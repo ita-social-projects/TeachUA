@@ -2,3 +2,12 @@
 /shelf/
 /workspace.xml
 /.idea
+
+target/
+
+.mvn/
+mvnw
+mvnw.cmd
+
+TeachUA.iml
+
