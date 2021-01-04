@@ -16,7 +16,7 @@ public class ContactPhoneNumber {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String phone;
-
     @ManyToOne
+    @JoinColumn(name = "club_id")
     private Club club;
 }

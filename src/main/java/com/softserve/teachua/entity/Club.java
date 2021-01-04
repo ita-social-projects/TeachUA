@@ -30,7 +30,6 @@ public class Club {
     @Enumerated(value = EnumType.STRING)
     @ElementCollection(targetClass = ChildrenAge.class)
     private List<ChildrenAge> childrenAge;
-
     @ManyToOne
     @JoinColumn(name = "children_center_id")
     private ChildrenCenter childrenCenter;

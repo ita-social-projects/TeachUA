@@ -21,7 +21,6 @@ public class ChildrenCenter {
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
-
     @OneToMany(mappedBy = "childrenCenter")
     private List<Club> clubs;
 
