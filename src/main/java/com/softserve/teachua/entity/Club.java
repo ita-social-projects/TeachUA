@@ -1,6 +1,6 @@
 package com.softserve.teachua.entity;
 
-import com.softserve.teachua.entity.enams.ChildrenAge;
+import com.softserve.teachua.entity.enums.ChildrenAge;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +26,8 @@ public class Club {
     private String generalDescriptionOfActivities;
     @Column(name = "general_description_of_club")
     private String generalDescriptionOfClub;
+    @Column(name = "logo_url")
+    private String logoUrl;
     @Column(name = "children_age")
     @Enumerated(value = EnumType.STRING)
     @ElementCollection(targetClass = ChildrenAge.class)
