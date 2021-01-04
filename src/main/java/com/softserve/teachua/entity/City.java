@@ -19,6 +19,4 @@ public class City {
     private String city;
     @OneToMany(mappedBy = "city")
     private List<ChildrenCenter> childrenCenters;
-
-
 }

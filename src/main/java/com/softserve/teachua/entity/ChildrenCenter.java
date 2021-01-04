@@ -23,6 +23,4 @@ public class ChildrenCenter {
     private City city;
     @OneToMany(mappedBy = "childrenCenter")
     private List<Club> clubs;
-
-
 }

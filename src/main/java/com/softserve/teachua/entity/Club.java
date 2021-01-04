@@ -40,5 +40,4 @@ public class Club {
     joinColumns = {@JoinColumn(name = "club_id")},
     inverseJoinColumns = {@JoinColumn(name = "activities_id")})
     private Set<Activities> activities;
-
 }
