@@ -18,6 +18,8 @@ public class Club {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "club_name")
+    private String clubName;
     @Column(name = "web_site_url")
     private String webSiteUrl;
     @Column(name = "link_in_social_networks")
@@ -35,7 +37,7 @@ public class Club {
     @ManyToOne
     @JoinColumn(name = "children_center_id")
     private ChildrenCenter childrenCenter;
-    @OneToMany
+    @OneToMany(mappedBy = "club")
     private List<ContactPhoneNumber> contactPhoneNumbers;
     @ManyToMany
     @JoinTable(name = "club_activities",
