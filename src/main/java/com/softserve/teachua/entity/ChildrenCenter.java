@@ -16,8 +16,7 @@ public class ChildrenCenter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String addres;
-    private String coordinates;
+    private String address;
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
