@@ -114,7 +114,9 @@
                                     <div class="row">
                                         <div class="col-sm-12" >
                                             <div>
-                                                <p>[[${club.address}]] <a href="#" > показати на мапі</a></p>
+                                                <p>[[${club.address}]]
+                                                    <a th:href="@{/map/{clubName}/{clubId}(clubId=${club.id},clubName=${club.clubName})}"> показати на мапі</a>
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

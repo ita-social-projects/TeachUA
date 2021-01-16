@@ -13,7 +13,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table
+@Table(name = "club")
 public class Club {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,4 +44,11 @@ public class Club {
     joinColumns = {@JoinColumn(name = "club_id")},
     inverseJoinColumns = {@JoinColumn(name = "activities_id")})
     private Set<Activities> activities;
+
+    @Column(name = "coordinates_id", updatable = false, insertable = false)
+    private Integer coordinatesId;
+
+    @OneToOne
+    @JoinColumn(name = "coordinates_id", referencedColumnName = "id")
+    private Coordinates coordinates;
 }
