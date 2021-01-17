@@ -1,6 +1,6 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.config.LiqPayParent;
+import com.softserve.teachua.liqpay.LiqPayObj;
 import com.softserve.teachua.dto.CityIdModel;
 import com.softserve.teachua.dto.SearchModel;
 import com.softserve.teachua.repository.ClubRepository;
@@ -14,22 +14,22 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class ClubsController {
 
-    private ClubRepository  clubRepository;
+    private ClubRepository clubRepository;
     private CityService cityService;
     private ClubService clubService;
-    private LiqPayParent liqPayParent;
+    private LiqPayObj liqPayObj;
 
     @Autowired
     public ClubsController(ClubRepository clubRepository, CityService cityService,
-                           ClubService clubService, LiqPayParent liqPayParent) {
+                           ClubService clubService, LiqPayObj liqPayObj) {
         this.clubRepository = clubRepository;
         this.cityService = cityService;
         this.clubService = clubService;
-        this.liqPayParent = liqPayParent;
+        this.liqPayObj = liqPayObj;
     }
     @GetMapping("/clubs")
     public String getClubsPage(Model model){
-        liqPayParent.liqPayParam(model);
+        liqPayObj.liqPayParam(model);
         model.addAttribute("cities", cityService.getAll());
         model.addAttribute("currentCity", cityService.getCityById(1L));
         model.addAttribute("clubs", clubService.getByCityId(1L));
@@ -44,7 +44,7 @@ public class ClubsController {
         model.addAttribute("clubs", clubService.getByCityId(cityModel.getId()));
         model.addAttribute("seacrhModel", new SearchModel());
         model.addAttribute("cityModel", new CityIdModel());
-        liqPayParent.liqPayParam(model);
+        liqPayObj.liqPayParam(model);
         return "clubs";
     }
     @PostMapping("/search/{id}")
@@ -54,7 +54,7 @@ public class ClubsController {
         model.addAttribute("clubs", clubService.getByCityIdAndSearchParam(id,searchModel.getRequest()));
         model.addAttribute("seacrhModel", new SearchModel());
         model.addAttribute("cityModel", new CityIdModel());
-        liqPayParent.liqPayParam(model);
+        liqPayObj.liqPayParam(model);
         return "clubs";
     }
 }

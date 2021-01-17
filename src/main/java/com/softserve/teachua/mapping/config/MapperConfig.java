@@ -1,4 +1,4 @@
-package com.softserve.teachua.config;
+package com.softserve.teachua.mapping.config;
 
 import java.util.List;
 import org.modelmapper.Converter;

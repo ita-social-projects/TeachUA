@@ -1,5 +1,6 @@
-package com.softserve.teachua.config;
+package com.softserve.teachua.liqpay;
 
+import com.softserve.teachua.liqpay.LiqPayDataGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
@@ -8,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class LiqPayParent {
+public class LiqPayObj {
     @Value("${publicKey}")
     private String publicKey;
     @Value("${privateKey}")
@@ -29,8 +30,8 @@ public class LiqPayParent {
         map.put("currency", "UAH");
         map.put("description", "Help project");
         map.put("language", "uk");
-        LiqPayChild liqPayChild = new LiqPayChild(getPublicKey(), getPrivateKey());
-        Map<String, String> liqPayParam = liqPayChild.generateData(map);
+        LiqPayDataGenerator liqPayDataGenerator = new LiqPayDataGenerator(getPublicKey(), getPrivateKey());
+        Map<String, String> liqPayParam = liqPayDataGenerator.generateData(map);
         model.addAttribute("liqPayParam", liqPayParam);
     }
 }

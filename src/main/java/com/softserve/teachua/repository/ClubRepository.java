@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long> {
-    @Query("select c from Club c inner join ChildrenCenter  cc on c.childrenCenter.id = cc.id where cc.city.id = :id")
-    List<Club> getClubByCityId(@Param("id") Long id);
+    @Query("select c from Club c inner join ChildrenCenter cc on c.childrenCenter.id = cc.id where cc.city.id = :id order by c.id")
+    List<Club> getClubByCityId(Long id);
 }

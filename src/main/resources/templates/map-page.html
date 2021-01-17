@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script th:inline="javascript">
+    function initMap() {
+        const map = new google.maps.Map(
+            document.getElementById('map'), {
+                zoom: 14,
+                center: {lat: 49.842957, lng: 24.031111}
+            });
+        createMarker([[${latitude}]], [[${longitude}]], [[${clubName}]], map);
+    }
+
+    function createMarker(latitude, longitude, title, map) {
+        const marker = new google.maps.Marker({
+            icon: {
+                url: "/images/google-maps-marker.svg",
+                size: new google.maps.Size(52, 52),
+                scaledSize: new google.maps.Size(45, 45),
+                anchor: new google.maps.Point(15, 35),
+                labelOrigin: new google.maps.Point(75, 20)
+            },
+            position: {lat: latitude, lng: longitude},
+            map: map,
+            label: {
+                text: title,
+                fontSize: "16px",
+                fontWeight: "bold"
+            }
+        });
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGz43yvvQMIrYFfD1q8detWXmn0yx4EcE&callback=initMap">
+</script>
+</body>
+</html>
