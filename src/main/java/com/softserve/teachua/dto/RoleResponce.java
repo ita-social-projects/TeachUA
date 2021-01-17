@@ -8,5 +8,5 @@ import lombok.Data;
 public class RoleResponce {
 
     private String rolename;
-    
+
 }

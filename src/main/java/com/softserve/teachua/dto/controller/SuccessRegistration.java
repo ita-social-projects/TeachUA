@@ -9,8 +9,8 @@ import lombok.Data;
 @Data
 public class SuccessRegistration {
 
-	private Long id;
+    private Long id;
     private String email;
     private String roleName;
-    
+
 }
