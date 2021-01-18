@@ -1,10 +1,10 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.ClubDto;
-import java.util.List;
+import com.softserve.teachua.dto.PageableAdvancedDto;
+import org.springframework.data.domain.Pageable;
 
 public interface ClubService {
-    List<ClubDto> getAll();
-    List<ClubDto> getByCityId(Long id);
-    List<ClubDto> getByCityIdAndSearchParam(Long id, String search);
+    PageableAdvancedDto<ClubDto> getByCityIdAndSearchParam(Long id, String search, Pageable pageable);
+    PageableAdvancedDto<ClubDto> getByCityId(Pageable pageable, Long id);
 }

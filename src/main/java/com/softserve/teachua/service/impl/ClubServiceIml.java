@@ -1,16 +1,16 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.dto.ClubDto;
-import com.softserve.teachua.entity.Activities;
+import com.softserve.teachua.dto.PageableAdvancedDto;
 import com.softserve.teachua.entity.Club;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.service.ClubService;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,44 +26,31 @@ public class ClubServiceIml implements ClubService {
     }
 
     @Override
-    public List<ClubDto> getAll() {
-        List<Club> clubs = clubRepository.findAll();
-        List<ClubDto> clubDtos = new ArrayList<>();
-        for (Club club:clubs){
-            clubDtos.add(modelMapper.map(club, ClubDto.class));
-        }
-        return clubDtos;
+    public PageableAdvancedDto<ClubDto> getByCityIdAndSearchParam(Long id, String search, Pageable pageable) {
+        Page<Club> pages = clubRepository.getClubByCityIdAndClubNamePageble(pageable,id,search);
+        return buildPageableAdvancedDto(pages);
     }
 
     @Override
-    public List<ClubDto> getByCityId(Long id) {
-        List<Club> clubs = clubRepository.getClubByCityId(id);
-        List<ClubDto> clubDtos = new ArrayList<>();
-        for (Club club: clubs) {
-            clubDtos.add(modelMapper.map(club,ClubDto.class));
-        }
-        return clubDtos;
+    public PageableAdvancedDto<ClubDto> getByCityId(Pageable pageable, Long id) {
+        Page<Club> pages = clubRepository.getClubByCityIdPageble(pageable,id);
+        return buildPageableAdvancedDto(pages);
     }
 
-    @Override
-    public List<ClubDto> getByCityIdAndSearchParam(Long id, String search) {
-        List<Club> clubs = clubRepository.getClubByCityId(id);
-        Set<Club> clubSet = new HashSet<>();
-        for (Club club:clubs){
-            Set<Activities> activitiesSet = club.getActivities();
-            for (Activities activity :activitiesSet){
-                if (activity.getActivity().contains(search)){
-                    clubSet.add(club);
-                }
-            }
-            if (club.getClubName().contains(search)){
-                clubSet.add(club);
-            }
-        }
-        List<ClubDto> clubDtos = new ArrayList<>();
-        for (Club club: clubSet) {
-            clubDtos.add(modelMapper.map(club,ClubDto.class));
-        }
-        return clubDtos;
+    private PageableAdvancedDto<ClubDto> buildPageableAdvancedDto(Page<Club> clubPage){
+        List<ClubDto> clubDtos = clubPage.stream()
+            .map(club -> modelMapper.map(club,ClubDto.class))
+            .collect(Collectors.toList());
+        return new PageableAdvancedDto<>(
+            clubDtos,
+            clubPage.getTotalElements(),
+            clubPage.getPageable().getPageNumber(),
+            clubPage.getTotalPages(),
+            clubPage.getNumber(),
+            clubPage.hasPrevious(),
+            clubPage.hasNext(),
+            clubPage.isFirst(),
+            clubPage.isLast()
+        );
     }
 }
