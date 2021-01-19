@@ -1,7 +1,6 @@
 package com.softserve.teachua.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,26 +9,26 @@ import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Data
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "news")
+public class News {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (name = "email")
-    private String email;
+    @Column(name = "title")
+    private String title;
 
-    @Column (name = "password")
-    private String password;
-
-    @Column
-    private String name;
+    @Column(name = "description")
+    private String description;
 
     @ManyToOne
-    @JoinColumn(name = "roles_id")
-    private Role role;
+    @JoinColumn(name = "club_id")
+    private Club club;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
