@@ -47,8 +47,8 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div>
-                    <form th:object="${cityModel}" th:action="@{/clubs/select_city}" method="post">
-                        <select th:field="*{id}" class="form-control-sm" >
+                    <form th:object="${cityModel}" th:action="@{/clubs}" method="post">
+                        <select id="citySelect" th:field="*{id}" class="form-control-sm" >
                             <option th:each="city:${cities}" th:value="${city.id}" th:utext="${city.city}"/>
                         </select>
                         <input type="submit" class="btn" value="Змінити">
@@ -87,8 +87,8 @@
         </div>
         <div class="col-sm-6" >
             <div class="margin_search">
-                <form action="#" th:action="@{/search/{id}(id=${currentCity.id})}" th:object="${seacrhModel}" method="post"  >
-                    <input type="text" th:field="*{request}"/>
+                <form action="#" th:action="@{/clubs/{id}(id=${currentCity.id})}" method="get"  >
+                    <input type="text" th:name="search" />
                     <input type="submit" class="btn" value="Пошук"/>
                 </form>
             </div>
@@ -98,7 +98,7 @@
     <div class="row"  >
         <div class="col-sm-12" >
             <div class="row" >
-                <div class="col-sm-3 margin_clubs_card" th:each="club:${clubs}">
+                <div class="col-sm-3 margin_clubs_card" th:each="club, iter :${pageable.getPage()}">
                     <div class="card">
                         <div class="row">
                             <div class="col-sm-6" >
@@ -133,68 +133,106 @@
                 </div>
             </div>
         </div>
-    </div>
+        <div class="row" style="margin-left: 40%" >
+            <div class="col-sm-12" >
+                <div class="clearfix" th:if="${pageable.getPage().size() ne 0}">
+                    <div class="hint-text">
+                        Showing
+                        <b th:text="${pageable.getCurrentPage() eq 0 ? '1 -' : (pageable.isHasNext() ? pageable.getPage().size() * pageable.getCurrentPage() : pageable.getTotalElements() - pageable.getPage().size()) + 1 + ' - '}"></b>
+                        <b th:text="${pageable.getCurrentPage() eq 0 ? pageable.getPage().size() : (pageable.isHasNext() ? pageable.getPage().size() * (pageable.getCurrentPage() + 1) : pageable.getTotalElements())}">*</b>
+                        out of
+                        <b th:text="${pageable.getTotalElements()}"></b>
+                        entries
+                    </div>
+                    <ul class="pagination">
 
-        <footer>
-            <div class=" container-fluid mt-4 bg-light fill-height">
-                <div class="row text-center">
-                    <div class="col-12 "> <h4 >Наші партнери і контакти</h4></div>
-                    <div class="col-12 ">
-                        <form method="POST" action="https://www.liqpay.ua/api/3/checkout"
-                              accept-charset="utf-8">
-                            <input type="hidden" name="data" th:value="${liqPayParam.get('data')}"/>
-                            <input type="hidden" name="signature" th:value="${liqPayParam.get('signature')}"/>
-                            <button style="border: none !important; display:inline-block !important;text-align: center !important;padding: 7px 20px !important;
-		color: #fff !important; font-size:16px !important; font-weight: 600 !important; font-family:OpenSans, sans-serif; cursor: pointer !important; border-radius: 2px !important;
-		background: rgb(31,33,28) !important;"onmouseover="this.style.opacity='0.5';" onmouseout="this.style.opacity='1';">
-                                <img src="https://static.liqpay.ua/buttons/logo-small.png" name="btn_text"
-                                     style="margin-right: 7px !important; vertical-align: middle !important;"/>
-                                <span style="vertical-align:middle; !important">Допомога проекту</span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <div class="row " >
+                        <li class="page-item"
+                            th:classappend="${!pageable.isFirst()} ? '' : 'disabled'">
+                            <a class="page-link" rel="tooltip" th:if="${!pageable.isFirst()}"
+                               th:href="@{/clubs/{city}?page={id}&search={searchName}(id=${0},searchName=${search},city=${currentCity.id})}">First</a>
+                            <a class="page-link" rel="tooltip" th:if="${pageable.isFirst()}"></a>
+                        </li>
 
-                    <div class="col-2 ">
-                        <a href="#" class="btn">
-                            <h5 class="text-center " >Title</h5>
-                            <p class="text-center "> text-centefadsfadsfaafafdasf</p>
-                        </a>
-                    </div>
-                    <div class="col-2 ">
-                        <a href="#" class="btn">
-                            <h5 class="text-center " >Title</h5>
-                            <p class="text-center "> text-centefadsfadsfaafafdasf</p>
-                        </a>
-                    </div>
-                    <div class="col-2 ">
-                        <a href="#" class="btn">
-                            <h5 class="text-center " >Title</h5>
-                            <p class="text-center "> text-centefadsfadsfaafafdasf</p>
-                        </a>
-                    </div>
-                    <div class="col-2 ">
-                        <a href="#" class="btn">
-                            <h5 class="text-center " >Title</h5>
-                            <p class="text-center "> text-centefadsfadsfaafafdasf</p>
-                        </a>
-                    </div>
-                    <div class="col-2 ">
-                        <a href="#" class="btn">
-                            <h5 class="text-center " >Title</h5>
-                            <p class="text-center "> text-centefadsfadsfaafafdasf</p>
-                        </a>
-                    </div>
-                    <div class="col-2 ">
-                        <a href="#" class="btn">
-                            <h5 class="text-center " >Title</h5>
-                            <p class="text-center "> text-centefadsfadsfaafafdasf</p>
-                        </a>
-                    </div>
+                        <li class="page-item"
+                            th:if="${pageNumber > -1 && pageNumber < pageable.getTotalPages()}"
+                            th:classappend="${pageNumber == pageable.getNumber()} ? 'active' : ''"
+                            th:each="pageNumber : ${#numbers.sequence(pageable.getNumber()-3, pageable.getNumber()+3)}">
+                            <a class="page-link" th:href="@{/clubs/{city}?page={id}&search={searchName}(id=${pageNumber}, searchName=${search}, city=${currentCity.id})}">[[${pageNumber}+1]]</a>
+                        </li>
+
+                        <li class="page-item"
+                            th:classappend="${!pageable.isLast()} ? '' : 'disabled'">
+                            <a class="page-link" rel="tooltip" th:if="${!pageable.isLast()}"
+                               th:href="@{/clubs/{city}?page={id}&search={searchName}(id=${pageable.getTotalPages()-1}, searchName=${search},city=${currentCity.id})}">Last</a>
+                            <a class="page-link" rel="tooltip" th:if="${pageable.isLast()}"></a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </footer>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class=" container-fluid mt-4 bg-light fill-height">
+            <div class="row text-center">
+                <div class="col-12 "> <h4 >Наші партнери і контакти</h4></div>
+                <div class="col-12 ">
+                    <form method="POST" action="https://www.liqpay.ua/api/3/checkout"
+                          accept-charset="utf-8">
+                        <input type="hidden" name="data" th:value="${liqPayParam.get('data')}"/>
+                        <input type="hidden" name="signature" th:value="${liqPayParam.get('signature')}"/>
+                        <button style="border: none !important; display:inline-block !important;text-align: center !important;padding: 7px 20px !important;
+		color: #fff !important; font-size:16px !important; font-weight: 600 !important; font-family:OpenSans, sans-serif; cursor: pointer !important; border-radius: 2px !important;
+		background: rgb(31,33,28) !important;"onmouseover="this.style.opacity='0.5';" onmouseout="this.style.opacity='1';">
+                            <img src="https://static.liqpay.ua/buttons/logo-small.png" name="btn_text"
+                                 style="margin-right: 7px !important; vertical-align: middle !important;"/>
+                            <span style="vertical-align:middle; !important">Допомога проекту</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="row " >
+
+                <div class="col-2 ">
+                    <a href="#" class="btn">
+                        <h5 class="text-center " >Title</h5>
+                        <p class="text-center "> text-centefadsfadsfaafafdasf</p>
+                    </a>
+                </div>
+                <div class="col-2 ">
+                    <a href="#" class="btn">
+                        <h5 class="text-center " >Title</h5>
+                        <p class="text-center "> text-centefadsfadsfaafafdasf</p>
+                    </a>
+                </div>
+                <div class="col-2 ">
+                    <a href="#" class="btn">
+                        <h5 class="text-center " >Title</h5>
+                        <p class="text-center "> text-centefadsfadsfaafafdasf</p>
+                    </a>
+                </div>
+                <div class="col-2 ">
+                    <a href="#" class="btn">
+                        <h5 class="text-center " >Title</h5>
+                        <p class="text-center "> text-centefadsfadsfaafafdasf</p>
+                    </a>
+                </div>
+                <div class="col-2 ">
+                    <a href="#" class="btn">
+                        <h5 class="text-center " >Title</h5>
+                        <p class="text-center "> text-centefadsfadsfaafafdasf</p>
+                    </a>
+                </div>
+                <div class="col-2 ">
+                    <a href="#" class="btn">
+                        <h5 class="text-center " >Title</h5>
+                        <p class="text-center "> text-centefadsfadsfaafafdasf</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
 </div>
 </body>
 </html>
