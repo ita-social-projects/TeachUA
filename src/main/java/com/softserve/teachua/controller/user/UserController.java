@@ -39,7 +39,7 @@ public class UserController {
                 .body(userService.updateUserProfileById(id));
     }
 
-    @DeleteMapping("/user//{id}")
+    @DeleteMapping("/user/{id}")
     public ResponseEntity<UserProfile> deleteById(@PathVariable("id") Long id) {
         log.info("**/delete user = " + id);
         userService.getUserProfileById(id);
