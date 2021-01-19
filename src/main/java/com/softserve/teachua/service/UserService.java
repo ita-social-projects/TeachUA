@@ -28,12 +28,12 @@ public interface UserService {
 
     List<User> getListOfUsers();
 
-    UserEntity updateUserEntityById(Long id);
+    UserProfile updateUserProfileById(Long id);
 
-    ResponseEntity<UserEntity> deleteUserById(Long id);
+    ResponseEntity<UserProfile> deleteUserById(Long id);
 
 
-    UserEntity getUserEntityById(Long id);
+    UserProfile getUserProfileById(Long id);
 
     List<RoleResponce> getAllRoles();
 

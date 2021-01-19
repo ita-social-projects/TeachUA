@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity updateUserEntityById(Long id) {
+    public UserProfile updateUserProfileById(Long id) {
         if (!isUserExistById(id)) {
             String USER_NOT_FOUND_BY_ID = "User not found by id %s";
             log.error(String.format(USER_NOT_FOUND_BY_ID, id));
@@ -93,24 +93,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<UserEntity> deleteUserById(Long id) {
+    public ResponseEntity<UserProfile> deleteUserById(Long id) {
         userRepository.deleteById(id);
         return null;
     }
 
     @Override
-    public UserEntity getUserEntityById(Long id) {
+    public UserProfile getUserProfileById(Long id) {
         if (!isUserExistById(id)) {
             String USER_NOT_FOUND_BY_ID = "User not found by id %s";
             log.error(String.format(USER_NOT_FOUND_BY_ID, id));
             throw new WrongAuthenticationException(String.format(USER_NOT_FOUND_BY_ID, id));
         }
         User user = getUserById(id);
-        return UserEntity.builder()
+        return UserProfile.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .password(user.getPassword())
-                .roleName(user.getRole().getName())
                 .build();
     }
 
@@ -147,7 +146,6 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .email(userProfile.getEmail())
                 .password(encodeService.encodePassword(userProfile.getPassword()))
-                .name(userProfile.getName())
                 .role(roleRepository.findByName(RoleData.USER.getDBRoleName()))
                 .build();
         user = userRepository.save(user);

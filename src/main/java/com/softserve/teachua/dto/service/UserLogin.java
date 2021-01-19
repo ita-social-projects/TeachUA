@@ -14,5 +14,4 @@ public class UserLogin {
 
     @NotEmpty
     private String password;
-
 }
