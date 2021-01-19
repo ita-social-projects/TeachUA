@@ -7,10 +7,8 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 @Data
-public class SuccessRegistration {
-
-    private Long id;
-    private String email;
-    private String roleName;
-
+public class SuccessCreatedClub {
+    private int ageFrom;
+    private int ageTo;
+    private String name;
 }

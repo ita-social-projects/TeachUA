@@ -5,8 +5,8 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class OperationResponce {
-    
+public class OperationResponse {
+
     private String status;
-    
+
 }

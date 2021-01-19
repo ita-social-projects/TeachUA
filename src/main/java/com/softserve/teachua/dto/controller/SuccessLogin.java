@@ -8,9 +8,9 @@ import lombok.Data;
 @Builder
 @Data
 public class SuccessLogin {
-	
-	private Long id;
-	private String email;
-	private String accessToken;
-	
+
+    private Long id;
+    private String email;
+    private String accessToken;
+
 }

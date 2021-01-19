@@ -1,23 +1,23 @@
 package com.softserve.teachua.dto.service;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
-@Builder
 @Data
+public class ClubProfile {
+    @NotNull
+    private int ageFrom;
 
-public class UserProfile {
-
-    @NotEmpty
-    private Long id;
-
-    @NotEmpty
-    private String email;
+    @NotNull
+    private int ageTo;
 
     @NotEmpty
-    private String password;
+    private String name;
+
+    @NotEmpty
+    private String urlWeb;
 }

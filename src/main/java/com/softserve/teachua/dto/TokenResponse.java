@@ -8,5 +8,5 @@ import lombok.Data;
 public class TokenResponse {
 
     private String token;
-    
+
 }

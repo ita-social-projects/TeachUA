@@ -1,31 +1,30 @@
 package com.softserve.teachua.security;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Component
 //@Log
 @Slf4j
 public class JwtProvider {
-	private final int TOKEN_LIFE_DAYS = 15;
+    private final int TOKEN_LIFE_DAYS = 15;
 
     @Value("$(jwt.secret)")
     private String jwtSecret;
 
     public String generateToken(String login) {
         Date date = Date.from(LocalDate.now()
-        		.plusDays(TOKEN_LIFE_DAYS)
-        		.atStartOfDay(ZoneId.systemDefault())
-        		.toInstant());
+                .plusDays(TOKEN_LIFE_DAYS)
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant());
         return Jwts.builder()
                 .setSubject(login)
                 .setExpiration(date)
@@ -36,8 +35,8 @@ public class JwtProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token);
+                    .setSigningKey(jwtSecret)
+                    .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             log.error("invalid token");
@@ -53,7 +52,7 @@ public class JwtProvider {
                 .getBody();
         return claims.getSubject();
     }
-    
+
     public Date getExpirationDate(String token) {
         Claims claims = Jwts
                 .parser()
@@ -62,5 +61,5 @@ public class JwtProvider {
                 .getBody();
         return claims.getExpiration();
     }
-    
+
 }
