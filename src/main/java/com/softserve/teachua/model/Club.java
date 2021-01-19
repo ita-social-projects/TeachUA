@@ -16,13 +16,13 @@ public class Club {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "age_from")
-    private Short ageFrom;
+    private Integer ageFrom;
 
     @Column(name = "age_to")
-    private Short ageTo;
+    private Integer ageTo;
 
     @Column
     private String name;
@@ -33,14 +33,16 @@ public class Club {
     @Column(name = "url_logo")
     private String urlLogo;
 
+    //TODO change to @OneToMany center
     @Column(name = "center_id")
-    private Integer centerId;
+    private Long centerId;
 
+    //TODO change to @OneToMany category
     @Column(name = "category_id")
-    private Integer categoryId;
+    private Long categoryId;
 
     @Column(name = "work_time")
-    private Integer workTime;
+    private String workTime;
 
     @ManyToMany
     @JoinTable(
