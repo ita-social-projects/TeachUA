@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GoogleMapRepository extends JpaRepository<Coordinates, Integer> {
 
-    @Query("select crd from Coordinates crd join Club cl ON cl.coordinatesId=:clubId")
-    Coordinates getClubCoordinatesById(Integer clubId);
+    @Query("select crd from Coordinates crd join ChildrenCenter cc ON cc.address=:centerAddress")
+    Coordinates getClubCoordinatesByAddress(String centerAddress);
 }

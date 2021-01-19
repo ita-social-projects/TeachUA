@@ -22,4 +22,11 @@ public class ChildrenCenter {
     private City city;
     @OneToMany(mappedBy = "childrenCenter")
     private List<Club> clubs;
+
+    @Column(name = "coordinates_id", updatable = false, insertable = false)
+    private Integer coordinatesId;
+
+    @OneToOne
+    @JoinColumn(name = "coordinates_id", referencedColumnName = "id")
+    private Coordinates coordinates;
 }

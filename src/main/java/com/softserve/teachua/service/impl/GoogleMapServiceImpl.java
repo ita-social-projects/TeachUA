@@ -12,7 +12,7 @@ public class GoogleMapServiceImpl implements GoogleMapService {
     private GoogleMapRepository googleMapRepository;
 
     @Override
-    public Coordinates getClubCoordinatesById(Integer clubId) {
-        return googleMapRepository.getClubCoordinatesById(clubId);
+    public Coordinates getClubCoordinatesByAddress(String centerAddress) {
+        return googleMapRepository.getClubCoordinatesByAddress(centerAddress);
     }
 }

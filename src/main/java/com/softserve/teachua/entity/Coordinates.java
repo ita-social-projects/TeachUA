@@ -34,5 +34,5 @@ public class Coordinates {
     private Double longitude;
 
     @OneToOne(mappedBy = "coordinates")
-    private Club club;
+    private ChildrenCenter childrenCenter;
 }
