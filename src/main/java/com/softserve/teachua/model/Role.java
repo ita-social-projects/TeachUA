@@ -3,12 +3,14 @@ package com.softserve.teachua.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 
+
 @AllArgsConstructor
 @NoArgsConstructor
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 @Data
 @Entity
 @Table(name = "roles")
