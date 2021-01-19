@@ -14,7 +14,6 @@ public class ClubRatingController {
      * @param clubId - put club id.
      * @param ratingId - put club's rating id.
      * @return new {@code ...}.
-     * @author Denis Burko
      */
     @GetMapping("/club/{clubId}/rating/{ratingId}")
     public Object getClubRating(@PathVariable Integer clubId,
@@ -28,7 +27,6 @@ public class ClubRatingController {
      * @param id - put club id.
      * @param rating - insert rating.
      * @return new {@code ...}.
-     * @author Denis Burko
      */
     @PostMapping("/club/{id}/rating")
     public Object addClubRating(
@@ -43,7 +41,6 @@ public class ClubRatingController {
      * @param clubId - put club id.
      * @param ratingId - put rating id.
      * @return new {@code ...}.
-     * @author Denis Burko
      */
     @DeleteMapping("/club/{clubId}/rating")
     public SuccessDeletedClubRating deletedClubRating(

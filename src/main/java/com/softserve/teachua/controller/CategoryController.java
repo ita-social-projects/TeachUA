@@ -17,7 +17,6 @@ public class CategoryController {
      *
      * @param id - put category id.
      * @return new {@code CategoryResponse}.
-     * @author Denis Burko
      */
     @GetMapping("/category/{id}")
     public CategoryResponse getCategory(@PathVariable Long id) {
@@ -32,7 +31,6 @@ public class CategoryController {
      *
      * @param categoryProfile - Place dto with all parameters for adding new category.
      * @return new {@code SuccessCreatedCategory}.
-     * @author Denis Burko
      */
     @PostMapping("/category")
     public SuccessCreatedCategory addCategory(
@@ -48,7 +46,6 @@ public class CategoryController {
      *
      * @param id - put category id.
      * @return new {@code ...}.
-     * @author Denis Burko
      */
     @DeleteMapping("/category")
     public Object deleteCategory(@RequestParam Long id) throws JsonProcessingException {

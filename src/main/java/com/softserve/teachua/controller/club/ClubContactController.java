@@ -14,7 +14,6 @@ public class ClubContactController {
      * @param clubId - put club id.
      * @param contactId - put club's contact id.
      * @return new {@code ...}.
-     * @author Denis Burko
      */
     @GetMapping("/club/{clubId}/contact/{contactId}")
     public Object getClubContact(@PathVariable Long clubId,
@@ -28,7 +27,6 @@ public class ClubContactController {
      * @param id - put club id.
      * @param name - insert contact name.
      * @return new {@code ...}.
-     * @author Denis Burko
      */
     @PostMapping("/club/{id}/contact")
     public Object addClubContact(
@@ -43,7 +41,6 @@ public class ClubContactController {
      * @param clubId - put club id.
      * @param contactId - put contact id.
      * @return new {@code SuccessDeletedClubContact}.
-     * @author Denis Burko
      */
     @DeleteMapping("/club/{clubId}/contact")
     public SuccessDeletedClubContact deleteClubContact(

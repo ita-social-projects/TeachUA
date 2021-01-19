@@ -17,7 +17,6 @@ public class ActivityController {
      *
      * @param id - put activity id.
      * @return new {@code ActivityResponse}.
-     * @author Denis Burko
      */
     @GetMapping("/activity/{id}")
     public ActivityResponse getActivity(@PathVariable Long id) {
@@ -32,7 +31,6 @@ public class ActivityController {
      *
      * @param activityProfile - Place dto with all parameters for adding new activity.
      * @return new {@code SuccessCreatedActivity}.
-     * @author Denis Burko
      */
     @PostMapping("/activity")
     public SuccessCreatedActivity addActivity(
@@ -48,7 +46,6 @@ public class ActivityController {
      *
      * @param id - put activity id.
      * @return new {@code ...}.
-     * @author Denis Burko
      */
     @DeleteMapping("/activity")
     public Object deleteActivity(@RequestParam Long id) throws JsonProcessingException {
