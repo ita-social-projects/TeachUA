@@ -1,5 +1,7 @@
 package com.softserve.teachua.config;
 
+import com.softserve.teachua.constants.RoleData;
+import com.softserve.teachua.security.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,9 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import com.softserve.teachua.constants.RoleData;
-import com.softserve.teachua.security.JwtFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -32,9 +32,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //.antMatchers("/admin/*").hasRole(RoleData.ADMIN.getRoleName())
                 .antMatchers("/roles").hasRole(RoleData.ADMIN.getRoleName())
                 .antMatchers("/hello").hasAnyRole(RoleData.ADMIN.getRoleName(), RoleData.USER.getRoleName())
-                .antMatchers("/index", "/signup", "/signin").permitAll()
+                .antMatchers("/index", "/signup", "/signin", "/signout").permitAll()
+                .antMatchers("/user{id}", "/user{email}", "/users").permitAll()
                 .and()
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/signout")).logoutSuccessUrl("/signin");
     }
 
     // TODO move to class
@@ -42,5 +44,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
 }

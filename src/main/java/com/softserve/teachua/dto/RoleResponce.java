@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class RoleResponce {
 
     private String roleName;
-
 }

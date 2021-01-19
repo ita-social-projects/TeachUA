@@ -1,23 +1,17 @@
 package com.softserve.teachua.dto.service;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 
 @AllArgsConstructor
-@Builder
 @Data
-
-public class UserProfile {
-
+public class ActivityProfile {
     @NotEmpty
-    private Long id;
+    private String name;
 
+    //For @RequestBody, will delete
     @NotEmpty
-    private String email;
-
-    @NotEmpty
-    private String password;
+    private String secondField;
 }
