@@ -33,13 +33,11 @@ public class Club {
     @Column(name = "url_logo")
     private String urlLogo;
 
-    //TODO change to @OneToMany center
-    @Column(name = "center_id")
-    private Long centerId;
+    @ManyToOne
+    private Center center;
 
-    //TODO change to @OneToMany category
-    @Column(name = "category_id")
-    private Long categoryId;
+    @ManyToOne
+    private Category category;
 
     @Column(name = "work_time")
     private String workTime;
