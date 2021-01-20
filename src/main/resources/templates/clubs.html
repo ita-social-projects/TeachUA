@@ -3,154 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <style>
-        hr {
-            display: block;
-            margin-top: 0.5em;
-            margin-bottom: 0.5em;
-            margin-left: auto;
-            margin-right: auto;
-            border-style: inset;
-            border-width: 1px;
-        }
-        .margin_clubs{
-            margin-left: 20%;
-            justify-content: right;
-        }
-        .margin_clubs_card{
-            margin-top: 3%;
-        }
-        .margin_search{
-            margin-left: 20%;
-            justify-content: right;
-        }
-        .image_style{
-            width: 100px;
-            height: 100px;
-            opacity: 0.8;
-        }
-        .margin_club_name{
-            margin-top: 10%;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link href="../static/images/style.css" th:href="@{/images/style.css}" rel="stylesheet"/>
 </head>
 <body>
 <!-- Page Content -->
-<div class="container-fluid">
+<div class="behind-header"></div>
+<div class="bg">
     <!-- Navigation -->
-    <div class="row" >
-        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Навчай українською</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div>
-                    <form th:object="${cityModel}" th:action="@{/clubs}" method="post">
-                        <select id="citySelect" th:field="*{id}" class="form-control-sm" >
-                            <option th:each="city:${cities}" th:value="${city.id}" th:utext="${city.city}"/>
-                        </select>
-                        <input type="submit" class="btn" value="Змінити">
+    <header>
+        <div class="row">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="container-fluid">
+                    <div className="left-side-menu">
+                        <div class="logo"></div>
+                    </div>
+
+                    <div className="center-side">
+                        <div class="collapse navbar-collapse" id="navbarResponsive">
+                            <ul class="navbar-nav ml-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Гуртки</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" th:href="@{/project-page}">Проєкт</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="right-side-menu">
+                        <div class="city-icon"></div>
+                        <div style="display: inline-block">
+                            <form th:object="${cityModel}" th:action="@{/clubs}" method="post">
+                                <select id="citySelect" th:field="*{id}" class="form-control-sm chose-city" >
+                                    <option style="color:black" th:each="city:${cities}" th:value="${city.id}" th:utext="${city.city}"/>
+                                </select>
+                                <input type="submit" class="btn" value="Змінити">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <section class="content">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="margin_clubs">
+                    <h2>Гуртки у місті [[${currentCity.city}]]</h2>
+                </div>
+            </div>
+            <div class="col-sm-6 flex">
+                <div class="margin_search">
+                    <form action="#" th:action="@{/clubs/{id}(id=${currentCity.id})}" method="get">
+                        <input placeholder="Який гурток шукаєте?" class="search" type="text" th:name="search" />
+                        <input type="submit" class="search-icon" value=""/>
                     </form>
                 </div>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Гуртки</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link"  href="#">Челендж</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Новини</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/project-page}">Проєкт</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Про послуги українською</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Користувач</a>
-                        </li>
-                    </ul>
-                </div>
             </div>
-        </nav>
-    </div>
-    <div class="row" style="margin-top: 5%" >
-        <div class="col-sm-6" >
-            <div class="margin_clubs">
-                <h2>Гуртки у місті [[${currentCity.city}]]</h2>
-            </div>
-        </div>
-        <div class="col-sm-6" >
-            <div class="margin_search">
-                <form action="#" th:action="@{/clubs/{id}(id=${currentCity.id})}" method="get"  >
-                    <input type="text" th:name="search" />
-                    <input type="submit" class="btn" value="Пошук"/>
-                </form>
-            </div>
-        </div>
-        <hr style="border-bottom:1px solid black; width: 100%;">
-    </div>
-    <div class="row"  >
-        <div class="col-sm-12" >
-            <div class="row" >
-                <div class="col-sm-3 margin_clubs_card" th:each="club, iter :${pageable.getPage()}">
-                    <div class="card">
+            <hr style="border-bottom:1px solid black; width: 100%;">
+        </div> 
+         <div class="content-center">
+            <div class="margin_clubs_card" th:each="club, iter :${pageable.getPage()}">
+                <div class="card">
+                    <div class="card-body">
                         <div class="row">
-                            <div class="col-sm-6" >
-                                <img class="card-img-top image_style" th:src="${club.logoUrl}" alt="Card image">
+                            <div class="card-image divider">
+                                <img th:src="@{/images/logo/logo-blue.png}"
+                                     alt="Card image">
                             </div>
-                            <div class="col-sm-6 margin_club_name">
-                                <div><span> [[${club.clubName}]]</span></div>
+                            <div class="margin_club_name divider col-sm-12">
+                                <span> [[${club.clubName}]]</span>
                             </div>
                         </div>
-                        <div class="card-body" style="border: 1px solid black;">
-                            <div  class="row">
-                                <div class="col-sm-12" >
-                                    <div class="row">
-                                        <div class="col-sm-12" >
-                                            <div>
-                                                <p>[[${club.address}]]
-                                                    <a th:href="@{/map/show-club/(clubId=${club.id}, clubAddress=${club.address}, clubName=${club.clubName})}"> показати на мапі</a>
-                                                </p>
-                                            </div>
-                                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <p class="card-text"
+                                           th:utext="${club.generalDescriptionOfClub}"></p>
                                     </div>
-                                    <div class="row" >
-                                        <div class="col-sm-12">
-                                            <p class="card-text" th:utext="${club.generalDescriptionOfClub}"></p>
-                                            <a href="#" class="">Читати далі </a>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div>
+                                            <p>[[${club.address}]]
+                                                <a th:href="@{/map/{clubName}/{clubId}(clubId=${club.id},clubName=${club.clubName})}"> показати на мапі</a>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
+                                <a href="#" class="">Детальніше</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row" style="margin-left: 40%" >
+        <div class="row">
             <div class="col-sm-12" >
                 <div class="clearfix" th:if="${pageable.getPage().size() ne 0}">
-                    <div class="hint-text">
-                        Showing
-                        <b th:text="${pageable.getCurrentPage() eq 0 ? '1 -' : (pageable.isHasNext() ? pageable.getPage().size() * pageable.getCurrentPage() : pageable.getTotalElements() - pageable.getPage().size()) + 1 + ' - '}"></b>
-                        <b th:text="${pageable.getCurrentPage() eq 0 ? pageable.getPage().size() : (pageable.isHasNext() ? pageable.getPage().size() * (pageable.getCurrentPage() + 1) : pageable.getTotalElements())}">*</b>
-                        out of
-                        <b th:text="${pageable.getTotalElements()}"></b>
-                        entries
-                    </div>
-                    <ul class="pagination">
+                    <ul class="pagination content-center">
 
                         <li class="page-item"
                             th:classappend="${!pageable.isFirst()} ? '' : 'disabled'">
-                            <a class="page-link" rel="tooltip" th:if="${!pageable.isFirst()}"
-                               th:href="@{/clubs/{city}?page={id}&search={searchName}(id=${0},searchName=${search},city=${currentCity.id})}">First</a>
-                            <a class="page-link" rel="tooltip" th:if="${pageable.isFirst()}"></a>
+                            <a class="page-link" rel="tooltip"
+                               th:href="@{/clubs/{city}?page={id}&search={searchName}(id=${pageable.getNumber()-1}, searchName=${search},city=${currentCity.id})}"><</a>
                         </li>
 
                         <li class="page-item"
@@ -162,73 +121,40 @@
 
                         <li class="page-item"
                             th:classappend="${!pageable.isLast()} ? '' : 'disabled'">
-                            <a class="page-link" rel="tooltip" th:if="${!pageable.isLast()}"
-                               th:href="@{/clubs/{city}?page={id}&search={searchName}(id=${pageable.getTotalPages()-1}, searchName=${search},city=${currentCity.id})}">Last</a>
-                            <a class="page-link" rel="tooltip" th:if="${pageable.isLast()}"></a>
+                            <a class="page-link" rel="tooltip"
+                               th:href="@{/clubs/{city}?page={id}&search={searchName}(id=${pageable.getNumber()+1}, searchName=${search},city=${currentCity.id})}">></a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-
-    </div>
-
+    </section>
     <footer>
-        <div class=" container-fluid mt-4 bg-light fill-height">
-            <div class="row text-center">
-                <div class="col-12 "> <h4 >Наші партнери і контакти</h4></div>
-                <div class="col-12 ">
-                    <form method="POST" action="https://www.liqpay.ua/api/3/checkout"
-                          accept-charset="utf-8">
-                        <input type="hidden" name="data" th:value="${liqPayParam.get('data')}"/>
-                        <input type="hidden" name="signature" th:value="${liqPayParam.get('signature')}"/>
-                        <button style="border: none !important; display:inline-block !important;text-align: center !important;padding: 7px 20px !important;
-		color: #fff !important; font-size:16px !important; font-weight: 600 !important; font-family:OpenSans, sans-serif; cursor: pointer !important; border-radius: 2px !important;
-		background: rgb(31,33,28) !important;"onmouseover="this.style.opacity='0.5';" onmouseout="this.style.opacity='1';">
-                            <img src="https://static.liqpay.ua/buttons/logo-small.png" name="btn_text"
-                                 style="margin-right: 7px !important; vertical-align: middle !important;"/>
-                            <span style="vertical-align:middle; !important">Допомога проекту</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="row " >
-
-                <div class="col-2 ">
-                    <a href="#" class="btn">
-                        <h5 class="text-center " >Title</h5>
-                        <p class="text-center "> text-centefadsfadsfaafafdasf</p>
-                    </a>
-                </div>
-                <div class="col-2 ">
-                    <a href="#" class="btn">
-                        <h5 class="text-center " >Title</h5>
-                        <p class="text-center "> text-centefadsfadsfaafafdasf</p>
-                    </a>
-                </div>
-                <div class="col-2 ">
-                    <a href="#" class="btn">
-                        <h5 class="text-center " >Title</h5>
-                        <p class="text-center "> text-centefadsfadsfaafafdasf</p>
-                    </a>
-                </div>
-                <div class="col-2 ">
-                    <a href="#" class="btn">
-                        <h5 class="text-center " >Title</h5>
-                        <p class="text-center "> text-centefadsfadsfaafafdasf</p>
-                    </a>
-                </div>
-                <div class="col-2 ">
-                    <a href="#" class="btn">
-                        <h5 class="text-center " >Title</h5>
-                        <p class="text-center "> text-centefadsfadsfaafafdasf</p>
-                    </a>
-                </div>
-                <div class="col-2 ">
-                    <a href="#" class="btn">
-                        <h5 class="text-center " >Title</h5>
-                        <p class="text-center "> text-centefadsfadsfaafafdasf</p>
-                    </a>
+        <div class="container-fluid mt-4 fill-height">
+            <div class="row">
+                <div class="col-12 flex" style="padding: 30px 50px 80px 50px;">
+                    <div class="col-3">
+                        Socials links
+                    </div>
+                    <div class="col-6">
+                        <div class="label">Наші партнери</div>
+                        <div class="partner" style="background: url('../images/partners/lang-unite.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner" style="background: url('../images/partners/change-to-ukr.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner" style="background: url('../images/partners/e-lang.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner" style="background: url('../images/partners/nat-lang.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner" style="background: url('../images/partners/ukr-cv.png') no-repeat; background-size: contain;"></div>
+                    </div>
+                    <div class="col-3">
+                        <div class="label">Як допомогти проєкту</div>
+                        <form method="POST" action="https://www.liqpay.ua/api/3/checkout"
+                              accept-charset="utf-8">
+                            <input type="hidden" name="data" th:value="${liqPayParam.get('data')}"/>
+                            <input type="hidden" name="signature" th:value="${liqPayParam.get('signature')}"/>
+                            <button class="help-button">
+                                <span>Допомога проекту</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
