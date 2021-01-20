@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GoogleMapRepository extends JpaRepository<Coordinates, Integer> {
 
-    @Query("select crd from Coordinates crd where crd.childrenCenter.address like:centerAddress")
+    @Query(value = "select * from club_coordinates as crd join children_center as cc on cc.coordinates_id=crd.id where cc.address=:centerAddress", nativeQuery = true)
     Coordinates getClubCoordinatesByAddress(String centerAddress);
 }

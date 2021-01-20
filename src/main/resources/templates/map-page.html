@@ -50,7 +50,7 @@
     }
 </script>
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGz43yvvQMIrYFfD1q8detWXmn0yx4EcE&callback=initMap">
+        th:src="@{https://maps.googleapis.com/maps/api/js(key=${googleMapKey}, callback='initMap')}">
 </script>
 </body>
 </html>
