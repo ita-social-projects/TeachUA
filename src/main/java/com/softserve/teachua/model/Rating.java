@@ -2,6 +2,7 @@ package com.softserve.teachua.model;
 
 import lombok.*;
 import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "ratings")
 public class Rating {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
