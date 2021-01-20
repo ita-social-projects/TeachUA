@@ -115,7 +115,7 @@
                                         <div class="col-sm-12" >
                                             <div>
                                                 <p>[[${club.address}]]
-                                                    <a th:href="@{/map/{clubName}/{clubId}(clubId=${club.id},clubName=${club.clubName})}"> показати на мапі</a>
+                                                    <a th:href="@{/map/show-club/(clubId=${club.id}, clubAddress=${club.address}, clubName=${club.clubName})}"> показати на мапі</a>
                                                 </p>
                                             </div>
                                         </div>
