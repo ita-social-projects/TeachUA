@@ -35,8 +35,8 @@
                     <div className="right-side-menu">
                         <div class="city-icon"></div>
                         <div style="display: inline-block">
-                            <form th:object="${cityModel}" th:action="@{/clubs/select_city}" method="post">
-                                <select th:field="*{id}" class="form-control-sm chose-city">
+                            <form th:object="${cityModel}" th:action="@{/clubs}" method="post">
+                                <select id="citySelect" th:field="*{id}" class="form-control-sm chose-city" >
                                     <option style="color:black" th:each="city:${cities}" th:value="${city.id}" th:utext="${city.city}"/>
                                 </select>
                                 <input type="submit" class="btn" value="Змінити">
@@ -56,9 +56,8 @@
             </div>
             <div class="col-sm-6 flex">
                 <div class="margin_search">
-                    <form action="#" th:action="@{/search/{id}(id=${currentCity.id})}" th:object="${seacrhModel}"
-                          method="post">
-                        <input placeholder="Який гурток шукаєте?" class="search" type="text" th:field="*{request}"/>
+                    <form action="#" th:action="@{/clubs/{id}(id=${currentCity.id})}" method="get">
+                        <input placeholder="Який гурток шукаєте?" class="search" type="text" th:name="search" />
                         <input type="submit" class="search-icon" value=""/>
                     </form>
                 </div>
