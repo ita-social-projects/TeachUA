@@ -1,29 +1,31 @@
 package com.softserve.teachua.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "centers")
+@Table(name = "feedbacks")
+public class Feedback {
 
-public class Center {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String city;
+    private String userName;
 
     @Column
-    private String adress;
+    private Float rate;
 
     @Column
-    private String coordinate;
+    private String text;
+
+    @ManyToOne
+    @JoinColumn(name = "club_id")
+    private Club club;
 
 }

@@ -5,7 +5,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
-
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -32,11 +31,11 @@ public class User {
     @Column
     private String name;
 
-
     @NonNull
     @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
 
-    @OneToMany
-    List<News> newsList;
+    @OneToMany(mappedBy = "user")
+    List<Club> clubs;
 }
