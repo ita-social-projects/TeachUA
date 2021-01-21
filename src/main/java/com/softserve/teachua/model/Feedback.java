@@ -1,8 +1,12 @@
 package com.softserve.teachua.model;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import javax.persistence.*;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,6 +28,8 @@ public class Feedback {
     @Column
     private String text;
 
+    @ToString.Exclude
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;

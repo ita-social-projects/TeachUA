@@ -1,6 +1,8 @@
 package com.softserve.teachua.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,10 +12,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
 @Table(name = "cities")
 public class City {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,10 +23,7 @@ public class City {
     @Column
     private String name;
 
-    @OneToOne
-    @JoinColumn(name = "coordinate_id")
-    private Coordinate coordinate;
-
     @OneToMany(mappedBy = "city")
+    @JsonManagedReference
     private List<Club> clubs;
 }

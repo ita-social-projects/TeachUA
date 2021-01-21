@@ -1,5 +1,7 @@
 package com.softserve.teachua.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,10 +34,15 @@ public class User {
     private String name;
 
     @NonNull
+    @ToString.Exclude
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
 
+
+    @ToString.Exclude
+    @JsonManagedReference
     @OneToMany(mappedBy = "user")
     List<Club> clubs;
 }
