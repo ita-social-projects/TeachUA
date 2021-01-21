@@ -18,22 +18,22 @@ public class Club {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column//(name = "age_from")
+    @Column
     private Integer ageFrom;
 
-    @Column//(name = "age_to")
+    @Column
     private Integer ageTo;
 
     @Column
     private String name;
 
-    @Column//(name = "url_web")
+    @Column
     private String urlWeb;
 
-    @Column//(name = "url_logo")
+    @Column
     private String urlLogo;
 
-    @Column//(name = "work_time")
+    @Column
     private String workTime;
 
     @ManyToOne
