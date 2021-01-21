@@ -30,6 +30,7 @@ public class LiqPayObj {
         map.put("currency", "UAH");
         map.put("description", "Help project");
         map.put("language", "uk");
+        map.put("result_url","https://speak-ukrainian.org.ua:10013/teachua/");
         LiqPayDataGenerator liqPayDataGenerator = new LiqPayDataGenerator(getPublicKey(), getPrivateKey());
         Map<String, String> liqPayParam = liqPayDataGenerator.generateData(map);
         model.addAttribute("liqPayParam", liqPayParam);
