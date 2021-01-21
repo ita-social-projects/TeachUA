@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
           integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link href="../static/images/style.css" th:href="@{/images/style.css}" rel="stylesheet"/>
+    <style>
+        a  {
+            color: rgba(150,122,48,0.99);
+        }
+    </style>
 </head>
 <body>
 <div class="behind-header"></div>
@@ -29,70 +34,105 @@
                             </ul>
                         </div>
                     </div>
-                    </div>
+                </div>
             </nav>
         </div>
     </header>
-<div class="container">
-    <div class="row">
-        <div class="col-12 pt-22 pb-5">
-            <img th:src="@{/images/logo/project-logo.png}" width="520" height="200" class="rounded mx-auto d-block">
-        </div>
-        <div class="col-12 text-left">
-           <h4 align="center">Вітаємо на сторінці ініціативи “Навчай українською”!</h4>
-
-            Ініціатива “Навчай українською” - це небайдужі громадяни,
-            які об'єдналися, щоб популяризувати українську мову у сфері освіти.
-            Ви можете більше про нас дізнатися з нашої Facebook-сторінки.
-        </div>
-    </div>
-    <div class="center-block">
-    <div class="row mt-4">
-        <div class="col item">
-            <a href="https://www.facebook.com/teach.in.ukrainian/" class="btn btn-info">Ми у Facebook</a>
-        </div>
-        <div class="col item">
-        </div>
-        <div class="col item">
-            <a href="https://www.instagram.com/teach.in.ukrainian/" class="btn btn-info">Ми у Instagram</a>
-        </div>
-
-    </div>
-    <div class="row mt-4">
-        <div class="col-12 text-left">
-            Партнери проєкту: Український культурний фонд, Уповноважений із захисту державної мови, студія онлайн-освіти EdEra, Країна ФМ, Є-Мова,
-            спільнота Мова об’єднує, Про Мову, Переходь на українську, “Простір свободи”, Громадська Організація “Незалежні”,
-            Портал мовної політики, видавництво “Наш формат”, журнал “Український тиждень”, Український кризовий медіа центр.
-
-    </div>
-</div>
-    <footer>
-        <div class="container-fluid mt-4 fill-height">
-            <div class="row">
-                <div class="col-12 flex" style="padding: 30px 50px 80px 50px;">
-
-                    <div class="col item">
-                        <div class="label">Наші партнери</div>
-                        <div class="partner" style="background: url('../images/partners/lang-unite.png') no-repeat; background-size: contain;"></div>
-                        <div class="partner" style="background: url('../images/partners/change-to-ukr.png') no-repeat; background-size: contain;"></div>
-                        <div class="partner" style="background: url('../images/partners/e-lang.png') no-repeat; background-size: contain;"></div>
-                        <div class="partner" style="background: url('../images/partners/nat-lang.png') no-repeat; background-size: contain;"></div>
-                        <div class="partner" style="background: url('../images/partners/ukr-cv.png') no-repeat; background-size: contain;"></div>
-                    </div>
-                    <div class="col-3">
-                        <div class="label">Як допомогти проєкту</div>
-                        <form method="POST" action="https://www.liqpay.ua/api/3/checkout"
-                              accept-charset="utf-8">
-                            <input type="hidden" name="data" th:value="${liqPayParam.get('data')}"/>
-                            <input type="hidden" name="signature" th:value="${liqPayParam.get('signature')}"/>
-                            <button class="help-button">
-                                <span>Допомога проекту</span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 pt-22 pb-5">
+                <img th:src="@{/images/logo/project-logo.png}" width="520" height="200" class="rounded mx-auto d-block">
+            </div>
+            <div class="col-12 text-left">
+                <h4 align="center">Вітаємо на сторінці ініціативи “Навчай українською”!</h4>
+                Незабаром тут буде повноцінний сайт, а поки що ми шукаємо гуртки для дітей з українською мовою
+                навчання.
+                <p>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdx17PTqbzozbVBGa52Vt-jRu0EiF8Uj1o3FX1gZEUySDpE_Q/viewform">
+                        Додати гурток до бази закладів з українською мовою навчання</a>
+                </p>
+                Ми розпочинаємо із 5 міст: Києва, Харкова, Дніпра, Одеси і Запоріжжя.
+                Тож якщо ви знаєте гурток чи секцію із українською мовою навчання у цих п’яти містах, просимо заповнити
+                ґуґл-форму, що вище.
             </div>
         </div>
-    </footer>
+        <div class="center-block">
+            <div class="row mt-4">
+                <div class="col item">
+                    <a href="https://www.facebook.com/teach.in.ukrainian/" class="btn btn-info">Ми у Facebook</a>
+                </div>
+                <div class="col item">
+                </div>
+                <div class="col item">
+                    <a href="https://www.instagram.com/teach.in.ukrainian/" class="btn btn-info">Ми у Instagram</a>
+                </div>
+
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-left">
+                    Партнери проєкту:
+                    <a href="https://ucf.in.ua/">
+                        Український культурний фонд,
+                        <a href="https://mova-ombudsman.gov.ua/">
+                            Уповноважений із захисту державної мови,
+                            <a href="https://www.ed-era.com/">
+                                студія онлайн-освіти EdEra,
+                                <a href="https://krainafm.com.ua/">
+                                    Країна ФМ,
+                                    <a href="https://emova.language-ua.online/">
+                                        Є-Мова,
+                                        <a href="https://www.facebook.com/zakonpromovu5670">
+                                            спільнота Мова об’єднує,
+                                            <a href="https://www.facebook.com/ProMovu1">
+                                                Про Мову,
+                                                <a href="https://www.facebook.com/perehodnamovu">
+                                                    Переходь на українську,
+                                                    <a href="https://prostirsvobody.org/">
+                                                        “Простір свободи”,
+                                                        <a href="https://www.facebook.com/independents.org.ua/">
+                                                            Громадська Організація “Незалежні”,
+                                                            <a href="https://language-policy.info/">
+                                                                Портал мовної політики,
+                                                                <a href="https://nashformat.ua/">
+                                                                    видавництво “Наш формат”,
+                                                                    <a href="https://tyzhden.ua/">
+                                                                        журнал “Український тиждень”,
+                                                                        <a href="https://uacrisis.org/uk/">
+                                                                            Український кризовий медіа центр.
+                </div>
+            </div>
+            <footer>
+                <div class="container-fluid mt-4 fill-height">
+                    <div class="row">
+                        <div class="col-12 flex" style="padding: 30px 50px 80px 50px;">
+
+                            <div class="col item">
+                                <div class="label">Наші партнери</div>
+                                <div class="partner"
+                                     style="background: url('../images/partners/lang-unite.png') no-repeat; background-size: contain;"></div>
+                                <div class="partner"
+                                     style="background: url('../images/partners/change-to-ukr.png') no-repeat; background-size: contain;"></div>
+                                <div class="partner"
+                                     style="background: url('../images/partners/e-lang.png') no-repeat; background-size: contain;"></div>
+                                <div class="partner"
+                                     style="background: url('../images/partners/nat-lang.png') no-repeat; background-size: contain;"></div>
+                                <div class="partner"
+                                     style="background: url('../images/partners/ukr-cv.png') no-repeat; background-size: contain;"></div>
+                            </div>
+                            <div class="col-3">
+                                <div class="label">Як допомогти проєкту</div>
+                                <form method="POST" action="https://www.liqpay.ua/api/3/checkout"
+                                      accept-charset="utf-8">
+                                    <input type="hidden" name="data" th:value="${liqPayParam.get('data')}"/>
+                                    <input type="hidden" name="signature" th:value="${liqPayParam.get('signature')}"/>
+                                    <button class="help-button">
+                                        <span>Допомога проекту</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
 </body>
 </html>
