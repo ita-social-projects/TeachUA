@@ -1,67 +1,61 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.dto.controller.CenterEntity;
+import com.softserve.teachua.dto.controller.CityResponse;
+import com.softserve.teachua.dto.controller.SuccessCreatedCity;
+import com.softserve.teachua.service.CityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 public class CityController {
+    private final CityService cityService;
 
-
-    @GetMapping("/center/{id}")
-    public CenterEntity getCenter(@PathVariable long id){
-        return new CenterEntity(id,"City", "Adress", "Coordinate");
+    @Autowired
+    public CityController(CityService cityService) {
+        this.cityService = cityService;
     }
 
-    @PostMapping("/center")
-    public CenterEntity createCenter(@RequestBody CenterEntity centerEntity){
-        CenterEntity newCenter = new CenterEntity();
-        newCenter=centerEntity;
-        return newCenter;
+    @GetMapping("/city/{id}")
+    public CityResponse getCity(@PathVariable long id) {
+        return cityService.getCityById(id);
     }
 
-    @DeleteMapping("/center/{id}")
-    public String deleteCenter(@PathVariable long id){
-        return "Sity " + id + " is deleted";
+    @PostMapping("/city")
+    public SuccessCreatedCity addCity(
+            @Valid
+            @RequestParam String name) {
+        return cityService.addCity(name);
     }
 
-    @PutMapping("/center/{id}")
-    public String updateCenter(@PathVariable long id)
-    {
-        return "Sity " + id + " is updated";
+    @GetMapping("/cities")
+    public List<CityResponse> getCities() {
+        return cityService.getListOfCities();
     }
 
-    @GetMapping("/centres")
-    public List<CenterEntity> getCenteres(){
-        List<CenterEntity> centres = new ArrayList<CenterEntity>();
-        centres.add(new CenterEntity(1L,"City1","Adress1","Coordinate1"));
-        centres.add(new CenterEntity(1L,"City1","Adress2","Coordinate2"));
-        centres.add(new CenterEntity(1L,"City1","Adress3","Coordinate3"));
-        return centres;
+    //TODO
+    @PutMapping("/city/{id}")
+    public String updateCenter(@PathVariable long id) {
+        return "City " + id + " is updated";
     }
 
-    @PostMapping("/centres")
-    public List<CenterEntity> createCenteres(){
-        List<CenterEntity> centres = new ArrayList<CenterEntity>();
-        centres.add(new CenterEntity(1L,"City1","Adress1","Coordinate1"));
-        centres.add(new CenterEntity(1L,"City1","Adress2","Coordinate2"));
-        centres.add(new CenterEntity(1L,"City1","Adress3","Coordinate3"));
-        return centres;
+    //TODO have to known we're archiving cities or deleting
+    @DeleteMapping("/city/{id}")
+    public String deleteCenter(@PathVariable long id) {
+        return "City " + id + " is deleted";
     }
 
-    @DeleteMapping("/centres")
-    public String deleteCenteres(){
+    //TODO
+    @DeleteMapping("/cities")
+    public String deleteCenteres() {
         return "Centeres was deleted";
     }
 
-    @PutMapping("/centres")
-    public String updateCenteres()
-    {
+    //TODO
+    @PutMapping("/cities")
+    public String updateCenteres() {
         return "Centres was updated";
     }
-
-
-
 }

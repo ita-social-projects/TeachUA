@@ -24,8 +24,5 @@ public class Coordinate {
     private Double longitude;
 
     @OneToOne(mappedBy = "coordinate")
-    private City city;
-
-    @OneToOne(mappedBy = "coordinate")
     private Club club;
 }

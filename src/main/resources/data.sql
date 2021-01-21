@@ -1,7 +1,3 @@
--- insert into roles(name) values
--- ('ROLE_USER'),
--- ('ROLE_ADMIN');
-
 insert into users(email, password, name, role_id) values
 ('user@gmail.com', '$2y$12$aDvzOnearRd4eulVJID3pOufutAIXVU5i1GKhgpXuvyVmktuSAmqe', 'user',1),
 ('admin@gmail.com', '$2y$12$iod5PRHZaYrIO6L3onnnk.Mhx9Hc1lb2ehBi0hRvPDD83u6OM/b66', 'admin',2);
@@ -29,16 +25,16 @@ insert into coordinates(latitude,longitude) values
 (49.83817131443633, 24.029413132472404),
 (49.83817121443633, 24.029413122472404);
 
-insert into cities(name,coordinate_id) values
-('Львів',1),
-('Київ',2),
-('Харків',3),
-('Одеса',4),
-('Вінниця',5),
-('Рівне',6),
-('Луцьк',7),
-('Донецьк',8),
-('Луганськ',9);
+insert into cities(name) values
+('Львів'),
+('Київ'),
+('Харків'),
+('Одеса'),
+('Вінниця'),
+('Рівне'),
+('Луцьк'),
+('Донецьк'),
+('Луганськ');
 
 insert into categories(name) values
 ('спортивні секції'),
@@ -84,7 +80,7 @@ insert into news(title,description) values
 ('title2','description2');
 
 insert into clubs(age_from, age_to, name, url_logo, url_web, work_time,
-category_id, city_id, club_contact_id, coordinate_id, studio_id, user_id) values
+                  category_id, city_id, club_contact_id, coordinate_id, studio_id, user_id) values
 (6, 9, 'гурток 1', '#', '#', '09:00-16:00', 1, 1, 1, 10, null, 2),
 (7, 10, 'гурток 2', '#', '#', '09:00-16:00', 2, 2, 2, 11, null, 2),
 (11, 16, 'гурток 3', '#', '#', '09:00-16:00', 3, 3, 3, 12, null, 2),

@@ -1,5 +1,6 @@
 package com.softserve.teachua.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,6 +23,8 @@ public class Role {
     @Column
     private String name;
 
+    @ToString.Exclude
+    @JsonManagedReference
     @OneToMany(mappedBy = "role")
     private List<User> users;
 }
