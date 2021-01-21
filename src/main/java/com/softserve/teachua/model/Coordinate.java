@@ -18,10 +18,10 @@ public class Coordinate {
     private Long id;
 
     @Column
-    private String latitude;
+    private Double latitude;
 
     @Column
-    private String longitude;
+    private Double longitude;
 
     @OneToOne(mappedBy = "coordinate")
     private City city;
