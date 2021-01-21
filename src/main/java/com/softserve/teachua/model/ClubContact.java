@@ -17,16 +17,14 @@ public class ClubContact {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "phone_numbers")
+    @Column
     private String phoneNumbers;
 
-    @Column(name = "email")
+    @Column
     private String email;
 
-    @ManyToOne
+    @OneToOne(mappedBy = "clubContact")
     private Club club;
 
-    @ManyToOne
-    private User contactPerson;
 }
 

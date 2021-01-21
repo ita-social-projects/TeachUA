@@ -1,27 +1,27 @@
 package com.softserve.teachua.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Data
 @Entity
-@Table(name = "roles")
-public class Role {
+@Table(name = "studios")
+public class Studio {
 
-    @NonNull
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @NonNull
     @Column
     private String name;
 
-    @OneToMany(mappedBy = "role")
-    private List<User> users;
+    @OneToMany(mappedBy = "studio")
+    private List<Club> clubs;
+
 }

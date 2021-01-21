@@ -5,22 +5,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "news")
-public class News {
+@Table(name = "cities")
+public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String title;
+    private String name;
 
-    @Column
-    private String description;
+    @OneToOne
+    @JoinColumn(name = "coordinate_id")
+    private Coordinate coordinate;
 
+    @OneToMany(mappedBy = "city")
+    private List<Club> clubs;
 }

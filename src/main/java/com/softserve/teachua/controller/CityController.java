@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class CenterController {
+public class CityController {
 
 
     @GetMapping("/center/{id}")
@@ -24,13 +24,13 @@ public class CenterController {
 
     @DeleteMapping("/center/{id}")
     public String deleteCenter(@PathVariable long id){
-        return "Center " + id + " is deleted";
+        return "Sity " + id + " is deleted";
     }
 
     @PutMapping("/center/{id}")
     public String updateCenter(@PathVariable long id)
     {
-        return "Center " + id + " is updated";
+        return "Sity " + id + " is updated";
     }
 
     @GetMapping("/centres")
