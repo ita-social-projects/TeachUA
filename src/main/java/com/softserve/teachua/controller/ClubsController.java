@@ -34,7 +34,7 @@ public class ClubsController {
 
     @GetMapping({"/teachua", "/"})
     public String redirect() {
-        return "redirect:/clubs/2";
+        return "redirect:/clubs/1";
     }
 
     @GetMapping("/clubs/{id}")
