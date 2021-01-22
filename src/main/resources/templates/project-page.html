@@ -7,14 +7,14 @@
           integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link href="../static/images/style.css" th:href="@{/images/style.css}" rel="stylesheet"/>
     <style>
-        a  {
-            color: rgba(150,122,48,0.99);
+        a {
+            color: rgba(150, 122, 48, 0.99);
         }
     </style>
 </head>
 <body>
 <div class="behind-header"></div>
-<div class="bg">
+<section class="bg">
     <header>
         <div class="row">
             <nav class="navbar navbar-expand-lg navbar-light">
@@ -34,11 +34,14 @@
                             </ul>
                         </div>
                     </div>
+                    <div className="right-side-menu">
+                        <div class="city-icon"></div>
+                    </div>
                 </div>
             </nav>
         </div>
     </header>
-    <div class="container">
+    <section class="content" style="height: 100vh">
         <div class="row">
             <div class="col-12 pt-22 pb-5">
                 <img th:src="@{/images/logo/project-logo.png}" width="520" height="200" class="rounded mx-auto d-block">
@@ -73,66 +76,85 @@
                     Партнери проєкту:
                     <a href="https://ucf.in.ua/">
                         Український культурний фонд,
-                        <a href="https://mova-ombudsman.gov.ua/">
-                            Уповноважений із захисту державної мови,
-                            <a href="https://www.ed-era.com/">
-                                студія онлайн-освіти EdEra,
-                                <a href="https://krainafm.com.ua/">
-                                    Країна ФМ,
-                                    <a href="https://emova.language-ua.online/">
-                                        Є-Мова,
-                                        <a href="https://www.facebook.com/zakonpromovu5670">
-                                            спільнота Мова об’єднує,
-                                            <a href="https://www.facebook.com/ProMovu1">
-                                                Про Мову,
-                                                <a href="https://www.facebook.com/perehodnamovu">
-                                                    Переходь на українську,
-                                                    <a href="https://prostirsvobody.org/">
-                                                        “Простір свободи”,
-                                                        <a href="https://www.facebook.com/independents.org.ua/">
-                                                            Громадська Організація “Незалежні”,
-                                                            <a href="https://language-policy.info/">
-                                                                Портал мовної політики,
-                                                                <a href="https://nashformat.ua/">
-                                                                    видавництво “Наш формат”,
-                                                                    <a href="https://tyzhden.ua/">
-                                                                        журнал “Український тиждень”,
-                                                                        <a href="https://uacrisis.org/uk/">
-                                                                            Український кризовий медіа центр.
+                    </a>
+                    <a href="https://mova-ombudsman.gov.ua/">
+                        Уповноважений із захисту державної мови,
+                    </a>
+                    <a href="https://www.ed-era.com/">
+                        студія онлайн-освіти EdEra,
+                    </a>
+                    <a href="https://krainafm.com.ua/">
+                        Країна ФМ,
+                    </a>
+                    <a href="https://emova.language-ua.online/">
+                        Є-Мова,
+                    </a>
+                    <a href="https://www.facebook.com/zakonpromovu5670">
+                        спільнота Мова об’єднує,
+                    </a>
+                    <a href="https://www.facebook.com/ProMovu1">
+                        Про Мову,
+                    </a>
+                    <a href="https://www.facebook.com/perehodnamovu">
+                        Переходь на українську,
+                    </a>
+                    <a href="https://prostirsvobody.org/">
+                        “Простір свободи”,
+                    </a>
+                    <a href="https://www.facebook.com/independents.org.ua/">
+                        Громадська Організація “Незалежні”,
+                    </a>
+                    <a href="https://language-policy.info/">
+                        Портал мовної політики,
+                    </a>
+                    <a href="https://nashformat.ua/">
+                        видавництво “Наш формат”,
+                    </a>
+                    <a href="https://tyzhden.ua/">
+                        журнал “Український тиждень”,
+                    </a>
+                    <a href="https://uacrisis.org/uk/">
+                        Український кризовий медіа центр.
+                    </a>
                 </div>
             </div>
-            <footer>
-                <div class="container-fluid mt-4 fill-height">
-                    <div class="row">
-                        <div class="col-12 flex" style="padding: 30px 50px 80px 50px;">
-
-                            <div class="col item">
-                                <div class="label">Наші партнери</div>
-                                <div class="partner"
-                                     style="background: url('../images/partners/lang-unite.png') no-repeat; background-size: contain;"></div>
-                                <div class="partner"
-                                     style="background: url('../images/partners/change-to-ukr.png') no-repeat; background-size: contain;"></div>
-                                <div class="partner"
-                                     style="background: url('../images/partners/e-lang.png') no-repeat; background-size: contain;"></div>
-                                <div class="partner"
-                                     style="background: url('../images/partners/nat-lang.png') no-repeat; background-size: contain;"></div>
-                                <div class="partner"
-                                     style="background: url('../images/partners/ukr-cv.png') no-repeat; background-size: contain;"></div>
-                            </div>
-                            <div class="col-3">
-                                <div class="label">Як допомогти проєкту</div>
-                                <form method="POST" action="https://www.liqpay.ua/api/3/checkout"
-                                      accept-charset="utf-8">
-                                    <input type="hidden" name="data" th:value="${liqPayParam.get('data')}"/>
-                                    <input type="hidden" name="signature" th:value="${liqPayParam.get('signature')}"/>
-                                    <button class="help-button">
-                                        <span>Допомога проекту</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container-fluid mt-4 fill-height">
+            <div class="row">
+                <div class="col-12 flex" style="padding: 30px 50px 80px 50px;">
+                    <div class="col-3">
+                        <div class="label">Social links</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="label">Наші партнери</div>
+                        <div class="partner"
+                             style="background: url('../images/partners/lang-unite.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner"
+                             style="background: url('../images/partners/change-to-ukr.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner"
+                             style="background: url('../images/partners/e-lang.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner"
+                             style="background: url('../images/partners/nat-lang.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner"
+                             style="background: url('../images/partners/ukr-cv.png') no-repeat; background-size: contain;"></div>
+                    </div>
+                    <div class="col-3">
+                        <div class="label">Як допомогти проєкту</div>
+                        <form method="POST" action="https://www.liqpay.ua/api/3/checkout"
+                              accept-charset="utf-8">
+                            <input type="hidden" name="data" th:value="${liqPayParam.get('data')}"/>
+                            <input type="hidden" name="signature" th:value="${liqPayParam.get('signature')}"/>
+                            <button class="help-button">
+                                <span>Допомога проекту</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
-            </footer>
+            </div>
+        </div>
+    </footer>
+    </div>
 </body>
 </html>
