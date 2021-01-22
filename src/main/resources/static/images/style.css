@@ -161,12 +161,11 @@ header {
 
 .margin_club_name {
     color: #002766;
-    width: 100%;
     font-weight: 700;
     font-size: 18px;
-    height: 60px;
-    display: flex;
-    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .page-item.active .page-link {
