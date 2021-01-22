@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long> {
-    @Query("select c from Club c inner join ChildrenCenter  cc on c.childrenCenter.id = cc.id where cc.city.id = :id")
+    @Query("select c from Club c inner join ChildrenCenter  cc on c.childrenCenter.id = cc.id where cc.city.id = :id ORDER BY c.id")
     Page<Club> getClubByCityIdPageble(Pageable pageable, @Param("id") Long id);
     @Query("select c from Club c inner join ChildrenCenter  cc on c.childrenCenter.id = cc.id where cc.city.id = :id " +
-        "and c.clubName like %:name%")
+        "and c.clubName like %:name% ORDER BY c.id")
     Page<Club> getClubByCityIdAndClubNamePageble(Pageable pageable, @Param("id") Long id, @Param("name") String clubName);
 }

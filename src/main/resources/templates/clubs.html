@@ -36,8 +36,9 @@
                         <div class="city-icon"></div>
                         <div style="display: inline-block">
                             <form th:object="${cityModel}" th:action="@{/clubs}" method="post">
-                                <select id="citySelect" th:field="*{id}" class="form-control-sm chose-city" >
-                                    <option style="color:black" th:each="city:${cities}" th:value="${city.id}" th:utext="${city.city}"/>
+                                <select id="citySelect" th:field="*{id}" class="form-control-sm chose-city">
+                                    <option style="color:black" th:each="city:${cities}" th:value="${city.id}"
+                                            th:utext="${city.city}"/>
                                 </select>
                                 <input type="submit" class="btn" value="Змінити">
                             </form>
@@ -45,7 +46,7 @@
                     </div>
                 </div>
             </nav>
-
+        </div>
     </header>
     <section class="content">
         <div class="row">
@@ -57,14 +58,14 @@
             <div class="col-sm-6 flex">
                 <div class="margin_search">
                     <form action="#" th:action="@{/clubs/{id}(id=${currentCity.id})}" method="get">
-                        <input placeholder="Який гурток шукаєте?" class="search" type="text" th:name="search" />
+                        <input placeholder="Який гурток шукаєте?" class="search" type="text" th:name="search"/>
                         <input type="submit" class="search-icon" value=""/>
                     </form>
                 </div>
             </div>
             <hr style="border-bottom:1px solid black; width: 100%;">
-        </div> 
-         <div class="content-center">
+        </div>
+        <div class="content-center">
             <div class="margin_clubs_card" th:each="club, iter :${pageable.getPage()}">
                 <div class="card">
                     <div class="card-body">
@@ -89,7 +90,8 @@
                                     <div class="col-sm-12">
                                         <div>
                                             <p>[[${club.address}]]
-                                                <a th:href="@{/map/show-club/(clubId=${club.id}, clubAddress=${club.address}, clubName=${club.clubName})}"> показати на мапі</a>
+                                                <a th:href="@{/map/show-club/(clubId=${club.id}, clubAddress=${club.address}, clubName=${club.clubName})}">
+                                                    показати на мапі</a>
                                             </p>
                                         </div>
                                     </div>
@@ -102,7 +104,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12" >
+            <div class="col-sm-12">
                 <div class="clearfix" th:if="${pageable.getPage().size() ne 0}">
                     <ul class="pagination content-center">
 
@@ -116,7 +118,8 @@
                             th:if="${pageNumber > -1 && pageNumber < pageable.getTotalPages()}"
                             th:classappend="${pageNumber == pageable.getNumber()} ? 'active' : ''"
                             th:each="pageNumber : ${#numbers.sequence(pageable.getNumber()-3, pageable.getNumber()+3)}">
-                            <a class="page-link" th:href="@{/clubs/{city}?page={id}&search={searchName}(id=${pageNumber}, searchName=${search}, city=${currentCity.id})}">[[${pageNumber}+1]]</a>
+                            <a class="page-link"
+                               th:href="@{/clubs/{city}?page={id}&search={searchName}(id=${pageNumber}, searchName=${search}, city=${currentCity.id})}">[[${pageNumber}+1]]</a>
                         </li>
 
                         <li class="page-item"
@@ -134,15 +137,20 @@
             <div class="row">
                 <div class="col-12 flex" style="padding: 30px 50px 80px 50px;">
                     <div class="col-3">
-                        Socials links
+                        <div class="label">Social links</div>
                     </div>
                     <div class="col-6">
                         <div class="label">Наші партнери</div>
-                        <div class="partner" style="background: url('../images/partners/lang-unite.png') no-repeat; background-size: contain;"></div>
-                        <div class="partner" style="background: url('../images/partners/change-to-ukr.png') no-repeat; background-size: contain;"></div>
-                        <div class="partner" style="background: url('../images/partners/e-lang.png') no-repeat; background-size: contain;"></div>
-                        <div class="partner" style="background: url('../images/partners/nat-lang.png') no-repeat; background-size: contain;"></div>
-                        <div class="partner" style="background: url('../images/partners/ukr-cv.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner"
+                             style="background: url('../images/partners/lang-unite.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner"
+                             style="background: url('../images/partners/change-to-ukr.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner"
+                             style="background: url('../images/partners/e-lang.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner"
+                             style="background: url('../images/partners/nat-lang.png') no-repeat; background-size: contain;"></div>
+                        <div class="partner"
+                             style="background: url('../images/partners/ukr-cv.png') no-repeat; background-size: contain;"></div>
                     </div>
                     <div class="col-3">
                         <div class="label">Як допомогти проєкту</div>

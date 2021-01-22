@@ -32,6 +32,11 @@ public class ClubsController {
         this.liqPayObj = liqPayObj;
     }
 
+    @GetMapping({"/teachua", "/"})
+    public String redirect() {
+        return "redirect:/clubs/2";
+    }
+
     @GetMapping("/clubs/{id}")
     public String getClubsPage(@PathVariable("id") Long id, Model model,
                                @PageableDefault(value = 8) Pageable pageable,
