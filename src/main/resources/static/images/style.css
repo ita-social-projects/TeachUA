@@ -21,7 +21,34 @@ hr {
     background-size: cover;
 }
 
+.size {
+    overflow: hidden;
+    position: relative;
+    line-height: 1.2em;
+    max-height: 3.6em;
+    text-align: justify;
+    padding-right: 1em;
+}
+.size:before {
+    content: '…';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
 
+.size:after {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: 1em;
+    height: 1em;
+    margin-top: 0.2em;
+    background: white;
+}
+
+.map-link {
+    padding: 1rem 0;
+}
 
 header .navbar {
     width: 100%;
@@ -155,6 +182,9 @@ header {
     width: 100%;
     font-weight: 700;
     font-size: 18px;
+    height: 60px;
+    display: flex;
+    align-items: center;
 }
 
 .page-item.active .page-link {

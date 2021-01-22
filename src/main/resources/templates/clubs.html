@@ -82,14 +82,14 @@
                             <div class="col-sm-12">
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <p class="card-text"
+                                        <p class="card-text size"
                                            th:utext="${club.generalDescriptionOfClub}"></p>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div>
-                                            <p>[[${club.address}]]
+                                            <p class="map-link">[[${club.address}]]
                                                 <a th:href="@{/map/show-club/(clubId=${club.id}, clubAddress=${club.address}, clubName=${club.clubName})}">
                                                     показати на мапі</a>
                                             </p>
