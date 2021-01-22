@@ -22,28 +22,10 @@ hr {
 }
 
 .size {
+    -webkit-line-clamp: 4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    position: relative;
-    line-height: 1.2em;
-    max-height: 3.6em;
-    text-align: justify;
-    padding-right: 1em;
-}
-.size:before {
-    content: '…';
-    position: absolute;
-    right: 0;
-    bottom: 0;
-}
-
-.size:after {
-    content: "";
-    position: absolute;
-    right: 0;
-    width: 1em;
-    height: 1em;
-    margin-top: 0.2em;
-    background: white;
 }
 
 .map-link {
