@@ -22,6 +22,7 @@ hr {
 }
 
 
+
 header .navbar {
     width: 100%;
     padding: 0;
@@ -114,6 +115,10 @@ header {
 }
 .search::placeholder {
     color: white;
+}
+
+.col-12 {
+    color: black;
 }
 
 
