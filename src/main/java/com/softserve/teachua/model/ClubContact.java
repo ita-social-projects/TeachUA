@@ -3,6 +3,7 @@ package com.softserve.teachua.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -23,8 +24,9 @@ public class ClubContact {
     @Column
     private String email;
 
-    @OneToOne(mappedBy = "clubContact")
+    @OneToOne
+    @JoinColumn(name = "club_id", referencedColumnName = "id")
+    @ToString.Exclude
     private Club club;
-
 }
 

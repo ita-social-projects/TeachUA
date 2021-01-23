@@ -23,8 +23,8 @@ public class Role {
     @Column
     private String name;
 
-    @ToString.Exclude
     @JsonManagedReference
     @OneToMany(mappedBy = "role")
+    @ToString.Exclude
     private List<User> users;
 }
