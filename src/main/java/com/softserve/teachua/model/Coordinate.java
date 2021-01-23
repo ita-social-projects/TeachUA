@@ -3,6 +3,7 @@ package com.softserve.teachua.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -23,6 +24,8 @@ public class Coordinate {
     @Column
     private Double longitude;
 
-    @OneToOne(mappedBy = "coordinate")
+    @OneToOne
+    @JoinColumn(name = "club_id", referencedColumnName = "id")
+    @ToString.Exclude
     private Club club;
 }

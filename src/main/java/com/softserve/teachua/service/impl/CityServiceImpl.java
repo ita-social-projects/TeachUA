@@ -27,7 +27,6 @@ public class CityServiceImpl implements CityService {
         return CityResponse.builder()
                 .id(city.getId())
                 .name(city.getName())
-                .clubs(city.getClubs())
                 .build();
     }
 
@@ -48,7 +47,7 @@ public class CityServiceImpl implements CityService {
     public List<CityResponse> getListOfCities() {
         return cityRepository.findAll()
                 .stream()
-                .map(city -> new CityResponse(city.getId(), city.getName(), city.getClubs()))
+                .map(city -> new CityResponse(city.getId(), city.getName()))
                 .collect(Collectors.toList());
     }
 }

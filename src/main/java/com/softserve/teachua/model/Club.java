@@ -1,13 +1,11 @@
 package com.softserve.teachua.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,43 +37,22 @@ public class Club {
     private String workTime;
 
     @ManyToOne
-    @JoinColumn(name ="city_id", referencedColumnName = "id")
-    @JsonBackReference
+    @JoinColumn(name = "city_id", referencedColumnName = "id")
     @ToString.Exclude
     private City city;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    @JsonBackReference
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
     @ToString.Exclude
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ToString.Exclude
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "studio_id")
-    @JsonBackReference
+    @JoinColumn(name = "studio_id", referencedColumnName = "id")
     @ToString.Exclude
     private Studio studio;
-
-    @OneToMany(mappedBy = "club")
-    @JsonBackReference
-    @ToString.Exclude
-    private List<Feedback> feedbacks;
-
-    @OneToOne
-    @JoinColumn(name = "coordinate_id")
-    @JsonBackReference
-    @ToString.Exclude
-    private Coordinate coordinate;
-
-    @OneToOne
-    @JoinColumn(name = "club_contact_id")
-    @JsonBackReference
-    @ToString.Exclude
-    private ClubContact clubContact;
 }
