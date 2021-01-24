@@ -17,7 +17,4 @@ public class ClubProfile {
 
     @NotEmpty
     private String name;
-
-    @NotEmpty
-    private String urlWeb;
 }
