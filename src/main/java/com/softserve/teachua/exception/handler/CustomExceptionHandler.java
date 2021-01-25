@@ -1,6 +1,8 @@
 package com.softserve.teachua.exception.handler;
 
 import com.softserve.teachua.dto.controller.ExceptionResponse;
+import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.WrongAuthenticationException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(WrongAuthenticationException.class)
-    public final ResponseEntity<Object> handleWrongEmailExceptionn(WrongAuthenticationException exception) {
+    public final ResponseEntity<Object> handleAuthenticationException(WrongAuthenticationException exception) {
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .message(exception.getMessage())
@@ -24,6 +26,30 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn(exception.getMessage());
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
+                .body(exceptionResponse);
+    }
+
+    @ExceptionHandler(NotExistException.class)
+    public final ResponseEntity<Object> handleNotExistException(NotExistException exception) {
+        ExceptionResponse exceptionResponse = ExceptionResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(exception.getMessage())
+                .build();
+        log.warn(exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(exceptionResponse);
+    }
+
+    @ExceptionHandler(AlreadyExistException.class)
+    public final ResponseEntity<Object> handleAlreadyExistException(AlreadyExistException exception) {
+        ExceptionResponse exceptionResponse = ExceptionResponse.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .message(exception.getMessage())
+                .build();
+        log.warn(exception.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .body(exceptionResponse);
     }
 
