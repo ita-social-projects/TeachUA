@@ -1,16 +1,24 @@
 package com.softserve.teachua.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.dto.controller.CategoryResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedCategory;
 import com.softserve.teachua.dto.service.CategoryProfile;
+import com.softserve.teachua.service.CategoryService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
+@Slf4j
 public class CategoryController {
+
+    @Autowired
+    private CategoryService categoryService;
+
 
     /**
      * The controller returns information {@code CategoryResponse} about category.
@@ -20,11 +28,16 @@ public class CategoryController {
      */
     @GetMapping("/category/{id}")
     public CategoryResponse getCategory(@PathVariable Long id) {
-        return CategoryResponse.builder()
-                .id(id)
-                .name("My category")
-                .build();
+        CategoryResponse categoryResponse = categoryService.getCategoryById(id);
+
+        return categoryResponse;
     }
+
+    @GetMapping("/categories")
+    public List<CategoryResponse> getAllCateries(){
+        return categoryService.getListOfCategories();
+    }
+
 
     /**
      * The controller returns dto {@code SuccessCreatedCategory} of created category.
@@ -36,9 +49,7 @@ public class CategoryController {
     public SuccessCreatedCategory addCategory(
             @Valid
             @RequestBody CategoryProfile categoryProfile) {
-        return SuccessCreatedCategory.builder()
-                .name(categoryProfile.getName())
-                .build();
+        return categoryService.addCategory(categoryProfile);
     }
 
     /**
@@ -47,8 +58,9 @@ public class CategoryController {
      * @param id - put category id.
      * @return new {@code ...}.
      */
-    @DeleteMapping("/category")
-    public Object deleteCategory(@RequestParam Long id) throws JsonProcessingException {
-        return new ObjectMapper().readValue("{ \"id\" : "+ id +" }", Object.class);
+    @DeleteMapping("/category/{id}")
+    public ResponseEntity<CategoryProfile> deleteCategory(@PathVariable("id") Long id){
+
+        return  categoryService.deleteCategoryById(id);
     }
 }
