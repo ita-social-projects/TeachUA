@@ -11,7 +11,6 @@ public class CategoryProfile {
     @NotEmpty
     private String name;
 
-    //For @RequestBody, will delete
     @NotEmpty
-    private String secondField;
+    private String urlLogo;
 }
