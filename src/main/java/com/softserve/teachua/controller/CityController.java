@@ -20,7 +20,7 @@ public class CityController {
 
     @GetMapping("/city/{id}")
     public CityResponse getCity(@PathVariable long id) {
-        return cityService.getCityById(id);
+        return cityService.getCityProfileById(id);
     }
 
     @PostMapping("/city")

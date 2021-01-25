@@ -20,11 +20,10 @@ import java.util.List;
 @Slf4j
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
-
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @Autowired
-    CategoryServiceImpl(CategoryRepository categoryRepository){
+    CategoryServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
 
     }
@@ -32,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse getCategoryById(Long id) {
         Category category = categoryRepository.findById(id);
-        return  CategoryResponse.builder()
+        return CategoryResponse.builder()
                 .id(category.getId())
                 .name(category.getName())
                 .urlLogo(category.getUrlLogo())
@@ -42,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryResponse> getListOfCategories() {
         List<CategoryResponse> allCategories = new ArrayList<>();
-        for( Category category: categoryRepository.findAll()){
+        for (Category category : categoryRepository.findAll()) {
             allCategories.add(CategoryResponse.builder()
                     .id(category.getId())
                     .name(category.getName())

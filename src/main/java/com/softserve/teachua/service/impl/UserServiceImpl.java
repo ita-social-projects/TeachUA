@@ -105,6 +105,7 @@ public class UserServiceImpl implements UserService {
             log.error(String.format(USER_NOT_FOUND_BY_ID, id));
             throw new WrongAuthenticationException(String.format(USER_NOT_FOUND_BY_ID, id));
         }
+
         User user = getUserById(id);
         return UserProfile.builder()
                 .id(user.getId())
