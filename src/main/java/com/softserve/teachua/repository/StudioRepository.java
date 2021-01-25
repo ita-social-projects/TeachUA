@@ -1,11 +1,11 @@
 package com.softserve.teachua.repository;
 
-import com.softserve.teachua.model.Role;
+import com.softserve.teachua.model.Studio;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Integer> {
+public interface StudioRepository extends JpaRepository <Studio, Long> {
 
-    Role findByName(String name);
+    Studio getById(Long id);
 }

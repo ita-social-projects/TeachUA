@@ -8,6 +8,7 @@ import lombok.Data;
 @Builder
 @Data
 public class SuccessCreatedClub {
+    private Long id;
     private int ageFrom;
     private int ageTo;
     private String name;

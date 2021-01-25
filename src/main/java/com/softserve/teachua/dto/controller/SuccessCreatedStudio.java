@@ -5,12 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 
 @AllArgsConstructor
-@Data
 @Builder
-public class ClubResponse {
+@Data
+public class SuccessCreatedStudio {
     private Long id;
-    private Integer ageFrom;
-    private Integer ageTo;
     private String name;
-    private String urlWeb;
 }
