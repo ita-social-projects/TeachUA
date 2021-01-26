@@ -3,6 +3,8 @@ package com.softserve.teachua.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,10 +41,19 @@ public class Club {
     @ToString.Exclude
     private City city;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @ManyToMany
+    @JoinTable(name = "club_category",
+            joinColumns = { @JoinColumn(name = "club_id") },
+            inverseJoinColumns = { @JoinColumn(name = "category_id")})
     @ToString.Exclude
-    private Category category;
+    private Set <Category> categories = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "club_coordinates",
+            joinColumns = { @JoinColumn(name = "club_id") },
+            inverseJoinColumns = { @JoinColumn(name = "coordinates_id")})
+    @ToString.Exclude
+    private Set <Coordinates> coordinates = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

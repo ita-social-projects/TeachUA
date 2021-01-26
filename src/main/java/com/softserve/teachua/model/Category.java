@@ -1,11 +1,10 @@
 package com.softserve.teachua.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,4 +23,8 @@ public class Category {
 
     @Column
     private String urlLogo;
+
+    @ManyToMany(mappedBy = "categories")
+    @ToString.Exclude
+    private Set<Club> clubs = new HashSet<>();
 }
