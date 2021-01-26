@@ -40,35 +40,35 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public Studio getStudioById(Long id) {
         if (!isStudioExistById(id)) {
-            String cityNotFoundById = String.format(STUDIO_NOT_FOUND_BY_ID, id);
-            log.error(cityNotFoundById);
-            throw new NotExistException(cityNotFoundById);
+            String studioNotFoundById = String.format(STUDIO_NOT_FOUND_BY_ID, id);
+            log.error(studioNotFoundById);
+            throw new NotExistException(studioNotFoundById);
         }
 
         Studio studio = studioRepository.getById(id);
-        log.info("**/getting city by id = " + studio);
+        log.info("**/getting studio by id = " + studio);
         return studio;
     }
 
     @Override
     public Studio getStudioByName(String name) {
         if (!isStudioExistByName(name)) {
-            String cityNotFoundById = String.format(STUDIO_NOT_FOUND_BY_NAME, name);
-            log.error(cityNotFoundById);
-            throw new NotExistException(cityNotFoundById);
+            String studioNotFoundById = String.format(STUDIO_NOT_FOUND_BY_NAME, name);
+            log.error(studioNotFoundById);
+            throw new NotExistException(studioNotFoundById);
         }
 
         Studio studio = studioRepository.findByName(name);
-        log.info("**/getting city by name = " + name);
+        log.info("**/getting studio by name = " + name);
         return studio;
     }
 
     @Override
     public SuccessCreatedStudio addStudio(String name) {
         if (isStudioExistByName(name)) {
-            String cityAlreadyExist = String.format(STUDIO_ALREADY_EXIST, name);
-            log.error(cityAlreadyExist);
-            throw new AlreadyExistException(cityAlreadyExist);
+            String studioAlreadyExist = String.format(STUDIO_ALREADY_EXIST, name);
+            log.error(studioAlreadyExist);
+            throw new AlreadyExistException(studioAlreadyExist);
         }
 
         Studio studio = studioRepository.save(Studio
