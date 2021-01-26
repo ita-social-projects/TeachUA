@@ -21,9 +21,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
-    private static final String CATEGORY_ALREADY_EXIST = "category already exist with name: %s";
-    private static final String CATEGORY_NOT_FOUND_BY_ID = "category not found by id: %s";
-    private static final String CATEGORY_NOT_FOUND_NAME = "category not found by name: %s";
+    private static final String CATEGORY_ALREADY_EXIST = "Category already exist with name: %s";
+    private static final String CATEGORY_NOT_FOUND_BY_ID = "Category not found by id: %s";
+    private static final String CATEGORY_NOT_FOUND_NAME = "Category not found by name: %s";
 
     private CategoryRepository categoryRepository;
 

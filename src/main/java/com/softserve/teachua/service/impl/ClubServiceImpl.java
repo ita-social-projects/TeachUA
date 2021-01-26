@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class ClubServiceImpl implements ClubService {
-    private static final String CLUB_ALREADY_EXIST = "club already exist with name: %s";
-    private static final String CLUB_NOT_FOUND_BY_ID = "club not found by id: %s";
-    private static final String CLUB_NOT_FOUND_BY_NAME = "club not found by name: %s";
+    private static final String CLUB_ALREADY_EXIST = "Club already exist with name: %s";
+    private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
+    private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
 
     private final ClubRepository clubRepository;
 

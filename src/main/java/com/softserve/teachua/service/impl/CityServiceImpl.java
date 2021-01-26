@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class CityServiceImpl implements CityService {
-    private static final String CITY_ALREADY_EXIST = "city already exist with name: %s";
-    private static final String CITY_NOT_FOUND_BY_ID = "city not found by id: %s";
-    private static final String CITY_NOT_FOUND_BY_NAME = "city not found by name: %s";
+    private static final String CITY_ALREADY_EXIST = "City already exist with name: %s";
+    private static final String CITY_NOT_FOUND_BY_ID = "City not found by id: %s";
+    private static final String CITY_NOT_FOUND_BY_NAME = "City not found by name: %s";
 
 
     private final CityRepository cityRepository;

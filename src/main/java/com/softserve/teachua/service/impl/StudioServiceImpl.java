@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class StudioServiceImpl implements StudioService {
-    private static final String STUDIO_ALREADY_EXIST = "studio already exist with name: %s";
-    private static final String STUDIO_NOT_FOUND_BY_ID = "studio not found by id: %s";
-    private static final String STUDIO_NOT_FOUND_BY_NAME = "studio not found by name: %s";
+    private static final String STUDIO_ALREADY_EXIST = "Studio already exist with name: %s";
+    private static final String STUDIO_NOT_FOUND_BY_ID = "Studio not found by id: %s";
+    private static final String STUDIO_NOT_FOUND_BY_NAME = "Studio not found by name: %s";
 
     private final StudioRepository studioRepository;
 

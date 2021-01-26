@@ -26,11 +26,11 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private static final String EMAIL_ALREADY_EXIST = "email %s already exist";
-    private static final String USER_NOT_FOUND_BY_ID = "user not found by id %s";
-    private static final String USER_NOT_FOUND_BY_EMAIL = "user not found by email %s";
-    private static final String WRONG_PASSWORD = "wrong password: %s";
-    private static final String CANT_CREATE_USER = "cant create user %s";
+    private static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
+    private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
+    private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
+    private static final String WRONG_PASSWORD = "Wrong password: %s";
+    private static final String CANT_CREATE_USER = "Cant create user %s";
 
     private final UserRepository userRepository;
     private final EncoderService encodeService;
