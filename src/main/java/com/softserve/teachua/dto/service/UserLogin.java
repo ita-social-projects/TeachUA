@@ -8,7 +8,6 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @Data
 public class UserLogin {
-
     @NotEmpty
     private String email;
 

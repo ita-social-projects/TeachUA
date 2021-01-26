@@ -7,4 +7,8 @@ public class NotExistException extends IllegalArgumentException {
     public NotExistException(String message) {
         super(message.isEmpty() ? NOT_EXIST_EXCEPTION : message);
     }
+
+    public NotExistException() {
+        super(NOT_EXIST_EXCEPTION);
+    }
 }
