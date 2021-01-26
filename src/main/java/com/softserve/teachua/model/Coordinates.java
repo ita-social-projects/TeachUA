@@ -6,13 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
 @Table(name = "coordinates")
-public class Coordinate {
+public class Coordinates {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +26,7 @@ public class Coordinate {
     @Column
     private Double longitude;
 
-    @OneToOne
-    @JoinColumn(name = "club_id", referencedColumnName = "id")
+    @ManyToMany(mappedBy = "coordinates")
     @ToString.Exclude
-    private Club club;
+    private Set<Club> clubs = new HashSet<>();
 }
