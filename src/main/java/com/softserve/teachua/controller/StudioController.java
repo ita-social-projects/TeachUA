@@ -29,7 +29,7 @@ public class StudioController {
      */
     @GetMapping("/studio/{id}")
     public StudioResponse getStudio(@PathVariable Long id) {
-        return studioService.getStudioById(id);
+        return studioService.getStudioByProfileId(id);
     }
 
     /**

@@ -9,4 +9,8 @@ public interface StudioRepository extends JpaRepository<Studio, Long> {
     Studio findByName(String name);
 
     Studio getById(Long id);
+
+    boolean existsById(Long id);
+
+    boolean existsByName(String name);
 }

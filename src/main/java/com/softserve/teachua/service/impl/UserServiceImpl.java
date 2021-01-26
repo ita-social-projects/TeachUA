@@ -7,6 +7,7 @@ import com.softserve.teachua.dto.controller.UserResponse;
 import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.service.UserLogin;
 import com.softserve.teachua.dto.service.UserProfile;
+import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.UserRepository;
@@ -25,9 +26,11 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
-    private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
-    private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
+    private static final String EMAIL_ALREADY_EXIST = "email %s already exist";
+    private static final String USER_NOT_FOUND_BY_ID = "user not found by id %s";
+    private static final String USER_NOT_FOUND_BY_EMAIL = "user not found by email %s";
+    private static final String WRONG_PASSWORD = "wrong password: %s";
+    private static final String CANT_CREATE_USER = "cant create user %s";
 
     private final UserRepository userRepository;
     private final EncoderService encodeService;
@@ -43,8 +46,50 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponse getUserProfileById(Long id) {
+        User user = getUserById(id);
+        return UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .password(user.getPassword())
+                .roleName(user.getRole().getName())
+                .build();
+    }
+
+    @Override
+    public UserEntity getUserEntity(String email) {
+        User user = getUserByEmail(email);
+        return UserEntity.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .roleName(user.getRole().getName())
+                .build();
+    }
+
+    @Override
     public User getUserById(Long id) {
-        return userRepository.getById(id);
+        if (!isUserExistById(id)) {
+            String userNotFoundById = String.format(USER_NOT_FOUND_BY_ID, id);
+            log.error(userNotFoundById);
+            throw new WrongAuthenticationException(userNotFoundById);
+        }
+
+        User user = userRepository.getById(id);
+        log.info("**/getting user by id = " + user);
+        return user;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        if (!isUserExistByEmail(email)) {
+            String userNotFoundByEmail = String.format(USER_NOT_FOUND_BY_EMAIL, email);
+            log.error(userNotFoundByEmail);
+            throw new WrongAuthenticationException(userNotFoundByEmail);
+        }
+
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -65,13 +110,54 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public SuccessRegistration registerUser(UserProfile userProfile) {
+        if (isUserExistByEmail(userProfile.getEmail())) {
+            String emailAlreadyExist = String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail());
+            log.error(emailAlreadyExist);
+            throw new WrongAuthenticationException(emailAlreadyExist);
+        }
+
+        User user = User.builder()
+                .email(userProfile.getEmail())
+                .name(userProfile.getName())
+                .password(encodeService.encodePassword(userProfile.getPassword()))
+                .role(roleService.findByName(RoleData.USER.getDBRoleName()))
+                .build();
+
+        user = userRepository.save(user);
+        if (user == null) {
+            String userIsNull = String.format(CANT_CREATE_USER, userProfile);
+            log.error(userIsNull);
+            throw new DatabaseRepositoryException(userIsNull);
+        }
+        // TODO user.getRole().getName() delete ROLE_
+        return new SuccessRegistration(user.getId(), user.getEmail(), user.getRole().getName());
+    }
+
+    @Override
+    public SuccessLogin validateUser(UserLogin userLogin) {
+        UserEntity userEntity = getUserEntity(userLogin.getEmail());
+        if (!encodeService.isValidPassword(userLogin, userEntity)) {
+            String wrongPassword = String.format(WRONG_PASSWORD, userLogin.getPassword());
+            log.error(wrongPassword);
+            throw new WrongAuthenticationException(wrongPassword);
+        }
+
+        return SuccessLogin.builder()
+                .id(userEntity.getId())
+                .email(userEntity.getEmail())
+                .accessToken(encodeService.createToken(userEntity.getEmail()))
+                .build();
+    }
+
+    @Override
     public UserProfile updateUserProfileById(Long id) {
         if (!isUserExistById(id)) {
             log.error(String.format(USER_NOT_FOUND_BY_ID, id));
             throw new WrongAuthenticationException(String.format(USER_NOT_FOUND_BY_ID, id));
         }
 
-        log.info("**/ update user = " + id);
+        log.info("**/update user = " + id);
         return null;
     }
 
@@ -84,79 +170,6 @@ public class UserServiceImpl implements UserService {
         return userResponse;
     }
 
-    @Override
-    public UserResponse getUserProfileById(Long id) {
-        if (!isUserExistById(id)) {
-            log.error(String.format(USER_NOT_FOUND_BY_ID, id));
-            throw new WrongAuthenticationException(String.format(USER_NOT_FOUND_BY_ID, id));
-        }
-
-        User user = getUserById(id);
-
-        log.info("**/getting user by id = " + user);
-        return UserResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .name(user.getName())
-                .password(user.getPassword())
-                .roleName(user.getRole().getName())
-                .build();
-    }
-
-    public UserEntity getUserEntity(String email) {
-        if (!isUserExistByEmail(email)) {
-            log.error(String.format(USER_NOT_FOUND_BY_EMAIL, email));
-            throw new WrongAuthenticationException(String.format(USER_NOT_FOUND_BY_EMAIL, email));
-        }
-
-        User user = getUserByEmail(email);
-        return UserEntity.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .roleName(user.getRole().getName())
-                .build();
-    }
-
-    public SuccessRegistration registerUser(UserProfile userProfile) {
-        if (isUserExistByEmail(userProfile.getEmail())) {
-            log.error(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
-            // TODO Develop DuplicateEmailException
-            throw new WrongAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
-        }
-
-        User user = User.builder()
-                .email(userProfile.getEmail())
-                .password(encodeService.encodePassword(userProfile.getPassword()))
-                .role(roleService.findByName(RoleData.USER.getDBRoleName()))
-                .build();
-
-        user = userRepository.save(user);
-        if (user == null) {
-            // TODO Develop Custom Exception
-            throw new RuntimeException("Invalid User");
-        }
-        // TODO user.getRole().getName() delete ROLE_
-        return new SuccessRegistration(user.getId(), user.getEmail(), user.getRole().getName());
-    }
-
-    public SuccessLogin validateUser(UserLogin userLogin) {
-        UserEntity userEntity = getUserEntity(userLogin.getEmail());
-        if (!encodeService.isValidPassword(userLogin, userEntity)) {
-            // TODO Develop Custom Exception
-            // else timestamp email status 403  "message": "The user does not exist by this email: string@aaa.com",
-            throw new RuntimeException("BAD_PASSWORD");
-        }
-        return SuccessLogin.builder()
-                .id(userEntity.getId())
-                .email(userEntity.getEmail())
-                .accessToken(encodeService.createToken(userEntity.getEmail()))
-                .build();
-    }
-
-    private User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
     private boolean isUserExistByEmail(String email) {
         return userRepository.existsByEmail(email);
     }

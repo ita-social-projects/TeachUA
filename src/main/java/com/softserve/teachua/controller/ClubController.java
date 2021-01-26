@@ -29,7 +29,7 @@ public class ClubController {
      */
     @GetMapping("/club/{id}")
     public ClubResponse getClubById(@PathVariable Long id) {
-        return clubService.getClubById(id);
+        return clubService.getClubProfileById(id);
     }
 
     /**

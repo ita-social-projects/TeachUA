@@ -18,7 +18,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CityServiceImpl implements CityService {
     private static final String CITY_ALREADY_EXIST = "city already exist with name: %s";
-    private static final String CITY_NOT_FOUND = "city not found by id: %s";
+    private static final String CITY_NOT_FOUND_BY_ID = "city not found by id: %s";
+    private static final String CITY_NOT_FOUND_BY_NAME = "city not found by name: %s";
+
 
     private final CityRepository cityRepository;
 
@@ -29,12 +31,6 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public CityResponse getCityProfileById(Long id) {
-        if (!isCityExistById(id)) {
-            String cityNotFoundById = String.format(CITY_NOT_FOUND, id);
-            log.error(cityNotFoundById);
-            throw new NotExistException(cityNotFoundById);
-        }
-
         City city = getCityById(id);
         return CityResponse.builder()
                 .id(city.getId())
@@ -44,6 +40,12 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public City getCityById(Long id) {
+        if (!isCityExistById(id)) {
+            String cityNotFoundById = String.format(CITY_NOT_FOUND_BY_ID, id);
+            log.error(cityNotFoundById);
+            throw new NotExistException(cityNotFoundById);
+        }
+
         City city = cityRepository.getById(id);
         log.info("**/getting city by id = " + city);
         return city;
@@ -51,6 +53,12 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public City getCityByName(String name) {
+        if (!isCityExistByName(name)) {
+            String cityNotFoundById = String.format(CITY_NOT_FOUND_BY_NAME, name);
+            log.error(cityNotFoundById);
+            throw new NotExistException(cityNotFoundById);
+        }
+
         City city = cityRepository.findByName(name);
         log.info("**/getting city by id = " + city);
         return city;
@@ -83,7 +91,7 @@ public class CityServiceImpl implements CityService {
                 .map(city -> new CityResponse(city.getId(), city.getName()))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of users = " + cityResponses);
+        log.info("**/getting list of cities = " + cityResponses);
         return cityResponses;
     }
 

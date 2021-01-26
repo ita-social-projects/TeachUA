@@ -6,6 +6,7 @@ import com.softserve.teachua.dto.service.CategoryProfile;
 import com.softserve.teachua.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,20 +22,18 @@ public class CategoryController {
 
 
     /**
-     * The controller returns information {@code CategoryResponse} about category.
+     * The controller returns dto {@code CategoryResponse} about category.
      *
      * @param id - put category id.
      * @return new {@code CategoryResponse}.
      */
     @GetMapping("/category/{id}")
     public CategoryResponse getCategory(@PathVariable Long id) {
-        CategoryResponse categoryResponse = categoryService.getCategoryById(id);
-
-        return categoryResponse;
+        return categoryService.getCategoryProfileById(id);
     }
 
     @GetMapping("/categories")
-    public List<CategoryResponse> getAllCateries(){
+    public List<CategoryResponse> getAllCategories(){
         return categoryService.getListOfCategories();
     }
 
@@ -59,8 +58,9 @@ public class CategoryController {
      * @return new {@code ...}.
      */
     @DeleteMapping("/category/{id}")
-    public ResponseEntity<CategoryProfile> deleteCategory(@PathVariable("id") Long id){
-
-        return  categoryService.deleteCategoryById(id);
+    public ResponseEntity<CategoryResponse> deleteCategory(@PathVariable("id") Long id){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(categoryService.deleteCategoryById(id));
     }
 }

@@ -18,11 +18,23 @@ public class CityController {
         this.cityService = cityService;
     }
 
+    /**
+     * The controller returns dto {@code CityResponse} about city.
+     *
+     * @param id - put city id.
+     * @return new {@code CityResponse}.
+     */
     @GetMapping("/city/{id}")
     public CityResponse getCity(@PathVariable long id) {
         return cityService.getCityProfileById(id);
     }
 
+    /**
+     * The controller returns dto {@code SuccessCreatedCity} of created city.
+     *
+     * @param name - enter city name.
+     * @return new {@code SuccessCreatedCategory}.
+     */
     @PostMapping("/city")
     public SuccessCreatedCity addCity(
             @Valid
@@ -30,6 +42,11 @@ public class CityController {
         return cityService.addCity(name);
     }
 
+    /**
+     * The controller returns list of dto {@code List<CityResponse>} of city.
+     *
+     * @return new {@code List<CityResponse>}.
+     */
     @GetMapping("/cities")
     public List<CityResponse> getCities() {
         return cityService.getListOfCities();
@@ -45,17 +62,5 @@ public class CityController {
     @DeleteMapping("/city/{id}")
     public String deleteCenter(@PathVariable long id) {
         return "City " + id + " is deleted";
-    }
-
-    //TODO
-    @DeleteMapping("/cities")
-    public String deleteCenteres() {
-        return "Centeres was deleted";
-    }
-
-    //TODO
-    @PutMapping("/cities")
-    public String updateCenteres() {
-        return "Centres was updated";
     }
 }

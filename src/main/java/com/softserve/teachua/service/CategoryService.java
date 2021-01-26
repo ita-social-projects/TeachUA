@@ -4,16 +4,22 @@ package com.softserve.teachua.service;
 import com.softserve.teachua.dto.controller.CategoryResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedCategory;
 import com.softserve.teachua.dto.service.CategoryProfile;
+import com.softserve.teachua.model.Category;
 import org.springframework.http.ResponseEntity;
+
 import java.util.List;
 
 public interface CategoryService {
 
-    CategoryResponse getCategoryById(Long id);
+    CategoryResponse getCategoryProfileById(Long id);
 
-    List<CategoryResponse> getListOfCategories();
+    Category getCategoryById(Long id);
+
+    Category getCategoryByName(String name);
 
     SuccessCreatedCategory addCategory(CategoryProfile categoryProfile);
 
-    ResponseEntity<CategoryProfile> deleteCategoryById(Long id);
+    List<CategoryResponse> getListOfCategories();
+
+    CategoryResponse deleteCategoryById(Long id);
 }
