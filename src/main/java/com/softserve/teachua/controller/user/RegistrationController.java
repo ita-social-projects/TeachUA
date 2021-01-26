@@ -22,8 +22,10 @@ public class RegistrationController {
     private UserService userService;
 
     @GetMapping({"/signup", "/registration"})
-    public String registration() {
-        return "signup";
+    public ResponseEntity<Object> registration() {
+        return ResponseEntity
+                .status(HttpStatus.BAD_GATEWAY)
+                .build();
     }
 
     @PostMapping({"/signup", "/registration"})

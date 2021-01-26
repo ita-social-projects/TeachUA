@@ -1,3 +1,5 @@
+insert into roles(name) values ('ROLE_ADMIN'), ('ROLE_USER');
+
 insert into users(email, password, name, role_id) values
 ('user@gmail.com', '$2y$12$aDvzOnearRd4eulVJID3pOufutAIXVU5i1GKhgpXuvyVmktuSAmqe', 'user', 1),
 ('admin@gmail.com', '$2y$12$iod5PRHZaYrIO6L3onnnk.Mhx9Hc1lb2ehBi0hRvPDD83u6OM/b66', 'admin', 2);

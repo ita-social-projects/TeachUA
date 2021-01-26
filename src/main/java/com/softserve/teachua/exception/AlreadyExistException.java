@@ -7,4 +7,8 @@ public class AlreadyExistException extends IllegalStateException {
     public AlreadyExistException(String message) {
         super(message.isEmpty() ? ALREADY_EXIST_EXCEPTION : message);
     }
+
+    public AlreadyExistException() {
+        super(ALREADY_EXIST_EXCEPTION);
+    }
 }
