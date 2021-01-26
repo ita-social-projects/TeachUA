@@ -7,6 +7,10 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 @Data
-public class SuccessCreatedActivity {
+public class UserResponse {
+    private Long id;
     private String name;
+    private String email;
+    private String password;
+    private String roleName;
 }

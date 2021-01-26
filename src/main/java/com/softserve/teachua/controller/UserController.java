@@ -1,8 +1,10 @@
-package com.softserve.teachua.controller.user;
+package com.softserve.teachua.controller;
 
+import com.softserve.teachua.dto.controller.UserResponse;
 import com.softserve.teachua.dto.service.UserProfile;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.service.UserService;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,20 +21,17 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/user/{id}")
-    public UserProfile findById(@PathVariable("id") Long id) {
-        log.info("**/getting user by id = " + userService.getUserProfileById(id));
+    public UserResponse findById(@PathVariable("id") Long id) {
         return userService.getUserProfileById(id);
     }
 
-    @PostMapping("/users")
-    public List<User> findAllUsers() {
-        log.info("**/getting list of users = " + userService.getListOfUsers());
+    @GetMapping("/users")
+    public List<UserResponse> findAllUsers() {
         return userService.getListOfUsers();
     }
 
     @PutMapping("/user/{id}")
     public ResponseEntity<UserProfile> updateById(@PathVariable("id") Long id) {
-        log.info("**/ = " + userService.getUserProfileById(id));
         userService.getUserProfileById(id);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -40,10 +39,11 @@ public class UserController {
     }
 
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<UserProfile> deleteById(@PathVariable("id") Long id) {
-        log.info("**/delete user = " + id);
+    public ResponseEntity<UserResponse> deleteById(@PathVariable("id") Long id) {
         userService.getUserProfileById(id);
-        return userService.deleteUserById(id);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userService.deleteUserById(id));
     }
 
 }

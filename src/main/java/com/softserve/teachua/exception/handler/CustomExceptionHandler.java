@@ -19,37 +19,27 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(WrongAuthenticationException.class)
     public final ResponseEntity<Object> handleAuthenticationException(WrongAuthenticationException exception) {
-        ExceptionResponse exceptionResponse = ExceptionResponse.builder()
-                .status(HttpStatus.UNAUTHORIZED.value())
-                .message(exception.getMessage())
-                .build();
-        log.warn(exception.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(exceptionResponse);
+        return buildExceptionBody(exception, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(NotExistException.class)
     public final ResponseEntity<Object> handleNotExistException(NotExistException exception) {
-        ExceptionResponse exceptionResponse = ExceptionResponse.builder()
-                .status(HttpStatus.NOT_FOUND.value())
-                .message(exception.getMessage())
-                .build();
-        log.warn(exception.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(exceptionResponse);
+        return buildExceptionBody(exception, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(AlreadyExistException.class)
     public final ResponseEntity<Object> handleAlreadyExistException(AlreadyExistException exception) {
+        return buildExceptionBody(exception, HttpStatus.FORBIDDEN);
+    }
+
+    private ResponseEntity<Object> buildExceptionBody(Exception exception, HttpStatus httpStatus) {
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
-                .status(HttpStatus.FORBIDDEN.value())
+                .status(httpStatus.value())
                 .message(exception.getMessage())
                 .build();
         log.warn(exception.getMessage());
         return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
+                .status(httpStatus)
                 .body(exceptionResponse);
     }
 

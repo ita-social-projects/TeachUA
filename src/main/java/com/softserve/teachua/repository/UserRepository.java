@@ -7,13 +7,16 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByEmail(String email);
 
-    User findById(Long id);
+    User getById(Long id);
 
     List<User> findAll();
 
-    User deleteById(Long id);
+    void deleteById(Long id);
+
+    boolean existsById(Long id);
+    boolean existsByEmail(String email);
 }

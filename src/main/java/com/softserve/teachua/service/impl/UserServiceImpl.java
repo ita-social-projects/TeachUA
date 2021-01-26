@@ -1,135 +1,115 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.constants.RoleData;
-import com.softserve.teachua.dto.RoleResponce;
 import com.softserve.teachua.dto.controller.SuccessLogin;
 import com.softserve.teachua.dto.controller.SuccessRegistration;
+import com.softserve.teachua.dto.controller.UserResponse;
 import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.service.UserLogin;
 import com.softserve.teachua.dto.service.UserProfile;
 import com.softserve.teachua.exception.WrongAuthenticationException;
-import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
-import com.softserve.teachua.repository.RoleRepository;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.service.EncoderService;
+import com.softserve.teachua.service.RoleService;
 import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-//@AllArgsConstructor
 @Service
 @Transactional
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private final String EMAIL_ALREADY_EXIST = "Email %s already exist";
+    private static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
+    private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
+    private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
 
-    // @Autowired
-    private UserRepository userRepository;
-
-    // @Autowired
-    private RoleRepository roleRepository;
-
-    // @Autowired
-    private EncoderService encodeService;
+    private final UserRepository userRepository;
+    private final EncoderService encodeService;
+    private final RoleService roleService;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
-                           RoleRepository roleRepository,
-                           EncoderService encodeService
-    ) {
+                           EncoderService encodeService,
+                           RoleService roleService) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.encodeService = encodeService;
-        initDefaultData();
-    }
-
-    // TODO  move another class
-    private void initDefaultData() {
-        if ((roleRepository.count() == 0)
-                && (userRepository.count() == 0)) {
-            roleRepository.save(new Role(1, RoleData.USER.getDBRoleName()));
-            Role adminRole = roleRepository.save(new Role(2, RoleData.ADMIN.getDBRoleName()));
-            User admin = new User(1L, "admin@gmail.com",
-                    encodeService.encodePassword("admin"), "adminName", adminRole);
-            userRepository.save(admin);
-        }
-    }
-
-    private User getUser(String email) {
-        return userRepository.findByEmail(email);
+        this.roleService = roleService;
     }
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id);
+        return userRepository.getById(id);
     }
 
-//    @Override
-//    public List<UserEntity> getListOfUserEntities() {
-//        List<User> users = getListOfUsers();
-//        return (List<UserEntity>) users.stream();
-//    }
-
     @Override
-    public List<User> getListOfUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> getListOfUsers() {
+        List<UserResponse> userResponses = userRepository.findAll()
+                .stream()
+                .map(user -> new UserResponse(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getPassword(),
+                        user.getRole().getName()
+                ))
+                .collect(Collectors.toList());
+
+        log.info("**/getting list of users = " + userResponses);
+        return userResponses;
     }
 
     @Override
     public UserProfile updateUserProfileById(Long id) {
         if (!isUserExistById(id)) {
-            String USER_NOT_FOUND_BY_ID = "User not found by id %s";
             log.error(String.format(USER_NOT_FOUND_BY_ID, id));
             throw new WrongAuthenticationException(String.format(USER_NOT_FOUND_BY_ID, id));
         }
+
+        log.info("**/ update user = " + id);
         return null;
     }
 
     @Override
-    public ResponseEntity<UserProfile> deleteUserById(Long id) {
+    public UserResponse deleteUserById(Long id) {
+        UserResponse userResponse = getUserProfileById(id);
         userRepository.deleteById(id);
-        return null;
+
+        log.info("**/delete user = " + id);
+        return userResponse;
     }
 
     @Override
-    public UserProfile getUserProfileById(Long id) {
+    public UserResponse getUserProfileById(Long id) {
         if (!isUserExistById(id)) {
-            String USER_NOT_FOUND_BY_ID = "User not found by id %s";
             log.error(String.format(USER_NOT_FOUND_BY_ID, id));
             throw new WrongAuthenticationException(String.format(USER_NOT_FOUND_BY_ID, id));
         }
 
         User user = getUserById(id);
-        return UserProfile.builder()
+
+        log.info("**/getting user by id = " + user);
+        return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
+                .name(user.getName())
                 .password(user.getPassword())
+                .roleName(user.getRole().getName())
                 .build();
     }
 
-
-    private boolean isUserExist(String email) {
-        return getUser(email) != null;
-    }
-
-    private boolean isUserExistById(Long id) {
-        return getUserById(id) != null;
-    }
-
     public UserEntity getUserEntity(String email) {
-        if (!isUserExist(email)) {
-            String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
+        if (!isUserExistByEmail(email)) {
             log.error(String.format(USER_NOT_FOUND_BY_EMAIL, email));
             throw new WrongAuthenticationException(String.format(USER_NOT_FOUND_BY_EMAIL, email));
         }
-        User user = getUser(email);
+
+        User user = getUserByEmail(email);
         return UserEntity.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -139,16 +119,18 @@ public class UserServiceImpl implements UserService {
     }
 
     public SuccessRegistration registerUser(UserProfile userProfile) {
-        if (isUserExist(userProfile.getEmail())) {
+        if (isUserExistByEmail(userProfile.getEmail())) {
             log.error(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
             // TODO Develop DuplicateEmailException
             throw new WrongAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
         }
+
         User user = User.builder()
                 .email(userProfile.getEmail())
                 .password(encodeService.encodePassword(userProfile.getPassword()))
-                .role(roleRepository.findByName(RoleData.USER.getDBRoleName()))
+                .role(roleService.findByName(RoleData.USER.getDBRoleName()))
                 .build();
+
         user = userRepository.save(user);
         if (user == null) {
             // TODO Develop Custom Exception
@@ -172,24 +154,13 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-
-    /*-
-    // TODO move security package
-    public String getExpirationLocalDate() {
-        CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        LocalDateTime localDate = customUserDetails.getExpirationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy 'at' hh:mm");
-        return localDate.format(formatter);
+    private User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
-    */
-
-    // TODO Role Service
-    public List<RoleResponce> getAllRoles() {
-        List<RoleResponce> result = new ArrayList<>();
-        for (Role role : roleRepository.findAll()) {
-            result.add(new RoleResponce(role.getName()));
-        }
-        return result;
+    private boolean isUserExistByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
-
+    private boolean isUserExistById(Long id) {
+        return userRepository.existsById(id);
+    }
 }

@@ -4,9 +4,7 @@ import com.softserve.teachua.dto.controller.CityResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedCity;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.model.City;
-import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.CityRepository;
 import com.softserve.teachua.service.CityService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +17,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class CityServiceImpl implements CityService {
+    private static final String CITY_ALREADY_EXIST = "city already exist with name: %s";
+    private static final String CITY_NOT_FOUND = "city not found by id: %s";
+
     private final CityRepository cityRepository;
 
     @Autowired
@@ -29,7 +30,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public CityResponse getCityProfileById(Long id) {
         if (!isCityExistById(id)) {
-            String cityNotFoundById = String.format("City not found by id %s", id);
+            String cityNotFoundById = String.format(CITY_NOT_FOUND, id);
             log.error(cityNotFoundById);
             throw new NotExistException(cityNotFoundById);
         }
@@ -43,18 +44,22 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public City getCityById(Long id) {
-        return cityRepository.getById(id);
+        City city = cityRepository.getById(id);
+        log.info("**/getting city by id = " + city);
+        return city;
     }
 
     @Override
     public City getCityByName(String name) {
-        return cityRepository.findByName(name);
+        City city = cityRepository.findByName(name);
+        log.info("**/getting city by id = " + city);
+        return city;
     }
 
     @Override
     public SuccessCreatedCity addCity(String name) {
         if (isCityExistByName(name)) {
-            String cityAlreadyExist = String.format("City already exist by name %s", name);
+            String cityAlreadyExist = String.format(CITY_ALREADY_EXIST, name);
             log.error(cityAlreadyExist);
             throw new AlreadyExistException(cityAlreadyExist);
         }
@@ -64,6 +69,7 @@ public class CityServiceImpl implements CityService {
                 .name(name)
                 .build());
 
+        log.info("**/adding new city = " + city);
         return SuccessCreatedCity.builder()
                 .id(city.getId())
                 .name(city.getName())
@@ -72,17 +78,19 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public List<CityResponse> getListOfCities() {
-        return cityRepository.findAll()
+        List<CityResponse> cityResponses = cityRepository.findAll()
                 .stream()
                 .map(city -> new CityResponse(city.getId(), city.getName()))
                 .collect(Collectors.toList());
+
+        log.info("**/getting list of users = " + cityResponses);
+        return cityResponses;
     }
 
     private boolean isCityExistById(Long id) {
-        return getCityById(id) != null;
+        return cityRepository.existsById(id);
     }
-
     private boolean isCityExistByName(String name) {
-        return getCityByName(name) != null;
+        return cityRepository.existsByName(name);
     }
 }
