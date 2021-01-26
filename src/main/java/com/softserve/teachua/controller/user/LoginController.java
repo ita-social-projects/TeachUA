@@ -23,10 +23,8 @@ public class LoginController {
     private UserService userService;
 
     @GetMapping({"/signin", "/login"})
-    public ResponseEntity<Object> login() {
-        return ResponseEntity
-                .status(HttpStatus.BAD_GATEWAY)
-                .build();
+    public String login() {
+        return "signin";
     }
 
     @PostMapping({"/signin", "/login"})

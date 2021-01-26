@@ -18,6 +18,10 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class ClubServiceImpl implements ClubService {
+    private static final String CLUB_ALREADY_EXIST = "Club already exist with name: %s";
+    private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
+    private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
+
     private final ClubRepository clubRepository;
 
     @Autowired
@@ -26,15 +30,8 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public ClubResponse getClubById(Long id) {
-        if (!isClubExistById(id)) {
-            String clubNotFoundById = String.format("Club not found by id %s", id);
-            log.error(clubNotFoundById);
-            throw new NotExistException(clubNotFoundById);
-        }
-        Club club = clubRepository.getById(id);
-        String gettingClubDyId = String.format("Getting club by id %s", id);
-        log.info(gettingClubDyId);
+    public ClubResponse getClubProfileById(Long id) {
+        Club club = getClubById(id);
         return ClubResponse.builder()
                 .id(club.getId())
                 .ageFrom(club.getAgeFrom())
@@ -45,25 +42,47 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
+    public Club getClubById(Long id) {
+        if (!isClubExistById(id)) {
+            String clubNotFoundById = String.format(CLUB_NOT_FOUND_BY_ID, id);
+            log.error(clubNotFoundById);
+            throw new NotExistException(clubNotFoundById);
+        }
+
+        Club club = clubRepository.getById(id);
+        log.info("**/getting club by id = " + club);
+        return club;
+    }
+
+    @Override
     public Club getClubByName(String name) {
-        return clubRepository.findByName(name);
+        if (!isClubExistByName(name)) {
+            String clubNotFoundById = String.format(CLUB_NOT_FOUND_BY_NAME, name);
+            log.error(clubNotFoundById);
+            throw new NotExistException(clubNotFoundById);
+        }
+
+        Club club = clubRepository.findByName(name);
+        log.info("**/getting club by name = " + club);
+        return club;
     }
 
     @Override
     public SuccessCreatedClub addClub(ClubProfile clubProfile) {
         if (isClubExistByName(clubProfile.getName())) {
-            String clubAlreadyExist = String.format("Club already exist by name %s", clubProfile.getName());
+            String clubAlreadyExist = String.format(CLUB_ALREADY_EXIST, clubProfile.getName());
             log.error(clubAlreadyExist);
             throw new AlreadyExistException(clubAlreadyExist);
         }
+
         Club club = clubRepository.save(Club
                 .builder()
                 .ageFrom(clubProfile.getAgeFrom())
                 .ageTo(clubProfile.getAgeTo())
                 .name(clubProfile.getName())
                 .build());
-        String clubAdding = String.format("Added club by name %s", clubProfile.getName());
-        log.info(clubAdding);
+
+        log.info("**/adding club with name = " +  clubProfile.getName());
         return SuccessCreatedClub.builder()
                 .id(club.getId())
                 .ageFrom(club.getAgeFrom())
@@ -73,19 +92,19 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public List<ClubResponse> getListOfClubs() {
-        String gettingListOfClubs = String.format("Getting list of clubs");
-        log.info(gettingListOfClubs);
-        return clubRepository.findAll()
+        List<ClubResponse> clubResponses = clubRepository.findAll()
                 .stream()
                 .map(club -> new ClubResponse(club.getId(), club.getAgeFrom(), club.getAgeTo(), club.getName(), club.getUrlWeb()))
                 .collect(Collectors.toList());
+
+        log.info("/**getting list of clubs = " + clubResponses);
+        return clubResponses;
     }
 
     private boolean isClubExistById(Long id) {
-        return getClubById(id) != null;
+        return clubRepository.existsById(id);
     }
-
     private boolean isClubExistByName(String name) {
-        return getClubByName(name) != null;
+        return clubRepository.existsByName(name);
     }
 }

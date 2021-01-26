@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface ClubService {
 
-    ClubResponse getClubById(Long id);
+    ClubResponse getClubProfileById(Long id);
+
+    Club getClubById(Long id);
 
     Club getClubByName(String name);
 
