@@ -22,12 +22,20 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public StudioResponse getStudioById(Long id) {
+
+
+
         Studio studio = studioRepository.getById(id);
 
         return StudioResponse.builder()
                 .id(studio.getId())
                 .name(studio.getName())
                 .build();
+    }
+
+    @Override
+    public Studio getStudioByName(String name) {
+        return studioRepository.findByName(name);
     }
 
     @Override
