@@ -1,6 +1,7 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.constants.RoleData;
+import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.controller.SuccessLogin;
 import com.softserve.teachua.dto.controller.SuccessRegistration;
 import com.softserve.teachua.dto.controller.UserResponse;
@@ -35,37 +36,27 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final EncoderService encodeService;
     private final RoleService roleService;
+    private final DtoConverter dtoConverter;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
                            EncoderService encodeService,
-                           RoleService roleService) {
+                           RoleService roleService, DtoConverter dtoConverter) {
         this.userRepository = userRepository;
         this.encodeService = encodeService;
         this.roleService = roleService;
+        this.dtoConverter = dtoConverter;
     }
 
     @Override
     public UserResponse getUserProfileById(Long id) {
         User user = getUserById(id);
-        return UserResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .name(user.getName())
-                .password(user.getPassword())
-                .roleName(user.getRole().getName())
-                .build();
+        return dtoConverter.convertToDto(user, UserResponse.class);
     }
 
     @Override
     public UserEntity getUserEntity(String email) {
-        User user = getUserByEmail(email);
-        return UserEntity.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .roleName(user.getRole().getName())
-                .build();
+        return dtoConverter.convertToDto(getUserByEmail(email), UserEntity.class);
     }
 
     @Override
@@ -96,13 +87,7 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse> getListOfUsers() {
         List<UserResponse> userResponses = userRepository.findAll()
                 .stream()
-                .map(user -> new UserResponse(
-                        user.getId(),
-                        user.getName(),
-                        user.getEmail(),
-                        user.getPassword(),
-                        user.getRole().getName()
-                ))
+                .map(user -> (UserResponse) dtoConverter.convertToDto(user, UserResponse.class))
                 .collect(Collectors.toList());
 
         log.info("**/getting list of users = " + userResponses);
@@ -117,12 +102,9 @@ public class UserServiceImpl implements UserService {
             throw new WrongAuthenticationException(emailAlreadyExist);
         }
 
-        User user = User.builder()
-                .email(userProfile.getEmail())
-                .name(userProfile.getName())
-                .password(encodeService.encodePassword(userProfile.getPassword()))
-                .role(roleService.findByName(RoleData.USER.getDBRoleName()))
-                .build();
+        User user = dtoConverter.convertToEntity(userProfile, new User())
+                .withPassword(encodeService.encodePassword(userProfile.getPassword()))
+                .withRole(roleService.findByName(RoleData.USER.getDBRoleName()));
 
         user = userRepository.save(user);
         if (user == null) {
@@ -131,7 +113,7 @@ public class UserServiceImpl implements UserService {
             throw new DatabaseRepositoryException(userIsNull);
         }
         // TODO user.getRole().getName() delete ROLE_
-        return new SuccessRegistration(user.getId(), user.getEmail(), user.getRole().getName());
+        return dtoConverter.convertToDto(user, SuccessRegistration.class);
     }
 
     @Override
@@ -143,11 +125,8 @@ public class UserServiceImpl implements UserService {
             throw new WrongAuthenticationException(wrongPassword);
         }
 
-        return SuccessLogin.builder()
-                .id(userEntity.getId())
-                .email(userEntity.getEmail())
-                .accessToken(encodeService.createToken(userEntity.getEmail()))
-                .build();
+        return dtoConverter.convertFromDtoToDto(userEntity, new SuccessLogin())
+                .withAccessToken(encodeService.createToken(userEntity.getEmail()));
     }
 
     @Override

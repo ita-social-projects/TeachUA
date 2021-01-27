@@ -1,24 +1,24 @@
 package com.softserve.teachua.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.softserve.teachua.dto.marker.Dto;
+import lombok.*;
 
 import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Data
 @Builder
 @Entity
 @Table(name = "cities")
-public class City {
+public class City implements Dto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
+    @NonNull
     private String name;
 }

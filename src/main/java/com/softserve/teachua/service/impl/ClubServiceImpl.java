@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.controller.ClubResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedClub;
 import com.softserve.teachua.dto.service.ClubProfile;
@@ -23,29 +24,17 @@ public class ClubServiceImpl implements ClubService {
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
 
     private final ClubRepository clubRepository;
+    private final DtoConverter dtoConverter;
 
     @Autowired
-    public ClubServiceImpl(ClubRepository clubRepository) {
+    public ClubServiceImpl(ClubRepository clubRepository, DtoConverter dtoConverter) {
         this.clubRepository = clubRepository;
+        this.dtoConverter = dtoConverter;
     }
 
     @Override
     public ClubResponse getClubProfileById(Long id) {
-        Club club = getClubById(id);
-        return ClubResponse.builder()
-                .id(club.getId())
-                .ageFrom(club.getAgeFrom())
-                .ageTo(club.getAgeTo())
-                .name(club.getName())
-                .urlWeb(club.getUrlWeb())
-                .urlLogo(club.getUrlLogo())
-                .workTime(club.getWorkTime())
-                .city(club.getCity())
-                .categories(club.getCategories())
-                .coordinates(club.getCoordinates())
-                .user(club.getUser())
-                .studio(club.getStudio())
-                .build();
+        return dtoConverter.convertToDto(getClubById(id), ClubResponse.class);
     }
 
     @Override

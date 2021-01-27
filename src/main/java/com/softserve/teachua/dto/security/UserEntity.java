@@ -1,13 +1,13 @@
 package com.softserve.teachua.dto.security;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import com.softserve.teachua.dto.marker.Dto;
+import lombok.*;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
-public class UserEntity {
+public class UserEntity implements Dto {
 
     private Long id;
     private String email;

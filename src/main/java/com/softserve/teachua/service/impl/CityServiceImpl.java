@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.controller.CityResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedCity;
 import com.softserve.teachua.exception.AlreadyExistException;
@@ -22,20 +23,18 @@ public class CityServiceImpl implements CityService {
     private static final String CITY_NOT_FOUND_BY_NAME = "City not found by name: %s";
 
 
+    private final DtoConverter dtoConverter;
     private final CityRepository cityRepository;
 
     @Autowired
-    public CityServiceImpl(CityRepository cityRepository) {
+    public CityServiceImpl(DtoConverter dtoConverter, CityRepository cityRepository) {
+        this.dtoConverter = dtoConverter;
         this.cityRepository = cityRepository;
     }
 
     @Override
     public CityResponse getCityProfileById(Long id) {
-        City city = getCityById(id);
-        return CityResponse.builder()
-                .id(city.getId())
-                .name(city.getName())
-                .build();
+        return dtoConverter.convertToDto(getCityById(id), CityResponse.class);
     }
 
     @Override
@@ -72,23 +71,17 @@ public class CityServiceImpl implements CityService {
             throw new AlreadyExistException(cityAlreadyExist);
         }
 
-        City city = cityRepository.save(City
-                .builder()
-                .name(name)
-                .build());
+        City city = cityRepository.save(new City(name));
 
         log.info("**/adding new city = " + city);
-        return SuccessCreatedCity.builder()
-                .id(city.getId())
-                .name(city.getName())
-                .build();
+        return dtoConverter.convertToDto(city, SuccessCreatedCity.class);
     }
 
     @Override
     public List<CityResponse> getListOfCities() {
         List<CityResponse> cityResponses = cityRepository.findAll()
                 .stream()
-                .map(city -> new CityResponse(city.getId(), city.getName()))
+                .map(city -> (CityResponse) dtoConverter.convertToDto(city, CityResponse.class))
                 .collect(Collectors.toList());
 
         log.info("**/getting list of cities = " + cityResponses);
@@ -98,6 +91,7 @@ public class CityServiceImpl implements CityService {
     private boolean isCityExistById(Long id) {
         return cityRepository.existsById(id);
     }
+
     private boolean isCityExistByName(String name) {
         return cityRepository.existsByName(name);
     }

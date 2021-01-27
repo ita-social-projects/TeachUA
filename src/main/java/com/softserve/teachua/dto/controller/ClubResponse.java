@@ -1,16 +1,19 @@
 package com.softserve.teachua.dto.controller;
 
+import com.softserve.teachua.dto.marker.Dto;
 import com.softserve.teachua.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Builder
-public class ClubResponse {
+public class ClubResponse implements Dto {
     private Long id;
     private Integer ageFrom;
     private Integer ageTo;
