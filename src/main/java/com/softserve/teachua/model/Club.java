@@ -23,11 +23,9 @@ public class Club implements Dto {
     private Long id;
 
     @Column
-    @EqualsAndHashCode.Include
     private Integer ageFrom;
 
     @Column
-    @EqualsAndHashCode.Include
     private Integer ageTo;
 
     @Column
@@ -36,6 +34,18 @@ public class Club implements Dto {
 
     @Column
     @EqualsAndHashCode.Include
+    private String email;
+
+    @Column
+    private String address;
+
+    @Column
+    private String phones;
+
+    @Column
+    private String description;
+
+    @Column
     private String urlWeb;
 
     @Column
@@ -43,6 +53,15 @@ public class Club implements Dto {
 
     @Column
     private String workTime;
+
+    @Column
+    private String socialLinks;
+
+    @Column
+    private Double latitude;
+
+    @Column
+    private Double longitude;
 
     @ManyToOne
     @JoinColumn(name = "city_id", referencedColumnName = "id")
@@ -57,21 +76,13 @@ public class Club implements Dto {
     @ToString.Exclude
     private Set<Category> categories = new HashSet<>();
 
-    @JsonManagedReference
-    @ManyToMany
-    @JoinTable(name = "club_coordinates",
-            joinColumns = {@JoinColumn(name = "club_id")},
-            inverseJoinColumns = {@JoinColumn(name = "coordinates_id")})
-    @ToString.Exclude
-    private Set<Coordinates> coordinates = new HashSet<>();
-
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ToString.Exclude
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "studio_id", referencedColumnName = "id")
+    @JoinColumn(name = "center_id", referencedColumnName = "id")
     @ToString.Exclude
-    private Studio studio;
+    private Center center;
 }
