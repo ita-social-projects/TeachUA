@@ -1,16 +1,16 @@
 package com.softserve.teachua.dto.service;
 
+import com.softserve.teachua.dto.marker.Dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @Builder
 @Data
-public class UserProfile {
+public class UserProfile implements Dto {
     @NotEmpty
     private String email;
 

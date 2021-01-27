@@ -12,7 +12,6 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -22,7 +21,6 @@ import static org.springframework.http.HttpStatus.*;
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
-
     @ExceptionHandler(WrongAuthenticationException.class)
     public final ResponseEntity<Object> handleAuthenticationException(WrongAuthenticationException exception) {
         return buildExceptionBody(exception, UNAUTHORIZED);
@@ -45,12 +43,15 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return buildExceptionBody(new BadRequestException(), status);
+        String exceptionMessage = exception.getMessage();
+        String message = String.format(BadRequestException.CANT_FIND_FIELD_IN_JSON,
+                exceptionMessage.substring(exceptionMessage.indexOf("field"), exceptionMessage.indexOf("':") + 1));
+        return buildExceptionBody(new BadRequestException(message), status);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return buildExceptionBody(new BadRequestException(), status);
+        return buildExceptionBody(new BadRequestException(BadRequestException.JSON_IS_NOT_READABLE), status);
     }
 
     @Override

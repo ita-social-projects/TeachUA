@@ -1,6 +1,7 @@
 package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.softserve.teachua.dto.marker.Dto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "clubs")
-public class Club {
+public class Club implements Dto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
