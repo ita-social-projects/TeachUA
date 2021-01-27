@@ -1,6 +1,5 @@
 package com.softserve.teachua.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.softserve.teachua.dto.marker.Dto;
 import lombok.*;
 
@@ -33,10 +32,10 @@ public class Club implements Dto {
     private String name;
 
     @Column
-    @EqualsAndHashCode.Include
     private String email;
 
     @Column
+    @EqualsAndHashCode.Include
     private String address;
 
     @Column
@@ -68,7 +67,6 @@ public class Club implements Dto {
     @ToString.Exclude
     private City city;
 
-    @JsonManagedReference
     @ManyToMany
     @JoinTable(name = "club_category",
             joinColumns = {@JoinColumn(name = "club_id")},
