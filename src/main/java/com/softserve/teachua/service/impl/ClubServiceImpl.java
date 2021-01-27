@@ -46,7 +46,7 @@ public class ClubServiceImpl implements ClubService {
         }
 
         Club club = clubRepository.getById(id);
-        log.info("**/getting club by id = " + club);
+        log.info("**/getting club by id = " + club.getId());
         return club;
     }
 
@@ -59,26 +59,13 @@ public class ClubServiceImpl implements ClubService {
         }
 
         Club club = clubRepository.findByName(name);
-        log.info("**/getting club by name = " + club);
+        log.info("**/getting club by name = " + club.getName());
         return club;
     }
 
     @Override
     public ClubResponse getClubProfileByName(String name) {
-        Club club = getClubByName(name);
-        return ClubResponse.builder()
-                .id(club.getId())
-                .ageFrom(club.getAgeFrom())
-                .ageTo(club.getAgeTo())
-                .name(club.getName())
-                .urlWeb(club.getUrlWeb())
-                .urlLogo(club.getUrlLogo())
-                .workTime(club.getWorkTime())
-                .city(club.getCity())
-                .categories(club.getCategories())
-                .user(club.getUser())
-                .center(club.getCenter())
-                .build();
+        return dtoConverter.convertToDto(getClubByName(name), ClubResponse.class);
     }
 
     @Override
@@ -89,28 +76,17 @@ public class ClubServiceImpl implements ClubService {
             throw new AlreadyExistException(clubAlreadyExist);
         }
 
-        Club club = clubRepository.save(Club
-                .builder()
-                .ageFrom(clubProfile.getAgeFrom())
-                .ageTo(clubProfile.getAgeTo())
-                .name(clubProfile.getName())
-                .build());
+        Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, Club.builder().build()));
 
         log.info("**/adding club with name = " + clubProfile.getName());
-        return SuccessCreatedClub.builder()
-                .id(club.getId())
-                .ageFrom(club.getAgeFrom())
-                .ageTo(club.getAgeTo())
-                .build();
+        return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
     }
 
     @Override
     public List<ClubResponse> getListOfClubs() {
         List<ClubResponse> clubResponses = clubRepository.findAll()
                 .stream()
-                .map(club -> new ClubResponse(club.getId(), club.getAgeFrom(), club.getAgeTo(),
-                        club.getName(), club.getUrlWeb(), club.getUrlLogo()
-                        , club.getWorkTime(), club.getCity(), club.getCategories(), club.getUser(), club.getCenter()))
+                .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
                 .collect(Collectors.toList());
 
         log.info("/**getting list of clubs = " + clubResponses);
