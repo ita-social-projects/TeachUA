@@ -22,9 +22,9 @@ public class StudioController {
     }
 
     /**
-     * The controller returns information {@code StudioResponse} about studio.
+     * The controller returns information {@code StudioResponse} about center.
      *
-     * @param id - put studio id.
+     * @param id - put center id.
      * @return new {@code StudioResponse}.
      */
     @GetMapping("/studio/{id}")
@@ -33,9 +33,9 @@ public class StudioController {
     }
 
     /**
-     * The controller returns dto {@code SuccessCreatedStudio} of created studio.
+     * The controller returns dto {@code SuccessCreatedStudio} of created center.
      *
-     * @param name - place Studio name for add new Studio.
+     * @param name - place Center name for add new Center.
      * @return new {@code SuccessCreatedStudio}.
      */
     @PostMapping("/studio")
@@ -46,7 +46,7 @@ public class StudioController {
     }
 
     /**
-     * The controller returns information {@code List <StudioResponse>} about studio.
+     * The controller returns information {@code List <StudioResponse>} about center.
      *
      * @return new {@code List <StudioResponse>}.
      */
@@ -56,7 +56,7 @@ public class StudioController {
     }
 
     /**
-     * The controller returns dto {@code ...} of deleted studio.
+     * The controller returns dto {@code ...} of deleted center.
      *
      * @param id - put category id.
      * @return new {@code ...}.
@@ -68,9 +68,9 @@ public class StudioController {
     }
 
     /**
-     * The controller returns id {@code ...} of updated studio.
+     * The controller returns id {@code ...} of updated center.
      *
-     * @param id - put studio id.
+     * @param id - put center id.
      * @return new {@code ...}.
      */
     //TODO

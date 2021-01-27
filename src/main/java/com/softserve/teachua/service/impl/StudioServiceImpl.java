@@ -4,8 +4,8 @@ import com.softserve.teachua.dto.controller.StudioResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedStudio;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.model.Studio;
-import com.softserve.teachua.repository.StudioRepository;
+import com.softserve.teachua.model.Center;
+import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.service.StudioService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,50 +17,50 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class StudioServiceImpl implements StudioService {
-    private static final String STUDIO_ALREADY_EXIST = "Studio already exist with name: %s";
-    private static final String STUDIO_NOT_FOUND_BY_ID = "Studio not found by id: %s";
-    private static final String STUDIO_NOT_FOUND_BY_NAME = "Studio not found by name: %s";
+    private static final String STUDIO_ALREADY_EXIST = "Center already exist with name: %s";
+    private static final String STUDIO_NOT_FOUND_BY_ID = "Center not found by id: %s";
+    private static final String STUDIO_NOT_FOUND_BY_NAME = "Center not found by name: %s";
 
-    private final StudioRepository studioRepository;
+    private final CenterRepository centerRepository;
 
     @Autowired
-    public StudioServiceImpl(StudioRepository studioRepository) {
-        this.studioRepository = studioRepository;
+    public StudioServiceImpl(CenterRepository centerRepository) {
+        this.centerRepository = centerRepository;
     }
 
     @Override
     public StudioResponse getStudioByProfileId(Long id) {
-        Studio studio = getStudioById(id);
+        Center center = getStudioById(id);
         return StudioResponse.builder()
-                .id(studio.getId())
-                .name(studio.getName())
+                .id(center.getId())
+                .name(center.getName())
                 .build();
     }
 
     @Override
-    public Studio getStudioById(Long id) {
+    public Center getStudioById(Long id) {
         if (!isStudioExistById(id)) {
             String studioNotFoundById = String.format(STUDIO_NOT_FOUND_BY_ID, id);
             log.error(studioNotFoundById);
             throw new NotExistException(studioNotFoundById);
         }
 
-        Studio studio = studioRepository.getById(id);
-        log.info("**/getting studio by id = " + studio);
-        return studio;
+        Center center = centerRepository.getById(id);
+        log.info("**/getting center by id = " + center);
+        return center;
     }
 
     @Override
-    public Studio getStudioByName(String name) {
+    public Center getStudioByName(String name) {
         if (!isStudioExistByName(name)) {
             String studioNotFoundById = String.format(STUDIO_NOT_FOUND_BY_NAME, name);
             log.error(studioNotFoundById);
             throw new NotExistException(studioNotFoundById);
         }
 
-        Studio studio = studioRepository.findByName(name);
-        log.info("**/getting studio by name = " + name);
-        return studio;
+        Center center = centerRepository.findByName(name);
+        log.info("**/getting center by name = " + name);
+        return center;
     }
 
     @Override
@@ -71,21 +71,21 @@ public class StudioServiceImpl implements StudioService {
             throw new AlreadyExistException(studioAlreadyExist);
         }
 
-        Studio studio = studioRepository.save(Studio
+        Center center = centerRepository.save(Center
                 .builder()
                 .name(name)
                 .build());
 
-        log.info("**/adding new studio = " + studio);
+        log.info("**/adding new center = " + center);
         return SuccessCreatedStudio.builder()
-                .id(studio.getId())
-                .name(studio.getName())
+                .id(center.getId())
+                .name(center.getName())
                 .build();
     }
 
     @Override
     public List<StudioResponse> getListOfStudios() {
-        List<StudioResponse> studioResponses = studioRepository.findAll()
+        List<StudioResponse> studioResponses = centerRepository.findAll()
                 .stream()
                 .map(studio -> new StudioResponse(studio.getId(), studio.getName()))
                 .collect(Collectors.toList());
@@ -95,10 +95,10 @@ public class StudioServiceImpl implements StudioService {
     }
 
     private boolean isStudioExistById(Long id) {
-        return studioRepository.existsById(id);
+        return centerRepository.existsById(id);
     }
 
     private boolean isStudioExistByName(String name) {
-        return studioRepository.existsByName(name);
+        return centerRepository.existsByName(name);
     }
 }

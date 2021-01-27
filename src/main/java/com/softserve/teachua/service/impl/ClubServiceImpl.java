@@ -76,9 +76,8 @@ public class ClubServiceImpl implements ClubService {
                 .workTime(club.getWorkTime())
                 .city(club.getCity())
                 .categories(club.getCategories())
-                .coordinates(club.getCoordinates())
                 .user(club.getUser())
-                .studio(club.getStudio())
+                .center(club.getCenter())
                 .build();
     }
 
@@ -111,7 +110,7 @@ public class ClubServiceImpl implements ClubService {
                 .stream()
                 .map(club -> new ClubResponse(club.getId(), club.getAgeFrom(), club.getAgeTo(),
                         club.getName(), club.getUrlWeb(), club.getUrlLogo()
-                        , club.getWorkTime(), club.getCity(), club.getCategories(), club.getCoordinates(), club.getUser(), club.getStudio()))
+                        , club.getWorkTime(), club.getCity(), club.getCategories(), club.getUser(), club.getCenter()))
                 .collect(Collectors.toList());
 
         log.info("/**getting list of clubs = " + clubResponses);

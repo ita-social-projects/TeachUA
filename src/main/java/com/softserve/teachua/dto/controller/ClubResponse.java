@@ -23,7 +23,6 @@ public class ClubResponse implements Dto {
     private String workTime;
     private City city;
     private Set<Category> categories;
-    private Set <Coordinates> coordinates;
     private User user;
-    private Studio studio;
+    private Center center;
 }
