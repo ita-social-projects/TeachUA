@@ -38,6 +38,13 @@ public class ClubServiceImpl implements ClubService {
                 .ageTo(club.getAgeTo())
                 .name(club.getName())
                 .urlWeb(club.getUrlWeb())
+                .urlLogo(club.getUrlLogo())
+                .workTime(club.getWorkTime())
+                .city(club.getCity())
+                .categories(club.getCategories())
+                .coordinates(club.getCoordinates())
+                .user(club.getUser())
+                .studio(club.getStudio())
                 .build();
     }
 
@@ -68,6 +75,25 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
+    public ClubResponse getClubProfileByName(String name) {
+        Club club = getClubByName(name);
+        return ClubResponse.builder()
+                .id(club.getId())
+                .ageFrom(club.getAgeFrom())
+                .ageTo(club.getAgeTo())
+                .name(club.getName())
+                .urlWeb(club.getUrlWeb())
+                .urlLogo(club.getUrlLogo())
+                .workTime(club.getWorkTime())
+                .city(club.getCity())
+                .categories(club.getCategories())
+                .coordinates(club.getCoordinates())
+                .user(club.getUser())
+                .studio(club.getStudio())
+                .build();
+    }
+
+    @Override
     public SuccessCreatedClub addClub(ClubProfile clubProfile) {
         if (isClubExistByName(clubProfile.getName())) {
             String clubAlreadyExist = String.format(CLUB_ALREADY_EXIST, clubProfile.getName());
@@ -82,7 +108,7 @@ public class ClubServiceImpl implements ClubService {
                 .name(clubProfile.getName())
                 .build());
 
-        log.info("**/adding club with name = " +  clubProfile.getName());
+        log.info("**/adding club with name = " + clubProfile.getName());
         return SuccessCreatedClub.builder()
                 .id(club.getId())
                 .ageFrom(club.getAgeFrom())
@@ -94,7 +120,9 @@ public class ClubServiceImpl implements ClubService {
     public List<ClubResponse> getListOfClubs() {
         List<ClubResponse> clubResponses = clubRepository.findAll()
                 .stream()
-                .map(club -> new ClubResponse(club.getId(), club.getAgeFrom(), club.getAgeTo(), club.getName(), club.getUrlWeb()))
+                .map(club -> new ClubResponse(club.getId(), club.getAgeFrom(), club.getAgeTo(),
+                        club.getName(), club.getUrlWeb(), club.getUrlLogo()
+                        , club.getWorkTime(), club.getCity(), club.getCategories(), club.getCoordinates(), club.getUser(), club.getStudio()))
                 .collect(Collectors.toList());
 
         log.info("/**getting list of clubs = " + clubResponses);
@@ -104,6 +132,7 @@ public class ClubServiceImpl implements ClubService {
     private boolean isClubExistById(Long id) {
         return clubRepository.existsById(id);
     }
+
     private boolean isClubExistByName(String name) {
         return clubRepository.existsByName(name);
     }
