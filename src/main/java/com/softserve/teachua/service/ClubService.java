@@ -15,6 +15,8 @@ public interface ClubService {
 
     Club getClubByName(String name);
 
+    ClubResponse getClubProfileByName(String name);
+
     SuccessCreatedClub addClub(ClubProfile clubProfile);
 
     List<ClubResponse> getListOfClubs();

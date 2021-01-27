@@ -1,13 +1,16 @@
 package com.softserve.teachua.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @Builder
 @Entity
@@ -19,15 +22,19 @@ public class Club {
     private Long id;
 
     @Column
+    @EqualsAndHashCode.Include
     private Integer ageFrom;
 
     @Column
+    @EqualsAndHashCode.Include
     private Integer ageTo;
 
     @Column
+    @EqualsAndHashCode.Include
     private String name;
 
     @Column
+    @EqualsAndHashCode.Include
     private String urlWeb;
 
     @Column
@@ -41,19 +48,21 @@ public class Club {
     @ToString.Exclude
     private City city;
 
+    @JsonManagedReference
     @ManyToMany
     @JoinTable(name = "club_category",
-            joinColumns = { @JoinColumn(name = "club_id") },
-            inverseJoinColumns = { @JoinColumn(name = "category_id")})
+            joinColumns = {@JoinColumn(name = "club_id")},
+            inverseJoinColumns = {@JoinColumn(name = "category_id")})
     @ToString.Exclude
-    private Set <Category> categories = new HashSet<>();
+    private Set<Category> categories = new HashSet<>();
 
+    @JsonManagedReference
     @ManyToMany
     @JoinTable(name = "club_coordinates",
-            joinColumns = { @JoinColumn(name = "club_id") },
-            inverseJoinColumns = { @JoinColumn(name = "coordinates_id")})
+            joinColumns = {@JoinColumn(name = "club_id")},
+            inverseJoinColumns = {@JoinColumn(name = "coordinates_id")})
     @ToString.Exclude
-    private Set <Coordinates> coordinates = new HashSet<>();
+    private Set<Coordinates> coordinates = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

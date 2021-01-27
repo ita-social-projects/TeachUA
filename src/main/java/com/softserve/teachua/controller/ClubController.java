@@ -33,15 +33,27 @@ public class ClubController {
     }
 
     /**
+     * The controller returns information {@code ClubResponse} about club.
+     *
+     * @param name - put club name.
+     * @return new {@code ClubResponse}.
+     */
+    @GetMapping("/club/name/{name}")
+    public ClubResponse getClubByName(@PathVariable String name) {
+        return clubService.getClubProfileByName(name);
+    }
+
+    /**
      * The controller returns dto {@code SuccessCreatedClub} of created club
      *
      * @param clubProfile - Place dto with all parameters for adding new club.
      * @return new {@code SuccessCreatedClub}.
      */
+
     @PostMapping("/club")
     public SuccessCreatedClub addClub(
             @Valid
-            @RequestParam ClubProfile clubProfile) {
+            @RequestBody ClubProfile clubProfile) {
         return clubService.addClub(clubProfile);
     }
 
@@ -61,6 +73,7 @@ public class ClubController {
      * @param id - put club id.
      * @return new {@code ...}.
      */
+
     //TODO
     @DeleteMapping("/club{id}")
     public Object deleteClub(@PathVariable Long id) throws JsonProcessingException {
