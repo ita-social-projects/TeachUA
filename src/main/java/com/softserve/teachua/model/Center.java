@@ -1,5 +1,6 @@
 package com.softserve.teachua.model;
 
+import com.softserve.teachua.dto.marker.Dto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "centers")
-public class Center {
+public class Center implements Dto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
