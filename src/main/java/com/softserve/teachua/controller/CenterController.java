@@ -2,9 +2,11 @@ package com.softserve.teachua.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.teachua.dto.controller.StudioResponse;
-import com.softserve.teachua.dto.controller.SuccessCreatedStudio;
-import com.softserve.teachua.service.StudioService;
+import com.softserve.teachua.dto.controller.CenterResponse;
+import com.softserve.teachua.dto.controller.ClubResponse;
+import com.softserve.teachua.dto.controller.SuccessCreatedCenter;
+import com.softserve.teachua.dto.service.CenterProfile;
+import com.softserve.teachua.service.CenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,13 +14,13 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-public class StudioController {
+public class CenterController {
 
-    private final StudioService studioService;
+    private final CenterService centerService;
 
     @Autowired
-    public StudioController(StudioService studioService) {
-        this.studioService = studioService;
+    public CenterController(CenterService centerService) {
+        this.centerService = centerService;
     }
 
     /**
@@ -27,9 +29,9 @@ public class StudioController {
      * @param id - put center id.
      * @return new {@code StudioResponse}.
      */
-    @GetMapping("/studio/{id}")
-    public StudioResponse getStudio(@PathVariable Long id) {
-        return studioService.getStudioByProfileId(id);
+    @GetMapping("/center/{id}")
+    public CenterResponse getCenter(@PathVariable Long id) {
+        return centerService.getCenterByProfileId(id);
     }
 
     /**
@@ -38,11 +40,11 @@ public class StudioController {
      * @param name - place Center name for add new Center.
      * @return new {@code SuccessCreatedStudio}.
      */
-    @PostMapping("/studio")
-    public SuccessCreatedStudio addStudio(
+    @PostMapping("/center")
+    public SuccessCreatedCenter addCenter(
             @Valid
-            @RequestBody String name) {
-        return studioService.addStudio(name);
+            @RequestBody CenterProfile centerProfile) {
+        return centerService.addCenter(centerProfile);
     }
 
     /**
@@ -50,10 +52,11 @@ public class StudioController {
      *
      * @return new {@code List <StudioResponse>}.
      */
-    @GetMapping("/studios")
-    public List<StudioResponse> getStudios() {
-        return studioService.getListOfStudios();
+    @GetMapping("/centers")
+    public List<CenterResponse> getCenters() {
+        return centerService.getListOfCenters();
     }
+
 
     /**
      * The controller returns dto {@code ...} of deleted center.
@@ -62,8 +65,8 @@ public class StudioController {
      * @return new {@code ...}.
      */
     //TODO
-    @DeleteMapping("/studio")
-    public Object deleteStudio(@RequestParam Long id) throws JsonProcessingException {
+    @DeleteMapping("/center")
+    public Object deleteCenter(@RequestParam Long id) throws JsonProcessingException {
         return new ObjectMapper().readValue("{ \"id\" : " + id + " }", Object.class);
     }
 
@@ -74,8 +77,8 @@ public class StudioController {
      * @return new {@code ...}.
      */
     //TODO
-    @PutMapping("/studio/{id}")
-    public Object updateStudio(@PathVariable long id) throws JsonProcessingException {
+    @PutMapping("/center/{id}")
+    public Object updateCenter(@PathVariable long id) throws JsonProcessingException {
         return new ObjectMapper().readValue("{ \"id\" : " + id + " }", Object.class);
     }
 }

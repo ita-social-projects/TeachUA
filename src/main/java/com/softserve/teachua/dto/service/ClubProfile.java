@@ -16,8 +16,7 @@ import java.util.Set;
 @Data
 public class ClubProfile implements Dto {
 
-    @NotEmpty
-    private String name;
+
 
     @NotNull
     private City city;
@@ -39,6 +38,9 @@ public class ClubProfile implements Dto {
 
     @NotEmpty
     private String description;
+
+    @NotNull
+    private String name;
 
     @NotNull
     private Integer ageFrom;

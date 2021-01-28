@@ -1,11 +1,15 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.controller.CategoryResponse;
+import com.softserve.teachua.dto.controller.CenterResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedCategory;
+import com.softserve.teachua.dto.controller.SuccessCreatedCenter;
 import com.softserve.teachua.dto.service.CategoryProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Category;
+import com.softserve.teachua.model.Center;
 import com.softserve.teachua.repository.CategoryRepository;
 import com.softserve.teachua.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,22 +29,19 @@ public class CategoryServiceImpl implements CategoryService {
     private static final String CATEGORY_NOT_FOUND_BY_ID = "Category not found by id: %s";
     private static final String CATEGORY_NOT_FOUND_NAME = "Category not found by name: %s";
 
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
+    private final DtoConverter dtoConverter;
 
     @Autowired
-    CategoryServiceImpl(CategoryRepository categoryRepository) {
+    CategoryServiceImpl(CategoryRepository categoryRepository, DtoConverter dtoConverter) {
         this.categoryRepository = categoryRepository;
+        this.dtoConverter = dtoConverter;
 
     }
 
     @Override
     public CategoryResponse getCategoryProfileById(Long id) {
-        Category category = getCategoryById(id);
-        return CategoryResponse.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .urlLogo(category.getUrlLogo())
-                .build();
+        return dtoConverter.convertToDto(getCategoryById(id), CategoryResponse.class);
     }
 
     @Override
@@ -77,20 +78,16 @@ public class CategoryServiceImpl implements CategoryService {
             throw new AlreadyExistException(categoryAlreadyExist);
         }
 
-        Category category = categoryRepository.save(Category.builder()
-                .name(categoryProfile.getName())
-                .urlLogo(categoryProfile.getUrlLogo())
-                .build());
-
+        Category category = categoryRepository.save(dtoConverter.convertToEntity(categoryProfile,Category.builder().build()));
         log.info("**/adding new category = " + category);
-        return new SuccessCreatedCategory(category.getName());
+        return dtoConverter.convertToDto(category, SuccessCreatedCategory.class);
     }
 
     @Override
     public List<CategoryResponse> getListOfCategories() {
         List<CategoryResponse> categoryResponses = categoryRepository.findAll()
                 .stream()
-                .map(category -> new CategoryResponse(category.getId(), category.getName(), category.getUrlLogo()))
+                .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
                 .collect(Collectors.toList());
 
         log.info("**/getting list of category = " + categoryResponses);

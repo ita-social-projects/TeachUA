@@ -1,6 +1,7 @@
 package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.softserve.teachua.dto.marker.Dto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,7 +15,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "categories")
-public class Category {
+public class Category implements Dto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

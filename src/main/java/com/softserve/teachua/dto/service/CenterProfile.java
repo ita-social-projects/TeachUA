@@ -1,26 +1,45 @@
-package com.softserve.teachua.dto.controller;
+package com.softserve.teachua.dto.service;
 
+
+import com.softserve.teachua.dto.marker.Dto;
 import com.softserve.teachua.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @Data
-public class SuccessCreatedCity {
-    private Long id;
+public class CenterProfile implements Dto {
+
+    @NotNull
     private String name;
+
+    @NotNull
     private String email;
+
+    @NotNull
     private String address;
+
+    @NotNull
     private String phones;
+
     private String description;
+
+    @NotNull
     private String urlWeb;
+
+    @NotNull
     private String urlLogo;
+
     private String socialLinks;
+
     private Double latitude;
+
     private Double longitude;
+
     private User user;
+
 }
