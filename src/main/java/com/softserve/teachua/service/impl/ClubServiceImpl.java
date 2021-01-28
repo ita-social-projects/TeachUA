@@ -102,9 +102,10 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public Page<ClubResponse> getClubsBySearchParameters(SearchClubDto searchClubDto, Pageable pageable) {
-        Page<Club> clubResponses = clubRepository.findAllByNameContainsAndCityNameContains(
+        Page<Club> clubResponses = clubRepository.findAllByParameters(
                 searchClubDto.getClubName(),
                 searchClubDto.getCityName(),
+                searchClubDto.getCategoryName(),
                 pageable);
 
         return new PageImpl<>(
