@@ -14,11 +14,12 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     boolean existsByName(String name);
     boolean existsById(Long id);
 
-    @Query("SELECT DISTINCT club from Club AS club " +
-            "INNER JOIN club.categories AS category WHERE " +
+@Query("SELECT DISTINCT club from Club AS club " +
+            "LEFT JOIN club.categories AS category WHERE " +
             "club.name LIKE CONCAT('%',:name,'%') AND " +
             "club.city.name LIKE CONCAT('%',:city,'%') AND " +
-            "category.name LIKE CONCAT('%',:category,'%')")
+            "(category.name LIKE CONCAT('%', :category ,'%') " +
+            "OR category.name IS NULL AND :category = '')")
     Page<Club> findAllByParameters(
             @Param("name") String name,
             @Param("city") String cityName,
