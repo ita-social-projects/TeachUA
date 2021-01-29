@@ -3,12 +3,12 @@ package com.softserve.teachua.service.impl;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.controller.ClubResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedClub;
-import com.softserve.teachua.dto.search.SearchClubDto;
+import com.softserve.teachua.dto.search.SearchClubResponse;
+import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.service.ClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
-import com.softserve.teachua.repository.CategoryRepository;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.service.ClubService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,13 +30,11 @@ public class ClubServiceImpl implements ClubService {
 
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
-    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public ClubServiceImpl(ClubRepository clubRepository, DtoConverter dtoConverter, CategoryRepository categoryRepository) {
+    public ClubServiceImpl(ClubRepository clubRepository, DtoConverter dtoConverter) {
         this.clubRepository = clubRepository;
         this.dtoConverter = dtoConverter;
-        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -101,18 +99,26 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public Page<ClubResponse> getClubsBySearchParameters(SearchClubDto searchClubDto, Pageable pageable) {
+    public Page<ClubResponse> getClubsBySearchParameters(SearchClubResponse searchClubResponse, Pageable pageable) {
         Page<Club> clubResponses = clubRepository.findAllByParameters(
-                searchClubDto.getClubName(),
-                searchClubDto.getCityName(),
-                searchClubDto.getCategoryName(),
+                searchClubResponse.getClubName(),
+                searchClubResponse.getCityName(),
+                searchClubResponse.getCategoryName(),
                 pageable);
 
-        return new PageImpl<>(
-                clubResponses.stream()
-                        .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
-                        .collect(Collectors.toList()),
+        return new PageImpl<>(clubResponses
+                .stream()
+                .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
+                .collect(Collectors.toList()),
                 clubResponses.getPageable(), clubResponses.getSize());
+    }
+
+    @Override
+    public List<SearchPossibleResponse> getPossibleClubByName(String text) {
+        return clubRepository.findRandomTop3ByName(text)
+                .stream()
+                .map(category -> (SearchPossibleResponse) dtoConverter.convertToDto(category, SearchPossibleResponse.class))
+                .collect(Collectors.toList());
     }
 
     private boolean isClubExistById(Long id) {

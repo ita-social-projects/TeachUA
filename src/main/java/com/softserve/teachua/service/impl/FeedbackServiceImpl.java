@@ -25,18 +25,18 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class FeedbackServiceImpl implements FeedbackService {
-    private final String FEEDBACK_NOT_FOUND_BY_ID= "Feedback not found by id: %s";
+    private final String FEEDBACK_NOT_FOUND_BY_ID = "Feedback not found by id: %s";
 
 
-    private boolean isFeedbackExistById(Long id){
+    private boolean isFeedbackExistById(Long id) {
         return feedbackRepository.existsById(id);
     }
 
-    FeedbackRepository feedbackRepository;
-    DtoConverter dtoConverter;
+    private final FeedbackRepository feedbackRepository;
+    private final DtoConverter dtoConverter;
 
     @Autowired
-    FeedbackServiceImpl(FeedbackRepository feedbackRepository,DtoConverter dtoConverter){
+    FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
     }
@@ -48,20 +48,20 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public Feedback getFeedbackById(Long id) {
-        if(!isFeedbackExistById(id)){
-            String feedbackNotFoundById = String.format(FEEDBACK_NOT_FOUND_BY_ID,id);
+        if (!isFeedbackExistById(id)) {
+            String feedbackNotFoundById = String.format(FEEDBACK_NOT_FOUND_BY_ID, id);
             log.error(feedbackNotFoundById);
             throw new NotExistException(feedbackNotFoundById);
         }
         Feedback feedback = feedbackRepository.getById(id);
-        log.info("get feedback by id - "+feedback);
+        log.info("get feedback by id - " + feedback);
         return feedback;
     }
 
     @Override
     public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile) {
         Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, Feedback.builder().build()));
-        log.info("add new feedback - "+feedback);
+        log.info("add new feedback - " + feedback);
         return dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
     }
 
@@ -69,10 +69,10 @@ public class FeedbackServiceImpl implements FeedbackService {
     public List<FeedbackResponse> getListOfFeedback() {
         List<FeedbackResponse> feedbackResponses = feedbackRepository.findAll()
                 .stream()
-                .map(feedback ->(FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
+                .map(feedback -> (FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("get list of feedback -"+feedbackResponses );
+        log.info("get list of feedback -" + feedbackResponses);
         return feedbackResponses;
     }
 }

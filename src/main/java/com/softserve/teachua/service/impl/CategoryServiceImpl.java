@@ -3,6 +3,7 @@ package com.softserve.teachua.service.impl;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.controller.CategoryResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedCategory;
+import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.service.CategoryProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
@@ -98,6 +99,14 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(id);
         log.info("**/delete category = " + id);
         return categoryResponse;
+    }
+
+    @Override
+    public List<SearchPossibleResponse> getPossibleCategoryByName(String text) {
+        return categoryRepository.findRandomTop3ByName(text)
+                .stream()
+                .map(category -> (SearchPossibleResponse) dtoConverter.convertToDto(category, SearchPossibleResponse.class))
+                .collect(Collectors.toList());
     }
 
     private boolean isCategoryExistById(Long id) {
