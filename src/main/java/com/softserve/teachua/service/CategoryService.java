@@ -3,9 +3,9 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.controller.CategoryResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedCategory;
+import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.service.CategoryProfile;
 import com.softserve.teachua.model.Category;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -22,4 +22,6 @@ public interface CategoryService {
     List<CategoryResponse> getListOfCategories();
 
     CategoryResponse deleteCategoryById(Long id);
+
+    List<SearchPossibleResponse> getPossibleCategoryByName(String text);
 }

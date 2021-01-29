@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.dto.controller.ClubResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedClub;
-import com.softserve.teachua.dto.search.SearchClubDto;
+import com.softserve.teachua.dto.search.SearchClubResponse;
 import com.softserve.teachua.dto.service.ClubProfile;
 import com.softserve.teachua.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,11 +76,11 @@ public class ClubController {
     @GetMapping("/clubs/search")
     public Page<ClubResponse> getClubsListOfClubs(
             @Valid
-            @RequestBody SearchClubDto searchClubDto,
+            @RequestBody SearchClubResponse searchClubResponse,
             @PageableDefault(
                     value = CLUBS_PER_PAGE,
                     sort = "id") Pageable pageable) {
-        return clubService.getClubsBySearchParameters(searchClubDto, pageable);
+        return clubService.getClubsBySearchParameters(searchClubResponse, pageable);
     }
 
     /**
