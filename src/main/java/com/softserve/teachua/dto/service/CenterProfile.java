@@ -1,12 +1,12 @@
 package com.softserve.teachua.dto.service;
 
-
 import com.softserve.teachua.dto.marker.Dto;
 import com.softserve.teachua.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
@@ -14,30 +14,34 @@ import javax.validation.constraints.NotNull;
 @Data
 public class CenterProfile implements Dto {
 
-    @NotNull
+    @NotEmpty
     private String name;
 
-    @NotNull
+    @NotEmpty
     private String email;
 
-    @NotNull
+    @NotEmpty
     private String address;
 
-    @NotNull
+    @NotEmpty
     private String phones;
 
+    @NotEmpty
     private String description;
 
-    @NotNull
+    @NotEmpty
     private String urlWeb;
 
-    @NotNull
+    @NotEmpty
     private String urlLogo;
 
+    @NotEmpty
     private String socialLinks;
 
+    @NotNull
     private Double latitude;
 
+    @NotNull
     private Double longitude;
 
     private User user;

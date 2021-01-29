@@ -2,14 +2,11 @@ package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.controller.CategoryResponse;
-import com.softserve.teachua.dto.controller.CenterResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedCategory;
-import com.softserve.teachua.dto.controller.SuccessCreatedCenter;
 import com.softserve.teachua.dto.service.CategoryProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Category;
-import com.softserve.teachua.model.Center;
 import com.softserve.teachua.repository.CategoryRepository;
 import com.softserve.teachua.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
