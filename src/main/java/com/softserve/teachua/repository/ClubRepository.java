@@ -36,7 +36,4 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     @Query(value = "SELECT *  FROM clubs AS c WHERE LOWER(c.name) LIKE LOWER('%' || :text || '%') ORDER BY RANDOM() LIMIT 3",
             nativeQuery=true)
     List<Club> findRandomTop3ByName(@Param("text") String enteredText);
-
-    @Query("SELECT (SUM(feedback.rate) / COUNT(feedback.rate)) FROM Feedback AS feedback WHERE feedback.club.id = :clubId")
-    Double findSumRating(@Param("clubId") Long clubId);
 }
