@@ -1,18 +1,11 @@
 package com.softserve.teachua.dto.controller;
 
 import com.softserve.teachua.dto.marker.Dto;
-import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
