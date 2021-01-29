@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -17,6 +18,16 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import static org.springframework.http.HttpStatus.*;
 
+
+/**
+ * Custom exception handler to handle own exceptions
+ * and handle Spring's exceptions(BadRequest, MethodNotSupported).
+ *
+ * Use @code buildExceptionBody(Exception exception, HttpStatus status) to create
+ * own exception body.
+ *
+ * @author Denis Burko
+ */
 @AllArgsConstructor
 @RestControllerAdvice
 @Slf4j
@@ -57,6 +68,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
         return buildExceptionBody(new MethodNotSupportedException(exception.getMessage()), status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return buildExceptionBody(new BadRequestException(exception.getMessage()), status);
     }
 
     private ResponseEntity<Object> buildExceptionBody(Exception exception, HttpStatus httpStatus) {

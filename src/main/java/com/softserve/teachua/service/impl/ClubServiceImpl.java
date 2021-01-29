@@ -3,14 +3,19 @@ package com.softserve.teachua.service.impl;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.controller.ClubResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedClub;
+import com.softserve.teachua.dto.search.SearchClubDto;
 import com.softserve.teachua.dto.service.ClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
+import com.softserve.teachua.repository.CategoryRepository;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.service.ClubService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,11 +30,13 @@ public class ClubServiceImpl implements ClubService {
 
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public ClubServiceImpl(ClubRepository clubRepository, DtoConverter dtoConverter) {
+    public ClubServiceImpl(ClubRepository clubRepository, DtoConverter dtoConverter, CategoryRepository categoryRepository) {
         this.clubRepository = clubRepository;
         this.dtoConverter = dtoConverter;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -76,7 +83,7 @@ public class ClubServiceImpl implements ClubService {
             throw new AlreadyExistException(clubAlreadyExist);
         }
 
-        Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, Club.builder().build()));
+        Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club()));
 
         log.info("**/adding club with name = " + clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
@@ -91,6 +98,21 @@ public class ClubServiceImpl implements ClubService {
 
         log.info("/**getting list of clubs = " + clubResponses);
         return clubResponses;
+    }
+
+    @Override
+    public Page<ClubResponse> getClubsBySearchParameters(SearchClubDto searchClubDto, Pageable pageable) {
+        Page<Club> clubResponses = clubRepository.findAllByParameters(
+                searchClubDto.getClubName(),
+                searchClubDto.getCityName(),
+                searchClubDto.getCategoryName(),
+                pageable);
+
+        return new PageImpl<>(
+                clubResponses.stream()
+                        .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
+                        .collect(Collectors.toList()),
+                clubResponses.getPageable(), clubResponses.getSize());
     }
 
     private boolean isClubExistById(Long id) {

@@ -7,6 +7,17 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
 
+/**
+ * Class that helps to convert from DTO to Entity, from Entity to DTO and from DTO to DTO.
+ *
+ * Use @code convertToEntity(new Dto(), new Entity()) - to convert from DTO to Entity
+ * Use @code convertToDto(new Entity(), Dto.class) - to convert from Entity to DTO
+ * Use @code convertFromDtoToDto(new DtoConverted(), new DtoConverting()) - to convert from DTO to DTO
+ *
+ * All the converting classes(DTOs and Entities) must implement 'Dto' interface.
+ *
+ * @author Denis Burko
+ */
 @Component
 public class DtoConverter {
     private final ModelMapper modelMapper;

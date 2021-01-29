@@ -4,9 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.dto.controller.ClubResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedClub;
+import com.softserve.teachua.dto.search.SearchClubDto;
 import com.softserve.teachua.dto.service.ClubProfile;
 import com.softserve.teachua.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -14,6 +18,8 @@ import java.util.List;
 
 @RestController
 public class ClubController {
+    private static final int CLUBS_PER_PAGE = 8;
+
     private final ClubService clubService;
 
     @Autowired
@@ -44,6 +50,16 @@ public class ClubController {
     }
 
     /**
+     * The controller returns information {@code List <ClubResponse>} about clubs.
+     *
+     * @return new {@code List <ClubResponse>}.
+     */
+    @GetMapping("/clubs")
+    public List<ClubResponse> getClubs() {
+        return clubService.getListOfClubs();
+    }
+
+    /**
      * The controller returns dto {@code SuccessCreatedClub} of created club
      *
      * @param clubProfile - Place dto with all parameters for adding new club.
@@ -57,14 +73,14 @@ public class ClubController {
         return clubService.addClub(clubProfile);
     }
 
-    /**
-     * The controller returns information {@code List <ClubResponse>} about clubs.
-     *
-     * @return new {@code List <ClubResponse>}.
-     */
-    @GetMapping("/clubs")
-    public List<ClubResponse> getClubs() {
-        return clubService.getListOfClubs();
+    @GetMapping("/clubs/search")
+    public Page<ClubResponse> getClubsListOfClubs(
+            @Valid
+            @RequestBody SearchClubDto searchClubDto,
+            @PageableDefault(
+                    value = CLUBS_PER_PAGE,
+                    sort = "id") Pageable pageable) {
+        return clubService.getClubsBySearchParameters(searchClubDto, pageable);
     }
 
     /**

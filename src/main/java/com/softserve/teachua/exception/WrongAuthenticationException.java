@@ -1,5 +1,14 @@
 package com.softserve.teachua.exception;
 
+/**
+ * This class is custom exception for problem with authentication.
+ * (Invalid password, invalid email etc.)
+ * The constructor accepts message for Exception
+ *
+ * Use @code throw new WrongAuthenticationException("Authentication exception")
+ *
+ * @author Denis Burko
+ */
 public class WrongAuthenticationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
