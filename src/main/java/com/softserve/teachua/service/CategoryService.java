@@ -5,7 +5,7 @@ import com.softserve.teachua.dto.controller.CategoryResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedCategory;
 import com.softserve.teachua.dto.service.CategoryProfile;
 import com.softserve.teachua.model.Category;
-import org.springframework.http.ResponseEntity;
+
 
 import java.util.List;
 

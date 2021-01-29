@@ -7,15 +7,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class CategoryResponse implements Dto {
+@Data
+public class SuccessCreatedFeedback implements Dto {
     private Long id;
-    private String name;
-    private String urlLogo;
-    private Set<Club> clubs;
+
+    private String userName;
+
+    private Float rate;
+
+    private String text;
+
+    private Club club;
 }
