@@ -30,4 +30,5 @@ public class SuccessCreatedClub implements Dto {
     private String urlWeb;
     private String urlLogo;
     private String socialLinks;
+    private Double rating;
 }

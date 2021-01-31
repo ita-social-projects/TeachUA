@@ -15,4 +15,8 @@ public interface FeedbackService {
     SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile);
 
     List<FeedbackResponse> getListOfFeedback();
+
+    FeedbackProfile updateFeedbackProfileById(Long id,FeedbackProfile feedbackProfile);
+
+    FeedbackResponse deleteFeedbackById(Long id);
 }

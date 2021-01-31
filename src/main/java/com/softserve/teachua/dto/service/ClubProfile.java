@@ -55,4 +55,6 @@ public class ClubProfile implements Dto {
     private String urlLogo;
 
     private String socialLinks;
+
+    private Double rating;
 }
