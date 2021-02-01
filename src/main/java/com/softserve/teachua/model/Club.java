@@ -2,6 +2,7 @@ package com.softserve.teachua.model;
 
 import com.softserve.teachua.dto.marker.Dto;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -84,4 +85,7 @@ public class Club implements Dto {
     @JoinColumn(name = "center_id", referencedColumnName = "id")
     @ToString.Exclude
     private Center center;
+
+    @Column
+    private Double rating;
 }

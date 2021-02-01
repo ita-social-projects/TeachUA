@@ -36,5 +36,15 @@ public class FeedbackController {
         return feedbackService.addFeedback(feedbackProfile);
     }
 
+    @PutMapping("/feedback/{id}")
+    public FeedbackProfile updateFeedback(@PathVariable Long id, @RequestBody FeedbackProfile feedbackProfile)
+    {
+        return feedbackService.updateFeedbackProfileById(id,feedbackProfile);
+    }
+
+    @DeleteMapping("/feedback/{id}")
+    public FeedbackResponse deleteFeedbackById(@PathVariable Long id){
+        return feedbackService.deleteFeedbackById(id);
+    }
 
 }

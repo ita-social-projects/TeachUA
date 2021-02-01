@@ -9,8 +9,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     Feedback getById(Long id);
+
+    void deleteById(Long id);
+
     boolean existsById(Long id);
 
-    @Query("SELECT (SUM(feedback.rate) / COUNT(feedback.rate)) FROM Feedback AS feedback WHERE feedback.club.id = :clubId")
-    Double findSumRating(@Param("clubId") Long clubId);
+    @Query("SELECT AVG(feedback.rate) FROM Feedback AS feedback WHERE feedback.club.id = :clubId")
+    Double findAvgRating(@Param("clubId") Long clubId);
 }
