@@ -32,6 +32,7 @@ public class Club implements Dto {
     private String name;
 
     @Column
+    @EqualsAndHashCode.Include
     private String email;
 
     @Column

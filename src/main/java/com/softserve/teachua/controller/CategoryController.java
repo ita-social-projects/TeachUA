@@ -52,6 +52,16 @@ public class CategoryController {
     }
 
     /**
+     * The controller returns dto {@code  CategoryProfile} about category.
+     *
+     * @return new {@code CategoryProfile}.
+     */
+    @PutMapping("/category")
+    public CategoryProfile updateCategory(@Valid @RequestBody CategoryProfile categoryProfile){
+        return categoryService.updateCategory(categoryProfile);
+    }
+
+    /**
      * The controller returns dto {@code ...} of deleted category.
      *
      * @param id - put category id.

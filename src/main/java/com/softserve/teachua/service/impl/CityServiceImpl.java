@@ -3,6 +3,7 @@ package com.softserve.teachua.service.impl;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.controller.CityResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedCity;
+import com.softserve.teachua.dto.service.CityProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.City;
@@ -22,7 +23,6 @@ public class CityServiceImpl implements CityService {
     private static final String CITY_NOT_FOUND_BY_ID = "City not found by id: %s";
     private static final String CITY_NOT_FOUND_BY_NAME = "City not found by name: %s";
 
-
     private final DtoConverter dtoConverter;
     private final CityRepository cityRepository;
 
@@ -33,7 +33,7 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public CityResponse getCityProfileById(Long id) {
+    public CityResponse getCityResponseById(Long id) {
         return dtoConverter.convertToDto(getCityById(id), CityResponse.class);
     }
 
@@ -86,6 +86,13 @@ public class CityServiceImpl implements CityService {
 
         log.info("**/getting list of cities = " + cityResponses);
         return cityResponses;
+    }
+
+    @Override
+    public CityProfile updateCity(CityProfile cityProfile) {
+        City city = cityRepository.save(dtoConverter.convertToEntity(cityProfile, new City()));
+        log.info("**/updating city = " + city);
+        return dtoConverter.convertToDto(city, CityProfile.class);
     }
 
     private boolean isCityExistById(Long id) {

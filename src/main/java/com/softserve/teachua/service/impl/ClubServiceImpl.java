@@ -69,6 +69,13 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
+    public ClubProfile updateClub(ClubProfile clubProfile) {
+        Club club  = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club()));
+        log.info("**/updating club = " + club);
+        return dtoConverter.convertToDto(club, ClubProfile.class);
+    }
+
+    @Override
     public ClubResponse getClubProfileByName(String name) {
         return dtoConverter.convertToDto(getClubByName(name), ClubResponse.class);
     }

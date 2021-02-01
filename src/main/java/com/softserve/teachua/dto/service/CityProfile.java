@@ -1,20 +1,19 @@
 package com.softserve.teachua.dto.service;
 
 import com.softserve.teachua.dto.marker.Dto;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 
 @AllArgsConstructor
+@Builder
 @Data
-public class CategoryProfile implements Dto {
+public class CityProfile implements Dto {
 
     private Long id;
 
     @NotEmpty
     private String name;
-
-    @NotEmpty
-    private String urlLogo;
 }
