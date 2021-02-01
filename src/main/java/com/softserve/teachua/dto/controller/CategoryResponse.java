@@ -17,5 +17,6 @@ public class CategoryResponse implements Dto {
     private Long id;
     private String name;
     private String urlLogo;
+    private String backgroundColor;
     private Set<Club> clubs;
 }

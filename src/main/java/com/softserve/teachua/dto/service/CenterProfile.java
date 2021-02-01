@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 @Data
 public class CenterProfile implements Dto {
 
+    private Long id;
+
     @NotEmpty
     private String name;
 

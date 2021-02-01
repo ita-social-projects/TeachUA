@@ -10,7 +10,6 @@ public class RoleController {
      * The method which return role.
      *
      * @return {@link RoleResponce}
-     * @author Yurii Mykytiuk
      */
     @GetMapping("/role/{id}")
     public RoleResponce getRole(@PathVariable Long id) {
@@ -22,7 +21,6 @@ public class RoleController {
      * The method which return role.
      *
      * @return {@link RoleResponce}
-     * @author Yurii Mykytiuk
      */
     @PostMapping("/role/{id}")
     public RoleResponce addRole() {
@@ -34,7 +32,6 @@ public class RoleController {
      * The method which return array of existing roles.
      *
      * @return {...}
-     * @author Yurii Mykytiuk
      */
     @DeleteMapping("/role/{id}")
     public String deleteRole(@PathVariable Long id) {
@@ -46,7 +43,6 @@ public class RoleController {
      * The method which return array of existing roles.
      *
      * @return {@link RoleResponce}
-     * @author Yurii Mykytiuk
      */
     @GetMapping("/roles")
     public String getRoles() {

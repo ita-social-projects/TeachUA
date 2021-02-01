@@ -24,4 +24,6 @@ public interface CategoryService {
     CategoryResponse deleteCategoryById(Long id);
 
     List<SearchPossibleResponse> getPossibleCategoryByName(String text);
+
+    CategoryProfile updateCategory(CategoryProfile categoryProfile);
 }
