@@ -1,6 +1,6 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.dto.RoleResponce;
+import com.softserve.teachua.dto.RoleResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,23 +9,23 @@ public class RoleController {
     /**
      * The method which return role.
      *
-     * @return {@link RoleResponce}
+     * @return {@link RoleResponse}
      */
     @GetMapping("/role/{id}")
-    public RoleResponce getRole(@PathVariable Long id) {
+    public RoleResponse getRole(@PathVariable Long id) {
         // TODO
-        return new RoleResponce();
+        return new RoleResponse();
     }
 
     /**
      * The method which return role.
      *
-     * @return {@link RoleResponce}
+     * @return {@link RoleResponse}
      */
     @PostMapping("/role/{id}")
-    public RoleResponce addRole() {
+    public RoleResponse addRole() {
         // TODO
-        return new RoleResponce();
+        return new RoleResponse();
     }
 
     /**
@@ -42,7 +42,7 @@ public class RoleController {
     /**
      * The method which return array of existing roles.
      *
-     * @return {@link RoleResponce}
+     * @return {@link RoleResponse}
      */
     @GetMapping("/roles")
     public String getRoles() {

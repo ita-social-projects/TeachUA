@@ -1,6 +1,6 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.teachua.dto.RoleResponce;
+import com.softserve.teachua.dto.RoleResponse;
 import com.softserve.teachua.model.Role;
 import com.softserve.teachua.repository.RoleRepository;
 import com.softserve.teachua.service.RoleService;
@@ -20,10 +20,10 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<RoleResponce> getListOfRoles() {
+    public List<RoleResponse> getListOfRoles() {
         return roleRepository.findAll()
                 .stream()
-                .map(role -> new RoleResponce(role.getName()))
+                .map(role -> new RoleResponse(role.getName()))
                 .collect(Collectors.toList());
     }
 
@@ -31,5 +31,4 @@ public class RoleServiceImpl implements RoleService {
     public Role findByName(String name) {
         return roleRepository.findByName(name);
     }
-
 }

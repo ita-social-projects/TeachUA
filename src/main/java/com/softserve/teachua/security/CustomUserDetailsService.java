@@ -15,8 +15,12 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public CustomUserDetailsService(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

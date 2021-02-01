@@ -3,7 +3,6 @@ package com.softserve.teachua.controller.user;
 import com.softserve.teachua.dto.controller.SuccessRegistration;
 import com.softserve.teachua.dto.service.UserProfile;
 import com.softserve.teachua.service.UserService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,23 +14,36 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@Slf4j
 public class RegistrationController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @GetMapping({"/signup", "/registration"})
-    public String registration() {
-        return "signup";
+    @Autowired
+    public RegistrationController(UserService userService) {
+        this.userService = userService;
     }
 
-    @PostMapping({"/signup", "/registration"})
+    /**
+     * The controller returns sign-up page.
+     *
+     * @return /signup.
+     */
+    @GetMapping("/signup")
+    public String signup() {
+        return "/signup";
+    }
+
+    /**
+     * The controller returns dto {@code SuccessLogin} of sign-upped user.
+     *
+     * @param userProfile - dto with all params.
+     * @return new {@code SuccessRegistration}.
+     */
+    @PostMapping("/signup")
     public ResponseEntity<SuccessRegistration> signUp(
             @Valid
             @RequestBody
                     UserProfile userProfile) {
-        log.info("**/signup userLogin = " + userProfile.getEmail());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userService.registerUser(userProfile));
