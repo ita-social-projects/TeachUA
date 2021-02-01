@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 public class ClubController {
     private static final int CLUBS_PER_PAGE = 8;
-
     private final ClubService clubService;
 
     @Autowired
@@ -65,7 +64,6 @@ public class ClubController {
      * @param clubProfile - Place dto with all parameters for adding new club.
      * @return new {@code SuccessCreatedClub}.
      */
-
     @PostMapping("/club")
     public SuccessCreatedClub addClub(
             @Valid

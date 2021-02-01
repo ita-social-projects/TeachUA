@@ -19,8 +19,8 @@ public class CustomUserDetails implements UserDetails {
     // TODO
     private Date expirationDate;
 
-//    private CustomUserDetails() {
-//    }
+    private CustomUserDetails() {
+    }
 
     public static CustomUserDetails fromUserEntityToCustomUserDetails(UserEntity userEntity) {
         CustomUserDetails customUserDetails = new CustomUserDetails();

@@ -17,11 +17,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @Slf4j
 public class ClubServiceImpl implements ClubService {
     private static final String CLUB_ALREADY_EXIST = "Club already exist with name: %s";
@@ -70,7 +72,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public ClubProfile updateClub(ClubProfile clubProfile) {
-        Club club  = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club()));
+        Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club()));
         log.info("**/updating club = " + club);
         return dtoConverter.convertToDto(club, ClubProfile.class);
     }
