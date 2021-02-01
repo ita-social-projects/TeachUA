@@ -1,18 +1,14 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.controller.CenterResponse;
 import com.softserve.teachua.dto.controller.FeedbackResponse;
-import com.softserve.teachua.dto.controller.SuccessCreatedCenter;
 import com.softserve.teachua.dto.controller.SuccessCreatedFeedback;
 import com.softserve.teachua.dto.service.FeedbackProfile;
-import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Feedback;
+import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.service.FeedbackService;
-import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,12 +29,14 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     private final FeedbackRepository feedbackRepository;
+    private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
 
     @Autowired
-    FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter) {
+    FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
+        this.clubRepository = clubRepository;
     }
 
     @Override
@@ -61,7 +59,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile) {
         Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, Feedback.builder().build()));
-        log.info("add new feedback - " + feedback);
+        clubRepository.updateRating(feedbackProfile.getClub().getId(),feedbackRepository.findAvgRating(feedbackProfile.getClub().getId()));
+        log.info("add new feedback - "+ feedback);
         return dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
     }
 
@@ -74,5 +73,27 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         log.info("get list of feedback -" + feedbackResponses);
         return feedbackResponses;
+    }
+
+    @Override
+    public FeedbackProfile updateFeedbackProfileById(Long id,FeedbackProfile feedbackProfile) {
+        Feedback feedback = new Feedback().builder()
+                .id(id)
+                .userName(feedbackProfile.getUserName())
+                .rate(feedbackProfile.getRate())
+                .text(feedbackProfile.getText())
+                .club(feedbackProfile.getClub())
+                .build();
+        feedbackRepository.save(feedback);
+        clubRepository.updateRating(feedbackProfile.getClub().getId(),feedbackRepository.findAvgRating(feedbackProfile.getClub().getId()));
+        return feedbackProfile;
+    }
+
+    @Override
+    public FeedbackResponse deleteFeedbackById(Long id) {
+        FeedbackResponse feedbackResponse = dtoConverter.convertToDto(feedbackRepository.getById(id), FeedbackResponse.class);
+        feedbackRepository.deleteById(id);
+        clubRepository.updateRating(feedbackResponse.getClub().getId(),feedbackRepository.findAvgRating(feedbackResponse.getClub().getId()));
+        return feedbackResponse;
     }
 }

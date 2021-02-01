@@ -1,46 +1,50 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.dto.controller.NewsResponse;
+import com.softserve.teachua.dto.controller.SuccessCreatedNews;
+import com.softserve.teachua.dto.service.NewsProfile;
+import com.softserve.teachua.service.NewsService;
+import com.softserve.teachua.service.impl.NewsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class NewsController {
 
+    NewsService newsService;
 
-    @GetMapping("/news/{id}")
-    public String getNews(@PathVariable Long id) {
-        // TODO
-        return "GetMapping, Method getNews, news id: " + id;
+    @Autowired
+    NewsController(NewsServiceImpl newsService){
+        this.newsService = newsService;
     }
 
-    @PostMapping("/news/{id}")
-    public String addNews() {
-        // TODO
-        return "PostMapping, Method addNews";
+    @GetMapping("/news/{id}")
+    public NewsResponse getNews(@PathVariable Long id) {
+        return newsService.getNewsProfileById(id);
+    }
+
+    @PostMapping("/news")
+    public SuccessCreatedNews addNews( @RequestBody NewsProfile newsProfile) {
+        return newsService.addNews(newsProfile);
+    }
+
+    @PutMapping("/news/{id}")
+    public NewsProfile updateNewsById(@PathVariable Long id, @RequestBody NewsProfile newsProfile){
+        return newsService.updateNewsProfileById(id,newsProfile);
     }
 
     @DeleteMapping("/news/{id}")
-    public String deleteNews(@PathVariable Long id) {
-        // TODO
-        return "DeleteMapping, Method deleteNews, news id: " + id;
+    public NewsResponse deleteNews(@PathVariable Long id) {
+
+        return newsService.deleteNewsById(id);
     }
 
     @GetMapping("/newslist")
-    public String getNewsList() {
-        // TODO
-        return "GetMapping, Method getNewsList";
+    public List<NewsResponse> getNewsList() {
+        return newsService.getListOfNews();
     }
 
 
-    @PostMapping("/newslist")
-    public String addNewsList() {
-        // TODO
-        return "PostMapping, Method addNewsList";
-    }
-
-
-    @DeleteMapping("/newslist")
-    public String deleteNewsList() {
-        // TODO
-        return "DeleteMapping, Method deleteNewsList";
-    }
 }
