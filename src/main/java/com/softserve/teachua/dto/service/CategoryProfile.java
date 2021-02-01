@@ -17,4 +17,7 @@ public class CategoryProfile implements Dto {
 
     @NotEmpty
     private String urlLogo;
+
+    @NotEmpty
+    private String backgroundColor;
 }

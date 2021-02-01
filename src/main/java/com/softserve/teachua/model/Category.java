@@ -29,6 +29,9 @@ public class Category implements Dto {
     @Column
     private String urlLogo;
 
+    @Column
+    private String backgroundColor;
+
     @JsonBackReference
     @ManyToMany(mappedBy = "categories")
     @ToString.Exclude
