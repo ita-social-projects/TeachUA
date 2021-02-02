@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto;
+package com.softserve.teachua.dto.service;
 
 import com.softserve.teachua.dto.marker.Dto;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RoleResponse implements Dto {
+public class RoleProfile implements Dto{
 
     private String roleName;
+
 }

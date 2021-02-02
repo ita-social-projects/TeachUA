@@ -72,7 +72,7 @@ public class CenterServiceImpl implements CenterService {
             throw new AlreadyExistException(centerAlreadyExist);
         }
 
-        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile,Center.builder().build()));
+        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center()));
         log.info("**/adding new center = " + centerProfile.getName());
         return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
     }
