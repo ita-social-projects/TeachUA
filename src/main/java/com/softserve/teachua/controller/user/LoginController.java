@@ -1,8 +1,8 @@
 package com.softserve.teachua.controller.user;
 
 
-import com.softserve.teachua.dto.controller.SuccessLogin;
-import com.softserve.teachua.dto.service.UserLogin;
+import com.softserve.teachua.dto.user.SuccessLogin;
+import com.softserve.teachua.dto.user.UserLogin;
 import com.softserve.teachua.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

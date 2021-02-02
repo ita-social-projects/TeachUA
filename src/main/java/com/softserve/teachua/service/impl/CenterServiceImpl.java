@@ -1,9 +1,9 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.controller.CenterResponse;
-import com.softserve.teachua.dto.controller.SuccessCreatedCenter;
-import com.softserve.teachua.dto.service.CenterProfile;
+import com.softserve.teachua.dto.center.CenterResponse;
+import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;

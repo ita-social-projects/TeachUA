@@ -1,10 +1,10 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.controller.ClubResponse;
-import com.softserve.teachua.dto.controller.SuccessCreatedClub;
-import com.softserve.teachua.dto.service.SearchClubProfile;
+import com.softserve.teachua.dto.club.ClubResponse;
+import com.softserve.teachua.dto.club.SuccessCreatedClub;
+import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
-import com.softserve.teachua.dto.service.ClubProfile;
+import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.model.Club;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

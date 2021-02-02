@@ -1,7 +1,7 @@
 package com.softserve.teachua.controller.user;
 
-import com.softserve.teachua.dto.controller.SuccessRegistration;
-import com.softserve.teachua.dto.service.UserProfile;
+import com.softserve.teachua.dto.user.SuccessRegistration;
+import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

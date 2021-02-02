@@ -1,8 +1,8 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.dto.controller.CategoryResponse;
-import com.softserve.teachua.dto.controller.SuccessCreatedCategory;
-import com.softserve.teachua.dto.service.CategoryProfile;
+import com.softserve.teachua.dto.category.CategoryResponse;
+import com.softserve.teachua.dto.category.SuccessCreatedCategory;
+import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

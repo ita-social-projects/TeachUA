@@ -2,10 +2,10 @@ package com.softserve.teachua.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.teachua.dto.controller.ClubResponse;
-import com.softserve.teachua.dto.controller.SuccessCreatedClub;
-import com.softserve.teachua.dto.service.SearchClubProfile;
-import com.softserve.teachua.dto.service.ClubProfile;
+import com.softserve.teachua.dto.club.ClubResponse;
+import com.softserve.teachua.dto.club.SuccessCreatedClub;
+import com.softserve.teachua.dto.search.SearchClubProfile;
+import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

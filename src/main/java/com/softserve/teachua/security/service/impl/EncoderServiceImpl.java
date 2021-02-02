@@ -1,7 +1,7 @@
 package com.softserve.teachua.security.service.impl;
 
 import com.softserve.teachua.dto.security.UserEntity;
-import com.softserve.teachua.dto.service.UserLogin;
+import com.softserve.teachua.dto.user.UserLogin;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.security.service.EncoderService;
 import org.springframework.beans.factory.annotation.Autowired;
