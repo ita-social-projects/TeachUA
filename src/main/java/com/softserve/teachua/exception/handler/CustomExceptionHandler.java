@@ -1,6 +1,6 @@
 package com.softserve.teachua.exception.handler;
 
-import com.softserve.teachua.dto.controller.ExceptionResponse;
+import com.softserve.teachua.dto.exception.ExceptionResponse;
 import com.softserve.teachua.exception.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

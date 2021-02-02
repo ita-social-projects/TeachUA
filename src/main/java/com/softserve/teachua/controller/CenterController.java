@@ -2,10 +2,9 @@ package com.softserve.teachua.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.teachua.dto.controller.CenterResponse;
-import com.softserve.teachua.dto.controller.ClubResponse;
-import com.softserve.teachua.dto.controller.SuccessCreatedCenter;
-import com.softserve.teachua.dto.service.CenterProfile;
+import com.softserve.teachua.dto.center.CenterResponse;
+import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.service.CenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

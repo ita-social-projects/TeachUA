@@ -2,12 +2,12 @@ package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.controller.SuccessLogin;
-import com.softserve.teachua.dto.controller.SuccessRegistration;
-import com.softserve.teachua.dto.controller.UserResponse;
+import com.softserve.teachua.dto.user.SuccessLogin;
+import com.softserve.teachua.dto.user.SuccessRegistration;
+import com.softserve.teachua.dto.user.UserResponse;
 import com.softserve.teachua.dto.security.UserEntity;
-import com.softserve.teachua.dto.service.UserLogin;
-import com.softserve.teachua.dto.service.UserProfile;
+import com.softserve.teachua.dto.user.UserLogin;
+import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.model.User;

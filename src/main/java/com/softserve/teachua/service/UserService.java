@@ -1,11 +1,11 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.controller.SuccessLogin;
-import com.softserve.teachua.dto.controller.SuccessRegistration;
-import com.softserve.teachua.dto.controller.UserResponse;
+import com.softserve.teachua.dto.user.SuccessLogin;
+import com.softserve.teachua.dto.user.SuccessRegistration;
+import com.softserve.teachua.dto.user.UserResponse;
 import com.softserve.teachua.dto.security.UserEntity;
-import com.softserve.teachua.dto.service.UserLogin;
-import com.softserve.teachua.dto.service.UserProfile;
+import com.softserve.teachua.dto.user.UserLogin;
+import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.model.User;
 
 import java.util.List;
