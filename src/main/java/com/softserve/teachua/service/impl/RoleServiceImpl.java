@@ -1,10 +1,8 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.RoleResponse;
-import com.softserve.teachua.dto.service.RoleProfile;
-import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.dto.role.*;
+import com.softserve.teachua.exception.*;
 import com.softserve.teachua.model.Role;
 import com.softserve.teachua.repository.RoleRepository;
 import com.softserve.teachua.service.RoleService;

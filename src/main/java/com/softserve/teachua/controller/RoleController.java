@@ -1,8 +1,6 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.dto.RoleResponse;
-import com.softserve.teachua.dto.service.RoleProfile;
-import com.softserve.teachua.service.CityService;
+import com.softserve.teachua.dto.role.*;
 import com.softserve.teachua.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

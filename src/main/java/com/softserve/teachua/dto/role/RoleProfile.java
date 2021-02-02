@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.service;
+package com.softserve.teachua.dto.role;
 
 import com.softserve.teachua.dto.marker.Dto;
 import lombok.AllArgsConstructor;
