@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.dto.RoleResponse;
 import com.softserve.teachua.dto.search.CombinedPossibleResponse;
 import com.softserve.teachua.service.CategoryService;
 import com.softserve.teachua.service.ClubService;
@@ -19,6 +20,12 @@ public class SearchController {
         this.clubService = clubService;
     }
 
+    /**
+     * The method which return possible results of search by entered text.
+     *
+     * @param text - put search text.
+     * @return {@link CombinedPossibleResponse }
+     */
     @GetMapping("/search")
     public CombinedPossibleResponse possibleResponses(@RequestParam String text) {
         return CombinedPossibleResponse.builder()
@@ -26,5 +33,4 @@ public class SearchController {
                 .clubs(clubService.getPossibleClubByName(text))
                 .build();
     }
-
 }

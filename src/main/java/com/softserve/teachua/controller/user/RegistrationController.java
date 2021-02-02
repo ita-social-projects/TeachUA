@@ -26,11 +26,11 @@ public class RegistrationController {
     /**
      * The controller returns sign-up page.
      *
-     * @return /signup.
+     * @return signup.
      */
     @GetMapping("/signup")
     public String signup() {
-        return "/signup";
+        return "sign-up";
     }
 
     /**
