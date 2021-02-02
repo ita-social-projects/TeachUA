@@ -193,6 +193,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean isUserExistById(Long id) {
-        return !userRepository.existsById(id);
+        return userRepository.existsById(id);
     }
 }
