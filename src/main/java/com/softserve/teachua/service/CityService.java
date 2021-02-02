@@ -8,7 +8,7 @@ import com.softserve.teachua.model.City;
 import java.util.List;
 
 public interface CityService {
-    CityResponse getCityResponseById(Long id);
+    CityResponse getCityProfileById(Long id);
 
     City getCityById(Long id);
 

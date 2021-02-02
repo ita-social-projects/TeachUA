@@ -33,37 +33,24 @@ public class CenterServiceImpl implements CenterService {
         this.dtoConverter = dtoConverter;
     }
 
+    /**
+     * The method returns dto {@code CenterResponse} of center by id.
+     *
+     * @param id - put center id.
+     * @return new {@code CenterResponse}.
+     */
     @Override
     public CenterResponse getCenterByProfileId(Long id) {
         return dtoConverter.convertToDto(getCenterById(id), CenterResponse.class);
     }
 
-    @Override
-    public Center getCenterById(Long id) {
-        if (!isCenterExistById(id)) {
-            String centerNotFoundById = String.format(CENTER_NOT_FOUND_BY_ID, id);
-            log.error(centerNotFoundById);
-            throw new NotExistException(centerNotFoundById);
-        }
-
-        Center center = centerRepository.getById(id);
-        log.info("**/getting center by id = " + center);
-        return center;
-    }
-
-    @Override
-    public Center getCenterByName(String name) {
-        if (!isCenterExistByName(name)) {
-            String centerNotFoundById = String.format(CENTER_NOT_FOUND_BY_NAME, name);
-            log.error(centerNotFoundById);
-            throw new NotExistException(centerNotFoundById);
-        }
-
-        Center center = centerRepository.findByName(name);
-        log.info("**/getting center by name = " + name);
-        return center;
-    }
-
+    /**
+     * The method returns dto {@code SuccessCreatedCenter} if center successfully added.
+     *
+     * @param centerProfile - place body of dto {@code CenterProfile}.
+     * @return new {@code SuccessCreatedCenter}.
+     * @throws AlreadyExistException if center already exists.
+     */
     @Override
     public SuccessCreatedCenter addCenter(CenterProfile centerProfile){
         if (isCenterExistByName(centerProfile.getName())) {
@@ -77,6 +64,64 @@ public class CenterServiceImpl implements CenterService {
         return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
     }
 
+
+    /**
+     * The method returns entity {@code Center} of center by id.
+     *
+     * @param id - put center id.
+     * @return new {@code Center}.
+     * @throws NotExistException if center not exists.
+     */
+    @Override
+    public Center getCenterById(Long id) {
+        if (!isCenterExistById(id)) {
+            String centerNotFoundById = String.format(CENTER_NOT_FOUND_BY_ID, id);
+            log.error(centerNotFoundById);
+            throw new NotExistException(centerNotFoundById);
+        }
+
+        Center center = centerRepository.getById(id);
+        log.info("**/getting center by id = " + center);
+        return center;
+    }
+
+    /**
+     * The method returns dto {@code CenterProfile} of updated club.
+     *
+     * @param centerProfile - place body of dto {@code CenterProfile}.
+     * @return new {@code CenterProfile}.
+     */
+    @Override
+    public CenterProfile updateCenter(CenterProfile centerProfile) {
+        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center()));
+        return dtoConverter.convertToDto(center, CenterProfile.class);
+    }
+
+    /**
+     * The method returns entity {@code Center} of center by name.
+     *
+     * @param name - put center name.
+     * @return new {@code Center}.
+     * @throws NotExistException if center not exists.
+     */
+    @Override
+    public Center getCenterByName(String name) {
+        if (!isCenterExistByName(name)) {
+            String centerNotFoundByName = String.format(CENTER_NOT_FOUND_BY_NAME, name);
+            log.error(centerNotFoundByName);
+            throw new NotExistException(centerNotFoundByName);
+        }
+
+        Center center = centerRepository.findByName(name);
+        log.info("**/getting center by name = " + name);
+        return center;
+    }
+
+    /**
+     * The method returns list of dto {@code List<CenterResponse>} of all centers.
+     *
+     * @return new {@code List<CenterResponse>}.
+     */
     @Override
     public List<CenterResponse> getListOfCenters() {
         List<CenterResponse> centerResponses = centerRepository.findAll()
@@ -86,12 +131,6 @@ public class CenterServiceImpl implements CenterService {
 
         log.info("**/getting list of centers = " + centerResponses);
         return centerResponses;
-    }
-
-    @Override
-    public CenterProfile updateCenter(CenterProfile centerProfile) {
-        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center()));
-        return dtoConverter.convertToDto(center, CenterProfile.class);
     }
 
     private boolean isCenterExistById(Long id) {
