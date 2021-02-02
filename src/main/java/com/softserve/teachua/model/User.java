@@ -18,10 +18,10 @@ public class User implements Dto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column (unique = true, nullable = false)
     private String email;
 
-    @Column
+    @Column (nullable = false)
     private String password;
 
     @Column

@@ -30,6 +30,11 @@ public class RoleServiceImpl implements RoleService {
         this.dtoConverter = dtoConverter;
     }
 
+    /**
+     * The method returns list of existing {@link  Role}.
+     *
+     * @return list of {@link  Role}.
+     */
     @Override
     public List<RoleResponse> getListOfRoles() {
         log.info("**/getting all roles" );
@@ -39,6 +44,13 @@ public class RoleServiceImpl implements RoleService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * The method returns {@link  RoleResponse} by role id.
+     *
+     * @param id - put role id.
+     * @return  RoleResponse {@link  RoleResponse}.
+     * @throws NotExistException {@link NotExistException} if the role doesn't exist.
+     */
     @Override
     public RoleResponse getRoleResponseById(Integer id){
         Optional<Role> optionalRole = roleRepository.findById(id);
@@ -51,6 +63,14 @@ public class RoleServiceImpl implements RoleService {
         return dtoConverter.convertToDto(optionalRole.get(),RoleResponse.class);
     }
 
+    /**
+     * The method updates existing role by role id.
+     *
+     * @param id - put role id.
+     * @param roleProfile - put RoleProfile to updating role
+     * @return  RoleProfile {@link  RoleProfile}.
+     * @throws NotExistException {@link NotExistException} if the role doesn't exist.
+     */
     @Override
     public RoleProfile updateRole(Integer id, RoleProfile roleProfile) {
         Optional<Role> optionalRole = roleRepository.findById(id);
@@ -65,6 +85,13 @@ public class RoleServiceImpl implements RoleService {
         return dtoConverter.convertToDto(roleRepository.save(role),RoleProfile.class);
     }
 
+    /**
+     * The method returns {@link  Role} by role name.
+     *
+     * @param name - put role name.
+     * @return  RoleResponse {@link  RoleResponse}.
+     * @throws NotExistException {@link NotExistException} if the role doesn't exist.
+     */
     @Override
     public Role findByName(String name) {
         Optional<Role> optionalRole = roleRepository.findByName(name);
@@ -77,6 +104,13 @@ public class RoleServiceImpl implements RoleService {
         return optionalRole.get();
     }
 
+    /**
+     * The method adds new role {@link  Role}
+     *
+     * @param roleProfile - put RoleProfile to adding new role
+     * @return  RoleProfile {@link  RoleProfile}.
+     * @throws AlreadyExistException {@link AlreadyExistException} if the same role already exists.
+     */
     @Override
     public RoleProfile addNewRole(RoleProfile roleProfile) {
             if (roleRepository.findByName(roleProfile.getRoleName()).isPresent()) {
