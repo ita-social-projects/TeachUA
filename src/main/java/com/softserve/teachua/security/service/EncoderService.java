@@ -1,7 +1,7 @@
 package com.softserve.teachua.security.service;
 
 import com.softserve.teachua.dto.security.UserEntity;
-import com.softserve.teachua.dto.service.UserLogin;
+import com.softserve.teachua.dto.user.UserLogin;
 
 public interface EncoderService {
 

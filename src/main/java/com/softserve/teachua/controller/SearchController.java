@@ -1,6 +1,5 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.dto.RoleResponse;
 import com.softserve.teachua.dto.search.CombinedPossibleResponse;
 import com.softserve.teachua.service.CategoryService;
 import com.softserve.teachua.service.ClubService;

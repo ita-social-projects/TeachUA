@@ -1,6 +1,6 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.dto.RoleResponse;
+import com.softserve.teachua.dto.role.RoleResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

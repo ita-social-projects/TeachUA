@@ -1,8 +1,8 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.dto.controller.CityResponse;
-import com.softserve.teachua.dto.controller.SuccessCreatedCity;
-import com.softserve.teachua.dto.service.CityProfile;
+import com.softserve.teachua.dto.city.CityResponse;
+import com.softserve.teachua.dto.city.SuccessCreatedCity;
+import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

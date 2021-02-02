@@ -1,7 +1,7 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.dto.controller.UserResponse;
-import com.softserve.teachua.dto.service.UserProfile;
+import com.softserve.teachua.dto.user.UserResponse;
+import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

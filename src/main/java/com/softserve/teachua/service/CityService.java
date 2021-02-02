@@ -1,8 +1,8 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.controller.CityResponse;
-import com.softserve.teachua.dto.controller.SuccessCreatedCity;
-import com.softserve.teachua.dto.service.CityProfile;
+import com.softserve.teachua.dto.city.CityResponse;
+import com.softserve.teachua.dto.city.SuccessCreatedCity;
+import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.model.City;
 
 import java.util.List;
