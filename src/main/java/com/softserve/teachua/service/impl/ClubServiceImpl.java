@@ -196,7 +196,7 @@ public class ClubServiceImpl implements ClubService {
     }
 
     private boolean isClubExistById(Long id) {
-        return !clubRepository.existsById(id);
+        return clubRepository.existsById(id);
     }
 
     private boolean isClubExistByName(String name) {
