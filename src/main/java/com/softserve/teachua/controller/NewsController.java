@@ -4,7 +4,6 @@ import com.softserve.teachua.dto.controller.NewsResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedNews;
 import com.softserve.teachua.dto.service.NewsProfile;
 import com.softserve.teachua.service.NewsService;
-import com.softserve.teachua.service.impl.NewsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +12,10 @@ import java.util.List;
 @RestController
 public class NewsController {
 
-    NewsService newsService;
+    private final NewsService newsService;
 
     @Autowired
-    NewsController(NewsServiceImpl newsService){
+    public NewsController(NewsService newsService) {
         this.newsService = newsService;
     }
 
@@ -26,13 +25,13 @@ public class NewsController {
     }
 
     @PostMapping("/news")
-    public SuccessCreatedNews addNews( @RequestBody NewsProfile newsProfile) {
+    public SuccessCreatedNews addNews(@RequestBody NewsProfile newsProfile) {
         return newsService.addNews(newsProfile);
     }
 
     @PutMapping("/news/{id}")
-    public NewsProfile updateNewsById(@PathVariable Long id, @RequestBody NewsProfile newsProfile){
-        return newsService.updateNewsProfileById(id,newsProfile);
+    public NewsProfile updateNewsById(@PathVariable Long id, @RequestBody NewsProfile newsProfile) {
+        return newsService.updateNewsProfileById(id, newsProfile);
     }
 
     @DeleteMapping("/news/{id}")

@@ -14,36 +14,36 @@ import java.util.List;
 @Slf4j
 @RestController
 public class FeedbackController {
-    FeedbackService feedbackService;
+
+    private final FeedbackService feedbackService;
 
     @Autowired
-    FeedbackController(FeedbackService feedbackService){
+    public FeedbackController(FeedbackService feedbackService) {
         this.feedbackService = feedbackService;
     }
 
     @GetMapping("/feedback/{id}")
-    public FeedbackResponse getFeedbackById(@PathVariable Long id){
+    public FeedbackResponse getFeedbackById(@PathVariable Long id) {
         return feedbackService.getFeedbackProfileById(id);
     }
 
     @GetMapping("/feedbacks")
-    public List<FeedbackResponse> getAllFeedback(){
+    public List<FeedbackResponse> getAllFeedback() {
         return feedbackService.getListOfFeedback();
     }
 
     @PostMapping("/feedback")
-    public SuccessCreatedFeedback addFeedback(@RequestBody FeedbackProfile feedbackProfile){
+    public SuccessCreatedFeedback addFeedback(@RequestBody FeedbackProfile feedbackProfile) {
         return feedbackService.addFeedback(feedbackProfile);
     }
 
     @PutMapping("/feedback/{id}")
-    public FeedbackProfile updateFeedback(@PathVariable Long id, @RequestBody FeedbackProfile feedbackProfile)
-    {
-        return feedbackService.updateFeedbackProfileById(id,feedbackProfile);
+    public FeedbackProfile updateFeedback(@PathVariable Long id, @RequestBody FeedbackProfile feedbackProfile) {
+        return feedbackService.updateFeedbackProfileById(id, feedbackProfile);
     }
 
     @DeleteMapping("/feedback/{id}")
-    public FeedbackResponse deleteFeedbackById(@PathVariable Long id){
+    public FeedbackResponse deleteFeedbackById(@PathVariable Long id) {
         return feedbackService.deleteFeedbackById(id);
     }
 

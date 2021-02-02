@@ -4,7 +4,6 @@ public enum RoleData {
     ADMIN("ADMIN"),
     USER("USER");
 
-    //
     private final String DB_PREFIX = "ROLE_";
     private String name;
 
@@ -24,5 +23,4 @@ public enum RoleData {
     public String toString() {
         return name;
     }
-
 }

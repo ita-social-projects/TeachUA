@@ -24,10 +24,10 @@ public class CenterController {
     }
 
     /**
-     * The controller returns information {@code StudioResponse} about center.
+     * The controller returns information {@code CenterResponse} about center.
      *
      * @param id - put center id.
-     * @return new {@code StudioResponse}.
+     * @return new {@code CenterResponse}.
      */
     @GetMapping("/center/{id}")
     public CenterResponse getCenter(@PathVariable Long id) {
@@ -35,9 +35,9 @@ public class CenterController {
     }
 
     /**
-     * The controller returns dto {@code SuccessCreatedStudio} of created center.
+     * The controller returns dto {@code SuccessCreatedCenter} of created center.
      *
-     * @return new {@code SuccessCreatedStudio}.
+     * @return new {@code SuccessCreatedCenter}.
      */
     @PostMapping("/center")
     public SuccessCreatedCenter addCenter(
@@ -57,15 +57,14 @@ public class CenterController {
     }
 
     /**
-     * The controller returns information {@code List <StudioResponse>} about center.
+     * The controller returns information {@code List <CenterResponse>} about center.
      *
-     * @return new {@code List <StudioResponse>}.
+     * @return new {@code List <CenterResponse>}.
      */
     @GetMapping("/centers")
     public List<CenterResponse> getCenters() {
         return centerService.getListOfCenters();
     }
-
 
     /**
      * The controller returns dto {@code ...} of deleted center.

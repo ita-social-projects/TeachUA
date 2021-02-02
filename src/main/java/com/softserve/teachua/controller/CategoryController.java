@@ -17,9 +17,12 @@ import java.util.List;
 @Slf4j
 public class CategoryController {
 
-    @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     /**
      * The controller returns dto {@code CategoryResponse} about category.
