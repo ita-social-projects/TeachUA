@@ -3,7 +3,7 @@ package com.softserve.teachua.service.impl;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.controller.ClubResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedClub;
-import com.softserve.teachua.dto.search.SearchClubResponse;
+import com.softserve.teachua.dto.service.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.service.ClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
@@ -99,18 +99,18 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public Page<ClubResponse> getClubsBySearchParameters(SearchClubResponse searchClubResponse, Pageable pageable) {
+    public Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable) {
         Page<Club> clubResponses = clubRepository.findAllByParameters(
-                searchClubResponse.getClubName(),
-                searchClubResponse.getCityName(),
-                searchClubResponse.getCategoryName(),
+                searchClubProfile.getClubName(),
+                searchClubProfile.getCityName(),
+                searchClubProfile.getCategoryName(),
                 pageable);
 
         return new PageImpl<>(clubResponses
                 .stream()
                 .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
                 .collect(Collectors.toList()),
-                clubResponses.getPageable(), clubResponses.getSize());
+                clubResponses.getPageable(), clubResponses.getTotalElements());
     }
 
     @Override

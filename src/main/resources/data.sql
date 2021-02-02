@@ -16,18 +16,18 @@ insert into cities(name) values
 ('Львів'),
 ('Рівне');
 
-insert into categories(name,url_logo) values
-('спортивні секції', '#'),
-('танці, хореографія', '#'),
-('студії раннього розвитку', '#'),
-('програмування, робототехніка, STEM', '#'),
-('художні студії, мистецтво, дизайн', '#'),
-('вокальна студії, музика, музичні інструменти', '#'),
-('акторська майстерність, театр', '#'),
-('особистісний розвиток', '#'),
-('журналістика, дитяче телебачення, монтаж відео, влогів', '#'),
-('інше', '#'),
-('центр розвитку', '#');
+insert into categories(name,url_logo, background_color) values
+('спортивні секції', 'assets/images/categories/sport.svg', '#1890FF'),
+('танці, хореографія', 'assets/images/categories/dance.svg', '#531DAB'),
+('студії раннього розвитку', 'assets/images/categories/improvement.svg', '#73D13D'),
+('програмування, робототехніка, STEM', 'assets/images/categories/programming.svg', '#597EF7'),
+('художні студії, мистецтво, дизайн', 'assets/images/categories/art.svg', '#9254DE'),
+('вокальна студії, музика, музичні інструменти', 'assets/images/categories/music.svg', '#FF7A45'),
+('акторська майстерність, театр', 'assets/images/categories/theatre.svg', '#FF4D4F'),
+('особистісний розвиток', 'assets/images/categories/self-improvement.svg', '#FADB14'),
+('журналістика, дитяче телебачення, монтаж відео, влогів', 'assets/images/categories/tv.svg', '#13C2C2'),
+('інше', 'assets/images/categories/other.svg', '#FFA940'),
+('центр розвитку', 'assets/images/categories/center.svg', '#F759AB');
 
 insert into centers (name, email, address, phones, social_links, description,
                       latitude, longitude, url_logo, url_web, user_id) values
@@ -41,17 +41,17 @@ insert into news(title, description) values
 ('title2', 'description2');
 
 insert into clubs(age_from, age_to, name, address, url_logo, url_web, work_time, latitude, longitude,
-                  city_id, center_id, user_id) values
-(6, 9, 'гурток 1', 'club_address1', '#', '#', '09:00-16:00', 49.73259434488975, 23.997036169252326, 1, 2, 3),
-(7, 10, 'гурток 2', 'club_address2', '#', '#', '09:00-16:00', 49.63259434488875, 23.997036168252326, 2, 2, 3),
-(11, 16, 'гурток 3', 'club_address3', '#', '#', '09:00-16:00', 49.83259434488775, 23.997036167252326, 3, 1, 2),
-(6, 9, 'гурток 4', 'club_address4', '#', '#', '09:00-16:00', 49.83259434488675, 23.997036166252326, 4, null, 2),
-(5, 10, 'гурток 5', 'club_address5', '#', '#', '09:00-16:00', 49.83259434488575, 23.997036165252326, 5, null, 2),
-(5, 10, 'гурток 6', 'club_address6', '#', '#', '09:00-16:00', 49.83259434488475, 23.997036164252326, 6, null, 3),
-(5, 10, 'гурток 7', 'club_address7', '#', '#', '09:00-16:00', 49.83259434488475, 23.997036164252326, 7, null, 2),
-(5, 10, 'гурток 8', 'club_address8', '#', '#', '09:00-16:00', 49.83259434488475, 23.997036164252326, 8, null, 2),
-(5, 10, 'гурток 9', 'club_address9', '#', '#', '09:00-16:00', 49.83259434488175, 23.997036161252326, 9, 1, 2),
-(5, 10, 'гурток 10', 'club_address10', '#', '#', '09:00-16:00', 49.83817131443633, 24.029413132472404, 1, null, 3);
+                  city_id, center_id, user_id, description) values
+(6, 9, 'ГУРТОК 1', 'club_address1', '#', '#', '09:00-16:00', 49.73259434488975, 23.997036169252326, 1, 2, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ...'),
+(7, 10, 'гурток 2', 'club_address2', '#', '#', '09:00-16:00', 49.63259434488875, 23.997036168252326, 2, 2, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ...'),
+(11, 16, 'гурток 3', 'club_address3', '#', '#', '09:00-16:00', 49.83259434488775, 23.997036167252326, 3, 1, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ...'),
+(6, 9, 'гурток 4', 'club_address4', '#', '#', '09:00-16:00', 49.83259434488675, 23.997036166252326, 4, null, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ...'),
+(5, 10, 'гурток 5', 'club_address5', '#', '#', '09:00-16:00', 49.83259434488575, 23.997036165252326, 5, null, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ...'),
+(5, 10, 'гурток 6', 'club_address6', '#', '#', '09:00-16:00', 49.83259434488475, 23.997036164252326, 6, null, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ...'),
+(5, 10, 'гурток 7', 'club_address7', '#', '#', '09:00-16:00', 49.83259434488475, 23.997036164252326, 7, null, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ...'),
+(5, 10, 'гурток 8', 'club_address8', '#', '#', '09:00-16:00', 49.83259434488475, 23.997036164252326, 8, null, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ...'),
+(5, 10, 'гурток 9', 'club_address9', '#', '#', '09:00-16:00', 49.83259434488175, 23.997036161252326, 9, 1, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ...'),
+(5, 10, 'гурток 10', 'club_address10', '#', '#', '09:00-16:00', 49.83817131443633, 24.029413132472404, 1, null, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ...');
 
 
 insert into feedbacks(rate, text, user_name, club_id) values
