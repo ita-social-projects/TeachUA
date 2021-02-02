@@ -2,7 +2,7 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.controller.ClubResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedClub;
-import com.softserve.teachua.dto.search.SearchClubResponse;
+import com.softserve.teachua.dto.service.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.service.ClubProfile;
 import com.softserve.teachua.model.Club;
@@ -27,7 +27,7 @@ public interface ClubService {
 
     List<ClubResponse> getListOfClubs();
 
-    Page<ClubResponse> getClubsBySearchParameters(SearchClubResponse searchClubResponse, Pageable pageable);
+    Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable);
 
     List<SearchPossibleResponse> getPossibleClubByName(String text);
 }
