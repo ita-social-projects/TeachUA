@@ -16,7 +16,7 @@ import java.util.Set;
 @Data
 public class ClubProfile implements Dto {
 
-
+    private Long id;
 
     @NotNull
     private City city;
@@ -55,4 +55,7 @@ public class ClubProfile implements Dto {
     private String urlLogo;
 
     private String socialLinks;
+
+    private Double rating;
+
 }

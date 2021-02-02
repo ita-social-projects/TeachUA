@@ -2,6 +2,7 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.dto.controller.CityResponse;
 import com.softserve.teachua.dto.controller.SuccessCreatedCity;
+import com.softserve.teachua.dto.service.CityProfile;
 import com.softserve.teachua.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class CityController {
      */
     @GetMapping("/city/{id}")
     public CityResponse getCity(@PathVariable long id) {
-        return cityService.getCityProfileById(id);
+        return cityService.getCityResponseById(id);
     }
 
     /**
@@ -43,6 +44,16 @@ public class CityController {
     }
 
     /**
+     * The controller returns dto {@code CityProfile} about city.
+     *
+     * @return new {@code CityProfile}.
+     */
+    @PutMapping("/city")
+    public CityProfile updateCity(@Valid @RequestBody CityProfile cityProfile){
+        return cityService.updateCity(cityProfile);
+    }
+
+    /**
      * The controller returns list of dto {@code List<CityResponse>} of city.
      *
      * @return new {@code List<CityResponse>}.
@@ -52,15 +63,9 @@ public class CityController {
         return cityService.getListOfCities();
     }
 
-    //TODO
-    @PutMapping("/city/{id}")
-    public String updateCenter(@PathVariable long id) {
-        return "City " + id + " is updated";
-    }
-
     //TODO have to known we're archiving cities or deleting
     @DeleteMapping("/city/{id}")
-    public String deleteCenter(@PathVariable long id) {
+    public String deleteCity(@PathVariable long id) {
         return "City " + id + " is deleted";
     }
 }

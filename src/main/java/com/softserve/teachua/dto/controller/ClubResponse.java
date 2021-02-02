@@ -35,4 +35,5 @@ public class ClubResponse implements Dto {
     private Set<Category> categories;
     private User user;
     private Center center;
+    private Double rating;
 }

@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 public class ClubController {
     private static final int CLUBS_PER_PAGE = 8;
-
     private final ClubService clubService;
 
     @Autowired
@@ -65,7 +64,6 @@ public class ClubController {
      * @param clubProfile - Place dto with all parameters for adding new club.
      * @return new {@code SuccessCreatedClub}.
      */
-
     @PostMapping("/club")
     public SuccessCreatedClub addClub(
             @Valid
@@ -83,27 +81,24 @@ public class ClubController {
     }
 
     /**
+     * The controller returns dto {@code {@link ClubProfile}} about club.
+     *
+     * @return new {@code ClubResponse}.
+     */
+    @PutMapping("/club")
+    public ClubProfile updateClub(@Valid @RequestBody ClubProfile clubProfile){
+        return clubService.updateClub(clubProfile);
+    }
+
+    /**
      * The controller returns id {@code ...} of deleted club.
      *
      * @param id - put club id.
      * @return new {@code ...}.
      */
-
     //TODO
-    @DeleteMapping("/club{id}")
+    @DeleteMapping("/club/{id}")
     public Object deleteClub(@PathVariable Long id) throws JsonProcessingException {
-        return new ObjectMapper().readValue("{ \"id\" : " + id + " }", Object.class);
-    }
-
-    /**
-     * The controller returns id {@code ...} of updated club.
-     *
-     * @param id - put club id.
-     * @return new {@code ...}.
-     */
-    //TODO
-    @PutMapping("/club/{id}")
-    public Object updateClub(@PathVariable long id) throws JsonProcessingException {
         return new ObjectMapper().readValue("{ \"id\" : " + id + " }", Object.class);
     }
 }

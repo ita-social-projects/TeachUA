@@ -88,6 +88,12 @@ public class CenterServiceImpl implements CenterService {
         return centerResponses;
     }
 
+    @Override
+    public CenterProfile updateCenter(CenterProfile centerProfile) {
+        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center()));
+        return dtoConverter.convertToDto(center, CenterProfile.class);
+    }
+
     private boolean isCenterExistById(Long id) {
         return centerRepository.existsById(id);
     }

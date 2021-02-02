@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService {
             throw new WrongAuthenticationException(userNotFoundByEmail);
         }
 
+        log.info("**/getting user by email = " + userRepository.findByEmail(email));
         return userRepository.findByEmail(email);
     }
 
@@ -112,7 +113,7 @@ public class UserServiceImpl implements UserService {
             log.error(userIsNull);
             throw new DatabaseRepositoryException(userIsNull);
         }
-        // TODO user.getRole().getName() delete ROLE_
+        log.info("**/user registered successfully = " + user);
         return dtoConverter.convertToDto(user, SuccessRegistration.class);
     }
 
@@ -125,6 +126,7 @@ public class UserServiceImpl implements UserService {
             throw new WrongAuthenticationException(wrongPassword);
         }
 
+        log.info("**/user registered successfully = " + userLogin);
         return dtoConverter.convertFromDtoToDto(userEntity, new SuccessLogin())
                 .withAccessToken(encodeService.createToken(userEntity.getEmail()));
     }

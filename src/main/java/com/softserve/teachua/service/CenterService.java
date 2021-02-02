@@ -17,4 +17,6 @@ public interface CenterService {
     SuccessCreatedCenter addCenter(CenterProfile centerProfile);
 
     List<CenterResponse> getListOfCenters();
+
+    CenterProfile updateCenter(CenterProfile centerProfile);
 }

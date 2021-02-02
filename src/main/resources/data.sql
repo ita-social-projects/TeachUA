@@ -53,6 +53,8 @@ insert into clubs(age_from, age_to, name, address, url_logo, url_web, work_time,
 (5, 10, 'гурток 9', 'club_address9', '#', '#', '09:00-16:00', 49.83259434488175, 23.997036161252326, 9, 1, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ...'),
 (5, 10, 'гурток 10', 'club_address10', '#', '#', '09:00-16:00', 49.83817131443633, 24.029413132472404, 1, null, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut ...');
 
+    
+
 
 insert into feedbacks(rate, text, user_name, club_id) values
 (5, 'nice club', 'John Smith', 1),

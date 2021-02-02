@@ -15,13 +15,9 @@ public interface UserService {
 
     UserEntity getUserEntity(String email);
 
-    //UserResponce findByLoginAndPassword(UserProfile userProfile);
-
     User getUserById(Long id);
 
     User getUserByEmail(String email);
-
-//    List<UserEntity> getListOfUserEntities();
 
     List<UserResponse> getListOfUsers();
 

@@ -12,7 +12,6 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Component
-//@Log
 @Slf4j
 public class JwtProvider {
     private final int TOKEN_LIFE_DAYS = 15;
@@ -61,5 +60,4 @@ public class JwtProvider {
                 .getBody();
         return claims.getExpiration();
     }
-
 }

@@ -109,6 +109,12 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public CategoryProfile updateCategory(CategoryProfile categoryProfile) {
+        Category category = categoryRepository.save(dtoConverter.convertToEntity(categoryProfile, new Category()));
+        return dtoConverter.convertToDto(category, CategoryProfile.class);
+    }
+
     private boolean isCategoryExistById(Long id) {
         return categoryRepository.existsById(id);
     }

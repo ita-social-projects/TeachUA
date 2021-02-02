@@ -2,47 +2,63 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.dto.controller.UserResponse;
 import com.softserve.teachua.dto.service.UserProfile;
-import com.softserve.teachua.model.User;
 import com.softserve.teachua.service.UserService;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@Slf4j
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    /**
+     * The controller returns information {@code UserResponse} about user.
+     *
+     * @param id - put user id.
+     * @return new {@code UserResponse}.
+     */
     @GetMapping("/user/{id}")
     public UserResponse findById(@PathVariable("id") Long id) {
         return userService.getUserProfileById(id);
     }
 
+    /**
+     * The controller returns information {@code List <UserResponse>} about users.
+     *
+     * @return new {@code List <UserResponse>}.
+     */
     @GetMapping("/users")
     public List<UserResponse> findAllUsers() {
         return userService.getListOfUsers();
     }
 
+    /**
+     * The controller returns information {@code UserResponse} about updated user.
+     *
+     * @param id - put user id.
+     * @return new {@code UserProfile}.
+     */
     @PutMapping("/user/{id}")
-    public ResponseEntity<UserProfile> updateById(@PathVariable("id") Long id) {
+    public UserProfile updateById(@PathVariable("id") Long id) {
         userService.getUserProfileById(id);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(userService.updateUserProfileById(id));
+        return userService.updateUserProfileById(id);
     }
 
+    /**
+     * The controller returns information {@code UserResponse} about deleted user.
+     *
+     * @param id - put user id.
+     * @return new {@code UserResponse}.
+     */
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<UserResponse> deleteById(@PathVariable("id") Long id) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(userService.deleteUserById(id));
+    public UserResponse deleteById(@PathVariable("id") Long id) {
+        return userService.deleteUserById(id);
     }
-
 }

@@ -4,6 +4,7 @@ import com.softserve.teachua.model.Club;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -36,4 +37,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     @Query(value = "SELECT *  FROM clubs AS c WHERE LOWER(c.name) LIKE LOWER('%' || :text || '%') ORDER BY RANDOM() LIMIT 3",
             nativeQuery=true)
     List<Club> findRandomTop3ByName(@Param("text") String enteredText);
+
+    @Modifying
+    @Query(value="UPDATE clubs SET rating=:rating WHERE id = :club_id", nativeQuery=true)
+    void updateRating(@Param("club_id") Long club_id, @Param("rating") double rating);
 }

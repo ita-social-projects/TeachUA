@@ -37,7 +37,6 @@ public class CenterController {
     /**
      * The controller returns dto {@code SuccessCreatedStudio} of created center.
      *
-     * @param name - place Center name for add new Center.
      * @return new {@code SuccessCreatedStudio}.
      */
     @PostMapping("/center")
@@ -45,6 +44,16 @@ public class CenterController {
             @Valid
             @RequestBody CenterProfile centerProfile) {
         return centerService.addCenter(centerProfile);
+    }
+
+    /**
+     * The controller returns dto {@code  CenterProfile} about center.
+     *
+     * @return new {@code CenterProfile}.
+     */
+    @PutMapping("/center")
+    public CenterProfile updateCenter(@Valid @RequestBody CenterProfile centerProfile){
+        return centerService.updateCenter(centerProfile);
     }
 
     /**
@@ -70,15 +79,5 @@ public class CenterController {
         return new ObjectMapper().readValue("{ \"id\" : " + id + " }", Object.class);
     }
 
-    /**
-     * The controller returns id {@code ...} of updated center.
-     *
-     * @param id - put center id.
-     * @return new {@code ...}.
-     */
-    //TODO
-    @PutMapping("/center/{id}")
-    public Object updateCenter(@PathVariable long id) throws JsonProcessingException {
-        return new ObjectMapper().readValue("{ \"id\" : " + id + " }", Object.class);
-    }
+
 }
