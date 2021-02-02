@@ -4,8 +4,6 @@ import com.softserve.teachua.dto.user.SuccessRegistration;
 import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,23 +27,21 @@ public class RegistrationController {
      * @return signup.
      */
     @GetMapping("/signup")
-    public String signup() {
-        return "sign-up";
+    public String signUp() {
+        return "signup";
     }
 
     /**
-     * The controller returns dto {@code SuccessLogin} of sign-upped user.
+     * The controller returns dto {@code SuccessRegistration} of sign-upped user.
      *
      * @param userProfile - dto with all params.
      * @return new {@code SuccessRegistration}.
      */
     @PostMapping("/signup")
-    public ResponseEntity<SuccessRegistration> signUp(
+    public SuccessRegistration signUp(
             @Valid
             @RequestBody
                     UserProfile userProfile) {
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(userService.registerUser(userProfile));
+        return userService.registerUser(userProfile);
     }
 }

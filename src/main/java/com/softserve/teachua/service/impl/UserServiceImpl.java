@@ -2,13 +2,10 @@ package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.user.SuccessLogin;
-import com.softserve.teachua.dto.user.SuccessRegistration;
-import com.softserve.teachua.dto.user.UserResponse;
 import com.softserve.teachua.dto.security.UserEntity;
-import com.softserve.teachua.dto.user.UserLogin;
-import com.softserve.teachua.dto.user.UserProfile;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
+import com.softserve.teachua.dto.user.*;
+import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.UserRepository;
@@ -31,7 +28,6 @@ public class UserServiceImpl implements UserService {
     private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
     private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
     private static final String WRONG_PASSWORD = "Wrong password: %s";
-    private static final String CANT_CREATE_USER = "Cant create user %s";
 
     private final UserRepository userRepository;
     private final EncoderService encodeService;
@@ -48,23 +44,42 @@ public class UserServiceImpl implements UserService {
         this.dtoConverter = dtoConverter;
     }
 
+    /**
+     * The method returns dto {@code UserResponse} of user by id.
+     *
+     * @param id - put user id.
+     * @return new {@code UserResponse}.
+     */
     @Override
     public UserResponse getUserProfileById(Long id) {
         User user = getUserById(id);
         return dtoConverter.convertToDto(user, UserResponse.class);
     }
 
+    /**
+     * The method returns entity {@code UserEntity} of user by email.
+     *
+     * @param email - put user email.
+     * @return new {@code UserEntity}.
+     */
     @Override
     public UserEntity getUserEntity(String email) {
         return dtoConverter.convertToDto(getUserByEmail(email), UserEntity.class);
     }
 
+    /**
+     * The method returns entity {@code User} of user by id.
+     *
+     * @param id - put user id.
+     * @return new {@code User}.
+     * @throws NotExistException if user not exists.
+     */
     @Override
     public User getUserById(Long id) {
-        if (!isUserExistById(id)) {
+        if (isUserExistById(id)) {
             String userNotFoundById = String.format(USER_NOT_FOUND_BY_ID, id);
             log.error(userNotFoundById);
-            throw new WrongAuthenticationException(userNotFoundById);
+            throw new NotExistException(userNotFoundById);
         }
 
         User user = userRepository.getById(id);
@@ -72,18 +87,30 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    /**
+     * The method returns entity {@code User} of user by email.
+     *
+     * @param email - put user email.
+     * @return new {@code User}.
+     * @throws NotExistException if user not exists.
+     */
     @Override
     public User getUserByEmail(String email) {
         if (!isUserExistByEmail(email)) {
             String userNotFoundByEmail = String.format(USER_NOT_FOUND_BY_EMAIL, email);
             log.error(userNotFoundByEmail);
-            throw new WrongAuthenticationException(userNotFoundByEmail);
+            throw new NotExistException(userNotFoundByEmail);
         }
 
         log.info("**/getting user by email = " + userRepository.findByEmail(email));
         return userRepository.findByEmail(email);
     }
 
+    /**
+     * The method returns list of dto {@code List<UserResponse>} of all users.
+     *
+     * @return new {@code List<UserResponse>}.
+     */
     @Override
     public List<UserResponse> getListOfUsers() {
         List<UserResponse> userResponses = userRepository.findAll()
@@ -95,6 +122,13 @@ public class UserServiceImpl implements UserService {
         return userResponses;
     }
 
+    /**
+     * The method returns dto {@code SuccessRegistration} if user successfully registered.
+     *
+     * @param userProfile- place dto with all params.
+     * @return new {@code SuccessRegistration}.
+     * @throws AlreadyExistException if user with email already exists.
+     */
     @Override
     public SuccessRegistration registerUser(UserProfile userProfile) {
         if (isUserExistByEmail(userProfile.getEmail())) {
@@ -108,15 +142,17 @@ public class UserServiceImpl implements UserService {
                 .withRole(roleService.findByName(RoleData.USER.getDBRoleName()));
 
         user = userRepository.save(user);
-        if (user == null) {
-            String userIsNull = String.format(CANT_CREATE_USER, userProfile);
-            log.error(userIsNull);
-            throw new DatabaseRepositoryException(userIsNull);
-        }
         log.info("**/user registered successfully = " + user);
         return dtoConverter.convertToDto(user, SuccessRegistration.class);
     }
 
+    /**
+     * The method returns dto {@code SuccessLogin} if user successfully logged.
+     *
+     * @param userLogin- place dto with all params.
+     * @return new {@code SuccessLogin}.
+     * @throws WrongAuthenticationException if user password is incorrect.
+     */
     @Override
     public SuccessLogin validateUser(UserLogin userLogin) {
         UserEntity userEntity = getUserEntity(userLogin.getEmail());
@@ -126,35 +162,37 @@ public class UserServiceImpl implements UserService {
             throw new WrongAuthenticationException(wrongPassword);
         }
 
-        log.info("**/user registered successfully = " + userLogin);
+        log.info("**/user logged successfully = " + userLogin);
         return dtoConverter.convertFromDtoToDto(userEntity, new SuccessLogin())
                 .withAccessToken(encodeService.createToken(userEntity.getEmail()));
     }
 
+    /**
+     * The method returns dto {@code SuccessUpdatedUser} of updated user.
+     *
+     * @param userProfile - place dto with all params.
+     * @return new {@code SuccessUpdatedUser}.
+     * @throws NotExistException if user id is incorrect.
+     */
     @Override
-    public UserProfile updateUserProfileById(Long id) {
-        if (!isUserExistById(id)) {
-            log.error(String.format(USER_NOT_FOUND_BY_ID, id));
-            throw new WrongAuthenticationException(String.format(USER_NOT_FOUND_BY_ID, id));
+    public SuccessUpdatedUser updateUser(UserProfile userProfile) {
+        if (isUserExistById(userProfile.getId())) {
+            String userNotFoundById = String.format(USER_NOT_FOUND_BY_ID, userProfile.getId());
+            log.error(userNotFoundById);
+            throw new NotExistException(userNotFoundById);
         }
 
-        log.info("**/update user = " + id);
-        return null;
-    }
-
-    @Override
-    public UserResponse deleteUserById(Long id) {
-        UserResponse userResponse = getUserProfileById(id);
-        userRepository.deleteById(id);
-
-        log.info("**/delete user = " + id);
-        return userResponse;
+        User user = userRepository.save(dtoConverter.convertToEntity(userProfile, new User())
+                .withPassword(encodeService.encodePassword(userProfile.getPassword())));
+        log.info("**/updating user = " + user);
+        return dtoConverter.convertToDto(user, SuccessUpdatedUser.class);
     }
 
     private boolean isUserExistByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
     private boolean isUserExistById(Long id) {
-        return userRepository.existsById(id);
+        return !userRepository.existsById(id);
     }
 }
