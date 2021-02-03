@@ -73,9 +73,9 @@ public class CityServiceImpl implements CityService {
     @Override
     public City getCityByName(String name) {
         if (!isCityExistByName(name)) {
-            String cityNotFoundById = String.format(CITY_NOT_FOUND_BY_NAME, name);
-            log.error(cityNotFoundById);
-            throw new NotExistException(cityNotFoundById);
+            String cityNotFoundByName = String.format(CITY_NOT_FOUND_BY_NAME, name);
+            log.error(cityNotFoundByName);
+            throw new NotExistException(cityNotFoundByName);
         }
 
         City city = cityRepository.findByName(name);
@@ -121,7 +121,7 @@ public class CityServiceImpl implements CityService {
     }
 
     /**
-     * The method returns dto {@code CityProfile} of updated club.
+     * The method returns dto {@code CityProfile} of updated city.
      *
      * @param cityProfile - place body of dto {@code CityProfile}.
      * @return new {@code CityProfile}.

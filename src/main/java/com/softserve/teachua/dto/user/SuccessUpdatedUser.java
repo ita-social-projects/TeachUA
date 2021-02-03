@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class SuccessRegistration implements Dto {
-
+public class SuccessUpdatedUser implements Dto {
+    private String name;
     private Long id;
     private String email;
-    private String roleName;
 }

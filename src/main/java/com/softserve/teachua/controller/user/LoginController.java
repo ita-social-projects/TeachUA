@@ -28,8 +28,8 @@ public class LoginController {
      * @return /signin.
      */
     @GetMapping("/signin")
-    public String login() {
-        return "sign-in";
+    public String signIn() {
+        return "signin";
     }
 
     /**

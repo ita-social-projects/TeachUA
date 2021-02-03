@@ -2,10 +2,12 @@ package com.softserve.teachua.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
+import com.softserve.teachua.dto.club.SuccessUpdatedClub;
+
 import com.softserve.teachua.dto.search.SearchClubProfile;
-import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -81,12 +83,13 @@ public class ClubController {
     }
 
     /**
-     * The controller returns dto {@code {@link ClubProfile}} about club.
+     * The controller returns dto {@code {@link ClubProfile}} of updated club.
      *
-     * @return new {@code ClubResponse}.
+     * @param clubProfile - Place dto with all parameters for updating existed club.
+     * @return new {@code ClubProfile}.
      */
-    @PutMapping("/club")
-    public ClubProfile updateClub(@Valid @RequestBody ClubProfile clubProfile){
+    @PutMapping("/club{id}")
+    public SuccessUpdatedClub updateClub(@Valid @RequestBody ClubProfile clubProfile) {
         return clubService.updateClub(clubProfile);
     }
 
