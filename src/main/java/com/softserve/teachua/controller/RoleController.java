@@ -1,31 +1,56 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.dto.role.RoleResponse;
+import com.softserve.teachua.dto.role.*;
+import com.softserve.teachua.service.RoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class RoleController {
 
-    /**
-     * The method which return role.
-     *
-     * @return {@link RoleResponse}
-     */
-    @GetMapping("/role/{id}")
-    public RoleResponse getRole(@PathVariable Long id) {
-        // TODO
-        return new RoleResponse();
+    private final RoleService roleService;
+
+    @Autowired
+    public RoleController(RoleService roleService) {
+        this.roleService = roleService;
     }
 
     /**
      * The method which return role.
      *
+     * @param id - put role id.
      * @return {@link RoleResponse}
      */
-    @PostMapping("/role/{id}")
-    public RoleResponse addRole() {
-        // TODO
-        return new RoleResponse();
+    @GetMapping("/role/{id}")
+    public RoleResponse getRole(@PathVariable Integer id) {
+        return roleService.getRoleResponseById(id);
+    }
+
+    /**
+     * The method which adds a new role.
+     *
+     * @param roleProfile - put json role
+     * @return {@link RoleProfile}
+     */
+    @PostMapping("/role")
+    public RoleProfile addRole(@Valid @RequestBody RoleProfile roleProfile) {
+        return roleService.addNewRole(roleProfile);
+    }
+
+    /**
+     * The method which updates existing role.
+     *
+     * @param id - put role id.
+     * @param roleProfile - put json role
+     * @return {@link RoleProfile}
+     */
+    @PostMapping("/role/id")
+    public RoleProfile addRole(@PathVariable Integer id,
+                               @Valid @RequestBody RoleProfile roleProfile) {
+        return roleService.updateRole(id, roleProfile);
     }
 
     /**
@@ -45,21 +70,7 @@ public class RoleController {
      * @return {@link RoleResponse}
      */
     @GetMapping("/roles")
-    public String getRoles() {
-        // TODO
-        return "GetMapping, Method getRoles";
+    public List<RoleResponse> getRoles() {
+        return roleService.getListOfRoles();
     }
-
-    @PostMapping("/roles")
-    public String addRoles() {
-        // TODO
-        return "PostMapping, Method addRoles";
-    }
-
-    @DeleteMapping("/roles")
-    public String deleteRoles() {
-        // TODO
-        return "DeleteMapping, Method deleteRoles";
-    }
-
 }

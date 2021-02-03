@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RoleResponse implements Dto {
+public class RoleProfile implements Dto{
 
     private String roleName;
+
 }
