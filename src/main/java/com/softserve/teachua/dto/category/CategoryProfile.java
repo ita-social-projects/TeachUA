@@ -1,14 +1,16 @@
 package com.softserve.teachua.dto.category;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class CategoryProfile implements Dto {
+public class CategoryProfile implements Convertible {
 
     private Long id;
 

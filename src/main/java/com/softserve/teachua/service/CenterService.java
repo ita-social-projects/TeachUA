@@ -1,8 +1,8 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
-import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.model.Center;
 
 import java.util.List;
@@ -18,5 +18,5 @@ public interface CenterService {
 
     List<CenterResponse> getListOfCenters();
 
-    CenterProfile updateCenter(CenterProfile centerProfile);
+    CenterProfile updateCenter(Long id, CenterProfile centerProfile);
 }

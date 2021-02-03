@@ -1,5 +1,7 @@
 package com.softserve.teachua.exception;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * This class is custom exception for problem with authentication.
  * (Invalid password, invalid email etc.)
@@ -9,6 +11,7 @@ package com.softserve.teachua.exception;
  *
  * @author Denis Burko
  */
+@Slf4j
 public class WrongAuthenticationException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
@@ -21,5 +24,4 @@ public class WrongAuthenticationException extends RuntimeException {
     public WrongAuthenticationException() {
         super(WRONG_AUTHENTICATION_EXCEPTION);
     }
-
 }

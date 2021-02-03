@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,14 +61,13 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public Club getClubById(Long id) {
-        if (isClubExistById(id)) {
-            String clubNotFoundById = String.format(CLUB_NOT_FOUND_BY_ID, id);
-            log.error(clubNotFoundById);
-            throw new NotExistException(clubNotFoundById);
+        Optional<Club> optionalClub = getOptionalClubById(id);
+        if (!optionalClub.isPresent()) {
+            throw new NotExistException(String.format(CLUB_NOT_FOUND_BY_ID, id));
         }
 
-        Club club = clubRepository.getById(id);
-        log.info("**/getting club by id = " + club.getId());
+        Club club = optionalClub.get();
+        log.info("**/getting club by id = " + club);
         return club;
     }
 
@@ -80,13 +80,12 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public Club getClubByName(String name) {
-        if (!isClubExistByName(name)) {
-            String clubNotFoundByName = String.format(CLUB_NOT_FOUND_BY_NAME, name);
-            log.error(clubNotFoundByName);
-            throw new NotExistException(clubNotFoundByName);
+        Optional<Club> optionalClub = getOptionalClubByName(name);
+        if (!optionalClub.isPresent()) {
+            throw new NotExistException(String.format(CLUB_NOT_FOUND_BY_NAME, name));
         }
 
-        Club club = clubRepository.findByName(name);
+        Club club = optionalClub.get();
         log.info("**/getting club by name = " + club.getName());
         return club;
     }
@@ -99,16 +98,13 @@ public class ClubServiceImpl implements ClubService {
      * @throws NotExistException if club not exists by id.
      */
     @Override
-    public SuccessUpdatedClub updateClub(ClubProfile clubProfile) {
-        if (isClubExistById(clubProfile.getId())) {
-            String clubNotFoundById = String.format(CLUB_NOT_FOUND_BY_ID, clubProfile.getId());
-            log.error(clubNotFoundById);
-            throw new NotExistException(clubNotFoundById);
-        }
+    public SuccessUpdatedClub updateClub(Long id, ClubProfile clubProfile) {
+        Club club = getClubById(id);
+        Club newClub = dtoConverter.convertToEntity(clubProfile, club)
+                .withId(id);
 
-        Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club()));
-        log.info("**/updating club = " + club);
-        return dtoConverter.convertToDto(club, SuccessUpdatedClub.class);
+        log.info("**/updating club by id = " + newClub);
+        return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);
     }
 
     /**
@@ -132,9 +128,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public SuccessCreatedClub addClub(ClubProfile clubProfile) {
         if (isClubExistByName(clubProfile.getName())) {
-            String clubAlreadyExist = String.format(CLUB_ALREADY_EXIST, clubProfile.getName());
-            log.error(clubAlreadyExist);
-            throw new AlreadyExistException(clubAlreadyExist);
+            throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }
 
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club()));
@@ -195,11 +189,13 @@ public class ClubServiceImpl implements ClubService {
                 .collect(Collectors.toList());
     }
 
-    private boolean isClubExistById(Long id) {
-        return clubRepository.existsById(id);
-    }
-
     private boolean isClubExistByName(String name) {
         return clubRepository.existsByName(name);
+    }
+    private Optional<Club> getOptionalClubById(Long id) {
+        return clubRepository.findById(id);
+    }
+    private Optional<Club> getOptionalClubByName(String name) {
+        return clubRepository.findByName(name);
     }
 }

@@ -47,9 +47,12 @@ public class UserController {
      * @param userProfile - Place dto with all parameters for update existed user.
      * @return new {@code UserProfile}.
      */
-    @PutMapping("/user")
-    public SuccessUpdatedUser updateUser(@Valid @RequestBody UserProfile userProfile) {
-        return userService.updateUser(userProfile);
+    @PutMapping("/user/{id}")
+    public SuccessUpdatedUser updateUser(
+            @PathVariable Long id,
+            @Valid
+            @RequestBody UserProfile userProfile) {
+        return userService.updateUser(id, userProfile);
     }
 
     /**

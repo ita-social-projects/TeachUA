@@ -6,7 +6,6 @@ import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
-
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,9 +87,12 @@ public class ClubController {
      * @param clubProfile - Place dto with all parameters for updating existed club.
      * @return new {@code ClubProfile}.
      */
-    @PutMapping("/club{id}")
-    public SuccessUpdatedClub updateClub(@Valid @RequestBody ClubProfile clubProfile) {
-        return clubService.updateClub(clubProfile);
+    @PutMapping("/club/{id}")
+    public SuccessUpdatedClub updateClub(
+            @PathVariable Long id,
+            @Valid
+            @RequestBody ClubProfile clubProfile) {
+        return clubService.updateClub(id, clubProfile);
     }
 
     /**

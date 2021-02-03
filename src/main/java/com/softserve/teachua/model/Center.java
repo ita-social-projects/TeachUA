@@ -1,6 +1,6 @@
 package com.softserve.teachua.model;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,9 +9,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @Builder
+@With
 @Entity
 @Table(name = "centers")
-public class Center implements Dto {
+public class Center implements Convertible {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

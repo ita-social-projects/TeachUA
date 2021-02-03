@@ -1,9 +1,9 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
-import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,12 +55,10 @@ public class CenterServiceImpl implements CenterService {
     @Override
     public SuccessCreatedCenter addCenter(CenterProfile centerProfile){
         if (isCenterExistByName(centerProfile.getName())) {
-            String centerAlreadyExist = String.format(CENTER_ALREADY_EXIST, centerProfile.getName());
-            log.error(centerAlreadyExist);
-            throw new AlreadyExistException(centerAlreadyExist);
+            throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
         }
 
-        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile,Center.builder().build()));
+        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center()));
         log.info("**/adding new center = " + centerProfile.getName());
         return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
     }
@@ -74,13 +73,12 @@ public class CenterServiceImpl implements CenterService {
      */
     @Override
     public Center getCenterById(Long id) {
-        if (!isCenterExistById(id)) {
-            String centerNotFoundById = String.format(CENTER_NOT_FOUND_BY_ID, id);
-            log.error(centerNotFoundById);
-            throw new NotExistException(centerNotFoundById);
+        Optional<Center> optionalCenter = getOptionalCenterById(id);
+        if (!optionalCenter.isPresent()) {
+            throw new NotExistException(String.format(CENTER_NOT_FOUND_BY_ID, id));
         }
 
-        Center center = centerRepository.getById(id);
+        Center center = optionalCenter.get();
         log.info("**/getting center by id = " + center);
         return center;
     }
@@ -91,10 +89,15 @@ public class CenterServiceImpl implements CenterService {
      * @param centerProfile - place body of dto {@code CenterProfile}.
      * @return new {@code CenterProfile}.
      */
+
     @Override
-    public CenterProfile updateCenter(CenterProfile centerProfile) {
-        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center()));
-        return dtoConverter.convertToDto(center, CenterProfile.class);
+    public CenterProfile updateCenter(Long id, CenterProfile centerProfile) {
+        Center center = getCenterById(id);
+        Center newCenter = dtoConverter.convertToEntity(centerProfile, center)
+                .withId(id);
+
+        log.info("**/updating center by id = " + newCenter);
+        return dtoConverter.convertToDto(centerRepository.save(newCenter), CenterProfile.class);
     }
 
     /**
@@ -106,13 +109,12 @@ public class CenterServiceImpl implements CenterService {
      */
     @Override
     public Center getCenterByName(String name) {
-        if (!isCenterExistByName(name)) {
-            String centerNotFoundByName = String.format(CENTER_NOT_FOUND_BY_NAME, name);
-            log.error(centerNotFoundByName);
-            throw new NotExistException(centerNotFoundByName);
+        Optional<Center> optionalCenter = getOptionalCenterByName(name);
+        if (!optionalCenter.isPresent()) {
+            throw new NotExistException(String.format(CENTER_NOT_FOUND_BY_NAME, name));
         }
 
-        Center center = centerRepository.findByName(name);
+        Center center = optionalCenter.get();
         log.info("**/getting center by name = " + name);
         return center;
     }
@@ -133,11 +135,13 @@ public class CenterServiceImpl implements CenterService {
         return centerResponses;
     }
 
-    private boolean isCenterExistById(Long id) {
-        return centerRepository.existsById(id);
-    }
-
     private boolean isCenterExistByName(String name) {
         return centerRepository.existsByName(name);
+    }
+    private Optional<Center> getOptionalCenterById(Long id) {
+        return centerRepository.findById(id);
+    }
+    private Optional<Center> getOptionalCenterByName(String name) {
+        return centerRepository.findByName(name);
     }
 }

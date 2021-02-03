@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.user;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @Builder
 @Data
-public class UserProfile implements Dto {
+public class UserProfile implements Convertible {
 
     private Long id;
 

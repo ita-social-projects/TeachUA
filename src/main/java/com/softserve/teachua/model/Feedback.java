@@ -1,6 +1,6 @@
 package com.softserve.teachua.model;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
 
 import javax.persistence.*;
@@ -8,10 +8,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@With
 @Builder
 @Entity
 @Table(name = "feedbacks")
-public class Feedback implements Dto {
+public class Feedback implements Convertible {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

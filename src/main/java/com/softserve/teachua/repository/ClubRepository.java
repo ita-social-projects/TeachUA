@@ -10,17 +10,16 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long> {
 
-    Club getById(Long id);
+    Optional<Club> findById(Long id);
 
-    Club findByName(String name);
+    Optional<Club> findByName(String name);
 
     boolean existsByName(String name);
-
-    boolean existsById(Long id);
 
     @Query("SELECT DISTINCT club from Club AS club " +
             "LEFT JOIN club.categories AS category WHERE " +
@@ -39,6 +38,6 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     List<Club> findRandomTop3ByName(@Param("text") String enteredText);
 
     @Modifying
-    @Query(value="UPDATE clubs SET rating=:rating WHERE id = :club_id", nativeQuery=true)
-    void updateRating(@Param("club_id") Long club_id, @Param("rating") double rating);
+    @Query(value="UPDATE Club AS club SET club.rating = :rating WHERE club.id = :clubId")
+    void updateRating(@Param("clubId") Long clubId, @Param("rating") double rating);
 }

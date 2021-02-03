@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.category;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 @Data
-public class SuccessCreatedCategory implements Dto {
+public class SuccessCreatedCategory implements Convertible {
 
     private String name;
 

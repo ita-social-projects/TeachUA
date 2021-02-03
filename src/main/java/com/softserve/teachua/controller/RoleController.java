@@ -1,6 +1,7 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.dto.role.*;
+import com.softserve.teachua.dto.role.RoleProfile;
+import com.softserve.teachua.dto.role.RoleResponse;
 import com.softserve.teachua.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class RoleController {
      */
     @GetMapping("/role/{id}")
     public RoleResponse getRole(@PathVariable Integer id) {
-        return roleService.getRoleResponseById(id);
+        return roleService.getRoleProfileById(id);
     }
 
     /**
@@ -43,13 +44,15 @@ public class RoleController {
     /**
      * The method which updates existing role.
      *
-     * @param id - put role id.
+     * @param id          - put role id.
      * @param roleProfile - put json role
      * @return {@link RoleProfile}
      */
-    @PostMapping("/role/id")
-    public RoleProfile addRole(@PathVariable Integer id,
-                               @Valid @RequestBody RoleProfile roleProfile) {
+    @PutMapping("/role/{id}")
+    public RoleProfile addRole(
+            @PathVariable Integer id,
+            @Valid
+            @RequestBody RoleProfile roleProfile) {
         return roleService.updateRole(id, roleProfile);
     }
 

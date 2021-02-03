@@ -1,18 +1,20 @@
 package com.softserve.teachua.dto.center;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
-public class CenterProfile implements Dto {
+public class CenterProfile implements Convertible {
 
     private Long id;
 

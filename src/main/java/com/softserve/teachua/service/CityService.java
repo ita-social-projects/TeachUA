@@ -1,8 +1,8 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.city.SuccessCreatedCity;
-import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.model.City;
 
 import java.util.List;
@@ -18,5 +18,5 @@ public interface CityService {
 
     List<CityResponse> getListOfCities();
 
-    CityProfile updateCity(CityProfile cityProfile);
+    CityProfile updateCity(Long id, CityProfile cityProfile);
 }

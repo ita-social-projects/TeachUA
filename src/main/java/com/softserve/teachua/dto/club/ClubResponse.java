@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.club;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.City;
@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Builder
-public class ClubResponse implements Dto {
+public class ClubResponse implements Convertible {
     private Long id;
     private Integer ageFrom;
     private Integer ageTo;

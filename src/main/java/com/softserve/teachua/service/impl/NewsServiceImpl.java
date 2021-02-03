@@ -1,9 +1,9 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
-import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.News;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,17 +24,11 @@ import java.util.stream.Collectors;
 public class NewsServiceImpl implements NewsService {
     private static final String NEWS_NOT_FOUND_BY_ID = "News not found by id: %s";
 
-
-    private boolean isNewsExistById(Long id) {
-        return newsRepository.existsById(id);
-    }
-
-
     private final NewsRepository newsRepository;
     private final DtoConverter dtoConverter;
 
     @Autowired
-    NewsServiceImpl(NewsRepository newsRepository, DtoConverter dtoConverter){
+    NewsServiceImpl(NewsRepository newsRepository, DtoConverter dtoConverter) {
         this.newsRepository = newsRepository;
         this.dtoConverter = dtoConverter;
     }
@@ -46,7 +41,7 @@ public class NewsServiceImpl implements NewsService {
      **/
     @Override
     public NewsResponse getNewsProfileById(Long id) {
-        return dtoConverter.convertToDto(getNewsById(id),NewsResponse.class);
+        return dtoConverter.convertToDto(getNewsById(id), NewsResponse.class);
     }
 
     /**
@@ -57,14 +52,13 @@ public class NewsServiceImpl implements NewsService {
      **/
     @Override
     public News getNewsById(Long id) {
-        if(!isNewsExistById(id)){
-            String newsNotFoundById = String.format(NEWS_NOT_FOUND_BY_ID,id);
-            log.error(newsNotFoundById);
-            throw new NotExistException(newsNotFoundById);
+        Optional<News> optionalNews = getOptionalNewsById(id);
+        if (!optionalNews.isPresent()) {
+            throw new NotExistException(String.format(NEWS_NOT_FOUND_BY_ID, id));
         }
 
-        News news = newsRepository.getById(id);
-        log.info("get news by id - "+id);
+        News news = optionalNews.get();
+        log.info("get news by id - " + news);
         return news;
     }
 
@@ -77,7 +71,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public SuccessCreatedNews addNews(NewsProfile newsProfile) {
         News news = newsRepository.save(dtoConverter.convertToEntity(newsProfile, new News()));
-        return dtoConverter.convertToDto(news,SuccessCreatedNews.class);
+        return dtoConverter.convertToDto(news, SuccessCreatedNews.class);
     }
 
     /**
@@ -104,15 +98,12 @@ public class NewsServiceImpl implements NewsService {
      **/
     @Override
     public NewsProfile updateNewsProfileById(Long id, NewsProfile newsProfile) {
-        if(!isNewsExistById(id)){
-            String newsNotFoundById = String.format(NEWS_NOT_FOUND_BY_ID,id);
-            log.error(newsNotFoundById);
-            throw new NotExistException(newsNotFoundById);
-        }
-        News news = dtoConverter.convertToEntity(newsProfile, new News());
-        news.setId(id);
-        newsRepository.save(news);
-        return dtoConverter.convertToDto(news, NewsProfile.class);
+        News news = getNewsById(id);
+        News newNews = dtoConverter.convertToEntity(newsProfile, news)
+                .withId(id);
+
+        log.info("**/updating club by id = " + newNews);
+        return dtoConverter.convertToDto(newsRepository.save(newNews), NewsProfile.class);
     }
 
     /**
@@ -123,13 +114,15 @@ public class NewsServiceImpl implements NewsService {
      **/
     @Override
     public NewsResponse deleteNewsById(Long id) {
-        if(!isNewsExistById(id)){
-            String newsNotFoundById = String.format(NEWS_NOT_FOUND_BY_ID,id);
-            log.error(newsNotFoundById);
-            throw new NotExistException(newsNotFoundById);
-        }
-        News news = newsRepository.getById(id);
+        News deletedNews = getNewsById(id);
+
         newsRepository.deleteById(id);
-        return dtoConverter.convertToDto(news, NewsResponse.class);
+
+        log.info("deleted feedback " + deletedNews);
+        return dtoConverter.convertToDto(deletedNews, NewsResponse.class);
+    }
+
+    private Optional<News> getOptionalNewsById(Long id) {
+        return newsRepository.findById(id);
     }
 }

@@ -1,10 +1,10 @@
 package com.softserve.teachua.service;
 
 
+import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.category.SuccessCreatedCategory;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
-import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.model.Category;
 
 import java.util.List;
@@ -25,5 +25,5 @@ public interface CategoryService {
 
     List<SearchPossibleResponse> getPossibleCategoryByName(String text);
 
-    CategoryProfile updateCategory(CategoryProfile categoryProfile);
+    CategoryProfile updateCategory(Long id, CategoryProfile categoryProfile);
 }
