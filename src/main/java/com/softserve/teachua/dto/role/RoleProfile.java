@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.role;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RoleProfile implements Dto{
+public class RoleProfile implements Convertible {
 
     private String roleName;
 

@@ -6,19 +6,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Category getById(Long id);
-
-    Category findByName(String name);
+    Optional<Category> findById(Long id);
+    boolean existsByName(String name);
 
     List<Category> findAll();
 
     void deleteById(Long id);
 
-    boolean existsById(Long id);
-
-    boolean existsByName(String name);
+    Optional<Category> findByName(String name);
 
     @Query(value = "SELECT *  FROM categories AS c WHERE LOWER(c.name) LIKE LOWER('%' || :text || '%') ORDER BY RANDOM() LIMIT 3",
             nativeQuery=true)

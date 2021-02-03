@@ -1,8 +1,8 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.city.SuccessCreatedCity;
-import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -48,9 +48,12 @@ public class CityController {
      *
      * @return new {@code CityProfile}.
      */
-    @PutMapping("/city")
-    public CityProfile updateCity(@Valid @RequestBody CityProfile cityProfile){
-        return cityService.updateCity(cityProfile);
+    @PutMapping("/city/{id}")
+    public CityProfile updateCity(
+            @PathVariable Long id,
+            @Valid
+            @RequestBody CityProfile cityProfile){
+        return cityService.updateCity(id, cityProfile);
     }
 
     /**

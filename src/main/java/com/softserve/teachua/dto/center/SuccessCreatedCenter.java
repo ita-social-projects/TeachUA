@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.center;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 @Data
-public class SuccessCreatedCenter implements Dto {
+public class SuccessCreatedCenter implements Convertible {
 
     private Long id;
 

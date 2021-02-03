@@ -4,13 +4,13 @@ import com.softserve.teachua.model.City;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CityRepository extends JpaRepository<City, Long> {
-    City getById(Long id);
+    Optional<City> findById(Long id);
 
-    City findByName(String name);
+    Optional<City> findByName(String name);
 
     boolean existsByName(String name);
-
-    boolean existsById(Long id);
 }

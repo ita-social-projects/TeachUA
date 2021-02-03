@@ -1,7 +1,6 @@
 package com.softserve.teachua.dto.feedback;
 
-import com.softserve.teachua.dto.marker.Dto;
-import com.softserve.teachua.model.Club;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class SuccessCreatedFeedback implements Dto {
+public class SuccessCreatedFeedback implements Convertible {
     private Long id;
 
     private String userName;
@@ -20,5 +19,5 @@ public class SuccessCreatedFeedback implements Dto {
 
     private String text;
 
-    private Club club;
+    private Long clubId;
 }

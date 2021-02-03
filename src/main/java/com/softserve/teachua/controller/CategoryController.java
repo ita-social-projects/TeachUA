@@ -1,8 +1,8 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.category.SuccessCreatedCategory;
-import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +59,12 @@ public class CategoryController {
      *
      * @return new {@code CategoryProfile}.
      */
-    @PutMapping("/category")
-    public CategoryProfile updateCategory(@Valid @RequestBody CategoryProfile categoryProfile){
-        return categoryService.updateCategory(categoryProfile);
+    @PutMapping("/category/{id}")
+    public CategoryProfile updateCategory(
+            @PathVariable Long id,
+            @Valid
+            @RequestBody CategoryProfile categoryProfile){
+        return categoryService.updateCategory(id, categoryProfile);
     }
 
     /**

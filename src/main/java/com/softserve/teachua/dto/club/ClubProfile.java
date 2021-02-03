@@ -1,20 +1,22 @@
 package com.softserve.teachua.dto.club;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.City;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
-public class ClubProfile implements Dto {
+public class ClubProfile implements Convertible {
 
     private Long id;
 

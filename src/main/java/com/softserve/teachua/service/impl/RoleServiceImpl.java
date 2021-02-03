@@ -1,14 +1,16 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.role.*;
-import com.softserve.teachua.exception.*;
+import com.softserve.teachua.dto.role.RoleProfile;
+import com.softserve.teachua.dto.role.RoleResponse;
+import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Role;
 import com.softserve.teachua.repository.RoleRepository;
 import com.softserve.teachua.service.RoleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,69 +39,68 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public List<RoleResponse> getListOfRoles() {
-        log.info("**/getting all roles" );
+        log.info("**/getting all roles");
         return roleRepository.findAll()
                 .stream()
-                .map(role -> new RoleResponse(role.getName()))
+                .map(role -> new RoleResponse(role.getId(), role.getName()))
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public RoleResponse getRoleProfileById(Integer id) {
+        return dtoConverter.convertToDto(getRoleById(id), RoleResponse.class);
+    }
+
     /**
-     * The method returns {@link  RoleResponse} by role id.
+     * The method returns {@link  Role} by role id.
      *
      * @param id - put role id.
-     * @return  RoleResponse {@link  RoleResponse}.
+     * @return Role {@link  Role}.
      * @throws NotExistException {@link NotExistException} if the role doesn't exist.
      */
     @Override
-    public RoleResponse getRoleResponseById(Integer id){
-        Optional<Role> optionalRole = roleRepository.findById(id);
+    public Role getRoleById(Integer id) {
+        Optional<Role> optionalRole = getOptionalRoleById(id);
         if (!optionalRole.isPresent()) {
-            String roleNotFoundById = String.format(ROLE_NOT_FOUND_BY_ID, id);
-            log.error(roleNotFoundById);
-            throw new NotExistException(roleNotFoundById);
+            throw new NotExistException(String.format(ROLE_NOT_FOUND_BY_ID, id));
         }
+
         log.info("**/getting RoleResponse by id = " + id);
-        return dtoConverter.convertToDto(optionalRole.get(),RoleResponse.class);
+        return optionalRole.get();
     }
 
     /**
      * The method updates existing role by role id.
      *
-     * @param id - put role id.
+     * @param id          - put role id.
      * @param roleProfile - put RoleProfile to updating role
-     * @return  RoleProfile {@link  RoleProfile}.
+     * @return RoleProfile {@link  RoleProfile}.
      * @throws NotExistException {@link NotExistException} if the role doesn't exist.
      */
     @Override
     public RoleProfile updateRole(Integer id, RoleProfile roleProfile) {
-        Optional<Role> optionalRole = roleRepository.findById(id);
-        if (!optionalRole.isPresent()) {
-            String roleNotFoundById = String.format(ROLE_NOT_FOUND_BY_ID, id);
-            log.error(roleNotFoundById);
-            throw new NotExistException(roleNotFoundById);
-        }
-        Role role = dtoConverter.convertToEntity(roleProfile, new Role());
-        role.setId(id);
-        log.info("**/updating role by id = " + id);
-        return dtoConverter.convertToDto(roleRepository.save(role),RoleProfile.class);
+        Role role = getRoleById(id);
+        Role newRole = dtoConverter.convertToEntity(roleProfile, role)
+                .withId(id);
+
+        log.info("**/updating role by id = " + newRole);
+        return dtoConverter.convertToDto(roleRepository.save(newRole), RoleProfile.class);
     }
 
     /**
      * The method returns {@link  Role} by role name.
      *
      * @param name - put role name.
-     * @return  RoleResponse {@link  RoleResponse}.
+     * @return RoleResponse {@link  RoleResponse}.
      * @throws NotExistException {@link NotExistException} if the role doesn't exist.
      */
     @Override
     public Role findByName(String name) {
         Optional<Role> optionalRole = roleRepository.findByName(name);
         if (!optionalRole.isPresent()) {
-            String roleNotFoundByName = String.format(ROLE_NOT_FOUND_BY_NAME, name);
-            log.error(roleNotFoundByName);
-            throw new NotExistException(roleNotFoundByName);
+            throw new NotExistException(String.format(ROLE_NOT_FOUND_BY_NAME, name));
         }
+
         log.info("**/getting role by name = " + name);
         return optionalRole.get();
     }
@@ -108,18 +109,24 @@ public class RoleServiceImpl implements RoleService {
      * The method adds new role {@link  Role}
      *
      * @param roleProfile - put RoleProfile to adding new role
-     * @return  RoleProfile {@link  RoleProfile}.
+     * @return RoleProfile {@link  RoleProfile}.
      * @throws AlreadyExistException {@link AlreadyExistException} if the same role already exists.
      */
     @Override
     public RoleProfile addNewRole(RoleProfile roleProfile) {
-            if (roleRepository.findByName(roleProfile.getRoleName()).isPresent()) {
-                String roleAlreadyExist = String.format(ROLE_ALREADY_EXIST, roleProfile.getRoleName());
-                log.error(roleAlreadyExist);
-                throw new AlreadyExistException(roleAlreadyExist);
-            }
-            Role role = roleRepository.save(dtoConverter.convertToEntity(roleProfile, new Role()));
-            log.info("**/adding new role = " + roleProfile.getRoleName());
-            return dtoConverter.convertToDto(role, RoleProfile.class);
+        if (isRoleExistByName(roleProfile.getRoleName())) {
+            throw new AlreadyExistException(String.format(ROLE_ALREADY_EXIST, roleProfile.getRoleName()));
+        }
+
+        Role role = roleRepository.save(dtoConverter.convertToEntity(roleProfile, new Role()));
+        log.info("**/adding new role = " + roleProfile.getRoleName());
+        return dtoConverter.convertToDto(role, RoleProfile.class);
+    }
+
+    private boolean isRoleExistByName(String name) {
+        return roleRepository.existsByName(name);
+    }
+    private Optional<Role> getOptionalRoleById(Integer id) {
+        return roleRepository.findById(id);
     }
 }

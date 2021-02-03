@@ -1,17 +1,17 @@
 package com.softserve.teachua.dto.feedback;
 
-import com.softserve.teachua.dto.marker.Dto;
-import com.softserve.teachua.model.Club;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class FeedbackProfile implements Dto {
-
+public class FeedbackProfile implements Convertible {
     private Long id;
 
     @NotEmpty
@@ -23,5 +23,6 @@ public class FeedbackProfile implements Dto {
     @NotEmpty
     private String text;
 
-    private Club club;
+    @NotNull
+    private Long clubId;
 }

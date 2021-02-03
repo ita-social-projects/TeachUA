@@ -1,9 +1,9 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
-import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.repository.ClubRepository;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,10 +23,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FeedbackServiceImpl implements FeedbackService {
     private final String FEEDBACK_NOT_FOUND_BY_ID = "Feedback not found by id: %s";
-
-    private boolean isFeedbackExistById(Long id) {
-        return feedbackRepository.existsById(id);
-    }
 
     private final FeedbackRepository feedbackRepository;
     private final ClubRepository clubRepository;
@@ -57,12 +54,12 @@ public class FeedbackServiceImpl implements FeedbackService {
      **/
     @Override
     public Feedback getFeedbackById(Long id) {
-        if (!isFeedbackExistById(id)) {
-            String feedbackNotFoundById = String.format(FEEDBACK_NOT_FOUND_BY_ID, id);
-            log.error(feedbackNotFoundById);
-            throw new NotExistException(feedbackNotFoundById);
+        Optional<Feedback> optionalFeedback = getOptionalFeedbackById(id);
+        if (!optionalFeedback.isPresent()) {
+            throw new NotExistException(String.format(FEEDBACK_NOT_FOUND_BY_ID, id));
         }
-        Feedback feedback = feedbackRepository.getById(id);
+
+        Feedback feedback = optionalFeedback.get();
         log.info("get feedback by id - " + feedback);
         return feedback;
     }
@@ -75,9 +72,13 @@ public class FeedbackServiceImpl implements FeedbackService {
      **/
     @Override
     public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile) {
-        Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, Feedback.builder().build()));
-        clubRepository.updateRating(feedbackProfile.getClub().getId(),feedbackRepository.findAvgRating(feedbackProfile.getClub().getId()));
-        log.info("add new feedback - "+ feedback);
+        Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, new Feedback()));
+
+        Long clubId = feedback.getClub().getId();
+
+        clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
+
+        log.info("add new feedback - " + feedback);
         return dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
     }
 
@@ -105,18 +106,17 @@ public class FeedbackServiceImpl implements FeedbackService {
      * @return FeedbackProfile
      **/
     @Override
-    public FeedbackProfile updateFeedbackProfileById(Long id,FeedbackProfile feedbackProfile) {
-        if (!isFeedbackExistById(id)) {
-            String feedbackNotFoundById = String.format(FEEDBACK_NOT_FOUND_BY_ID, id);
-            log.error(feedbackNotFoundById);
-            throw new NotExistException(feedbackNotFoundById);
-        }
-        Feedback feedback = dtoConverter.convertToEntity(feedbackProfile, new Feedback());
-        feedback.setId(id);
-        feedbackRepository.save(feedback);
-        log.info("update feedback "+feedback);
-        clubRepository.updateRating(feedbackProfile.getClub().getId(),feedbackRepository.findAvgRating(feedbackProfile.getClub().getId()));
-        return feedbackProfile;
+    public FeedbackProfile updateFeedbackProfileById(Long id, FeedbackProfile feedbackProfile) {
+        Feedback feedback = getFeedbackById(id);
+
+        Feedback newFeedback = dtoConverter.convertToEntity(feedbackProfile, feedback)
+                .withId(id);
+
+        feedbackRepository.save(newFeedback);
+        clubRepository.updateRating(feedbackProfile.getClubId(), feedbackRepository.findAvgRating(feedbackProfile.getClubId()));
+
+        log.info("updated feedback " + newFeedback);
+        return dtoConverter.convertToDto(newFeedback, FeedbackProfile.class);
     }
 
     /**
@@ -127,22 +127,18 @@ public class FeedbackServiceImpl implements FeedbackService {
      **/
     @Override
     public FeedbackResponse deleteFeedbackById(Long id) {
-        if (!isFeedbackExistById(id)) {
-            String feedbackNotFoundById = String.format(FEEDBACK_NOT_FOUND_BY_ID, id);
-            log.error(feedbackNotFoundById);
-            throw new NotExistException(feedbackNotFoundById);
-        }
-        FeedbackResponse feedbackResponse = dtoConverter.convertToDto(feedbackRepository.getById(id), FeedbackResponse.class);
-        feedbackRepository.deleteById(id);
-        log.info("delete feedback "+feedbackResponse);
-        if(feedbackRepository.findAvgRating(feedbackResponse.getClub().getId())==null){
-        clubRepository.updateRating(feedbackResponse.getClub().getId(),0);
-        }
-        else{
-            clubRepository.updateRating(feedbackResponse.getClub().getId(),
-                    feedbackRepository.findAvgRating(feedbackResponse.getClub().getId()));
-        }
+        Feedback deletedFeedback = getFeedbackById(id);
 
-        return feedbackResponse;
+        Long clubId = deletedFeedback.getClub().getId();
+
+        feedbackRepository.deleteById(id);
+        clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
+
+        log.info("deleted feedback " + deletedFeedback);
+        return dtoConverter.convertToDto(deletedFeedback, FeedbackResponse.class);
+    }
+
+    private Optional<Feedback> getOptionalFeedbackById(Long id) {
+        return feedbackRepository.findById(id);
     }
 }

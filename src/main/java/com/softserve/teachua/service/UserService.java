@@ -21,5 +21,5 @@ public interface UserService {
 
     SuccessLogin validateUser(UserLogin userLogin);
 
-    SuccessUpdatedUser updateUser(UserProfile userProfile);
+    SuccessUpdatedUser updateUser(Long id, UserProfile userProfile);
 }

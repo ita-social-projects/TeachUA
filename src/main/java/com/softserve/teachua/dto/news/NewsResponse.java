@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.news;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class NewsResponse implements Dto {
+public class NewsResponse implements Convertible {
 
     private Long id;
 

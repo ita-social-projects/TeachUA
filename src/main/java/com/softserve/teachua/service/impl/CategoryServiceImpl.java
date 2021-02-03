@@ -1,10 +1,10 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.category.SuccessCreatedCategory;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
-import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Category;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -25,13 +26,13 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
     private static final String CATEGORY_ALREADY_EXIST = "Category already exist with name: %s";
     private static final String CATEGORY_NOT_FOUND_BY_ID = "Category not found by id: %s";
-    private static final String CATEGORY_NOT_FOUND_NAME = "Category not found by name: %s";
+    private static final String CATEGORY_NOT_FOUND_BY_NAME = "Category not found by name: %s";
 
     private final CategoryRepository categoryRepository;
     private final DtoConverter dtoConverter;
 
     @Autowired
-    CategoryServiceImpl(CategoryRepository categoryRepository, DtoConverter dtoConverter) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, DtoConverter dtoConverter) {
         this.categoryRepository = categoryRepository;
         this.dtoConverter = dtoConverter;
 
@@ -44,26 +45,26 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryById(Long id) {
-        if (!isCategoryExistById(id)) {
-            String categoryNotFoundById = String.format(CATEGORY_NOT_FOUND_BY_ID, id);
-            log.error(categoryNotFoundById);
-            throw new NotExistException(categoryNotFoundById);
+        Optional<Category> optionalCategory = getOptionalCategoryById(id);
+        if (!optionalCategory.isPresent()) {
+            throw new NotExistException(String.format(CATEGORY_NOT_FOUND_BY_ID, id));
         }
 
-        Category category = categoryRepository.getById(id);
+        Category category = optionalCategory.get();
+
         log.info("**/getting category by id = " + category);
         return category;
     }
 
     @Override
     public Category getCategoryByName(String name) {
-        if (!isCategoryExistByName(name)) {
-            String categoryNotFoundById = String.format(CATEGORY_NOT_FOUND_NAME, name);
-            log.error(categoryNotFoundById);
-            throw new NotExistException(categoryNotFoundById);
+        Optional<Category> optionalCategory = getOptionalCategoryByName(name);
+        if (!optionalCategory.isPresent()) {
+            throw new NotExistException(String.format(CATEGORY_NOT_FOUND_BY_NAME, name));
         }
 
-        Category category = categoryRepository.findByName(name);
+        Category category = optionalCategory.get();
+
         log.info("**/getting category by name = " + category);
         return category;
     }
@@ -71,12 +72,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public SuccessCreatedCategory addCategory(CategoryProfile categoryProfile) {
         if (isCategoryExistByName(categoryProfile.getName())) {
-            String categoryAlreadyExist = String.format(CATEGORY_ALREADY_EXIST, categoryProfile.getName());
-            log.error(categoryAlreadyExist);
-            throw new AlreadyExistException(categoryAlreadyExist);
+            throw new AlreadyExistException(String.format(CATEGORY_ALREADY_EXIST, categoryProfile.getName()));
         }
 
-        Category category = categoryRepository.save(dtoConverter.convertToEntity(categoryProfile,Category.builder().build()));
+        Category category = categoryRepository.save(dtoConverter.convertToEntity(categoryProfile, new Category()));
         log.info("**/adding new category = " + category);
         return dtoConverter.convertToDto(category, SuccessCreatedCategory.class);
     }
@@ -110,16 +109,24 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryProfile updateCategory(CategoryProfile categoryProfile) {
-        Category category = categoryRepository.save(dtoConverter.convertToEntity(categoryProfile, new Category()));
-        return dtoConverter.convertToDto(category, CategoryProfile.class);
-    }
+    public CategoryProfile updateCategory(Long id, CategoryProfile categoryProfile) {
+        Category category = getCategoryById(id);
+        Category newCategory = dtoConverter.convertToEntity(categoryProfile, category)
+                .withId(id);
 
-    private boolean isCategoryExistById(Long id) {
-        return categoryRepository.existsById(id);
+        log.info("**/updating category by id = " + newCategory);
+        return dtoConverter.convertToDto(categoryRepository.save(newCategory), CategoryProfile.class);
     }
 
     private boolean isCategoryExistByName(String name) {
         return categoryRepository.existsByName(name);
+    }
+
+    private Optional<Category> getOptionalCategoryById(Long id) {
+        return categoryRepository.findById(id);
+    }
+
+    private Optional<Category> getOptionalCategoryByName(String name) {
+        return categoryRepository.findByName(name);
     }
 }

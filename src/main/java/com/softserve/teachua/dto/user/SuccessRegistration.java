@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.user;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class SuccessRegistration implements Dto {
+public class SuccessRegistration implements Convertible {
 
     private Long id;
     private String email;

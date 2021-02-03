@@ -1,20 +1,18 @@
 package com.softserve.teachua.model;
 
-import com.softserve.teachua.dto.marker.Dto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.softserve.teachua.dto.marker.Convertible;
+import lombok.*;
 
 import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@With
 @Entity
 @Builder
 @Table(name = "news")
-public class News implements Dto {
+public class News implements Convertible {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

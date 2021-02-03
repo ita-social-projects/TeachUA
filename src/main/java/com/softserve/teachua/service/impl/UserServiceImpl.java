@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,13 +77,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User getUserById(Long id) {
-        if (isUserExistById(id)) {
-            String userNotFoundById = String.format(USER_NOT_FOUND_BY_ID, id);
-            log.error(userNotFoundById);
-            throw new NotExistException(userNotFoundById);
+        Optional<User> optionalUser = getOptionalUserById(id);
+        if (!optionalUser.isPresent()) {
+            throw new NotExistException(String.format(USER_NOT_FOUND_BY_ID, id));
         }
 
-        User user = userRepository.getById(id);
+        User user = optionalUser.get();
         log.info("**/getting user by id = " + user);
         return user;
     }
@@ -96,14 +96,13 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User getUserByEmail(String email) {
-        if (!isUserExistByEmail(email)) {
-            String userNotFoundByEmail = String.format(USER_NOT_FOUND_BY_EMAIL, email);
-            log.error(userNotFoundByEmail);
-            throw new NotExistException(userNotFoundByEmail);
+        Optional<User> optionalUser = getOptionalUserByEmail(email);
+        if (!optionalUser.isPresent()) {
+            throw new NotExistException(String.format(USER_NOT_FOUND_BY_EMAIL, email));
         }
 
         log.info("**/getting user by email = " + userRepository.findByEmail(email));
-        return userRepository.findByEmail(email);
+        return optionalUser.get();
     }
 
     /**
@@ -132,9 +131,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public SuccessRegistration registerUser(UserProfile userProfile) {
         if (isUserExistByEmail(userProfile.getEmail())) {
-            String emailAlreadyExist = String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail());
-            log.error(emailAlreadyExist);
-            throw new WrongAuthenticationException(emailAlreadyExist);
+            throw new WrongAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
         }
 
         User user = dtoConverter.convertToEntity(userProfile, new User())
@@ -157,9 +154,7 @@ public class UserServiceImpl implements UserService {
     public SuccessLogin validateUser(UserLogin userLogin) {
         UserEntity userEntity = getUserEntity(userLogin.getEmail());
         if (!encodeService.isValidPassword(userLogin, userEntity)) {
-            String wrongPassword = String.format(WRONG_PASSWORD, userLogin.getPassword());
-            log.error(wrongPassword);
-            throw new WrongAuthenticationException(wrongPassword);
+            throw new WrongAuthenticationException(String.format(WRONG_PASSWORD, userLogin.getPassword()));
         }
 
         log.info("**/user logged successfully = " + userLogin);
@@ -175,24 +170,23 @@ public class UserServiceImpl implements UserService {
      * @throws NotExistException if user id is incorrect.
      */
     @Override
-    public SuccessUpdatedUser updateUser(UserProfile userProfile) {
-        if (isUserExistById(userProfile.getId())) {
-            String userNotFoundById = String.format(USER_NOT_FOUND_BY_ID, userProfile.getId());
-            log.error(userNotFoundById);
-            throw new NotExistException(userNotFoundById);
-        }
+    public SuccessUpdatedUser updateUser(Long id, UserProfile userProfile) {
+        User user = getUserById(id);
 
-        User user = userRepository.save(dtoConverter.convertToEntity(userProfile, new User())
-                .withPassword(encodeService.encodePassword(userProfile.getPassword())));
-        log.info("**/updating user = " + user);
-        return dtoConverter.convertToDto(user, SuccessUpdatedUser.class);
+        User newUser = dtoConverter.convertToEntity(userProfile, user)
+                .withId(id);
+
+        log.info("**/updating role by id = " + newUser);
+        return dtoConverter.convertToDto(userRepository.save(newUser), SuccessUpdatedUser.class);
     }
 
     private boolean isUserExistByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
-
-    private boolean isUserExistById(Long id) {
-        return userRepository.existsById(id);
+    private Optional<User> getOptionalUserById(Long id) {
+        return userRepository.findById(id);
+    }
+    private Optional<User> getOptionalUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }

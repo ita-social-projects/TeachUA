@@ -2,9 +2,9 @@ package com.softserve.teachua.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
-import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.service.CenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -50,9 +50,12 @@ public class CenterController {
      *
      * @return new {@code CenterProfile}.
      */
-    @PutMapping("/center")
-    public CenterProfile updateCenter(@Valid @RequestBody CenterProfile centerProfile){
-        return centerService.updateCenter(centerProfile);
+    @PutMapping("/center/{id}")
+    public CenterProfile updateCenter(
+            @PathVariable Long id,
+            @Valid
+            @RequestBody CenterProfile centerProfile){
+        return centerService.updateCenter(id, centerProfile);
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,9 +13,10 @@ import java.util.Set;
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
+@With
 @Entity
 @Table(name = "categories")
-public class Category implements Dto {
+public class Category implements Convertible {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

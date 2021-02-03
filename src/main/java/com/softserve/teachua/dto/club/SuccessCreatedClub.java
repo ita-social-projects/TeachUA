@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.club;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.City;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Data
-public class SuccessCreatedClub implements Dto {
+public class SuccessCreatedClub implements Convertible {
     private Long id;
     private String name;
     private City city;

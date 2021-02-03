@@ -1,8 +1,7 @@
 package com.softserve.teachua.model;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,10 +12,11 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
+@With
 @Builder
 @Entity
 @Table(name = "clubs")
-public class Club implements Dto {
+public class Club implements Convertible {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

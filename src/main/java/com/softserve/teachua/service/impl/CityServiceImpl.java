@@ -1,9 +1,10 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.center.CenterProfile;
+import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.city.SuccessCreatedCity;
-import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.City;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,13 +54,12 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public City getCityById(Long id) {
-        if (!isCityExistById(id)) {
-            String cityNotFoundById = String.format(CITY_NOT_FOUND_BY_ID, id);
-            log.error(cityNotFoundById);
-            throw new NotExistException(cityNotFoundById);
+        Optional<City> optionalCity = getOptionalCityById(id);
+        if (!optionalCity.isPresent()) {
+            throw new NotExistException(String.format(CITY_NOT_FOUND_BY_ID, id));
         }
 
-        City city = cityRepository.getById(id);
+        City city = optionalCity.get();
         log.info("**/getting city by id = " + city);
         return city;
     }
@@ -72,13 +73,12 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public City getCityByName(String name) {
-        if (!isCityExistByName(name)) {
-            String cityNotFoundByName = String.format(CITY_NOT_FOUND_BY_NAME, name);
-            log.error(cityNotFoundByName);
-            throw new NotExistException(cityNotFoundByName);
+        Optional<City> optionalCity = getOptionalCityByName(name);
+        if (!optionalCity.isPresent()) {
+            throw new NotExistException(String.format(CITY_NOT_FOUND_BY_NAME, name));
         }
 
-        City city = cityRepository.findByName(name);
+        City city = optionalCity.get();
         log.info("**/getting city by id = " + city);
         return city;
     }
@@ -93,9 +93,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public SuccessCreatedCity addCity(String name) {
         if (isCityExistByName(name)) {
-            String cityAlreadyExist = String.format(CITY_ALREADY_EXIST, name);
-            log.error(cityAlreadyExist);
-            throw new AlreadyExistException(cityAlreadyExist);
+            throw new AlreadyExistException(String.format(CITY_ALREADY_EXIST, name));
         }
 
         City city = cityRepository.save(new City(name));
@@ -127,17 +125,22 @@ public class CityServiceImpl implements CityService {
      * @return new {@code CityProfile}.
      */
     @Override
-    public CityProfile updateCity(CityProfile cityProfile) {
-        City city = cityRepository.save(dtoConverter.convertToEntity(cityProfile, new City()));
-        log.info("**/updating city = " + city);
-        return dtoConverter.convertToDto(city, CityProfile.class);
-    }
+    public CityProfile updateCity(Long id, CityProfile cityProfile) {
+        City city = getCityById(id);
+        City newCity = dtoConverter.convertToEntity(cityProfile, city)
+                .withId(id);
 
-    private boolean isCityExistById(Long id) {
-        return cityRepository.existsById(id);
+        log.info("**/updating city by id = " + newCity);
+        return dtoConverter.convertToDto(cityRepository.save(newCity), CenterProfile.class);
     }
 
     private boolean isCityExistByName(String name) {
         return cityRepository.existsByName(name);
+    }
+    private Optional<City> getOptionalCityById(Long id) {
+        return cityRepository.findById(id);
+    }
+    private Optional<City> getOptionalCityByName(String name) {
+        return cityRepository.findByName(name);
     }
 }

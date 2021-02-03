@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.user;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
 
 @AllArgsConstructor
@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @With
 @Data
-public class SuccessLogin implements Dto {
+public class SuccessLogin implements Convertible {
 
     private Long id;
     private String email;

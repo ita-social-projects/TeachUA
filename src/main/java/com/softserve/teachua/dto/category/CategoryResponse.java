@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.category;
 
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.Club;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Builder
-public class CategoryResponse implements Dto {
+public class CategoryResponse implements Convertible {
 
     private Long id;
 

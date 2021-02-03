@@ -6,5 +6,5 @@ package com.softserve.teachua.dto.marker;
  *
  * @author Denis Burko
  */
-public interface Dto {
+public interface Convertible {
 }

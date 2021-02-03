@@ -1,7 +1,7 @@
 package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.softserve.teachua.dto.marker.Dto;
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,9 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Data
+@With
 @Entity
 @Table(name = "roles")
-public class Role implements Dto {
+public class Role implements Convertible {
 
     @NonNull
     @Id

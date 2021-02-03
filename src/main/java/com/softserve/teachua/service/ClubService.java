@@ -21,7 +21,7 @@ public interface ClubService {
 
     Club getClubByName(String name);
 
-    SuccessUpdatedClub updateClub(ClubProfile clubProfile);
+    SuccessUpdatedClub updateClub(Long id, ClubProfile clubProfile);
 
     ClubResponse getClubProfileByName(String name);
 

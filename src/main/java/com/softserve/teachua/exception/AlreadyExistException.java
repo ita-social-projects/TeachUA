@@ -1,5 +1,7 @@
 package com.softserve.teachua.exception;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * This class is custom exception for entity which already
  * exists in Database or other data storage.
@@ -9,6 +11,7 @@ package com.softserve.teachua.exception;
  *
  * @author Denis Burko
  */
+@Slf4j
 public class AlreadyExistException extends IllegalStateException {
     private static final long serialVersionUID = 1L;
     private static final String ALREADY_EXIST_EXCEPTION = "Already exist";
