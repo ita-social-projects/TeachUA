@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -165,8 +166,12 @@ public class ClubServiceImpl implements ClubService {
         Page<Club> clubResponses = clubRepository.findAllByParameters(
                 searchClubProfile.getClubName(),
                 searchClubProfile.getCityName(),
+                searchClubProfile.getDistrictName(),
+                searchClubProfile.getStationName(),
                 searchClubProfile.getCategoryName(),
                 pageable);
+      //  Page<Club> clubResponses = clubRepository.findAll(pageable);
+
 
         return new PageImpl<>(clubResponses
                 .stream()
@@ -182,8 +187,8 @@ public class ClubServiceImpl implements ClubService {
      * @return {@code List<SearchPossibleResponse>}
      */
     @Override
-    public List<SearchPossibleResponse> getPossibleClubByName(String text) {
-        return clubRepository.findRandomTop3ByName(text)
+    public List<SearchPossibleResponse> getPossibleClubByName(String text, String cityName) {
+        return clubRepository.findTop3ByName(text, cityName, PageRequest.of(0, 3))
                 .stream()
                 .map(category -> (SearchPossibleResponse) dtoConverter.convertToDto(category, SearchPossibleResponse.class))
                 .collect(Collectors.toList());

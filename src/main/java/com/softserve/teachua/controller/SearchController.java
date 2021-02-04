@@ -26,10 +26,12 @@ public class SearchController {
      * @return {@link CombinedPossibleResponse }
      */
     @GetMapping("/search")
-    public CombinedPossibleResponse possibleResponses(@RequestParam String text) {
+    public CombinedPossibleResponse possibleResponses(
+            @RequestParam String text,
+            @RequestParam String cityName) {
         return CombinedPossibleResponse.builder()
                 .categories(categoryService.getPossibleCategoryByName(text))
-                .clubs(clubService.getPossibleClubByName(text))
+                .clubs(clubService.getPossibleClubByName(text, cityName))
                 .build();
     }
 }

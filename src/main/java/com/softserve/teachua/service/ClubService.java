@@ -31,5 +31,5 @@ public interface ClubService {
 
     Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable);
 
-    List<SearchPossibleResponse> getPossibleClubByName(String text);
+    List<SearchPossibleResponse> getPossibleClubByName(String text, String cityName);
 }
