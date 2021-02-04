@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.user.SuccessUpdatedUser;
 import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.dto.user.UserResponse;
@@ -11,7 +12,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-public class UserController {
+public class UserController implements Api {
 
     private final UserService userService;
 

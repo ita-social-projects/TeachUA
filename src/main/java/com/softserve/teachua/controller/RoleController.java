@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.role.RoleProfile;
 import com.softserve.teachua.dto.role.RoleResponse;
 import com.softserve.teachua.service.RoleService;
@@ -10,7 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-public class RoleController {
+public class RoleController implements Api {
 
     private final RoleService roleService;
 

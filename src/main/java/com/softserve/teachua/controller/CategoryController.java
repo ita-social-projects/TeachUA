@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.category.SuccessCreatedCategory;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-public class CategoryController {
+public class CategoryController implements Api {
 
     private CategoryService categoryService;
 

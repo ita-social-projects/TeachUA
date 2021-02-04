@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.search.CombinedPossibleResponse;
 import com.softserve.teachua.service.CategoryService;
 import com.softserve.teachua.service.ClubService;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class SearchController {
+public class SearchController implements Api {
     private final CategoryService categoryService;
     private final ClubService clubService;
 

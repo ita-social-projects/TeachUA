@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.dto.station.StationResponse;
@@ -11,7 +12,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-public class StationController {
+public class StationController implements Api {
     private final StationService stationService;
 
     public StationController(StationService stationService) {

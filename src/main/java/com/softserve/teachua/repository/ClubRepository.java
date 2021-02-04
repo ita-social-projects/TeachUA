@@ -38,8 +38,6 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             @Param("category") String categoryName,
             Pageable pageable);
 
-    Page<Club> findAll(Pageable pageable);
-
     @Query(value =
             "SELECT c FROM Club AS c WHERE " +
             "LOWER(c.name) LIKE LOWER(CONCAT('%', :text ,'%')) AND " +

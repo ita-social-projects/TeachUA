@@ -170,8 +170,6 @@ public class ClubServiceImpl implements ClubService {
                 searchClubProfile.getStationName(),
                 searchClubProfile.getCategoryName(),
                 pageable);
-      //  Page<Club> clubResponses = clubRepository.findAll(pageable);
-
 
         return new PageImpl<>(clubResponses
                 .stream()
