@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller.user;
 
+import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.user.SuccessRegistration;
 import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.service.UserService;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-public class RegistrationController {
+public class RegistrationController implements Api {
 
     private final UserService userService;
 

@@ -1,6 +1,7 @@
 package com.softserve.teachua.controller.user;
 
 
+import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.user.SuccessLogin;
 import com.softserve.teachua.dto.user.UserLogin;
 import com.softserve.teachua.service.UserService;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-public class LoginController {
+public class LoginController implements Api {
 
     private final UserService userService;
 
