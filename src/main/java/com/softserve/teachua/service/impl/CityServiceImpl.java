@@ -86,18 +86,16 @@ public class CityServiceImpl implements CityService {
     /**
      * The method returns dto {@code SuccessCreatedCity} if city successfully added.
      *
-     * @param name - place city name.
+     * @param cityProfile - place place body of dto {@code CityProfile}.
      * @return new {@code SuccessCreatedCity}.
      * @throws AlreadyExistException if city already exists.
      */
     @Override
-    public SuccessCreatedCity addCity(String name) {
-        if (isCityExistByName(name)) {
-            throw new AlreadyExistException(String.format(CITY_ALREADY_EXIST, name));
+    public SuccessCreatedCity addCity(CityProfile cityProfile) {
+        if (isCityExistByName(cityProfile.getName())) {
+            throw new AlreadyExistException(String.format(CITY_ALREADY_EXIST, cityProfile.getName()));
         }
-
-        City city = cityRepository.save(new City(name));
-
+        City city = cityRepository.save(dtoConverter.convertToEntity(cityProfile, new City()));
         log.info("**/adding new city = " + city);
         return dtoConverter.convertToDto(city, SuccessCreatedCity.class);
     }

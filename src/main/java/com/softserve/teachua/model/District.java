@@ -11,8 +11,8 @@ import javax.persistence.*;
 @With
 @Builder
 @Entity
-@Table(name = "cities")
-public class City implements Convertible {
+@Table(name = "districts")
+public class District implements Convertible {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +20,9 @@ public class City implements Convertible {
 
     @Column (nullable = false)
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "city_id", referencedColumnName = "id", nullable = false)
+    @ToString.Exclude
+    private City city;
 }

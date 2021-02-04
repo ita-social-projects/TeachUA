@@ -28,7 +28,7 @@ public class Club implements Convertible {
     @Column
     private Integer ageTo;
 
-    @Column
+    @Column (nullable = false)
     @EqualsAndHashCode.Include
     private String name;
 
@@ -64,8 +64,11 @@ public class Club implements Convertible {
     @Column
     private Double longitude;
 
+    @Column
+    private Double rating;
+
     @ManyToOne
-    @JoinColumn(name = "city_id", referencedColumnName = "id")
+    @JoinColumn(name = "city_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
     private City city;
 
@@ -86,6 +89,13 @@ public class Club implements Convertible {
     @ToString.Exclude
     private Center center;
 
-    @Column
-    private Double rating;
+    @ManyToOne
+    @JoinColumn(name = "district_id", referencedColumnName = "id", nullable = false)
+    @ToString.Exclude
+    private District district;
+
+    @ManyToOne
+    @JoinColumn(name = "station_id", referencedColumnName = "id", nullable = false)
+    @ToString.Exclude
+    private Station station;
 }

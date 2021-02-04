@@ -33,14 +33,14 @@ public class CityController {
     /**
      * The controller returns dto {@code SuccessCreatedCity} of created city.
      *
-     * @param name - enter city name.
-     * @return new {@code SuccessCreatedCategory}.
+     * @param cityProfile - place body to {@link CityProfile}.
+     * @return new {@code SuccessCreatedCity}.
      */
     @PostMapping("/city")
     public SuccessCreatedCity addCity(
             @Valid
-            @RequestParam String name) {
-        return cityService.addCity(name);
+            @RequestBody CityProfile cityProfile) {
+        return cityService.addCity(cityProfile);
     }
 
     /**
