@@ -1,10 +1,7 @@
 package com.softserve.teachua.dto.club;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.Category;
-import com.softserve.teachua.model.Center;
-import com.softserve.teachua.model.City;
-import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,4 +33,6 @@ public class ClubResponse implements Convertible {
     private User user;
     private Center center;
     private Double rating;
+    private District district;
+    private Station station;
 }

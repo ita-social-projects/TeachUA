@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class SuccesCreatedStation implements Convertible {
+public class SuccessCreatedStation implements Convertible {
 
     private Long id;
 
