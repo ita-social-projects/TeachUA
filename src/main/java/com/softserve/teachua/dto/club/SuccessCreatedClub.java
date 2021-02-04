@@ -3,6 +3,8 @@ package com.softserve.teachua.dto.club;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.City;
+import com.softserve.teachua.model.District;
+import com.softserve.teachua.model.Station;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,4 +33,7 @@ public class SuccessCreatedClub implements Convertible {
     private String urlLogo;
     private String socialLinks;
     private Double rating;
+    private District district;
+    private Station station;
+
 }
