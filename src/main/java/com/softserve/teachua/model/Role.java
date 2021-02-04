@@ -22,7 +22,7 @@ public class Role implements Convertible {
     private Integer id;
 
     @NonNull
-    @Column
+    @Column (nullable = false)
     private String name;
 
     @JsonManagedReference

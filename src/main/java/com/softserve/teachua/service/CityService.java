@@ -14,7 +14,7 @@ public interface CityService {
 
     City getCityByName(String name);
 
-    SuccessCreatedCity addCity(String name);
+    SuccessCreatedCity addCity(CityProfile cityProfile);
 
     List<CityResponse> getListOfCities();
 

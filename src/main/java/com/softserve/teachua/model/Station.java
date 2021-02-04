@@ -11,24 +11,23 @@ import javax.persistence.*;
 @With
 @Builder
 @Entity
-@Table(name = "feedbacks")
-public class Feedback implements Convertible {
+@Table(name = "stations")
+public class Station implements Convertible{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String userName;
-
     @Column (nullable = false)
-    private Float rate;
-
-    @Column
-    private String text;
+    private String name;
 
     @ManyToOne
-    @JoinColumn(name = "club_id", referencedColumnName = "id")
+    @JoinColumn(name = "district_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
-    private Club club;
+    private District district;
+
+    @ManyToOne
+    @JoinColumn(name = "city_id", referencedColumnName = "id", nullable = false)
+    @ToString.Exclude
+    private City city;
 }

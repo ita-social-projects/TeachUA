@@ -29,7 +29,7 @@ public class User implements Convertible {
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role_id", nullable = false)
     @ToString.Exclude
     private Role role;
 }
