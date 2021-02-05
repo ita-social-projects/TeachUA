@@ -46,20 +46,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/signout")).logoutSuccessUrl("/signin");
     }
 
-    //TODO refactor everything
-    @Bean
-    public FilterRegistrationBean nonApiRequestToRootPathForwarderFilterRegistrationbean() {
-        FilterRegistrationBean<Filter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
-        filterFilterRegistrationBean.setFilter((request, response, chain) -> {
-            HttpServletRequest request1 = (HttpServletRequest) request;
-            if (!request1.getRequestURI().startsWith("/static/") && !request1.getRequestURI().startsWith("/api/") && !request1.getRequestURI().equals("/")) {
-                RequestDispatcher requestDispatcher = request.getRequestDispatcher("/");
-                requestDispatcher.forward(request, response);
-                return;
-            }
-
-            chain.doFilter(request, response);
-        });
-        return filterFilterRegistrationBean;
-    }
 }
