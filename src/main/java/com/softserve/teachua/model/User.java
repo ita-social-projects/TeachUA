@@ -2,6 +2,7 @@ package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "users")
-public class User implements Convertible {
+public class User implements Convertible, Archivable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

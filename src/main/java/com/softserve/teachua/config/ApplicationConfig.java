@@ -1,5 +1,6 @@
 package com.softserve.teachua.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -40,4 +41,7 @@ public class ApplicationConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public ObjectMapper objectMapper() { return new ObjectMapper(); }
 }
