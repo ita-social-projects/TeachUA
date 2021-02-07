@@ -17,17 +17,17 @@ insert into cities(name) values
 ('Рівне');
 
 insert into categories(name,url_logo, background_color) values
-('спортивні секції', 'static/images/categories/sport.svg', '#1890FF'),
-('танці, хореографія', 'static/images/categories/dance.svg', '#531DAB'),
-('студії раннього розвитку', 'static/images/categories/improvement.svg', '#73D13D'),
-('програмування, робототехніка, STEM', 'static/images/categories/programming.svg', '#597EF7'),
-('художні студії, мистецтво, дизайн', 'static/images/categories/art.svg', '#9254DE'),
-('вокальна студії, музика, музичні інструменти', 'static/images/categories/music.svg', '#FF7A45'),
-('акторська майстерність, театр', 'static/images/categories/theatre.svg', '#FF4D4F'),
-('особистісний розвиток', 'static/images/categories/self-improvement.svg', '#FADB14'),
-('журналістика, дитяче телебачення, монтаж відео, влогів', 'static/images/categories/tv.svg', '#13C2C2'),
-('інше', 'static/images/categories/other.svg', '#FFA940'),
-('центр розвитку', 'static/images/categories/center.svg', '#F759AB');
+('спортивні секції', '/static/images/categories/sport.svg', '#1890FF'),
+('танці, хореографія', '/static/images/categories/dance.svg', '#531DAB'),
+('студії раннього розвитку', '/static/images/categories/improvement.svg', '#73D13D'),
+('програмування, робототехніка, STEM', '/static/images/categories/programming.svg', '#597EF7'),
+('художні студії, мистецтво, дизайн', '/static/images/categories/art.svg', '#9254DE'),
+('вокальна студії, музика, музичні інструменти', '/static/images/categories/music.svg', '#FF7A45'),
+('акторська майстерність, театр', '/static/images/categories/theatre.svg', '#FF4D4F'),
+('особистісний розвиток', '/static/images/categories/self-improvement.svg', '#FADB14'),
+('журналістика, дитяче телебачення, монтаж відео, влогів', '/static/images/categories/tv.svg', '#13C2C2'),
+('інше', '/static/images/categories/other.svg', '#FFA940'),
+('центр розвитку', '/static/images/categories/center.svg', '#F759AB');
 
 insert into centers (name, email, address, phones, social_links, description,
                       latitude, longitude, url_logo, url_web, user_id) values

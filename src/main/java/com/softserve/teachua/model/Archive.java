@@ -10,7 +10,7 @@ import javax.persistence.*;
 @With
 @Builder
 @Entity
-@Table(name = "Archive")
+@Table(name = "archive")
 public class Archive {
 
     @Id

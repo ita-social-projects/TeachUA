@@ -23,7 +23,7 @@ public class CenterProfile implements Convertible {
 
     @NotEmpty
     private String email;
-
+/*
     @NotEmpty
     private String address;
 
@@ -46,7 +46,7 @@ public class CenterProfile implements Convertible {
     private Double latitude;
 
     @NotNull
-    private Double longitude;
+    private Double longitude;*/
 
     private User user;
 

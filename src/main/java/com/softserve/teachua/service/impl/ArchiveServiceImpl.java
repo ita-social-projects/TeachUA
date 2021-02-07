@@ -43,9 +43,10 @@ public class ArchiveServiceImpl implements ArchiveService {
     public <T extends Archivable> T saveModel(T model) {
         Archive archive;
         try {
-             archive = new Archive()
-                    .withClassName(model.getClass().getName())
-                    .withData(objectMapper.writeValueAsString(model));
+            archive = Archive.builder()
+                    .className(model.getClass().getSimpleName())
+                    .data(objectMapper.writeValueAsString(model))
+                    .build();
         } catch (JsonProcessingException e) {
             throw new JsonWriteException(String.format(JSON_WRITE_EXCEPTION, model.getClass().getName()));
         }
