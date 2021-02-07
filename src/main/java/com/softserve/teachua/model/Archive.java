@@ -1,7 +1,5 @@
 package com.softserve.teachua.model;
 
-import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,13 +10,16 @@ import javax.persistence.*;
 @With
 @Builder
 @Entity
-@Table(name = "cities")
-public class City implements Convertible, Archivable {
+@Table(name = "Archive")
+public class Archive {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column (nullable = false)
-    private String name;
+    private String className;
+
+    @Column (nullable = false, columnDefinition = "TEXT")
+    private String data;
 }

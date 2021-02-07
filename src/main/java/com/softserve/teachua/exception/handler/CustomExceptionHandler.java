@@ -52,6 +52,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildExceptionBody(exception, BAD_GATEWAY);
     }
 
+    @ExceptionHandler(JsonWriteException.class)
+    public final ResponseEntity<Object> handleJsonWriteException(JsonWriteException exception) {
+        return buildExceptionBody(exception, CONFLICT);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String exceptionMessage = exception.getMessage();
