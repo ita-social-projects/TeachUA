@@ -57,14 +57,13 @@ public class UserController implements Api {
     }
 
     /**
-     * The controller returns information {@code UserResponse} about deleted user.
+     * The controller returns dto {@code UserResponse} of deleted user by id.
      *
      * @param id - put user id.
      * @return new {@code UserResponse}.
      */
-    // TODO
     @DeleteMapping("/user/{id}")
-    public UserProfile deleteById(@PathVariable("id") Long id) {
-        return null;
+    public UserResponse deleteUser(@PathVariable Long id) {
+        return userService.deleteUserById(id);
     }
 }

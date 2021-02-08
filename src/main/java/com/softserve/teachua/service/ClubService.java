@@ -26,6 +26,8 @@ public interface ClubService {
 
     ClubResponse getClubProfileByName(String name);
 
+    ClubResponse deleteClubById(Long id);
+
     SuccessCreatedClub addClub(ClubProfile clubProfile);
 
     List<ClubResponse> getListOfClubs();

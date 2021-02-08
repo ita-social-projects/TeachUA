@@ -1,7 +1,5 @@
 package com.softserve.teachua.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
@@ -103,14 +101,13 @@ public class ClubController implements Api {
     }
 
     /**
-     * The controller returns id {@code ...} of deleted club.
+     * The controller returns dto {@code ClubResponse} of deleted club by id.
      *
      * @param id - put club id.
-     * @return new {@code ...}.
+     * @return new {@code ClubResponse}.
      */
-    //TODO
     @DeleteMapping("/club/{id}")
-    public Object deleteClub(@PathVariable Long id) throws JsonProcessingException {
-        return new ObjectMapper().readValue("{ \"id\" : " + id + " }", Object.class);
+    public ClubResponse deleteClub(@PathVariable Long id) {
+        return clubService.deleteClubById(id);
     }
 }

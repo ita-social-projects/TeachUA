@@ -1,7 +1,5 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
@@ -11,12 +9,15 @@ import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.repository.ClubRepository;
+import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ClubService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,14 +37,18 @@ public class ClubServiceImpl implements ClubService {
     private static final String CLUB_ALREADY_EXIST = "Club already exist with name: %s";
     private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
+    private static final String CLUB_DELETING_ERROR = "Can't delete club cause of relationship";
+
 
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
+    private final ArchiveService archiveService;
 
     @Autowired
-    public ClubServiceImpl(ClubRepository clubRepository, DtoConverter dtoConverter) {
+    public ClubServiceImpl(ClubRepository clubRepository, DtoConverter dtoConverter, ArchiveService archiveService) {
         this.clubRepository = clubRepository;
         this.dtoConverter = dtoConverter;
+        this.archiveService = archiveService;
     }
 
     /**
@@ -72,7 +78,7 @@ public class ClubServiceImpl implements ClubService {
 
         Club club = optionalClub.get();
 
-        log.info("**/getting club by id = " + club);
+        log.info("getting club by id {}", id);
         return club;
     }
 
@@ -91,7 +97,7 @@ public class ClubServiceImpl implements ClubService {
         }
 
         Club club = optionalClub.get();
-        log.info("**/getting club by name = " + club.getName());
+        log.info("getting club by name {}", club.getName());
         return club;
     }
 
@@ -108,7 +114,7 @@ public class ClubServiceImpl implements ClubService {
         Club newClub = dtoConverter.convertToEntity(clubProfile, club)
                 .withId(id);
 
-        log.info("**/updating club by id = " + newClub);
+        log.info("updating club by id {}", newClub);
         return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);
     }
 
@@ -138,7 +144,7 @@ public class ClubServiceImpl implements ClubService {
 
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club()));
 
-        log.info("**/adding club with name = " + clubProfile.getName());
+        log.info("adding club with name {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
     }
 
@@ -154,7 +160,7 @@ public class ClubServiceImpl implements ClubService {
                 .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("/**getting list of clubs = " + clubResponses);
+        log.info("getting list of clubs {}", clubResponses);
         return clubResponses;
     }
 
@@ -206,6 +212,29 @@ public class ClubServiceImpl implements ClubService {
                 .stream()
                 .map(category -> (SearchPossibleResponse) dtoConverter.convertToDto(category, SearchPossibleResponse.class))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * The method returns dto {@code ClubResponse} of deleted club by id.
+     *
+     * @param id - put club id.
+     * @return new {@code ClubResponse}.
+     * @throws DatabaseRepositoryException if club contain foreign keys.
+     */
+    @Override
+    public ClubResponse deleteClubById(Long id) {
+        Club club = getClubById(id);
+
+        archiveService.saveModel(club);
+
+        try {
+            clubRepository.deleteById(id);
+        } catch (DataAccessException | ValidationException e) {
+            throw new DatabaseRepositoryException(CLUB_DELETING_ERROR);
+        }
+
+        log.info("club {} was successfully deleted", club);
+        return dtoConverter.convertToDto(club, ClubResponse.class);
     }
 
     private boolean isClubExistByName(String name) {
