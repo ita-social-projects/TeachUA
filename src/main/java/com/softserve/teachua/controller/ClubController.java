@@ -1,9 +1,6 @@
 package com.softserve.teachua.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;

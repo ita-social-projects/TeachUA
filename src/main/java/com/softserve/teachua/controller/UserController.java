@@ -1,7 +1,6 @@
 package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.user.SuccessUpdatedUser;
 import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.dto.user.UserResponse;
@@ -63,7 +62,7 @@ public class UserController implements Api {
      * @param id - put user id.
      * @return new {@code UserResponse}.
      */
-    @DeleteMapping("/club/{id}")
+    @DeleteMapping("/user/{id}")
     public UserResponse deleteUser(@PathVariable Long id) {
         return userService.deleteUserById(id);
     }
