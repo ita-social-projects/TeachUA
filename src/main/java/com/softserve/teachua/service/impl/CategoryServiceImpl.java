@@ -1,22 +1,24 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.category.SuccessCreatedCategory;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.repository.CategoryRepository;
+import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,15 +31,17 @@ public class CategoryServiceImpl implements CategoryService {
     private static final String CATEGORY_ALREADY_EXIST = "Category already exist with name: %s";
     private static final String CATEGORY_NOT_FOUND_BY_ID = "Category not found by id: %s";
     private static final String CATEGORY_NOT_FOUND_BY_NAME = "Category not found by name: %s";
+    private static final String CATEGORY_DELETING_ERROR = "Can't delete category cause of relationship";
 
     private final CategoryRepository categoryRepository;
     private final DtoConverter dtoConverter;
+    private final ArchiveService archiveService;
 
     @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository, DtoConverter dtoConverter) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, DtoConverter dtoConverter, ArchiveService archiveService) {
         this.categoryRepository = categoryRepository;
         this.dtoConverter = dtoConverter;
-
+        this.archiveService = archiveService;
     }
 
     @Override
@@ -93,13 +97,20 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryResponses;
     }
 
-    @Transactional
     @Override
     public CategoryResponse deleteCategoryById(Long id) {
-        CategoryResponse categoryResponse = getCategoryProfileById(id);
-        categoryRepository.deleteById(id);
-        log.info("**/delete category = " + id);
-        return categoryResponse;
+        Category category = getCategoryById(id);
+
+        archiveService.saveModel(category);
+
+        try {
+            categoryRepository.deleteById(id);
+        } catch (DataAccessException | ValidationException e) {
+            throw new DatabaseRepositoryException(CATEGORY_DELETING_ERROR);
+        }
+
+        log.info("category {} was successfully deleted", category);
+        return dtoConverter.convertToDto(category, CategoryResponse.class);
     }
 
     @Override
