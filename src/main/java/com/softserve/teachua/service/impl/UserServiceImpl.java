@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = optionalUser.get();
-        log.info("**/getting user by id = " + user);
+        log.info("getting user by id {}", user);
         return user;
     }
 
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
             throw new NotExistException(String.format(USER_NOT_FOUND_BY_EMAIL, email));
         }
 
-        log.info("**/getting user by email = " + userRepository.findByEmail(email));
+        log.info("getting user by email {}", userRepository.findByEmail(email));
         return optionalUser.get();
     }
 
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
                 .map(user -> (UserResponse) dtoConverter.convertToDto(user, UserResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of users = " + userResponses);
+        log.info("getting list of users {}", userResponses);
         return userResponses;
     }
 
@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
                 .withRole(roleService.findByName(RoleData.USER.getDBRoleName()));
 
         user = userRepository.save(user);
-        log.info("**/user registered successfully = " + user);
+        log.info("user {} registered successfully", user);
         return dtoConverter.convertToDto(user, SuccessRegistration.class);
     }
 
@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
             throw new WrongAuthenticationException(String.format(WRONG_PASSWORD, userLogin.getPassword()));
         }
 
-        log.info("**/user logged successfully = " + userLogin);
+        log.info("user {} logged successfully", userLogin);
         return dtoConverter.convertFromDtoToDto(userEntity, new SuccessLogin())
                 .withAccessToken(encodeService.createToken(userEntity.getEmail()));
     }
@@ -184,7 +184,7 @@ public class UserServiceImpl implements UserService {
         User newUser = dtoConverter.convertToEntity(userProfile, user)
                 .withId(id);
 
-        log.info("**/updating role by id = " + newUser);
+        log.info("updating role by id {}", newUser);
         return dtoConverter.convertToDto(userRepository.save(newUser), SuccessUpdatedUser.class);
     }
 

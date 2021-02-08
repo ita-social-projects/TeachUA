@@ -1,7 +1,6 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
@@ -12,7 +11,6 @@ import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.service.ArchiveService;
@@ -28,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
-import java.sql.SQLDataException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -100,7 +97,7 @@ public class ClubServiceImpl implements ClubService {
         }
 
         Club club = optionalClub.get();
-        log.info("**/getting club by name = " + club.getName());
+        log.info("getting club by name {}", club.getName());
         return club;
     }
 
@@ -117,7 +114,7 @@ public class ClubServiceImpl implements ClubService {
         Club newClub = dtoConverter.convertToEntity(clubProfile, club)
                 .withId(id);
 
-        log.info("**/updating club by id = " + newClub);
+        log.info("updating club by id {}", newClub);
         return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);
     }
 
@@ -147,7 +144,7 @@ public class ClubServiceImpl implements ClubService {
 
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club()));
 
-        log.info("**/adding club with name = " + clubProfile.getName());
+        log.info("adding club with name {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
     }
 
@@ -163,7 +160,7 @@ public class ClubServiceImpl implements ClubService {
                 .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("/**getting list of clubs = " + clubResponses);
+        log.info("getting list of clubs {}", clubResponses);
         return clubResponses;
     }
 
