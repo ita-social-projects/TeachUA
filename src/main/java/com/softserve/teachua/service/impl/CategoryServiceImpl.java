@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
-    private static final String CATEGORY_ALREADY_EXIST = "Category already exist with name: %s";
+    private static final String CATEGORY_ALREADY_EXIST = "Category already exists with name: %s";
     private static final String CATEGORY_NOT_FOUND_BY_ID = "Category not found by id: %s";
     private static final String CATEGORY_NOT_FOUND_BY_NAME = "Category not found by name: %s";
     private static final String CATEGORY_DELETING_ERROR = "Can't delete category cause of relationship";
@@ -44,11 +44,24 @@ public class CategoryServiceImpl implements CategoryService {
         this.archiveService = archiveService;
     }
 
+    /**
+     * The method returns dto {@code CategoryResponse} of category by id.
+     *
+     * @param id - put category id.
+     * @return new {@code CategoryResponse}.
+     */
     @Override
     public CategoryResponse getCategoryProfileById(Long id) {
         return dtoConverter.convertToDto(getCategoryById(id), CategoryResponse.class);
     }
 
+    /**
+     * The method returns entity {@code Category} of category by id.
+     *
+     * @param id - put category id.
+     * @return new {@code Category}.
+     * @throws NotExistException if category does not exist.
+     */
     @Override
     public Category getCategoryById(Long id) {
         Optional<Category> optionalCategory = getOptionalCategoryById(id);
@@ -58,10 +71,17 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = optionalCategory.get();
 
-        log.info("**/getting category by id = " + category);
+        log.info("Getting category by id = {}", category);
         return category;
     }
 
+    /**
+     * The method returns entity {@code Category} of category by name.
+     *
+     * @param name - put category name.
+     * @return new {@code Category}.
+     * @throws NotExistException if category does not exist.
+     */
     @Override
     public Category getCategoryByName(String name) {
         Optional<Category> optionalCategory = getOptionalCategoryByName(name);
@@ -71,10 +91,17 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = optionalCategory.get();
 
-        log.info("**/getting category by name = " + category);
+        log.info("Getting category by name = {}", category);
         return category;
     }
 
+    /**
+     * The method returns dto {@code SuccessCreatedCategory} if category successfully added.
+     *
+     * @param categoryProfile - place body of dto {@code CategoryProfile}.
+     * @return new {@code SuccessCreatedCategory}.
+     * @throws AlreadyExistException if category already exists.
+     */
     @Override
     public SuccessCreatedCategory addCategory(CategoryProfile categoryProfile) {
         if (isCategoryExistByName(categoryProfile.getName())) {
@@ -82,10 +109,15 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category category = categoryRepository.save(dtoConverter.convertToEntity(categoryProfile, new Category()));
-        log.info("**/adding new category = " + category);
+        log.info("Adding new category = {}", category);
         return dtoConverter.convertToDto(category, SuccessCreatedCategory.class);
     }
 
+    /**
+     * The method returns list of dto {@code List<CategoryResponse>} of all categories.
+     *
+     * @return new {@code List<CategoryResponse>}.
+     */
     @Override
     public List<CategoryResponse> getListOfCategories() {
         List<CategoryResponse> categoryResponses = categoryRepository.findAll()
@@ -93,10 +125,17 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of category = " + categoryResponses);
+        log.info("Getting list of categories = {}", categoryResponses);
         return categoryResponses;
     }
 
+    /**
+     * The method returns dto {@code CategoryResponse} of deleted category by id.
+     *
+     * @param id - put category id.
+     * @return new {@code CategoryResponse}.
+     * @throws DatabaseRepositoryException if category contains foreign keys.
+     */
     @Override
     public CategoryResponse deleteCategoryById(Long id) {
         Category category = getCategoryById(id);
@@ -109,10 +148,15 @@ public class CategoryServiceImpl implements CategoryService {
             throw new DatabaseRepositoryException(CATEGORY_DELETING_ERROR);
         }
 
-        log.info("category {} was successfully deleted", category);
+        log.info("Category {} was successfully deleted", category);
         return dtoConverter.convertToDto(category, CategoryResponse.class);
     }
 
+    /**
+     * The method returns list of dto {@code List<SearchPossibleResponse>} of 3 random categories by name.
+     *
+     * @return new {@code List<SearchPossibleResponse>}.
+     */
     @Override
     public List<SearchPossibleResponse> getPossibleCategoryByName(String text) {
         return categoryRepository.findRandomTop3ByName(text)
@@ -121,13 +165,19 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * The method returns dto {@code CategoryProfile} of updated category.
+     *
+     * @param categoryProfile - place body of dto {@code CategoryProfile}.
+     * @return new {@code CategoryProfile}.
+     */
     @Override
     public CategoryProfile updateCategory(Long id, CategoryProfile categoryProfile) {
         Category category = getCategoryById(id);
         Category newCategory = dtoConverter.convertToEntity(categoryProfile, category)
                 .withId(id);
 
-        log.info("**/updating category by id = " + newCategory);
+        log.info("Updating category by id = {}", newCategory);
         return dtoConverter.convertToDto(categoryRepository.save(newCategory), CategoryProfile.class);
     }
 
