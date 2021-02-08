@@ -4,8 +4,8 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
-import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.repository.CenterRepository;
@@ -13,18 +13,23 @@ import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CenterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional
 public class CenterServiceImpl implements CenterService {
     private static final String CENTER_ALREADY_EXIST = "Center already exist with name: %s";
     private static final String CENTER_NOT_FOUND_BY_ID = "Center not found by id: %s";
     private static final String CENTER_NOT_FOUND_BY_NAME = "Center not found by name: %s";
+    private static final String CENTER_DELETING_ERROR = "Can't delete center cause of relationship";
 
     private final CenterRepository centerRepository;
     private final ArchiveService archiveService;
@@ -108,7 +113,12 @@ public class CenterServiceImpl implements CenterService {
         Center center = getCenterById(id);
 
         archiveService.saveModel(center);
-        centerRepository.deleteById(id);
+
+        try {
+            centerRepository.deleteById(id);
+        } catch (DataAccessException | ValidationException e) {
+            throw new DatabaseRepositoryException(CENTER_DELETING_ERROR);
+        }
 
         log.info("center {} was successfully deleted", center);
         return dtoConverter.convertToDto(center, CenterResponse.class);

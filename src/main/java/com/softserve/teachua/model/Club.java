@@ -54,10 +54,14 @@ public class Club implements Convertible, Archivable {
     private String urlLogo;
 
     @Column
+    private String urlBackground;
+
+    @Column
     private String workTime;
 
     @Column
     private String socialLinks;
+
 
     @Column
     private Double latitude;

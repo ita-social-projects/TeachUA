@@ -24,6 +24,7 @@ public class ClubResponse implements Convertible {
     private String description;
     private String urlWeb;
     private String urlLogo;
+    private String urlBackground;
     private String workTime;
     private String socialLinks;
     private Double latitude;

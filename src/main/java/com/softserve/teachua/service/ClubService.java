@@ -7,6 +7,7 @@ import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
+import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.model.Club;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,8 @@ public interface ClubService {
     SuccessCreatedClub addClub(ClubProfile clubProfile);
 
     List<ClubResponse> getListOfClubs();
+
+    List<ClubResponse> getSimilarClubsByCategoryName(SimilarClubProfile similarClubProfile);
 
     Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable);
 

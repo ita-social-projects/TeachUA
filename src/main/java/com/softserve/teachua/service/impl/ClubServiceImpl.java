@@ -9,6 +9,7 @@ import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
+import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
@@ -157,6 +158,18 @@ public class ClubServiceImpl implements ClubService {
         return clubResponses;
     }
 
+    @Override
+    public List<ClubResponse> getSimilarClubsByCategoryName(SimilarClubProfile similarClubProfile) {
+        return clubRepository.findTop2ByCategoryName(
+                similarClubProfile.getId(),
+                similarClubProfile.getCategoryName(),
+                similarClubProfile.getCityName(),
+                PageRequest.of(0, 2))
+                .stream()
+                .map(category -> (ClubResponse) dtoConverter.convertToDto(category, ClubResponse.class))
+                .collect(Collectors.toList());
+    }
+
 
     /**
      * The method which return possible results of search by entered text.
@@ -198,9 +211,11 @@ public class ClubServiceImpl implements ClubService {
     private boolean isClubExistByName(String name) {
         return clubRepository.existsByName(name);
     }
+
     private Optional<Club> getOptionalClubById(Long id) {
         return clubRepository.findById(id);
     }
+
     private Optional<Club> getOptionalClubByName(String name) {
         return clubRepository.findByName(name);
     }
