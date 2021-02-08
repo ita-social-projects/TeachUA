@@ -24,7 +24,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     boolean existsById(Long id);
 
     @Query("SELECT DISTINCT club from Club AS club " +
-            "LEFT JOIN club.categories AS category WHERE " +
+            "JOIN club.categories AS category WHERE " +
             "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) AND " +
             "club.city.name LIKE CONCAT('%', :city , '%') AND " +
             "club.district.name LIKE CONCAT('%', :district , '%') AND " +
@@ -42,7 +42,19 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "SELECT c FROM Club AS c WHERE " +
             "LOWER(c.name) LIKE LOWER(CONCAT('%', :text ,'%')) AND " +
             "c.city.name = :city")
-    Page<Club> findTop3ByName(@Param("text") String text, @Param("city") String cityName, Pageable pageable);
+    Page<Club> findTop3ByName(@Param("text") String text,
+                              @Param("city") String cityName,
+                              Pageable pageable);
+
+    @Query("SELECT DISTINCT club from Club AS club " +
+            "JOIN club.categories AS category WHERE " +
+            "category.name = :categoryName " +
+            "AND club.city.name = :cityName " +
+            "AND club.id <> :id")
+    Page<Club> findTop2ByCategoryName(@Param("id") Long id,
+                                      @Param("categoryName") String categoryName,
+                                      @Param("cityName") String cityName,
+                                      Pageable pageable);
 
     @Modifying
     @Query(value = "UPDATE clubs SET rating=:rating WHERE id = :club_id", nativeQuery = true)

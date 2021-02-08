@@ -8,6 +8,7 @@ import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.search.SearchClubProfile;
+import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -71,6 +72,11 @@ public class ClubController implements Api {
             @Valid
             @RequestBody ClubProfile clubProfile) {
         return clubService.addClub(clubProfile);
+    }
+
+    @GetMapping("/clubs/search/similar")
+    public List<ClubResponse> getSimilarClubs(SimilarClubProfile similarClubProfile) {
+        return clubService.getSimilarClubsByCategoryName(similarClubProfile);
     }
 
     @GetMapping("/clubs/search")
