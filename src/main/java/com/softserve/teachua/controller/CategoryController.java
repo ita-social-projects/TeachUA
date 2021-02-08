@@ -68,15 +68,13 @@ public class CategoryController implements Api {
     }
 
     /**
-     * The controller returns dto {@code ...} of deleted category.
+     * The controller returns dto {@code CategoryResponse} of deleted category.
      *
      * @param id - put category id.
-     * @return new {@code ...}.
+     * @return new {@code CategoryResponse}.
      */
     @DeleteMapping("/category/{id}")
-    public ResponseEntity<CategoryResponse> deleteCategory(@PathVariable("id") Long id){
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(categoryService.deleteCategoryById(id));
+    public CategoryResponse deleteCategory(@PathVariable("id") Long id){
+        return categoryService.deleteCategoryById(id);
     }
 }
