@@ -41,7 +41,6 @@ public class CategoryController implements Api {
         return categoryService.getListOfCategories();
     }
 
-
     /**
      * The controller returns dto {@code SuccessCreatedCategory} of created category.
      *

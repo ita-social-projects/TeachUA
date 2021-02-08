@@ -1,7 +1,5 @@
 package com.softserve.teachua.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
@@ -76,9 +74,9 @@ public class CenterController implements Api {
      * @return new {@code ...}.
      */
     //TODO
-    @DeleteMapping("/center")
-    public Object deleteCenter(@RequestParam Long id) throws JsonProcessingException {
-        return new ObjectMapper().readValue("{ \"id\" : " + id + " }", Object.class);
+    @DeleteMapping("/center/{id}")
+    public CenterResponse deleteCenter(@PathVariable Long id) {
+        return centerService.deleteCenterById(id);
     }
 
 

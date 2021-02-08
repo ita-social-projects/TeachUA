@@ -1,5 +1,7 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
@@ -68,6 +70,7 @@ public class ClubServiceImpl implements ClubService {
         }
 
         Club club = optionalClub.get();
+
         log.info("**/getting club by id = " + club);
         return club;
     }

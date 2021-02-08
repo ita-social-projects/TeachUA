@@ -19,4 +19,6 @@ public interface CenterService {
     List<CenterResponse> getListOfCenters();
 
     CenterProfile updateCenter(Long id, CenterProfile centerProfile);
+
+    CenterResponse deleteCenterById(Long id);
 }

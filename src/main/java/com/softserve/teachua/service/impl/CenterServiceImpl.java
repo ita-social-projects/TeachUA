@@ -4,10 +4,12 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.repository.CenterRepository;
+import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CenterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +27,13 @@ public class CenterServiceImpl implements CenterService {
     private static final String CENTER_NOT_FOUND_BY_NAME = "Center not found by name: %s";
 
     private final CenterRepository centerRepository;
+    private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
 
     @Autowired
-    public CenterServiceImpl(CenterRepository centerRepository,DtoConverter dtoConverter) {
-
+    public CenterServiceImpl(CenterRepository centerRepository, ArchiveService archiveService, DtoConverter dtoConverter) {
         this.centerRepository = centerRepository;
+        this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
     }
 
@@ -53,7 +56,7 @@ public class CenterServiceImpl implements CenterService {
      * @throws AlreadyExistException if center already exists.
      */
     @Override
-    public SuccessCreatedCenter addCenter(CenterProfile centerProfile){
+    public SuccessCreatedCenter addCenter(CenterProfile centerProfile) {
         if (isCenterExistByName(centerProfile.getName())) {
             throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
         }
@@ -100,6 +103,17 @@ public class CenterServiceImpl implements CenterService {
         return dtoConverter.convertToDto(centerRepository.save(newCenter), CenterProfile.class);
     }
 
+    @Override
+    public CenterResponse deleteCenterById(Long id) {
+        Center center = getCenterById(id);
+
+        archiveService.saveModel(center);
+        centerRepository.deleteById(id);
+
+        log.info("center {} was successfully deleted", center);
+        return dtoConverter.convertToDto(center, CenterResponse.class);
+    }
+
     /**
      * The method returns entity {@code Center} of center by name.
      *
@@ -138,9 +152,11 @@ public class CenterServiceImpl implements CenterService {
     private boolean isCenterExistByName(String name) {
         return centerRepository.existsByName(name);
     }
+
     private Optional<Center> getOptionalCenterById(Long id) {
         return centerRepository.findById(id);
     }
+
     private Optional<Center> getOptionalCenterByName(String name) {
         return centerRepository.findByName(name);
     }
