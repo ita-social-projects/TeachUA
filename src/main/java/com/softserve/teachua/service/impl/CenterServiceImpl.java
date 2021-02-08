@@ -116,11 +116,6 @@ public class CenterServiceImpl implements CenterService {
 
         try {
             centerRepository.deleteById(id);
-
-            if(true) {
-                throw new DataAccessException("dasd") {
-                };
-            }
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(CENTER_DELETING_ERROR);
         }
