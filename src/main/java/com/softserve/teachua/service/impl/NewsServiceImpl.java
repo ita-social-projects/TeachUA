@@ -4,16 +4,20 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
+import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.News;
 import com.softserve.teachua.repository.NewsRepository;
+import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.NewsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,14 +27,17 @@ import java.util.stream.Collectors;
 @Service
 public class NewsServiceImpl implements NewsService {
     private static final String NEWS_NOT_FOUND_BY_ID = "News not found by id: %s";
+    private static final String CATEGORY_DELETING_ERROR = "Can't delete category cause of relationship";
 
     private final NewsRepository newsRepository;
     private final DtoConverter dtoConverter;
+    private final ArchiveService archiveService;
 
     @Autowired
-    NewsServiceImpl(NewsRepository newsRepository, DtoConverter dtoConverter) {
+    NewsServiceImpl(NewsRepository newsRepository, DtoConverter dtoConverter, ArchiveService archiveService) {
         this.newsRepository = newsRepository;
         this.dtoConverter = dtoConverter;
+        this.archiveService = archiveService;
     }
 
     /**
@@ -116,9 +123,15 @@ public class NewsServiceImpl implements NewsService {
     public NewsResponse deleteNewsById(Long id) {
         News deletedNews = getNewsById(id);
 
-        newsRepository.deleteById(id);
+        archiveService.saveModel(deletedNews);
 
-        log.info("deleted feedback " + deletedNews);
+        try {
+            newsRepository.deleteById(id);
+        } catch (DataAccessException | ValidationException e) {
+            throw new DatabaseRepositoryException(CATEGORY_DELETING_ERROR);
+        }
+
+        log.info("news {} was successfully deleted", deletedNews);
         return dtoConverter.convertToDto(deletedNews, NewsResponse.class);
     }
 
