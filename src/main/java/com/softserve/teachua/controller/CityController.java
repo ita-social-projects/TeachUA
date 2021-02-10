@@ -67,9 +67,8 @@ public class CityController implements Api {
         return cityService.getListOfCities();
     }
 
-    //TODO have to known we're archiving cities or deleting
     @DeleteMapping("/city/{id}")
-    public String deleteCity(@PathVariable long id) {
-        return "City " + id + " is deleted";
+    public CityResponse deleteCity(@PathVariable long id) {
+        return cityService.deleteCityById(id);
     }
 }
