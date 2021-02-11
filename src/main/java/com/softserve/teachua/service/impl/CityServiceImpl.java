@@ -5,32 +5,43 @@ import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.city.SuccessCreatedCity;
+import com.softserve.teachua.dto.role.RoleResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.City;
+import com.softserve.teachua.model.Role;
 import com.softserve.teachua.repository.CityRepository;
+import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @Slf4j
 public class CityServiceImpl implements CityService {
     private static final String CITY_ALREADY_EXIST = "City already exist with name: %s";
     private static final String CITY_NOT_FOUND_BY_ID = "City not found by id: %s";
     private static final String CITY_NOT_FOUND_BY_NAME = "City not found by name: %s";
+    private static final String CITY_DELETING_ERROR = "Can't city role cause of relationship";
 
     private final DtoConverter dtoConverter;
+    private final ArchiveService archiveService;
     private final CityRepository cityRepository;
 
     @Autowired
-    public CityServiceImpl(DtoConverter dtoConverter, CityRepository cityRepository) {
+    public CityServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService, CityRepository cityRepository) {
         this.dtoConverter = dtoConverter;
+        this.archiveService = archiveService;
         this.cityRepository = cityRepository;
     }
 
@@ -130,6 +141,30 @@ public class CityServiceImpl implements CityService {
 
         log.info("**/updating city by id = " + newCity);
         return dtoConverter.convertToDto(cityRepository.save(newCity), CenterProfile.class);
+    }
+
+    /**
+     * The method deletes city {@link  City}
+     *
+     * @param id - id of city to delete
+     * @return CityResponse {@link  CityResponse}.
+     * @throws NotExistException {@link NotExistException} if the city doesn't exist.
+     */
+    @Override
+    public CityResponse deleteCityById(Long id) {
+        City city = getCityById(id);
+
+        archiveService.saveModel(city);
+
+        try {
+            cityRepository.deleteById(id);
+            cityRepository.flush();
+        } catch (DataAccessException | ValidationException e) {
+            throw new DatabaseRepositoryException(CITY_DELETING_ERROR);
+        }
+
+        log.info("city {} was successfully deleted", city);
+        return dtoConverter.convertToDto(city, CityResponse.class);
     }
 
     private boolean isCityExistByName(String name) {

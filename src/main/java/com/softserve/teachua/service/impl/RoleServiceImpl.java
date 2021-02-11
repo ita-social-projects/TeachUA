@@ -4,31 +4,40 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.role.RoleProfile;
 import com.softserve.teachua.dto.role.RoleResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Role;
 import com.softserve.teachua.repository.RoleRepository;
+import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.RoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @Slf4j
 public class RoleServiceImpl implements RoleService {
     private static final String ROLE_ALREADY_EXIST = "Role already exist with name: %s";
     private static final String ROLE_NOT_FOUND_BY_ID = "Role not found by id: %s";
     private static final String ROLE_NOT_FOUND_BY_NAME = "Role not found by name: %s";
+    private static final String ROLE_DELETING_ERROR = "Can't delete role cause of relationship";
 
     private final RoleRepository roleRepository;
+    private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
 
     @Autowired
-    public RoleServiceImpl(RoleRepository roleRepository, DtoConverter dtoConverter) {
+    public RoleServiceImpl(RoleRepository roleRepository, ArchiveService archiveService, DtoConverter dtoConverter) {
         this.roleRepository = roleRepository;
+        this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
     }
 
@@ -121,6 +130,31 @@ public class RoleServiceImpl implements RoleService {
         Role role = roleRepository.save(dtoConverter.convertToEntity(roleProfile, new Role()));
         log.info("**/adding new role = " + roleProfile.getRoleName());
         return dtoConverter.convertToDto(role, RoleProfile.class);
+    }
+
+    /**
+     * The method deletes role {@link  Role}
+     *
+     * @param id - id of role to delete
+     * @return RoleRespone {@link  RoleResponse}.
+     * @throws NotExistException {@link NotExistException} if the role doesn't exist.
+     * @throws DatabaseRepositoryException {@link DatabaseRepositoryException} if role has re.
+     */
+    @Override
+    public RoleResponse deleteRoleById(Integer id) {
+        Role role = getRoleById(id);
+
+        archiveService.saveModel(role);
+
+        try {
+            roleRepository.deleteById(id);
+            roleRepository.flush();
+        } catch (DataAccessException | ValidationException e) {
+            throw new DatabaseRepositoryException(ROLE_DELETING_ERROR);
+        }
+
+        log.info("role {} was successfully deleted", role);
+        return dtoConverter.convertToDto(role, RoleResponse.class);
     }
 
     private boolean isRoleExistByName(String name) {
