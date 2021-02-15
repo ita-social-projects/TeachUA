@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class FeedbackServiceImpl implements FeedbackService {
-    private final String FEEDBACK_NOT_FOUND_BY_ID = "Feedback not found by id: %s";
+    private static final String FEEDBACK_NOT_FOUND_BY_ID = "Feedback not found by id: %s";
 
     private final FeedbackRepository feedbackRepository;
     private final ClubRepository clubRepository;
@@ -62,6 +62,17 @@ public class FeedbackServiceImpl implements FeedbackService {
         Feedback feedback = optionalFeedback.get();
         log.info("get feedback by id - " + feedback);
         return feedback;
+    }
+
+    @Override
+    public List<FeedbackResponse> getAllByClubId(Long id) {
+        List<FeedbackResponse> feedbackResponses = feedbackRepository.getAllByClubId(id)
+                .stream()
+                .map(feedback -> (FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
+                .collect(Collectors.toList());
+
+        log.info("get list of feedback -" + feedbackResponses);
+        return feedbackResponses;
     }
 
     /**
