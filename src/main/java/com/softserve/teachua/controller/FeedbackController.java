@@ -45,6 +45,16 @@ public class FeedbackController implements Api {
     }
 
     /**
+     * The method to get all Feedbacks
+     *
+     * @return List of FeedbackResponse
+     */
+    @GetMapping("/feedbacks/{id}")
+    public List<FeedbackResponse> getAllFeedback(@PathVariable Long id) {
+        return feedbackService.getAllByClubId(id);
+    }
+
+    /**
      * The method to create a new Feedback
      *
      * @param feedbackProfile - object of DTO class

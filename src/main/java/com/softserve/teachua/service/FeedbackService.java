@@ -17,6 +17,8 @@ public interface FeedbackService {
 
     List<FeedbackResponse> getListOfFeedback();
 
+    List<FeedbackResponse> getAllByClubId(Long id);
+
     FeedbackProfile updateFeedbackProfileById(Long id,FeedbackProfile feedbackProfile);
 
     FeedbackResponse deleteFeedbackById(Long id);

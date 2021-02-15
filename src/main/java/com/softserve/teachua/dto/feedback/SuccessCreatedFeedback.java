@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 public class SuccessCreatedFeedback implements Convertible {
     private Long id;
 
-    private String userName;
-
     private Float rate;
 
     private String text;
+
+    private Long userId;
 
     private Long clubId;
 }

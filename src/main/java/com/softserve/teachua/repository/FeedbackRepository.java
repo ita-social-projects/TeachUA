@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,8 +16,9 @@ import java.util.Optional;
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     Optional<Feedback> findById(Long id);
 
-    void deleteById(Long id);
+    List<Feedback> getAllByClubId(Long clubId);
 
+    void deleteById(Long id);
 
     @Query("SELECT AVG(feedback.rate) FROM Feedback AS feedback WHERE feedback.club.id = :clubId")
     Double findAvgRating(@Param("clubId") Long clubId);

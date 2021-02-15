@@ -71,6 +71,17 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedback;
     }
 
+    @Override
+    public List<FeedbackResponse> getAllByClubId(Long id) {
+        List<FeedbackResponse> feedbackResponses = feedbackRepository.getAllByClubId(id)
+                .stream()
+                .map(feedback -> (FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
+                .collect(Collectors.toList());
+
+        log.info("get list of feedback -" + feedbackResponses);
+        return feedbackResponses;
+    }
+
     /**
      * Method add and save new {@link Feedback}
      *

@@ -33,6 +33,12 @@ public class Category implements Convertible, Archivable {
     @Column
     private String backgroundColor;
 
+    @Column
+    private String tagBackgroundColor;
+
+    @Column
+    private String tagTextColor;
+
     @JsonBackReference
     @ManyToMany(mappedBy = "categories")
     @ToString.Exclude

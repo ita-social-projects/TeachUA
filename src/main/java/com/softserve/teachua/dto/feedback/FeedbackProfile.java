@@ -24,5 +24,8 @@ public class FeedbackProfile implements Convertible {
     private String text;
 
     @NotNull
+    private Long userId;
+
+    @NotNull
     private Long clubId;
 }
