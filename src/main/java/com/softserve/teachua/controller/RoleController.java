@@ -58,15 +58,15 @@ public class RoleController implements Api {
     }
 
     /**
-     * The method which return array of existing roles.
+     * The method deletes role by id.
      *
      * @return {...}
      */
     @DeleteMapping("/role/{id}")
-    public String deleteRole(@PathVariable Long id) {
-        // TODO
-        return "DeleteMapping, Method deleteRole, role id: " + id;
+    public RoleResponse deleteRole(@PathVariable Integer id) {
+        return roleService.deleteRoleById(id);
     }
+
 
     /**
      * The method which return array of existing roles.

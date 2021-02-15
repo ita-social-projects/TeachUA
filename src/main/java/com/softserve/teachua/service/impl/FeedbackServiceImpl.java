@@ -4,16 +4,20 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
+import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
+import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.FeedbackService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,23 +27,26 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FeedbackServiceImpl implements FeedbackService {
     private static final String FEEDBACK_NOT_FOUND_BY_ID = "Feedback not found by id: %s";
+    private static final String FEEDBACK_DELETING_ERROR = "Can't delete feedback cause of relationship";
 
     private final FeedbackRepository feedbackRepository;
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
+    private final ArchiveService archiveService;
 
     @Autowired
-    FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository) {
+    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
+        this.archiveService = archiveService;
     }
 
     /**
      * Method find {@link Feedback}, and convert it to object of DTO class
      *
-     * @param id
-     * @return FeedbackResponce
+     * @param id - place id here.
+     * @return new {@code FeedbackResponse}
      **/
     @Override
     public FeedbackResponse getFeedbackProfileById(Long id) {
@@ -49,7 +56,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     /**
      * Method find {@link Feedback}
      *
-     * @param id
+     * @param id - place id
      * @return Feedback
      **/
     @Override
@@ -78,7 +85,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     /**
      * Method add and save new {@link Feedback}
      *
-     * @param feedbackProfile
+     * @param feedbackProfile - put dto 'FeedbackProfile'
      * @return SuccessCreatedFeedback
      **/
     @Override
@@ -96,7 +103,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     /**
      * Method find all {@link Feedback}
      *
-     * @return List of FeedbackResponse
+     * @return new {@code List<FeedbackResponse>}
      **/
     @Override
     public List<FeedbackResponse> getListOfFeedback() {
@@ -112,8 +119,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     /**
      * Method find {@link Feedback} by id, and update data and Club rating
      *
-     * @param id
-     * @param feedbackProfile
+     * @param id - place id
+     * @param feedbackProfile  - put dto 'FeedbackProfile'
      * @return FeedbackProfile
      **/
     @Override
@@ -133,20 +140,28 @@ public class FeedbackServiceImpl implements FeedbackService {
     /**
      * Method delete {@link Feedback} and update Club rating
      *
-     * @param id
-     * @return FeedbackResponce
+     * @param id - place id
+     * @return new {@code FeedbackResponse}
      **/
     @Override
     public FeedbackResponse deleteFeedbackById(Long id) {
-        Feedback deletedFeedback = getFeedbackById(id);
+        Feedback feedback = getFeedbackById(id);
 
-        Long clubId = deletedFeedback.getClub().getId();
+        Long clubId = feedback.getClub().getId();
 
-        feedbackRepository.deleteById(id);
+        archiveService.saveModel(feedback);
+
+        try {
+            feedbackRepository.deleteById(id);
+            feedbackRepository.flush();
+        } catch (DataAccessException | ValidationException e) {
+            throw new DatabaseRepositoryException(FEEDBACK_DELETING_ERROR);
+        }
+
         clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
 
-        log.info("deleted feedback " + deletedFeedback);
-        return dtoConverter.convertToDto(deletedFeedback, FeedbackResponse.class);
+        log.info("feedback {} was successfully deleted", feedback);
+        return dtoConverter.convertToDto(feedback, FeedbackResponse.class);
     }
 
     private Optional<Feedback> getOptionalFeedbackById(Long id) {

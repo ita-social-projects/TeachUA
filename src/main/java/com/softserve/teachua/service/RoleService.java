@@ -18,4 +18,6 @@ public interface RoleService {
     Role findByName(String name);
 
     RoleProfile addNewRole(RoleProfile roleProfile);
+
+    RoleResponse deleteRoleById(Integer id);
 }

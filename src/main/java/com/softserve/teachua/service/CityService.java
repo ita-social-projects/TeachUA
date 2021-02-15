@@ -19,4 +19,6 @@ public interface CityService {
     List<CityResponse> getListOfCities();
 
     CityProfile updateCity(Long id, CityProfile cityProfile);
+
+    CityResponse deleteCityById(Long id);
 }
