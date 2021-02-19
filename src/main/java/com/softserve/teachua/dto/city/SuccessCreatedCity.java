@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.city;
 
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class SuccessCreatedCity {
+public class SuccessCreatedCity implements Convertible {
     private Long id;
     private String name;
 }

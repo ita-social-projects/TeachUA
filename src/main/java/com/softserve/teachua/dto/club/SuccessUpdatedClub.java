@@ -24,16 +24,14 @@ public class SuccessUpdatedClub implements Convertible {
     private String address;
     private Double latitude;
     private Double longitude;
-    private String phones;
     private Set<Category> categories;
     private String description;
     private Integer ageFrom;
     private Integer ageTo;
-    private String email;
     private String urlWeb;
     private String urlLogo;
-    private String socialLinks;
     private Double rating;
     private District district;
     private Station station;
+    private Boolean isApproved;
 }

@@ -18,15 +18,12 @@ public class ClubResponse implements Convertible {
     private Integer ageFrom;
     private Integer ageTo;
     private String name;
-    private String email;
     private String address;
-    private String phones;
     private String description;
     private String urlWeb;
     private String urlLogo;
     private String urlBackground;
     private String workTime;
-    private String socialLinks;
     private Double latitude;
     private Double longitude;
     private City city;
@@ -36,4 +33,5 @@ public class ClubResponse implements Convertible {
     private Double rating;
     private District district;
     private Station station;
+    private Boolean isApproved;
 }

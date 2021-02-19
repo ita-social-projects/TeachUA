@@ -35,14 +35,7 @@ public class Club implements Convertible, Archivable {
 
     @Column
     @EqualsAndHashCode.Include
-    private String email;
-
-    @Column
-    @EqualsAndHashCode.Include
     private String address;
-
-    @Column
-    private String phones;
 
     @Column
     private String description;
@@ -58,10 +51,6 @@ public class Club implements Convertible, Archivable {
 
     @Column
     private String workTime;
-
-    @Column
-    private String socialLinks;
-
 
     @Column
     private Double latitude;
@@ -103,4 +92,7 @@ public class Club implements Convertible, Archivable {
     @JoinColumn(name = "station_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
     private Station station;
+
+    @Column
+    private Boolean isApproved;
 }

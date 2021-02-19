@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class SuccessUpdatedUser implements Convertible {
+
     private String name;
     private Long id;
     private String email;
