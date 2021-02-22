@@ -23,5 +23,6 @@ public class CategoryResponse implements Convertible {
 
     private String backgroundColor;
 
-    private Set<Club> clubs;
+   //TODO
+    // private Set<Club> clubs;
 }

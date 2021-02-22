@@ -4,17 +4,22 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.category.SuccessCreatedCategory;
+import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Category;
+import com.softserve.teachua.model.Club;
 import com.softserve.teachua.repository.CategoryRepository;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,7 +124,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @return new {@code List<CategoryResponse>}.
      */
     @Override
-    public List<CategoryResponse> getListOfCategories() {
+    public List<CategoryResponse> getAllCategories() {
         List<CategoryResponse> categoryResponses = categoryRepository.findAll()
                 .stream()
                 .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
@@ -127,6 +132,22 @@ public class CategoryServiceImpl implements CategoryService {
 
         log.info("Getting list of categories = {}", categoryResponses);
         return categoryResponses;
+    }
+
+    /**
+     * The method returns page of dto {@code List<CategoryResponse>} of all categories.
+     *
+     * @return new {@code List<CategoryResponse>}.
+     */
+
+    @Override
+    public Page<CategoryResponse> getListOfCategories(Pageable pageable) {
+        Page<Category> categoryResponses = categoryRepository.findAll(pageable);
+        return new PageImpl<>(categoryResponses
+                .stream()
+                .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
+                .collect(Collectors.toList()),
+                categoryResponses.getPageable(), categoryResponses.getTotalElements());
     }
 
     /**

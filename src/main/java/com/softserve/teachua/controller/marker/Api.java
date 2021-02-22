@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller.marker;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -9,5 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Denis Burko
  */
 @RequestMapping("/api")
+@CrossOrigin
 public interface Api {
 }

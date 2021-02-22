@@ -187,10 +187,10 @@ public class CategoryServiceTest {
         Set<String> expectedCategoriesNames = categoryList.stream()
                 .map(c -> c.getName()).collect(Collectors.toSet());
 
-        Set<String> actualCategoriesNames = categoryService.getListOfCategories().stream()
+        Set<String> actualCategoriesNames = categoryService.getAllCategories().stream()
                 .map(c -> c.getName()).collect(Collectors.toSet());
 
-        assertThat(categoryService.getListOfCategories().size()).isEqualTo(2);
+        assertThat(categoryService.getAllCategories().size()).isEqualTo(2);
 
         assertThat(actualCategoriesNames).isEqualTo(expectedCategoriesNames);
     }
