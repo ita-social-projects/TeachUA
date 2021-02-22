@@ -31,9 +31,6 @@ public class ClubProfile implements Convertible {
     @NotNull
     private Double longitude;
 
-    @NotEmpty
-    private String phones;
-
     @NotNull
     private Set<Category> categories;
 
@@ -49,13 +46,12 @@ public class ClubProfile implements Convertible {
     @NotNull
     private Integer ageTo;
 
-    private String email;
+    @NotNull
+    private Boolean isApproved;
 
     private String urlWeb;
 
     private String urlLogo;
-
-    private String socialLinks;
 
     private Double rating;
 
