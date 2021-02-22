@@ -6,6 +6,8 @@ import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -72,8 +74,13 @@ public class NewsController implements Api {
      * @return List of NewsResponse
      */
     @GetMapping("/newslist")
-    public List<NewsResponse> getNewsList() {
-        return newsService.getListOfNews();
+    public List<NewsResponse> getAllNews() {
+        return newsService.getAllNews();
+    }
+
+    @GetMapping("/newslist/search")
+    public Page<NewsResponse> getListOfNews(Pageable pageable) {
+        return newsService.getListOfNews(pageable);
     }
 
 

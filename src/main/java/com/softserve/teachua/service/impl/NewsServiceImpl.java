@@ -1,11 +1,13 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.News;
 import com.softserve.teachua.repository.NewsRepository;
@@ -14,6 +16,9 @@ import com.softserve.teachua.service.NewsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,13 +92,23 @@ public class NewsServiceImpl implements NewsService {
      * @return List of {@link News}
      **/
     @Override
-    public List<NewsResponse> getListOfNews() {
+    public List<NewsResponse> getAllNews() {
         List<NewsResponse> newsResponses = newsRepository.findAll()
                 .stream()
                 .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
                 .collect(Collectors.toList());
         log.info("get list of cities = " + newsResponses);
         return newsResponses;
+    }
+
+    @Override
+    public Page<NewsResponse> getListOfNews(Pageable pageable) {
+        Page<News> newsResponses = newsRepository.findAll(pageable);
+        return new PageImpl<>(newsResponses
+                .stream()
+                .map(category -> (NewsResponse) dtoConverter.convertToDto(category, NewsResponse.class))
+                .collect(Collectors.toList()),
+                newsResponses.getPageable(), newsResponses.getTotalElements());
     }
 
     /**
