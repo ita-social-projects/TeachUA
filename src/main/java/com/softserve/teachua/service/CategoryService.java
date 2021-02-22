@@ -6,6 +6,8 @@ import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.category.SuccessCreatedCategory;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.model.Category;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -19,7 +21,9 @@ public interface CategoryService {
 
     SuccessCreatedCategory addCategory(CategoryProfile categoryProfile);
 
-    List<CategoryResponse> getListOfCategories();
+    List<CategoryResponse> getAllCategories();
+
+    Page<CategoryResponse> getListOfCategories(Pageable pageable);
 
     CategoryResponse deleteCategoryById(Long id);
 

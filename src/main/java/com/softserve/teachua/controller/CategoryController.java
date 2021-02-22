@@ -7,8 +7,9 @@ import com.softserve.teachua.dto.category.SuccessCreatedCategory;
 import com.softserve.teachua.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,8 +38,16 @@ public class CategoryController implements Api {
     }
 
     @GetMapping("/categories")
-    public List<CategoryResponse> getAllCategories(){
-        return categoryService.getListOfCategories();
+    public List<CategoryResponse> getAllCategories() {
+        return categoryService.getAllCategories();
+    }
+
+    @GetMapping("/categories/search")
+    public Page<CategoryResponse> getListOfCategories(
+            @PageableDefault(
+                    value = 4,
+                    sort = "id") Pageable pageable) {
+        return categoryService.getListOfCategories(pageable);
     }
 
     /**
@@ -63,7 +72,7 @@ public class CategoryController implements Api {
     public CategoryProfile updateCategory(
             @PathVariable Long id,
             @Valid
-            @RequestBody CategoryProfile categoryProfile){
+            @RequestBody CategoryProfile categoryProfile) {
         return categoryService.updateCategory(id, categoryProfile);
     }
 
@@ -74,7 +83,7 @@ public class CategoryController implements Api {
      * @return new {@code CategoryResponse}.
      */
     @DeleteMapping("/category/{id}")
-    public CategoryResponse deleteCategory(@PathVariable("id") Long id){
+    public CategoryResponse deleteCategory(@PathVariable("id") Long id) {
         return categoryService.deleteCategoryById(id);
     }
 }

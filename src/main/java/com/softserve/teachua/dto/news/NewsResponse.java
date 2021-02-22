@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-;
+;import java.sql.Timestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,4 +18,8 @@ public class NewsResponse implements Convertible {
     private String title;
 
     private String description;
+
+    private String urlTitleLogo;
+
+    private Timestamp date;
 }
