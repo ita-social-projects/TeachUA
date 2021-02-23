@@ -27,7 +27,7 @@ public class ApplicationConfig {
             if (!req.getRequestURI().startsWith(rootUri + "/static/") &&
                     !req.getRequestURI().startsWith(rootUri + "/api/") &&
                     !req.getRequestURI().equals(rootUri + "/")) {
-                RequestDispatcher requestDispatcher = request.getRequestDispatcher(rootUri + "/");
+                RequestDispatcher requestDispatcher = request.getRequestDispatcher( "/");
                 requestDispatcher.forward(request, response);
                 return;
                 }
