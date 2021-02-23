@@ -29,7 +29,7 @@ public class User implements Convertible, Archivable {
     private String name;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "role_id", nullable = false)
     @ToString.Exclude
     private Role role;
