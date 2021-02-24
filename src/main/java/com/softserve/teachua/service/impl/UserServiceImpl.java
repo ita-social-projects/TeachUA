@@ -203,6 +203,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             userRepository.deleteById(id);
+            userRepository.flush();
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(USER_DELETING_ERROR);
         }
