@@ -26,7 +26,13 @@ public class User implements Convertible, Archivable {
     private String password;
 
     @Column
-    private String name;
+    private String firstName;
+
+    @Column
+    private String lastName;
+
+    @Column
+    private String phone;
 
     @JsonBackReference
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})

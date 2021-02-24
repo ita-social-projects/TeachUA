@@ -21,10 +21,17 @@ public class UserProfile implements Convertible {
     private String email;
 
     @NotEmpty
-    private String name;
+    private String firstName;
+
+    @NotEmpty
+    private String lastName;
+
+    @NotEmpty
+    private String phone;
 
     @NotEmpty
     private String password;
 
+    @NotEmpty
     private String roleName;
 }

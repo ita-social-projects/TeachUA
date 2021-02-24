@@ -59,7 +59,10 @@ public class UserServiceTest {
     @BeforeEach
     public void init() {
         user = User.builder().id(EXISTING_ID).email(EXISTING_EMAIL).build();
-        userProfile = UserProfile.builder().email(NEW_EMAIL).password(PASSWORD).name("username").build();
+        userProfile = UserProfile.builder()
+                .email(NEW_EMAIL)
+                .password(PASSWORD)
+                .firstName("username").build();
     }
 
     @Test
@@ -163,7 +166,7 @@ public class UserServiceTest {
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
         when(userRepository.save(any())).thenReturn(user);
         when(dtoConverter.convertToEntity(userProfile, user)).thenReturn(User.builder()
-                .email(userProfile.getEmail()).name(userProfile.getName()).build());
+                .email(userProfile.getEmail()).firstName(userProfile.getFirstName()).build());
         when(dtoConverter.convertToDto(user, SuccessUpdatedUser.class)).thenReturn(SuccessUpdatedUser
                 .builder().email(userProfile.getEmail()).build());
 
@@ -187,7 +190,7 @@ public class UserServiceTest {
         doNothing().when(userRepository).deleteById(EXISTING_ID);
         doNothing().when(userRepository).flush();
         when(dtoConverter.convertToDto(user, UserResponse.class)).thenReturn(UserResponse.builder()
-                .id(user.getId()).email(user.getEmail()).name(user.getName()).build());
+                .id(user.getId()).email(user.getEmail()).firstName(user.getFirstName()).build());
 
         UserResponse userResponse = userService.deleteUserById(EXISTING_ID);
         assertEquals(userResponse.getEmail(), user.getEmail());
