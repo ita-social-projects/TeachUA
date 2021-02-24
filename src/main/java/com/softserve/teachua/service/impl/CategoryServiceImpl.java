@@ -165,6 +165,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         try {
             categoryRepository.deleteById(id);
+            categoryRepository.flush();
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(CATEGORY_DELETING_ERROR);
         }
