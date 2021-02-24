@@ -29,7 +29,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "club.city.name LIKE CONCAT('%', :city , '%') AND " +
             "club.district.name LIKE CONCAT('%', :district , '%') AND " +
             "club.station.name LIKE CONCAT('%', :station , '%') AND " +
-            "category.name LIKE CONCAT('%', :category ,'%')")
+            "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
     Page<Club> findAllByParameters(
             @Param("name") String name,
             @Param("city") String cityName,
