@@ -23,6 +23,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     boolean existsById(Long id);
 
+    List<Club> findByUserId(Long id);
+
     @Query("SELECT DISTINCT club from Club AS club " +
             "JOIN club.categories AS category WHERE " +
             "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) AND " +
