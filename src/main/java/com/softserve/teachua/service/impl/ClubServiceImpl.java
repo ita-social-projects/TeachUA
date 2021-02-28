@@ -215,6 +215,18 @@ public class ClubServiceImpl implements ClubService {
                 .collect(Collectors.toList());
     }
 
+
+    /**
+     * The method returns list of dto {@code List<ClubResponse>} of all clubs by user-owner.
+     *
+     * @param id - put user id.
+     * @return new {@code List<ClubResponse>}.
+     */
+    @Override
+    public List<Club> getClubsByUserId(Long id) {
+                return clubRepository.findByUserId(id);
+    }
+
     /**
      * The method returns dto {@code ClubResponse} of deleted club by id.
      *

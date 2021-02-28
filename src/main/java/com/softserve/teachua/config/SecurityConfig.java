@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/roles").hasRole(RoleData.ADMIN.getRoleName())
                 .antMatchers("/hello").hasAnyRole(RoleData.ADMIN.getRoleName(), RoleData.USER.getRoleName())
                 .antMatchers("/index", "/signup", "/signin", "/signout").permitAll()
-                .antMatchers("/user{id}", "/user{email}", "/users").permitAll()
+                .antMatchers("/user{id}", "/user{email}", "/users").hasAnyRole(RoleData.ADMIN.getRoleName(), RoleData.USER.getRoleName())
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/signout")).logoutSuccessUrl("/signin");

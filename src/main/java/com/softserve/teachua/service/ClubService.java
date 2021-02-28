@@ -32,6 +32,8 @@ public interface ClubService {
 
     List<ClubResponse> getListOfClubs();
 
+    List<Club> getClubsByUserId(Long id);
+
     List<ClubResponse> getSimilarClubsByCategoryName(SimilarClubProfile similarClubProfile);
 
     Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable);

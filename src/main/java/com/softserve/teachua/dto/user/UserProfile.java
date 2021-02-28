@@ -34,4 +34,6 @@ public class UserProfile implements Convertible {
 
     @NotEmpty
     private String roleName;
+
+    private String urlLogo;
 }
