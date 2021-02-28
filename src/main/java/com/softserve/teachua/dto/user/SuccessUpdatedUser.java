@@ -19,5 +19,6 @@ public class SuccessUpdatedUser implements Convertible {
     private Long id;
     private String email;
     private String roleName;
+    private String urlLogo;
 
 }
