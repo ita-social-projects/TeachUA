@@ -140,7 +140,7 @@ public class CityServiceImpl implements CityService {
                 .withId(id);
 
         log.info("**/updating city by id = " + newCity);
-        return dtoConverter.convertToDto(cityRepository.save(newCity), CenterProfile.class);
+        return dtoConverter.convertToDto(cityRepository.save(newCity), CityProfile.class);
     }
 
     /**
@@ -170,9 +170,11 @@ public class CityServiceImpl implements CityService {
     private boolean isCityExistByName(String name) {
         return cityRepository.existsByName(name);
     }
+
     private Optional<City> getOptionalCityById(Long id) {
         return cityRepository.findById(id);
     }
+
     private Optional<City> getOptionalCityByName(String name) {
         return cityRepository.findByName(name);
     }
