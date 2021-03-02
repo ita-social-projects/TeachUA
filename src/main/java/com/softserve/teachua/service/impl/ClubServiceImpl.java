@@ -242,6 +242,7 @@ public class ClubServiceImpl implements ClubService {
 
         try {
             clubRepository.deleteById(id);
+            clubRepository.flush();
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(CLUB_DELETING_ERROR);
         }
