@@ -16,7 +16,6 @@ import java.util.Set;
 @Builder
 @Data
 public class ClubProfile implements Convertible {
-
     private Long id;
 
     @NotNull
@@ -60,6 +59,4 @@ public class ClubProfile implements Convertible {
     private District district;
 
     private Center center;
-
-
 }
