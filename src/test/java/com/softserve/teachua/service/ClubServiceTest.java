@@ -27,9 +27,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,9 +73,13 @@ class ClubServiceTest {
                 .name(NEW_NAME)
                 .build();
 
-        club4 = Club.builder().name("Клуб").city(City.builder().name("Lviv").build()).categories(Set.of(Category.builder().name("Спортивні секції").build())).build();
-        club5 = Club.builder().name("Клук").city(City.builder().name("Lviv").build()).categories(Set.of(Category.builder().name("Спортивні секції").build())).build();
-        club6 = Club.builder().name("Клік").city(City.builder().name("Lviv").build()).categories(Set.of(Category.builder().name("Танці").build())).build();
+        Set<Category> set1 = Collections.singleton(Category.builder().name("Спортивні секції").build());
+        Set<Category> set2 = Collections.singleton(Category.builder().name("Спортивні секції").build());
+        Set<Category> set3 = Collections.singleton(Category.builder().name("Танці").build());
+
+        club4 = Club.builder().name("Клуб").city(City.builder().name("Lviv").build()).categories(set1).build();
+        club5 = Club.builder().name("Клук").city(City.builder().name("Lviv").build()).categories(set2).build();
+        club6 = Club.builder().name("Клік").city(City.builder().name("Lviv").build()).categories(set3).build();
 
     }
 
@@ -163,7 +166,7 @@ class ClubServiceTest {
 
     @Test
     void getListOfClubs() {
-        when(clubRepository.findAll()).thenReturn(List.of(club));
+        when(clubRepository.findAll()).thenReturn(Collections.singletonList(club));
         when(dtoConverter.convertToDto(club, ClubResponse.class)).thenReturn(ClubResponse.builder().name(EXISTING_NAME).build());
 
         List<ClubResponse> actual = clubService.getListOfClubs();
@@ -172,7 +175,7 @@ class ClubServiceTest {
 
     @Test
     void getSimilarClubsByCategoryName() {
-        Page<Club> clubs = new PageImpl<>(List.of(club4, club5));
+        Page<Club> clubs = new PageImpl<>(Arrays.asList(club4, club5));
 
         when(clubRepository.findTop2ByCategoryName(1L, "Спортивні секції", "Lviv", PageRequest.of(0, 2)))
                 .thenReturn(clubs);
@@ -188,7 +191,7 @@ class ClubServiceTest {
     @Test
     void getClubsBySearchParameters() {
         SearchClubProfile searchClubProfile = new SearchClubProfile("", "Lviv", "", "", "Спортивні секції");
-        Page<Club> clubs = new PageImpl<>(List.of(club4, club5));
+        Page<Club> clubs = new PageImpl<>(Arrays.asList(club4, club5));
         Pageable pageable = PageRequest.of(0, 2);
         when(clubRepository.findAllByParameters(searchClubProfile.getClubName(),
                 searchClubProfile.getCityName(),
@@ -210,7 +213,7 @@ class ClubServiceTest {
 
     @Test
     void getPossibleClubByName() {
-        Page<Club> clubs = new PageImpl<>(List.of(club4, club5, club6));
+        Page<Club> clubs = new PageImpl<>(Arrays.asList(club4, club5, club6));
 
         when(clubRepository.findTop3ByName("Кл", "Lviv", PageRequest.of(0, 3))).thenReturn(clubs);
         when(dtoConverter.convertToDto(club4, SearchPossibleResponse.class)).thenReturn(SearchPossibleResponse.builder().name(club4.getName()).build());
