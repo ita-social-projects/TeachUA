@@ -1,5 +1,6 @@
 package com.softserve.teachua.repository;
 
+import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.Club;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long> {
@@ -22,6 +24,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     boolean existsByName(String name);
 
     boolean existsById(Long id);
+
+    List<Club> findByUserId(Long id);
 
     @Query("SELECT DISTINCT club from Club AS club " +
             "JOIN club.categories AS category WHERE " +
@@ -48,11 +52,11 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     @Query("SELECT DISTINCT club from Club AS club " +
             "JOIN club.categories AS category WHERE " +
-            "category.name = :categoryName " +
-            "AND club.city.name = :cityName " +
+            "category.name IN (:categoriesName) AND " +
+            "club.city.name = :cityName " +
             "AND club.id <> :id")
     Page<Club> findTop2ByCategoryName(@Param("id") Long id,
-                                      @Param("categoryName") String categoryName,
+                                      @Param("categoriesName") List<String> categoriesName,
                                       @Param("cityName") String cityName,
                                       Pageable pageable);
 

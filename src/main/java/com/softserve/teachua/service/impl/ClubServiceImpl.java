@@ -169,7 +169,7 @@ public class ClubServiceImpl implements ClubService {
     public List<ClubResponse> getSimilarClubsByCategoryName(SimilarClubProfile similarClubProfile) {
         return clubRepository.findTop2ByCategoryName(
                 similarClubProfile.getId(),
-                similarClubProfile.getCategoryName(),
+                similarClubProfile.getCategoriesName(),
                 similarClubProfile.getCityName(),
                 PageRequest.of(0, 2))
                 .stream()
@@ -213,6 +213,18 @@ public class ClubServiceImpl implements ClubService {
                 .stream()
                 .map(category -> (SearchPossibleResponse) dtoConverter.convertToDto(category, SearchPossibleResponse.class))
                 .collect(Collectors.toList());
+    }
+
+
+    /**
+     * The method returns list of dto {@code List<ClubResponse>} of all clubs by user-owner.
+     *
+     * @param id - put user id.
+     * @return new {@code List<ClubResponse>}.
+     */
+    @Override
+    public List<Club> getClubsByUserId(Long id) {
+                return clubRepository.findByUserId(id);
     }
 
     /**

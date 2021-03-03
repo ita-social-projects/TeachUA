@@ -34,8 +34,11 @@ public class User implements Convertible, Archivable {
     @Column
     private String phone;
 
+    @Column
+    private String urlLogo;
+
     @JsonBackReference
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "role_id", nullable = false)
     @ToString.Exclude
     private Role role;
