@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -123,7 +123,7 @@ public class CityServiceTest {
 
     @Test
     void getListOfCities() {
-        when(cityRepository.findAll()).thenReturn(List.of(city));
+        when(cityRepository.findAll()).thenReturn(Collections.singletonList(city));
         when(dtoConverter.convertToDto(city, CityResponse.class)).thenReturn(CityResponse.builder().name(EXISTING_NAME).build());
 
         List<CityResponse> actual = cityService.getListOfCities();
