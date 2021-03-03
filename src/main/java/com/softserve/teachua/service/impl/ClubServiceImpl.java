@@ -169,7 +169,7 @@ public class ClubServiceImpl implements ClubService {
     public List<ClubResponse> getSimilarClubsByCategoryName(SimilarClubProfile similarClubProfile) {
         return clubRepository.findTop2ByCategoryName(
                 similarClubProfile.getId(),
-                similarClubProfile.getCategoryName(),
+                similarClubProfile.getCategoriesName(),
                 similarClubProfile.getCityName(),
                 PageRequest.of(0, 2))
                 .stream()

@@ -1,13 +1,12 @@
 package com.softserve.teachua.dto.search;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
-@AllArgsConstructor
+import java.util.List;
+
 @Data
 public class SimilarClubProfile {
     private Long id;
-    private String categoryName;
+    private List<String> categoriesName;
     private String cityName;
 }
