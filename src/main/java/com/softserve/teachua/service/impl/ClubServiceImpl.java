@@ -229,16 +229,21 @@ public class ClubServiceImpl implements ClubService {
                 .collect(Collectors.toList());
     }
 
-
     /**
-     * The method returns list of dto {@code List<ClubResponse>} of all clubs by user-owner.
+     * The method returns list of dto {@code Page<ClubResponse>} of all clubs by user-owner.
      *
      * @param id - put user id.
-     * @return new {@code List<ClubResponse>}.
+     * @return new {@code Page<ClubResponse>}.
      */
     @Override
-    public List<Club> getClubsByUserId(Long id) {
-        return clubRepository.findByUserId(id);
+    public Page<ClubResponse> getClubsByUserId(Long id, Pageable pageable) {
+        Page<Club> clubResponses = clubRepository.findAllByUserId(id,pageable);
+
+        return new PageImpl<>(clubResponses
+                .stream()
+                .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
+                .collect(Collectors.toList()),
+                clubResponses.getPageable(), clubResponses.getTotalElements());
     }
 
     /**
