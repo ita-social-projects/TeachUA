@@ -28,11 +28,13 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     List<Club> findByUserId(Long id);
 
     @Query("SELECT DISTINCT club from Club AS club " +
+            "LEFT JOIN club.district AS district " +
+            "LEFT JOIN club.station AS station " +
             "JOIN club.categories AS category WHERE " +
             "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) AND " +
             "club.city.name LIKE CONCAT('%', :city , '%') AND " +
-            "club.district.name LIKE CONCAT('%', :district , '%') AND " +
-            "club.station.name LIKE CONCAT('%', :station , '%') AND " +
+            "(district.name IS NULL OR district.name LIKE CONCAT('%', :district , '%')) AND " +
+            "(station.name IS NULL OR station.name LIKE CONCAT('%', :station , '%')) AND " +
             "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
     Page<Club> findAllByParameters(
             @Param("name") String name,

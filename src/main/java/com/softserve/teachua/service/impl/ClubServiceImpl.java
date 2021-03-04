@@ -12,8 +12,11 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.District;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.CategoryService;
+import com.softserve.teachua.service.CityService;
 import com.softserve.teachua.service.ClubService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,12 +47,16 @@ public class ClubServiceImpl implements ClubService {
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
+    private final CityService cityService;
+    private final CategoryService categoryService;
 
     @Autowired
-    public ClubServiceImpl(ClubRepository clubRepository, DtoConverter dtoConverter, ArchiveService archiveService) {
+    public ClubServiceImpl(ClubRepository clubRepository, DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, CategoryService categoryService) {
         this.clubRepository = clubRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
+        this.cityService = cityService;
+        this.categoryService = categoryService;
     }
 
     /**
@@ -143,7 +150,14 @@ public class ClubServiceImpl implements ClubService {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }
 
-        Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club()));
+        Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
+                .withCity(cityService.getCityByName(clubProfile.getCityName()))
+                .withDistrict(null)
+                .withCategories(clubProfile.getCategoriesName()
+                        .stream()
+                        .map(categoryService::getCategoryByName)
+                        .collect(Collectors.toSet())));
+
 
         log.info("adding club with name {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
@@ -224,7 +238,7 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public List<Club> getClubsByUserId(Long id) {
-                return clubRepository.findByUserId(id);
+        return clubRepository.findByUserId(id);
     }
 
     /**

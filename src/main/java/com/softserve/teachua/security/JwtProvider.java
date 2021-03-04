@@ -16,7 +16,7 @@ import java.util.Date;
 public class JwtProvider {
     private final int TOKEN_LIFE_DAYS = 15;
 
-    @Value("${jwt.secret}")
+    @Value("${application.jwt.secret}")
     private String jwtSecret;
 
     public String generateToken(String login) {

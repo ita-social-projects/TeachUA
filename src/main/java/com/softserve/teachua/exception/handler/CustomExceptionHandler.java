@@ -57,6 +57,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildExceptionBody(exception, CONFLICT);
     }
 
+    @ExceptionHandler(FileUploadException.class)
+    public final ResponseEntity<Object> handleFileUploadException(JsonWriteException exception) {
+        return buildExceptionBody(exception, FORBIDDEN);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String exceptionMessage = exception.getMessage();

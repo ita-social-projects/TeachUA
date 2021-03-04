@@ -24,7 +24,8 @@ public class ApplicationConfig {
         FilterRegistrationBean<Filter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
         filterFilterRegistrationBean.setFilter((request, response, chain) -> {
             HttpServletRequest req = (HttpServletRequest) request;
-            if (!req.getRequestURI().startsWith(rootUri + "/static/") &&
+            if (!req.getRequestURI().startsWith(rootUri + "/upload/") &&
+                    !req.getRequestURI().startsWith(rootUri + "/static/") &&
                     !req.getRequestURI().startsWith(rootUri + "/api/") &&
                     !req.getRequestURI().equals(rootUri + "/")) {
                 RequestDispatcher requestDispatcher = request.getRequestDispatcher( "/");
