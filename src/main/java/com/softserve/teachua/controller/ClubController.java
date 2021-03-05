@@ -7,7 +7,6 @@ import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
-import com.softserve.teachua.model.Club;
 import com.softserve.teachua.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -79,13 +78,18 @@ public class ClubController implements Api {
     }
 
     /**
-     * The controller returns information {@code List <Club>} about clubs by id of user-owner
+     * The controller returns information {@code Page<ClubResponse>} about clubs by id of user-owner
+     *
      * @param id - put user id.
-     * @return new {@code List <ClubResponse>}.
+     * @return new {@code Page<ClubResponse>}.
      */
     @GetMapping("/clubs/{id}")
-    public List<Club> getClubsByUserId(@PathVariable Long id) {
-        return clubService.getClubsByUserId(id);
+    public Page<ClubResponse> getClubsByUserId(
+            @PathVariable Long id,
+            @PageableDefault(
+                    value = 3,
+                    sort = "id") Pageable pageable) {
+        return clubService.getClubsByUserId(id, pageable);
     }
 
     @GetMapping("/clubs/search")

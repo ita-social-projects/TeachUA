@@ -182,7 +182,8 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(id);
 
         User newUser = dtoConverter.convertToEntity(userProfile, user)
-                .withId(id);
+                .withId(id)
+                .withRole(roleService.findByName(userProfile.getRoleName()));
 
         log.info("updating role by id {}", newUser);
         return dtoConverter.convertToDto(userRepository.save(newUser), SuccessUpdatedUser.class);
