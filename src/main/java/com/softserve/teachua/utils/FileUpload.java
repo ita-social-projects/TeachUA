@@ -1,8 +1,6 @@
 package com.softserve.teachua.utils;
 
 import com.softserve.teachua.exception.FileUploadException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -11,12 +9,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class FileUpload {
     private static final String FILE_UPLOAD_EXCEPTION = "Could not save image file: %s";
     private static final String DIRECTORY_CREATE_EXCEPTION = "Could not create directory with name: %s";
+    private static final String UPLOAD_LOCATION = "/upload";
 
 
     public static String uploadImage(String uploadDir, String fileName,
@@ -38,6 +35,7 @@ public class FileUpload {
             throw new FileUploadException(String.format(FILE_UPLOAD_EXCEPTION, fileName));
         }
 
-        return String.format("/%s/%s", uploadDir, fileName).replaceAll("/target", "");
+        String actualPath = String.format("/%s/%s", uploadDir, fileName);
+        return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
     }
 }

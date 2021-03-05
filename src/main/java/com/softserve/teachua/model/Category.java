@@ -28,6 +28,9 @@ public class Category implements Convertible, Archivable {
     private String name;
 
     @Column
+    private String description;
+
+    @Column
     private String urlLogo;
 
     @Column
