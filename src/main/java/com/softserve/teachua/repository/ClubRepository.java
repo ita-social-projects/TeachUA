@@ -1,6 +1,5 @@
 package com.softserve.teachua.repository;
 
-import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.Club;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long> {

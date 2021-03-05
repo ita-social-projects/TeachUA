@@ -10,15 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
-public class Application implements WebMvcConfigurer {
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/upload/**")
-                .addResourceLocations("file:target/upload/");
-    }
-
-
+public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
