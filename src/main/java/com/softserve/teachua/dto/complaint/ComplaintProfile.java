@@ -16,9 +16,6 @@ import javax.validation.constraints.NotNull;
 public class ComplaintProfile implements Convertible {
     private Long id;
 
-    @NotNull
-    private Float rate;
-
     @NotEmpty
     private String text;
 

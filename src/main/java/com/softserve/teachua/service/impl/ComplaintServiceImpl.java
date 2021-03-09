@@ -73,7 +73,7 @@ public class ComplaintServiceImpl implements ComplaintService {
      **/
     @Override
     public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile) {
-        Complaint complaint = complaintRepository.save(dtoConverter.convertToEntity(complaintRepository, new Complaint()));
+        Complaint complaint = complaintRepository.save(dtoConverter.convertToEntity(complaintProfile, new Complaint()));
 
         log.info("add new complaint {}", complaint);
         return dtoConverter.convertToDto(complaint, SuccessCreatedComplaint.class);
