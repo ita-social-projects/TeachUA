@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 public class ClubController implements Api {
     private static final int CLUBS_PER_PAGE = 8;
+    private static final int CLUBS_PER_USER_PAGE = 3;
     private final ClubService clubService;
 
     @Autowired
@@ -87,7 +88,7 @@ public class ClubController implements Api {
     public Page<ClubResponse> getClubsByUserId(
             @PathVariable Long id,
             @PageableDefault(
-                    value = 3,
+                    value = CLUBS_PER_USER_PAGE,
                     sort = "id") Pageable pageable) {
         return clubService.getClubsByUserId(id, pageable);
     }

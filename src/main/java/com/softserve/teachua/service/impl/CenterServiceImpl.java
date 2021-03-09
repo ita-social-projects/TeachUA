@@ -14,6 +14,9 @@ import com.softserve.teachua.service.CenterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -123,6 +126,23 @@ public class CenterServiceImpl implements CenterService {
 
         log.info("center {} was successfully deleted", center);
         return dtoConverter.convertToDto(center, CenterResponse.class);
+    }
+
+    /**
+     * The method returns list of dto {@code Page<CenterResponse>} of all centers by user-owner.
+     *
+     * @param id - put user id.
+     * @return new {@code Page<ClubResponse>}.
+     */
+    @Override
+    public Page<CenterResponse> getCentersByUserId(Long id, Pageable pageable) {
+        Page<Center> centerResponses = centerRepository.findAllByUserId(id, pageable);
+
+        return new PageImpl<>(centerResponses
+                .stream()
+                .map(center -> (CenterResponse) dtoConverter.convertToDto(center, CenterResponse.class))
+                .collect(Collectors.toList()),
+                centerResponses.getPageable(), centerResponses.getTotalElements());
     }
 
     /**
