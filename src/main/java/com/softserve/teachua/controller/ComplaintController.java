@@ -73,7 +73,7 @@ public class ComplaintController implements Api {
      * @return ComplaintProfile
      */
     @PutMapping("/complaint/{id}")
-    public ComplaintProfile updateFComplaint(@PathVariable Long id, @RequestBody ComplaintProfile complaintProfile) {
+    public ComplaintProfile updateComplaint(@PathVariable Long id, @RequestBody ComplaintProfile complaintProfile) {
         return complaintService.updateComplaintProfileById(id, complaintProfile);
     }
 
