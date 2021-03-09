@@ -37,7 +37,7 @@ public class Club implements Convertible, Archivable {
     @EqualsAndHashCode.Include
     private String address;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column
@@ -84,12 +84,12 @@ public class Club implements Convertible, Archivable {
     private Center center;
 
     @ManyToOne
-    @JoinColumn(name = "district_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "district_id", referencedColumnName = "id")
     @ToString.Exclude
     private District district;
 
     @ManyToOne
-    @JoinColumn(name = "station_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "station_id", referencedColumnName = "id")
     @ToString.Exclude
     private Station station;
 

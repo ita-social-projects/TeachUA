@@ -15,6 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 
 @Configuration
 public class ApplicationConfig {
+    private static final String UPLOAD_LOCATION = "/upload/";
+    private static final String STATIC_LOCATION = "/static/";
+    private static final String API_LOCATION = "/api/";
+    private static final String SLASH = "/";
 
     @Value("${server.servlet.context-path}")
     private String rootUri;
@@ -24,10 +28,11 @@ public class ApplicationConfig {
         FilterRegistrationBean<Filter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
         filterFilterRegistrationBean.setFilter((request, response, chain) -> {
             HttpServletRequest req = (HttpServletRequest) request;
-            if (!req.getRequestURI().startsWith(rootUri + "/static/") &&
-                    !req.getRequestURI().startsWith(rootUri + "/api/") &&
-                    !req.getRequestURI().equals(rootUri + "/")) {
-                RequestDispatcher requestDispatcher = request.getRequestDispatcher( "/");
+            if (!req.getRequestURI().startsWith(rootUri + UPLOAD_LOCATION) &&
+                    !req.getRequestURI().startsWith(rootUri + STATIC_LOCATION) &&
+                    !req.getRequestURI().startsWith(rootUri + API_LOCATION) &&
+                    !req.getRequestURI().equals(rootUri + SLASH)) {
+                RequestDispatcher requestDispatcher = request.getRequestDispatcher(SLASH);
                 requestDispatcher.forward(request, response);
                 return;
                 }

@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.search;
+package com.softserve.teachua.dto.contactType;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
@@ -6,11 +6,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
-public class SearchPossibleResponse implements Convertible {
+public class ContactTypeResponse implements Convertible {
+
     private Long id;
+
     private String name;
+
+    private String urlLogo;
 }

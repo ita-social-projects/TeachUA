@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.feedback;
+package com.softserve.teachua.dto.contactType;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
@@ -7,27 +7,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-public class FeedbackProfile implements Convertible {
+public class ContactTypeProfile implements Convertible {
+
     private Long id;
 
     @NotEmpty
-    private String userName;
-
-    @NotNull
-    private Float rate;
+    private String name;
 
     @NotEmpty
-    private String text;
-
-    @NotNull
-    private Long userId;
-
-    @NotNull
-    private Long clubId;
+    private String urlLogo;
 }

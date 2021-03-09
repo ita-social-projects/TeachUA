@@ -1,7 +1,6 @@
 package com.softserve.teachua.repository;
 
 import com.softserve.teachua.model.Category;
-import com.softserve.teachua.model.Club;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

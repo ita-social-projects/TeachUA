@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -16,11 +17,10 @@ import java.util.Set;
 @Builder
 @Data
 public class ClubProfile implements Convertible {
-
     private Long id;
 
-    @NotNull
-    private City city;
+    @NotEmpty
+    private String cityName;
 
     @NotEmpty
     private String address;
@@ -31,10 +31,9 @@ public class ClubProfile implements Convertible {
     @NotNull
     private Double longitude;
 
-    @NotNull
-    private Set<Category> categories;
-
     @NotEmpty
+    private List<String> categoriesName;
+
     private String description;
 
     @NotNull
@@ -46,20 +45,13 @@ public class ClubProfile implements Convertible {
     @NotNull
     private Integer ageTo;
 
-    @NotNull
-    private Boolean isApproved;
-
-    private String urlWeb;
+    private String urlBackground;
 
     private String urlLogo;
 
-    private Double rating;
+    private String stationName;
 
-    private Station station;
+    private String districtName;
 
-    private District district;
-
-    private Center center;
-
-
+   // private Center center;
 }

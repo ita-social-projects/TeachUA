@@ -23,14 +23,16 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     boolean existsById(Long id);
 
-    List<Club> findByUserId(Long id);
+    Page<Club> findAllByUserId(Long id, Pageable pageable);
 
     @Query("SELECT DISTINCT club from Club AS club " +
+            "LEFT JOIN club.district AS district " +
+            "LEFT JOIN club.station AS station " +
             "JOIN club.categories AS category WHERE " +
             "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) AND " +
             "club.city.name LIKE CONCAT('%', :city , '%') AND " +
-            "club.district.name LIKE CONCAT('%', :district , '%') AND " +
-            "club.station.name LIKE CONCAT('%', :station , '%') AND " +
+            "(district.name IS NULL OR district.name LIKE CONCAT('%', :district , '%')) AND " +
+            "(station.name IS NULL OR station.name LIKE CONCAT('%', :station , '%')) AND " +
             "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
     Page<Club> findAllByParameters(
             @Param("name") String name,
@@ -50,11 +52,11 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     @Query("SELECT DISTINCT club from Club AS club " +
             "JOIN club.categories AS category WHERE " +
-            "category.name = :categoryName " +
-            "AND club.city.name = :cityName " +
+            "category.name IN (:categoriesName) AND " +
+            "club.city.name = :cityName " +
             "AND club.id <> :id")
     Page<Club> findTop2ByCategoryName(@Param("id") Long id,
-                                      @Param("categoryName") String categoryName,
+                                      @Param("categoriesName") List<String> categoriesName,
                                       @Param("cityName") String cityName,
                                       Pageable pageable);
 

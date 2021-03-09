@@ -21,8 +21,12 @@ public class CategoryResponse implements Convertible {
 
     private String urlLogo;
 
+    private String description;
+
     private String backgroundColor;
 
-   //TODO
-    // private Set<Club> clubs;
+    private String tagBackgroundColor;
+
+    private String tagTextColor;
+
 }
