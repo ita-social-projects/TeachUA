@@ -63,6 +63,14 @@ values ('center1', 'center1@gameil.com', 'center_address1', '+380000000001', 'so
        ('Творчий край', 'center2@gameil.com', 'center_address2', '+380000000002', 'some_links',
         'center2_description',
         49.23259434488972, 23.297036169252322, 'https://www.logodesign.net/images/illustration-logo.png', '#',
+        3),
+       ('Творчий край2', 'center2@gameil.com', 'center_address123', '+380000000002', 'some_links',
+        'center2_description',
+        49.23259434488972, 23.297036169252322, 'https://www.logodesign.net/images/illustration-logo.png', '#',
+        3),
+       ('Творчий край3', 'center2@gameil.com', 'center_address123', '+380000000002', 'some_links',
+        'center2_description',
+        49.23259434488972, 23.297036169252322, 'https://www.logodesign.net/images/illustration-logo.png', '#',
         3);
 
 insert into news(title, description, date, url_title_logo)
