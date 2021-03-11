@@ -13,4 +13,6 @@ import lombok.NoArgsConstructor;
 public class SuccessCreatedCity implements Convertible {
     private Long id;
     private String name;
+    private Double longitude;
+    private Double latitude;
 }

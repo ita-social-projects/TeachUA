@@ -32,7 +32,7 @@ public class CityServiceImpl implements CityService {
     private static final String CITY_ALREADY_EXIST = "City already exist with name: %s";
     private static final String CITY_NOT_FOUND_BY_ID = "City not found by id: %s";
     private static final String CITY_NOT_FOUND_BY_NAME = "City not found by name: %s";
-    private static final String CITY_DELETING_ERROR = "Can't city role cause of relationship";
+    private static final String CITY_DELETING_ERROR = "Can't delete city cause of relationship";
 
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
@@ -118,7 +118,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public List<CityResponse> getListOfCities() {
-        List<CityResponse> cityResponses = cityRepository.findAll()
+        List<CityResponse> cityResponses = cityRepository.findAllByOrderByIdAsc()
                 .stream()
                 .map(city -> (CityResponse) dtoConverter.convertToDto(city, CityResponse.class))
                 .collect(Collectors.toList());

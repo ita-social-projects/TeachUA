@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class SuccessCreatedDistrict implements Convertible {
-
     private Long id;
-
     private String name;
+    private String cityName;
 }
