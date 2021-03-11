@@ -63,6 +63,14 @@ values ('center1', 'center1@gameil.com', 'center_address1', '+380000000001', 'so
        ('Творчий край', 'center2@gameil.com', 'center_address2', '+380000000002', 'some_links',
         'center2_description',
         49.23259434488972, 23.297036169252322, 'https://www.logodesign.net/images/illustration-logo.png', '#',
+        3),
+       ('Творчий край2', 'center2@gameil.com', 'center_address123', '+380000000002', 'some_links',
+        'center2_description',
+        49.23259434488972, 23.297036169252322, 'https://www.logodesign.net/images/illustration-logo.png', '#',
+        3),
+       ('Творчий край3', 'center2@gameil.com', 'center_address123', '+380000000002', 'some_links',
+        'center2_description',
+        49.23259434488972, 23.297036169252322, 'https://www.logodesign.net/images/illustration-logo.png', '#',
         3);
 
 insert into news(title, description, date, url_title_logo)
@@ -513,6 +521,19 @@ values (5, '2021-02-15 16:06:36.21', 'nice club', 1, 1),
        (5, '2021-02-15 16:06:36.21', 'nice club', 2, 8),
        (2, '2021-02-15 16:06:36.21', 'bad club', 3, 9),
        (1, '2021-02-15 16:06:36.21', 'bad club', 1, 10);
+
+insert into complaints(date, text, user_id, club_id)
+values ('2021-02-15 16:06:36.21', 'bad club 1', 2, 1),
+       ('2021-02-15 16:06:36.21', 'bad club 2', 2, 1),
+       ('2021-02-15 16:06:36.21', 'very bad club 3', 1, 2),
+       ('2021-02-15 16:06:36.21', 'very bad club 4', 2, 3),
+       ('2021-02-15 16:06:36.21', 'very bad club 5', 1, 4),
+       ('2021-02-15 16:06:36.21', 'not perfect club 6', 2, 5),
+       ('2021-02-15 16:06:36.21', 'very bad club 7', 3, 6),
+       ('2021-02-15 16:06:36.21', 'not perfect club 8', 2, 7),
+       ('2021-02-15 16:06:36.21', 'very bad club 9', 3, 8),
+       ('2021-02-15 16:06:36.21', 'bad club 10', 2, 10),
+       ('2021-02-15 16:06:36.21', 'bad club 11', 2, 10);
 
 insert into club_category(club_id, category_id)
 VALUES (1, 2),
