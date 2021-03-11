@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
+import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
@@ -12,12 +13,9 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.District;
 import com.softserve.teachua.repository.ClubRepository;
-import com.softserve.teachua.service.ArchiveService;
-import com.softserve.teachua.service.CategoryService;
-import com.softserve.teachua.service.CityService;
-import com.softserve.teachua.service.ClubService;
+import com.softserve.teachua.service.*;
+import com.softserve.teachua.utils.CategoryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -48,14 +46,16 @@ public class ClubServiceImpl implements ClubService {
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
     private final CityService cityService;
+    private final DistrictService districtService;
     private final CategoryService categoryService;
 
     @Autowired
-    public ClubServiceImpl(ClubRepository clubRepository, DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, CategoryService categoryService) {
+    public ClubServiceImpl(ClubRepository clubRepository, DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, DistrictService districtService, CategoryService categoryService) {
         this.clubRepository = clubRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
         this.cityService = cityService;
+        this.districtService = districtService;
         this.categoryService = categoryService;
     }
 
@@ -152,7 +152,7 @@ public class ClubServiceImpl implements ClubService {
 
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                 .withCity(cityService.getCityByName(clubProfile.getCityName()))
-                .withDistrict(null)
+                .withDistrict(districtService.getDistrictByName(clubProfile.getDistrictName()))
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
                         .map(categoryService::getCategoryByName)
@@ -181,14 +181,38 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public List<ClubResponse> getSimilarClubsByCategoryName(SimilarClubProfile similarClubProfile) {
-        return clubRepository.findTop2ByCategoryName(
+        return clubRepository.findByCategoryName(
                 similarClubProfile.getId(),
-                similarClubProfile.getCategoriesName(),
+                CategoryUtil.replaceSemicolonToComma(similarClubProfile.getCategoriesName()),
                 similarClubProfile.getCityName(),
                 PageRequest.of(0, 2))
                 .stream()
                 .map(category -> (ClubResponse) dtoConverter.convertToDto(category, ClubResponse.class))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * The method which return possible results of search by entered text.
+     *
+     * @param advancedSearchClubProfile -  put text of advanced search
+     * @return {@code Page<ClubResponse>}
+     */
+    @Override
+    public Page<ClubResponse> getAdvancedSearchClubs(AdvancedSearchClubProfile advancedSearchClubProfile, Pageable pageable) {
+        Page<Club> clubResponses = clubRepository.findAllBylAdvancedSearch(
+                advancedSearchClubProfile.getAgeFrom(),
+                advancedSearchClubProfile.getAgeTo(),
+                advancedSearchClubProfile.getCityName(),
+                advancedSearchClubProfile.getDistrictName(),
+                advancedSearchClubProfile.getStationName(),
+                CategoryUtil.replaceSemicolonToComma(advancedSearchClubProfile.getCategoriesName()),
+                pageable);
+
+        return new PageImpl<>(clubResponses
+                .stream()
+                .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
+                .collect(Collectors.toList()),
+                clubResponses.getPageable(), clubResponses.getTotalElements());
     }
 
 
@@ -203,8 +227,6 @@ public class ClubServiceImpl implements ClubService {
         Page<Club> clubResponses = clubRepository.findAllByParameters(
                 searchClubProfile.getClubName(),
                 searchClubProfile.getCityName(),
-                searchClubProfile.getDistrictName(),
-                searchClubProfile.getStationName(),
                 searchClubProfile.getCategoryName(),
                 pageable);
 

@@ -13,7 +13,9 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 @Data
 public class DistrictProfile implements Convertible {
-
     @NotEmpty
     private String name;
+
+    @NotEmpty
+    private String cityName;
 }

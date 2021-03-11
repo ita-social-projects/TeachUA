@@ -19,6 +19,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     Optional<Club> findByName(String name);
 
+    List<Club> findAllByOrderByIdAsc();
+
     boolean existsByName(String name);
 
     boolean existsById(Long id);
@@ -29,16 +31,30 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "LEFT JOIN club.district AS district " +
             "LEFT JOIN club.station AS station " +
             "JOIN club.categories AS category WHERE " +
+            "(:city IS NULL OR club.city.name = :city) AND " +
+            "(club.ageFrom >= :ageFrom AND club.ageTo <= :ageTo) AND " +
+            "(category.name IN (:categories) OR :categories IS NULL) AND " +
+            "(:district IS NULL OR district.name = :district) AND " +
+            "(:station IS NULL OR station.name = :station)")
+    Page<Club> findAllBylAdvancedSearch(
+            @Param("ageFrom") Integer ageFrom,
+            @Param("ageTo") Integer ageTo,
+            @Param("city") String cityName,
+            @Param("district") String districtName,
+            @Param("station") String stationName,
+            @Param("categories") List<String> categoriesName,
+            Pageable pageable);
+
+    @Query("SELECT DISTINCT club from Club AS club " +
+            "LEFT JOIN club.district AS district " +
+            "LEFT JOIN club.station AS station " +
+            "JOIN club.categories AS category WHERE " +
             "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) AND " +
             "club.city.name LIKE CONCAT('%', :city , '%') AND " +
-            "(district.name IS NULL OR district.name LIKE CONCAT('%', :district , '%')) AND " +
-            "(station.name IS NULL OR station.name LIKE CONCAT('%', :station , '%')) AND " +
             "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
     Page<Club> findAllByParameters(
             @Param("name") String name,
             @Param("city") String cityName,
-            @Param("district") String districtName,
-            @Param("station") String stationName,
             @Param("category") String categoryName,
             Pageable pageable);
 
@@ -55,10 +71,10 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "category.name IN (:categoriesName) AND " +
             "club.city.name = :cityName " +
             "AND club.id <> :id")
-    Page<Club> findTop2ByCategoryName(@Param("id") Long id,
-                                      @Param("categoriesName") List<String> categoriesName,
-                                      @Param("cityName") String cityName,
-                                      Pageable pageable);
+    Page<Club> findByCategoryName(@Param("id") Long id,
+                                  @Param("categoriesName") List<String> categoriesName,
+                                  @Param("cityName") String cityName,
+                                  Pageable pageable);
 
     @Modifying
     @Query(value = "UPDATE clubs SET rating=:rating WHERE id = :club_id", nativeQuery = true)

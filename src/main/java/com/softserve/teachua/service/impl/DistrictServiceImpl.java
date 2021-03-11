@@ -10,6 +10,7 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.District;
 import com.softserve.teachua.repository.DistrictRepository;
 import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.CityService;
 import com.softserve.teachua.service.DistrictService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +34,14 @@ public class DistrictServiceImpl implements DistrictService {
 
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
+    private final CityService cityService;
     private final DistrictRepository districtRepository;
 
     @Autowired
-    public DistrictServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService, DistrictRepository districtRepository) {
+    public DistrictServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, DistrictRepository districtRepository) {
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
+        this.cityService = cityService;
         this.districtRepository = districtRepository;
     }
 
@@ -103,7 +106,10 @@ public class DistrictServiceImpl implements DistrictService {
         if (isDistrictExistByName(districtProfile.getName())) {
             throw new AlreadyExistException(String.format(DISTRICT_ALREADY_EXIST, districtProfile.getName()));
         }
-        District district = districtRepository.save(dtoConverter.convertToEntity(districtProfile, new District()));
+
+        District district = districtRepository.save(dtoConverter.convertToEntity(districtProfile, new District())
+                .withCity(cityService.getCityByName(districtProfile.getCityName())));
+
         log.info("**/adding new district = " + district);
         return dtoConverter.convertToDto(district, SuccessCreatedDistrict.class);
     }
@@ -115,7 +121,7 @@ public class DistrictServiceImpl implements DistrictService {
      */
     @Override
     public List<DistrictResponse> getListOfDistricts() {
-        List<DistrictResponse> districtResponses = districtRepository.findAll()
+        List<DistrictResponse> districtResponses = districtRepository.findAllByOrderByIdAsc()
                 .stream()
                 .map(district -> (DistrictResponse) dtoConverter.convertToDto(district, DistrictResponse.class))
                 .collect(Collectors.toList());
@@ -150,7 +156,8 @@ public class DistrictServiceImpl implements DistrictService {
     public DistrictProfile updateDistrict(Long id, DistrictProfile districtProfile) {
         District district = getDistrictById(id);
         District newDistrict = dtoConverter.convertToEntity(districtProfile, district)
-                .withId(id);
+                .withId(id)
+                .withCity(cityService.getCityByName(districtProfile.getCityName()));
 
         log.info("**/updating district by id = " + newDistrict);
         return dtoConverter.convertToDto(districtRepository.save(newDistrict), DistrictProfile.class);

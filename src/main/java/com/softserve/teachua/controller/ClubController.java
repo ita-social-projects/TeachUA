@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
+import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.service.ClubService;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 public class ClubController implements Api {
     private static final int CLUBS_PER_PAGE = 8;
+
     private final ClubService clubService;
 
     @Autowired
@@ -99,6 +101,15 @@ public class ClubController implements Api {
                     value = CLUBS_PER_PAGE,
                     sort = "id") Pageable pageable) {
         return clubService.getClubsBySearchParameters(searchClubProfile, pageable);
+    }
+
+    @GetMapping("/clubs/search/advanced")
+    public Page<ClubResponse> getAdvancedSearchClubs(
+            AdvancedSearchClubProfile advancedSearchClubProfile,
+            @PageableDefault(
+                    value = 6,
+                    sort = "id") Pageable pageable) {
+        return clubService.getAdvancedSearchClubs(advancedSearchClubProfile, pageable);
     }
 
     /**

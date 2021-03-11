@@ -1,10 +1,8 @@
 package com.softserve.teachua.dto.district;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.softserve.teachua.model.City;
+import lombok.*;
 
 
 @AllArgsConstructor
@@ -12,8 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class DistrictResponse implements Convertible {
-
     private Long id;
 
     private String name;
+
+    private String cityName;
 }
