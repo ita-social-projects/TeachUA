@@ -4,6 +4,7 @@ import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.*;
 import com.softserve.teachua.model.User;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface UserService {
@@ -24,4 +25,8 @@ public interface UserService {
     SuccessLogin validateUser(UserLogin userLogin);
 
     SuccessUpdatedUser updateUser(Long id, UserProfile userProfile);
+
+    void updateUser(User user);
+
+    void validateUserId(Long id, HttpServletRequest httpServletRequest);
 }
