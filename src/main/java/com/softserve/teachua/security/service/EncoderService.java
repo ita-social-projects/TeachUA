@@ -9,6 +9,4 @@ public interface EncoderService {
 
     String encodePassword(String rawPassword);
 
-    String createToken(String email);
-
 }

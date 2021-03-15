@@ -4,12 +4,10 @@ import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.*;
-import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.exception.WrongAuthenticationException;
+import com.softserve.teachua.exception.*;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.security.service.EncoderService;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.RoleService;
@@ -17,9 +15,14 @@ import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
@@ -41,16 +44,21 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
+    private final JwtProvider jwtProvider;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
                            EncoderService encodeService,
-                           RoleService roleService, DtoConverter dtoConverter, ArchiveService archiveService) {
+                           RoleService roleService, DtoConverter dtoConverter, ArchiveService archiveService
+            ,JwtProvider jwtProvider,AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.encodeService = encodeService;
         this.roleService = roleService;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
+        this.jwtProvider = jwtProvider;
+        this.authenticationManager = authenticationManager;
     }
 
     /**
@@ -144,7 +152,7 @@ public class UserServiceImpl implements UserService {
 
         User user = dtoConverter.convertToEntity(userProfile, new User())
                 .withPassword(encodeService.encodePassword(userProfile.getPassword()))
-                .withRole(roleService.findByName(RoleData.USER.getDBRoleName()));
+                .withRole(roleService.findByName(userProfile.getRoleName()));
 
         user = userRepository.save(user);
         log.info("user {} registered successfully", user);
@@ -166,8 +174,18 @@ public class UserServiceImpl implements UserService {
         }
 
         log.info("user {} logged successfully", userLogin);
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        userLogin.getEmail(),
+                        userLogin.getPassword()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         return dtoConverter.convertFromDtoToDto(userEntity, new SuccessLogin())
-                .withAccessToken(encodeService.createToken(userEntity.getEmail()));
+                .withAccessToken(jwtProvider.generateToken(authentication));
     }
 
     /**
@@ -211,6 +229,19 @@ public class UserServiceImpl implements UserService {
 
         log.info("user {} was successfully deleted", user);
         return dtoConverter.convertToDto(user, UserResponse.class);
+    }
+
+    @Override
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public void validateUserId(Long id, HttpServletRequest httpServletRequest) {
+        String token = jwtProvider.getJwtFromRequest(httpServletRequest);
+        if(jwtProvider.getUserIdFromToken(token)!=id){
+             throw new BadRequestException("Wrond id");
+        }
     }
 
     private boolean isUserExistByEmail(String email) {

@@ -4,7 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -18,12 +21,9 @@ import static org.springframework.util.StringUtils.hasText;
 @Component
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
-
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String BEARER = "Bearer ";
-
     private final JwtProvider jwtProvider;
-    private final CustomUserDetailsService customUserDetailsService;
+
+    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     public JwtFilter(JwtProvider jwtProvider, CustomUserDetailsService customUserDetailsService) {
@@ -35,33 +35,25 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
         log.info("**doFilter start, requestURI {}", httpServletRequest.getRequestURI());
-        String token = getTokenFromRequest(httpServletRequest);
-        // TODO check ExpirationDate
-        if ((token != null)
-                && jwtProvider.validateToken(token)) {
-            String email = jwtProvider.getEmailFromToken(token);
-            CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(email);
-            // TODO
-            customUserDetails.setExpirationDate(jwtProvider.getExpirationDate(token));
-            //
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(customUserDetails,
-                    null, customUserDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(auth);
+        try {
+            String jwt = jwtProvider.getJwtFromRequest(httpServletRequest);
+
+            if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
+                Long userId = jwtProvider.getUserIdFromToken(jwt);
+                UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.info("User "+userDetails.getUsername()+"successfully authenticate with token"+jwt);
+            }
+            else{
+                log.error("User is not authenticate");
+            }
+        } catch (Exception ex) {
+            logger.error("Could not set user authentication in security context", ex);
         }
-//        else {
-//        	// TODO
-//        	throw new RuntimeException("error token");
-//        }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
-        //
         log.info("**doFilter done");
     }
 
-    private String getTokenFromRequest(HttpServletRequest request) {
-        String bearer = request.getHeader(AUTHORIZATION);
-        if (hasText(bearer) && bearer.startsWith(BEARER)) {
-            return bearer.substring(BEARER.length());
-        }
-        return null;
-    }
 }
