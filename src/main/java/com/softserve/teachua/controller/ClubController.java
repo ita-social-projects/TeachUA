@@ -113,6 +113,11 @@ public class ClubController implements Api {
         return clubService.getAdvancedSearchClubs(advancedSearchClubProfile, pageable);
     }
 
+    @GetMapping("/clubs/search/simple")
+    public List<ClubResponse> getClubsByCategoryAndCity (SearchClubProfile searchClubProfile){
+        return clubService.getClubByCategoryAndCity(searchClubProfile);
+    }
+
     /**
      * The controller returns dto {@code {@link ClubProfile}} of updated club.
      *

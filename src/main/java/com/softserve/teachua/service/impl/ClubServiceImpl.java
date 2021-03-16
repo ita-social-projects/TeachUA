@@ -269,6 +269,16 @@ public class ClubServiceImpl implements ClubService {
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
 
+    public List<ClubResponse> getClubByCategoryAndCity(SearchClubProfile searchClubProfile){
+        List<Club> clubResponses = clubRepository.findAllClubsByParameters(searchClubProfile.getCityName()
+        , searchClubProfile.getCategoryName());
+
+        return clubResponses
+                .stream()
+                .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
+                .collect(Collectors.toList());
+    }
+
     /**
      * The method returns dto {@code ClubResponse} of deleted club by id.
      *

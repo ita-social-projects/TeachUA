@@ -42,4 +42,6 @@ public interface ClubService {
     Page<ClubResponse> getAdvancedSearchClubs(AdvancedSearchClubProfile advancedSearchClubProfile, Pageable pageable);
 
     List<SearchPossibleResponse> getPossibleClubByName(String text, String cityName);
+
+    List<ClubResponse> getClubByCategoryAndCity(SearchClubProfile searchClubProfile);
 }
