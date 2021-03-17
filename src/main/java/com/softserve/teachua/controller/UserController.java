@@ -38,7 +38,7 @@ public class UserController implements Api {
      */
     @GetMapping("/user/{id}")
     public UserResponse getUserById(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
-        userService.validateUserId(id, httpServletRequest);
+        // TEMP // userService.validateUserId(id, httpServletRequest);
         return userService.getUserProfileById(id);
     }
 
