@@ -87,13 +87,6 @@ public class ComplaintServiceTest {
         Mockito.when(complaintRepository.findById(COMPLAINT_2_ID)).thenReturn(Optional.of(complaint2));
         Mockito.when(complaintRepository.findById(Mockito.argThat(arg -> arg != COMPLAINT_1_ID && arg != COMPLAINT_2_ID))).thenReturn(Optional.empty());
 
-       /* Mockito.when(complaintRepository.findByName(COMPLAINT_1_TEXT)).thenReturn(Optional.of(complaint1));
-        Mockito.when(complaintRepository.findByName(COMPLAINT_2_TEXT)).thenReturn(Optional.of(complaint2));
-        Mockito.when(complaintRepository.findByName(Mockito.argThat(arg -> !arg.equals(COMPLAINT_1_TEXT) && !arg.equals(COMPLAINT_2_TEXT)))).thenReturn(Optional.empty());
-
-        Mockito.when(complaintRepository.existsByName(COMPLAINT_1_TEXT)).thenReturn(true);
-        Mockito.when(complaintRepository.existsByName(COMPLAINT_2_TEXT)).thenReturn(true);
-        Mockito.when(complaintRepository.existsByName(Mockito.argThat(arg -> !arg.equals(COMPLAINT_1_TEXT) && !arg.equals(COMPLAINT_2_TEXT)))).thenReturn(false);*/
 
         Mockito.when(complaintRepository.findAll()).thenReturn(complaintList);
 
