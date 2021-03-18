@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
+import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.service.ClubService;
@@ -101,6 +102,23 @@ public class ClubController implements Api {
                     sort = "id") Pageable pageable) {
         return clubService.getClubsBySearchParameters(searchClubProfile, pageable);
     }
+
+
+    /**
+     * The controller returns dto {@code {@link ClubProfile}} of updated club.
+     *
+     * @param advancedSearchClubProfile - Place dto with all parameters for updating existed club.
+     * @return new {@code ClubProfile}.
+     */
+    @GetMapping("/clubs/search/advanced")
+    public Page<ClubResponse> getAdvancedSearchClubs(
+            AdvancedSearchClubProfile advancedSearchClubProfile,
+            @PageableDefault(
+                    value = 6,
+                    sort = "id") Pageable pageable) {
+        return clubService.getAdvancedSearchClubs(advancedSearchClubProfile, pageable);
+    }
+
 
     /**
      * The controller returns dto {@code {@link ClubProfile}} of updated club.
