@@ -2,6 +2,7 @@ package com.softserve.teachua.security.oauth2;
 
 import com.softserve.teachua.exception.oauth2.OAuth2AuthenticationProcessingException;
 import com.softserve.teachua.model.AuthProvider;
+import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.UserPrincipal;
@@ -29,6 +30,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * The method returns object OAuth2User as result of successful authentication
+     *
+     * @return OAut2User
+     */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
@@ -39,6 +45,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
     }
 
+    /**
+     * The method checks if user already has account, if not create new
+     *
+     * @return OAut2User
+     */
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
         if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
@@ -50,9 +61,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (userOptional.isPresent()) {
             user = userOptional.get();
             if (!user.getProvider().equals(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {
-                throw new OAuth2AuthenticationProcessingException("Looks like you're signed up with " +
-                        user.getProvider() + " account. Please use your " + user.getProvider() +
-                        " account to login.");
+                throw new OAuth2AuthenticationProcessingException("You already sign up with your" +
+                        user.getProvider() + " account. Use your " + user.getProvider() +
+                        " to log in.");
             }
             user = updateExistingUser(user, oAuth2UserInfo);
             log.info("Successfull log in user - "+user);
@@ -63,6 +74,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return UserPrincipal.create(user, oAuth2User.getAttributes());
     }
 
+    /**
+     * The method create new user
+     *
+     * @return User
+     */
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
         User user = new User();
         user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
@@ -74,6 +90,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return userRepository.save(user);
     }
 
+    /**
+     * The method update user
+     *
+     * @return User
+     */
     private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
         existingUser.setFirstName(oAuth2UserInfo.getFirstName());
         existingUser.setLastName(oAuth2UserInfo.getLastName());

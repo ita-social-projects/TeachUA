@@ -20,6 +20,11 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
     public static final String USER_ROLE_PARAMETER = "role";
     private static final int cookieExpireSeconds = 180;
 
+    /**
+     * The method load authorization request
+     *
+     * @return OAuth2AuthorizationRequest
+     */
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(@NotNull HttpServletRequest request) {
         log.info("User role from request "+ request.getParameter("role"));
@@ -28,6 +33,11 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
                 .orElse(null);
     }
 
+    /**
+     * The method save new authorization request
+     *
+     * @return OAuth2AuthorizationRequest
+     */
     @Override
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
         if (authorizationRequest == null) {
@@ -48,11 +58,20 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
         return null;
     }
 
+    /**
+     * The method remove authorization request
+     *
+     * @return OAuth2AuthorizationRequest
+     */
     @Override
     public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request, HttpServletResponse response) {
         return this.loadAuthorizationRequest(request);
     }
 
+    /**
+     * The method remove cookies from authorization request
+     *
+     */
     public void removeAuthorizationRequestCookies(HttpServletRequest request, HttpServletResponse response) {
         CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
         CookieUtils.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME);
