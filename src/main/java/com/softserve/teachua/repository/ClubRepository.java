@@ -46,8 +46,6 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             Pageable pageable);
 
     @Query("SELECT DISTINCT club from Club AS club " +
-            "LEFT JOIN club.district AS district " +
-            "LEFT JOIN club.station AS station " +
             "JOIN club.categories AS category WHERE " +
             "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) AND " +
             "club.city.name LIKE CONCAT('%', :city , '%') AND " +

@@ -120,16 +120,16 @@ values ('Деснянський', 1),
        ('Хортицький', 5),
        ('Шевченківський', 5);
 
-insert into stations(name, city_id, district_id)
-values ('No Station', 1, 1),
-       ('No Station', 2, 2),
-       ('No Station', 3, 3),
-       ('No Station', 4, 4),
-       ('No Station', 5, 5),
-       ('No Station', 6, 6),
-       ('No Station', 7, 7),
-       ('No Station', 8, 8),
-       ('No Station', 9, 9);
+insert into stations(name, city_id)
+values ('No Station', 1),
+       ('No Station', 2),
+       ('No Station', 3),
+       ('No Station', 4),
+       ('No Station', 5),
+       ('No Station', 6),
+       ('No Station', 7),
+       ('No Station', 8),
+       ('No Station', 9);
 
 
 insert into clubs(age_from, age_to, name, address, url_logo, url_web, url_background, work_time, latitude, longitude,
