@@ -22,6 +22,11 @@ public class JwtProvider {
     @Value("$(jwt.secret)")
     private String jwtSecret;
 
+    /**
+     * The method generate jwt token
+     *
+     * @return jwt
+     */
     public String generateToken(Authentication authentication) {
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
@@ -37,6 +42,11 @@ public class JwtProvider {
                 .compact();
     }
 
+    /**
+     * The method retrieve user id from jwt token
+     *
+     * @return id
+     */
     public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
@@ -45,6 +55,11 @@ public class JwtProvider {
         return Long.parseLong(claims.getSubject());
     }
 
+    /**
+     * The method validate token
+     *
+     * @return boolean
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
@@ -57,6 +72,11 @@ public class JwtProvider {
         return false;
     }
 
+    /**
+     * The method retrieve user email from jwt token
+     *
+     * @return email
+     */
     public String getEmailFromToken(String token) {
         Claims claims = Jwts
                 .parser()
@@ -75,6 +95,11 @@ public class JwtProvider {
         return claims.getExpiration();
     }
 
+    /**
+     * The method retrieve jwt token from HttpServletRequest
+     *
+     * @return id
+     */
     public String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {

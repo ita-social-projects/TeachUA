@@ -20,6 +20,11 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
     @Autowired
     HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
+    /**
+     * The method handle authentication failure during OAuth2 authentication
+     *
+     * @return OAuth2AuthorizationRequest
+     */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         String targetUrl = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)

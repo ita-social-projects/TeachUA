@@ -31,6 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
         this.customUserDetailsService = customUserDetailsService;
     }
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
@@ -41,6 +42,8 @@ public class JwtFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
                 Long userId = jwtProvider.getUserIdFromToken(jwt);
                 UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+                log.info("USER AUTHORITIES");
+                log.info(userDetails.getAuthorities().toString());
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                 SecurityContextHolder.getContext().setAuthentication(authentication);

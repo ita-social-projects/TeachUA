@@ -52,6 +52,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
     }
 
+    /**
+     * The method handle OAuth2 authentication process
+     *
+     * @return OAuth2AuthorizationRequest
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String targetUrl = determineTargetUrl(request, response, authentication);
@@ -61,10 +66,14 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             return;
         }
         clearAuthenticationAttributes(request, response);
-        ;
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
+    /**
+     * The retrieve cookie from request, add redirect uri,
+     *
+     * @return uri
+     */
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
@@ -93,11 +102,21 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .build().toUriString();
     }
 
+    /**
+     * The method clear cookie from HttpServletRequest
+     *
+     * @return OAuth2AuthorizationRequest
+     */
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
     }
 
+    /**
+     * The method check if redirect uri from request equals from
+     *
+     * @return OAuth2AuthorizationRequest
+     */
     private boolean isAuthorizedRedirectUri(String uri) {
         URI clientRedirectUri = URI.create(uri);
         return authorizedRedirectUris
