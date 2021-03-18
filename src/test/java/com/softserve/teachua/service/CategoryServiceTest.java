@@ -197,25 +197,6 @@ public class CategoryServiceTest {
 
     @Test
     public void testDeleteCategoryById() {
-       /* final long CATEGORY_1 = 1L;
-        final long CATEGORY_2 = 200L;
-        final long NOT_EXISTS_CATEGORY = 10000L;
-
-        String category1Name = "testDeleteCategoryById Name1";
-        String category2Name = "testDeleteCategoryById Name2";
-
-        Category category1 = new Category();
-        Category category2 = new Category();
-
-        category1.setName(category1Name);
-        category2.setName(category2Name);
-
-        category1.setId(CATEGORY_1);
-        category2.setId(CATEGORY_2);*/
-    /*Mockito.when(categoryRepository.findById(CATEGORY_1_ID)).thenReturn(Optional.of(category1));
-        Mockito.when(categoryRepository.findById(CATEGORY_2)).thenReturn(Optional.of(category2));
-        Mockito.when(categoryRepository.findById(NOT_EXISTS_CATEGORY)).thenReturn(Optional.empty());*/
-
         Mockito.doNothing().when(categoryRepository).deleteById(CATEGORY_1_ID);
         Mockito.doNothing().when(categoryRepository).deleteById(CATEGORY_2_ID);
         Mockito.doNothing().when(categoryRepository).deleteById(SOME_NOT_EXISTS_CATEGORY_ID);
@@ -276,7 +257,7 @@ public class CategoryServiceTest {
         + CategoryResponse getCategoryProfileById(Long id);
         + Category getCategoryById(Long id);
         + Category getCategoryByName(String name);
-        - SuccessCreatedCategory addCategory(CategoryProfile categoryProfile);
+        + SuccessCreatedCategory addCategory(CategoryProfile categoryProfile);
         + List<CategoryResponse> getListOfCategories();
         + CategoryResponse deleteCategoryById(Long id);
         + List<SearchPossibleResponse> getPossibleCategoryByName(String text);

@@ -113,10 +113,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/cities", "/api/city/**").permitAll()
                 .antMatchers("/api/categories", "/api/category/**","/api/categories/search","/api/categories/search/**").permitAll()
                 .antMatchers("/api/newslist","/api/newslist/search").permitAll()
-                .antMatchers("/api/clubs", "/api/club/**","/api/clubs/search", "/api/club/search/simple").permitAll()
+                .antMatchers("/api/clubs", "/api/club/**","/api/clubs/search").permitAll()
                 .antMatchers("/api/contact-types", "/oauth2/**").permitAll()
                 .antMatchers("/api/search").permitAll()
                 .antMatchers("/api/clubs/simple/search").hasRole(RoleData.ADMIN.getRoleName())
+
+                .antMatchers("/api/user/**").permitAll()
+                .antMatchers("/api/feedbacks/**", "/api/feedback", "/api/feedback/**").permitAll()
+                .antMatchers("/api/complaint").permitAll()
+
+                .antMatchers().permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
