@@ -104,6 +104,13 @@ public class ClubController implements Api {
         return clubService.getClubsBySearchParameters(searchClubProfile, pageable);
     }
 
+
+    /**
+     * The controller returns dto {@code {@link ClubProfile}} of updated club.
+     *
+     * @param advancedSearchClubProfile - Place dto with all parameters for updating existed club.
+     * @return new {@code ClubProfile}.
+     */
     @GetMapping("/clubs/search/advanced")
     public Page<ClubResponse> getAdvancedSearchClubs(
             AdvancedSearchClubProfile advancedSearchClubProfile,
