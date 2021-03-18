@@ -116,6 +116,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/clubs", "/api/club/**","/api/clubs/search").permitAll()
                 .antMatchers("/api/contact-types", "/oauth2/**").permitAll()
                 .antMatchers("/api/search").permitAll()
+                .antMatchers("/api/clubs/simple/search").hasRole(RoleData.ADMIN.getRoleName())
 
                 .antMatchers("/api/user/**").permitAll()
                 .antMatchers("/api/feedbacks/**", "/api/feedback", "/api/feedback/**").permitAll()
