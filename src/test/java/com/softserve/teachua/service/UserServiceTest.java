@@ -138,7 +138,7 @@ public class UserServiceTest {
         when(encodeService.isValidPassword(userLogin, userEntity)).thenReturn(true);
         when(dtoConverter.convertFromDtoToDto(userEntity, new SuccessLogin()))
                 .thenReturn(SuccessLogin.builder().email(NEW_EMAIL).build());
-        when(encodeService.createToken(userEntity.getEmail())).thenReturn("token");
+//        when(encodeService.createToken(userEntity.getEmail())).thenReturn("token");
 
         SuccessLogin actual = userService.validateUser(userLogin);
         assertEquals(actual.getEmail(), userLogin.getEmail());

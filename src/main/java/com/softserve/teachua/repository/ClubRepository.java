@@ -56,6 +56,14 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             @Param("category") String categoryName,
             Pageable pageable);
 
+    @Query("SELECT DISTINCT club from Club AS club " +
+            "JOIN club.categories AS category WHERE " +
+            "club.city.name LIKE CONCAT('%', :city , '%') AND " +
+            "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
+    List<Club> findAllClubsByParameters(
+            @Param("city") String cityName,
+            @Param("category") String categoryName);
+
     @Query(value =
             "SELECT c FROM Club AS c WHERE " +
             "LOWER(c.name) LIKE LOWER(CONCAT('%', :text ,'%')) AND " +
@@ -77,4 +85,5 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     @Modifying
     @Query(value = "UPDATE clubs SET rating=:rating WHERE id = :club_id", nativeQuery = true)
     void updateRating(@Param("club_id") Long club_id, @Param("rating") double rating);
+
 }

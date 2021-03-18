@@ -22,6 +22,7 @@ import java.util.List;
 public class ClubController implements Api {
     private static final int CLUBS_PER_PAGE = 8;
     private static final int CLUBS_PER_USER_PAGE = 3;
+
     private final ClubService clubService;
 
     @Autowired
@@ -119,6 +120,10 @@ public class ClubController implements Api {
         return clubService.getAdvancedSearchClubs(advancedSearchClubProfile, pageable);
     }
 
+    @GetMapping("/clubs/search/simple")
+    public List<ClubResponse> getClubsByCategoryAndCity (SearchClubProfile searchClubProfile){
+        return clubService.getClubByCategoryAndCity(searchClubProfile);
+    }
 
     /**
      * The controller returns dto {@code {@link ClubProfile}} of updated club.

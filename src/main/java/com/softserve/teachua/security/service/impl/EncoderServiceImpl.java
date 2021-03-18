@@ -30,7 +30,4 @@ public class EncoderServiceImpl implements EncoderService {
         return passwordEncoder.encode(rawPassword);
     }
 
-    public String createToken(String email) {
-        return jwtProvider.generateToken(email);
-    }
 }

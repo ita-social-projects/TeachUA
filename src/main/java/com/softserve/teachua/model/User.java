@@ -22,7 +22,7 @@ public class User implements Convertible, Archivable {
     @Column (unique = true, nullable = false)
     private String email;
 
-    @Column (nullable = false)
+    @Column
     private String password;
 
     @Column
@@ -39,7 +39,12 @@ public class User implements Convertible, Archivable {
 
     @JsonBackReference
     @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "role_id", nullable = false)
+    @JoinColumn(name = "role_id")
     @ToString.Exclude
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
+    private String providerId;
 }
