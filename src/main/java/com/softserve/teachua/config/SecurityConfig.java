@@ -75,18 +75,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization", "content-type"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "content-type"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
     private final JwtFilter jwtFilter;
 
     @Autowired
@@ -113,9 +101,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/cities", "/api/city/**").permitAll()
                 .antMatchers("/api/categories", "/api/category/**","/api/categories/search","/api/categories/search/**").permitAll()
                 .antMatchers("/api/newslist","/api/newslist/search").permitAll()
-                .antMatchers("/api/clubs", "/api/club/**","/api/clubs/search").permitAll()
+                .antMatchers("/api/clubs", "/api/club/**", "/api/clubs/search" ,"/api/clubs/search/simple", "/api/clubs/search/advanced").permitAll()
                 .antMatchers("/api/contact-types", "/oauth2/**").permitAll()
                 .antMatchers("/api/search").permitAll()
+                .antMatchers("/api/contact-type", "/api/upload-image").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
