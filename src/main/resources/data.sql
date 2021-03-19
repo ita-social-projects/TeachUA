@@ -1,6 +1,7 @@
 insert into roles(name)
 values ('ROLE_ADMIN'),
-       ('ROLE_USER');
+       ('ROLE_USER'),
+       ('ROLE_MANAGER');
 
 insert into users(email, password, url_logo, first_name, last_name, phone, role_id,provider)
 values ('admin@gmail.com', '$2y$12$iod5PRHZaYrIO6L3onnnk.Mhx9Hc1lb2ehBi0hRvPDD83u6OM/b66',

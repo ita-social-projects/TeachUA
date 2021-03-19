@@ -9,9 +9,9 @@ import com.softserve.teachua.security.oauth2.HttpCookieOAuth2AuthorizationReques
 import com.softserve.teachua.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.softserve.teachua.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,15 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -95,15 +87,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
-                .antMatchers("/roles").hasRole(RoleData.ADMIN.getRoleName())
-                .antMatchers("/hello").hasAnyRole(RoleData.ADMIN.getRoleName(), RoleData.USER.getRoleName())
+                .antMatchers("/roles").hasRole("ADMIN")
                 .antMatchers("/index", "/api/signup", "/api/signin", "/api/signout").permitAll()
-                .antMatchers("/api/cities", "/api/city/**").permitAll()
-                .antMatchers("/api/categories", "/api/category/**","/api/categories/search","/api/categories/search/**").permitAll()
-                .antMatchers("/api/newslist","/api/newslist/search").permitAll()
-                .antMatchers("/api/clubs", "/api/club/**", "/api/clubs/search" ,"/api/clubs/search/simple", "/api/clubs/search/advanced").permitAll()
-                .antMatchers("/api/contact-types", "/oauth2/**").permitAll()
-                .antMatchers("/api/search").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/user/**").hasAnyRole("USER","ADMIN","MANAGER")
+                .antMatchers(HttpMethod.PUT,"/api/user/**").hasAnyRole("USER","ADMIN","MANAGER")
+                .antMatchers(HttpMethod.GET,"/api/cities", "/api/city/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/city").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT,"/api/city/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE,"/api/city/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/api/categories", "/api/category/**","/api/categories/search","/api/categories/search/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/newslist","/api/newslist/search").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/clubs","/api/clubs/{id}" , "/api/clubs/search**", "/api/clubs/search/simple","/api/clubs/search/advanced").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/club").hasAnyRole("MANAGER","ADMIN")
+                .antMatchers(HttpMethod.PUT,"/api/club").hasAnyRole("MANAGER","ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/complaint","/api/feedback").hasAnyRole("USER","MANAGER","ADMIN")
+                .antMatchers(HttpMethod.GET,"/api/center/**","/api/centers/**","/api/feedbacks/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/search").permitAll()
+                .antMatchers( "/oauth2/**").permitAll()
                 .antMatchers("/api/contact-type", "/api/upload-image").permitAll()
                 .anyRequest()
                 .authenticated()

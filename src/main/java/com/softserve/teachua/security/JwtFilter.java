@@ -1,5 +1,6 @@
 package com.softserve.teachua.security;
 
+import com.softserve.teachua.constants.RoleData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
