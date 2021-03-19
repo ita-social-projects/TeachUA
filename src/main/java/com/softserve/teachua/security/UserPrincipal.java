@@ -6,10 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserPrincipal implements OAuth2User, UserDetails {
     private Long id;
@@ -26,8 +23,14 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
 
     public static UserPrincipal create(User user) {
-        List<GrantedAuthority> authorities = Collections.
-                singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        List<GrantedAuthority> authorities;
+        if(user.getRole()!=null) {
+                     authorities = Collections.
+                    singletonList(new SimpleGrantedAuthority(user.getRole().getName()));
+        }else{
+                    authorities = Collections.
+                    singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        }
 
         return new UserPrincipal(
                 user.getId(),
