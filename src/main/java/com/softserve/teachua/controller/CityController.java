@@ -53,7 +53,7 @@ public class CityController implements Api {
     public CityProfile updateCity(
             @PathVariable Long id,
             @Valid
-            @RequestBody CityProfile cityProfile){
+            @RequestBody CityProfile cityProfile) {
         return cityService.updateCity(id, cityProfile);
     }
 

@@ -170,9 +170,8 @@ public class UserServiceImpl implements UserService {
     /**
      * The method returns dto {@code SuccessRegistration} if user successfully registered.
      *
-     * @param userProfile- place dto with all params
+     * @param userProfile-       place dto with all params
      * @param httpServletRequest - place httpRequest
-     *
      * @return new {@code SuccessRegistration}.
      * @throws AlreadyExistException if user with email already exists.
      */
@@ -205,16 +204,14 @@ public class UserServiceImpl implements UserService {
      * @param userLogin- place dto with all params.
      * @return new {@code SuccessLogin}.
      * @throws WrongAuthenticationException if user password is incorrect.
-     * @throws NotVerifiedUserException if user verification code is incorrect.
+     * @throws NotVerifiedUserException     if user verification code is incorrect.
      */
     @Override
     public SuccessLogin validateUser(UserLogin userLogin) {
         UserEntity userEntity = getUserEntity(userLogin.getEmail());
         if (encodeService.isValidStatus(userLogin, userEntity)) {
             throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userLogin.getEmail()));
-        }
-
-        else if (!encodeService.isValidPassword(userLogin, userEntity)) {
+        } else if (!encodeService.isValidPassword(userLogin, userEntity)) {
             throw new WrongAuthenticationException(String.format(WRONG_PASSWORD, userLogin.getPassword()));
         }
         log.info("user {} logged successfully", userLogin);
@@ -276,13 +273,12 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     /**
      * The method returns dto {@code SuccessVerification} of user by verification code
      *
      * @param verificationCode - put user verificationCode.
      * @return new {@code SuccessVerification}.
-     * @throws NotExistException if user not exist
+     * @throws NotExistException        if user not exist
      * @throws NotVerifiedUserException if user status is inactive
      */
     @Override
@@ -304,18 +300,15 @@ public class UserServiceImpl implements UserService {
     /**
      * The method send message {@code message} to new user after registration
      *
-     * @param userProfile - put user entity
-     * @param  httpServletRequest - put request
-     *
-     * @throws MessagingException if message isn`t sent
+     * @param userProfile        - put user entity
+     * @param httpServletRequest - put request
+     * @throws MessagingException           if message isn`t sent
      * @throws UnsupportedEncodingException if there is wrong encoding
-     *
      * @value toAddress - an email of user to send verificationCode with httpRequest
      * @value fromAddress - an email of company getting from environment variables
      * @value senderName - name of company or name of user-sender
      * @value subject - email header
      * @value content - email body
-     *
      */
     private void sendVerificationEmail(UserProfile userProfile, HttpServletRequest httpServletRequest)
             throws MessagingException, UnsupportedEncodingException {

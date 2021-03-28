@@ -68,7 +68,7 @@ public class ComplaintController implements Api {
     /**
      * The method to update Complaint
      *
-     * @param id Complaint id
+     * @param id               Complaint id
      * @param complaintProfile Complaint profile with new data
      * @return ComplaintProfile
      */

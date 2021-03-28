@@ -1,9 +1,9 @@
 package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
-import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

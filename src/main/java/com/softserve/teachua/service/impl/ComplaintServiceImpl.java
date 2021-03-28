@@ -115,7 +115,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     /**
      * Method find {@link Complaint} by id, and update data
      *
-     * @param id - complaint id
+     * @param id               - complaint id
      * @param complaintProfile profile with data for Complaint
      * @return ComplaintProfile
      **/

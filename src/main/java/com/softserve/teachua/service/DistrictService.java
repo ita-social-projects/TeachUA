@@ -1,6 +1,5 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.district.DistrictProfile;
 import com.softserve.teachua.dto.district.DistrictResponse;
 import com.softserve.teachua.dto.district.SuccessCreatedDistrict;

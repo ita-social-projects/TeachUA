@@ -1,8 +1,10 @@
 package com.softserve.teachua.dto.district;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.City;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @AllArgsConstructor

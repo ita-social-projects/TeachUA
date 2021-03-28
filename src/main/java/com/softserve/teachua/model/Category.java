@@ -23,7 +23,7 @@ public class Category implements Convertible, Archivable {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     @EqualsAndHashCode.Include
     private String name;
 

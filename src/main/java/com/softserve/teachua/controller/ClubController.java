@@ -121,7 +121,7 @@ public class ClubController implements Api {
     }
 
     @GetMapping("/clubs/search/simple")
-    public List<ClubResponse> getClubsByCategoryAndCity (SearchClubProfile searchClubProfile){
+    public List<ClubResponse> getClubsByCategoryAndCity(SearchClubProfile searchClubProfile) {
         return clubService.getClubByCategoryAndCity(searchClubProfile);
     }
 

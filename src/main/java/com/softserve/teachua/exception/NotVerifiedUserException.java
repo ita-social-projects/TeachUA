@@ -5,11 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class is custom exception to check problems with user verification after registration
- *
+ * <p>
  * The constructor accepts message for Exception
- *
+ * <p>
  * Use @code throw new NotVerifiedUserException("Authentication exception")
- *
  */
 @Slf4j
 public class NotVerifiedUserException extends RuntimeException {
