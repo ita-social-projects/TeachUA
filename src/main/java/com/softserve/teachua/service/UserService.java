@@ -18,15 +18,19 @@ public interface UserService {
 
     User getUserByEmail(String email);
 
+    User getUserByVerificationCode(String verificationCode);
+
     List<UserResponse> getListOfUsers();
 
-    SuccessRegistration registerUser(UserProfile userProfile);
+    SuccessRegistration registerUser(UserProfile userProfile, HttpServletRequest request);
 
     SuccessLogin validateUser(UserLogin userLogin);
 
     SuccessUpdatedUser updateUser(Long id, UserProfile userProfile);
 
     void updateUser(User user);
+
+    SuccessVerification verify(String verificationCode);
 
     void validateUserId(Long id, HttpServletRequest httpServletRequest);
 }

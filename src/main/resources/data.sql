@@ -3,13 +3,13 @@ values ('ROLE_ADMIN'),
        ('ROLE_USER'),
        ('ROLE_MANAGER');
 
-insert into users(email, password, url_logo, first_name, last_name, phone, role_id,provider)
+insert into users(email, password, url_logo, first_name, last_name, phone, role_id, provider, status)
 values ('admin@gmail.com', '$2y$12$iod5PRHZaYrIO6L3onnnk.Mhx9Hc1lb2ehBi0hRvPDD83u6OM/b66',
-        '/static/images/user/avatar/user1.png', 'Admin', 'Admin', '+38000000000', 1,'local'),
+        '/static/images/user/avatar/user1.png', 'Admin', 'Admin', '+38000000000', 1, 'local', true),
        ('user@gmail.com', '$2y$12$aDvzOnearRd4eulVJID3pOufutAIXVU5i1GKhgpXuvyVmktuSAmqe',
-        '/static/images/user/avatar/user2.png', 'user', 'user', '+38000000000', 2,'local'),
+        '/static/images/user/avatar/user2.png', 'user', 'user', '+38000000000', 2, 'local', true),
        ('user2@gmail.com', '$2y$12$aDvzOnearRd4eulVJID3pOufutAIXVU5i1GKhgpXuvyVmktuSAmqe',
-        '/static/images/user/avatar/user3.png', 'user2', 'user2', '+38000000000', 2, 'local');
+        '/static/images/user/avatar/user3.png', 'user2', 'user2', '+38000000000', 2, 'local', true);
 
 insert into cities(name, latitude, longitude)
 values ('Київ', 50.4501, 30.5234),
@@ -23,13 +23,17 @@ values ('Київ', 50.4501, 30.5234),
        ('Рівне', 50.6199, 26.2516);
 
 insert into categories(name, description, url_logo, background_color, tag_background_color, tag_text_color)
-values ('Спортивні секції', 'Футбол, бокс, хокей, гімнастика, плавання, бойові мистецтва тощо', '/static/images/categories/sport.svg', '#1890FF', '#1890FF', '#fff'),
-       ('Танці, хореографія', 'Класичні і народні танці, брейк-данс, степ, контемп, балет та ін.', '/static/images/categories/dance.svg', '#531DAB', '#F9F0FF', '#531DAB'),
-       ('Студії раннього розвитку', 'Центри раннього розвитку, заняття для малюків, розвиток мовлення', '/static/images/categories/improvement.svg', '#73D13D',
+values ('Спортивні секції', 'Футбол, бокс, хокей, гімнастика, плавання, бойові мистецтва тощо',
+        '/static/images/categories/sport.svg', '#1890FF', '#1890FF', '#fff'),
+       ('Танці, хореографія', 'Класичні і народні танці, брейк-данс, степ, контемп, балет та ін.',
+        '/static/images/categories/dance.svg', '#531DAB', '#F9F0FF', '#531DAB'),
+       ('Студії раннього розвитку', 'Центри раннього розвитку, заняття для малюків, розвиток мовлення',
+        '/static/images/categories/improvement.svg', '#73D13D',
         '#73D13D',
         '#fff'),
        ('Програмування, робототехніка, STEM',
-        'Вивчення природничих наук, технологій, інженерії та математики, STEM-освіта', '/static/images/categories/programming.svg', '#597EF7',
+        'Вивчення природничих наук, технологій, інженерії та математики, STEM-освіта',
+        '/static/images/categories/programming.svg', '#597EF7',
         '#597EF7',
         '#fff'),
        ('Художні студії, мистецтво, дизайн',
@@ -42,10 +46,12 @@ values ('Спортивні секції', 'Футбол, бокс, хокей, 
         '#FF7A45',
         '#FF7A45',
         '#fff'),
-       ('Акторська майстерність, театр', 'Театральна студія, ляльковий театр, акторська майстерність', '/static/images/categories/theatre.svg', '#FF4D4F',
+       ('Акторська майстерність, театр', 'Театральна студія, ляльковий театр, акторська майстерність',
+        '/static/images/categories/theatre.svg', '#FF4D4F',
         '#FF4D4F',
         '#fff'),
-       ('Особистісний розвиток', 'Розвиток лідерських якостей, підприємництво для підлітків, фінансова грамотність', '/static/images/categories/self-improvement.svg', '#FADB14',
+       ('Особистісний розвиток', 'Розвиток лідерських якостей, підприємництво для підлітків, фінансова грамотність',
+        '/static/images/categories/self-improvement.svg', '#FADB14',
         '#FFF9D4',
         '#D46B08'),
        ('Журналістика, дитяче телебачення, монтаж відео, влогів',
@@ -53,7 +59,8 @@ values ('Спортивні секції', 'Футбол, бокс, хокей, 
         '/static/images/categories/tv.svg',
         '#13C2C2',
         '#13C2C2', '#fff'),
-       ('Інше', 'Тут є цікаві гуртки, які не потрапили в інші категорії','/static/images/categories/other.svg', '#FFA940', '#FFA940', '#fff'),
+       ('Інше', 'Тут є цікаві гуртки, які не потрапили в інші категорії', '/static/images/categories/other.svg',
+        '#FFA940', '#FFA940', '#fff'),
        ('Центр розвитку', '', '/static/images/categories/center.svg', '#F759AB', '#F759AB', '#fff');
 
 insert into centers (name, email, address, phones, social_links, description,

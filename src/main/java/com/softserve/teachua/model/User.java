@@ -47,4 +47,10 @@ public class User implements Convertible, Archivable {
     private AuthProvider provider;
 
     private String providerId;
+
+    @Column
+    private boolean status;
+
+    @Column
+    private String verificationCode;
 }

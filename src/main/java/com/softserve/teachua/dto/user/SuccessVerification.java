@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.security;
+package com.softserve.teachua.dto.user;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class UserEntity implements Convertible {
+public class SuccessVerification implements Convertible {
 
     private Long id;
-    private String email;
-    private String password;
-    private String roleName;
+
     private boolean status;
+
+    private String verificationCode;
 }
