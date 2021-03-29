@@ -137,7 +137,7 @@ public class RoleServiceImpl implements RoleService {
      *
      * @param id - id of role to delete
      * @return RoleRespone {@link  RoleResponse}.
-     * @throws NotExistException {@link NotExistException} if the role doesn't exist.
+     * @throws NotExistException           {@link NotExistException} if the role doesn't exist.
      * @throws DatabaseRepositoryException {@link DatabaseRepositoryException} if role has re.
      */
     @Override
@@ -160,6 +160,7 @@ public class RoleServiceImpl implements RoleService {
     private boolean isRoleExistByName(String name) {
         return roleRepository.existsByName(name);
     }
+
     private Optional<Role> getOptionalRoleById(Integer id) {
         return roleRepository.findById(id);
     }

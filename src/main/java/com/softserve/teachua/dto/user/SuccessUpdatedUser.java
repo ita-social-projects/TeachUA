@@ -1,7 +1,6 @@
 package com.softserve.teachua.dto.user;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

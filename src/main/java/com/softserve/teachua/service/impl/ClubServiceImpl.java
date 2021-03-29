@@ -1,7 +1,6 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
@@ -260,7 +259,7 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public Page<ClubResponse> getClubsByUserId(Long id, Pageable pageable) {
-        Page<Club> clubResponses = clubRepository.findAllByUserId(id,pageable);
+        Page<Club> clubResponses = clubRepository.findAllByUserId(id, pageable);
 
         return new PageImpl<>(clubResponses
                 .stream()
@@ -269,9 +268,9 @@ public class ClubServiceImpl implements ClubService {
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
 
-    public List<ClubResponse> getClubByCategoryAndCity(SearchClubProfile searchClubProfile){
+    public List<ClubResponse> getClubByCategoryAndCity(SearchClubProfile searchClubProfile) {
         List<Club> clubResponses = clubRepository.findAllClubsByParameters(searchClubProfile.getCityName()
-        , searchClubProfile.getCategoryName());
+                , searchClubProfile.getCategoryName());
 
         return clubResponses
                 .stream()

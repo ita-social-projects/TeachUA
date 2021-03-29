@@ -4,11 +4,11 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.user.SuccessUpdatedUser;
 import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.dto.user.UserResponse;
-import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;

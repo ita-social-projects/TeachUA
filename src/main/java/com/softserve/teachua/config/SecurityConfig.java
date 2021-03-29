@@ -1,6 +1,5 @@
 package com.softserve.teachua.config;
 
-import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.security.JwtFilter;
 import com.softserve.teachua.security.RestAuthenticationEntryPoint;
@@ -88,22 +87,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/roles").hasRole("ADMIN")
-                .antMatchers("/index", "/api/signup", "/api/signin", "/api/signout").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/user/**").hasAnyRole("USER","ADMIN","MANAGER")
-                .antMatchers(HttpMethod.PUT,"/api/user/**").hasAnyRole("USER","ADMIN","MANAGER")
-                .antMatchers(HttpMethod.GET,"/api/cities", "/api/city/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/city").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT,"/api/city/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE,"/api/city/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET,"/api/categories", "/api/category/**","/api/categories/search","/api/categories/search/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/newslist","/api/newslist/search").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/clubs","/api/clubs/{id}" , "/api/clubs/search**", "/api/clubs/search/simple","/api/clubs/search/advanced").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/club").hasAnyRole("MANAGER","ADMIN")
-                .antMatchers(HttpMethod.PUT,"/api/club").hasAnyRole("MANAGER","ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/complaint","/api/feedback").hasAnyRole("USER","MANAGER","ADMIN")
-                .antMatchers(HttpMethod.GET,"/api/center/**","/api/centers/**","/api/feedbacks/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/search").permitAll()
-                .antMatchers( "/oauth2/**").permitAll()
+                .antMatchers("/index", "/api/signup", "/api/signin", "/api/signout", "/api/verify").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/user/**").hasAnyRole("USER", "ADMIN", "MANAGER")
+                .antMatchers(HttpMethod.PUT, "/api/user/**").hasAnyRole("USER", "ADMIN", "MANAGER")
+                .antMatchers(HttpMethod.GET, "/api/cities", "/api/city/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/city").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/city/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/city/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/categories", "/api/category/**", "/api/categories/search", "/api/categories/search/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/newslist", "/api/newslist/search").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/clubs", "/api/clubs/{id}", "/api/clubs/search**", "/api/clubs/search/simple", "/api/clubs/search/advanced").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/club").hasAnyRole("MANAGER", "ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/club").hasAnyRole("MANAGER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/complaint", "/api/feedback").hasAnyRole("USER", "MANAGER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/center/**", "/api/centers/**", "/api/feedbacks/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/search").permitAll()
+                .antMatchers("/oauth2/**").permitAll()
                 .antMatchers("/api/contact-type", "/api/upload-image").permitAll()
 
                 .antMatchers("/api/users","/api/user/update").permitAll()

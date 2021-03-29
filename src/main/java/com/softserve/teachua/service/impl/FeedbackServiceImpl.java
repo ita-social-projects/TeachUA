@@ -119,8 +119,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     /**
      * Method find {@link Feedback} by id, and update data and Club rating
      *
-     * @param id - place id
-     * @param feedbackProfile  - put dto 'FeedbackProfile'
+     * @param id              - place id
+     * @param feedbackProfile - put dto 'FeedbackProfile'
      * @return FeedbackProfile
      **/
     @Override

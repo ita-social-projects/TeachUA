@@ -25,7 +25,7 @@ public class Role implements Convertible, Archivable {
     private Integer id;
 
     @NonNull
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String name;
 
     @JsonManagedReference

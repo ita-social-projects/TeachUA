@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.*;
 /**
  * Custom exception handler to handle own exceptions
  * and handle Spring's exceptions(BadRequest, MethodNotSupported).
- *
+ * <p>
  * Use @code buildExceptionBody(Exception exception, HttpStatus status) to create
  * own exception body.
  *

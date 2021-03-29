@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,4 +16,7 @@ public class UserLogin {
 
     @NotEmpty
     private String password;
+
+    @NotNull
+    private boolean status;
 }

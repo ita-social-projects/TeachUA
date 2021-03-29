@@ -3,6 +3,7 @@ package com.softserve.teachua.model;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -10,20 +11,19 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @With
-@Builder
 @Entity
-@Table(name = "stations")
-public class Station implements Convertible, Archivable {
+@Builder
+@Table(name = "question")
+public class Question implements Convertible, Archivable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Column
+    private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "city_id", referencedColumnName = "id", nullable = false)
-    @ToString.Exclude
-    private City city;
+    @Column
+    @Type(type = "text")
+    private String text;
 }

@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.district;
+package com.softserve.teachua.dto.question;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
@@ -6,15 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-public class DistrictResponse implements Convertible {
+public class QuestionProfile implements Convertible {
+
     private Long id;
 
-    private String name;
+    @NotEmpty
+    private String title;
 
-    private String cityName;
+    @NotEmpty
+    private String text;
 }
