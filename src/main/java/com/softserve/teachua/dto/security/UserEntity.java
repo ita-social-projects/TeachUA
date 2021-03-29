@@ -16,5 +16,5 @@ public class UserEntity implements Convertible {
     private String email;
     private String password;
     private String roleName;
-
+    private boolean status;
 }

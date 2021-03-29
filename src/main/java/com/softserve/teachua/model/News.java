@@ -21,7 +21,7 @@ public class News implements Convertible, Archivable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String title;
 
     @CreationTimestamp

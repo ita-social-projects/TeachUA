@@ -2,7 +2,6 @@ package com.softserve.teachua.security.oauth2;
 
 import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.model.User;
-import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.security.util.CookieUtils;
 import com.softserve.teachua.service.RoleService;
@@ -85,11 +84,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
         User user = userService.getUserByEmail(authentication.getName());
-        if(userRole.get()!="") {
+        if (userRole.get() != "") {
             user.setRole(roleService.findByName((String) userRole.get()));
             log.info("Set user role" + userRole.get());
-        }
-        else {
+        } else {
             user.setRole(roleService.findByName("ROLE_USER"));
             log.info("Set default user role");
         }

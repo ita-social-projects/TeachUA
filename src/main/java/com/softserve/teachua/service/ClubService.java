@@ -33,7 +33,7 @@ public interface ClubService {
 
     List<ClubResponse> getListOfClubs();
 
-    Page<ClubResponse> getClubsByUserId(Long id,Pageable pageable);
+    Page<ClubResponse> getClubsByUserId(Long id, Pageable pageable);
 
     List<ClubResponse> getSimilarClubsByCategoryName(SimilarClubProfile similarClubProfile);
 

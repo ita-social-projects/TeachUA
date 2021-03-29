@@ -19,7 +19,7 @@ public class User implements Convertible, Archivable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column
@@ -38,7 +38,7 @@ public class User implements Convertible, Archivable {
     private String urlLogo;
 
     @JsonBackReference
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id")
     @ToString.Exclude
     private Role role;
@@ -47,4 +47,10 @@ public class User implements Convertible, Archivable {
     private AuthProvider provider;
 
     private String providerId;
+
+    @Column
+    private boolean status;
+
+    @Column
+    private String verificationCode;
 }

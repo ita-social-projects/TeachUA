@@ -66,8 +66,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     @Query(value =
             "SELECT c FROM Club AS c WHERE " +
-            "LOWER(c.name) LIKE LOWER(CONCAT('%', :text ,'%')) AND " +
-            "c.city.name = :city")
+                    "LOWER(c.name) LIKE LOWER(CONCAT('%', :text ,'%')) AND " +
+                    "c.city.name = :city")
     Page<Club> findTop3ByName(@Param("text") String text,
                               @Param("city") String cityName,
                               Pageable pageable);

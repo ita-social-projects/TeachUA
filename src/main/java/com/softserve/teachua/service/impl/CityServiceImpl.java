@@ -1,16 +1,13 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.city.SuccessCreatedCity;
-import com.softserve.teachua.dto.role.RoleResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.City;
-import com.softserve.teachua.model.Role;
 import com.softserve.teachua.repository.CityRepository;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CityService;

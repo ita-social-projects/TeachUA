@@ -1,6 +1,5 @@
 package com.softserve.teachua.security;
 
-import com.softserve.teachua.constants.RoleData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,8 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-import static org.springframework.util.StringUtils.hasText;
 
 @Component
 @Slf4j
@@ -48,9 +45,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.info("User "+userDetails.getUsername()+"successfully authenticate with token"+jwt);
-            }
-            else{
+                log.info("User " + userDetails.getUsername() + "successfully authenticate with token" + jwt);
+            } else {
                 log.error("User is not authenticate");
             }
         } catch (Exception ex) {

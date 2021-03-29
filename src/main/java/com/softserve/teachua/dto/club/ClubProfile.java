@@ -1,7 +1,6 @@
 package com.softserve.teachua.dto.club;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -53,5 +51,5 @@ public class ClubProfile implements Convertible {
 
     private String districtName;
 
-   // private Center center;
+    // private Center center;
 }

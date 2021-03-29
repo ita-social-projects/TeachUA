@@ -8,7 +8,6 @@ import com.softserve.teachua.model.ContactType;
 import com.softserve.teachua.service.ContactTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 import java.util.List;
