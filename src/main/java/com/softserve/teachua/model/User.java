@@ -47,4 +47,7 @@ public class User implements Convertible, Archivable {
     private AuthProvider provider;
 
     private String providerId;
+
+    @Column(name = "status")
+    private boolean status;
 }

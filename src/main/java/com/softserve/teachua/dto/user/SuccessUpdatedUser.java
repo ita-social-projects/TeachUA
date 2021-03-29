@@ -13,12 +13,13 @@ import lombok.NoArgsConstructor;
 @Data
 public class SuccessUpdatedUser implements Convertible {
 
+    private Long id;
     private String firstName;
     private String lastName;
     private String phone;
-    private Long id;
     private String email;
     private String roleName;
     private String urlLogo;
+    private String status;
 
 }

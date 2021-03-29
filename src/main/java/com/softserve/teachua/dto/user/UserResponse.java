@@ -20,4 +20,5 @@ public class UserResponse implements Convertible {
     private String password;
     private String roleName;
     private String urlLogo;
+    private String status;
 }
