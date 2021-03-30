@@ -2,14 +2,17 @@ package com.softserve.teachua.controller.user;
 
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.user.SuccessRegistration;
+import com.softserve.teachua.dto.user.SuccessVerification;
 import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -22,14 +25,16 @@ public class RegistrationController implements Api {
         this.userService = userService;
     }
 
+
     /**
-     * The controller returns sign-up page.
+     * The controller returns dto {@code SuccessRegistration} of sign-upped user.
      *
-     * @return signup.
+     * @param verificationCode - code of user verification
+     * @return new {@code SuccessRegistration}.
      */
     @GetMapping("/signup")
-    public String signUp() {
-        return "signup";
+    public SuccessVerification verifyUser(@Param("verificationCode") String verificationCode) {
+        return userService.verify(verificationCode);
     }
 
     /**
@@ -42,7 +47,7 @@ public class RegistrationController implements Api {
     public SuccessRegistration signUp(
             @Valid
             @RequestBody
-                    UserProfile userProfile) {
-        return userService.registerUser(userProfile);
+                    UserProfile userProfile, HttpServletRequest request) {
+        return userService.registerUser(userProfile, request);
     }
 }

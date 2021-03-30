@@ -33,7 +33,7 @@ public class ApplicationConfig {
                 RequestDispatcher requestDispatcher = request.getRequestDispatcher(SLASH);
                 requestDispatcher.forward(request, response);
                 return;
-                }
+            }
 
             chain.doFilter(request, response);
         });
@@ -46,5 +46,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ObjectMapper objectMapper() { return new ObjectMapper(); }
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
 }

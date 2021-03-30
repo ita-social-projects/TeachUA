@@ -31,7 +31,7 @@ public class Club implements Convertible, Archivable {
     @Column
     private Integer ageTo;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     @EqualsAndHashCode.Include
     private String name;
 

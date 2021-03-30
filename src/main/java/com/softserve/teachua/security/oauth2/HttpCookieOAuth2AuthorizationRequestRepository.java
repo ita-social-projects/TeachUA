@@ -27,7 +27,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
      */
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(@NotNull HttpServletRequest request) {
-        log.info("User role from request "+ request.getParameter("role"));
+        log.info("User role from request " + request.getParameter("role"));
         return CookieUtils.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
                 .map(cookie -> CookieUtils.deserialize(cookie, OAuth2AuthorizationRequest.class))
                 .orElse(null);
@@ -70,7 +70,6 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
     /**
      * The method remove cookies from authorization request
-     *
      */
     public void removeAuthorizationRequestCookies(HttpServletRequest request, HttpServletResponse response) {
         CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
