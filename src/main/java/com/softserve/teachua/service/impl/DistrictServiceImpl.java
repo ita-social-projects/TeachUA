@@ -94,6 +94,11 @@ public class DistrictServiceImpl implements DistrictService {
         return district;
     }
 
+    @Override
+    public Optional<District> getOptionalDistrictByName(String name) {
+        return districtRepository.findByName(name);
+    }
+
     /**
      * The method returns dto {@code SuccessCreatedDistrict} if district successfully added.
      *
@@ -193,9 +198,5 @@ public class DistrictServiceImpl implements DistrictService {
 
     private Optional<District> getOptionalDistrictById(Long id) {
         return districtRepository.findById(id);
-    }
-
-    private Optional<District> getOptionalDistrictByName(String name) {
-        return districtRepository.findByName(name);
     }
 }

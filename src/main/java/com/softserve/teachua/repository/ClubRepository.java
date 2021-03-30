@@ -28,10 +28,11 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     Page<Club> findAllByUserId(Long id, Pageable pageable);
 
     @Query("SELECT DISTINCT club from Club AS club " +
-            "LEFT JOIN club.district AS district " +
-            "LEFT JOIN club.station AS station " +
-            "JOIN club.categories AS category WHERE " +
-            "(:city IS NULL OR club.city.name = :city) AND " +
+            "JOIN club.categories AS category " +
+            "JOIN club.locations AS locations " +
+            "LEFT JOIN locations.district AS district " +
+            "LEFT JOIN locations.station AS station WHERE " +
+            "(:city IS NULL OR locations.city.name = :city) AND " +
             "(club.ageFrom >= :ageFrom AND club.ageTo <= :ageTo) AND " +
             "(category.name IN (:categories) OR :categories IS NULL) AND " +
             "(:district IS NULL OR district.name = :district) AND " +
@@ -46,9 +47,10 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             Pageable pageable);
 
     @Query("SELECT DISTINCT club from Club AS club " +
+            "JOIN club.locations AS locations " +
             "JOIN club.categories AS category WHERE " +
             "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) AND " +
-            "club.city.name LIKE CONCAT('%', :city , '%') AND " +
+            "locations.city.name LIKE CONCAT('%', :city , '%') AND " +
             "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
     Page<Club> findAllByParameters(
             @Param("name") String name,
@@ -57,25 +59,27 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             Pageable pageable);
 
     @Query("SELECT DISTINCT club from Club AS club " +
+            "JOIN club.locations AS locations " +
             "JOIN club.categories AS category WHERE " +
-            "club.city.name LIKE CONCAT('%', :city , '%') AND " +
+            "locations.city.name LIKE CONCAT('%', :city , '%') AND " +
             "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
     List<Club> findAllClubsByParameters(
             @Param("city") String cityName,
             @Param("category") String categoryName);
 
-    @Query(value =
-            "SELECT c FROM Club AS c WHERE " +
-            "LOWER(c.name) LIKE LOWER(CONCAT('%', :text ,'%')) AND " +
-            "c.city.name = :city")
+    @Query("SELECT c FROM Club AS c " +
+            "JOIN c.locations AS locations " +
+            "WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :text ,'%')) AND " +
+            "locations.city.name = :city")
     Page<Club> findTop3ByName(@Param("text") String text,
                               @Param("city") String cityName,
                               Pageable pageable);
 
     @Query("SELECT DISTINCT club from Club AS club " +
+            "JOIN club.locations AS locations " +
             "JOIN club.categories AS category WHERE " +
             "category.name IN (:categoriesName) AND " +
-            "club.city.name = :cityName " +
+            "locations.city.name = :cityName " +
             "AND club.id <> :id")
     Page<Club> findByCategoryName(@Param("id") Long id,
                                   @Param("categoriesName") List<String> categoriesName,

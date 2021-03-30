@@ -72,7 +72,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return buildExceptionBody(new BadRequestException(BadRequestException.JSON_IS_NOT_READABLE), status);
+        return buildExceptionBody(new BadRequestException(exception.getMessage()), status);
     }
 
     @Override
