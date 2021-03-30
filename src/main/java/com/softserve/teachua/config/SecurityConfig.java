@@ -110,6 +110,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/contact-types", "/api/districts/**").permitAll()
                 .antMatchers("/oauth2/**").permitAll()
                 .antMatchers("/api/upload-image").permitAll()
+                .antMatchers("/api/users","/api/user/update").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
