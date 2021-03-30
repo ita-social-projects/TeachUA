@@ -8,6 +8,11 @@ import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +26,7 @@ public class UserController implements Api {
     private final UserService userService;
 
     private final JwtProvider jwtProvider;
+
 
     @Autowired
     public UserController(UserService userService, JwtProvider jwtProvider) {
@@ -36,6 +42,7 @@ public class UserController implements Api {
      */
     @GetMapping("/user/{id}")
     public UserResponse getUserById(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
+
         userService.validateUserId(id, httpServletRequest);
         return userService.getUserProfileById(id);
     }
@@ -64,6 +71,13 @@ public class UserController implements Api {
         userService.validateUserId(id, httpServletRequest);
         return userService.updateUser(id, userProfile);
     }
+    @PutMapping("/user/update")
+    public SuccessUpdatedUser updateUserByManager(
+            @Valid
+            @RequestBody UserProfile userProfile, HttpServletRequest httpServletRequest) {
+//        userService.validateUserId(userProfile.getId(), httpServletRequest); == todo think about validation
+        return userService.updateUser(userProfile.getId(), userProfile);
+    }
 
     /**
      * The controller returns dto {@code UserResponse} of deleted user by id.
@@ -73,6 +87,13 @@ public class UserController implements Api {
      */
     @DeleteMapping("/user/{id}")
     public UserResponse deleteUser(@PathVariable Long id) {
+        log.info("=======");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth!=null){
+            auth.getAuthorities().stream().forEach(a -> a.getAuthority());
+        }else{
+            System.out.println("auth is null");
+        }
         return userService.deleteUserById(id);
     }
 }

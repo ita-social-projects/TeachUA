@@ -38,5 +38,7 @@ public class UserProfile implements Convertible {
 
     private String urlLogo;
 
-    private boolean status;
+    @NotEmpty
+    private String status;
+
 }
