@@ -1,5 +1,7 @@
 package com.softserve.teachua.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
@@ -33,10 +35,6 @@ public class Club implements Convertible, Archivable {
     @EqualsAndHashCode.Include
     private String name;
 
-    @Column
-    @EqualsAndHashCode.Include
-    private String address;
-
     @Column(columnDefinition = "TEXT")
     private String description;
 
@@ -53,18 +51,12 @@ public class Club implements Convertible, Archivable {
     private String workTime;
 
     @Column
-    private Double latitude;
-
-    @Column
-    private Double longitude;
-
-    @Column
     private Double rating;
 
-    @ManyToOne
-    @JoinColumn(name = "city_id", referencedColumnName = "id", nullable = false)
+    @OneToMany(mappedBy = "club")
+    @JsonManagedReference
     @ToString.Exclude
-    private City city;
+    private Set<Location> locations;
 
     @ManyToMany
     @JoinTable(name = "club_category",
@@ -82,16 +74,6 @@ public class Club implements Convertible, Archivable {
     @JoinColumn(name = "center_id", referencedColumnName = "id")
     @ToString.Exclude
     private Center center;
-
-    @ManyToOne
-    @JoinColumn(name = "district_id", referencedColumnName = "id")
-    @ToString.Exclude
-    private District district;
-
-    @ManyToOne
-    @JoinColumn(name = "station_id", referencedColumnName = "id")
-    @ToString.Exclude
-    private Station station;
 
     @Column
     private Boolean isApproved;

@@ -6,6 +6,7 @@ import com.softserve.teachua.dto.station.SuccessCreatedStation;
 import com.softserve.teachua.model.Station;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StationService {
     StationResponse getStationProfileById(Long id);
@@ -13,6 +14,8 @@ public interface StationService {
     Station getStationById(Long id);
 
     Station getStationByName(String name);
+
+    Optional<Station> getOptionalStationByName(String name);
 
     SuccessCreatedStation addStation(StationProfile stationProfile);
 
