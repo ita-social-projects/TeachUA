@@ -29,12 +29,13 @@ public class RegistrationController implements Api {
     /**
      * The controller returns dto {@code SuccessRegistration} of sign-upped user.
      *
-     * @param verificationCode - code of user verification
+     * @param code - code of user verification
      * @return new {@code SuccessRegistration}.
      */
-    @GetMapping("/signup")
-    public SuccessVerification verifyUser(@Param("verificationCode") String verificationCode) {
-        return userService.verify(verificationCode);
+    @GetMapping("/verify")
+    public String verifyUser(@Param("code") String code) {
+        userService.verify(code);
+        return "Користувач успішно зареєстрований";
     }
 
     /**
