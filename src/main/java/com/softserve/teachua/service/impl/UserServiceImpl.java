@@ -190,7 +190,7 @@ public class UserServiceImpl implements UserService {
         user = userRepository.save(user);
         log.info("user {} registered successfully", user);
         try {
-            sendVerificationEmail(userProfile, httpServletRequest);
+            sendVerificationEmail(user, httpServletRequest);
         } catch (UnsupportedEncodingException | MessagingException ignored) {
             throw new DatabaseRepositoryException(USER_REGISTRATION_ERROR);
         }
@@ -300,7 +300,7 @@ public class UserServiceImpl implements UserService {
     /**
      * The method send message {@code message} to new user after registration
      *
-     * @param userProfile        - put user entity
+     * @param user       - put user entity
      * @param httpServletRequest - put request
      * @throws MessagingException           if message isn`t sent
      * @throws UnsupportedEncodingException if there is wrong encoding
@@ -310,9 +310,9 @@ public class UserServiceImpl implements UserService {
      * @value subject - email header
      * @value content - email body
      */
-    private void sendVerificationEmail(UserProfile userProfile, HttpServletRequest httpServletRequest)
+    private void sendVerificationEmail(User user, HttpServletRequest httpServletRequest)
             throws MessagingException, UnsupportedEncodingException {
-        String toAddress = userProfile.getEmail();
+        String toAddress = user.getEmail();
         String fromAddress = (System.getenv("USER_EMAIL"));
         String senderName = "TeachUA";
         String subject = "Підтвердіть Вашу реєстрацію";
@@ -329,8 +329,8 @@ public class UserServiceImpl implements UserService {
         helper.setTo(toAddress);
         helper.setSubject(subject);
 
-        content = content.replace("[[userFullName]]", userProfile.getLastName() + " " + userProfile.getFirstName());
-        String verifyURL = getSiteURL(httpServletRequest) + "/api/verify?code=" + userProfile.getVerificationCode();
+        content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
+        String verifyURL = getSiteURL(httpServletRequest) + "/api/verify?code=" + user.getVerificationCode();
 
 
         content = content.replace("[[URL]]", verifyURL);
@@ -338,7 +338,7 @@ public class UserServiceImpl implements UserService {
         helper.setText(content, true);
 
         javaMailSender.send(message);
-        log.info("Email has been sent\" {}", userProfile.getEmail());
+        log.info("Email has been sent\" {}", user.getEmail());
     }
 
     private String getSiteURL(HttpServletRequest request) {
