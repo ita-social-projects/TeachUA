@@ -13,7 +13,9 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.Location;
 import com.softserve.teachua.repository.ClubRepository;
+import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.service.*;
 import com.softserve.teachua.utils.CategoryUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -43,19 +45,23 @@ public class ClubServiceImpl implements ClubService {
 
 
     private final ClubRepository clubRepository;
+    private final LocationRepository locationRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
     private final CityService cityService;
     private final DistrictService districtService;
+    private final StationService stationService;
     private final CategoryService categoryService;
 
     @Autowired
-    public ClubServiceImpl(ClubRepository clubRepository, DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, DistrictService districtService, CategoryService categoryService) {
+    public ClubServiceImpl(ClubRepository clubRepository, LocationRepository locationRepository, DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, DistrictService districtService, StationService stationService, CategoryService categoryService) {
         this.clubRepository = clubRepository;
+        this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
         this.cityService = cityService;
         this.districtService = districtService;
+        this.stationService = stationService;
         this.categoryService = categoryService;
     }
 
@@ -151,13 +157,27 @@ public class ClubServiceImpl implements ClubService {
         }
 
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
-                .withCity(cityService.getCityByName(clubProfile.getCityName()))
-                .withDistrict(districtService.getDistrictByName(clubProfile.getDistrictName()))
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
                         .map(categoryService::getCategoryByName)
                         .collect(Collectors.toSet())));
 
+        club.setLocations(
+                clubProfile.getLocations()
+                        .stream()
+                        .map(locationProfile -> locationRepository.save(
+                                dtoConverter.convertToEntity(locationProfile, new Location())
+                                        .withClub(club)
+                                        .withCity(cityService.getCityByName(locationProfile.getCityName()))
+                                        .withDistrict(districtService.getOptionalDistrictByName(
+                                                locationProfile.getDistrictName())
+                                                .orElse(null))
+                                        .withStation(stationService.getOptionalStationByName(
+                                                locationProfile.getStationName())
+                                                .orElse(null))
+                        ))
+                        .collect(Collectors.toSet())
+        );
 
         log.info("adding club with name {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
@@ -269,8 +289,8 @@ public class ClubServiceImpl implements ClubService {
     }
 
     public List<ClubResponse> getClubByCategoryAndCity(SearchClubProfile searchClubProfile) {
-        List<Club> clubResponses = clubRepository.findAllClubsByParameters(searchClubProfile.getCityName()
-                , searchClubProfile.getCategoryName());
+        List<Club> clubResponses = clubRepository.findAllClubsByParameters(
+                searchClubProfile.getCityName(), searchClubProfile.getCategoryName());
 
         return clubResponses
                 .stream()

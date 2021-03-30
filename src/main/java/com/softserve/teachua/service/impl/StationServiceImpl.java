@@ -82,6 +82,11 @@ public class StationServiceImpl implements StationService {
         return station;
     }
 
+    @Override
+    public Optional<Station> getOptionalStationByName(String name) {
+        return stationRepository.findByName(name);
+    }
+
     /**
      * The method returns dto {@code SuccessCreatedStation} if station successfully added.
      *
@@ -137,9 +142,5 @@ public class StationServiceImpl implements StationService {
 
     private Optional<Station> getOptionalStationById(Long id) {
         return stationRepository.findById(id);
-    }
-
-    private Optional<Station> getOptionalStationByName(String name) {
-        return stationRepository.findByName(name);
     }
 }
