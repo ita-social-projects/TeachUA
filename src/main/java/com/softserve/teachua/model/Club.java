@@ -53,6 +53,9 @@ public class Club implements Convertible, Archivable {
     @Column
     private Double rating;
 
+    @Column
+    private Boolean isOnline;
+
     @OneToMany(mappedBy = "club")
     @JsonManagedReference
     @ToString.Exclude
