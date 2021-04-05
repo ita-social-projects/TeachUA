@@ -162,22 +162,24 @@ public class ClubServiceImpl implements ClubService {
                         .map(categoryService::getCategoryByName)
                         .collect(Collectors.toSet())));
 
-        club.setLocations(
-                clubProfile.getLocations()
-                        .stream()
-                        .map(locationProfile -> locationRepository.save(
-                                dtoConverter.convertToEntity(locationProfile, new Location())
-                                        .withClub(club)
-                                        .withCity(cityService.getCityByName(locationProfile.getCityName()))
-                                        .withDistrict(districtService.getOptionalDistrictByName(
-                                                locationProfile.getDistrictName())
-                                                .orElse(null))
-                                        .withStation(stationService.getOptionalStationByName(
-                                                locationProfile.getStationName())
-                                                .orElse(null))
-                        ))
-                        .collect(Collectors.toSet())
-        );
+        if(!clubProfile.getLocations().isEmpty()) {
+            club.setLocations(
+                    clubProfile.getLocations()
+                            .stream()
+                            .map(locationProfile -> locationRepository.save(
+                                    dtoConverter.convertToEntity(locationProfile, new Location())
+                                            .withClub(club)
+                                            .withCity(cityService.getCityByName(locationProfile.getCityName()))
+                                            .withDistrict(districtService.getOptionalDistrictByName(
+                                                    locationProfile.getDistrictName())
+                                                    .orElse(null))
+                                            .withStation(stationService.getOptionalStationByName(
+                                                    locationProfile.getStationName())
+                                                    .orElse(null))
+                            ))
+                            .collect(Collectors.toSet())
+            );
+        }
 
         log.info("adding club with name {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
@@ -226,6 +228,7 @@ public class ClubServiceImpl implements ClubService {
                 advancedSearchClubProfile.getDistrictName(),
                 advancedSearchClubProfile.getStationName(),
                 CategoryUtil.replaceSemicolonToComma(advancedSearchClubProfile.getCategoriesName()),
+                advancedSearchClubProfile.getIsOnline(),
                 pageable);
 
         return new PageImpl<>(clubResponses
@@ -248,6 +251,7 @@ public class ClubServiceImpl implements ClubService {
                 searchClubProfile.getClubName(),
                 searchClubProfile.getCityName(),
                 searchClubProfile.getCategoryName(),
+                searchClubProfile.getIsOnline(),
                 pageable);
 
         return new PageImpl<>(clubResponses

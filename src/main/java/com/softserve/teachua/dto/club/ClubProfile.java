@@ -32,6 +32,7 @@ public class ClubProfile implements Convertible {
 
     private String urlLogo;
 
+    private Boolean isOnline;
 
     // private Center center;
 }

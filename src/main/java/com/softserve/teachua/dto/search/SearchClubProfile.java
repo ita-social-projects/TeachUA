@@ -9,4 +9,5 @@ public class SearchClubProfile {
     private String clubName;
     private String cityName;
     private String categoryName;
+    private Boolean isOnline;
 }
