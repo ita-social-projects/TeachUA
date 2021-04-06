@@ -9,14 +9,18 @@ import com.softserve.teachua.service.DataLoaderService;
 import com.softserve.teachua.service.ExcelParserService;
 import com.softserve.teachua.service.SqlDataExportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.sql.SQLException;
 
 @RestController
@@ -50,6 +54,22 @@ public class DatabaseTransferController implements Api {
         dataLoaderService.loadToDatabase(dataToLoad);
         return null;
 
+    }
+    @GetMapping("/download-database-sql")
+    public ResponseEntity<Resource> download(String param) throws SQLException {
+        String sqlScript = sqlDataExportService.createScript();
+        byte[] bytes = sqlScript.getBytes(StandardCharsets.UTF_8);
+        ByteArrayResource resource = new ByteArrayResource(bytes);
+
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=data.sql.txt");
+
+
+        return ResponseEntity.ok()
+                .headers(header)
+                .contentLength(bytes.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 
 }

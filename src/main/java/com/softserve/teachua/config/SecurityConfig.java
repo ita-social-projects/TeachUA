@@ -102,6 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/club").hasAnyRole("MANAGER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/upload-excel").permitAll() // TODO: only for admins
                 .antMatchers(HttpMethod.POST, "/api/load-excel-to-db").permitAll() // TODO: only for admins
+                .antMatchers(HttpMethod.GET, "/api/download-database-sql").permitAll() // TODO: only for admins
                 .antMatchers(HttpMethod.PUT, "/api/club").hasAnyRole("MANAGER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/complaint", "/api/feedback").hasAnyRole("USER", "MANAGER", "ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/center/**", "/api/centers/**", "/api/feedbacks/**").permitAll()
