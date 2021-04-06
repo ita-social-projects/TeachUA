@@ -156,8 +156,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                                 (club.getDescription().isEmpty() ?
                                         CLUB_DEFAULT_DESCRIPTION :
                                         club.getDescription()
-                                                .replace("\"", "''"))
-                                                .replace('\n', ' ') + DESCRIPTION_JSON_RIGHT)
+                                                .replace("\"", "''")
+                                                .replace("\\", "/")
+                                                .replace('\n', ' '))+ DESCRIPTION_JSON_RIGHT)
 
                         .name(club.getName())
                         .urlBackground(DEFAULT_CLUB_URL_BACKGROUND)
