@@ -29,4 +29,5 @@ public class ClubResponse implements Convertible {
     private Double rating;
     private Set<Location> locations;
     private Boolean isApproved;
+    private Boolean isOnline;
 }

@@ -29,10 +29,12 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     @Query("SELECT DISTINCT club from Club AS club " +
             "JOIN club.categories AS category " +
-            "JOIN club.locations AS locations " +
+            "LEFT JOIN club.locations AS locations " +
+            "LEFT JOIN locations.city AS city " +
             "LEFT JOIN locations.district AS district " +
             "LEFT JOIN locations.station AS station WHERE " +
-            "(:city IS NULL OR locations.city.name = :city) AND " +
+            "((:city NOT LIKE 'online' AND (:isOnline IS NULL OR club.isOnline = :isOnline) AND city.name = :city) OR " +
+            "(:city LIKE 'online' AND club.isOnline = true AND city IS NULL)) AND " +
             "(club.ageFrom >= :ageFrom AND club.ageTo <= :ageTo) AND " +
             "(category.name IN (:categories) OR :categories IS NULL) AND " +
             "(:district IS NULL OR district.name = :district) AND " +
@@ -44,18 +46,22 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             @Param("district") String districtName,
             @Param("station") String stationName,
             @Param("categories") List<String> categoriesName,
+            @Param("isOnline") Boolean isOnline,
             Pageable pageable);
 
-    @Query("SELECT DISTINCT club from Club AS club " +
-            "JOIN club.locations AS locations " +
+    @Query(value = "SELECT DISTINCT club from Club AS club " +
+            "LEFT JOIN club.locations AS locations " +
+            "LEFT JOIN locations.city AS city " +
             "JOIN club.categories AS category WHERE " +
             "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) AND " +
-            "locations.city.name LIKE CONCAT('%', :city , '%') AND " +
+            "((:isOnline = false AND city.name LIKE CONCAT('%', :city , '%')) OR " +
+            "(:isOnline = true AND club.isOnline = true AND city IS NULL)) AND " +
             "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
     Page<Club> findAllByParameters(
             @Param("name") String name,
             @Param("city") String cityName,
             @Param("category") String categoryName,
+            @Param("isOnline") Boolean isOnline,
             Pageable pageable);
 
     @Query("SELECT DISTINCT club from Club AS club " +

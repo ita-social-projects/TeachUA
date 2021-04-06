@@ -24,5 +24,7 @@ public class AdvancedSearchClubProfile {
     @Nullable
     private List<String> categoriesName;
 
+    private Boolean isOnline;
+
     private boolean isCenter;
 }
