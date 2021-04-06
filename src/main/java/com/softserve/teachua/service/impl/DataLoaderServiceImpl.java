@@ -31,18 +31,18 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DataLoaderServiceImpl implements DataLoaderService {
     private static final long DEFAULT_USER_OWNER_ID = 1L;
-    public static final String CENTER_DEFAULT_URL_WEB = "#";
-    public static final String CENTER_DEFAULT_EMAIL = "email@mail.com";
-    public static final String DEFAULT_CATEGORY_ICON_URL = "/static/images/categories/other.svg";
-    public static final String DEFAULT_CATEGORY_BACKGROUND_COLOR = "#13C2C2";
-    public static final String DEFAULT_CLUB_WORK_TIME = "09:00-16:00";
-    public static final String DEFAULT_CLUB_URL_WEB = "#";
-    public static final String DEFAULT_CLUB_URL_LOGO = "#";
-    public static final String DEFAULT_CLUB_URL_BACKGROUND = "/static/images/club/bg_2.png";
-    private static String CATEGORY_DEFAULT_LOGO_URL = "/static/images/categories/sport.svg";
-    private static String CENTER_DEFAULT_LOGO_URL = "https://www.logodesign.net/images/illustration-logo.png";
-    private static String DESCRIPTION_JSON_LEFT = "{\"blocks\":[{\"key\":\"etag9\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"8lltb\",\"text\":\" \",\"type\":\"atomic\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[{\"offset\":0,\"length\":1,\"key\":0}],\"data\":{}},{\"key\":\"98dtl\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"9q9dc\",\"text\":\"";
-    private static String DESCRIPTION_JSON_RIGHT = "\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{\"0\":{\"type\":\"image\",\"mutability\":\"IMMUTABLE\",\"data\":{\"src\":\"https://linguapedia.info/wp-content/uploads/2015/05/history-of-ukrainian.jpg\",\"className\":\"edited-image edited-image-center\"}}}}";
+    private static final String CENTER_DEFAULT_URL_WEB = "#";
+    private static final String CENTER_DEFAULT_EMAIL = "email@mail.com";
+    private static final String DEFAULT_CATEGORY_ICON_URL = "/static/images/categories/other.svg";
+    private static final String DEFAULT_CATEGORY_BACKGROUND_COLOR = "#13C2C2";
+    private static final String DEFAULT_CLUB_WORK_TIME = "09:00-16:00";
+    private static final String DEFAULT_CLUB_URL_WEB = "#";
+    private static final String DEFAULT_CLUB_URL_LOGO = "#";
+    private static final String DEFAULT_CLUB_URL_BACKGROUND = "/static/images/club/bg_2.png";
+    private static final String CLUB_DEFAULT_DESCRIPTION = "Опис відсутній";
+    private static final String CENTER_DEFAULT_LOGO_URL = "https://www.logodesign.net/images/illustration-logo.png";
+    private static final String DESCRIPTION_JSON_LEFT = "{\"blocks\":[{\"key\":\"etag9\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"8lltb\",\"text\":\" \",\"type\":\"atomic\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[{\"offset\":0,\"length\":1,\"key\":0}],\"data\":{}},{\"key\":\"98dtl\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"9q9dc\",\"text\":\"";
+    private static final String DESCRIPTION_JSON_RIGHT = "\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{\"0\":{\"type\":\"image\",\"mutability\":\"IMMUTABLE\",\"data\":{\"src\":\"https://linguapedia.info/wp-content/uploads/2015/05/history-of-ukrainian.jpg\",\"className\":\"edited-image edited-image-center\"}}}}";
 
     private final CategoryService categoryService;
     private final CenterService centerService;
@@ -71,7 +71,6 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         this.clubRepository = clubRepository;
     }
 
-
     public void loadToDatabase(ExcelParsingData excelParsingData) {
         Map<Long, Long> excelIdToDbId = new HashMap<>();
         Set<String> categoriesNames = new HashSet<>();
@@ -90,7 +89,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
                 try {
                     centerService.deleteCenterById(centerService.getCenterByName(center.getName()).getId());
-                } catch (NotExistException| DatabaseRepositoryException e) {
+                } catch (NotExistException | DatabaseRepositoryException e) {
                     // Do nothing if there is no such center
                     // or if center has any relationships
                 }
@@ -130,7 +129,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 }
                 try {
                     clubService.deleteClubById(clubService.getClubByName(club.getName()).getId());
-                } catch (NotExistException|DatabaseRepositoryException e) {
+                } catch (NotExistException | DatabaseRepositoryException e) {
                     // Do nothing if there is no such club
                     // or if club has any relationships
                 }
@@ -153,10 +152,12 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .ageTo(club.getAgeTo())
                         .locations(locations)
 
-
                         .description(DESCRIPTION_JSON_LEFT +
-                                (club.getDescription().isEmpty() ? "Опис" : club.getDescription().isEmpty()) +
-                                DESCRIPTION_JSON_RIGHT)
+                                (club.getDescription().isEmpty() ?
+                                        CLUB_DEFAULT_DESCRIPTION :
+                                        club.getDescription()
+                                                .replace("\"", "''"))
+                                                .replace('\n', ' ') + DESCRIPTION_JSON_RIGHT)
 
                         .name(club.getName())
                         .urlBackground(DEFAULT_CLUB_URL_BACKGROUND)
@@ -208,6 +209,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .name(station.getName())
                         .build());
             } catch (AlreadyExistException e) {
+                log.warn("Trying to add already exists station from excel");
             }
         }
     }
