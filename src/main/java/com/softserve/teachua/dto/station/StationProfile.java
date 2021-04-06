@@ -21,8 +21,5 @@ public class StationProfile implements Convertible {
     private String name;
 
     @NotNull
-    private District district;
-
-    @NotNull
     private City city;
 }
