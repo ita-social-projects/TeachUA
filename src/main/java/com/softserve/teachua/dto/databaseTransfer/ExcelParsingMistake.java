@@ -15,4 +15,5 @@ public class ExcelParsingMistake {
     private Long rowIndex;
     private String cellValue;
     private String errorDetails;
+    private boolean critical;
 }

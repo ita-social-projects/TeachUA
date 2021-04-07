@@ -52,11 +52,11 @@ public class ExcelRowParser {
         return UNNAMED_COLUMN_TITLE;
     }
 
-    public String getString(int column) {
-        return getString(column, false);
+    public String getString(int column, ExcelErrorType errorType) {
+        return getString(column, false, errorType);
     }
 
-    public String getString(int column, boolean maybeEmpty) {
+    public String getString(int column, boolean maybeEmpty, ExcelErrorType errorType) {
         XSSFCell cell = row.getCell(column);
         if (cell != null) {
             if (cell.getCellType() == CellType.STRING && !cell.getStringCellValue().isEmpty()) {
@@ -71,10 +71,11 @@ public class ExcelRowParser {
                 errorsFlag = true;
                 mistakes.add(ExcelParsingMistake.builder()
                         .cellValue("")
-                        .rowIndex((long) row.getRowNum())
+                        .rowIndex((long) row.getRowNum() + 1)
                         .columnName(getColumnName(column))
                         .errorDetails(EMPTY_CELL_ERROR)
                         .sheetName(sheet.getSheetName())
+                        .critical(errorType == ExcelErrorType.CRITICAL)
                         .build()
                 );
             }
@@ -100,7 +101,7 @@ public class ExcelRowParser {
     }
 
     public Double[] parseCoordinates(int column, boolean maybeEmpty) {
-        String coordinates = getString(column, maybeEmpty);
+        String coordinates = getString(column, maybeEmpty, ExcelErrorType.CRITICAL);
 
         if (!coordinates.isEmpty()) {
             String[] coordinateStrings = coordinates.split(",");
@@ -109,10 +110,11 @@ public class ExcelRowParser {
                 errorsFlag = true;
                 mistakes.add(ExcelParsingMistake.builder()
                         .cellValue(coordinates)
-                        .rowIndex((long) row.getRowNum())
+                        .rowIndex((long) row.getRowNum() + 1)
                         .columnName(getColumnName(column))
                         .errorDetails(INCORRECT_COORDINATES_FORMAT_ERROR)
                         .sheetName(sheet.getSheetName())
+                        .critical(true)
                         .build()
                 );
 
@@ -125,10 +127,11 @@ public class ExcelRowParser {
                     errorsFlag = true;
                     mistakes.add(ExcelParsingMistake.builder()
                             .cellValue(coordinates)
-                            .rowIndex((long) row.getRowNum())
+                            .rowIndex((long) row.getRowNum() + 1)
                             .columnName(getColumnName(column))
                             .errorDetails(INCORRECT_COORDINATES_NUMERIC_FORMAT_ERROR)
                             .sheetName(sheet.getSheetName())
+                            .critical(true)
                             .build()
 
                     );
@@ -141,7 +144,7 @@ public class ExcelRowParser {
     public List<String> parseCategories(int column, boolean maybeEmpty){
         List<String> result = new ArrayList<>();
 
-        String categories = getString(column, maybeEmpty);
+        String categories = getString(column, maybeEmpty, ExcelErrorType.CRITICAL);
         String[] categoriesArray = categories.split(",");
         for(String category: categoriesArray){
             String categoryString = category.trim();
@@ -165,7 +168,7 @@ public class ExcelRowParser {
 
     public Integer[] parseAges(int column, boolean maybeEmpty) {
 
-        String ages = getString(column, maybeEmpty);
+        String ages = getString(column, maybeEmpty, ExcelErrorType.CRITICAL);
 
         if (!ages.isEmpty()) {
             Pattern p = Pattern.compile("\\d+");
@@ -192,8 +195,8 @@ public class ExcelRowParser {
     }
 
 
-    public Long getLong(int column) {
-        String rowString = getString(column);
+    public Long getLong(int column, ExcelErrorType errorType) {
+        String rowString = getString(column, errorType);
         if (!rowString.isEmpty()) {
             try {
                 return Double.valueOf(rowString).longValue();
@@ -201,10 +204,11 @@ public class ExcelRowParser {
                 errorsFlag = true;
                 mistakes.add(ExcelParsingMistake.builder()
                         .cellValue(rowString)
-                        .rowIndex((long) row.getRowNum())
+                        .rowIndex((long) row.getRowNum() + 1)
                         .columnName(getColumnName(column))
                         .errorDetails(INCORRECT_NUMERIC_FORMAT_ERROR)
                         .sheetName(sheet.getSheetName())
+                        .critical(true)
                         .build()
                 );
             }
