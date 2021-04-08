@@ -48,7 +48,7 @@ public class RegistrationController implements Api {
     public SuccessRegistration signUp(
             @Valid
             @RequestBody
-                    UserProfile userProfile, HttpServletRequest request) {
-        return userService.registerUser(userProfile, request);
+                    UserProfile userProfile) {
+        return userService.registerUser(userProfile);
     }
 }

@@ -98,22 +98,22 @@ import static org.mockito.Mockito.*;
         assertThatThrownBy(() -> userService.getUserByEmail(NOT_EXISTING_EMAIL)).isInstanceOf(NotExistException.class);
     }
 
-//    @Test
-//     void registerNewUserTest() {
-//        User newUser = User.builder().email(NEW_EMAIL).build();
-//
-//        when(userRepository.existsByEmail(NEW_EMAIL)).thenReturn(false);
-//        when(dtoConverter.convertToEntity(userProfile, new User())).thenReturn(newUser);
-//        when(encodeService.encodePassword(PASSWORD)).thenReturn("encoded password");
-//        when(userRepository.save(any())).thenReturn(newUser);
-//        String ROLE_NAME = "ROLE_USER";
-//        when(roleService.findByName(ROLE_NAME)).thenReturn(Role.builder().id(2).name(ROLE_NAME).build());
-//        when(dtoConverter.convertToDto(newUser, SuccessRegistration.class))
-//                .thenReturn(SuccessRegistration.builder().email(NEW_EMAIL).build());
-//
-//        SuccessRegistration actual = userService.registerUser(userProfile,httpServletRequest);
-//        assertEquals(actual.getEmail(), userProfile.getEmail());
-//    }
+    @Test
+     void registerNewUserTest() {
+        User newUser = User.builder().email(NEW_EMAIL).build();
+
+        when(userRepository.existsByEmail(NEW_EMAIL)).thenReturn(false);
+        when(dtoConverter.convertToEntity(userProfile, new User())).thenReturn(newUser);
+        when(encodeService.encodePassword(PASSWORD)).thenReturn("encoded password");
+        when(userRepository.save(any())).thenReturn(newUser);
+        String ROLE_NAME = "ROLE_USER";
+        when(roleService.findByName(ROLE_NAME)).thenReturn(Role.builder().id(2).name(ROLE_NAME).build());
+        when(dtoConverter.convertToDto(newUser, SuccessRegistration.class))
+                .thenReturn(SuccessRegistration.builder().email(NEW_EMAIL).build());
+
+        SuccessRegistration actual = userService.registerUser(userProfile);
+        assertEquals(actual.getEmail(), userProfile.getEmail());
+    }
 
     @Test
      void registerExistingUserTest() {
@@ -121,27 +121,27 @@ import static org.mockito.Mockito.*;
         when(userRepository.existsByEmail(EXISTING_EMAIL)).thenReturn(true);
 
         assertThatThrownBy(() -> {
-            userService.registerUser(userProfile, httpServletRequest);
+            userService.registerUser(userProfile);
         }).isInstanceOf(WrongAuthenticationException.class);
     }
-//
-//    @Test
-//     void validateUserWithValidPasswordTest() {
-//        UserLogin userLogin = new UserLogin(NEW_EMAIL, PASSWORD, IS_STATUS);
-//        User newUser = User.builder().email(NEW_EMAIL).password(PASSWORD).status(IS_STATUS).build();
-//        when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
-//        when(dtoConverter.convertToDto(newUser, UserEntity.class))
-//                .thenReturn(UserEntity.builder().email(NEW_EMAIL).password(PASSWORD).build());
-//        UserEntity userEntity = userService.getUserEntity(NEW_EMAIL);
-//
-//        when(encodeService.isValidPassword(userLogin, userEntity)).thenReturn(true);
-//        when(dtoConverter.convertFromDtoToDto(userEntity, new SuccessLogin()))
-//                .thenReturn(SuccessLogin.builder().email(NEW_EMAIL).build());
-////        when(encodeService.createToken(userEntity.getEmail())).thenReturn("token");
-//
-//        SuccessLogin actual = userService.validateUser(userLogin);
-//        assertEquals(actual.getEmail(), userLogin.getEmail());
-//    }
+
+    @Test
+     void validateUserWithValidPasswordTest() {
+        UserLogin userLogin = new UserLogin(NEW_EMAIL, PASSWORD, IS_STATUS);
+        User newUser = User.builder().email(NEW_EMAIL).password(PASSWORD).status(IS_STATUS).build();
+        when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
+        when(dtoConverter.convertToDto(newUser, UserEntity.class))
+                .thenReturn(UserEntity.builder().email(NEW_EMAIL).password(PASSWORD).build());
+        UserEntity userEntity = userService.getUserEntity(NEW_EMAIL);
+
+        when(encodeService.isValidPassword(userLogin, userEntity)).thenReturn(true);
+        when(dtoConverter.convertFromDtoToDto(userEntity, new SuccessLogin()))
+                .thenReturn(SuccessLogin.builder().email(NEW_EMAIL).build());
+//        when(encodeService.createToken(userEntity.getEmail())).thenReturn("token");
+
+        SuccessLogin actual = userService.validateUser(userLogin);
+        assertEquals(actual.getEmail(), userLogin.getEmail());
+    }
 
     @Test
     public void validateUserWithInvalidPasswordTest() {
