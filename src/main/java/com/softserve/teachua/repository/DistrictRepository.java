@@ -13,6 +13,8 @@ public interface DistrictRepository extends JpaRepository<District, Long> {
 
     Optional<District> findByName(String name);
 
+    Optional<District> findFirstByName(String name);
+
     List<District> findAllByOrderByIdAsc();
 
     List<District> findAllByCityName(String name);

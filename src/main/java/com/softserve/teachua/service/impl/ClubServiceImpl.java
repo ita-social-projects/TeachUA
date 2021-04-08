@@ -1,10 +1,7 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.club.ClubProfile;
-import com.softserve.teachua.dto.club.ClubResponse;
-import com.softserve.teachua.dto.club.SuccessCreatedClub;
-import com.softserve.teachua.dto.club.SuccessUpdatedClub;
+import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
@@ -123,7 +120,7 @@ public class ClubServiceImpl implements ClubService {
      * @throws NotExistException if club not exists by id.
      */
     @Override
-    public SuccessUpdatedClub updateClub(Long id, ClubProfile clubProfile) {
+    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile) {
         Club club = getClubById(id);
         Club newClub = dtoConverter.convertToEntity(clubProfile, club)
                 .withId(id);
@@ -300,6 +297,15 @@ public class ClubServiceImpl implements ClubService {
                 .stream()
                 .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile) {
+        Club club = getClubById(id);
+        club.setUser(clubOwnerProfile.getUser());
+
+        log.info("changed club owner by id {}", club);
+        return dtoConverter.convertToDto(clubRepository.save(club), ClubResponse.class);
     }
 
     /**
