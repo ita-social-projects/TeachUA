@@ -27,6 +27,7 @@ hs_err_pid*
 
 # Config Files
 *.ini
+.DS_Store
 
 # Binary Files
 *.dat
