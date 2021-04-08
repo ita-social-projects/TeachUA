@@ -206,7 +206,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
             try {
                 stationService.addStation(StationProfile
                         .builder()
-                        .city(cityService.getCityByName(station.getCity()))
+                        .cityName(cityService.getCityByName(station.getCity()).getName())
                         .name(station.getName())
                         .build());
             } catch (AlreadyExistException e) {
