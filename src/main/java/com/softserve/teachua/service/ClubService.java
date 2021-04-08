@@ -1,10 +1,7 @@
 package com.softserve.teachua.service;
 
 
-import com.softserve.teachua.dto.club.ClubProfile;
-import com.softserve.teachua.dto.club.ClubResponse;
-import com.softserve.teachua.dto.club.SuccessCreatedClub;
-import com.softserve.teachua.dto.club.SuccessUpdatedClub;
+import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
@@ -23,7 +20,7 @@ public interface ClubService {
 
     Club getClubByName(String name);
 
-    SuccessUpdatedClub updateClub(Long id, ClubProfile clubProfile);
+    SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile);
 
     ClubResponse getClubProfileByName(String name);
 
@@ -44,4 +41,6 @@ public interface ClubService {
     List<SearchPossibleResponse> getPossibleClubByName(String text, String cityName);
 
     List<ClubResponse> getClubByCategoryAndCity(SearchClubProfile searchClubProfile);
+
+    ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile);
 }

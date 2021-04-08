@@ -34,5 +34,7 @@ public class ClubProfile implements Convertible {
 
     private Boolean isOnline;
 
+    private Boolean isApproved;
+
     // private Center center;
 }
