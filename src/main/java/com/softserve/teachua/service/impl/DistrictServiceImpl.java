@@ -96,7 +96,7 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public Optional<District> getOptionalDistrictByName(String name) {
-        return districtRepository.findByName(name);
+        return districtRepository.findFirstByName(name);
     }
 
     /**

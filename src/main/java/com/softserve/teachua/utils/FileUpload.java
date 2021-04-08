@@ -16,8 +16,7 @@ public class FileUpload {
     private static final String UPLOAD_LOCATION = "/upload";
 
 
-    public static String uploadImage(String uploadDir, String fileName,
-                                     MultipartFile multipartFile) {
+    public static String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile) {
         Path uploadPath = Paths.get(uploadDir);
 
         try {
@@ -38,4 +37,6 @@ public class FileUpload {
         String actualPath = String.format("/%s/%s", uploadDir, fileName);
         return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
     }
+
+
 }

@@ -1,10 +1,7 @@
 package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.club.ClubProfile;
-import com.softserve.teachua.dto.club.ClubResponse;
-import com.softserve.teachua.dto.club.SuccessCreatedClub;
-import com.softserve.teachua.dto.club.SuccessUpdatedClub;
+import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
@@ -135,9 +132,18 @@ public class ClubController implements Api {
     public SuccessUpdatedClub updateClub(
             @PathVariable Long id,
             @Valid
-            @RequestBody ClubProfile clubProfile) {
+            @RequestBody ClubResponse clubProfile) {
         return clubService.updateClub(id, clubProfile);
     }
+
+    @PatchMapping("/club/{id}")
+    public ClubResponse changeClubOwner(
+            @PathVariable Long id,
+            @Valid
+            @RequestBody ClubOwnerProfile clubOwnerProfile){
+        return clubService.changeClubOwner(id, clubOwnerProfile);
+    }
+
 
     /**
      * The controller returns dto {@code ClubResponse} of deleted club by id.

@@ -1,18 +1,26 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.district.DistrictResponse;
 import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.dto.station.StationResponse;
 import com.softserve.teachua.dto.station.SuccessCreatedStation;
 import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.model.District;
 import com.softserve.teachua.model.Station;
 import com.softserve.teachua.repository.StationRepository;
+import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.CityService;
+import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.StationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,14 +31,22 @@ public class StationServiceImpl implements StationService {
     private static final String STATION_ALREADY_EXIST = "Station already exist with name: %s";
     private static final String STATION_NOT_FOUND_BY_ID = "Station not found by id: %s";
     private static final String STATION_NOT_FOUND_BY_NAME = "Station not found by name: %s";
+    private static final String STATION_DELETING_ERROR = "Can't delete station cause of relationship";
 
     private final DtoConverter dtoConverter;
     private final StationRepository stationRepository;
+    private final CityService cityService;
+    private final DistrictService districtService;
+    private final ArchiveService archiveService;
 
     @Autowired
-    public StationServiceImpl(DtoConverter dtoConverter, StationRepository stationRepository) {
+    public StationServiceImpl(DtoConverter dtoConverter, StationRepository stationRepository,
+                              CityService cityService, DistrictService districtService, ArchiveService archiveService) {
         this.dtoConverter = dtoConverter;
         this.stationRepository = stationRepository;
+        this.cityService = cityService;
+        this.districtService = districtService;
+        this.archiveService = archiveService;
     }
 
     /**
@@ -99,7 +115,8 @@ public class StationServiceImpl implements StationService {
         if (isStationExistByName(stationProfile.getName())) {
             throw new AlreadyExistException(String.format(STATION_ALREADY_EXIST, stationProfile.getName()));
         }
-        Station station = stationRepository.save(dtoConverter.convertToEntity(stationProfile, new Station()));
+        Station station = stationRepository.save(dtoConverter.convertToEntity(stationProfile, new Station())
+                .withCity(cityService.getCityByName(stationProfile.getCityName())));
         log.info("**/adding new station = " + station);
         return dtoConverter.convertToDto(station, SuccessCreatedStation.class);
     }
@@ -130,10 +147,35 @@ public class StationServiceImpl implements StationService {
     public StationProfile updateStation(Long id, StationProfile stationProfile) {
         Station station = getStationById(id);
         Station newStation = dtoConverter.convertToEntity(stationProfile, station)
-                .withId(id);
+                .withId(id)
+                .withCity(cityService.getCityByName(stationProfile.getCityName()));
 
         log.info("**/updating station by id = " + newStation);
         return dtoConverter.convertToDto(stationRepository.save(newStation), StationProfile.class);
+    }
+
+    /**
+     * The method deletes station {@link  Station}
+     *
+     * @param id - id of district to delete
+     * @return StationResponse {@link  StationResponse}.
+     * @throws NotExistException {@link NotExistException} if the station doesn't exist.
+     */
+    @Override
+    public StationResponse deleteStationById(Long id) {
+        Station station = getStationById(id);
+
+        archiveService.saveModel(station);
+
+        try {
+            stationRepository.deleteById(id);
+            stationRepository.flush();
+        } catch (DataAccessException | ValidationException e) {
+            throw new DatabaseRepositoryException(STATION_DELETING_ERROR);
+        }
+
+        log.info("station {} was successfully deleted", station);
+        return dtoConverter.convertToDto(station, StationResponse.class);
     }
 
     private boolean isStationExistByName(String name) {
