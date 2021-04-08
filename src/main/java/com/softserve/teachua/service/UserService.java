@@ -22,7 +22,7 @@ public interface UserService {
 
     List<UserResponse> getListOfUsers();
 
-    SuccessRegistration registerUser(UserProfile userProfile, HttpServletRequest request);
+    SuccessRegistration registerUser(UserProfile userProfile);
 
     SuccessLogin validateUser(UserLogin userLogin);
 
