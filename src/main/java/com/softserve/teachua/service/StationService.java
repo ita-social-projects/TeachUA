@@ -22,4 +22,6 @@ public interface StationService {
     List<StationResponse> getListOfStations();
 
     StationProfile updateStation(Long id, StationProfile stationProfile);
+
+    StationResponse deleteStationById(Long id);
 }

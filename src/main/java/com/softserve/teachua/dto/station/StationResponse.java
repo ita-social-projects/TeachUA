@@ -18,7 +18,5 @@ public class StationResponse implements Convertible {
 
     private String name;
 
-    private District district;
-
-    private City city;
+    private String cityName;
 }

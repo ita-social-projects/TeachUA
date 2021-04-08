@@ -2,6 +2,7 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.city.CityProfile;
+import com.softserve.teachua.dto.district.DistrictResponse;
 import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.dto.station.StationResponse;
 import com.softserve.teachua.dto.station.SuccessCreatedStation;
@@ -66,5 +67,16 @@ public class StationController implements Api {
     @GetMapping("/stations")
     public List<StationResponse> getStations() {
         return stationService.getListOfStations();
+    }
+
+    /**
+     * The controller returns dto {@code StationResponse} of deleted station.
+     *
+     * @param id - put station id.
+     * @return new {@code StationResponse}.
+     */
+    @DeleteMapping("/station/{id}")
+    public StationResponse deleteStation(@PathVariable Long id) {
+        return stationService.deleteStationById(id);
     }
 }
