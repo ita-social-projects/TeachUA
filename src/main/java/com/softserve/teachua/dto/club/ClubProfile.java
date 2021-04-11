@@ -36,6 +36,8 @@ public class ClubProfile implements Convertible {
     private Boolean isOnline;
 
     private String contacts;
+  
+    private Boolean isApproved;
 
     // private Center center;
 }
