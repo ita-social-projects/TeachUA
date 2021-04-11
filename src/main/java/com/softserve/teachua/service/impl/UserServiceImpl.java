@@ -14,6 +14,7 @@ import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -46,7 +47,8 @@ public class UserServiceImpl implements UserService {
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
     private static final String RANDOM_STRING = RandomString.make(64);
-
+    @Value("${baseURL}")
+    private String baseUrl;
 
     private final UserRepository userRepository;
     private final EncoderService encodeService;
@@ -170,13 +172,12 @@ public class UserServiceImpl implements UserService {
     /**
      * The method returns dto {@code SuccessRegistration} if user successfully registered.
      *
-     * @param userProfile-       place dto with all params
-     * @param httpServletRequest - place httpRequest
+     * @param userProfile- place dto with all params
      * @return new {@code SuccessRegistration}.
      * @throws AlreadyExistException if user with email already exists.
      */
     @Override
-    public SuccessRegistration registerUser(UserProfile userProfile, HttpServletRequest httpServletRequest) {
+    public SuccessRegistration registerUser(UserProfile userProfile) {
         if (isUserExistByEmail(userProfile.getEmail())) {
             throw new WrongAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
         }
@@ -190,7 +191,7 @@ public class UserServiceImpl implements UserService {
         user = userRepository.save(user);
         log.info("user {} registered successfully", user);
         try {
-            sendVerificationEmail(user, httpServletRequest);
+            sendVerificationEmail(user);
         } catch (UnsupportedEncodingException | MessagingException ignored) {
             throw new DatabaseRepositoryException(USER_REGISTRATION_ERROR);
         }
@@ -300,8 +301,7 @@ public class UserServiceImpl implements UserService {
     /**
      * The method send message {@code message} to new user after registration
      *
-     * @param user       - put user entity
-     * @param httpServletRequest - put request
+     * @param user - put user entity
      * @throws MessagingException           if message isn`t sent
      * @throws UnsupportedEncodingException if there is wrong encoding
      * @value toAddress - an email of user to send verificationCode with httpRequest
@@ -310,7 +310,7 @@ public class UserServiceImpl implements UserService {
      * @value subject - email header
      * @value content - email body
      */
-    private void sendVerificationEmail(User user, HttpServletRequest httpServletRequest)
+    private void sendVerificationEmail(User user)
             throws MessagingException, UnsupportedEncodingException {
         String toAddress = user.getEmail();
         String fromAddress = (System.getenv("USER_EMAIL"));
@@ -330,8 +330,12 @@ public class UserServiceImpl implements UserService {
         helper.setSubject(subject);
 
         content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
-        String verifyURL = getSiteURL(httpServletRequest) + "/api/verify?code=" + user.getVerificationCode();
 
+
+        String verifyURL = baseUrl + "/verify?code=" + user.getVerificationCode();
+
+        //For local tests
+        //String verifyURL = "http://localhost:8080/dev/api/verify?code=" + user.getVerificationCode();
 
         content = content.replace("[[URL]]", verifyURL);
 
@@ -340,12 +344,6 @@ public class UserServiceImpl implements UserService {
         javaMailSender.send(message);
         log.info("Email has been sent\" {}", user.getEmail());
     }
-
-    private String getSiteURL(HttpServletRequest request) {
-        String siteURL = request.getRequestURL().toString();
-        return siteURL.replace(request.getServletPath(), "");
-    }
-
 
     @Override
     public void validateUserId(Long id, HttpServletRequest httpServletRequest) {

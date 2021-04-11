@@ -31,7 +31,7 @@ public class Center implements Convertible, Archivable {
     @Column
     private String phones;
 
-    @Column
+    @Column(columnDefinition="TEXT")
     private String description;
 
     @Column

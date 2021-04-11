@@ -4,6 +4,7 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.user.SuccessUpdatedUser;
 import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.dto.user.UserResponse;
+import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,13 @@ public class UserController implements Api {
         userService.validateUserId(id, httpServletRequest);
         return userService.getUserProfileById(id);
     }
+
+
+    @GetMapping("/user")
+    public User getUserByEmail(@RequestParam("email") String email) {
+        return userService.getUserByEmail(email);
+    }
+
 
     /**
      * The controller returns information {@code List <UserResponse>} about users.
