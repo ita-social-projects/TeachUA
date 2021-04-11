@@ -41,7 +41,7 @@ public class ClubToClubResponseConverter {
      */
     public ClubResponse convertToClubResponse(Club club){
 
-        ClubResponse clubResponse=createClubResponseFromClubWithMapper(club);
+        ClubResponse clubResponse=dtoConverter.convertToDto(club,ClubResponse.class);
         clubResponse.setContacts(
                 convertStringToContactDataResponses(club.getContacts()));
 
@@ -69,9 +69,5 @@ public class ClubToClubResponseConverter {
             result.add(new ContactDataResponse(contactType,data[1]));
         }
         return result;
-    }
-
-    private ClubResponse createClubResponseFromClubWithMapper(Club club){
-        return dtoConverter.convertToDto(club,ClubResponse.class);
     }
 }
