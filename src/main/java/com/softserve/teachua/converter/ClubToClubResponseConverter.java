@@ -24,9 +24,12 @@ public class ClubToClubResponseConverter {
 
     private ContactTypeService contactTypeService;
 
+    private DtoConverter dtoConverter;
+
     @Autowired
-    public ClubToClubResponseConverter(ContactTypeService contactTypeService){
+    public ClubToClubResponseConverter(ContactTypeService contactTypeService,DtoConverter dtoConverter){
         this.contactTypeService=contactTypeService;
+        this.dtoConverter=dtoConverter;
     }
 
     /**
@@ -38,7 +41,7 @@ public class ClubToClubResponseConverter {
      */
     public ClubResponse convertToClubResponse(Club club){
 
-        ClubResponse clubResponse=createClubResponseFromClub(club);
+        ClubResponse clubResponse=createClubResponseFromClubWithMapper(club);
         clubResponse.setContacts(
                 convertStringToContactDataResponses(club.getContacts()));
 
@@ -68,27 +71,7 @@ public class ClubToClubResponseConverter {
         return result;
     }
 
-    private ClubResponse createClubResponseFromClub(Club club){
-        ClubResponse clubResponse=new ClubResponse();
-
-        clubResponse.setAgeFrom(club.getAgeFrom());
-        clubResponse.setAgeTo(club.getAgeTo());
-        clubResponse.setCategories(club.getCategories());
-        clubResponse.setCenter(club.getCenter());
-        clubResponse.setDescription(club.getDescription());
-        clubResponse.setLocations(club.getLocations());
-        clubResponse.setIsApproved(club.getIsApproved());
-        clubResponse.setName(club.getName());
-        clubResponse.setIsOnline(club.getIsOnline());
-        clubResponse.setRating(club.getRating());
-        clubResponse.setUrlBackground(club.getUrlBackground());
-        clubResponse.setUser(club.getUser());
-        clubResponse.setWorkTime(club.getWorkTime());
-        clubResponse.setUrlWeb(club.getUrlWeb());
-        clubResponse.setUrlLogo(club.getUrlLogo());
-
-        clubResponse.setContacts(new HashSet<>());
-
-        return clubResponse;
+    private ClubResponse createClubResponseFromClubWithMapper(Club club){
+        return dtoConverter.convertToDto(club,ClubResponse.class);
     }
 }
