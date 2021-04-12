@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.club;
 
+import com.softserve.teachua.dto.contact_data.ContactDataResponse;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.*;
 import lombok.AllArgsConstructor;
@@ -30,4 +31,6 @@ public class ClubResponse implements Convertible {
     private Set<Location> locations;
     private Boolean isApproved;
     private Boolean isOnline;
+
+    private Set<ContactDataResponse> contacts;
 }

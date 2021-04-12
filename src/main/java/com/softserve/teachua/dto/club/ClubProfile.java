@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 @Data
 public class ClubProfile implements Convertible {
+
     private Long id;
 
     private List<String> categoriesName;
@@ -34,6 +35,8 @@ public class ClubProfile implements Convertible {
 
     private Boolean isOnline;
 
+    private String contacts;
+  
     private Boolean isApproved;
 
     // private Center center;

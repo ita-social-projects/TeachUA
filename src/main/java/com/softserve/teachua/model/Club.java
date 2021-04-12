@@ -1,6 +1,5 @@
 package com.softserve.teachua.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
@@ -80,4 +79,6 @@ public class Club implements Convertible, Archivable {
 
     @Column
     private Boolean isApproved;
+
+    private String contacts;
 }
