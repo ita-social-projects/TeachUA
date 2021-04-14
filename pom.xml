@@ -40,20 +40,20 @@
 
 
 	<dependencies>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>mysql</groupId> -->
+<!-- 			<artifactId>mysql-connector-java</artifactId> -->
+<!-- 		</dependency> -->
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.h2database</groupId> -->
+<!-- 			<artifactId>h2</artifactId> -->
+<!-- 		</dependency> -->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
-			<version>2.4.4</version>
+			<!-- <version>2.4.4</version> -->
 		</dependency>
 
 		<dependency>
@@ -102,7 +102,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
-			<scope>provided</scope>
+			<!-- <scope>provided</scope> -->
 		</dependency>
 
 		<dependency>
@@ -114,7 +114,8 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<version>1.18.18</version>
+			<!-- <optional>true</optional> -->
 		</dependency>
 
 		<dependency>
@@ -134,26 +135,22 @@
 			<artifactId>spring-security-oauth2-client</artifactId>
 		</dependency>
 
-		<!-- 		<dependency> -->
-<!-- 			<groupId>org.slf4j</groupId> -->
-<!-- 			<artifactId>slf4j-api</artifactId> -->
-<!-- 			<version>${org.slf4j.version}</version> -->
-<!-- 			<scope>compile</scope> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.slf4j</groupId> -->
+		<!-- <artifactId>slf4j-api</artifactId> -->
+		<!-- <version>${org.slf4j.version}</version> -->
+		<!-- <scope>compile</scope> -->
+		<!-- </dependency> -->
 
 <!-- 		<dependency> -->
-<!-- 			<groupId>org.slf4j</groupId> -->
-<!-- 			<artifactId>slf4j-log4j12</artifactId> -->
-<!-- 			<version>${org.slf4j.version}</version> -->
-<!-- 			<scope>runtime</scope> -->
+<!-- 		<groupId>org.slf4j</groupId> -->
+<!-- 		<artifactId>slf4j-log4j12</artifactId> -->
+<!-- 		<version>${org.slf4j.version}</version> -->
+<!-- 		<scope>runtime</scope> -->
 <!-- 		</dependency> -->
 
-		<!--<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-api-mockito</artifactId>
-			<version>1.7.4</version>
-			<scope>test</scope>
-		</dependency>-->
+		<!--<dependency> <groupId>org.powermock</groupId> <artifactId>powermock-api-mockito</artifactId> 
+			<version>1.7.4</version> <scope>test</scope> </dependency> -->
 
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -161,12 +158,15 @@
 			<version>1.10.19</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>RELEASE</version>
+			<!-- <version>RELEASE</version> -->
+			<version>20.0.0</version>
 			<scope>compile</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.social</groupId>
 			<artifactId>spring-social-core</artifactId>
@@ -186,6 +186,8 @@
 	</dependencies>
 
 	<build>
+		<finalName>dev</finalName>
+
 		<plugins>
 
 			<plugin>
@@ -212,16 +214,16 @@
 					</includes>
 				</configuration>
 			</plugin>
-<!--             <plugin> -->
-<!--                 <groupId>org.apache.maven.plugins</groupId> -->
-<!--                 <artifactId>maven-compiler-plugin</artifactId> -->
-<!--                 <configuration> -->
-<!--                     <source>10</source> -->
-<!--                     <target>10</target> -->
-<!--                 </configuration> -->
-<!--             </plugin> -->
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-compiler-plugin</artifactId> -->
+			<!-- <configuration> -->
+			<!-- <source>10</source> -->
+			<!-- <target>10</target> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
 
-        </plugins>
+		</plugins>
 	</build>
 
 </project>
