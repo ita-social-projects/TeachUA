@@ -77,7 +77,6 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public ClubResponse getClubProfileById(Long id) {
-
         return toClubResponseConverter.convertToClubResponse(getClubById(id));
     }
 
@@ -247,7 +246,6 @@ public class ClubServiceImpl implements ClubService {
                 .collect(Collectors.toList()),
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
-
 
     /**
      * The method which return possible results of search by entered text.
