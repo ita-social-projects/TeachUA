@@ -41,10 +41,11 @@ public class ClubToClubResponseConverter {
      */
     public ClubResponse convertToClubResponse(Club club){
 
+
         ClubResponse clubResponse=dtoConverter.convertToDto(club,ClubResponse.class);
         clubResponse.setContacts(
                 convertStringToContactDataResponses(club.getContacts()));
-
+        log.info("===  convertToClubResponse method"+clubResponse);
         return clubResponse;
     }
 
@@ -62,12 +63,19 @@ public class ClubToClubResponseConverter {
 
         String[] singleContact=contacts.split(",");
         Set<ContactDataResponse> result=new HashSet<>();
-        for (String s: singleContact) {
-            s = s.replaceAll("[\\{\\}\"]","");
-            String[] data = s.split(":");
-            ContactType contactType=contactTypeService.getContactTypeById(Long.parseLong(data[0]));
-            result.add(new ContactDataResponse(contactType,data[1]));
+        try{
+            for (String s: singleContact) {
+                s = s.replaceAll("[\\{\\}\"]","");
+                String[] data = s.split(":");
+                ContactType contactType=contactTypeService.getContactTypeById(Long.parseLong(data[0]));
+                result.add(new ContactDataResponse(contactType,data[1]));
+            }
+        }catch (NumberFormatException e){
+            log.info(e.getMessage());
+            return result;
         }
+
+        log.info("contacts field =="+result.toString());
         return result;
     }
 }
