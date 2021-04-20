@@ -13,6 +13,4 @@ import lombok.NoArgsConstructor;
 public class SuccessCreatedCategory implements Convertible {
 
     private String name;
-
 }
-
