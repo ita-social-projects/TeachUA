@@ -22,9 +22,15 @@ public class CategoryProfile implements Convertible {
     @NotEmpty
     private String description;
 
-    @NotEmpty
+    //@NotEmpty
     private String urlLogo;
 
     @NotEmpty
     private String backgroundColor;
+
+    @NotEmpty
+    private String tagBackgroundColor;
+
+    @NotEmpty
+    private String tagTextColor;
 }

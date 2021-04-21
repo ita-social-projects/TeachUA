@@ -16,14 +16,13 @@ public class CategoryResponse implements Convertible {
 
     private String name;
 
-    private String urlLogo;
-
     private String description;
+
+    private String urlLogo;
 
     private String backgroundColor;
 
     private String tagBackgroundColor;
 
     private String tagTextColor;
-
 }

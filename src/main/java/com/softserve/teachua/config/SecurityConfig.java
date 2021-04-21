@@ -1,6 +1,5 @@
 package com.softserve.teachua.config;
 
-import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.security.JwtFilter;
 import com.softserve.teachua.security.RestAuthenticationEntryPoint;
@@ -23,7 +22,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
 
 @Configuration
 @EnableWebSecurity
@@ -97,6 +95,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/city/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/city/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/categories/**", "/api/category/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/category").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/category/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/category/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/newslist", "/api/newslist/search").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/club/**", "/api/clubs/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/club").hasAnyRole("MANAGER", "ADMIN")
@@ -136,4 +137,3 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/signout")).logoutSuccessUrl("/signin");
     }
 }
-
