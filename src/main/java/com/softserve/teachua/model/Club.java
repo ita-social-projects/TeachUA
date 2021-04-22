@@ -75,6 +75,7 @@ public class Club implements Convertible, Archivable {
 
     @ManyToOne
     @JoinColumn(name = "center_id", referencedColumnName = "id")
+    @JsonBackReference
     @ToString.Exclude
     private Center center;
 

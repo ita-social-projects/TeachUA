@@ -49,9 +49,10 @@ public class ClubServiceImpl implements ClubService {
     private final DistrictService districtService;
     private final StationService stationService;
     private final CategoryService categoryService;
+    private final UserService userRepository;
 
     @Autowired
-    public ClubServiceImpl(ClubRepository clubRepository, LocationRepository locationRepository, DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, DistrictService districtService, StationService stationService, CategoryService categoryService) {
+    public ClubServiceImpl(ClubRepository clubRepository, LocationRepository locationRepository, DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, DistrictService districtService, StationService stationService, CategoryService categoryService, UserService userRepository) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -60,6 +61,7 @@ public class ClubServiceImpl implements ClubService {
         this.districtService = districtService;
         this.stationService = stationService;
         this.categoryService = categoryService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -157,7 +159,9 @@ public class ClubServiceImpl implements ClubService {
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
                         .map(categoryService::getCategoryByName)
-                        .collect(Collectors.toSet())));
+                        .collect(Collectors.toSet())))
+                .withUser(userRepository.getUserById(clubProfile.getUserId()));
+
 
         if(!clubProfile.getLocations().isEmpty()) {
             club.setLocations(

@@ -1,16 +1,19 @@
 package com.softserve.teachua.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
-@Builder
 @With
+@Builder
 @Entity
 @Table(name = "centers")
 public class Center implements Convertible, Archivable {
@@ -24,9 +27,6 @@ public class Center implements Convertible, Archivable {
 
     @Column
     private String email;
-
-    @Column
-    private String address;
 
     @Column
     private String phones;
@@ -43,11 +43,15 @@ public class Center implements Convertible, Archivable {
     @Column
     private String socialLinks;
 
-    @Column
-    private Double latitude;
+    @OneToMany(mappedBy = "center")
+    @JsonManagedReference
+    @ToString.Exclude
+    private Set<Location> locations;
 
-    @Column
-    private Double longitude;
+    @OneToMany(mappedBy = "center")
+    @JsonManagedReference
+    @ToString.Exclude
+    private Set<Club> clubs;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

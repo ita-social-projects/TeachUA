@@ -4,13 +4,16 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
+import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.Location;
 import com.softserve.teachua.repository.CenterRepository;
-import com.softserve.teachua.service.ArchiveService;
-import com.softserve.teachua.service.CenterService;
+import com.softserve.teachua.repository.LocationRepository;
+import com.softserve.teachua.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -22,7 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,12 +42,22 @@ public class CenterServiceImpl implements CenterService {
     private final CenterRepository centerRepository;
     private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
+    private final ClubService clubService;
+    private final LocationRepository locationRepository;
+    private final CityService cityService;
+    private final DistrictService districtService;
+    private final StationService stationService;
 
     @Autowired
-    public CenterServiceImpl(CenterRepository centerRepository, ArchiveService archiveService, DtoConverter dtoConverter) {
+    public CenterServiceImpl(CenterRepository centerRepository, ArchiveService archiveService, DtoConverter dtoConverter, ClubService clubService, LocationRepository locationRepository, CityService cityService, DistrictService districtService, StationService stationService) {
         this.centerRepository = centerRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
+        this.clubService = clubService;
+        this.locationRepository = locationRepository;
+        this.cityService = cityService;
+        this.districtService = districtService;
+        this.stationService = stationService;
     }
 
     /**
@@ -65,11 +80,44 @@ public class CenterServiceImpl implements CenterService {
      */
     @Override
     public SuccessCreatedCenter addCenter(CenterProfile centerProfile) {
+        log.info("INFO         "+ centerProfile);
         if (isCenterExistByName(centerProfile.getName())) {
             throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
         }
 
-        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center()));
+        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
+                .withClubs(centerProfile.getClubsId()
+                        .stream()
+                        .map(clubService::getClubById)
+                        .collect(Collectors.toSet())));
+
+
+        if (!centerProfile.getLocations().isEmpty()) {
+            center.setLocations(centerProfile.getLocations()
+                    .stream()
+                    .map(locationProfile -> locationRepository.save(
+                            dtoConverter.convertToEntity(locationProfile, new Location())
+                                    .withCenter(center)
+                                    .withCity(cityService.getCityByName(locationProfile.getCityName()))
+                                    .withDistrict(districtService.getOptionalDistrictByName(
+                                            locationProfile.getDistrictName())
+                                            .orElse(null))
+                                    .withStation(stationService.getOptionalStationByName(
+                                            locationProfile.getStationName())
+                                            .orElse(null))
+                    ))
+                    .collect(Collectors.toSet())
+            );
+        }
+
+        Set<Club> clubs = centerProfile.getClubsId()
+                .stream()
+                .map(clubId -> clubService.getClubById(clubId))
+                .collect(Collectors.toSet());
+        log.info("CLUBS____________________________ "+clubs);
+        center.setClubs(clubs);
+
+
         log.info("**/adding new center = " + centerProfile.getName());
         return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
     }
