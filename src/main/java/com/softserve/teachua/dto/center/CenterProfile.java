@@ -35,4 +35,6 @@ public class CenterProfile implements Convertible {
 
     private List<Long> clubsId;
 
+    private Long userId;
+
 }

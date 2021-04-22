@@ -32,8 +32,6 @@ public class SuccessCreatedCenter implements Convertible {
 
     private String socialLinks;
 
-    private User user;
-
     private List<LocationProfile> locations;
 
 }
