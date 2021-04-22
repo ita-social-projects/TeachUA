@@ -91,7 +91,6 @@ public class CenterServiceImpl implements CenterService {
                         .map(clubService::getClubById)
                         .collect(Collectors.toSet())));
 
-
         if (!centerProfile.getLocations().isEmpty()) {
             center.setLocations(centerProfile.getLocations()
                     .stream()
@@ -109,15 +108,6 @@ public class CenterServiceImpl implements CenterService {
                     .collect(Collectors.toSet())
             );
         }
-
-        Set<Club> clubs = centerProfile.getClubsId()
-                .stream()
-                .map(clubId -> clubService.getClubById(clubId))
-                .collect(Collectors.toSet());
-        log.info("CLUBS____________________________ "+clubs);
-        center.setClubs(clubs);
-
-
         log.info("**/adding new center = " + centerProfile.getName());
         return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
     }
