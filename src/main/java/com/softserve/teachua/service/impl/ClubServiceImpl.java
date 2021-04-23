@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
@@ -44,15 +45,16 @@ public class ClubServiceImpl implements ClubService {
     private final ClubRepository clubRepository;
     private final LocationRepository locationRepository;
     private final DtoConverter dtoConverter;
+    private final ClubToClubResponseConverter toClubResponseConverter;
     private final ArchiveService archiveService;
     private final CityService cityService;
     private final DistrictService districtService;
     private final StationService stationService;
     private final CategoryService categoryService;
-    private final UserService userRepository;
+    private final UserService userService;
 
     @Autowired
-    public ClubServiceImpl(ClubRepository clubRepository, LocationRepository locationRepository, DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, DistrictService districtService, StationService stationService, CategoryService categoryService, UserService userRepository) {
+    public ClubServiceImpl(ClubRepository clubRepository, LocationRepository locationRepository, DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, DistrictService districtService, StationService stationService, CategoryService categoryService, UserService userService) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -61,7 +63,8 @@ public class ClubServiceImpl implements ClubService {
         this.districtService = districtService;
         this.stationService = stationService;
         this.categoryService = categoryService;
-        this.userRepository = userRepository;
+        this.userService = userService;
+        this.toClubResponseConverter=toClubResponseConverter;
     }
 
     /**
@@ -72,7 +75,7 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public ClubResponse getClubProfileById(Long id) {
-        return dtoConverter.convertToDto(getClubById(id), ClubResponse.class);
+        return toClubResponseConverter.convertToClubResponse(getClubById(id));
     }
 
     /**
@@ -139,7 +142,8 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public ClubResponse getClubProfileByName(String name) {
-        return dtoConverter.convertToDto(getClubByName(name), ClubResponse.class);
+
+        return toClubResponseConverter.convertToClubResponse(getClubByName(name));
     }
 
     /**
@@ -151,6 +155,10 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public SuccessCreatedClub addClub(ClubProfile clubProfile) {
+
+        //todo delete log below
+        log.info(clubProfile.getContacts());
+
         if (isClubExistByName(clubProfile.getName())) {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }
@@ -160,7 +168,7 @@ public class ClubServiceImpl implements ClubService {
                         .stream()
                         .map(categoryService::getCategoryByName)
                         .collect(Collectors.toSet())))
-                .withUser(userRepository.getUserById(clubProfile.getUserId()));
+                .withUser(userService.getUserById(clubProfile.getUserId()));
 
 
         if(!clubProfile.getLocations().isEmpty()) {
@@ -195,7 +203,7 @@ public class ClubServiceImpl implements ClubService {
     public List<ClubResponse> getListOfClubs() {
         List<ClubResponse> clubResponses = clubRepository.findAll()
                 .stream()
-                .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
+                .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                 .collect(Collectors.toList());
 
         log.info("getting list of clubs {}", clubResponses);
@@ -210,7 +218,7 @@ public class ClubServiceImpl implements ClubService {
                 similarClubProfile.getCityName(),
                 PageRequest.of(0, 2))
                 .stream()
-                .map(category -> (ClubResponse) dtoConverter.convertToDto(category, ClubResponse.class))
+                .map(category -> (ClubResponse) toClubResponseConverter.convertToClubResponse(category))
                 .collect(Collectors.toList());
     }
 
@@ -234,11 +242,10 @@ public class ClubServiceImpl implements ClubService {
 
         return new PageImpl<>(clubResponses
                 .stream()
-                .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
+                .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                 .collect(Collectors.toList()),
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
-
 
     /**
      * The method which return possible results of search by entered text.
@@ -257,7 +264,7 @@ public class ClubServiceImpl implements ClubService {
 
         return new PageImpl<>(clubResponses
                 .stream()
-                .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
+                .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                 .collect(Collectors.toList()),
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
@@ -288,7 +295,7 @@ public class ClubServiceImpl implements ClubService {
 
         return new PageImpl<>(clubResponses
                 .stream()
-                .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
+                .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                 .collect(Collectors.toList()),
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
@@ -299,7 +306,7 @@ public class ClubServiceImpl implements ClubService {
 
         return clubResponses
                 .stream()
-                .map(club -> (ClubResponse) dtoConverter.convertToDto(club, ClubResponse.class))
+                .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                 .collect(Collectors.toList());
     }
 
@@ -333,7 +340,7 @@ public class ClubServiceImpl implements ClubService {
         }
 
         log.info("club {} was successfully deleted", club);
-        return dtoConverter.convertToDto(club, ClubResponse.class);
+        return toClubResponseConverter.convertToClubResponse(club);
     }
 
     private boolean isClubExistByName(String name) {

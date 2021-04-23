@@ -499,6 +499,7 @@ values ('2021-02-15 16:06:36.21', 'bad club 1', 2, 1),
 insert into club_category(club_id, category_id)
 VALUES (1, 2),
        (1, 8),
+       (1, 11),
        (1, 3),
        (2, 2),
        (3, 2),
@@ -580,3 +581,27 @@ VALUES ('Як діяти, якщо вам відмовляють в інформ
         '- Спочатку варто спробувати владнати ситуацію на місці та попросити працівника обслуговувати вас державною мовою. - У разі відмови працівника, звернутись до керівництва закладу або на “гарячу лінію” установи. - У разі відмови або не забезпечення надання інформації (послуг) державною мовою необхідно зафіксувати факт відмови (за допомогою аудіо-, відео, письмового підтвердження очевидців тощо) та дані суб’єкта господарювання (назву, місцезнаходження, контакти суб’єкта).'),
        ('Куди можна подавати скаргу', 'Ви можете подати скаргу до Уповноваженого із захисту державної мови на поштову адресу 01001, м. Київ, провулок Музейний, 12, електронну скриньку skarha@mova-ombudsman.gov.ua або заповнити відповідну форму на сайті Уповноваженого https://mova-ombudsman.gov.ua/'),
        ('Що має містити скарга', 'У скарзі обов’язково має бути зазначено: прізвище, ім’я, по батькові, місце проживання особи, викладено суть скарги, який саме суб’єкт/працівник суб’єкта, коли, за якою адресою, яким чином порушив право скаржника. Рекомендуємо також додати докази на підтвердження.');
+
+
+insert into clubs(age_from, age_to, name, url_logo, url_web, url_background, work_time, center_id, user_id, description,
+                  rating, is_approved, is_online, contacts)
+values (6, 9, 'Гурток з контактами 1', '#', '#',
+        '/static/images/club/bg_2.png', '09:00-16:00', null, 3,
+        '{"blocks":[{"key":"etag9","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"8lltb","text":" ","type":"atomic","depth":0,"inlineStyleRanges":[],"entityRanges":[{"offset":0,"length":1,"key":0}],"data":{}},{"key":"98dtl","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"9q9dc","text":"Робота гуртка «Природа і фантазія у технічній творчості» спрямована на формування компетентностей особистості у процесі розкриття сенсу головних ідей, що висловлюють сутність та перспективи взаємодії людини і природи. На заняттях гуртка діти вчаться ознайомлення з основами технічної творчості, декоративно-ужиткового мистецтва, моделювання й конструювання, формування вмінь і навичок роботи з різними матеріалами й інструментами","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{"0":{"type":"image","mutability":"IMMUTABLE","data":{"src":"https://linguapedia.info/wp-content/uploads/2015/05/history-of-ukrainian.jpg","className":"edited-image edited-image-center"}}}}',
+        2, true, false, '1:+380502809724, 2:facebook/club/74, 4:club@mail.com'),
+       (6, 9, 'Гурток з контактами 2', '#', '#',
+        '/static/images/club/bg_2.png', '09:00-16:00', null, 3,
+        '{"blocks":[{"key":"etag9","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"8lltb","text":" ","type":"atomic","depth":0,"inlineStyleRanges":[],"entityRanges":[{"offset":0,"length":1,"key":0}],"data":{}},{"key":"98dtl","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"9q9dc","text":"Робота гуртка «Природа і фантазія у технічній творчості» спрямована на формування компетентностей особистості у процесі розкриття сенсу головних ідей, що висловлюють сутність та перспективи взаємодії людини і природи. На заняттях гуртка діти вчаться ознайомлення з основами технічної творчості, декоративно-ужиткового мистецтва, моделювання й конструювання, формування вмінь і навичок роботи з різними матеріалами й інструментами","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{"0":{"type":"image","mutability":"IMMUTABLE","data":{"src":"https://linguapedia.info/wp-content/uploads/2015/05/history-of-ukrainian.jpg","className":"edited-image edited-image-center"}}}}',
+        2, true, false, '1:+380502809000, 2:facebook/club/75, 4:club_75_@mail.com');
+
+insert into club_category(club_id, category_id)
+VALUES (74, 8),
+       (74,1),
+       (74,10),
+       (75,4),
+       (75,10),
+       (75,1);
+
+insert into locations(name, address, latitude, longitude, city_id, district_id, station_id, club_id)
+values ('Location 1', 'вул. Жилянська, 110', 49.7716456, 24.0287080, 1, 1, null, 74),
+       ('Location 1', 'вул. Жилянська, 110', 49.7716456, 24.0287080, 1, 1, null, 75);
