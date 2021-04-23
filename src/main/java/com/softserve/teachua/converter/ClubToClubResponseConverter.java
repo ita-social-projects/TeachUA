@@ -65,7 +65,7 @@ public class ClubToClubResponseConverter {
         Set<ContactDataResponse> result=new HashSet<>();
         try{
             for (String s: singleContact) {
-                s = s.replaceAll("[\\{\\}\"]","");
+                s = s.replaceAll("[\\{\\}\" ]","");
                 String[] data = s.split(":");
                 ContactType contactType=contactTypeService.getContactTypeById(Long.parseLong(data[0]));
                 result.add(new ContactDataResponse(contactType,data[1]));
