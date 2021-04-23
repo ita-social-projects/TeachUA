@@ -1,11 +1,15 @@
 package com.softserve.teachua.dto.center;
 
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.Location;
 import com.softserve.teachua.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,8 +23,6 @@ public class CenterResponse implements Convertible {
 
     private String email;
 
-    private String address;
-
     private String phones;
 
     private String description;
@@ -31,11 +33,10 @@ public class CenterResponse implements Convertible {
 
     private String socialLinks;
 
-    private Double latitude;
-
-    private Double longitude;
-
     private User user;
 
+    private Set<Location> locations;
+
+    private Set<Club> clubs;
 }
 

@@ -154,13 +154,10 @@ public class CenterServiceTest {
         CenterProfile newCenter = new CenterProfile();
         newCenter.setName(SOME_NOT_EXISTS_NAME);
         newCenter.setId(SOME_NOT_EXISTS_CENTER_ID);
-        newCenter.setAddress("_");
         newCenter.setDescription("_");
-        newCenter.setEmail("_");
-        newCenter.setLatitude(0.0);
-        newCenter.setLongitude(0.0);
-        newCenter.setPhones("_");
-        newCenter.setSocialLinks("_");
+//        newCenter.setEmail("_");
+//        newCenter.setPhones("_");
+//        newCenter.setSocialLinks("_");
         newCenter.setUrlLogo("_");
         newCenter.setUrlWeb("_");
         newCenter.setUser(new User());

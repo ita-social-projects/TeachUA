@@ -1,11 +1,14 @@
 package com.softserve.teachua.dto.center;
 
+import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,8 +22,6 @@ public class SuccessCreatedCenter implements Convertible {
 
     private String email;
 
-    private String address;
-
     private String phones;
 
     private String description;
@@ -31,9 +32,6 @@ public class SuccessCreatedCenter implements Convertible {
 
     private String socialLinks;
 
-    private Double latitude;
+    private List<LocationProfile> locations;
 
-    private Double longitude;
-
-    private User user;
 }

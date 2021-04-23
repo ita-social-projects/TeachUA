@@ -39,5 +39,7 @@ public class ClubProfile implements Convertible {
   
     private Boolean isApproved;
 
+    private Long userId;
+
     // private Center center;
 }

@@ -1,14 +1,16 @@
 package com.softserve.teachua.dto.center;
 
+import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,33 +23,18 @@ public class CenterProfile implements Convertible {
     @NotEmpty
     private String name;
 
-    @NotEmpty
-    private String email;
+    private List<LocationProfile> locations;
 
-    @NotEmpty
-    private String address;
-
-    @NotEmpty
-    private String phones;
-
-    @NotEmpty
     private String description;
 
-    @NotEmpty
     private String urlWeb;
 
-    @NotEmpty
     private String urlLogo;
 
-    @NotEmpty
-    private String socialLinks;
-
-    @NotNull
-    private Double latitude;
-
-    @NotNull
-    private Double longitude;
-
     private User user;
+
+    private List<Long> clubsId;
+
+    private Long userId;
 
 }
