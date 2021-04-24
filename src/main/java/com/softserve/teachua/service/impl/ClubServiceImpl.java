@@ -41,7 +41,6 @@ public class ClubServiceImpl implements ClubService {
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
     private static final String CLUB_DELETING_ERROR = "Can't delete club cause of relationship";
 
-
     private final ClubRepository clubRepository;
     private final LocationRepository locationRepository;
     private final DtoConverter dtoConverter;
@@ -54,7 +53,7 @@ public class ClubServiceImpl implements ClubService {
     private final UserService userService;
 
     @Autowired
-    public ClubServiceImpl(ClubRepository clubRepository, LocationRepository locationRepository, DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, DistrictService districtService, StationService stationService, CategoryService categoryService, UserService userService) {
+    public ClubServiceImpl(ClubRepository clubRepository, LocationRepository locationRepository, DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, DistrictService districtService, StationService stationService, CategoryService categoryService, UserService userService, ClubToClubResponseConverter toClubResponseConverter) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;

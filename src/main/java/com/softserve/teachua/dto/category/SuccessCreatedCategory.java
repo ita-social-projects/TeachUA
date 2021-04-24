@@ -13,4 +13,14 @@ import lombok.NoArgsConstructor;
 public class SuccessCreatedCategory implements Convertible {
 
     private String name;
+
+    private String description;
+
+    private String urlLogo;
+
+    private String backgroundColor;
+
+    private String tagBackgroundColor;
+
+    private String tagTextColor;
 }

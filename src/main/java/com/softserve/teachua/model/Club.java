@@ -1,5 +1,6 @@
 package com.softserve.teachua.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
@@ -8,7 +9,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
 
 @AllArgsConstructor
 @NoArgsConstructor

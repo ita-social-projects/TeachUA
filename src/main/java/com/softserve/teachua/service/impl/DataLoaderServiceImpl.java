@@ -97,16 +97,10 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 SuccessCreatedCenter createdCenter = centerService.addCenter(CenterProfile
                         .builder()
                         .id(center.getId())
-                        .address(center.getAddress())
                         .description(center.getDescription())
-                        .longitude(center.getLongitude())
-                        .latitude(center.getAltitude())
-                        .phones(center.getPhone())
-                        .socialLinks(center.getSite())
                         .user(userService.getUserById(DEFAULT_USER_OWNER_ID))
                         .name(center.getName())
                         .urlWeb(CENTER_DEFAULT_URL_WEB)
-                        .email(CENTER_DEFAULT_EMAIL)
                         .urlLogo(CENTER_DEFAULT_LOGO_URL)
                         .build());
                 excelIdToDbId.put(center.getId(), createdCenter.getId());
