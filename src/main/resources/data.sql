@@ -65,22 +65,22 @@ values ('Спортивні секції', 'Футбол, бокс, хокей, 
         '#FFA940', '#FFA940', '#fff'),
        ('Центр розвитку', '', '/static/images/categories/center.svg', '#F759AB', '#F759AB', '#fff');
 
-insert into centers (name, email, address, phones, social_links, description,
-                     latitude, longitude, url_logo, url_web, user_id)
-values ('center1', 'center1@gameil.com', 'center_address1', '+380000000001', 'some_links',
+insert into centers (name, email, phones, social_links, description,
+                     url_logo, url_web, user_id)
+values ('center1', 'center1@gameil.com', '+380000000001', 'some_links',
         'center1_description',
-        49.73259434488975, 23.997036169252326, 'https://www.logodesign.net/images/minimal-logo.png', '#', 2),
-       ('Творчий край', 'center2@gameil.com', 'center_address2', '+380000000002', 'some_links',
+        'https://www.logodesign.net/images/minimal-logo.png', '#', 2),
+       ('Творчий край', 'center2@gameil.com', '+380000000002', 'some_links',
         'center2_description',
-        49.23259434488972, 23.297036169252322, 'https://www.logodesign.net/images/illustration-logo.png', '#',
+        'https://www.logodesign.net/images/illustration-logo.png', '#',
         3),
-       ('Творчий край2', 'center2@gameil.com', 'center_address123', '+380000000002', 'some_links',
+       ('Творчий край2', 'center2@gameil.com', '+380000000002', 'some_links',
         'center2_description',
-        49.23259434488972, 23.297036169252322, 'https://www.logodesign.net/images/illustration-logo.png', '#',
+        'https://www.logodesign.net/images/illustration-logo.png', '#',
         3),
-       ('Творчий край3', 'center2@gameil.com', 'center_address123', '+380000000002', 'some_links',
+       ('Творчий край3', 'center2@gameil.com', '+380000000002', 'some_links',
         'center2_description',
-        49.23259434488972, 23.297036169252322, 'https://www.logodesign.net/images/illustration-logo.png', '#',
+        'https://www.logodesign.net/images/illustration-logo.png', '#',
         3);
 
 insert into news(title, description, date, url_title_logo)
@@ -456,11 +456,14 @@ values (6, 9, 'Школа мистецтв імені Миколи Дмитро�
         '{"blocks":[{"key":"etag9","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"8lltb","text":" ","type":"atomic","depth":0,"inlineStyleRanges":[],"entityRanges":[{"offset":0,"length":1,"key":0}],"data":{}},{"key":"98dtl","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"9q9dc","text":"Робота гуртка «Природа і фантазія у технічній творчості» спрямована на формування компетентностей особистості у процесі розкриття сенсу головних ідей, що висловлюють сутність та перспективи взаємодії людини і природи. На заняттях гуртка діти вчаться ознайомлення з основами технічної творчості, декоративно-ужиткового мистецтва, моделювання й конструювання, формування вмінь і навичок роботи з різними матеріалами й інструментами","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{"0":{"type":"image","mutability":"IMMUTABLE","data":{"src":"https://linguapedia.info/wp-content/uploads/2015/05/history-of-ukrainian.jpg","className":"edited-image edited-image-center"}}}}',
         1, true, false);
 
-insert into locations(name, address, latitude, longitude, city_id, district_id, station_id, club_id)
-values ('Location 1', 'вул. Жилянська, 110', 49.7716456, 24.0287080, 1, 1, null, 1),
-       ('Location 1', 'вул. Жилянська, 110', 49.8516456, 24.0287080, 2, null, null, 1),
-       ('Location 1', 'вул. Жилянська, 110', 49.8616456, 24.0287080, 1, null, null, 2),
-       ('Location 1', 'вул. Жилянська, 110', 49.8616456, 24.0287080, 1, null, null, 3);
+insert into locations(name, address, latitude, longitude, city_id, district_id, station_id, club_id, center_id)
+values ('Location 1', 'вул. Жилянська, 110', 50.442822046041485, 30.4662303713667, 1, 1, null, 1, 1),
+       ('Location 2', 'вул. Васильківська, 5', 50.422646340624176, 30.529244602441413, 1, null, null, 1, 2),
+       ('Location 3', 'вул. Набережна, 20', 50.40807914241183, 30.398710628488644, 1, null, null, 2, 3),
+       ('Location 4', 'вул. Street, 11', 50.43033730654731, 30.396049877145888, 1, null, null, 2, 3),
+       ('Location 5', 'вул. street, 11', 50.45033730654731, 30.396049877145888, 1, null, null, 3, 3),
+       ('Location 6', 'вул. street, 11', 50.41033730654731, 30.396049877145888, 1, null, null, 3,3),
+       ('Location 7', 'вул. street, 11', 50.4303, 30.39, 1, null, null, 1,3);
 
 
 insert into contact_type(name, url_logo)
