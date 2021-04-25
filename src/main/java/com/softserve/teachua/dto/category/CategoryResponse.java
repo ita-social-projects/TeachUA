@@ -14,6 +14,8 @@ public class CategoryResponse implements Convertible {
 
     private Long id;
 
+    private Integer sortby;
+
     private String name;
 
     private String description;

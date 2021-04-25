@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class SuccessCreatedCategory implements Convertible {
 
+    private Integer sortby;
+
     private String name;
 
     private String description;
