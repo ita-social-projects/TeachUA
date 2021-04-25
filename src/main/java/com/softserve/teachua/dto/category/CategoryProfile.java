@@ -16,13 +16,15 @@ public class CategoryProfile implements Convertible {
 
     private Long id;
 
+    private Integer sortby;
+
     @NotEmpty
     private String name;
 
     @NotEmpty
     private String description;
 
-    //@NotEmpty
+    @NotEmpty
     private String urlLogo;
 
     @NotEmpty

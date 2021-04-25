@@ -24,6 +24,9 @@ public class Category implements Convertible, Archivable {
     private Long id;
 
     @Column(nullable = false)
+    private Integer sortby;
+
+    @Column(nullable = false)
     @EqualsAndHashCode.Include
     private String name;
 
