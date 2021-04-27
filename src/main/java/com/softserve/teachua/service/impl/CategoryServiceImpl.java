@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -126,8 +127,8 @@ public class CategoryServiceImpl implements CategoryService {
         List<CategoryResponse> categoryResponses = categoryRepository.findAll()
                 .stream()
                 .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
+                .sorted(Comparator.comparing(CategoryResponse::getSortby))
                 .collect(Collectors.toList());
-
         log.info("Getting list of categories = {}", categoryResponses);
         return categoryResponses;
     }

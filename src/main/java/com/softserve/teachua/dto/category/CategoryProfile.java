@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,6 +17,7 @@ public class CategoryProfile implements Convertible {
 
     private Long id;
 
+    @NotNull
     private Integer sortby;
 
     @NotEmpty
