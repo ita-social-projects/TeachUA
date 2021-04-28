@@ -1,6 +1,7 @@
 package com.softserve.teachua.utils;
 
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -14,6 +15,7 @@ import java.util.regex.Pattern;
 /**
  * @author Vitalii Hapon
  */
+@Slf4j
 public class ExcelRowParser {
     public static final String INCORRECT_COORDINATES_FORMAT_ERROR = "Неправильний формат координат";
     public static final String INCORRECT_COORDINATES_NUMERIC_FORMAT_ERROR = "Неможливо розпізнати числові значення координат";
@@ -86,11 +88,21 @@ public class ExcelRowParser {
 
     public boolean isColumnEmpty(int column) {
         XSSFCell cell = row.getCell(column);
+        log.info("========================================");
+        log.info("== columnNumber : "+column);
+        log.info("===isColumnEmpty method==== cell: ");
+
         if (cell != null) {
+            log.info(cell.toString());
             if (cell.getCellType() == CellType.STRING) {
                 return cell.getStringCellValue().isEmpty();
             } else {
-                return cell.getRawValue().isEmpty();
+                log.info("++++ cell type is not a string \r\n"+cell.getRawValue());
+
+                if(cell.getRawValue() == null)
+                    return true;
+                else
+                    return cell.getRawValue().isEmpty();
             }
         }
         return true;

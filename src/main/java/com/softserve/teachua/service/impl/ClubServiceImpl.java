@@ -3,6 +3,7 @@ package com.softserve.teachua.service.impl;
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.*;
+import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
@@ -12,6 +13,7 @@ import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;
+import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.service.*;
@@ -162,15 +164,21 @@ public class ClubServiceImpl implements ClubService {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }
 
+        User user = null;
+        if(clubProfile.getUserId() != null ){
+            user = userService.getUserById(clubProfile.getUserId());
+        }
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
                         .map(categoryService::getCategoryByName)
                         .collect(Collectors.toSet())))
-                .withUser(userService.getUserById(clubProfile.getUserId()));
+                .withUser(user);
 
 
-        if(!clubProfile.getLocations().isEmpty()) {
+        List<LocationProfile> locations = clubProfile.getLocations();
+
+        if ( locations != null && !locations.isEmpty()) {
             club.setLocations(
                     clubProfile.getLocations()
                             .stream()
@@ -189,7 +197,7 @@ public class ClubServiceImpl implements ClubService {
             );
         }
 
-        log.info("adding club with name {}", clubProfile.getName());
+        log.info("adding club with name : ", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
     }
 

@@ -24,6 +24,24 @@ values ('Київ', 50.4501, 30.5234),
        ('Львів', 49.838203883856785, 24.02474257343053),
        ('Рівне', 50.6199, 26.2516);
 
+insert into centers (name, email, phones, social_links, description,
+                     url_logo, url_web, user_id)
+values ('center1', 'center1@gameil.com', '+380000000001', 'some_links',
+        'center1_description',
+        'https://www.logodesign.net/images/minimal-logo.png', '#', 2),
+       ('Творчий край', 'center2@gameil.com', '+380000000002', 'some_links',
+        'center2_description',
+        'https://www.logodesign.net/images/illustration-logo.png', '#',
+        3),
+       ('Творчий край2', 'center2@gameil.com', '+380000000002', 'some_links',
+        'center2_description',
+        'https://www.logodesign.net/images/illustration-logo.png', '#',
+        3),
+       ('Творчий край3', 'center2@gameil.com', '+380000000002', 'some_links',
+        'center2_description',
+        'https://www.logodesign.net/images/illustration-logo.png', '#',
+        3);
+
 insert into categories(sortby, name, description, url_logo, background_color, tag_background_color, tag_text_color)
 values ('1', 'Спортивні секції', 'Футбол, бокс, хокей, гімнастика, плавання, бойові мистецтва тощо',
         '/static/images/categories/sport.svg', '#1890FF', '#1890FF', '#fff'),
@@ -61,27 +79,10 @@ values ('1', 'Спортивні секції', 'Футбол, бокс, хок�
         '/static/images/categories/tv.svg',
         '#13C2C2',
         '#13C2C2', '#fff'),
-       ('45', 'Інше', 'Тут є цікаві гуртки, які не потрапили в інші категорії', '/static/images/categories/other.svg',
-        '#FFA940', '#FFA940', '#fff'),
-       ('50', 'Центр розвитку', 'підприємництво для підлітків, фінансова грамотність', '/static/images/categories/center.svg', '#F759AB', '#F759AB', '#fff');
-
-insert into centers (name, email, phones, social_links, description,
-                     url_logo, url_web, user_id)
-values ('center1', 'center1@gameil.com', '+380000000001', 'some_links',
-        'center1_description',
-        'https://www.logodesign.net/images/minimal-logo.png', '#', 2),
-       ('Творчий край', 'center2@gameil.com', '+380000000002', 'some_links',
-        'center2_description',
-        'https://www.logodesign.net/images/illustration-logo.png', '#',
-        3),
-       ('Творчий край2', 'center2@gameil.com', '+380000000002', 'some_links',
-        'center2_description',
-        'https://www.logodesign.net/images/illustration-logo.png', '#',
-        3),
-       ('Творчий край3', 'center2@gameil.com', '+380000000002', 'some_links',
-        'center2_description',
-        'https://www.logodesign.net/images/illustration-logo.png', '#',
-        3);
+       ('45', 'Центр розвитку', 'підприємництво для підлітків, фінансова грамотність',
+        '/static/images/categories/center.svg', '#F759AB', '#F759AB', '#fff'),
+       ('50', 'Інше', 'Тут є цікаві гуртки, які не потрапили в інші категорії', '/static/images/categories/other.svg',
+        '#FFA940', '#FFA940', '#fff');
 
 insert into news(title, description, date, url_title_logo)
 values ('title1', 'description1', '2021-02-15 16:06:36.21',
