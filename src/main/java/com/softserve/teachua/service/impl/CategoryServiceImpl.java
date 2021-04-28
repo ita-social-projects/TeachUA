@@ -112,6 +112,16 @@ public class CategoryServiceImpl implements CategoryService {
             throw new AlreadyExistException(String.format(CATEGORY_ALREADY_EXIST, categoryProfile.getName()));
         }
 
+        if(categoryProfile.getSortby() == null){
+            Category lastCategory = categoryRepository.findLastCategory();
+            Integer currentLastSortNumber = lastCategory.getSortby();
+
+            categoryProfile.setSortby(currentLastSortNumber);
+
+            lastCategory.setSortby(currentLastSortNumber+=10);
+            categoryRepository.save(lastCategory);
+        }
+
         Category category = categoryRepository.save(dtoConverter.convertToEntity(categoryProfile, new Category()));
         log.info("Adding new category = {}", category);
         return dtoConverter.convertToDto(category, SuccessCreatedCategory.class);

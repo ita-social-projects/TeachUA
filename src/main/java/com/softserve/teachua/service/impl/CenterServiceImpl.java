@@ -4,12 +4,14 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;
+import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
@@ -82,15 +84,28 @@ public class CenterServiceImpl implements CenterService {
      */
     @Override
     public SuccessCreatedCenter addCenter(CenterProfile centerProfile) {
+
+        log.info("centerName = "+centerProfile.getName());
+
         if (isCenterExistByName(centerProfile.getName())) {
             throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
         }
 
-        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
-                                    .withUser(userRepository.getOne(centerProfile.getUserId())));
+        User user = null;
+        if(centerProfile.getUserId() != null){
+            log.info("CenterServiceImpl=> centerProfile.userId == "+centerProfile.getUserId());
+            user = userRepository.getOne(centerProfile.getUserId());
+        }
 
-        if (!centerProfile.getLocations().isEmpty()) {
-            center.setLocations(centerProfile.getLocations()
+        log.info("CenterServiceImpl=> centerProfile.userId == null");
+
+        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
+                    .withUser(user));
+
+        List<LocationProfile> locations = centerProfile.getLocations();
+
+        if ( locations != null && !locations.isEmpty()) {
+            center.setLocations(locations
                     .stream()
                     .map(locationProfile -> locationRepository.save(
                             dtoConverter.convertToEntity(locationProfile, new Location())
@@ -106,7 +121,10 @@ public class CenterServiceImpl implements CenterService {
                     .collect(Collectors.toSet())
             );
         }
-        for(Long id : centerProfile.getClubsId() ){
+
+        List<Long> clubsId =centerProfile.getClubsId();
+        if(clubsId != null &&  !clubsId.isEmpty())
+        for(Long id : clubsId ){
             Club club = clubService.getClubById(id);
             club.setCenter(center);
             clubRepository.save(club);

@@ -122,6 +122,8 @@ public class ExcelParserServiceImpl implements ExcelParserService {
         return parseSheet(excelBook, CENTER_SHEET_NAME, (row) -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
+            //todo delete comment
+            //log.info(row.toString());
             if (rowParser.isColumnEmpty(1))
                 return false;
             Double[] coordinates = rowParser.parseCoordinates(4, true);
