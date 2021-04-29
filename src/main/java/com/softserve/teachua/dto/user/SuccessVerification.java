@@ -16,5 +16,5 @@ public class SuccessVerification implements Convertible {
 
     private boolean status;
 
-    private String verificationCode;
+    private String message;
 }

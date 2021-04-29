@@ -41,11 +41,12 @@ public class UserServiceImpl implements UserService {
     private static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
     private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
     private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
-    private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found by verification code %s";
+    private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
     private static final String WRONG_PASSWORD = "Wrong password: %s";
     private static final String NOT_VERIFIED = "User is not verified: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
+    //TODO: Random make method
     private static final String RANDOM_STRING = RandomString.make(64);
     @Value("${baseURL}")
     private String baseUrl;
@@ -62,8 +63,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
                            EncoderService encodeService,
-                           RoleService roleService, DtoConverter dtoConverter, ArchiveService archiveService
-            , JwtProvider jwtProvider, AuthenticationManager authenticationManager, JavaMailSender javaMailSender) {
+                           RoleService roleService,
+                           DtoConverter dtoConverter,
+                           ArchiveService archiveService,
+                           JwtProvider jwtProvider,
+                           AuthenticationManager authenticationManager,
+                           JavaMailSender javaMailSender) {
         this.userRepository = userRepository;
         this.encodeService = encodeService;
         this.roleService = roleService;
@@ -134,7 +139,6 @@ public class UserServiceImpl implements UserService {
         return optionalUser.get();
     }
 
-
     /**
      * The method returns entity {@code User} of user by verificationCode.
      *
@@ -146,7 +150,7 @@ public class UserServiceImpl implements UserService {
     public User getUserByVerificationCode(String verificationCode) {
         Optional<User> optionalUser = getOptionalUserByVerificationCode(verificationCode);
         if (!optionalUser.isPresent()) {
-            throw new NotExistException(String.format(USER_NOT_FOUND_BY_VERIFICATION_CODE, verificationCode));
+            throw new NotExistException(USER_NOT_FOUND_BY_VERIFICATION_CODE);
         }
 
         log.info("getting user by verificationCode {}", userRepository.findByVerificationCode(verificationCode));
@@ -273,7 +277,6 @@ public class UserServiceImpl implements UserService {
         return dtoConverter.convertToDto(user, UserResponse.class);
     }
 
-
     /**
      * The method returns dto {@code SuccessVerification} of user by verification code
      *
@@ -285,18 +288,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public SuccessVerification verify(String verificationCode) {
         User user = getUserByVerificationCode(verificationCode);
-        if (user == null) {
-            throw new NotExistException("User not exist");
-        } else if (user.isStatus()) {
-            throw new NotVerifiedUserException("User is inactive");
-        } else
-            user.setStatus(true);
+
+        user.setStatus(true);
         user.setVerificationCode(null);
         log.info("user {} was successfully registered", user);
         userRepository.save(user);
-        return dtoConverter.convertToDto(user, SuccessVerification.class);
-    }
 
+        SuccessVerification successVerificationUser = dtoConverter.convertToDto(user, SuccessVerification.class);
+        successVerificationUser.setMessage(String.format("Користувач %s %s успішно зареєстрований",
+                                                        user.getFirstName(),
+                                                        user.getLastName()));
+        return successVerificationUser;
+    }
 
     /**
      * The method send message {@code message} to new user after registration
@@ -331,14 +334,9 @@ public class UserServiceImpl implements UserService {
 
         content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
 
-
         String verifyURL = baseUrl + "/verify?code=" + user.getVerificationCode();
 
-        //For local tests
-        //String verifyURL = "http://localhost:8080/dev/api/verify?code=" + user.getVerificationCode();
-
         content = content.replace("[[URL]]", verifyURL);
-
         helper.setText(content, true);
 
         javaMailSender.send(message);
@@ -352,7 +350,6 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Wrong id");
         }
     }
-
 
     @Override
     public void updateUser(User user) {

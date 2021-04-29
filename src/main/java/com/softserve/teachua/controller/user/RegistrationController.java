@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.user.SuccessRegistration;
 import com.softserve.teachua.dto.user.SuccessVerification;
 import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
+@Slf4j
 public class RegistrationController implements Api {
 
     private final UserService userService;
@@ -25,7 +26,6 @@ public class RegistrationController implements Api {
         this.userService = userService;
     }
 
-
     /**
      * The controller returns dto {@code SuccessRegistration} of sign-upped user.
      *
@@ -33,9 +33,9 @@ public class RegistrationController implements Api {
      * @return new {@code SuccessRegistration}.
      */
     @GetMapping("/verify")
-    public String verifyUser(@Param("code") String code) {
-        userService.verify(code);
-        return "Користувач успішно зареєстрований";
+    public SuccessVerification verifyUser(@Param("code") String code) {
+        log.info("Controller \"verify\",  code = " + code);
+        return userService.verify(code);
     }
 
     /**
@@ -49,6 +49,7 @@ public class RegistrationController implements Api {
             @Valid
             @RequestBody
                     UserProfile userProfile) {
+        log.info("Controller \"signup\", userProfile = " + userProfile.toString());
         return userService.registerUser(userProfile);
     }
 }
