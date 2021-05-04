@@ -157,9 +157,6 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public SuccessCreatedClub addClub(ClubProfile clubProfile) {
 
-        //todo delete log below
-        log.info(clubProfile.getContacts());
-
         if (isClubExistByName(clubProfile.getName())) {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }

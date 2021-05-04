@@ -25,22 +25,23 @@ values ('Київ', 50.4501, 30.5234),
        ('Рівне', 50.6199, 26.2516);
 
 insert into centers (name, email, phones, social_links, description,
-                     url_logo, url_web, user_id)
-values ('center1', 'center1@gameil.com', '+380000000001', 'some_links',
-        'center1_description',
-        'https://www.logodesign.net/images/minimal-logo.png', '#', 2),
+                     url_logo, url_web, user_id, contacts)
+values ('Center1', 'center1@gmail.com', '+380000000001', 'some_links',
+        'center1_description, center ...........',
+        'https://www.logodesign.net/images/minimal-logo.png', '#', 2,
+        '1:+380502807724, 2:facebook/Center1/cool, 4:center1@mail.com'),
        ('Творчий край', 'center2@gameil.com', '+380000000002', 'some_links',
-        'center2_description',
+        'center2_description..................',
         'https://www.logodesign.net/images/illustration-logo.png', '#',
-        3),
+        3,  '1:+380502809724, 2:facebook/tvorchyi_kray/tv, 4:kray_@mail.com'),
        ('Творчий край2', 'center2@gameil.com', '+380000000002', 'some_links',
         'center2_description',
         'https://www.logodesign.net/images/illustration-logo.png', '#',
-        3),
+        3,  '1:+380502809724, 2:facebook/kray2, 4:tv_kr_@mail.com'),
        ('Творчий край3', 'center2@gameil.com', '+380000000002', 'some_links',
-        'center2_description',
+        'center2_description ............ ',
         'https://www.logodesign.net/images/illustration-logo.png', '#',
-        3);
+        3,  '1:+380502809724, 2:facebook/facebook/3, 4:center_tv_kr_@mail.com');
 
 insert into categories(sortby, name, description, url_logo, background_color, tag_background_color, tag_text_color)
 values ('1', 'Спортивні секції', 'Футбол, бокс, хокей, гімнастика, плавання, бойові мистецтва тощо',

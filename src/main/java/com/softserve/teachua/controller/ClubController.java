@@ -103,9 +103,9 @@ public class ClubController implements Api {
 
 
     /**
-     * The controller returns dto {@code {@link ClubProfile}} of updated club.
+     * The controller returns dto {@code {@link ClubProfile}} of the club.
      *
-     * @param advancedSearchClubProfile - Place dto with all parameters for updating existed club.
+     * @param advancedSearchClubProfile - Place dto with all parameters to get possible club.
      * @return new {@code ClubProfile}.
      */
     @GetMapping("/clubs/search/advanced")
