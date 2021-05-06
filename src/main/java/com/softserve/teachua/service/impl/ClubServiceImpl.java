@@ -238,8 +238,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public Page<ClubResponse> getAdvancedSearchClubs(AdvancedSearchClubProfile advancedSearchClubProfile, Pageable pageable) {
         Page<Club> clubResponses = clubRepository.findAllBylAdvancedSearch(
-                advancedSearchClubProfile.getAgeFrom(),
-                advancedSearchClubProfile.getAgeTo(),
+                advancedSearchClubProfile.getAge(),
                 advancedSearchClubProfile.getCityName(),
                 advancedSearchClubProfile.getDistrictName(),
                 advancedSearchClubProfile.getStationName(),
