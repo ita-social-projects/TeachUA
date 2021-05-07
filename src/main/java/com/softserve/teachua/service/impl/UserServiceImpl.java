@@ -46,8 +46,7 @@ public class UserServiceImpl implements UserService {
     private static final String NOT_VERIFIED = "User is not verified: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
-    //TODO: Random make method
-    private static final String RANDOM_STRING = RandomString.make(64);
+
     @Value("${baseURL}")
     private String baseUrl;
 
@@ -190,7 +189,7 @@ public class UserServiceImpl implements UserService {
                 .withPassword(encodeService.encodePassword(userProfile.getPassword()))
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
-        user.setVerificationCode(RANDOM_STRING);
+        user.setVerificationCode(RandomString.make(64));
         user.setStatus(false);
         user = userRepository.save(user);
         log.info("user {} registered successfully", user);
