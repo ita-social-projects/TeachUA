@@ -35,13 +35,12 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "LEFT JOIN locations.station AS station WHERE " +
             "((:city NOT LIKE 'online' AND (:isOnline IS NULL OR club.isOnline = :isOnline) AND city.name = :city) OR " +
             "(:city LIKE 'online' AND club.isOnline = true AND city IS NULL)) AND " +
-            "(club.ageFrom >= :ageFrom AND club.ageTo <= :ageTo) AND " +
+            "(club.ageFrom <= :age AND club.ageTo >= :age OR :age IS NULL) AND " +
             "(category.name IN (:categories) OR :categories IS NULL) AND " +
             "(:district IS NULL OR district.name = :district) AND " +
             "(:station IS NULL OR station.name = :station)")
     Page<Club> findAllBylAdvancedSearch(
-            @Param("ageFrom") Integer ageFrom,
-            @Param("ageTo") Integer ageTo,
+            @Param("age") Integer age,
             @Param("city") String cityName,
             @Param("district") String districtName,
             @Param("station") String stationName,

@@ -9,8 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class AdvancedSearchClubProfile {
-    private Integer ageFrom;
-    private Integer ageTo;
+    private Integer age;
 
     @Nullable
     private String districtName;
