@@ -21,6 +21,8 @@ public interface StationService {
 
     List<StationResponse> getListOfStations();
 
+    List<StationResponse> getListOfStationsByCity(String name);
+
     StationProfile updateStation(Long id, StationProfile stationProfile);
 
     StationResponse deleteStationById(Long id);
