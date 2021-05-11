@@ -25,6 +25,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     boolean existsById(Long id);
 
+    List<Club> findAllByUserId(Long id);
+
     Page<Club> findAllByUserId(Long id, Pageable pageable);
 
     @Query("SELECT DISTINCT club from Club AS club " +
