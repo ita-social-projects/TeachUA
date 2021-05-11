@@ -70,6 +70,17 @@ public class StationController implements Api {
     }
 
     /**
+     * The controller returns list of dto {@code List<StationResponse>} of station.
+     *
+     * @param name - put city name.
+     * @return new {@code List<StationResponse>}.
+     */
+    @GetMapping("/stations/{name}")
+    public List<StationResponse> getStationsByCityName(@PathVariable String name) {
+        return stationService.getListOfStationsByCityName(name);
+    }
+
+    /**
      * The controller returns dto {@code StationResponse} of deleted station.
      *
      * @param id - put station id.
