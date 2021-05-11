@@ -21,7 +21,7 @@ public interface StationService {
 
     List<StationResponse> getListOfStations();
 
-    List<StationResponse> getListOfStationsByCity(String name);
+    List<StationResponse> getListOfStationsByCityName(String name);
 
     StationProfile updateStation(Long id, StationProfile stationProfile);
 

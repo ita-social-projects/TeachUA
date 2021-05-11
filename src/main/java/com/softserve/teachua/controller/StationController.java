@@ -70,15 +70,14 @@ public class StationController implements Api {
     }
 
     /**
-     * The controller returns dto {@code StationResponse} of station.
+     * The controller returns list of dto {@code List<StationResponse>} of station.
      *
-     * @param name - put station id.
-     * @return new {@code StationResponse}.
+     * @param name - put city name.
+     * @return new {@code List<StationResponse>}.
      */
     @GetMapping("/stations/{name}")
-    public List<StationResponse> getStationsByCity(
-            @PathVariable String name) {
-        return stationService.getListOfStationsByCity(name);
+    public List<StationResponse> getStationsByCityName(@PathVariable String name) {
+        return stationService.getListOfStationsByCityName(name);
     }
 
     /**
