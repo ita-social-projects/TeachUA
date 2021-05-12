@@ -25,22 +25,23 @@ values ('Київ', 50.4501, 30.5234),
        ('Рівне', 50.6199, 26.2516);
 
 insert into centers (name, email, phones, social_links, description,
-                     url_logo, url_web, user_id)
-values ('center1', 'center1@gameil.com', '+380000000001', 'some_links',
-        'center1_description',
-        'https://www.logodesign.net/images/minimal-logo.png', '#', 2),
+                     url_logo, url_web, user_id, contacts, url_background_picture)
+values ('Center1', 'center1@gmail.com', '+380000000001', 'some_links',
+        'center1_description, center ...........',
+        'https://www.logodesign.net/images/minimal-logo.png', '#', 2,
+        '1:+380502807724, 2:facebook/Center1/cool, 4:center1@mail.com','/static/images/club/bg_2.png'),
        ('Творчий край', 'center2@gameil.com', '+380000000002', 'some_links',
-        'center2_description',
+        'center2_description..................',
         'https://www.logodesign.net/images/illustration-logo.png', '#',
-        3),
+        3,  '1:+380502809724, 2:facebook/tvorchyi_kray/tv, 4:kray_@mail.com','/static/images/club/bg_2.png'),
        ('Творчий край2', 'center2@gameil.com', '+380000000002', 'some_links',
         'center2_description',
         'https://www.logodesign.net/images/illustration-logo.png', '#',
-        3),
+        3,  '1:+380502809724, 2:facebook/kray2, 4:tv_kr_@mail.com','/static/images/club/bg_2.png'),
        ('Творчий край3', 'center2@gameil.com', '+380000000002', 'some_links',
-        'center2_description',
+        'center2_description ............ ',
         'https://www.logodesign.net/images/illustration-logo.png', '#',
-        3);
+        3,  '1:+380502809724, 2:facebook/facebook/3, 4:center_tv_kr_@mail.com','/static/images/club/bg_2.png');
 
 insert into categories(sortby, name, description, url_logo, background_color, tag_background_color, tag_text_color)
 values ('1', 'Спортивні секції', 'Футбол, бокс, хокей, гімнастика, плавання, бойові мистецтва тощо',
@@ -166,19 +167,19 @@ values (6, 9, 'Школа мистецтв імені Миколи Дмитро�
         '{"blocks":[{"key":"etag9","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"8lltb","text":" ","type":"atomic","depth":0,"inlineStyleRanges":[],"entityRanges":[{"offset":0,"length":1,"key":0}],"data":{}},{"key":"98dtl","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"9q9dc","text":"Робота гуртка «Природа і фантазія у технічній творчості» спрямована на формування компетентностей особистості у процесі розкриття сенсу головних ідей, що висловлюють сутність та перспективи взаємодії людини і природи. На заняттях гуртка діти вчаться ознайомлення з основами технічної творчості, декоративно-ужиткового мистецтва, моделювання й конструювання, формування вмінь і навичок роботи з різними матеріалами й інструментами","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{"0":{"type":"image","mutability":"IMMUTABLE","data":{"src":"https://linguapedia.info/wp-content/uploads/2015/05/history-of-ukrainian.jpg","className":"edited-image edited-image-center"}}}}',
         2, true, true),
        (6, 9, 'Котигорошко', '#', '#',
-        '/static/images/club/bg_2.png', '09:00-16:00', 2, 3,
+        '/static/images/club/bg_2.png', '09:00-16:00', null, 3,
         '{"blocks":[{"key":"etag9","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"8lltb","text":" ","type":"atomic","depth":0,"inlineStyleRanges":[],"entityRanges":[{"offset":0,"length":1,"key":0}],"data":{}},{"key":"98dtl","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"9q9dc","text":"Робота гуртка «Природа і фантазія у технічній творчості» спрямована на формування компетентностей особистості у процесі розкриття сенсу головних ідей, що висловлюють сутність та перспективи взаємодії людини і природи. На заняттях гуртка діти вчаться ознайомлення з основами технічної творчості, декоративно-ужиткового мистецтва, моделювання й конструювання, формування вмінь і навичок роботи з різними матеріалами й інструментами","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{"0":{"type":"image","mutability":"IMMUTABLE","data":{"src":"https://linguapedia.info/wp-content/uploads/2015/05/history-of-ukrainian.jpg","className":"edited-image edited-image-center"}}}}',
         2, true, true),
        (6, 9, 'Талан-клуб «Дивограй»🌈', '#', '#',
-        '/static/images/club/bg_2.png', '09:00-16:00', 2, 3,
+        '/static/images/club/bg_2.png', '09:00-16:00', null, 3,
         '{"blocks":[{"key":"etag9","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"8lltb","text":" ","type":"atomic","depth":0,"inlineStyleRanges":[],"entityRanges":[{"offset":0,"length":1,"key":0}],"data":{}},{"key":"98dtl","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"9q9dc","text":"Робота гуртка «Природа і фантазія у технічній творчості» спрямована на формування компетентностей особистості у процесі розкриття сенсу головних ідей, що висловлюють сутність та перспективи взаємодії людини і природи. На заняттях гуртка діти вчаться ознайомлення з основами технічної творчості, декоративно-ужиткового мистецтва, моделювання й конструювання, формування вмінь і навичок роботи з різними матеріалами й інструментами","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{"0":{"type":"image","mutability":"IMMUTABLE","data":{"src":"https://linguapedia.info/wp-content/uploads/2015/05/history-of-ukrainian.jpg","className":"edited-image edited-image-center"}}}}',
         2, true, false),
        (7, 10, 'Освітньо-мистецький центр Шанс', '#', '#',
-        '/static/images/club/bg_1.jpg', '09:00-16:00', 2, 3,
+        '/static/images/club/bg_1.jpg', '09:00-16:00', null, 3,
         '{"blocks":[{"key":"etag9","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"8lltb","text":" ","type":"atomic","depth":0,"inlineStyleRanges":[],"entityRanges":[{"offset":0,"length":1,"key":0}],"data":{}},{"key":"98dtl","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"9q9dc","text":"Робота гуртка «Природа і фантазія у технічній творчості» спрямована на формування компетентностей особистості у процесі розкриття сенсу головних ідей, що висловлюють сутність та перспективи взаємодії людини і природи. На заняттях гуртка діти вчаться ознайомлення з основами технічної творчості, декоративно-ужиткового мистецтва, моделювання й конструювання, формування вмінь і навичок роботи з різними матеріалами й інструментами","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{"0":{"type":"image","mutability":"IMMUTABLE","data":{"src":"https://linguapedia.info/wp-content/uploads/2015/05/history-of-ukrainian.jpg","className":"edited-image edited-image-center"}}}}',
         3, true, false),
        (11, 16, 'IT освіта: курси "ГРАНД"', '#', '#',
-        '/static/images/club/bg_3.jpg', '09:00-16:00', 1, 2,
+        '/static/images/club/bg_3.jpg', '09:00-16:00', null , 2,
         '{"blocks":[{"key":"etag9","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"8lltb","text":" ","type":"atomic","depth":0,"inlineStyleRanges":[],"entityRanges":[{"offset":0,"length":1,"key":0}],"data":{}},{"key":"98dtl","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"9q9dc","text":"Робота гуртка «Природа і фантазія у технічній творчості» спрямована на формування компетентностей особистості у процесі розкриття сенсу головних ідей, що висловлюють сутність та перспективи взаємодії людини і природи. На заняттях гуртка діти вчаться ознайомлення з основами технічної творчості, декоративно-ужиткового мистецтва, моделювання й конструювання, формування вмінь і навичок роботи з різними матеріалами й інструментами","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{"0":{"type":"image","mutability":"IMMUTABLE","data":{"src":"https://linguapedia.info/wp-content/uploads/2015/05/history-of-ukrainian.jpg","className":"edited-image edited-image-center"}}}}',
         1, true, false),
        (6, 9, 'Академія талановитих дітей', '#', '#',
@@ -464,7 +465,8 @@ values ('Location 1', 'вул. Жилянська, 110', 50.442822046041485, 30.
        ('Location 4', 'вул. Street, 11', 50.43033730654731, 30.396049877145888, 1, null, null, 2, 3),
        ('Location 5', 'вул. street, 11', 50.45033730654731, 30.396049877145888, 1, null, null, 3, 3),
        ('Location 6', 'вул. street, 11', 50.41033730654731, 30.396049877145888, 1, null, null, 3,3),
-       ('Location 7', 'вул. street, 11', 50.4303, 30.39, 1, null, null, 1,3);
+       ('Location 7', 'вул. street, 11', 50.4303, 30.39, 1, null, null, 1,3),
+       ('Location 8', 'вул. street, 11111', 50.4303, 30.39, 1, null, null, 13,3);
 
 
 insert into contact_type(name, url_logo)
@@ -590,7 +592,7 @@ VALUES ('Як діяти, якщо вам відмовляють в інформ
 insert into clubs(age_from, age_to, name, url_logo, url_web, url_background, work_time, center_id, user_id, description,
                   rating, is_approved, is_online, contacts)
 values (6, 9, 'Гурток з контактами 1', '#', '#',
-        '/static/images/club/bg_2.png', '09:00-16:00', null, 3,
+        '/static/images/club/bg_2.png', '09:00-16:00', 1, 3,
         '{"blocks":[{"key":"etag9","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"8lltb","text":" ","type":"atomic","depth":0,"inlineStyleRanges":[],"entityRanges":[{"offset":0,"length":1,"key":0}],"data":{}},{"key":"98dtl","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"9q9dc","text":"Робота гуртка «Природа і фантазія у технічній творчості» спрямована на формування компетентностей особистості у процесі розкриття сенсу головних ідей, що висловлюють сутність та перспективи взаємодії людини і природи. На заняттях гуртка діти вчаться ознайомлення з основами технічної творчості, декоративно-ужиткового мистецтва, моделювання й конструювання, формування вмінь і навичок роботи з різними матеріалами й інструментами","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{"0":{"type":"image","mutability":"IMMUTABLE","data":{"src":"https://linguapedia.info/wp-content/uploads/2015/05/history-of-ukrainian.jpg","className":"edited-image edited-image-center"}}}}',
         2, true, false, '1:+380502809724, 2:facebook/club/74, 4:club@mail.com'),
        (6, 9, 'Гурток з контактами 2', '#', '#',

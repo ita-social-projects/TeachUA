@@ -1,10 +1,13 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.converter.CenterToCenterResponseConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.location.LocationProfile;
+import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
@@ -17,6 +20,7 @@ import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.*;
+import com.softserve.teachua.utils.CategoryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -49,9 +53,20 @@ public class CenterServiceImpl implements CenterService {
     private final StationService stationService;
     private final ClubRepository clubRepository;
     private final UserRepository userRepository;
+    private final CenterToCenterResponseConverter centerToCenterResponseConverter;
 
     @Autowired
-    public CenterServiceImpl(CenterRepository centerRepository, ArchiveService archiveService, DtoConverter dtoConverter, ClubService clubService, LocationRepository locationRepository, CityService cityService, DistrictService districtService, StationService stationService, ClubRepository clubRepository, UserRepository userRepository) {
+    public CenterServiceImpl(CenterRepository centerRepository,
+                             ArchiveService archiveService,
+                             DtoConverter dtoConverter,
+                             ClubService clubService,
+                             LocationRepository locationRepository,
+                             CityService cityService,
+                             DistrictService districtService,
+                             StationService stationService,
+                             ClubRepository clubRepository,
+                             UserRepository userRepository,
+                             CenterToCenterResponseConverter centerToCenterResponseConverter) {
         this.centerRepository = centerRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
@@ -62,6 +77,7 @@ public class CenterServiceImpl implements CenterService {
         this.stationService = stationService;
         this.clubRepository = clubRepository;
         this.userRepository = userRepository;
+        this.centerToCenterResponseConverter=centerToCenterResponseConverter;
     }
 
     /**
@@ -72,7 +88,7 @@ public class CenterServiceImpl implements CenterService {
      */
     @Override
     public CenterResponse getCenterByProfileId(Long id) {
-        return dtoConverter.convertToDto(getCenterById(id), CenterResponse.class);
+        return centerToCenterResponseConverter.convertToCenterResponse(getCenterById(id));
     }
 
     /**
@@ -200,9 +216,35 @@ public class CenterServiceImpl implements CenterService {
 
         return new PageImpl<>(centerResponses
                 .stream()
-                .map(center -> (CenterResponse) dtoConverter.convertToDto(center, CenterResponse.class))
+                .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
                 .collect(Collectors.toList()),
                 centerResponses.getPageable(), centerResponses.getTotalElements());
+    }
+
+    /**
+     * The method returns page of dto {@code Page<CenterResponse>} of all centers by advancedSearchCenterProfile.
+     *
+     * @param advancedSearchCenterProfile - put user id.
+     * @param pageable - pagination object.
+     * @return new {@code Page<ClubResponse>}.
+     *
+     * @author Vasyl Khula
+     */
+    @Override
+    public Page<CenterResponse> getAdvancedSearchCenters(AdvancedSearchCenterProfile advancedSearchCenterProfile,
+                                                         Pageable pageable) {
+        Page<Center> centersOnPage = centerRepository.findAllBylAdvancedSearch(
+                advancedSearchCenterProfile.getCityName(),
+                advancedSearchCenterProfile.getDistrictName(),
+                advancedSearchCenterProfile.getStationName(),
+                pageable);
+
+        return new PageImpl<>(centersOnPage
+                .stream()
+                .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
+                .peek(System.out::println)
+                .collect(Collectors.toList()),
+                centersOnPage.getPageable(), centersOnPage.getTotalElements());
     }
 
     /**
@@ -233,7 +275,7 @@ public class CenterServiceImpl implements CenterService {
     public List<CenterResponse> getListOfCenters() {
         List<CenterResponse> centerResponses = centerRepository.findAll()
                 .stream()
-                .map(center -> (CenterResponse) dtoConverter.convertToDto(center, CenterResponse.class))
+                .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
                 .collect(Collectors.toList());
 
         log.info("**/getting list of centers = " + centerResponses);

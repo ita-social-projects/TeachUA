@@ -22,13 +22,13 @@ import java.util.Set;
 @Component
 public class ClubToClubResponseConverter {
 
-    private ContactTypeService contactTypeService;
-
+    private ContactsStringConverter contactsStringConverter;
     private DtoConverter dtoConverter;
 
     @Autowired
-    public ClubToClubResponseConverter(ContactTypeService contactTypeService,DtoConverter dtoConverter){
-        this.contactTypeService=contactTypeService;
+    public ClubToClubResponseConverter(ContactsStringConverter contactsStringConverter,
+                                       DtoConverter dtoConverter){
+        this.contactsStringConverter=contactsStringConverter;
         this.dtoConverter=dtoConverter;
     }
 
@@ -41,41 +41,10 @@ public class ClubToClubResponseConverter {
      */
     public ClubResponse convertToClubResponse(Club club){
 
-
         ClubResponse clubResponse=dtoConverter.convertToDto(club,ClubResponse.class);
         clubResponse.setContacts(
-                convertStringToContactDataResponses(club.getContacts()));
+                contactsStringConverter.convertStringToContactDataResponses(club.getContacts()));
         log.info("===  convertToClubResponse method"+clubResponse);
         return clubResponse;
-    }
-
-    /**
-     * The method returns {@code Set<ContactDataResponse>} after parsing string contacts from club object
-     *
-     * @param contacts - put club .
-     * @return new {@code Set<ContactDataResponse>}.
-     */
-    private Set<ContactDataResponse> convertStringToContactDataResponses(String contacts){
-        if(contacts==null || contacts.isEmpty()){
-            log.info("contacts string is null or empty");
-            return new HashSet<>();
-        }
-
-        String[] singleContact=contacts.split(",");
-        Set<ContactDataResponse> result=new HashSet<>();
-        try{
-            for (String s: singleContact) {
-                s = s.replaceAll("[\\{\\}\" ]","");
-                String[] data = s.split(":");
-                ContactType contactType=contactTypeService.getContactTypeById(Long.parseLong(data[0]));
-                result.add(new ContactDataResponse(contactType,data[1]));
-            }
-        }catch (NumberFormatException e){
-            log.info(e.getMessage());
-            return result;
-        }
-
-        log.info("contacts field =="+result.toString());
-        return result;
     }
 }

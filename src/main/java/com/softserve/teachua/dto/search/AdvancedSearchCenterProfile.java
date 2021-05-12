@@ -2,15 +2,13 @@ package com.softserve.teachua.dto.search;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
-import java.util.List;
-
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class AdvancedSearchClubProfile {
-  
-    private Integer age;
+public class AdvancedSearchCenterProfile {
 
     @Nullable
     private String districtName;
@@ -20,10 +18,5 @@ public class AdvancedSearchClubProfile {
 
     @Nullable
     private String stationName;
-
-    @Nullable
-    private List<String> categoriesName;
-
-    private Boolean isOnline;
 
 }

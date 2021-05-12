@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.center;
 
+import com.softserve.teachua.dto.contact_data.ContactDataResponse;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;
@@ -21,6 +22,8 @@ public class CenterResponse implements Convertible {
 
     private String name;
 
+    private String urlBackgroundPicture;
+
     private String email;
 
     private String phones;
@@ -38,5 +41,7 @@ public class CenterResponse implements Convertible {
     private Set<Location> locations;
 
     private Set<Club> clubs;
+
+    private Set<ContactDataResponse> contacts;
 }
 

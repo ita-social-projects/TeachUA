@@ -4,7 +4,12 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.club.ClubProfile;
+import com.softserve.teachua.dto.club.ClubResponse;
+import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
+import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.service.CenterService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RestController
 public class CenterController implements Api {
     private static final int CENTERS_PER_USER_PAGE = 9;
@@ -87,6 +93,22 @@ public class CenterController implements Api {
     @GetMapping("/centers")
     public List<CenterResponse> getCenters() {
         return centerService.getListOfCenters();
+    }
+
+    /**
+     * The controller returns dto {@code {@link CenterProfile }} of the club.
+     *
+     * @param advancedSearchCenterProfile - Place dto with all parameters for searched club.
+     * @return new {@code ClubProfile}.
+     */
+    @GetMapping("/centers/search/advanced")
+    public Page<CenterResponse> getAdvancedSearchClubs(
+            AdvancedSearchCenterProfile advancedSearchCenterProfile,
+            @PageableDefault(
+                    value = 6,
+                    sort = "id") Pageable pageable) {
+        log.info("===== centerController started ======");
+        return centerService.getAdvancedSearchCenters(advancedSearchCenterProfile, pageable);
     }
 
     /**
