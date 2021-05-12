@@ -138,6 +138,23 @@ public class StationServiceImpl implements StationService {
     }
 
     /**
+     * The method returns entity {@code Station} of station by id.
+     *
+     * @param name - put city name.
+     * @return new {@code List<StationResponse>}.
+     */
+    @Override
+    public List<StationResponse> getListOfStationsByCityName(String name) {
+        List<StationResponse> stationResponses = stationRepository.findAllByCityName(name)
+                .stream()
+                .map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
+                .collect(Collectors.toList());
+
+        log.info("**/getting list of stations = " + stationResponses);
+        return stationResponses;
+    }
+
+    /**
      * The method returns dto {@code StationProfile} of updated station.
      *
      * @param stationProfile - place body of dto {@code StationProfile}.

@@ -114,6 +114,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/question/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/question/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/contact-types", "/api/districts/**").permitAll()
+                //TODO: only for admin
+                .antMatchers(HttpMethod.GET, "/api/logs").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/logs").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/log/**").permitAll()
                 .antMatchers("/oauth2/**").permitAll()
                 .antMatchers("/api/upload-image").permitAll()
                 .antMatchers("/api/users","/api/user/update").permitAll()

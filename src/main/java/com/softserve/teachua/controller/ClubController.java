@@ -97,6 +97,11 @@ public class ClubController implements Api {
         return clubService.getClubsByUserId(id, pageable);
     }
 
+    @GetMapping("/clubs/user/{id}")
+    public List<ClubResponse> getListClubsByUserId(@PathVariable Long id){
+        return clubService.getListClubsByUserId(id);
+    }
+
     @GetMapping("/clubs/search")
     public Page<ClubResponse> getClubsListOfClubs(
             SearchClubProfile searchClubProfile,

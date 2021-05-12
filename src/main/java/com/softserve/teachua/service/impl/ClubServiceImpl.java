@@ -225,6 +225,17 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
+    public List<ClubResponse> getListClubsByUserId(Long id) {
+        List<ClubResponse> clubResponses = clubRepository.findAllByUserId(id)
+                .stream()
+                .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
+                .collect(Collectors.toList());
+
+        log.info("getting list of clubs by user id {}", clubResponses);
+        return clubResponses;
+    }
+
+    @Override
     public List<ClubResponse> getSimilarClubsByCategoryName(SimilarClubProfile similarClubProfile) {
         return clubRepository.findByCategoryName(
                 similarClubProfile.getId(),
@@ -245,8 +256,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public Page<ClubResponse> getAdvancedSearchClubs(AdvancedSearchClubProfile advancedSearchClubProfile, Pageable pageable) {
         Page<Club> clubResponses = clubRepository.findAllBylAdvancedSearch(
-                advancedSearchClubProfile.getAgeFrom(),
-                advancedSearchClubProfile.getAgeTo(),
+                advancedSearchClubProfile.getAge(),
                 advancedSearchClubProfile.getCityName(),
                 advancedSearchClubProfile.getDistrictName(),
                 advancedSearchClubProfile.getStationName(),
