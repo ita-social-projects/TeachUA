@@ -22,6 +22,8 @@ public class CenterResponse implements Convertible {
 
     private String name;
 
+    private String urlBackgroundPicture;
+
     private String email;
 
     private String phones;

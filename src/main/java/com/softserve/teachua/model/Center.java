@@ -33,6 +33,9 @@ public class Center implements Convertible, Archivable {
 
     private String contacts;
 
+    @Column(name = "url_background_picture")
+    private String urlBackgroundPicture;
+
     @Column(columnDefinition="TEXT")
     private String description;
 

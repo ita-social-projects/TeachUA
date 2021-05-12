@@ -87,10 +87,17 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "category.name IN (:categoriesName) AND " +
             "locations.city.name = :cityName " +
             "AND club.id <> :id")
+
     Page<Club> findByCategoryName(@Param("id") Long id,
                                   @Param("categoriesName") List<String> categoriesName,
                                   @Param("cityName") String cityName,
                                   Pageable pageable);
+
+    @Query("select center.clubs from Center as center "+
+            "join center.locations AS locations " +
+            " where lower (center.name) LIKE lower (concat('%', :centerName , '%')) and locations.city.name = :cityName")
+    Page<Club> findClubsByCenterName(@Param("centerName") String centerName,
+                                     @Param("cityName") String cityName,  Pageable pageable);
 
     @Modifying
     @Query(value = "UPDATE clubs SET rating=:rating WHERE id = :club_id", nativeQuery = true)

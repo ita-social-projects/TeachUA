@@ -5,7 +5,10 @@ import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
+import com.softserve.teachua.model.Club;
+import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.service.ClubService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RestController
 public class ClubController implements Api {
     private static final int CLUBS_PER_PAGE = 8;
@@ -23,7 +27,7 @@ public class ClubController implements Api {
     private final ClubService clubService;
 
     @Autowired
-    public ClubController(ClubService clubService) {
+    public ClubController(ClubService clubService,ClubRepository clubRepository) {
         this.clubService = clubService;
     }
 
@@ -37,6 +41,7 @@ public class ClubController implements Api {
     public ClubResponse getClubById(@PathVariable Long id) {
         return clubService.getClubProfileById(id);
     }
+
 
     /**
      * The controller returns information {@code ClubResponse} about club.
