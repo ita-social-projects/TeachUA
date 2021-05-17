@@ -7,7 +7,6 @@ import com.softserve.teachua.dto.city.SuccessCreatedCity;
 import com.softserve.teachua.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.List;
 
@@ -54,7 +53,6 @@ public class CityController implements Api {
             @PathVariable Long id,
             @Valid
             @RequestBody CityProfile cityProfile){
-
         return cityService.updateCity(id, cityProfile);
     }
 
