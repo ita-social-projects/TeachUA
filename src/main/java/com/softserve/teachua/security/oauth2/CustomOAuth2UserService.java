@@ -82,6 +82,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setFirstName(oAuth2UserInfo.getFirstName());
         user.setLastName(oAuth2UserInfo.getLastName());
         user.setEmail(oAuth2UserInfo.getEmail());
+        user.setStatus(true);
         log.info("Successfull registrate new user - " + user);
         return userRepository.save(user);
     }
