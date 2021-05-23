@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @AllArgsConstructor
@@ -19,14 +22,19 @@ public class ClubProfile implements Convertible {
 
     private List<String> categoriesName;
 
+    @Valid
     private List<LocationProfile> locations;
 
     private String description;
 
     private String name;
 
+    @Min(2)
+    @Max(17)
     private Integer ageFrom;
 
+    @Min(3)
+    @Max(18)
     private Integer ageTo;
 
     private String urlBackground;
