@@ -13,11 +13,13 @@ public class LocationProfile {
     private Long id;
     private String name;
     private String address;
-    private String cityName;
-    private String districtName;
-    private String stationName;
+    private Long cityId;
+    private Long districtId;
+    private Long stationId;
     private Double longitude;
     private Double latitude;
-    private String phone;
-    private Double key;
+
+    private Long centerId;
+    private Long clubId;
+
 }

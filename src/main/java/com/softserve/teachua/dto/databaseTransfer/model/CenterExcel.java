@@ -13,13 +13,18 @@ import lombok.NoArgsConstructor;
 public class CenterExcel implements Convertible {
     private Long id;
     private String name;
+    private String description;
+
     private String city;
     private String address;
     private Double longitude;
-    private Double altitude;
+    private Double latitude;
     private String district;
     private String station;
-    private String site;
+
+    // contacts field
+
     private String phone;
-    private String description;
+    // site field can include social media too
+    private String site;
 }

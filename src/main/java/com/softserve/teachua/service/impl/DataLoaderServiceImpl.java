@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
+import com.softserve.teachua.dto.databaseTransfer.ExcelConvertToFormatStringContactsData;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingData;
 import com.softserve.teachua.dto.databaseTransfer.model.*;
 import com.softserve.teachua.dto.district.DistrictProfile;
@@ -52,6 +53,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     private final UserService userService;
     private final CityService cityService;
     private final ClubRepository clubRepository;
+    private final LocationService locationService;
+    private final ExcelConvertToFormatStringContactsData contactsConverter;
+    private final ExcelConvertToFormatStringContactsData excelContactsConverter;
 
     @Autowired
     public DataLoaderServiceImpl(CategoryService categoryService,
@@ -60,7 +64,11 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                                  DistrictService districtService,
                                  StationService stationService,
                                  UserService userService,
-                                 CityService cityService, ClubRepository clubRepository) {
+                                 CityService cityService,
+                                 ClubRepository clubRepository,
+                                 LocationService locationService,
+                                 ExcelConvertToFormatStringContactsData contactsConverter,
+                                 ExcelConvertToFormatStringContactsData excelContactsConverter) {
         this.categoryService = categoryService;
         this.centerService = centerService;
         this.clubService = clubService;
@@ -69,26 +77,58 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         this.userService = userService;
         this.cityService = cityService;
         this.clubRepository = clubRepository;
+        this.locationService = locationService;
+        this.contactsConverter = contactsConverter;
+        this.excelContactsConverter = excelContactsConverter;
     }
 
     public void loadToDatabase(ExcelParsingData excelParsingData) {
         Map<Long, Long> excelIdToDbId = new HashMap<>();
         Set<String> categoriesNames = new HashSet<>();
+
         loadDistricts(excelParsingData);
         loadStations(excelParsingData);
         loadCategories(excelParsingData, categoriesNames);
         loadCenters(excelParsingData, excelIdToDbId);
+        loadLocations(excelParsingData);
         loadClubs(excelParsingData, excelIdToDbId, categoriesNames);
     }
 
+    private void loadLocations(ExcelParsingData excelParsingData) {
+
+        for (LocationExcel location : excelParsingData.getLocations()) {
+            log.info("==============load locations DataLoaderService =========");
+            log.info(location.toString());
+            try{
+                LocationProfile locationProfile = LocationProfile.builder()
+                        .id(location.getId())
+                        .address(location.getAddress())
+                        .cityId(cityService.getCityByName(location.getCity()).getId())
+                        .districtId(districtService.getOptionalDistrictByName(location.getDistrict()).get().getId())
+                        .stationId(stationService.getOptionalStationByName(location.getStation()).get().getId())
+                        .centerId(location.getCenterId())
+                        .clubId(location.getClubId())
+                        .build();
+                locationService.addLocation(locationProfile);
+                log.info("====== location added ==");
+                log.info(location.getName()+" ");
+
+            }catch (AlreadyExistException | NoSuchElementException e){
+                log.info(e.getMessage());
+            }
+        }
+    }
+
     private void loadCenters(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId) {
+
         for (CenterExcel center : excelParsingData.getCenters()) {
             try {
-                if (center.getLongitude() == null || center.getAltitude() == null)
-                    continue;
+//                if (center.getLongitude() == null || center.getLatitude() == null)
+//                    continue;
 
                 try {
-                    centerService.deleteCenterById(centerService.getCenterByName(center.getName()).getId());
+                    centerService.deleteCenterById(center.getId());
+
                 } catch (NotExistException | DatabaseRepositoryException e) {
                     // Do nothing if there is no such center
                     // or if center has any relationships
@@ -102,6 +142,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .name(center.getName())
                         .urlWeb(CENTER_DEFAULT_URL_WEB)
                         .urlLogo(CENTER_DEFAULT_LOGO_URL)
+                        .contacts(excelContactsConverter.collectAllContactsData(center.getPhone(),center.getSite()))
                         .build());
                 excelIdToDbId.put(center.getId(), createdCenter.getId());
             } catch (AlreadyExistException e) {
@@ -111,15 +152,19 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         }
     }
 
-    private void loadClubs(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId, Set<String> catgories) {
+    private void loadClubs(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId, Set<String> categories) {
+
         for (ClubExcel club : excelParsingData.getClubs()) {
             try {
                 if (club.getAgeFrom() == null) {
-                    club.setAgeFrom(2);
+                    club.setAgeFrom(0);
                     club.setAgeTo(16);
                 }
                 if (club.getCity().isEmpty()) {
                     club.setCity("Київ");
+                }
+                if(club.getCenterId() == null){
+//todo think about this if block
                 }
                 try {
                     clubService.deleteClubById(clubService.getClubByName(club.getName()).getId());
@@ -130,12 +175,11 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 LocationProfile locationProfile = LocationProfile
                         .builder()
                         .address(club.getAddress())
-                        .latitude(club.getAltitude())
+                        .latitude(club.getLatitude())
                         .longitude(club.getLongitude())
-                        .cityName(club.getCity())
-                        .phone(club.getPhone())
-                        .districtName(club.getDistrict())
-                        .stationName(club.getStation())
+                        .cityId(cityService.getCityByName(club.getCity()).getId())
+                        .districtId(districtService.getDistrictByName(club.getDistrict()).getId())
+                        .stationId(stationService.getStationByName(club.getStation()).getId())
                         .build();
 
                 List<LocationProfile> locations = new ArrayList<>();
@@ -157,7 +201,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .name(club.getName())
                         .urlBackground(DEFAULT_CLUB_URL_BACKGROUND)
                         .urlLogo(DEFAULT_CLUB_URL_LOGO)
-                        .categoriesName(getFullCategoryName(catgories, club.getCategories()))
+                        .categoriesName(getFullCategoryName(categories, club.getCategories()))
                         .build());
 
                 clubRepository.flush();

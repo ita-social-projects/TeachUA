@@ -31,12 +31,13 @@ public class Center implements Convertible, Archivable {
     @Column
     private String phones;
 
+    @Column(length = 2000)
     private String contacts;
 
     @Column(name = "url_background_picture")
     private String urlBackgroundPicture;
 
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition="TEXT", length = 1500)
     private String description;
 
     @Column

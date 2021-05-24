@@ -192,13 +192,12 @@ public class ClubServiceImpl implements ClubService {
                             .map(locationProfile -> locationRepository.save(
                                     dtoConverter.convertToEntity(locationProfile, new Location())
                                             .withClub(club)
-                                            .withCity(cityService.getCityByName(locationProfile.getCityName()))
-                                            .withDistrict(districtService.getOptionalDistrictByName(
-                                                    locationProfile.getDistrictName())
-                                                    .orElse(null))
-                                            .withStation(stationService.getOptionalStationByName(
-                                                    locationProfile.getStationName())
-                                                    .orElse(null))
+                                            .withCity(cityService.getCityById(locationProfile.getCityId()))
+                                            .withDistrict(districtService.getDistrictById(
+                                                    locationProfile.getDistrictId())
+                                                    )
+                                            .withStation(stationService.getStationById(
+                                                    locationProfile.getStationId()))
                             ))
                             .collect(Collectors.toSet())
             );

@@ -37,4 +37,6 @@ public class CenterProfile implements Convertible {
 
     private Long userId;
 
+    private String contacts;
+
 }

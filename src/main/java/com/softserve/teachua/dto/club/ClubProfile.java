@@ -41,5 +41,5 @@ public class ClubProfile implements Convertible {
 
     private Long userId;
 
-    // private Center center;
+//     private Center center;
 }

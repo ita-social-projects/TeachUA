@@ -13,4 +13,5 @@ public class ExcelParsingData {
     private final List<CategoryExcel> categories = new ArrayList<>();
     private final List<StationExcel> stations = new ArrayList<>();
     private final List<DistrictExcel> districts = new ArrayList<>();
+    private final List<LocationExcel> locations = new ArrayList<>();
 }

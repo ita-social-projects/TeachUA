@@ -34,7 +34,7 @@ public class Club implements Convertible, Archivable {
     @EqualsAndHashCode.Include
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", length = 1500)
     private String description;
 
     @Column
@@ -81,5 +81,6 @@ public class Club implements Convertible, Archivable {
     @Column
     private Boolean isApproved;
 
+    @Column(length = 2000)
     private String contacts;
 }
