@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @AllArgsConstructor
@@ -25,6 +26,10 @@ public class ClubProfile implements Convertible {
     @Valid
     private List<LocationProfile> locations;
 
+    @Pattern(regexp = "^(?!\\s)([\\wА-ЩЬЮЯҐЄІЇа-щьюяґєії \\/\\\\'’.,\"!?:*|><]){39,1500}\\S$" ,
+            message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
+    @Pattern(regexp = "^.*\\S$",
+            message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
     private String description;
 
     private String name;
