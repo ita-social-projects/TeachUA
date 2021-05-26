@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.Set;
@@ -38,5 +40,7 @@ public class CenterProfile implements Convertible {
     private Long userId;
 
     private String contacts;
+
+    private Long externalId;
 
 }

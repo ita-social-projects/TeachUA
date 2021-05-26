@@ -83,4 +83,7 @@ public class Club implements Convertible, Archivable {
 
     @Column(length = 2000)
     private String contacts;
+
+    @Column(name = "external_id")
+    private Long externalId;
 }

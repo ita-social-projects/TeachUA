@@ -3,6 +3,10 @@ package com.softserve.teachua.service.impl;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingResponse;
 import com.softserve.teachua.dto.databaseTransfer.model.*;
+import com.softserve.teachua.model.ExcelCenterEntity;
+import com.softserve.teachua.model.ExcelClubEntity;
+import com.softserve.teachua.repository.ExcelCenterEntityRepository;
+import com.softserve.teachua.repository.ExcelClubEntityRepository;
 import com.softserve.teachua.service.CityService;
 import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.ExcelParserService;
@@ -38,12 +42,18 @@ public class ExcelParserServiceImpl implements ExcelParserService {
 
     final CityService cityService;
     final DistrictService districtService;
+    private final ExcelCenterEntityRepository excelCenterEntityRepository;
+    private final ExcelClubEntityRepository excelClubEntityRepository;
 
 
     @Autowired
-    public ExcelParserServiceImpl(CityService cityService, DistrictService districtService) {
+    public ExcelParserServiceImpl(CityService cityService, DistrictService districtService,
+                                  ExcelCenterEntityRepository excelCenterEntityRepository,
+                                  ExcelClubEntityRepository excelClubEntityRepository) {
         this.cityService = cityService;
         this.districtService = districtService;
+        this.excelCenterEntityRepository = excelCenterEntityRepository;
+        this.excelClubEntityRepository = excelClubEntityRepository;
     }
 
     public ExcelParsingResponse parseExcel(InputStream excelInputStream) throws IOException {
@@ -81,6 +91,14 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                         result.getParsingMistakes())
         );
 
+
+        parseExcelCenters(excelBook, result.getData().getExcelCenters(),
+                        result.getParsingMistakes());
+
+
+        parseExcelClubs(excelBook, result.getData().getExcelClubs(),
+                        result.getParsingMistakes());
+
         excelBook.close();
         return result;
     }
@@ -108,6 +126,80 @@ public class ExcelParserServiceImpl implements ExcelParserService {
         return "";
     }
 
+    private Long parseExcelClubs(XSSFWorkbook excelBook, List<ExcelClubEntity> clubEntities,
+                                 List<ExcelParsingMistake> mistakesOutput){
+
+        return parseSheet(excelBook, CLUB_SHEET_NAME, (row) -> {
+            ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
+
+            log.info("CLUB REPRESENTATION");
+            log.info("name = "+rowParser.getString(1, ExcelErrorType.CRITICAL));
+            log.info("club_ext_ID = "+rowParser.getString(13, ExcelErrorType.CRITICAL));
+            ExcelClubEntity clubRepresentation = ExcelClubEntity.builder()
+
+                    .centerExternalId(rowParser.getLong(0, ExcelErrorType.CRITICAL))
+                    .name(rowParser.getString(1, ExcelErrorType.CRITICAL))
+                    .cityName(rowParser.getString(2, ExcelErrorType.CRITICAL))
+                    .address(rowParser.getString(3, ExcelErrorType.CRITICAL))
+                    .coordinates(rowParser.getString(4, ExcelErrorType.CRITICAL))
+                    .district(rowParser.getString(5, ExcelErrorType.CRITICAL))
+                    .station(rowParser.getString(6, ExcelErrorType.CRITICAL))
+                    .webContact(rowParser.getString(7, ExcelErrorType.CRITICAL))
+                    .phone(rowParser.getString(8, ExcelErrorType.CRITICAL))
+                    .categories(rowParser.getString(10,ExcelErrorType.CRITICAL))
+                    .ages(rowParser.getString(11,ExcelErrorType.CRITICAL))
+                    .description(rowParser.getString(12, ExcelErrorType.CRITICAL))
+                    .clubExternalId(rowParser.getLong(13, ExcelErrorType.CRITICAL))
+                    .build();
+
+            log.info(clubRepresentation.toString());
+
+            if(!clubRepresentation.getName().isEmpty() & !clubRepresentation.getCoordinates().isEmpty()){
+
+                excelClubEntityRepository.save(clubRepresentation);
+            }
+
+            clubEntities.add(clubRepresentation);
+
+            return !rowParser.hasErrors();
+        });
+
+    }
+
+    private Long parseExcelCenters(XSSFWorkbook excelBook, List<ExcelCenterEntity> centerEntities,
+                                 List<ExcelParsingMistake> mistakesOutput){
+
+        return parseSheet(excelBook, CENTER_SHEET_NAME, (row) -> {
+
+            ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
+
+            log.info("=CENTER REPRESENTATION ==>");
+            log.info("name = "+rowParser.getString(1, ExcelErrorType.CRITICAL));
+
+            ExcelCenterEntity centerRepresentation = ExcelCenterEntity.builder()
+
+                    .centerExternalId(rowParser.getLong(0, ExcelErrorType.CRITICAL))
+                    .name(rowParser.getString(1, ExcelErrorType.CRITICAL))
+                    .cityName(rowParser.getString(2, ExcelErrorType.CRITICAL))
+                    .address(rowParser.getString(3, ExcelErrorType.CRITICAL))
+                    .coordinates(rowParser.getString(4, ExcelErrorType.CRITICAL))
+                    .district(rowParser.getString(5, ExcelErrorType.CRITICAL))
+                    .station(rowParser.getString(6, ExcelErrorType.CRITICAL))
+                    .webContact(rowParser.getString(7, ExcelErrorType.CRITICAL))
+                    .phone(rowParser.getString(8, ExcelErrorType.CRITICAL))
+                    .description(rowParser.getString(9, ExcelErrorType.CRITICAL))
+                    .build();
+
+            log.info(centerRepresentation.toString());
+            if(!centerRepresentation.getName().isEmpty() && !centerRepresentation.getCoordinates().isEmpty()){
+
+                excelCenterEntityRepository.save(centerRepresentation);
+            }
+            centerEntities.add(centerRepresentation);
+            return !rowParser.hasErrors();
+        });
+    }
+
     private Long parseSheet(XSSFWorkbook excelBook, String sheetName, Predicate<XSSFRow> rowProcessing) {
         XSSFSheet sheet = excelBook.getSheet(sheetName);
 
@@ -128,6 +220,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
     private Long parseCenters(XSSFWorkbook excelBook, List<CenterExcel> centersOutput,
                               List<LocationExcel> locationsOutput,
                               List<ExcelParsingMistake> mistakesOutput) {
+
         return parseSheet(excelBook, CENTER_SHEET_NAME, (row) -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
@@ -140,19 +233,19 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                 }
                 Double[] coordinates = rowParser.parseCoordinates(4, true);
                 log.info("centerCoordinates in NEXT center location: " + Arrays.toString(coordinates));
-                log.info("last CENTER_ID : "+ centersOutput.get(centersOutput.size()-1).getId());
 
                 LocationExcel locationExcel = LocationExcel.builder()
                         .clubId(null)
-                        .centerId(centersOutput.get(centersOutput.size()-1).getId())
+                        .centerId(rowParser.getLong(0, ExcelErrorType.CRITICAL))
                         .city(rowParser.getString(2, ExcelErrorType.CRITICAL))
                         .address(rowParser.getString(3, true, ExcelErrorType.CRITICAL))
                         .longitude(coordinates[0])
                         .latitude(coordinates[1])
                         .district(rowParser.getString(5, ExcelErrorType.NON_CRITICAL))
                         .station(rowParser.getString(6, ExcelErrorType.NON_CRITICAL))
-                        .name("Location_"+rowParser.getString(3, true, ExcelErrorType.CRITICAL))
+                        .name("center_location_"+rowParser.getString(3, true, ExcelErrorType.CRITICAL).substring(0,10))
                         .build();
+
                 locationsOutput.add(locationExcel);
                 return !rowParser.hasErrors();
             }
@@ -178,7 +271,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                     .latitude(coordinates[1])
                     .district(rowParser.getString(5, ExcelErrorType.NON_CRITICAL))
                     .station(rowParser.getString(6, ExcelErrorType.NON_CRITICAL))
-                    .name("Location_"+rowParser.getString(3, true, ExcelErrorType.CRITICAL))
+                    .name("center_location_"+rowParser.getString(3, true, ExcelErrorType.CRITICAL).substring(0,9))
                     .build();
             centersOutput.add( centerExcel);
             locationsOutput.add(locationExcel);
@@ -192,43 +285,69 @@ public class ExcelParserServiceImpl implements ExcelParserService {
         return parseSheet(excelBook, CLUB_SHEET_NAME, (row) -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
-            if (rowParser.isColumnEmpty(1)) {
-                return false;
-            }
+            if ( rowParser.isColumnEmpty(0)) {
+                //this club has no center and has its own locations
+                if (rowParser.isColumnEmpty(1) ) { //if club has no name !
 
-            Double[] coordinates = rowParser.parseCoordinates(4);
-            Integer[] ages = rowParser.parseAges(11);
+                    if(rowParser.isColumnEmpty(4)){ //and has no coordinates -- return false !!!
+                        return false;
 
-            ClubExcel clubExcel = clubExcel = ClubExcel.builder()
-                    //.id(rowParser.getLong(0, ExcelErrorType.NON_CRITICAL))
-                    .name(rowParser.getString(1, ExcelErrorType.CRITICAL))
-                    .city(rowParser.getString(2, ExcelErrorType.CRITICAL))
-                    .address(rowParser.getString(3, ExcelErrorType.CRITICAL))
-                    .longitude(coordinates[0])
-                    .latitude(coordinates[1])
-                    .district(rowParser.getString(5, ExcelErrorType.NON_CRITICAL))
-                    .station(rowParser.getString(6, ExcelErrorType.NON_CRITICAL))
-                    .site(rowParser.getString(7, ExcelErrorType.NON_CRITICAL))
-                    .phone(rowParser.getString(8, ExcelErrorType.CRITICAL))
-                    .categories(rowParser.parseCategories(10))
-                    .ageFrom(ages[0])
-                    .ageTo(ages[1])
-                    .description(rowParser.getString(12, ExcelErrorType.CRITICAL))
-                    .build();;
+                    }else{
+                        Double[] coordinates = rowParser.parseCoordinates(4);
 
-            if ( ! rowParser.isColumnEmpty(0)) {
-                clubExcel = clubExcel.withCenterId(rowParser.getLong(0, ExcelErrorType.NON_CRITICAL));
+                        Integer[] ages = rowParser.parseAges(11);
+
+                        ClubExcel clubExcel = ClubExcel.builder()
+                                .id(rowParser.getLong(13, ExcelErrorType.NON_CRITICAL))
+                                .name(rowParser.getString(1, ExcelErrorType.CRITICAL))
+                                .site(rowParser.getString(7, ExcelErrorType.NON_CRITICAL))
+                                .phone(rowParser.getString(8, ExcelErrorType.CRITICAL))
+                                .categories(rowParser.parseCategories(10))
+                                .ageFrom(ages[0])
+                                .ageTo(ages[1])
+                                .description(rowParser.getString(12, ExcelErrorType.CRITICAL))
+                                .build();
+
+                        clubExcels.add(clubExcel);
+
+                        LocationExcel location = LocationExcel.builder()
+                                .centerId(null)
+                                .clubId(rowParser.getLong(13, ExcelErrorType.NON_CRITICAL))
+                                .name("club_loc_"+rowParser.getString(3, ExcelErrorType.CRITICAL))
+                                .city(rowParser.getString(2, ExcelErrorType.CRITICAL))
+                                .address(rowParser.getString(3, ExcelErrorType.CRITICAL))
+                                .longitude(coordinates[0])
+                                .latitude(coordinates[1])
+                                .district(rowParser.getString(5, ExcelErrorType.NON_CRITICAL))
+                                .station(rowParser.getString(6, ExcelErrorType.NON_CRITICAL))
+                                .build();
+
+                        log.info("new club without center,  Location : "+location.getAddress());
+                        locationsOutput.add(location);
+                        return !rowParser.hasErrors();
+                    }
+                }
 
             }else{
-                // this is the case when we should get locations from Clubs sheet
+                // the case when club has center and we can skip parsing coordinates
+                Integer[] ages = rowParser.parseAges(11);
 
-                LocationExcel locationExcel = LocationExcel.builder()
-                        .centerId(null)
-//                        .clubId()
+                ClubExcel clubExcel = ClubExcel.builder()
+                        .id(rowParser.getLong(13, ExcelErrorType.NON_CRITICAL))
+                        .centerId(rowParser.getLong(0, ExcelErrorType.CRITICAL))
+                        .name(rowParser.getString(1, ExcelErrorType.CRITICAL))
+                        .site(rowParser.getString(7, ExcelErrorType.NON_CRITICAL))
+                        .phone(rowParser.getString(8, ExcelErrorType.CRITICAL))
+                        .categories(rowParser.parseCategories(10))
+                        .ageFrom(ages[0])
+                        .ageTo(ages[1])
+                        .description(rowParser.getString(12, ExcelErrorType.CRITICAL))
                         .build();
-            }
 
-            clubExcels.add(clubExcel);
+                log.info("new club with center Location : "+clubExcel.getCenterId());
+                clubExcels.add(clubExcel);
+                return !rowParser.hasErrors();
+            }
 
             return !rowParser.hasErrors();
         });

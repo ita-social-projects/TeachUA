@@ -68,7 +68,7 @@ values (1,'Телефон', '/static/images/contacts/phone.svg'),
        (3,'WhatsApp', '/static/images/contacts/whats-app.svg'),
        (4,'Пошта', '/static/images/contacts/mail.svg'),
        (5,'Skype', '/static/images/contacts/skype.svg'),
-       (6,'Site', '/static/images/contacts/website-link-icon.png');
+       (6,'Site', '/static/images/contacts/website-link-icon.svg');
 
 
 

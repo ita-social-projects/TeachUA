@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
@@ -54,9 +55,12 @@ public class ClubServiceImpl implements ClubService {
     private final StationService stationService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final CenterRepository centerRepository;
+
 
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository,
+                           CenterRepository centerRepository,
                            LocationRepository locationRepository,
                            DtoConverter dtoConverter,
                            ArchiveService archiveService,
@@ -76,6 +80,7 @@ public class ClubServiceImpl implements ClubService {
         this.categoryService = categoryService;
         this.userService = userService;
         this.toClubResponseConverter=toClubResponseConverter;
+        this.centerRepository = centerRepository;
     }
 
     /**
@@ -175,6 +180,20 @@ public class ClubServiceImpl implements ClubService {
         if(clubProfile.getUserId() != null ){
             user = userService.getUserById(clubProfile.getUserId());
         }
+
+        //todo delete or replace this block
+        try{
+            if(clubProfile.getCenterId()==null)
+                throw new EntityNotFoundException();
+            if( !centerRepository.existsById(clubProfile.getCenterId())){
+                throw new EntityNotFoundException();
+            }
+        }catch (EntityNotFoundException e){
+            log.error("e.getMessage");
+            return new SuccessCreatedClub();
+        }
+
+        log.info("==clubService=?  clubProfile.centerID"+clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()

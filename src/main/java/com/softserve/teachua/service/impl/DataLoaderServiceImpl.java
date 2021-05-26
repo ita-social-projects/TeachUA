@@ -16,12 +16,19 @@ import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.ExcelCenterEntity;
+import com.softserve.teachua.model.ExcelClubEntity;
 import com.softserve.teachua.repository.ClubRepository;
+import com.softserve.teachua.repository.ExcelCenterEntityRepository;
+import com.softserve.teachua.repository.ExcelClubEntityRepository;
 import com.softserve.teachua.service.*;
 import lombok.extern.slf4j.Slf4j;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,6 +64,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     private final ExcelConvertToFormatStringContactsData contactsConverter;
     private final ExcelConvertToFormatStringContactsData excelContactsConverter;
 
+    private final ExcelCenterEntityRepository excelCenterEntityRepository;
+    private final ExcelClubEntityRepository excelClubEntityRepository;
+
     @Autowired
     public DataLoaderServiceImpl(CategoryService categoryService,
                                  CenterService centerService,
@@ -68,7 +78,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                                  ClubRepository clubRepository,
                                  LocationService locationService,
                                  ExcelConvertToFormatStringContactsData contactsConverter,
-                                 ExcelConvertToFormatStringContactsData excelContactsConverter) {
+                                 ExcelConvertToFormatStringContactsData excelContactsConverter,
+                                 ExcelCenterEntityRepository excelCenterEntityRepository,
+                                 ExcelClubEntityRepository excelClubEntityRepository) {
         this.categoryService = categoryService;
         this.centerService = centerService;
         this.clubService = clubService;
@@ -80,18 +92,37 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         this.locationService = locationService;
         this.contactsConverter = contactsConverter;
         this.excelContactsConverter = excelContactsConverter;
+        this.excelCenterEntityRepository = excelCenterEntityRepository;
+        this.excelClubEntityRepository = excelClubEntityRepository;
     }
 
     public void loadToDatabase(ExcelParsingData excelParsingData) {
         Map<Long, Long> excelIdToDbId = new HashMap<>();
         Set<String> categoriesNames = new HashSet<>();
 
+        // todo tmp load data is in parser
+//        loadExcelEntityToDB(excelParsingData);
+
         loadDistricts(excelParsingData);
         loadStations(excelParsingData);
         loadCategories(excelParsingData, categoriesNames);
         loadCenters(excelParsingData, excelIdToDbId);
-        loadLocations(excelParsingData);
         loadClubs(excelParsingData, excelIdToDbId, categoriesNames);
+        loadLocations(excelParsingData);
+
+    }
+
+    private void loadExcelEntityToDB(ExcelParsingData excelParsingData){
+
+        for (ExcelCenterEntity center : excelParsingData.getExcelCenters()) {
+            excelCenterEntityRepository.save(center);
+        }
+
+        for (ExcelClubEntity club : excelParsingData.getExcelClubs()) {
+
+            excelClubEntityRepository.save(club);
+        }
+
     }
 
     private void loadLocations(ExcelParsingData excelParsingData) {
@@ -103,6 +134,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 LocationProfile locationProfile = LocationProfile.builder()
                         .id(location.getId())
                         .address(location.getAddress())
+                        .longitude(location.getLongitude())
+                        .latitude(location.getLatitude())
+                        .name(location.getName())
                         .cityId(cityService.getCityByName(location.getCity()).getId())
                         .districtId(districtService.getOptionalDistrictByName(location.getDistrict()).get().getId())
                         .stationId(stationService.getOptionalStationByName(location.getStation()).get().getId())
@@ -142,7 +176,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .name(center.getName())
                         .urlWeb(CENTER_DEFAULT_URL_WEB)
                         .urlLogo(CENTER_DEFAULT_LOGO_URL)
-                        .contacts(excelContactsConverter.collectAllContactsData(center.getPhone(),center.getSite()))
+                        .contacts(excelContactsConverter.collectAllContactsData(center.getSite(),center.getPhone()))
                         .build());
                 excelIdToDbId.put(center.getId(), createdCenter.getId());
             } catch (AlreadyExistException e) {
@@ -154,41 +188,45 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
     private void loadClubs(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId, Set<String> categories) {
 
+        log.info("============== loadClubs DataLoaderService =========");
         for (ClubExcel club : excelParsingData.getClubs()) {
+            log.info(club.toString());
             try {
                 if (club.getAgeFrom() == null) {
                     club.setAgeFrom(0);
                     club.setAgeTo(16);
                 }
-                if (club.getCity().isEmpty()) {
-                    club.setCity("Київ");
-                }
-                if(club.getCenterId() == null){
-//todo think about this if block
-                }
-                try {
-                    clubService.deleteClubById(clubService.getClubByName(club.getName()).getId());
-                } catch (NotExistException | DatabaseRepositoryException e) {
-                    // Do nothing if there is no such club
-                    // or if club has any relationships
-                }
-                LocationProfile locationProfile = LocationProfile
-                        .builder()
-                        .address(club.getAddress())
-                        .latitude(club.getLatitude())
-                        .longitude(club.getLongitude())
-                        .cityId(cityService.getCityByName(club.getCity()).getId())
-                        .districtId(districtService.getDistrictByName(club.getDistrict()).getId())
-                        .stationId(stationService.getStationByName(club.getStation()).getId())
-                        .build();
+//                if (club.getCity().isEmpty()) {
+//                    club.setCity("Київ");
+//                }
+//                try {
+//                    clubService.deleteClubById(clubService.getClubByName(club.getName()).getId());
+//                } catch (NotExistException | DatabaseRepositoryException e) {
+//                    // Do nothing if there is no such club
+//                    // or if club has any relationships
+//                }
+//                LocationProfile locationProfile = LocationProfile
+//                        .builder()
+//                        .clubId(club.getId())
+//                        .address(club.getAddress())
+//                        .latitude(club.getLatitude())
+//                        .longitude(club.getLongitude())
+//                        .cityId(cityService.getCityByName(club.getCity()).getId())
+//                        .districtId(districtService.getDistrictByName(club.getDistrict()).getId())
+//                        .stationId(stationService.getStationByName(club.getStation()).getId())
+//                        .build();
 
-                List<LocationProfile> locations = new ArrayList<>();
-                locations.add(locationProfile);
+//                List<LocationProfile> locations = new ArrayList<>();
+//                locations.add(locationProfile);
+
                 SuccessCreatedClub createdClub = clubService.addClub(ClubProfile
                         .builder()
+                        .id(club.getId())
                         .ageFrom(club.getAgeFrom())
                         .ageTo(club.getAgeTo())
-                        .locations(locations)
+
+                        //create service method getByExternalId !!!
+                        //.centerId(centerService.getByExternalId(club.getCenterId()).getId())
 
                         .description(DESCRIPTION_JSON_LEFT +
                                 (club.getDescription().isEmpty() ?
@@ -202,24 +240,25 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .urlBackground(DEFAULT_CLUB_URL_BACKGROUND)
                         .urlLogo(DEFAULT_CLUB_URL_LOGO)
                         .categoriesName(getFullCategoryName(categories, club.getCategories()))
+                        .contacts(contactsConverter.collectAllContactsData(club.getSite(),club.getPhone()))
                         .build());
 
                 clubRepository.flush();
 
-                Club addedClub = clubService.getClubById(createdClub.getId());
-                addedClub.setUrlWeb(DEFAULT_CLUB_URL_WEB);
-                addedClub.setWorkTime(DEFAULT_CLUB_WORK_TIME);
-                addedClub.setIsApproved(true);
-
-                addedClub.setUser(userService.getUserById(DEFAULT_USER_OWNER_ID));
-
-                if (excelIdToDbId.containsKey(club.getId())) {
-                    Center center = centerService.getCenterById(excelIdToDbId.get(club.getId()));
-                    addedClub.setCenter(center);
-                }
-                clubRepository.save(addedClub);
+//                Club addedClub = clubService.getClubById(createdClub.getId());
+//                addedClub.setUrlWeb(DEFAULT_CLUB_URL_WEB);
+//                addedClub.setWorkTime(DEFAULT_CLUB_WORK_TIME);
+//                addedClub.setIsApproved(true);
+//
+//                addedClub.setUser(userService.getUserById(DEFAULT_USER_OWNER_ID));
+//
+//                if (excelIdToDbId.containsKey(club.getId())) {
+//                    Center center = centerService.getCenterById(excelIdToDbId.get(club.getId()));
+//                    addedClub.setCenter(center);
+//                }
+//                clubRepository.save(addedClub);
             } catch (AlreadyExistException e) {
-                log.error("Trying to add already exists club from excel");
+                log.error(e.getMessage());
             }
 
         }

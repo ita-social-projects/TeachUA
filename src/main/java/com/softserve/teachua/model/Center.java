@@ -64,4 +64,6 @@ public class Center implements Convertible, Archivable {
     @ToString.Exclude
     private User user;
 
+    @Column(name = "external_id")
+    private Long externalId;
 }

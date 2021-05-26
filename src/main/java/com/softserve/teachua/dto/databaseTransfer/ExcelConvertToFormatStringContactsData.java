@@ -18,7 +18,7 @@ public class ExcelConvertToFormatStringContactsData {
 
         StringBuilder builder = new StringBuilder("");
         for(String phone : phones){
-            builder.append("1:");
+            builder.append("1::");
             builder.append(phone);
             builder.append(", ");
         }
@@ -35,11 +35,11 @@ public class ExcelConvertToFormatStringContactsData {
 
         for (String url : siteUrls) {
             if(url.contains("facebook")){
-                builder.append("2:");
+                builder.append("2::");
                 builder.append(url);
                 builder.append(", ");
             }else{
-                builder.append("6:");
+                builder.append("6::");
                 builder.append(url);
                 builder.append(", ");
             }

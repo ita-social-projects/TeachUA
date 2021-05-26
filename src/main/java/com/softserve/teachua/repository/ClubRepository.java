@@ -109,4 +109,6 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     @Query(value = "UPDATE clubs SET rating=:rating WHERE id = :club_id", nativeQuery = true)
     void updateRating(@Param("club_id") Long club_id, @Param("rating") double rating);
 
+    Club findClubByExternalId(@Param("external_id") Long club_id);
+
 }
