@@ -15,6 +15,8 @@ public interface CenterService {
 
     Center getCenterById(Long id);
 
+    Center getCenterByExternalId(Long id);
+
     Center getCenterByName(String name);
 
     SuccessCreatedCenter addCenter(CenterProfile centerProfile);

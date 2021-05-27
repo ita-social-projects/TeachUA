@@ -11,6 +11,7 @@ import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;
 import com.softserve.teachua.model.User;
@@ -115,6 +116,20 @@ public class ClubServiceImpl implements ClubService {
     }
 
     /**
+     * The method returns entity {@code Club} of club by id.
+     *
+     * @param clubExternalId - put club id.
+     * @return new {@code Club}.
+     * @throws NotExistException if club not exists.
+     */
+    @Override
+    public Club getClubByClubExternalId(Long clubExternalId) {
+        Club club = clubRepository.findClubByClubExternalId(clubExternalId);
+        log.info("getting club by external id {}", clubExternalId);
+        return club;
+    }
+
+    /**
      * The method returns entity {@code Club} of club by name.
      *
      * @param name - put club name.
@@ -182,16 +197,17 @@ public class ClubServiceImpl implements ClubService {
         }
 
         //todo delete or replace this block
-        try{
-            if(clubProfile.getCenterId()==null)
-                throw new EntityNotFoundException();
-            if( !centerRepository.existsById(clubProfile.getCenterId())){
-                throw new EntityNotFoundException();
-            }
-        }catch (EntityNotFoundException e){
-            log.error("e.getMessage");
-            return new SuccessCreatedClub();
-        }
+        log.info("== add method");
+//        try{
+//            if(clubProfile.getCenterId()==null)
+//                throw new EntityNotFoundException();
+//            if( !centerRepository.existsById(clubProfile.getCenterId())){
+//                throw new EntityNotFoundException();
+//            }
+//        }catch (EntityNotFoundException e){
+//            log.error("e.getMessage");
+//            return new SuccessCreatedClub();
+//        }
 
         log.info("==clubService=?  clubProfile.centerID"+clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
@@ -224,6 +240,31 @@ public class ClubServiceImpl implements ClubService {
 
         log.info("adding club with name : ", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
+    }
+
+    @Override
+    public Club addClubsFromExcel(ClubProfile clubProfile) {
+        if(clubProfile.getCenterId() == null) {
+            log.info("addClubsFromExcel => " + clubProfile.getCenterId() + " not found");
+
+            return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
+                    .withCategories(clubProfile.getCategoriesName()
+                            .stream()
+                            .map(categoryService::getCategoryByName)
+                            .collect(Collectors.toSet())))
+                    .withUser(null)
+                    .withCenter(null);
+        } else {
+            Center center = centerRepository.findById(clubProfile.getCenterId()).get();
+            log.info("addClubsFromExcel => " + clubProfile.getCenterId() + " with real center , id =" + center.getId());
+            return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
+                    .withCategories(clubProfile.getCategoriesName()
+                            .stream()
+                            .map(categoryService::getCategoryByName)
+                            .collect(Collectors.toSet())))
+                    .withUser(null)
+                    .withCenter(center);
+        }
     }
 
     /**

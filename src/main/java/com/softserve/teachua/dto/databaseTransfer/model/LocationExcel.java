@@ -19,6 +19,6 @@ public class LocationExcel {
     private Double longitude;
     private Double latitude;
 
-    private Long centerId;
-    private Long clubId;
+    private Long centerExternalId;
+    private Long clubExternalId;
 }

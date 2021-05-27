@@ -41,7 +41,7 @@ public class ExcelClubEntity {
 
     private String ages;
 
-    @Column(length = 2000)
+    @Column(length = 3000)
     private String description;
 
     private Long clubExternalId;

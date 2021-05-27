@@ -23,12 +23,9 @@ import com.softserve.teachua.repository.ExcelCenterEntityRepository;
 import com.softserve.teachua.repository.ExcelClubEntityRepository;
 import com.softserve.teachua.service.*;
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -140,9 +137,17 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .cityId(cityService.getCityByName(location.getCity()).getId())
                         .districtId(districtService.getOptionalDistrictByName(location.getDistrict()).get().getId())
                         .stationId(stationService.getOptionalStationByName(location.getStation()).get().getId())
-                        .centerId(location.getCenterId())
-                        .clubId(location.getClubId())
+//                        .centerId(location.getCenterId())
+//                        .clubId(location.getClubId())
                         .build();
+                if (location.getClubExternalId() == null) {
+                    locationProfile.withClubId(null);
+                    if(location.getCenterExternalId() == null) {
+                        locationProfile.withCenterId(null);
+                    }
+                } else {
+                    locationProfile.withClubId(clubService.getClubByClubExternalId(location.getClubExternalId()).getId());
+                }
                 locationService.addLocation(locationProfile);
                 log.info("====== location added ==");
                 log.info(location.getName()+" ");
@@ -219,15 +224,14 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 //                List<LocationProfile> locations = new ArrayList<>();
 //                locations.add(locationProfile);
 
-                SuccessCreatedClub createdClub = clubService.addClub(ClubProfile
+                ClubProfile clubProfile = ClubProfile
                         .builder()
-                        .id(club.getId())
                         .ageFrom(club.getAgeFrom())
                         .ageTo(club.getAgeTo())
 
-                        //create service method getByExternalId !!!
-                        //.centerId(centerService.getByExternalId(club.getCenterId()).getId())
-
+//                        .centerId(centerService.getCenterByExternalId(club.getCenterId()).getId())
+                        .centerExternalId(club.getCenterExternalId())
+                        .clubExternalId(club.getClubExternalId())
                         .description(DESCRIPTION_JSON_LEFT +
                                 (club.getDescription().isEmpty() ?
                                         CLUB_DEFAULT_DESCRIPTION :
@@ -241,9 +245,20 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .urlLogo(DEFAULT_CLUB_URL_LOGO)
                         .categoriesName(getFullCategoryName(categories, club.getCategories()))
                         .contacts(contactsConverter.collectAllContactsData(club.getSite(),club.getPhone()))
-                        .build());
-
-                clubRepository.flush();
+                        .build();
+                if(club.getCenterExternalId() == null) {
+                    clubProfile.withCenterId(null);
+                } else {
+                    Center center = centerService.getCenterByExternalId(club.getCenterExternalId());
+                    if(center == null) {
+                        log.info("Center with id" + club.getCenterExternalId() + " is null");
+                        clubProfile.withCenterId(null);
+                    } else {
+                        clubProfile.withCenterId(center.getId());
+                    }
+                }
+                Club createdClub = clubService.addClubsFromExcel(clubProfile);
+//                clubRepository.flush();
 
 //                Club addedClub = clubService.getClubById(createdClub.getId());
 //                addedClub.setUrlWeb(DEFAULT_CLUB_URL_WEB);

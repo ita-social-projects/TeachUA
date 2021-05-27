@@ -2,10 +2,7 @@ package com.softserve.teachua.dto.club;
 
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -13,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Data
+@With
 public class ClubProfile implements Convertible {
 
     private Long id;
@@ -43,5 +41,7 @@ public class ClubProfile implements Convertible {
 
     private Long centerId;
 
-    private Long externalId;
+    private Long clubExternalId;
+
+    private Long centerExternalId;
 }

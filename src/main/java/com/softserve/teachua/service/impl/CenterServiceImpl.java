@@ -168,6 +168,20 @@ public class CenterServiceImpl implements CenterService {
     }
 
     /**
+     * The method returns entity {@code Center} of center by external id.
+     *
+     * @param centerExternalId - put center id.
+     * @return new {@code Center}.
+     * @throws NotExistException if center not exists.
+     */
+    @Override
+    public Center getCenterByExternalId(Long centerExternalId) {
+        Center center = centerRepository.findCenterByExternalId(centerExternalId);
+        log.info("**/getting center by external id = " + center);
+        return center;
+    }
+
+    /**
      * The method returns dto {@code CenterProfile} of updated club.
      *
      * @param centerProfile - place body of dto {@code CenterProfile}.

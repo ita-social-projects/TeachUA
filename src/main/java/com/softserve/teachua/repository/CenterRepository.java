@@ -38,5 +38,5 @@ public interface CenterRepository extends JpaRepository<Center, Long> {
                                           @Param("station") String stationName,
                                           Pageable pageable);
 
-    Center findCenterByExternalId (@Param("external_id") Long club_id);
+    Center findCenterByExternalId (Long id);
 }

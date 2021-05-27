@@ -13,7 +13,7 @@ import java.util.List;
 public class ClubExcel implements Convertible {
     private Long id;
     private String name;
-    private Long centerId;
+//    private Long centerId;
     private List<String> categories;
     private Integer ageFrom;
     private Integer ageTo;
@@ -29,4 +29,6 @@ public class ClubExcel implements Convertible {
 
     private String site;
     private String phone;
+    private Long clubExternalId;
+    private Long centerExternalId;
 }

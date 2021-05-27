@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -81,9 +82,12 @@ public class Club implements Convertible, Archivable {
     @Column
     private Boolean isApproved;
 
-    @Column(length = 2000)
+    @Column(length = 3000)
     private String contacts;
 
-    @Column(name = "external_id")
-    private Long externalId;
+    @Column(name = "club_external_id")
+    private Long clubExternalId;
+
+    @Column(name = "center_external_id")
+    private Long centerExternalId;
 }
