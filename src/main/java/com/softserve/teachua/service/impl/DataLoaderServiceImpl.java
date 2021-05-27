@@ -4,7 +4,6 @@ import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.club.ClubProfile;
-import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.databaseTransfer.ExcelConvertToFormatStringContactsData;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingData;
 import com.softserve.teachua.dto.databaseTransfer.model.*;
@@ -28,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.zip.DataFormatException;
 
 /**
  * @author Vitalii Hapon
@@ -100,6 +100,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         // todo tmp load data is in parser
 //        loadExcelEntityToDB(excelParsingData);
 
+        log.info("=========LOADING DATA TO DB STEP: all locations form dto =========");
+        log.info(excelParsingData.getLocations().toString());
+
         loadDistricts(excelParsingData);
         loadStations(excelParsingData);
         loadCategories(excelParsingData, categoriesNames);
@@ -143,7 +146,10 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 if (location.getClubExternalId() == null) {
                     locationProfile.withClubId(null);
                     if(location.getCenterExternalId() == null) {
-                        locationProfile.withCenterId(null);
+                        log.info("location has no ref of club or center !!!");
+                        throw new DataFormatException();
+                    }else{
+                        locationProfile.withCenterId(centerService.getCenterByExternalId(location.getCenterExternalId()).getId());
                     }
                 } else {
                     locationProfile.withClubId(clubService.getClubByClubExternalId(location.getClubExternalId()).getId());
@@ -152,7 +158,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 log.info("====== location added ==");
                 log.info(location.getName()+" ");
 
-            }catch (AlreadyExistException | NoSuchElementException e){
+            }catch (AlreadyExistException | NoSuchElementException | DataFormatException e){
                 log.info(e.getMessage());
             }
         }
@@ -160,13 +166,17 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
     private void loadCenters(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId) {
 
+        log.info("======= load_CENTERS DataLoaderService =========");
+
         for (CenterExcel center : excelParsingData.getCenters()) {
+
+            log.info("CENTER_EXCEL obj: "+center.toString());
             try {
 //                if (center.getLongitude() == null || center.getLatitude() == null)
 //                    continue;
 
                 try {
-                    centerService.deleteCenterById(center.getId());
+                    centerService.deleteCenterById(center.getCenterExternalId());
 
                 } catch (NotExistException | DatabaseRepositoryException e) {
                     // Do nothing if there is no such center
@@ -175,15 +185,16 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
                 SuccessCreatedCenter createdCenter = centerService.addCenter(CenterProfile
                         .builder()
-                        .id(center.getId())
+//                        .id(center.getId())
                         .description(center.getDescription())
                         .user(userService.getUserById(DEFAULT_USER_OWNER_ID))
                         .name(center.getName())
                         .urlWeb(CENTER_DEFAULT_URL_WEB)
                         .urlLogo(CENTER_DEFAULT_LOGO_URL)
                         .contacts(excelContactsConverter.collectAllContactsData(center.getSite(),center.getPhone()))
+                        .centerExternalId(center.getCenterExternalId())
                         .build());
-                excelIdToDbId.put(center.getId(), createdCenter.getId());
+                excelIdToDbId.put(center.getCenterExternalId(), createdCenter.getId());
             } catch (AlreadyExistException e) {
                 log.error("Trying to add already exists center from excel");
             }
@@ -193,7 +204,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
     private void loadClubs(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId, Set<String> categories) {
 
-        log.info("============== loadClubs DataLoaderService =========");
+        log.info("(row 207, DataLoader) ======= loadClubs DataLoaderService =========");
         for (ClubExcel club : excelParsingData.getClubs()) {
             log.info(club.toString());
             try {
@@ -229,7 +240,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .ageFrom(club.getAgeFrom())
                         .ageTo(club.getAgeTo())
 
-//                        .centerId(centerService.getCenterByExternalId(club.getCenterId()).getId())
+                        .centerId(centerService.getCenterByExternalId(club.getCenterExternalId()).getId())
                         .centerExternalId(club.getCenterExternalId())
                         .clubExternalId(club.getClubExternalId())
                         .description(DESCRIPTION_JSON_LEFT +
@@ -251,27 +262,15 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 } else {
                     Center center = centerService.getCenterByExternalId(club.getCenterExternalId());
                     if(center == null) {
-                        log.info("Center with id" + club.getCenterExternalId() + " is null");
+                        log.info("==(row-261,DataLoaderServiceImpl)==Center with external_id" + club.getCenterExternalId() + " is null");
                         clubProfile.withCenterId(null);
                     } else {
                         clubProfile.withCenterId(center.getId());
                     }
                 }
-                Club createdClub = clubService.addClubsFromExcel(clubProfile);
-//                clubRepository.flush();
 
-//                Club addedClub = clubService.getClubById(createdClub.getId());
-//                addedClub.setUrlWeb(DEFAULT_CLUB_URL_WEB);
-//                addedClub.setWorkTime(DEFAULT_CLUB_WORK_TIME);
-//                addedClub.setIsApproved(true);
-//
-//                addedClub.setUser(userService.getUserById(DEFAULT_USER_OWNER_ID));
-//
-//                if (excelIdToDbId.containsKey(club.getId())) {
-//                    Center center = centerService.getCenterById(excelIdToDbId.get(club.getId()));
-//                    addedClub.setCenter(center);
-//                }
-//                clubRepository.save(addedClub);
+                clubService.addClubsFromExcel(clubProfile);
+
             } catch (AlreadyExistException e) {
                 log.error(e.getMessage());
             }

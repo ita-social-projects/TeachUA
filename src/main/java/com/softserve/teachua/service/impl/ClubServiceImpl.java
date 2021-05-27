@@ -198,16 +198,7 @@ public class ClubServiceImpl implements ClubService {
 
         //todo delete or replace this block
         log.info("== add method");
-//        try{
-//            if(clubProfile.getCenterId()==null)
-//                throw new EntityNotFoundException();
-//            if( !centerRepository.existsById(clubProfile.getCenterId())){
-//                throw new EntityNotFoundException();
-//            }
-//        }catch (EntityNotFoundException e){
-//            log.error("e.getMessage");
-//            return new SuccessCreatedClub();
-//        }
+
 
         log.info("==clubService=?  clubProfile.centerID"+clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
@@ -244,8 +235,9 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public Club addClubsFromExcel(ClubProfile clubProfile) {
+
         if(clubProfile.getCenterId() == null) {
-            log.info("addClubsFromExcel => " + clubProfile.getCenterId() + " not found");
+            log.info("(row 239, ClubServiceImpl)  addClubsFromExcel => " + clubProfile.getCenterExternalId() + " not found");
 
             return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                     .withCategories(clubProfile.getCategoriesName()
@@ -256,6 +248,7 @@ public class ClubServiceImpl implements ClubService {
                     .withCenter(null);
         } else {
             Center center = centerRepository.findById(clubProfile.getCenterId()).get();
+            log.info("(clubServiceImpl) ==>  addClubsFromExcel = >  with EXTERNAL_center_id =" + center.getCenterExternalId());
             log.info("addClubsFromExcel => " + clubProfile.getCenterId() + " with real center , id =" + center.getId());
             return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                     .withCategories(clubProfile.getCategoriesName()

@@ -41,6 +41,6 @@ public class CenterProfile implements Convertible {
 
     private String contacts;
 
-    private Long externalId;
+    private Long centerExternalId;
 
 }

@@ -170,13 +170,13 @@ public class CenterServiceImpl implements CenterService {
     /**
      * The method returns entity {@code Center} of center by external id.
      *
-     * @param centerExternalId - put center id.
+     * @param centerExternalId - put centerExternalId id.
      * @return new {@code Center}.
      * @throws NotExistException if center not exists.
      */
     @Override
     public Center getCenterByExternalId(Long centerExternalId) {
-        Center center = centerRepository.findCenterByExternalId(centerExternalId);
+        Center center = centerRepository.findCenterByCenterExternalId(centerExternalId);
         log.info("**/getting center by external id = " + center);
         return center;
     }

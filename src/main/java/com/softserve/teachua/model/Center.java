@@ -25,13 +25,8 @@ public class Center implements Convertible, Archivable {
     @Column(nullable = false)
     private String name;
 
-    @Column
-    private String email;
 
-    @Column
-    private String phones;
-
-    @Column(length = 2000)
+    @Column(length = 3000)
     private String contacts;
 
     @Column(name = "url_background_picture")
@@ -45,9 +40,6 @@ public class Center implements Convertible, Archivable {
 
     @Column
     private String urlLogo;
-
-    @Column
-    private String socialLinks;
 
     @OneToMany(mappedBy = "center")
     @JsonManagedReference
@@ -64,6 +56,6 @@ public class Center implements Convertible, Archivable {
     @ToString.Exclude
     private User user;
 
-    @Column(name = "external_id")
-    private Long externalId;
+    @Column(name = "center_external_id")
+    private Long centerExternalId;
 }
