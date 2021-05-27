@@ -51,6 +51,9 @@ public class ContactsStringConverter {
             for (String s: singleContact) {
                 s = s.replaceAll("[\\{\\}\" ]","");
                 String[] data = s.split("::");
+                if(data.length<2){
+                    continue;
+                }
                 ContactType contactType=contactTypeService.getContactTypeById(Long.parseLong(data[0]));
                 result.add(new ContactDataResponse(contactType,data[1]));
             }

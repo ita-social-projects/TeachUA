@@ -14,7 +14,6 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
-import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.ExcelCenterEntity;
 import com.softserve.teachua.model.ExcelClubEntity;
 import com.softserve.teachua.repository.ClubRepository;
@@ -129,32 +128,41 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
         for (LocationExcel location : excelParsingData.getLocations()) {
             log.info("==============load locations DataLoaderService =========");
-            log.info(location.toString());
+            log.info("locations.length : "+excelParsingData.getLocations().size());
+            log.info("(row 133, DataLoader : "+location.toString());
             try{
+
+                String cityName = location.getCity();
+                if( cityName == null || cityName.isEmpty()){
+                    cityName = "Київ";
+                }
                 LocationProfile locationProfile = LocationProfile.builder()
                         .id(location.getId())
                         .address(location.getAddress())
                         .longitude(location.getLongitude())
                         .latitude(location.getLatitude())
                         .name(location.getName())
-                        .cityId(cityService.getCityByName(location.getCity()).getId())
+                        .cityId(cityService.getCityByName(cityName).getId())
                         .districtId(districtService.getOptionalDistrictByName(location.getDistrict()).get().getId())
                         .stationId(stationService.getOptionalStationByName(location.getStation()).get().getId())
 //                        .centerId(location.getCenterId())
 //                        .clubId(location.getClubId())
                         .build();
                 if (location.getClubExternalId() == null) {
-                    locationProfile.withClubId(null);
+                    locationProfile = locationProfile.withClubId(null);
                     if(location.getCenterExternalId() == null) {
                         log.info("location has no ref of club or center !!!");
                         throw new DataFormatException();
                     }else{
-                        locationProfile.withCenterId(centerService.getCenterByExternalId(location.getCenterExternalId()).getId());
+                        locationProfile = locationProfile.withCenterId(centerService.getCenterByExternalId(location.getCenterExternalId()).getId());
                     }
                 } else {
-                    locationProfile.withClubId(clubService.getClubByClubExternalId(location.getClubExternalId()).getId());
+                    locationProfile = locationProfile.withClubId(clubService.getClubByClubExternalId(location.getClubExternalId()).getId());
                 }
+                log.info("LocationProfile before saving : "+locationProfile);
+
                 locationService.addLocation(locationProfile);
+
                 log.info("====== location added ==");
                 log.info(location.getName()+" ");
 
@@ -212,35 +220,20 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                     club.setAgeFrom(0);
                     club.setAgeTo(16);
                 }
-//                if (club.getCity().isEmpty()) {
-//                    club.setCity("Київ");
-//                }
-//                try {
-//                    clubService.deleteClubById(clubService.getClubByName(club.getName()).getId());
-//                } catch (NotExistException | DatabaseRepositoryException e) {
-//                    // Do nothing if there is no such club
-//                    // or if club has any relationships
-//                }
-//                LocationProfile locationProfile = LocationProfile
-//                        .builder()
-//                        .clubId(club.getId())
-//                        .address(club.getAddress())
-//                        .latitude(club.getLatitude())
-//                        .longitude(club.getLongitude())
-//                        .cityId(cityService.getCityByName(club.getCity()).getId())
-//                        .districtId(districtService.getDistrictByName(club.getDistrict()).getId())
-//                        .stationId(stationService.getStationByName(club.getStation()).getId())
-//                        .build();
 
-//                List<LocationProfile> locations = new ArrayList<>();
-//                locations.add(locationProfile);
+                Center center = centerService.getCenterByExternalId(club.getCenterExternalId());
+                Long realCenterId = null;
+
+                if(center != null ){
+                    realCenterId = center.getId();
+                }
 
                 ClubProfile clubProfile = ClubProfile
                         .builder()
                         .ageFrom(club.getAgeFrom())
                         .ageTo(club.getAgeTo())
 
-                        .centerId(centerService.getCenterByExternalId(club.getCenterExternalId()).getId())
+                        .centerId(realCenterId)
                         .centerExternalId(club.getCenterExternalId())
                         .clubExternalId(club.getClubExternalId())
                         .description(DESCRIPTION_JSON_LEFT +
@@ -258,14 +251,15 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .contacts(contactsConverter.collectAllContactsData(club.getSite(),club.getPhone()))
                         .build();
                 if(club.getCenterExternalId() == null) {
-                    clubProfile.withCenterId(null);
+                    clubProfile = clubProfile.withCenterId(null);
                 } else {
-                    Center center = centerService.getCenterByExternalId(club.getCenterExternalId());
+//                    Center center1 = centerService.getCenterByExternalId(club.getCenterExternalId());
+                    log.info(" was  PROBLEM POINT");
                     if(center == null) {
                         log.info("==(row-261,DataLoaderServiceImpl)==Center with external_id" + club.getCenterExternalId() + " is null");
-                        clubProfile.withCenterId(null);
+                        clubProfile = clubProfile.withCenterId(null);
                     } else {
-                        clubProfile.withCenterId(center.getId());
+                        clubProfile = clubProfile.withCenterId(center.getId());
                     }
                 }
 

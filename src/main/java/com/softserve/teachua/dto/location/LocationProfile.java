@@ -8,6 +8,7 @@ import lombok.*;
 @Data
 @With
 public class LocationProfile {
+
     private Long id;
     private String name;
     private String address;

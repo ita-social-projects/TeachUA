@@ -239,13 +239,22 @@ public class ClubServiceImpl implements ClubService {
         if(clubProfile.getCenterId() == null) {
             log.info("(row 239, ClubServiceImpl)  addClubsFromExcel => " + clubProfile.getCenterExternalId() + " not found");
 
-            return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
-                    .withCategories(clubProfile.getCategoriesName()
-                            .stream()
-                            .map(categoryService::getCategoryByName)
-                            .collect(Collectors.toSet())))
-                    .withUser(null)
-                    .withCenter(null);
+            try{
+                return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
+                        .withCategories(clubProfile.getCategoriesName()
+                                .stream()
+                                .map(categoryService::getCategoryByName)
+                                .collect(Collectors.toSet())))
+                        .withUser(null)
+                        .withCenter(null);
+            }catch (Exception e){
+                //todo bad solution .... do refactor !!!!!
+                log.info("(row 252, ClubServiceImpl)    saving club ");
+                log.info(e.getMessage());
+
+                return new Club();
+            }
+
         } else {
             Center center = centerRepository.findById(clubProfile.getCenterId()).get();
             log.info("(clubServiceImpl) ==>  addClubsFromExcel = >  with EXTERNAL_center_id =" + center.getCenterExternalId());
