@@ -1,6 +1,9 @@
 package com.softserve.teachua.dto.location;
 
+import com.softserve.teachua.model.Club;
 import lombok.*;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor

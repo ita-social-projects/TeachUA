@@ -123,10 +123,10 @@ public class ClubServiceImpl implements ClubService {
      * @throws NotExistException if club not exists.
      */
     @Override
-    public Club getClubByClubExternalId(Long clubExternalId) {
-        Club club = clubRepository.findClubByClubExternalId(clubExternalId);
+    public List<Club> getClubByClubExternalId(Long clubExternalId) {
+        List<Club> clubs = clubRepository.findClubByClubExternalId(clubExternalId);
         log.info("getting club by external id {}", clubExternalId);
-        return club;
+        return clubs;
     }
 
     /**

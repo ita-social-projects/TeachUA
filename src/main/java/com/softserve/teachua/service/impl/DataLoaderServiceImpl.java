@@ -157,7 +157,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         locationProfile = locationProfile.withCenterId(centerService.getCenterByExternalId(location.getCenterExternalId()).getId());
                     }
                 } else {
-                    locationProfile = locationProfile.withClubId(clubService.getClubByClubExternalId(location.getClubExternalId()).getId());
+                    locationProfile = locationProfile.withClubId(clubService.getClubByClubExternalId(location.getClubExternalId()).get(0).getId());
                 }
                 log.info("LocationProfile before saving : "+locationProfile);
 

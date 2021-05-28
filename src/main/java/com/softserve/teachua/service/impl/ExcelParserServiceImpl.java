@@ -45,6 +45,8 @@ public class ExcelParserServiceImpl implements ExcelParserService {
     private final ExcelCenterEntityRepository excelCenterEntityRepository;
     private final ExcelClubEntityRepository excelClubEntityRepository;
 
+    private String previousName = "";
+
 
     @Autowired
     public ExcelParserServiceImpl(CityService cityService, DistrictService districtService,
@@ -54,6 +56,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
         this.districtService = districtService;
         this.excelCenterEntityRepository = excelCenterEntityRepository;
         this.excelClubEntityRepository = excelClubEntityRepository;
+        previousName = "";
     }
 
     public ExcelParsingResponse parseExcel(InputStream excelInputStream) throws IOException {
@@ -237,18 +240,29 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                 Double[] coordinates = rowParser.parseCoordinates(4, true);
                 log.info("centerCoordinates in NEXT center location: " + Arrays.toString(coordinates));
 
+                CenterExcel centerExcel = CenterExcel.builder()
+
+                        .centerExternalId(rowParser.getLong(0,ExcelErrorType.CRITICAL))
+                        .name(previousName)
+
+                        .site(rowParser.getString(7, ExcelErrorType.NON_CRITICAL))
+                        .phone(rowParser.getString(8, ExcelErrorType.CRITICAL))
+                        .description(rowParser.getString(9, ExcelErrorType.CRITICAL))
+                        .build();
+
                 LocationExcel locationExcel = LocationExcel.builder()
                         .clubExternalId(null)
                         .centerExternalId(rowParser.getLong(0, ExcelErrorType.CRITICAL))
                         .city(rowParser.getString(2, ExcelErrorType.CRITICAL))
                         .address(rowParser.getString(3, true, ExcelErrorType.CRITICAL))
-                        .longitude(coordinates[0])
-                        .latitude(coordinates[1])
+                        .latitude(coordinates[0])
+                        .longitude(coordinates[1])
                         .district(rowParser.getString(5, ExcelErrorType.NON_CRITICAL))
                         .station(rowParser.getString(6, ExcelErrorType.NON_CRITICAL))
-                        .name("center_location___")
+                        .name("center_location___") // Add previous name
                         .build();
 
+                centersOutput.add(centerExcel);
                 locationsOutput.add(locationExcel);
                 return !rowParser.hasErrors();
             }
@@ -257,6 +271,8 @@ public class ExcelParserServiceImpl implements ExcelParserService {
             log.info("center contacts in excelParser: "+rowParser.getString(7, ExcelErrorType.NON_CRITICAL)+" , "
             +rowParser.getString(8, ExcelErrorType.CRITICAL));
             log.info("==  centerExt_Id :  "+rowParser.getLong(0,ExcelErrorType.CRITICAL));
+
+            previousName = rowParser.getString(1, ExcelErrorType.CRITICAL);
 
             CenterExcel centerExcel = CenterExcel.builder()
 
@@ -273,8 +289,8 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                     .centerExternalId(rowParser.getLong(0, ExcelErrorType.CRITICAL))
                     .city(rowParser.getString(2, ExcelErrorType.CRITICAL))
                     .address(rowParser.getString(3, true, ExcelErrorType.CRITICAL))
-                    .longitude(coordinates[0])
-                    .latitude(coordinates[1])
+                    .latitude(coordinates[0])
+                    .longitude(coordinates[1])
                     .district(rowParser.getString(5, ExcelErrorType.NON_CRITICAL))
                     .station(rowParser.getString(6, ExcelErrorType.NON_CRITICAL))
                     .name("center_location_first.....")
@@ -300,9 +316,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
             if ( rowParser.isColumnEmpty(0)) {
                 log.info("club without center !!!!!!!!!");
                 //this club has no center and has its own locations
-                if (rowParser.isColumnEmpty(1) ) { //if club has no name !
-
-                    if(rowParser.isColumnEmpty(4)){ //and has no coordinates -- return false !!!
+                    if(rowParser.isColumnEmpty(1) && rowParser.isColumnEmpty(4)){ //and has no coordinates -- return false !!!
                         return false;
 
                     }else{
@@ -310,9 +324,17 @@ public class ExcelParserServiceImpl implements ExcelParserService {
 
                         Integer[] ages = rowParser.parseAges(11);
 
+                        String name = rowParser.getString(1, ExcelErrorType.CRITICAL);
+
+                        if(name == null || name.isEmpty()) {
+                            name = previousName;
+                        } else {
+                            previousName = name;
+                        }
+
                         ClubExcel clubExcel = ClubExcel.builder()
                                 .clubExternalId(rowParser.getLong(13, ExcelErrorType.NON_CRITICAL))
-                                .name(rowParser.getString(1, ExcelErrorType.CRITICAL))
+                                .name(name)
                                 .site(rowParser.getString(7, ExcelErrorType.NON_CRITICAL))
                                 .phone(rowParser.getString(8, ExcelErrorType.CRITICAL))
                                 .categories(rowParser.parseCategories(10))
@@ -329,8 +351,8 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                                 .name("club_loc_!!!")
                                 .city(rowParser.getString(2, ExcelErrorType.CRITICAL))
                                 .address(rowParser.getString(3, ExcelErrorType.CRITICAL))
-                                .longitude(coordinates[0])
-                                .latitude(coordinates[1])
+                                .latitude(coordinates[0])
+                                .longitude(coordinates[1])
                                 .district(rowParser.getString(5, ExcelErrorType.NON_CRITICAL))
                                 .station(rowParser.getString(6, ExcelErrorType.NON_CRITICAL))
                                 .build();
@@ -339,17 +361,24 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                         locationsOutput.add(location);
                         return !rowParser.hasErrors();
                     }
-                }
 
             }else{
                 log.info(" (row 345,ExelParser..).... club has center   !!!!!! ");
                 // the case when club has center and we can skip parsing coordinates
                 Integer[] ages = rowParser.parseAges(11);
 
+                String name = rowParser.getString(1, ExcelErrorType.NON_CRITICAL);
+
+                if(name == null || name.isEmpty()) {
+                    name = previousName;
+                } else {
+                    previousName = name;
+                }
+
                 ClubExcel clubExcel = ClubExcel.builder()
                         .clubExternalId(rowParser.getLong(13, ExcelErrorType.NON_CRITICAL))
                         .centerExternalId(rowParser.getLong(0, ExcelErrorType.CRITICAL))
-                        .name(rowParser.getString(1, ExcelErrorType.NON_CRITICAL))
+                        .name(name)
                         .site(rowParser.getString(7, ExcelErrorType.NON_CRITICAL))
                         .phone(rowParser.getString(8, ExcelErrorType.CRITICAL))
                         .categories(rowParser.parseCategories(10))
@@ -365,15 +394,15 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                 return !rowParser.hasErrors();
             }
 
-            return !rowParser.hasErrors();
+//            return !rowParser.hasErrors();
         });
     }
 
-    private Long parseDistricts(XSSFWorkbook excelBook, List<DistrictExcel> centersOutput, List<ExcelParsingMistake> mistakesOutput) {
+    private Long parseDistricts(XSSFWorkbook excelBook, List<DistrictExcel> districtsOutput, List<ExcelParsingMistake> mistakesOutput) {
         return parseSheet(excelBook, DISTRICT_SHEET_NAME, (row) -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
-            centersOutput.add(
+            districtsOutput.add(
                     DistrictExcel.builder()
                             .city(rowParser.getString(0, ExcelErrorType.CRITICAL))
                             .name(rowParser.getString(1, ExcelErrorType.CRITICAL))
@@ -382,11 +411,11 @@ public class ExcelParserServiceImpl implements ExcelParserService {
         });
     }
 
-    private Long parseStations(XSSFWorkbook excelBook, List<StationExcel> centersOutput, List<ExcelParsingMistake> mistakesOutput) {
+    private Long parseStations(XSSFWorkbook excelBook, List<StationExcel> stationsOutput, List<ExcelParsingMistake> mistakesOutput) {
         return parseSheet(excelBook, STATION_SHEET_NAME, (row) -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
-            centersOutput.add(
+            stationsOutput.add(
                     StationExcel.builder()
                             .city(rowParser.getString(0, ExcelErrorType.CRITICAL))
                             .name(rowParser.getString(1, ExcelErrorType.CRITICAL))
@@ -395,11 +424,11 @@ public class ExcelParserServiceImpl implements ExcelParserService {
         });
     }
 
-    private Long parseCategories(XSSFWorkbook excelBook, List<CategoryExcel> centersOutput, List<ExcelParsingMistake> mistakesOutput) {
+    private Long parseCategories(XSSFWorkbook excelBook, List<CategoryExcel> categoriesOutput, List<ExcelParsingMistake> mistakesOutput) {
         return parseSheet(excelBook, CATEGORY_SHEET_NAME, (row) -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
-            centersOutput.add(
+            categoriesOutput.add(
                     CategoryExcel.builder()
                             .name(rowParser.getString(0, ExcelErrorType.CRITICAL))
                             .description(rowParser.getString(1, ExcelErrorType.CRITICAL))

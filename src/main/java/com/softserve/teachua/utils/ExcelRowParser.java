@@ -64,9 +64,11 @@ public class ExcelRowParser {
         if (cell != null) {
             if (cell.getCellType() == CellType.STRING && !cell.getStringCellValue().isEmpty()) {
                 String cellValue = cell.getStringCellValue();
+                log.info("Cell Type String, not empty, cell value =" + cellValue + " Column = " + column);
                 return cellValue == null ? "" : cellValue;
             } else {
                 String cellValue = cell.getRawValue();
+                log.info("Cell Type Not String, cell value =" + cellValue + " Column = " + column);
                 return cellValue == null ? "" : cellValue;
             }
         } else if (mistakes != null) {

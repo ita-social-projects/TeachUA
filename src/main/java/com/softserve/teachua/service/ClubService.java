@@ -20,7 +20,7 @@ public interface ClubService {
 
     Club addClubsFromExcel(ClubProfile clubProfile);
 
-    Club getClubByClubExternalId(Long clubExternalId);
+    List<Club> getClubByClubExternalId(Long clubExternalId);
 
     Club getClubByName(String name);
 
