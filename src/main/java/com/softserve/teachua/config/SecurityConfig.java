@@ -102,7 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/center/*",
                         "/service").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/*").permitAll()
-                .antMatchers(HttpMethod.GET," admin/*","/manager/*").permitAll()
+                .antMatchers(HttpMethod.GET," /admin/*","/manager/*").permitAll()
 
 
                 .antMatchers("/verify").permitAll()
