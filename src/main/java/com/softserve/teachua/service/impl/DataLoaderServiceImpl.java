@@ -125,10 +125,10 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     }
 
     private void loadLocations(ExcelParsingData excelParsingData) {
+        log.info("==============load locations DataLoaderService =========");
+        log.info("locations.length : "+excelParsingData.getLocations().size());
 
         for (LocationExcel location : excelParsingData.getLocations()) {
-            log.info("==============load locations DataLoaderService =========");
-            log.info("locations.length : "+excelParsingData.getLocations().size());
             log.info("(row 133, DataLoader : "+location.toString());
             try{
 
@@ -136,15 +136,26 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 if( cityName == null || cityName.isEmpty()){
                     cityName = "Київ";
                 }
+
+                Long districtIdCheck = null;
+                if(location.getDistrict() != null && districtService.getOptionalDistrictByName(location.getDistrict()).isPresent()) {
+                    districtIdCheck = districtService.getOptionalDistrictByName(location.getDistrict()).get().getId();
+                }
+
+                Long stationIdCheck = null;
+                if(location.getStation() != null & stationService.getOptionalStationByName(location.getStation()).isPresent()) {
+                    stationIdCheck = stationService.getOptionalStationByName(location.getStation()).get().getId();
+                }
+
                 LocationProfile locationProfile = LocationProfile.builder()
                         .id(location.getId())
                         .address(location.getAddress())
-                        .longitude(location.getLongitude())
                         .latitude(location.getLatitude())
+                        .longitude(location.getLongitude())
                         .name(location.getName())
                         .cityId(cityService.getCityByName(cityName).getId())
-                        .districtId(districtService.getOptionalDistrictByName(location.getDistrict()).get().getId())
-                        .stationId(stationService.getOptionalStationByName(location.getStation()).get().getId())
+                        .districtId(districtIdCheck)
+                        .stationId(stationIdCheck)
 //                        .centerId(location.getCenterId())
 //                        .clubId(location.getClubId())
                         .build();
@@ -154,9 +165,14 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         log.info("location has no ref of club or center !!!");
                         throw new DataFormatException();
                     }else{
+                        log.info("getCenterByExternalId = " + location.getCenterExternalId());
                         locationProfile = locationProfile.withCenterId(centerService.getCenterByExternalId(location.getCenterExternalId()).getId());
                     }
                 } else {
+                    log.info("Review Club Location location.getClubExternalId() = " + location.getClubExternalId());
+                    while(clubService.getClubByClubExternalId(location.getClubExternalId()).size() == 0) {
+                        location.setClubExternalId(location.getClubExternalId() - 1);
+                    }
                     locationProfile = locationProfile.withClubId(clubService.getClubByClubExternalId(location.getClubExternalId()).get(0).getId());
                 }
                 log.info("LocationProfile before saving : "+locationProfile);
@@ -166,7 +182,8 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 log.info("====== location added ==");
                 log.info(location.getName()+" ");
 
-            }catch (AlreadyExistException | NoSuchElementException | DataFormatException e){
+            }catch (AlreadyExistException | NoSuchElementException | DataFormatException | NullPointerException e){
+                log.info("AlreadyExist = " + location.getClubExternalId());
                 log.info(e.getMessage());
             }
         }
@@ -182,7 +199,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
             try {
 //                if (center.getLongitude() == null || center.getLatitude() == null)
 //                    continue;
-
+                /*-
                 try {
                     centerService.deleteCenterById(center.getCenterExternalId());
 
@@ -190,6 +207,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                     // Do nothing if there is no such center
                     // or if center has any relationships
                 }
+                 */
+
+                //****************************** TODO
 
                 SuccessCreatedCenter createdCenter = centerService.addCenter(CenterProfile
                         .builder()
@@ -217,8 +237,8 @@ public class DataLoaderServiceImpl implements DataLoaderService {
             log.info(club.toString());
             try {
                 if (club.getAgeFrom() == null) {
-                    club.setAgeFrom(0);
-                    club.setAgeTo(16);
+                    club.setAgeFrom(2);
+                    club.setAgeTo(18);
                 }
 
                 Center center = centerService.getCenterByExternalId(club.getCenterExternalId());
@@ -227,6 +247,8 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 if(center != null ){
                     realCenterId = center.getId();
                 }
+
+                //******************************* TODO
 
                 ClubProfile clubProfile = ClubProfile
                         .builder()

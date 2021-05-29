@@ -240,6 +240,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                 Double[] coordinates = rowParser.parseCoordinates(4, true);
                 log.info("centerCoordinates in NEXT center location: " + Arrays.toString(coordinates));
 
+                /*-
                 CenterExcel centerExcel = CenterExcel.builder()
 
                         .centerExternalId(rowParser.getLong(0,ExcelErrorType.CRITICAL))
@@ -249,6 +250,8 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                         .phone(rowParser.getString(8, ExcelErrorType.CRITICAL))
                         .description(rowParser.getString(9, ExcelErrorType.CRITICAL))
                         .build();
+
+                 */
 
                 LocationExcel locationExcel = LocationExcel.builder()
                         .clubExternalId(null)
@@ -262,7 +265,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                         .name("center_location___") // Add previous name
                         .build();
 
-                centersOutput.add(centerExcel);
+//                centersOutput.add(centerExcel);
                 locationsOutput.add(locationExcel);
                 return !rowParser.hasErrors();
             }
@@ -331,19 +334,19 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                         } else {
                             previousName = name;
                         }
-
-                        ClubExcel clubExcel = ClubExcel.builder()
-                                .clubExternalId(rowParser.getLong(13, ExcelErrorType.NON_CRITICAL))
-                                .name(name)
-                                .site(rowParser.getString(7, ExcelErrorType.NON_CRITICAL))
-                                .phone(rowParser.getString(8, ExcelErrorType.CRITICAL))
-                                .categories(rowParser.parseCategories(10))
-                                .ageFrom(ages[0])
-                                .ageTo(ages[1])
-                                .description(rowParser.getString(12, ExcelErrorType.CRITICAL))
-                                .build();
-
-                        clubExcels.add(clubExcel);
+                        if(!rowParser.isColumnEmpty(1)) {
+                            ClubExcel clubExcel = ClubExcel.builder()
+                                    .clubExternalId(rowParser.getLong(13, ExcelErrorType.NON_CRITICAL))
+                                    .name(name)
+                                    .site(rowParser.getString(7, ExcelErrorType.NON_CRITICAL))
+                                    .phone(rowParser.getString(8, ExcelErrorType.CRITICAL))
+                                    .categories(rowParser.parseCategories(10))
+                                    .ageFrom(ages[0])
+                                    .ageTo(ages[1])
+                                    .description(rowParser.getString(12, ExcelErrorType.CRITICAL))
+                                    .build();
+                            clubExcels.add(clubExcel);
+                        }
 
                         LocationExcel location = LocationExcel.builder()
                                 .centerExternalId(null)
