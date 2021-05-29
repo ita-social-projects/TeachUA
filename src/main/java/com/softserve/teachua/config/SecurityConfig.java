@@ -85,13 +85,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
-                //.antMatchers("/**").permitAll()
-
                 .antMatchers("/").permitAll()
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/manifest.json").permitAll()
                 .antMatchers("/favicon**").permitAll()
-
+                .antMatchers(HttpMethod.GET,
+                        "/club/*",
+                        "/clubs",
+                        "/challenge",
+                        "/challenge/*",
+                        "/about",
+                        "/centers",
+                        "/center/*",
+                        "/service").permitAll()
+                .antMatchers(HttpMethod.GET,"/user/*").permitAll()
+                .antMatchers(HttpMethod.GET," /admin/*","/manager/*").permitAll()
+                .antMatchers("/verify").permitAll()
                 .antMatchers("/roles").hasRole("ADMIN")
                 .antMatchers("/index", "/api/signup", "/api/signin", "/api/signout", "/api/verify").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/user/**","/api/verify").hasAnyRole("USER", "ADMIN", "MANAGER")
@@ -122,8 +131,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/contact-types", "/api/districts/**").permitAll()
                 //TODO: only for admin
                 .antMatchers(HttpMethod.GET, "/api/logs").permitAll()
+                .antMatchers(HttpMethod.GET, "/logs").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/api/logs").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/logs").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/log/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/log/**").permitAll()
+
                 .antMatchers("/oauth2/**").permitAll()
                 .antMatchers("/api/upload-image").permitAll()
                 .antMatchers("/api/users","/api/user/update").permitAll()
