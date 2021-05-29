@@ -11,15 +11,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CenterExcel implements Convertible {
-    private Long id;
+
+    private Long centerExternalId;
     private String name;
-    private String city;
-    private String address;
-    private Double longitude;
-    private Double altitude;
-    private String district;
-    private String station;
-    private String site;
-    private String phone;
     private String description;
+
+    private String phone;
+    // site field can include social media too
+    private String site;
+
+//    private String city;
+//    private String address;
+//    private Double longitude;
+//    private Double latitude;
+//    private String district;
+//    private String station;
+
 }

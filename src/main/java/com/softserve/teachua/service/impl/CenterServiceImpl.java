@@ -5,7 +5,6 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
-import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
@@ -20,7 +19,6 @@ import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.*;
-import com.softserve.teachua.utils.CategoryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -54,6 +52,7 @@ public class CenterServiceImpl implements CenterService {
     private final ClubRepository clubRepository;
     private final UserRepository userRepository;
     private final CenterToCenterResponseConverter centerToCenterResponseConverter;
+
 
     @Autowired
     public CenterServiceImpl(CenterRepository centerRepository,
@@ -126,13 +125,11 @@ public class CenterServiceImpl implements CenterService {
                     .map(locationProfile -> locationRepository.save(
                             dtoConverter.convertToEntity(locationProfile, new Location())
                                     .withCenter(center)
-                                    .withCity(cityService.getCityByName(locationProfile.getCityName()))
-                                    .withDistrict(districtService.getOptionalDistrictByName(
-                                            locationProfile.getDistrictName())
-                                            .orElse(null))
-                                    .withStation(stationService.getOptionalStationByName(
-                                            locationProfile.getStationName())
-                                            .orElse(null))
+                                    .withCity(cityService.getCityById(locationProfile.getCityId()))
+                                    .withDistrict(districtService.getDistrictById(
+                                            locationProfile.getDistrictId()))
+                                    .withStation(stationService.getStationById(
+                                            locationProfile.getStationId()) )
                     ))
                     .collect(Collectors.toSet())
             );
@@ -167,6 +164,20 @@ public class CenterServiceImpl implements CenterService {
 
         Center center = optionalCenter.get();
         log.info("**/getting center by id = " + center);
+        return center;
+    }
+
+    /**
+     * The method returns entity {@code Center} of center by external id.
+     *
+     * @param centerExternalId - put centerExternalId id.
+     * @return new {@code Center}.
+     * @throws NotExistException if center not exists.
+     */
+    @Override
+    public Center getCenterByExternalId(Long centerExternalId) {
+        Center center = centerRepository.findCenterByCenterExternalId(centerExternalId);
+        log.info("**/getting center by external id = " + center);
         return center;
     }
 
@@ -287,6 +298,9 @@ public class CenterServiceImpl implements CenterService {
     }
 
     private Optional<Center> getOptionalCenterById(Long id) {
+        if(id == null){
+            return Optional.empty();
+        }
         return centerRepository.findById(id);
     }
 

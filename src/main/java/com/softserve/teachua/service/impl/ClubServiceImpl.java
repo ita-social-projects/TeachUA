@@ -11,6 +11,7 @@ import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;
 import com.softserve.teachua.model.User;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
@@ -54,9 +56,12 @@ public class ClubServiceImpl implements ClubService {
     private final StationService stationService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final CenterRepository centerRepository;
+
 
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository,
+                           CenterRepository centerRepository,
                            LocationRepository locationRepository,
                            DtoConverter dtoConverter,
                            ArchiveService archiveService,
@@ -76,6 +81,7 @@ public class ClubServiceImpl implements ClubService {
         this.categoryService = categoryService;
         this.userService = userService;
         this.toClubResponseConverter=toClubResponseConverter;
+        this.centerRepository = centerRepository;
     }
 
     /**
@@ -107,6 +113,20 @@ public class ClubServiceImpl implements ClubService {
 
         log.info("getting club by id {}", id);
         return club;
+    }
+
+    /**
+     * The method returns entity {@code Club} of club by id.
+     *
+     * @param clubExternalId - put club id.
+     * @return new {@code Club}.
+     * @throws NotExistException if club not exists.
+     */
+    @Override
+    public List<Club> getClubByClubExternalId(Long clubExternalId) {
+        List<Club> clubs = clubRepository.findClubByClubExternalId(clubExternalId);
+        log.info("getting club by external id {}", clubExternalId);
+        return clubs;
     }
 
     /**
@@ -175,6 +195,12 @@ public class ClubServiceImpl implements ClubService {
         if(clubProfile.getUserId() != null ){
             user = userService.getUserById(clubProfile.getUserId());
         }
+
+        //todo delete or replace this block
+        log.info("== add method");
+
+
+        log.info("==clubService=?  clubProfile.centerID"+clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
@@ -192,13 +218,12 @@ public class ClubServiceImpl implements ClubService {
                             .map(locationProfile -> locationRepository.save(
                                     dtoConverter.convertToEntity(locationProfile, new Location())
                                             .withClub(club)
-                                            .withCity(cityService.getCityByName(locationProfile.getCityName()))
-                                            .withDistrict(districtService.getOptionalDistrictByName(
-                                                    locationProfile.getDistrictName())
-                                                    .orElse(null))
-                                            .withStation(stationService.getOptionalStationByName(
-                                                    locationProfile.getStationName())
-                                                    .orElse(null))
+                                            .withCity(cityService.getCityById(locationProfile.getCityId()))
+                                            .withDistrict(districtService.getDistrictById(
+                                                    locationProfile.getDistrictId())
+                                                    )
+                                            .withStation(stationService.getStationById(
+                                                    locationProfile.getStationId()))
                             ))
                             .collect(Collectors.toSet())
             );
@@ -206,6 +231,42 @@ public class ClubServiceImpl implements ClubService {
 
         log.info("adding club with name : ", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
+    }
+
+    @Override
+    public Club addClubsFromExcel(ClubProfile clubProfile) {
+
+        if(clubProfile.getCenterId() == null) {
+            log.info("(row 239, ClubServiceImpl)  addClubsFromExcel => " + clubProfile.getCenterExternalId() + " not found");
+
+            try{
+                return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
+                        .withCategories(clubProfile.getCategoriesName()
+                                .stream()
+                                .map(categoryService::getCategoryByName)
+                                .collect(Collectors.toSet())))
+                        .withUser(null)
+                        .withCenter(null);
+            }catch (Exception e){
+                //todo bad solution .... do refactor !!!!!
+                log.info("(row 252, ClubServiceImpl)    saving club ");
+                log.info(e.getMessage());
+
+                return new Club();
+            }
+
+        } else {
+            Center center = centerRepository.findById(clubProfile.getCenterId()).get();
+            log.info("(clubServiceImpl) ==>  addClubsFromExcel = >  with EXTERNAL_center_id =" + center.getCenterExternalId());
+            log.info("addClubsFromExcel => " + clubProfile.getCenterId() + " with real center , id =" + center.getId());
+            return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
+                    .withCategories(clubProfile.getCategoriesName()
+                            .stream()
+                            .map(categoryService::getCategoryByName)
+                            .collect(Collectors.toSet())))
+                    .withUser(null)
+                    .withCenter(center);
+        }
     }
 
     /**

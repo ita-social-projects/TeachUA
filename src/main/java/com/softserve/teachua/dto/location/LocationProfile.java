@@ -1,9 +1,9 @@
 package com.softserve.teachua.dto.location;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.softserve.teachua.model.Club;
+import lombok.*;
+
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
@@ -13,7 +13,9 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @Builder
 @Data
+@With
 public class LocationProfile {
+
     private Long id;
 
     @Pattern(regexp = "^(?!\\s)([\\wА-ЩЬЮЯҐЄІЇа-щьюяґєії !\\\"#$%&'()*+,\\-.\\/:;<=>?@\\]\\[^_`{}~]){5,100}$" ,
@@ -23,11 +25,13 @@ public class LocationProfile {
     private String name;
 
     private String address;
-    private String cityName;
-    private String districtName;
-    private String stationName;
+    private Long cityId;
+    private Long districtId;
+    private Long stationId;
     private Double longitude;
     private Double latitude;
-    private String phone;
-    private Double key;
+
+    private Long centerId;
+    private Long clubId;
+
 }

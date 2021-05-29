@@ -4,7 +4,7 @@ import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.club.ClubProfile;
-import com.softserve.teachua.dto.club.SuccessCreatedClub;
+import com.softserve.teachua.dto.databaseTransfer.ExcelConvertToFormatStringContactsData;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingData;
 import com.softserve.teachua.dto.databaseTransfer.model.*;
 import com.softserve.teachua.dto.district.DistrictProfile;
@@ -14,8 +14,11 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
-import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.ExcelCenterEntity;
+import com.softserve.teachua.model.ExcelClubEntity;
 import com.softserve.teachua.repository.ClubRepository;
+import com.softserve.teachua.repository.ExcelCenterEntityRepository;
+import com.softserve.teachua.repository.ExcelClubEntityRepository;
 import com.softserve.teachua.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.zip.DataFormatException;
 
 /**
  * @author Vitalii Hapon
@@ -52,6 +56,12 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     private final UserService userService;
     private final CityService cityService;
     private final ClubRepository clubRepository;
+    private final LocationService locationService;
+    private final ExcelConvertToFormatStringContactsData contactsConverter;
+    private final ExcelConvertToFormatStringContactsData excelContactsConverter;
+
+    private final ExcelCenterEntityRepository excelCenterEntityRepository;
+    private final ExcelClubEntityRepository excelClubEntityRepository;
 
     @Autowired
     public DataLoaderServiceImpl(CategoryService categoryService,
@@ -60,7 +70,13 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                                  DistrictService districtService,
                                  StationService stationService,
                                  UserService userService,
-                                 CityService cityService, ClubRepository clubRepository) {
+                                 CityService cityService,
+                                 ClubRepository clubRepository,
+                                 LocationService locationService,
+                                 ExcelConvertToFormatStringContactsData contactsConverter,
+                                 ExcelConvertToFormatStringContactsData excelContactsConverter,
+                                 ExcelCenterEntityRepository excelCenterEntityRepository,
+                                 ExcelClubEntityRepository excelClubEntityRepository) {
         this.categoryService = categoryService;
         this.centerService = centerService;
         this.clubService = clubService;
@@ -69,41 +85,144 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         this.userService = userService;
         this.cityService = cityService;
         this.clubRepository = clubRepository;
+        this.locationService = locationService;
+        this.contactsConverter = contactsConverter;
+        this.excelContactsConverter = excelContactsConverter;
+        this.excelCenterEntityRepository = excelCenterEntityRepository;
+        this.excelClubEntityRepository = excelClubEntityRepository;
     }
 
     public void loadToDatabase(ExcelParsingData excelParsingData) {
         Map<Long, Long> excelIdToDbId = new HashMap<>();
         Set<String> categoriesNames = new HashSet<>();
+
+        // todo tmp load data is in parser
+//        loadExcelEntityToDB(excelParsingData);
+
+        log.info("=========LOADING DATA TO DB STEP: all locations form dto =========");
+        log.info(excelParsingData.getLocations().toString());
+
         loadDistricts(excelParsingData);
         loadStations(excelParsingData);
         loadCategories(excelParsingData, categoriesNames);
         loadCenters(excelParsingData, excelIdToDbId);
         loadClubs(excelParsingData, excelIdToDbId, categoriesNames);
+        loadLocations(excelParsingData);
+
+    }
+
+    private void loadExcelEntityToDB(ExcelParsingData excelParsingData){
+
+        for (ExcelCenterEntity center : excelParsingData.getExcelCenters()) {
+            excelCenterEntityRepository.save(center);
+        }
+
+        for (ExcelClubEntity club : excelParsingData.getExcelClubs()) {
+
+            excelClubEntityRepository.save(club);
+        }
+
+    }
+
+    private void loadLocations(ExcelParsingData excelParsingData) {
+        log.info("==============load locations DataLoaderService =========");
+        log.info("locations.length : "+excelParsingData.getLocations().size());
+
+        for (LocationExcel location : excelParsingData.getLocations()) {
+            log.info("(row 133, DataLoader : "+location.toString());
+            try{
+
+                String cityName = location.getCity();
+                if( cityName == null || cityName.isEmpty()){
+                    cityName = "Київ";
+                }
+
+                Long districtIdCheck = null;
+                if(location.getDistrict() != null && districtService.getOptionalDistrictByName(location.getDistrict()).isPresent()) {
+                    districtIdCheck = districtService.getOptionalDistrictByName(location.getDistrict()).get().getId();
+                }
+
+                Long stationIdCheck = null;
+                if(location.getStation() != null & stationService.getOptionalStationByName(location.getStation()).isPresent()) {
+                    stationIdCheck = stationService.getOptionalStationByName(location.getStation()).get().getId();
+                }
+
+                LocationProfile locationProfile = LocationProfile.builder()
+                        .id(location.getId())
+                        .address(location.getAddress())
+                        .latitude(location.getLatitude())
+                        .longitude(location.getLongitude())
+                        .name(location.getName())
+                        .cityId(cityService.getCityByName(cityName).getId())
+                        .districtId(districtIdCheck)
+                        .stationId(stationIdCheck)
+//                        .centerId(location.getCenterId())
+//                        .clubId(location.getClubId())
+                        .build();
+                if (location.getClubExternalId() == null) {
+                    locationProfile = locationProfile.withClubId(null);
+                    if(location.getCenterExternalId() == null) {
+                        log.info("location has no ref of club or center !!!");
+                        throw new DataFormatException();
+                    }else{
+                        log.info("getCenterByExternalId = " + location.getCenterExternalId());
+                        locationProfile = locationProfile.withCenterId(centerService.getCenterByExternalId(location.getCenterExternalId()).getId());
+                    }
+                } else {
+                    log.info("Review Club Location location.getClubExternalId() = " + location.getClubExternalId());
+                    while(clubService.getClubByClubExternalId(location.getClubExternalId()).size() == 0) {
+                        location.setClubExternalId(location.getClubExternalId() - 1);
+                    }
+                    locationProfile = locationProfile.withClubId(clubService.getClubByClubExternalId(location.getClubExternalId()).get(0).getId());
+                }
+                log.info("LocationProfile before saving : "+locationProfile);
+
+                locationService.addLocation(locationProfile);
+
+                log.info("====== location added ==");
+                log.info(location.getName()+" ");
+
+            }catch (AlreadyExistException | NoSuchElementException | DataFormatException | NullPointerException e){
+                log.info("AlreadyExist = " + location.getClubExternalId());
+                log.info(e.getMessage());
+            }
+        }
     }
 
     private void loadCenters(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId) {
-        for (CenterExcel center : excelParsingData.getCenters()) {
-            try {
-                if (center.getLongitude() == null || center.getAltitude() == null)
-                    continue;
 
+        log.info("======= load_CENTERS DataLoaderService =========");
+
+        for (CenterExcel center : excelParsingData.getCenters()) {
+
+            log.info("CENTER_EXCEL obj: "+center.toString());
+            try {
+//                if (center.getLongitude() == null || center.getLatitude() == null)
+//                    continue;
+                /*-
                 try {
-                    centerService.deleteCenterById(centerService.getCenterByName(center.getName()).getId());
+                    centerService.deleteCenterById(center.getCenterExternalId());
+
                 } catch (NotExistException | DatabaseRepositoryException e) {
                     // Do nothing if there is no such center
                     // or if center has any relationships
                 }
+                 */
+
+                //****************************** TODO
 
                 SuccessCreatedCenter createdCenter = centerService.addCenter(CenterProfile
                         .builder()
-                        .id(center.getId())
+//                        .id(center.getId())
                         .description(center.getDescription())
                         .user(userService.getUserById(DEFAULT_USER_OWNER_ID))
                         .name(center.getName())
                         .urlWeb(CENTER_DEFAULT_URL_WEB)
                         .urlLogo(CENTER_DEFAULT_LOGO_URL)
+                        .contacts(excelContactsConverter.collectAllContactsData(center.getSite(),center.getPhone()))
+                        .centerExternalId(center.getCenterExternalId())
                         .build());
-                excelIdToDbId.put(center.getId(), createdCenter.getId());
+                excelIdToDbId.put(center.getCenterExternalId(), createdCenter.getId());
             } catch (AlreadyExistException e) {
                 log.error("Trying to add already exists center from excel");
             }
@@ -111,41 +230,34 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         }
     }
 
-    private void loadClubs(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId, Set<String> catgories) {
+    private void loadClubs(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId, Set<String> categories) {
+
+        log.info("(row 207, DataLoader) ======= loadClubs DataLoaderService =========");
         for (ClubExcel club : excelParsingData.getClubs()) {
+            log.info(club.toString());
             try {
                 if (club.getAgeFrom() == null) {
                     club.setAgeFrom(2);
-                    club.setAgeTo(16);
+                    club.setAgeTo(18);
                 }
-                if (club.getCity().isEmpty()) {
-                    club.setCity("Київ");
-                }
-                try {
-                    clubService.deleteClubById(clubService.getClubByName(club.getName()).getId());
-                } catch (NotExistException | DatabaseRepositoryException e) {
-                    // Do nothing if there is no such club
-                    // or if club has any relationships
-                }
-                LocationProfile locationProfile = LocationProfile
-                        .builder()
-                        .address(club.getAddress())
-                        .latitude(club.getAltitude())
-                        .longitude(club.getLongitude())
-                        .cityName(club.getCity())
-                        .phone(club.getPhone())
-                        .districtName(club.getDistrict())
-                        .stationName(club.getStation())
-                        .build();
 
-                List<LocationProfile> locations = new ArrayList<>();
-                locations.add(locationProfile);
-                SuccessCreatedClub createdClub = clubService.addClub(ClubProfile
+                Center center = centerService.getCenterByExternalId(club.getCenterExternalId());
+                Long realCenterId = null;
+
+                if(center != null ){
+                    realCenterId = center.getId();
+                }
+
+                //******************************* TODO
+
+                ClubProfile clubProfile = ClubProfile
                         .builder()
                         .ageFrom(club.getAgeFrom())
                         .ageTo(club.getAgeTo())
-                        .locations(locations)
 
+                        .centerId(realCenterId)
+                        .centerExternalId(club.getCenterExternalId())
+                        .clubExternalId(club.getClubExternalId())
                         .description(DESCRIPTION_JSON_LEFT +
                                 (club.getDescription().isEmpty() ?
                                         CLUB_DEFAULT_DESCRIPTION :
@@ -157,25 +269,26 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .name(club.getName())
                         .urlBackground(DEFAULT_CLUB_URL_BACKGROUND)
                         .urlLogo(DEFAULT_CLUB_URL_LOGO)
-                        .categoriesName(getFullCategoryName(catgories, club.getCategories()))
-                        .build());
-
-                clubRepository.flush();
-
-                Club addedClub = clubService.getClubById(createdClub.getId());
-                addedClub.setUrlWeb(DEFAULT_CLUB_URL_WEB);
-                addedClub.setWorkTime(DEFAULT_CLUB_WORK_TIME);
-                addedClub.setIsApproved(true);
-
-                addedClub.setUser(userService.getUserById(DEFAULT_USER_OWNER_ID));
-
-                if (excelIdToDbId.containsKey(club.getId())) {
-                    Center center = centerService.getCenterById(excelIdToDbId.get(club.getId()));
-                    addedClub.setCenter(center);
+                        .categoriesName(getFullCategoryName(categories, club.getCategories()))
+                        .contacts(contactsConverter.collectAllContactsData(club.getSite(),club.getPhone()))
+                        .build();
+                if(club.getCenterExternalId() == null) {
+                    clubProfile = clubProfile.withCenterId(null);
+                } else {
+//                    Center center1 = centerService.getCenterByExternalId(club.getCenterExternalId());
+                    log.info(" was  PROBLEM POINT");
+                    if(center == null) {
+                        log.info("==(row-261,DataLoaderServiceImpl)==Center with external_id" + club.getCenterExternalId() + " is null");
+                        clubProfile = clubProfile.withCenterId(null);
+                    } else {
+                        clubProfile = clubProfile.withCenterId(center.getId());
+                    }
                 }
-                clubRepository.save(addedClub);
+
+                clubService.addClubsFromExcel(clubProfile);
+
             } catch (AlreadyExistException e) {
-                log.error("Trying to add already exists club from excel");
+                log.error(e.getMessage());
             }
 
         }

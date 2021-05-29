@@ -85,13 +85,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
-//                .antMatchers("/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/manifest.json").permitAll()
                 .antMatchers("/favicon**").permitAll()
-
-                //add security because crash app
                 .antMatchers(HttpMethod.GET,
                         "/club/*",
                         "/clubs",
@@ -103,10 +100,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/service").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/*").permitAll()
                 .antMatchers(HttpMethod.GET," /admin/*","/manager/*").permitAll()
-
-
                 .antMatchers("/verify").permitAll()
-
                 .antMatchers("/roles").hasRole("ADMIN")
                 .antMatchers("/index", "/api/signup", "/api/signin", "/api/signout", "/api/verify").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/user/**","/api/verify").hasAnyRole("USER", "ADMIN", "MANAGER")

@@ -18,6 +18,10 @@ public interface ClubService {
 
     Club getClubById(Long id);
 
+    Club addClubsFromExcel(ClubProfile clubProfile);
+
+    List<Club> getClubByClubExternalId(Long clubExternalId);
+
     Club getClubByName(String name);
 
     SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile);
