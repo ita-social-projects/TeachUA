@@ -91,6 +91,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/manifest.json").permitAll()
                 .antMatchers("/favicon**").permitAll()
 
+                //add security because crash app
+                .antMatchers(HttpMethod.GET,
+                        "/club/*",
+                        "/clubs",
+                        "/challenge",
+                        "/challenge/*",
+                        "/about",
+                        "/centers",
+                        "/center/*",
+                        "/service").permitAll()
+                .antMatchers(HttpMethod.GET,"/user/*"," admin/*","/manager/*").permitAll()
+
+
                 .antMatchers("/verify").permitAll()
 
                 .antMatchers("/roles").hasRole("ADMIN")
