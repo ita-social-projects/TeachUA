@@ -431,11 +431,15 @@ public class ExcelParserServiceImpl implements ExcelParserService {
         return parseSheet(excelBook, CATEGORY_SHEET_NAME, (row) -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
-            categoriesOutput.add(
-                    CategoryExcel.builder()
-                            .name(rowParser.getString(0, ExcelErrorType.CRITICAL))
-                            .description(rowParser.getString(1, ExcelErrorType.CRITICAL))
-                            .build());
+            String name = rowParser.getString(0, ExcelErrorType.CRITICAL).trim();
+            String description = rowParser.getString(1, ExcelErrorType.CRITICAL).trim();
+            if (!name.isEmpty() && !description.isEmpty()) {
+                categoriesOutput.add(
+                        CategoryExcel.builder()
+                                .name(name)
+                                .description(description)
+                                .build());
+            }
 
             return !rowParser.hasErrors();
         });
