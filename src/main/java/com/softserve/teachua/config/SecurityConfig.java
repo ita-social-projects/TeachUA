@@ -129,6 +129,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/question/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/question/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/contact-types", "/api/districts/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/club/**").hasAnyRole("MANAGER", "ADMIN")
+
                 //TODO: only for admin
                 .antMatchers(HttpMethod.GET, "/api/logs").permitAll()
                 .antMatchers(HttpMethod.GET, "/logs").permitAll()
