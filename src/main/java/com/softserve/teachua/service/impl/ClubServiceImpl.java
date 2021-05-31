@@ -80,7 +80,7 @@ public class ClubServiceImpl implements ClubService {
         this.stationService = stationService;
         this.categoryService = categoryService;
         this.userService = userService;
-        this.toClubResponseConverter=toClubResponseConverter;
+        this.toClubResponseConverter = toClubResponseConverter;
         this.centerRepository = centerRepository;
     }
 
@@ -186,13 +186,27 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public SuccessCreatedClub addClub(ClubProfile clubProfile) {
+        List<LocationProfile> locations = clubProfile.getLocations();
+        if (locations != null && !locations.isEmpty()) {
+            for (LocationProfile profile : locations) {
+                if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
+                    profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
+                }
+                if (profile.getDistrictName() != null && !profile.getDistrictName().isEmpty()) {
+                    profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
+                }
+                if (profile.getStationName() != null && !profile.getStationName().isEmpty()) {
+                    profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
+                }
+            }
+        }
 
         if (isClubExistByName(clubProfile.getName())) {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }
 
         User user = null;
-        if(clubProfile.getUserId() != null ){
+        if (clubProfile.getUserId() != null) {
             user = userService.getUserById(clubProfile.getUserId());
         }
 
@@ -200,7 +214,7 @@ public class ClubServiceImpl implements ClubService {
         log.info("== add method");
 
 
-        log.info("==clubService=?  clubProfile.centerID"+clubProfile.getCenterId());
+        log.info("==clubService=?  clubProfile.centerID" + clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
@@ -209,9 +223,9 @@ public class ClubServiceImpl implements ClubService {
                 .withUser(user);
 
 
-        List<LocationProfile> locations = clubProfile.getLocations();
+//        List<LocationProfile> locations = clubProfile.getLocations();
 
-        if ( locations != null && !locations.isEmpty()) {
+        if (locations != null && !locations.isEmpty()) {
             club.setLocations(
                     clubProfile.getLocations()
                             .stream()
@@ -221,7 +235,7 @@ public class ClubServiceImpl implements ClubService {
                                             .withCity(cityService.getCityById(locationProfile.getCityId()))
                                             .withDistrict(districtService.getDistrictById(
                                                     locationProfile.getDistrictId())
-                                                    )
+                                            )
                                             .withStation(stationService.getStationById(
                                                     locationProfile.getStationId()))
                             ))
@@ -236,10 +250,10 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public Club addClubsFromExcel(ClubProfile clubProfile) {
 
-        if(clubProfile.getCenterId() == null) {
+        if (clubProfile.getCenterId() == null) {
             log.info("(row 239, ClubServiceImpl)  addClubsFromExcel => " + clubProfile.getCenterExternalId() + " not found");
 
-            try{
+            try {
                 return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                         .withCategories(clubProfile.getCategoriesName()
                                 .stream()
@@ -247,7 +261,7 @@ public class ClubServiceImpl implements ClubService {
                                 .collect(Collectors.toSet())))
                         .withUser(null)
                         .withCenter(null);
-            }catch (Exception e){
+            } catch (Exception e) {
                 //todo bad solution .... do refactor !!!!!
                 log.info("(row 252, ClubServiceImpl)    saving club ");
                 log.info(e.getMessage());
@@ -348,15 +362,15 @@ public class ClubServiceImpl implements ClubService {
                 searchClubProfile.getIsOnline(),
                 pageable);
 
-        log.info("===find clubs : "+clubResponses.getNumberOfElements());
+        log.info("===find clubs : " + clubResponses.getNumberOfElements());
 
-        if(clubResponses.getNumberOfElements()==0){
+        if (clubResponses.getNumberOfElements() == 0) {
             log.info("==============================");
-            log.info("clubResponses by club name is empty==> start search by center name " +searchClubProfile.getClubName());
-            clubResponses=clubRepository.
+            log.info("clubResponses by club name is empty==> start search by center name " + searchClubProfile.getClubName());
+            clubResponses = clubRepository.
                     findClubsByCenterName(searchClubProfile.getClubName(),
                             searchClubProfile.getCityName(), pageable);
-            log.info("result of search by centerName : "+ clubResponses.getNumberOfElements());
+            log.info("result of search by centerName : " + clubResponses.getNumberOfElements());
             log.info(clubResponses.toString());
         }
 
