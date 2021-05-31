@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.location;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.model.Club;
 import lombok.*;
 
@@ -14,6 +15,7 @@ import javax.validation.constraints.Size;
 @Builder
 @Data
 @With
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LocationProfile {
 
     private Long id;
@@ -28,6 +30,11 @@ public class LocationProfile {
     private Long cityId;
     private Long districtId;
     private Long stationId;
+
+    private String cityName;
+    private String districtName;
+    private String stationName;
+
     private Double longitude;
     private Double latitude;
 
