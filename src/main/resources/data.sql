@@ -4,10 +4,10 @@ values ('ROLE_ADMIN'),
        ('ROLE_MANAGER');
 
 insert into users(email, password, url_logo, first_name, last_name, phone, role_id,provider,status)
-values ('admin@gmail.com', '$2y$12$iod5PRHZaYrIO6L3onnnk.Mhx9Hc1lb2ehBi0hRvPDD83u6OM/b66',
-        '/static/images/user/avatar/user1.png', 'Admin', 'Admin', '+38000000000', 1,'local',true),
-       ('user@gmail.com', '$2y$12$aDvzOnearRd4eulVJID3pOufutAIXVU5i1GKhgpXuvyVmktuSAmqe',
-        '/static/images/user/avatar/user2.png', 'user', 'user', '+38000000000', 2,'local',true);
+values ('admin@gmail.com', '$2y$12$N1bRbn.tjr3kJZpF7srydOA1gwoteWvBZv.z6ALh5uITiFCASXkl2',
+        '/static/images/user/avatar/user1.png', 'Admin', 'Admin', '+38000000000', 1,'local',true);
+--        ('user@gmail.com', '$2y$12$aDvzOnearRd4eulVJID3pOufutAIXVU5i1GKhgpXuvyVmktuSAmqe',
+--         '/static/images/user/avatar/user2.png', 'user', 'user', '+38000000000', 2,'local',true);
 
 
 insert into cities(name, latitude, longitude)
