@@ -31,10 +31,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,6 +57,7 @@ public class ClubServiceImpl implements ClubService {
     private final CategoryService categoryService;
     private final UserService userService;
     private final CenterRepository centerRepository;
+    private final LocationService locationService;
 
 
     @Autowired
@@ -70,7 +71,7 @@ public class ClubServiceImpl implements ClubService {
                            StationService stationService,
                            CategoryService categoryService,
                            UserService userService,
-                           ClubToClubResponseConverter toClubResponseConverter) {
+                           ClubToClubResponseConverter toClubResponseConverter, LocationService locationService) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -82,6 +83,7 @@ public class ClubServiceImpl implements ClubService {
         this.userService = userService;
         this.toClubResponseConverter = toClubResponseConverter;
         this.centerRepository = centerRepository;
+        this.locationService = locationService;
     }
 
     /**
@@ -446,6 +448,13 @@ public class ClubServiceImpl implements ClubService {
         archiveService.saveModel(club);
 
         try {
+            locationRepository.findAll()
+                    .stream()
+                    .filter(location -> location.getClub() != null && location.getClub().getId().equals(id))
+                    .forEach(location -> locationService.addLocation(dtoConverter.convertToDto(location.withClub(null), LocationProfile.class)));
+
+            updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class));
+
             clubRepository.deleteById(id);
             clubRepository.flush();
         } catch (DataAccessException | ValidationException e) {
