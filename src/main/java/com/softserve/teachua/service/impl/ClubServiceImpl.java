@@ -215,7 +215,6 @@ public class ClubServiceImpl implements ClubService {
         //todo delete or replace this block
         log.info("== add method");
 
-
         log.info("==clubService=?  clubProfile.centerID" + clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                 .withCategories(clubProfile.getCategoriesName()
@@ -223,9 +222,6 @@ public class ClubServiceImpl implements ClubService {
                         .map(categoryService::getCategoryByName)
                         .collect(Collectors.toSet())))
                 .withUser(user);
-
-
-//        List<LocationProfile> locations = clubProfile.getLocations();
 
         if (locations != null && !locations.isEmpty()) {
             club.setLocations(
@@ -253,7 +249,7 @@ public class ClubServiceImpl implements ClubService {
     public Club addClubsFromExcel(ClubProfile clubProfile) {
 
         if (clubProfile.getCenterId() == null) {
-            log.info("(row 239, ClubServiceImpl)  addClubsFromExcel => " + clubProfile.getCenterExternalId() + " not found");
+            log.info("(row 256, ClubServiceImpl)  addClubsFromExcel => " + clubProfile.getCenterExternalId() + " not found");
 
             try {
                 return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
@@ -265,7 +261,7 @@ public class ClubServiceImpl implements ClubService {
                         .withCenter(null);
             } catch (Exception e) {
                 //todo bad solution .... do refactor !!!!!
-                log.info("(row 252, ClubServiceImpl)    saving club ");
+                log.info("(row 268, ClubServiceImpl)    saving club ");
                 log.info(e.getMessage());
 
                 return new Club();

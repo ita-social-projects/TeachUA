@@ -59,7 +59,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "LEFT JOIN club.locations AS locations " +
             "LEFT JOIN locations.city AS city " +
             "JOIN club.categories AS category WHERE " +
-            "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) AND " +
+            "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) OR " +
+            "LOWER(club.description) LIKE LOWER(CONCAT('%', :name , '%')) AND "+
             "((:isOnline = false AND city.name LIKE CONCAT('%', :city , '%')) OR " +
             "(:isOnline = true AND club.isOnline = true AND city IS NULL)) AND " +
             "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
@@ -87,6 +88,38 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
                               @Param("city") String cityName,
                               Pageable pageable);
 
+   /**
+    * @author Vasyl Khula
+    */
+// alternatives ways to implement feature BY using NATIVE QUERY
+        // join with  all tables !!!
+//    @Query(value = "SELECT * from clubs as clubs "+
+//            " JOIN centers as centers on clubs.center_id=centers.id "+
+//            " JOIN locations as loc on centers.id=loc.center_id "+
+//            " JOIN cities as cities on loc.city_id=cities.id "+
+//            " WHERE LOWER (centers.name) LIKE LOWER (CONCAT('%', :centerName, '%')) OR "+
+//            " LOWER (centers.description) LIKE LOWER (CONCAT('%', :centerName, '%')) AND " +
+//            "cities.name = :cityName",
+//            nativeQuery = true)
+        //using subselect
+//    @Query(value = "SELECT  * from clubs as clubs WHERE clubs.center_id IN "+
+//            "(SELECT DISTINCT centers.id FROM centers as centers "+
+//            " JOIN locations as loc on centers.id=loc.center_id "+
+//            " JOIN cities as cities on loc.city_id=cities.id "+
+//            " WHERE LOWER (centers.name) LIKE LOWER (CONCAT('%', :centerName, '%')) OR "+
+//            " LOWER (centers.description) LIKE LOWER (CONCAT('%', :centerName, '%')) AND " +
+//            "cities.name = :cityName )",
+//            nativeQuery = true)
+
+    @Query("select center.clubs from Center as center "+
+            "join center.locations AS locations " +
+            " where (lower (center.name)) LIKE lower (concat('%', :centerName , '%')) or "+
+            " lower (center.description) LIKE lower (concat('%', :centerName , '%'))  and " +
+            " locations.city.name = :cityName")
+    Page<Club> findClubsByCenterName(@Param("centerName") String centerName,
+                                     @Param("cityName") String cityName,  Pageable pageable);
+
+
     @Query("SELECT DISTINCT club from Club AS club " +
             "JOIN club.locations AS locations " +
             "JOIN club.categories AS category WHERE " +
@@ -98,12 +131,6 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
                                   @Param("categoriesName") List<String> categoriesName,
                                   @Param("cityName") String cityName,
                                   Pageable pageable);
-
-    @Query("select center.clubs from Center as center "+
-            "join center.locations AS locations " +
-            " where lower (center.name) LIKE lower (concat('%', :centerName , '%')) and locations.city.name = :cityName")
-    Page<Club> findClubsByCenterName(@Param("centerName") String centerName,
-                                     @Param("cityName") String cityName,  Pageable pageable);
 
     @Modifying
     @Query(value = "UPDATE clubs SET rating=:rating WHERE id = :club_id", nativeQuery = true)

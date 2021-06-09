@@ -156,8 +156,6 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .cityId(cityService.getCityByName(cityName).getId())
                         .districtId(districtIdCheck)
                         .stationId(stationIdCheck)
-//                        .centerId(location.getCenterId())
-//                        .clubId(location.getClubId())
                         .build();
                 if (location.getClubExternalId() == null) {
                     locationProfile = locationProfile.withClubId(null);
@@ -197,23 +195,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
             log.info("CENTER_EXCEL obj: "+center.toString());
             try {
-//                if (center.getLongitude() == null || center.getLatitude() == null)
-//                    continue;
-                /*-
-                try {
-                    centerService.deleteCenterById(center.getCenterExternalId());
-
-                } catch (NotExistException | DatabaseRepositoryException e) {
-                    // Do nothing if there is no such center
-                    // or if center has any relationships
-                }
-                 */
-
-                //****************************** TODO
 
                 SuccessCreatedCenter createdCenter = centerService.addCenter(CenterProfile
                         .builder()
-//                        .id(center.getId())
                         .description(center.getDescription())
                         .user(userService.getUserById(DEFAULT_USER_OWNER_ID))
                         .name(center.getName())
@@ -232,7 +216,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
     private void loadClubs(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId, Set<String> categories) {
 
-        log.info("(row 207, DataLoader) ======= loadClubs DataLoaderService =========");
+        log.info("(row 219, DataLoader) ======= loadClubs DataLoaderService =========");
         for (ClubExcel club : excelParsingData.getClubs()) {
             log.info(club.toString());
             try {
@@ -277,7 +261,6 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 if(club.getCenterExternalId() == null) {
                     clubProfile = clubProfile.withCenterId(null);
                 } else {
-//                    Center center1 = centerService.getCenterByExternalId(club.getCenterExternalId());
                     log.info(" was  PROBLEM POINT");
                     if(center == null) {
                         log.info("==(row-261,DataLoaderServiceImpl)==Center with external_id" + club.getCenterExternalId() + " is null");
