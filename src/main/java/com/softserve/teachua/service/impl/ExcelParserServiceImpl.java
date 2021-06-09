@@ -96,12 +96,6 @@ public class ExcelParserServiceImpl implements ExcelParserService {
 
 
         //todo loading data to tmp excel representation tables
-//        parseExcelCenters(excelBook, result.getData().getExcelCenters(),
-//                        result.getParsingMistakes());
-//
-//
-//        parseExcelClubs(excelBook, result.getData().getExcelClubs(),
-//                        result.getParsingMistakes());
 
         excelBook.close();
         return result;
@@ -239,19 +233,6 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                 }
                 Double[] coordinates = rowParser.parseCoordinates(4, true);
                 log.info("centerCoordinates in NEXT center location: " + Arrays.toString(coordinates));
-
-                /*-
-                CenterExcel centerExcel = CenterExcel.builder()
-
-                        .centerExternalId(rowParser.getLong(0,ExcelErrorType.CRITICAL))
-                        .name(previousName)
-
-                        .site(rowParser.getString(7, ExcelErrorType.NON_CRITICAL))
-                        .phone(rowParser.getString(8, ExcelErrorType.CRITICAL))
-                        .description(rowParser.getString(9, ExcelErrorType.CRITICAL))
-                        .build();
-
-                 */
 
                 LocationExcel locationExcel = LocationExcel.builder()
                         .clubExternalId(null)
