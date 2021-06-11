@@ -29,7 +29,6 @@ public class JwtFilter extends OncePerRequestFilter {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
@@ -39,7 +38,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
                 Long userId = jwtProvider.getUserIdFromToken(jwt);
+                String currentEmail = jwtProvider.getEmailFromToken(jwt);
+                log.info("email user = " + currentEmail);
                 UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+                if (!userDetails.getUsername().equals(currentEmail)) {
+                    throw new RuntimeException("Invalid email");
+                }
                 log.info("USER AUTHORITIES");
                 log.info(userDetails.getAuthorities().toString());
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

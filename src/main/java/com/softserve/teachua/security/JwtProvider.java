@@ -17,7 +17,7 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JwtProvider {
-    private final int TOKEN_LIFE_DAYS = 15;
+    private final int TOKEN_LIFE_DAYS = 1;
 
     @Value("$(jwt.secret)")
     private String jwtSecret;
@@ -36,7 +36,8 @@ public class JwtProvider {
                 .atStartOfDay(ZoneId.systemDefault())
                 .toInstant());
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setSubject(userPrincipal.getEmail())
+                .setId(Long.toString(userPrincipal.getId()))
                 .setExpiration(date)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
@@ -52,7 +53,7 @@ public class JwtProvider {
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
-        return Long.parseLong(claims.getSubject());
+        return Long.parseLong(claims.getId());
     }
 
     /**
@@ -107,4 +108,6 @@ public class JwtProvider {
         }
         return null;
     }
+
+
 }
