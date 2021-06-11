@@ -54,6 +54,7 @@ public class ClubServiceImpl implements ClubService {
     private final UserService userService;
     private final CenterRepository centerRepository;
     private final LocationService locationService;
+    private final FileUploadService fileUploadService;
 
 
     @Autowired
@@ -67,7 +68,9 @@ public class ClubServiceImpl implements ClubService {
                            StationService stationService,
                            CategoryService categoryService,
                            UserService userService,
-                           ClubToClubResponseConverter toClubResponseConverter, LocationService locationService) {
+                           ClubToClubResponseConverter toClubResponseConverter,
+                           LocationService locationService,
+                           FileUploadService fileUploadService) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -80,6 +83,7 @@ public class ClubServiceImpl implements ClubService {
         this.toClubResponseConverter = toClubResponseConverter;
         this.centerRepository = centerRepository;
         this.locationService = locationService;
+        this.fileUploadService = fileUploadService;
     }
 
     /**
@@ -443,7 +447,7 @@ public class ClubServiceImpl implements ClubService {
                     .stream()
                     .filter(location -> location.getClub() != null && location.getClub().getId().equals(id))
                     .forEach(location -> locationService.addLocation(dtoConverter.convertToDto(location.withClub(null), LocationProfile.class)));
-
+            fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground());
             updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class));
 
             clubRepository.deleteById(id);

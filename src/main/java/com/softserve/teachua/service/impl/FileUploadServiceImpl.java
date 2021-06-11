@@ -1,0 +1,84 @@
+package com.softserve.teachua.service.impl;
+
+import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.teachua.service.FileUploadService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.*;
+import java.nio.file.*;
+
+@Service
+@Slf4j
+public class FileUploadServiceImpl implements FileUploadService {
+    private final String FILE_UPLOAD_EXCEPTION = "Could not save image file: %s";
+    private final String DIRECTORY_CREATE_EXCEPTION = "Could not create directory with name: %s";
+    private final String UPLOAD_LOCATION = "/upload";
+
+
+    public String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile) {
+        Path uploadPath = Paths.get(uploadDir);
+
+        try {
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+        } catch (IOException e) {
+            throw new FileUploadException(String.format(DIRECTORY_CREATE_EXCEPTION, fileName));
+        }
+
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ioe) {
+            throw new FileUploadException(String.format(FILE_UPLOAD_EXCEPTION, fileName));
+        }
+
+        String actualPath = String.format("/%s/%s", uploadDir, fileName);
+        return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
+    }
+
+    public void deleteImages(String urlLogo, String urlBackground) {
+        // assuming that path to folder will look like target/upload/clubs/PrezidentUkrani
+
+        String folderName;
+        if (urlLogo != null && urlLogo.contains(UPLOAD_LOCATION)) {
+            folderName = urlLogo.substring(0, ordinalIndexOf(urlLogo, "/", 4, false));
+        } else if (urlBackground != null && urlBackground.contains(UPLOAD_LOCATION)) {
+            folderName = urlBackground.substring(0, ordinalIndexOf(urlBackground, "/", 4, false));;
+        } else {
+            return ;
+        }
+
+        try {
+            FileUtils.deleteDirectory(new File("target" + folderName));
+        } catch (IOException ex) {
+            log.error("Folder " + folderName + " can not be deleted");
+        }   
+    }
+
+    private int ordinalIndexOf(final String str, final String searchStr, final int ordinal, final boolean lastIndex) {
+        if (str == null || searchStr == null || ordinal <= 0) {
+            return -1;
+        }
+        if (searchStr.length() == 0) {
+            return lastIndex ? str.length() : 0;
+        }
+        int found = 0;
+        int index = lastIndex ? str.length() : -1;
+        do {
+            if (lastIndex) {
+                index = str.lastIndexOf(searchStr, index - 1);
+            } else {
+                index = str.indexOf(searchStr, index + 1);
+            }
+            if (index < 0) {
+                return index;
+            }
+            found++;
+        } while (found < ordinal);
+        return index;
+    }
+
+}
