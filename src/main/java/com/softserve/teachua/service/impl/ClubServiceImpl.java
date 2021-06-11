@@ -11,10 +11,7 @@ import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.model.Center;
-import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.Location;
-import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.*;
 import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
@@ -34,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -240,8 +236,7 @@ public class ClubServiceImpl implements ClubService {
                             .collect(Collectors.toSet())
             );
         }
-
-        log.info("adding club with name : ", clubProfile.getName());
+        log.info("adding club with name : {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
     }
 

@@ -69,9 +69,10 @@ public class StationServiceImpl implements StationService {
      */
     @Override
     public Station getStationById(Long id) {
-        Optional<Station> optionalStation = getOptionalStationById(id);
+        Optional<Station> optionalStation = id == null ? Optional.empty() : getOptionalStationById(id);
         if (!optionalStation.isPresent()) {
-            throw new NotExistException(String.format(STATION_NOT_FOUND_BY_ID, id));
+            return null;
+//            throw new NotExistException(String.format(STATION_NOT_FOUND_BY_ID, id));
         }
 
         Station station = optionalStation.get();
