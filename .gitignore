@@ -86,6 +86,13 @@ workspace.xml
 /**/*.iml
 /**/*.ucls
 
+/**/frontend/static/
+/**/frontend/*.png
+/**/frontend/*.json
+/**/frontend/*.ico
+/**/frontend/*.html
+/**/frontend/robots.txt
+
 # Ignore binary
 *.bin
 *.exe
