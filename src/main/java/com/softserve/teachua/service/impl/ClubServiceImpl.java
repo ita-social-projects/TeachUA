@@ -12,10 +12,7 @@ import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.model.Center;
-import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.Location;
-import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.*;
 import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
@@ -59,6 +56,7 @@ public class ClubServiceImpl implements ClubService {
     private final UserService userService;
     private final CenterRepository centerRepository;
     private final LocationService locationService;
+    private final FileUploadService fileUploadService;
 
 
     @Autowired
@@ -72,8 +70,9 @@ public class ClubServiceImpl implements ClubService {
                            StationService stationService,
                            CategoryService categoryService,
                            UserService userService,
-                           ClubToClubResponseConverter toClubResponseConverter, LocationService locationService) {
-        this.coordinatesConverter = coordinatesConverter;
+                           ClubToClubResponseConverter toClubResponseConverter,
+                           LocationService locationService,
+                           FileUploadService fileUploadService) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -86,6 +85,7 @@ public class ClubServiceImpl implements ClubService {
         this.toClubResponseConverter = toClubResponseConverter;
         this.centerRepository = centerRepository;
         this.locationService = locationService;
+        this.fileUploadService = fileUploadService;
     }
 
     /**
@@ -243,8 +243,7 @@ public class ClubServiceImpl implements ClubService {
                             .collect(Collectors.toSet())
             );
         }
-
-        log.info("adding club with name : ", clubProfile.getName());
+        log.info("adding club with name : {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
     }
 
@@ -451,7 +450,7 @@ public class ClubServiceImpl implements ClubService {
                     .stream()
                     .filter(location -> location.getClub() != null && location.getClub().getId().equals(id))
                     .forEach(location -> locationService.addLocation(dtoConverter.convertToDto(location.withClub(null), LocationProfile.class)));
-
+            fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground());
             updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class));
 
             clubRepository.deleteById(id);

@@ -53,7 +53,11 @@ public class JwtProvider {
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
-        return Long.parseLong(claims.getId());
+        String claimsId = claims.getId();
+        claimsId = claimsId == null ? "0" : claimsId;
+        log.info("claims.getId() = " + claimsId);
+        //return Long.parseLong(claims.getId());
+        return Long.parseLong(claimsId);
     }
 
     /**

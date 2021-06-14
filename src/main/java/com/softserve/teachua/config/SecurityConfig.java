@@ -89,6 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/manifest.json").permitAll()
                 .antMatchers("/favicon**").permitAll()
+                .antMatchers("/upload/**").permitAll()
                 .antMatchers(HttpMethod.GET,
                         "/club/*",
                         "/clubs",
