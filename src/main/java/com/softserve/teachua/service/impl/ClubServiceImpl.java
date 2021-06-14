@@ -1,7 +1,6 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
-import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.location.LocationProfile;
@@ -43,7 +42,6 @@ public class ClubServiceImpl implements ClubService {
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
     private static final String CLUB_DELETING_ERROR = "Can't delete club cause of relationship";
 
-    private final CoordinatesConverter coordinatesConverter;
     private final ClubRepository clubRepository;
     private final LocationRepository locationRepository;
     private final DtoConverter dtoConverter;
@@ -60,7 +58,7 @@ public class ClubServiceImpl implements ClubService {
 
 
     @Autowired
-    public ClubServiceImpl(CoordinatesConverter coordinatesConverter, ClubRepository clubRepository,
+    public ClubServiceImpl(ClubRepository clubRepository,
                            CenterRepository centerRepository,
                            LocationRepository locationRepository,
                            DtoConverter dtoConverter,
@@ -193,7 +191,6 @@ public class ClubServiceImpl implements ClubService {
         List<LocationProfile> locations = clubProfile.getLocations();
         if (locations != null && !locations.isEmpty()) {
             for (LocationProfile profile : locations) {
-                coordinatesConverter.LocationProfileConverterToDb(profile);
                 if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
                     profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
                 }
