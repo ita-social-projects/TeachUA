@@ -18,8 +18,8 @@ public class ApplicationConfig {
     private static final String API_LOCATION = "/api/";
     private static final String SLASH = "/";
 
-    @Value("${server.servlet.context-path}")
-    private String rootUri;
+    //@Value("${server.servlet.context-path}")
+    private String rootUri="";
 
     @Bean
     public FilterRegistrationBean customFilterBean() {
