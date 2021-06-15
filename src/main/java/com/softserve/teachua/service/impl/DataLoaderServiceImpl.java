@@ -193,7 +193,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
         for (CenterExcel center : excelParsingData.getCenters()) {
 
-            log.info("CENTER_EXCEL obj: "+center.toString());
+            log.info("CENTER_EXCEL obj: "+ center.toString());
             try {
 
                 SuccessCreatedCenter createdCenter = centerService.addCenter(CenterProfile
@@ -208,6 +208,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .build());
                 excelIdToDbId.put(center.getCenterExternalId(), createdCenter.getId());
             } catch (AlreadyExistException e) {
+            	log.error("***###ERROR CENTER to DB: "+ center.toString());
                 log.error("Trying to add already exists center from excel");
             }
 
@@ -273,6 +274,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 clubService.addClubsFromExcel(clubProfile);
 
             } catch (AlreadyExistException e) {
+            	log.error("***###ERROR Club to DB: "+ club.toString());
                 log.error(e.getMessage());
             }
 
