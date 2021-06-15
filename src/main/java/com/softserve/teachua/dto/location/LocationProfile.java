@@ -35,6 +35,7 @@ public class LocationProfile {
     private String districtName;
     private String stationName;
 
+    private String coordinates;
     private Double longitude;
     private Double latitude;
 
