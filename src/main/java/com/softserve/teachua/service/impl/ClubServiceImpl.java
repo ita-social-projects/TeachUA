@@ -1,6 +1,7 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
+import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.location.LocationProfile;
@@ -55,6 +56,7 @@ public class ClubServiceImpl implements ClubService {
     private final CenterRepository centerRepository;
     private final LocationService locationService;
     private final FileUploadService fileUploadService;
+    private final CoordinatesConverter coordinatesConverter;
 
 
     @Autowired
@@ -70,7 +72,7 @@ public class ClubServiceImpl implements ClubService {
                            UserService userService,
                            ClubToClubResponseConverter toClubResponseConverter,
                            LocationService locationService,
-                           FileUploadService fileUploadService) {
+                           FileUploadService fileUploadService, CoordinatesConverter coordinatesConverter) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -84,6 +86,7 @@ public class ClubServiceImpl implements ClubService {
         this.centerRepository = centerRepository;
         this.locationService = locationService;
         this.fileUploadService = fileUploadService;
+        this.coordinatesConverter = coordinatesConverter;
     }
 
     /**
@@ -189,8 +192,10 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public SuccessCreatedClub addClub(ClubProfile clubProfile) {
         List<LocationProfile> locations = clubProfile.getLocations();
+
         if (locations != null && !locations.isEmpty()) {
             for (LocationProfile profile : locations) {
+                coordinatesConverter.LocationProfileConverterToDb(profile);
                 if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
                     profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
                 }
