@@ -73,6 +73,7 @@ public class ClubServiceImpl implements ClubService {
                            ClubToClubResponseConverter toClubResponseConverter,
                            LocationService locationService,
                            FileUploadService fileUploadService, CoordinatesConverter coordinatesConverter) {
+
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;

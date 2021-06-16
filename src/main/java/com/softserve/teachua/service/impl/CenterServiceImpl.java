@@ -110,32 +110,32 @@ public class CenterServiceImpl implements CenterService {
         if(centerProfile.getUserId() != null){
             log.info("CenterServiceImpl=> centerProfile.userId == "+centerProfile.getUserId());
             user = userRepository.getOne(centerProfile.getUserId());
-        }
+        }else {log.info("CenterServiceImpl=> centerProfile.userId == null");}
 
-        log.info("CenterServiceImpl=> centerProfile.userId == null");
 
         Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
                     .withUser(user));
 
         List<LocationProfile> locations = centerProfile.getLocations();
-
+                    log.info("++++++++++++++++++++++++++++++ location = " + locations);
         if ( locations != null && !locations.isEmpty()) {
             center.setLocations(locations
                     .stream()
                     .map(locationProfile -> locationRepository.save(
                             dtoConverter.convertToEntity(locationProfile, new Location())
                                     .withCenter(center)
-                                    .withCity(cityService.getCityById(locationProfile.getCityId()))
-                                    .withDistrict(districtService.getDistrictById(
-                                            locationProfile.getDistrictId()))
-                                    .withStation(stationService.getStationById(
-                                            locationProfile.getStationId()) )
+                                    .withCity(cityService.getCityByName(locationProfile.getCityName()))
+                                    .withDistrict(districtService.getDistrictByName(
+                                            locationProfile.getDistrictName()))
+                                    .withStation(stationService.getStationByName(
+                                            locationProfile.getStationName()) )
                     ))
                     .collect(Collectors.toSet())
             );
         }
 
         List<Long> clubsId =centerProfile.getClubsId();
+        log.info("______________________________ clubsId = " + clubsId);
         if(clubsId != null &&  !clubsId.isEmpty())
         for(Long id : clubsId ){
             Club club = clubService.getClubById(id);
