@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.center;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.Club;
@@ -18,6 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CenterProfile implements Convertible {
 
     private Long id;
