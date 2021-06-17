@@ -44,7 +44,7 @@ public class Location implements Convertible {
     private Station station;
 
     @ManyToOne
-    @JoinColumn(name = "city_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "city_id", referencedColumnName = "id")
     @ToString.Exclude
     private City city;
 
