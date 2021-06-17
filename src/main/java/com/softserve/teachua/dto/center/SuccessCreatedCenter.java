@@ -30,7 +30,7 @@ public class SuccessCreatedCenter implements Convertible {
 
     private String urlLogo;
 
-    private String socialLinks;
+    private String contacts;
 
     private List<LocationProfile> locations;
 

@@ -117,7 +117,6 @@ public class CenterServiceImpl implements CenterService {
                     .withUser(user));
 
         List<LocationProfile> locations = centerProfile.getLocations();
-                    log.info("++++++++++++++++++++++++++++++ location = " + locations);
         if ( locations != null && !locations.isEmpty()) {
             center.setLocations(locations
                     .stream()
@@ -135,7 +134,6 @@ public class CenterServiceImpl implements CenterService {
         }
 
         List<Long> clubsId =centerProfile.getClubsId();
-        log.info("______________________________ clubsId = " + clubsId);
         if(clubsId != null &&  !clubsId.isEmpty())
         for(Long id : clubsId ){
             Club club = clubService.getClubById(id);
@@ -289,7 +287,7 @@ public class CenterServiceImpl implements CenterService {
                 .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
                 .collect(Collectors.toList());
 
-//        log.info("**/getting list of centers = " + centerResponses);
+        log.info("**/getting list of centers = " + centerResponses);
         return centerResponses;
     }
 
