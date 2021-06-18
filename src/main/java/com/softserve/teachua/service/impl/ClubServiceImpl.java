@@ -314,7 +314,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public List<ClubResponse> getSimilarClubsByCategoryName(SimilarClubProfile similarClubProfile) {
-        return clubRepository.findByCategoryName(
+        return clubRepository.findByCategoriesNames(
                 similarClubProfile.getId(),
                 CategoryUtil.replaceSemicolonToComma(similarClubProfile.getCategoriesName()),
                 similarClubProfile.getCityName(),
@@ -332,6 +332,9 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public Page<ClubResponse> getAdvancedSearchClubs(AdvancedSearchClubProfile advancedSearchClubProfile, Pageable pageable) {
+
+        log.info("getAdvancedSearchClubs, advClubProf :" + advancedSearchClubProfile.toString());
+
         Page<Club> clubResponses = clubRepository.findAllBylAdvancedSearch(
                 advancedSearchClubProfile.getAge(),
                 advancedSearchClubProfile.getCityName(),
@@ -357,12 +360,24 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable) {
 
-        Page<Club> clubResponses = clubRepository.findAllByParameters(
-                searchClubProfile.getClubName(),
-                searchClubProfile.getCityName(),
-                searchClubProfile.getCategoryName(),
-                searchClubProfile.getIsOnline(),
-                pageable);
+        log.info("getClubsBySearchParameters ===> ");
+        log.info(searchClubProfile.toString());
+
+        Page<Club> clubResponses = null;
+        if (!searchClubProfile.getCategoryName().equals("")) {
+            log.info("find by category name ===>>>");
+            clubResponses = clubRepository
+                    .findAllByCategoryNameAndCity(searchClubProfile.getCategoryName(),
+                            searchClubProfile.getCityName(),
+                            pageable);
+        }else{
+            clubResponses = clubRepository.findAllByParameters(
+                    searchClubProfile.getClubName(),
+                    searchClubProfile.getCityName(),
+                    searchClubProfile.getCategoryName(),
+                    searchClubProfile.getIsOnline(),
+                    pageable);
+        }
 
         log.info("===find clubs : " + clubResponses.getNumberOfElements());
 
