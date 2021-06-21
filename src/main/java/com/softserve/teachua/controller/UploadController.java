@@ -15,7 +15,7 @@ public class UploadController implements Api {
 
     @Value("${application.upload.path}")
     private String uploadDirectory;
-    private FileUploadServiceImpl fileUploadServiceImpl;
+    private final FileUploadServiceImpl fileUploadServiceImpl;
 
     @Autowired
     public UploadController(FileUploadServiceImpl fileUploadServiceImpl) {

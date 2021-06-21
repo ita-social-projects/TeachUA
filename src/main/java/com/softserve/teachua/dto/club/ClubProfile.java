@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.club;
 
+import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
@@ -7,7 +8,6 @@ import lombok.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @AllArgsConstructor
@@ -43,6 +43,8 @@ public class ClubProfile implements Convertible {
     private String urlBackground;
 
     private String urlLogo;
+
+    private List<GalleryPhotoProfile> urlGallery;
 
     private Boolean isOnline;
 
