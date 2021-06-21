@@ -8,7 +8,6 @@ import lombok.*;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,8 +36,6 @@ public class Club implements Convertible, Archivable {
     private String name;
 
     @Column(columnDefinition = "TEXT", length = 1500)
-    @Pattern(regexp = "^[А-Яа-яёЁЇїІіЄєҐґa-zA-Z0-9()\\!\\\"#$%&'*\\n+\\r, ,-.:;\\\\<=>?|@_`{}~^\\/\\[\\]]{40,1500}$",
-           message = "This field isn`t correct")
     private String description;
 
     @Column
