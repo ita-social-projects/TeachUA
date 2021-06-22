@@ -41,7 +41,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "LEFT JOIN locations.district AS district " +
             "LEFT JOIN locations.station AS station WHERE " +
             "((:city NOT LIKE 'online' AND (:isOnline IS NULL OR club.isOnline = :isOnline) AND city.name = :city) OR " +
-            "(:city LIKE 'online' AND club.isOnline = true AND city IS NULL)) AND " +
+            "(:city LIKE 'online' AND club.isOnline = true AND city IS NULL)) OR " +
+            "(:city IS NULL OR city.name = :city) AND " +
             "(club.ageFrom <= :age AND club.ageTo >= :age OR :age IS NULL) AND " +
             "(category.name IN (:categories) OR :categories IS NULL) AND " +
             "(:district IS NULL OR district.name = :district) AND " +
@@ -60,8 +61,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "LEFT JOIN locations.city AS city " +
             "JOIN club.categories AS category WHERE " +
             "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) OR " +
-            "LOWER(club.description) LIKE LOWER(CONCAT('%', :name , '%')) AND "+
-            "((:isOnline = false AND city.name LIKE CONCAT('%', :city , '%')) OR " +
+            "LOWER(club.description) LIKE LOWER(CONCAT('%', :name , '%')) AND " +
+            "((:isOnline = false AND city.name = :city ) OR " +
             "(:isOnline = true AND club.isOnline = true AND city IS NULL)) AND " +
             "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
     Page<Club> findAllByParameters(
@@ -71,14 +72,23 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             @Param("isOnline") Boolean isOnline,
             Pageable pageable);
 
+    @Query(value = "SELECT DISTINCT club from Club AS club " +
+            "JOIN club.locations AS locations " +
+            "JOIN club.categories AS category WHERE " +
+            "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%')) AND " +
+            "locations.city.name = :city")
+    Page<Club> findAllByCategoryNameAndCity(@Param("category") String categoryName,
+                                            @Param("city") String cityName,
+                                            Pageable pageable);
+
     @Query("SELECT DISTINCT club from Club AS club " +
             "JOIN club.locations AS locations " +
             "JOIN club.categories AS category WHERE " +
             "locations.city.name LIKE CONCAT('%', :city , '%') AND " +
             "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
     List<Club> findAllClubsByParameters(
-            @Param("city") String cityName,
-            @Param("category") String categoryName);
+            @Param("category") String categoryName,
+            @Param("city") String cityName);
 
     @Query("SELECT c FROM Club AS c " +
             "JOIN c.locations AS locations " +
@@ -88,36 +98,16 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
                               @Param("city") String cityName,
                               Pageable pageable);
 
-   /**
-    * @author Vasyl Khula
-    */
-// alternatives ways to implement feature BY using NATIVE QUERY
-        // join with  all tables !!!
-//    @Query(value = "SELECT * from clubs as clubs "+
-//            " JOIN centers as centers on clubs.center_id=centers.id "+
-//            " JOIN locations as loc on centers.id=loc.center_id "+
-//            " JOIN cities as cities on loc.city_id=cities.id "+
-//            " WHERE LOWER (centers.name) LIKE LOWER (CONCAT('%', :centerName, '%')) OR "+
-//            " LOWER (centers.description) LIKE LOWER (CONCAT('%', :centerName, '%')) AND " +
-//            "cities.name = :cityName",
-//            nativeQuery = true)
-        //using subselect
-//    @Query(value = "SELECT  * from clubs as clubs WHERE clubs.center_id IN "+
-//            "(SELECT DISTINCT centers.id FROM centers as centers "+
-//            " JOIN locations as loc on centers.id=loc.center_id "+
-//            " JOIN cities as cities on loc.city_id=cities.id "+
-//            " WHERE LOWER (centers.name) LIKE LOWER (CONCAT('%', :centerName, '%')) OR "+
-//            " LOWER (centers.description) LIKE LOWER (CONCAT('%', :centerName, '%')) AND " +
-//            "cities.name = :cityName )",
-//            nativeQuery = true)
-
-    @Query("select center.clubs from Center as center "+
+    /**
+     * @author Vasyl Khula
+     */
+    @Query("select center.clubs from Center as center " +
             "join center.locations AS locations " +
-            " where (lower (center.name)) LIKE lower (concat('%', :centerName , '%')) or "+
+            " where (lower (center.name)) LIKE lower (concat('%', :centerName , '%')) or " +
             " lower (center.description) LIKE lower (concat('%', :centerName , '%'))  and " +
             " locations.city.name = :cityName")
     Page<Club> findClubsByCenterName(@Param("centerName") String centerName,
-                                     @Param("cityName") String cityName,  Pageable pageable);
+                                     @Param("cityName") String cityName, Pageable pageable);
 
 
     @Query("SELECT DISTINCT club from Club AS club " +
@@ -126,11 +116,10 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "category.name IN (:categoriesName) AND " +
             "locations.city.name = :cityName " +
             "AND club.id <> :id")
-
-    Page<Club> findByCategoryName(@Param("id") Long id,
-                                  @Param("categoriesName") List<String> categoriesName,
-                                  @Param("cityName") String cityName,
-                                  Pageable pageable);
+    Page<Club> findByCategoriesNames(@Param("id") Long id,
+                                     @Param("categoriesName") List<String> categoriesName,
+                                     @Param("cityName") String cityName,
+                                     Pageable pageable);
 
     @Modifying
     @Query(value = "UPDATE clubs SET rating=:rating WHERE id = :club_id", nativeQuery = true)
