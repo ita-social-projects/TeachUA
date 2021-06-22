@@ -5,6 +5,7 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
@@ -41,6 +42,7 @@ public class CenterServiceImpl implements CenterService {
     private static final String CENTER_NOT_FOUND_BY_NAME = "Center not found by name: %s";
     private static final String CENTER_DELETING_ERROR = "Can't delete center cause of relationship";
 
+    private final LocationService locationService;
     private final CenterRepository centerRepository;
     private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
@@ -55,7 +57,7 @@ public class CenterServiceImpl implements CenterService {
 
 
     @Autowired
-    public CenterServiceImpl(CenterRepository centerRepository,
+    public CenterServiceImpl(LocationService locationService, CenterRepository centerRepository,
                              ArchiveService archiveService,
                              DtoConverter dtoConverter,
                              ClubService clubService,
@@ -66,6 +68,7 @@ public class CenterServiceImpl implements CenterService {
                              ClubRepository clubRepository,
                              UserRepository userRepository,
                              CenterToCenterResponseConverter centerToCenterResponseConverter) {
+        this.locationService = locationService;
         this.centerRepository = centerRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
@@ -200,9 +203,19 @@ public class CenterServiceImpl implements CenterService {
     public CenterResponse deleteCenterById(Long id) {
         Center center = getCenterById(id);
 
+
         archiveService.saveModel(center);
 
         try {
+            log.info("delete Center");
+            clubRepository.findAll()
+                    .stream()
+                    .filter(club -> club.getCenter() !=null && club.getCenter().getId().equals(id))
+                    .forEach(club -> club.setCenter(null));
+            locationRepository.findAll()
+                    .stream()
+                    .filter(location -> location.getCenter() != null && location.getCenter().getId().equals(id))
+                    .forEach(location -> location.setCenter(null));
             centerRepository.deleteById(id);
             centerRepository.flush();
         } catch (DataAccessException | ValidationException e) {
