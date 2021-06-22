@@ -4,6 +4,7 @@ import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.*;
+import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
@@ -15,6 +16,7 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.*;
 import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
+import com.softserve.teachua.repository.GalleryRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.service.*;
 import com.softserve.teachua.utils.CategoryUtil;
@@ -57,6 +59,7 @@ public class ClubServiceImpl implements ClubService {
     private final LocationService locationService;
     private final FileUploadService fileUploadService;
     private final CoordinatesConverter coordinatesConverter;
+    private final GalleryRepository galleryRepository;
 
 
     @Autowired
@@ -72,7 +75,9 @@ public class ClubServiceImpl implements ClubService {
                            UserService userService,
                            ClubToClubResponseConverter toClubResponseConverter,
                            LocationService locationService,
-                           FileUploadService fileUploadService, CoordinatesConverter coordinatesConverter) {
+                           FileUploadService fileUploadService,
+                           CoordinatesConverter coordinatesConverter,
+                           GalleryRepository galleryRepository) {
 
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
@@ -88,6 +93,7 @@ public class ClubServiceImpl implements ClubService {
         this.locationService = locationService;
         this.fileUploadService = fileUploadService;
         this.coordinatesConverter = coordinatesConverter;
+        this.galleryRepository = galleryRepository;
     }
 
     /**
@@ -246,6 +252,18 @@ public class ClubServiceImpl implements ClubService {
                             .collect(Collectors.toSet())
             );
         }
+
+        List<GalleryPhotoProfile> galleryPhotos = clubProfile.getUrlGallery();
+        if (galleryPhotos != null && !galleryPhotos.isEmpty()) {
+            club.setUrlGallery(
+                    galleryPhotos.stream()
+                        .map(url -> galleryRepository.save(dtoConverter.convertToEntity(url, new GalleryPhoto()).
+                                withClub(club).
+                                withUrl(url.getUrlGallery())))
+                        .collect(Collectors.toList())
+            );
+        }
+
         log.info("adding club with name : {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
     }
@@ -468,7 +486,7 @@ public class ClubServiceImpl implements ClubService {
                     .stream()
                     .filter(location -> location.getClub() != null && location.getClub().getId().equals(id))
                     .forEach(location -> locationService.addLocation(dtoConverter.convertToDto(location.withClub(null), LocationProfile.class)));
-            fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground());
+            fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground(), club.getUrlGallery());
             updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class));
 
             clubRepository.deleteById(id);

@@ -1,6 +1,7 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.service.FileUploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.file.*;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -39,23 +41,30 @@ public class FileUploadServiceImpl implements FileUploadService {
         return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
     }
 
-    public void deleteImages(String urlLogo, String urlBackground) {
-        // assuming that path to folder will look like target/upload/clubs/PrezidentUkrani
+    public void deleteImages(String urlLogo, String urlBackground, List<GalleryPhoto> urlGallery) {
+        // assuming that path to folder will look like target/upload/clubs/uuidv4
 
-        String folderName;
-        if (urlLogo != null && urlLogo.contains(UPLOAD_LOCATION)) {
-            folderName = urlLogo.substring(0, ordinalIndexOf(urlLogo, "/", 4, false));
-        } else if (urlBackground != null && urlBackground.contains(UPLOAD_LOCATION)) {
-            folderName = urlBackground.substring(0, ordinalIndexOf(urlBackground, "/", 4, false));;
-        } else {
-            return ;
+        String folderName = null;
+        try {
+            if (urlLogo != null && urlLogo.contains(UPLOAD_LOCATION)) {
+                folderName = urlLogo.substring(0, ordinalIndexOf(urlLogo, "/", 4, false));
+            } else if (urlBackground != null && urlBackground.contains(UPLOAD_LOCATION)) {
+                folderName = urlBackground.substring(0, ordinalIndexOf(urlBackground, "/", 4, false));;
+            } else if (urlGallery != null && !urlGallery.isEmpty()) {
+                String url = urlGallery.get(0).getUrl();
+                folderName = url.substring(0, ordinalIndexOf(url, "/", 4, false));
+            }
+        } catch (IndexOutOfBoundsException ex) {
+            log.error("Incorrect photo url");
         }
 
-        try {
-            FileUtils.deleteDirectory(new File("target" + folderName));
-        } catch (IOException ex) {
-            log.error("Folder " + folderName + " can not be deleted");
-        }   
+        if (folderName != null) {
+            try {
+                FileUtils.deleteDirectory(new File("target" + folderName));
+            } catch (IOException ex) {
+                log.error("Folder " + folderName + " can not be deleted");
+            }
+        }
     }
 
     private int ordinalIndexOf(final String str, final String searchStr, final int ordinal, final boolean lastIndex) {

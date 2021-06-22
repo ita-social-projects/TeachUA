@@ -5,10 +5,11 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
+import com.softserve.teachua.model.GalleryPhoto;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -46,6 +47,11 @@ public class Club implements Convertible, Archivable {
 
     @Column
     private String urlBackground;
+
+    @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    @ToString.Exclude
+    private List<GalleryPhoto> urlGallery;
 
     @Column
     private String workTime;
