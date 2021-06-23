@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.DataFormatException;
@@ -276,8 +277,10 @@ public class DataLoaderServiceImpl implements DataLoaderService {
             } catch (AlreadyExistException e) {
             	log.error("***###ERROR Club to DB: "+ club.toString());
                 log.error(e.getMessage());
+            }catch (ConstraintViolationException constraintViolationException) {
+                log.error("Validation in description: " + club.getClubExternalId());
+                log.error(constraintViolationException.getMessage());
             }
-
         }
     }
 

@@ -8,6 +8,7 @@ import lombok.*;
 import com.softserve.teachua.model.GalleryPhoto;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,6 +38,8 @@ public class Club implements Convertible, Archivable {
     private String name;
 
     @Column(columnDefinition = "TEXT", length = 1500)
+    @Pattern(regexp = "^[А-Яа-яёЁЇїІіЄєҐґa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]{40,1500}$",
+            message = "This description isn`t correct")
     private String description;
 
     @Column
