@@ -49,13 +49,15 @@ public class Location implements Convertible {
     private City city;
 
     @ManyToOne
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonBackReference(value = "location-club")
     @JoinColumn(name = "club_id", referencedColumnName = "id")
     @ToString.Exclude
     private Club club;
 
     @ManyToOne
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonBackReference(value = "location-center")
     @JoinColumn(name = "center_id", referencedColumnName = "id")
     @ToString.Exclude
     private Center center;

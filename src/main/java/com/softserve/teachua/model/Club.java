@@ -57,7 +57,8 @@ public class Club implements Convertible, Archivable {
     private Boolean isOnline;
 
     @OneToMany(mappedBy = "club")
-    @JsonManagedReference
+//    @JsonManagedReference
+    @JsonManagedReference(value = "location-club")
     @ToString.Exclude
     private Set<Location> locations;
 
@@ -75,7 +76,8 @@ public class Club implements Convertible, Archivable {
 
     @ManyToOne
     @JoinColumn(name = "center_id", referencedColumnName = "id")
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonBackReference(value = "club-center")
     @ToString.Exclude
     private Center center;
 

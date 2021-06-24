@@ -96,7 +96,7 @@ public class ClubServiceImpl implements ClubService {
      * @return new {@code ClubResponse}.
      */
     @Override
-    public ClubResponse getClubProfileById(Long id) {
+    public ClubResponse getClubResponseById(Long id) {
         return toClubResponseConverter.convertToClubResponse(getClubById(id));
     }
 
@@ -161,9 +161,14 @@ public class ClubServiceImpl implements ClubService {
      * @throws NotExistException if club not exists by id.
      */
     @Override
-    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile) {
+    public SuccessUpdatedClub updateClub(Long id, ClubProfile clubProfile) {
         Club club = getClubById(id);
         Club newClub = dtoConverter.convertToEntity(clubProfile, club)
+                .withCategories(clubProfile.getCategoriesName()
+                        .stream()
+                        .map(categoryService::getCategoryByName)
+                        .collect(Collectors.toSet()))
+                .withUser(club.getUser())
                 .withId(id);
 
         log.info("updating club by id {}", newClub);
@@ -217,10 +222,6 @@ public class ClubServiceImpl implements ClubService {
             user = userService.getUserById(clubProfile.getUserId());
         }
 
-        //todo delete or replace this block
-        log.info("== add method");
-
-        log.info("==clubService=?  clubProfile.centerID" + clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
@@ -247,6 +248,10 @@ public class ClubServiceImpl implements ClubService {
         }
         log.info("adding club with name : {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
+    }
+
+    private boolean isClubExistByName(String name) {
+        return clubRepository.existsByName(name);
     }
 
     @Override
@@ -415,6 +420,7 @@ public class ClubServiceImpl implements ClubService {
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
 
+    @Override
     public List<ClubResponse> getClubByCategoryAndCity(SearchClubProfile searchClubProfile) {
         List<Club> clubResponses = clubRepository.findAllClubsByParameters(
                 searchClubProfile.getCityName(), searchClubProfile.getCategoryName());
@@ -453,7 +459,7 @@ public class ClubServiceImpl implements ClubService {
                     .filter(location -> location.getClub() != null && location.getClub().getId().equals(id))
                     .forEach(location -> locationService.addLocation(dtoConverter.convertToDto(location.withClub(null), LocationProfile.class)));
             fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground());
-            updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class));
+            clubRepository.save(club.withLocations(null));
 
             clubRepository.deleteById(id);
             clubRepository.flush();
@@ -463,10 +469,6 @@ public class ClubServiceImpl implements ClubService {
 
         log.info("club {} was successfully deleted", club);
         return toClubResponseConverter.convertToClubResponse(club);
-    }
-
-    private boolean isClubExistByName(String name) {
-        return clubRepository.existsByName(name);
     }
 
     private Optional<Club> getOptionalClubById(Long id) {

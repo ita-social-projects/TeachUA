@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface ClubService {
 
-    ClubResponse getClubProfileById(Long id);
+    ClubResponse getClubResponseById(Long id);
 
     Club getClubById(Long id);
 
@@ -24,7 +24,7 @@ public interface ClubService {
 
     Club getClubByName(String name);
 
-    SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile);
+    SuccessUpdatedClub updateClub(Long id, ClubProfile clubProfile);
 
     ClubResponse getClubProfileByName(String name);
 

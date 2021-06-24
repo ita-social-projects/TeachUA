@@ -1,10 +1,7 @@
 package com.softserve.teachua.dto.club;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.Category;
-import com.softserve.teachua.model.City;
-import com.softserve.teachua.model.District;
-import com.softserve.teachua.model.Station;
+import com.softserve.teachua.model.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,21 +14,20 @@ import java.util.Set;
 @Builder
 @Data
 public class SuccessUpdatedClub implements Convertible {
-
     private Long id;
-    private String name;
-    private City city;
-    private String address;
-    private Double latitude;
-    private Double longitude;
-    private Set<Category> categories;
-    private String description;
     private Integer ageFrom;
     private Integer ageTo;
+    private String name;
+    private String description;
     private String urlWeb;
     private String urlLogo;
+    private String urlBackground;
+    private String workTime;
+    private Set<Category> categories;
+    private User user;
+    private Center center;
     private Double rating;
-    private District district;
-    private Station station;
+    private Set<Location> locations;
     private Boolean isApproved;
+    private Boolean isOnline;
 }
