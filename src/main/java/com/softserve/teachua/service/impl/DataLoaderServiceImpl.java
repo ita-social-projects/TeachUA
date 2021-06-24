@@ -211,6 +211,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
             } catch (AlreadyExistException e) {
             	log.error("***###ERROR CENTER to DB: "+ center.toString());
                 log.error("Trying to add already exists center from excel");
+            }catch (Exception constraintViolationException) {
+                log.error("Validation in description center: " + center.getCenterExternalId());
+                log.error(constraintViolationException.getMessage());
             }
 
         }
@@ -277,7 +280,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
             } catch (AlreadyExistException e) {
             	log.error("***###ERROR Club to DB: "+ club.toString());
                 log.error(e.getMessage());
-            }catch (ConstraintViolationException constraintViolationException) {
+            }catch (Exception constraintViolationException) {
                 log.error("Validation in description: " + club.getClubExternalId());
                 log.error(constraintViolationException.getMessage());
             }
