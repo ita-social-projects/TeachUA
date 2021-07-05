@@ -162,8 +162,11 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public SuccessUpdatedClub updateClub(Long id, ClubProfile clubProfile) {
+        convertLocationProfile(clubProfile);
+
         Club club = getClubById(id);
-        Club newClub = dtoConverter.convertToEntity(clubProfile, club)
+
+        Club newClub = clubRepository.save(dtoConverter.convertToEntity(clubProfile, club))
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
                         .map(categoryService::getCategoryByName)
@@ -171,8 +174,50 @@ public class ClubServiceImpl implements ClubService {
                 .withUser(club.getUser())
                 .withId(id);
 
+        setLocationsToClubProfile(clubProfile, newClub);
+
         log.info("updating club by id {}", newClub);
-        return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);
+        return dtoConverter.convertToDto(newClub, SuccessUpdatedClub.class);
+    }
+
+    private void setLocationsToClubProfile(ClubProfile clubProfile, Club newClub) {
+        List<LocationProfile> locations = clubProfile.getLocations();
+        if (locations != null && !locations.isEmpty()) {
+            newClub.setLocations(
+                    clubProfile.getLocations()
+                            .stream()
+                            .map(locationProfile -> locationRepository.save(
+                                    dtoConverter.convertToEntity(locationProfile, new Location())
+                                            .withClub(newClub)
+                                            .withCity(cityService.getCityById(locationProfile.getCityId()))
+                                            .withDistrict(districtService.getDistrictById(
+                                                    locationProfile.getDistrictId())
+                                            )
+                                            .withStation(stationService.getStationById(
+                                                    locationProfile.getStationId()))
+                            ))
+                            .collect(Collectors.toSet())
+            );
+        }
+    }
+
+    private void convertLocationProfile(ClubProfile clubProfile) {
+        List<LocationProfile> locations = clubProfile.getLocations();
+
+        if (locations != null && !locations.isEmpty()) {
+            for (LocationProfile profile : locations) {
+                if (profile.getCoordinates() != null) coordinatesConverter.LocationProfileConverterToDb(profile);
+                if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
+                    profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
+                }
+                if (profile.getDistrictName() != null && !profile.getDistrictName().isEmpty()) {
+                    profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
+                }
+                if (profile.getStationName() != null && !profile.getStationName().isEmpty()) {
+                    profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
+                }
+            }
+        }
     }
 
     /**
@@ -196,22 +241,7 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public SuccessCreatedClub addClub(ClubProfile clubProfile) {
-        List<LocationProfile> locations = clubProfile.getLocations();
-
-        if (locations != null && !locations.isEmpty()) {
-            for (LocationProfile profile : locations) {
-                coordinatesConverter.LocationProfileConverterToDb(profile);
-                if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
-                    profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
-                }
-                if (profile.getDistrictName() != null && !profile.getDistrictName().isEmpty()) {
-                    profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
-                }
-                if (profile.getStationName() != null && !profile.getStationName().isEmpty()) {
-                    profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
-                }
-            }
-        }
+        convertLocationProfile(clubProfile);
 
         if (isClubExistByName(clubProfile.getName())) {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
@@ -229,23 +259,8 @@ public class ClubServiceImpl implements ClubService {
                         .collect(Collectors.toSet())))
                 .withUser(user);
 
-        if (locations != null && !locations.isEmpty()) {
-            club.setLocations(
-                    clubProfile.getLocations()
-                            .stream()
-                            .map(locationProfile -> locationRepository.save(
-                                    dtoConverter.convertToEntity(locationProfile, new Location())
-                                            .withClub(club)
-                                            .withCity(cityService.getCityById(locationProfile.getCityId()))
-                                            .withDistrict(districtService.getDistrictById(
-                                                    locationProfile.getDistrictId())
-                                            )
-                                            .withStation(stationService.getStationById(
-                                                    locationProfile.getStationId()))
-                            ))
-                            .collect(Collectors.toSet())
-            );
-        }
+
+        setLocationsToClubProfile(clubProfile, club);
         log.info("adding club with name : {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
     }

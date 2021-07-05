@@ -62,7 +62,7 @@ public class Club implements Convertible, Archivable {
     @ToString.Exclude
     private Set<Location> locations;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "club_category",
             joinColumns = {@JoinColumn(name = "club_id")},
             inverseJoinColumns = {@JoinColumn(name = "category_id")})
