@@ -134,7 +134,7 @@ public class ContactTypeServiceImpl implements ContactTypeService {
         }
 
         ContactType contactType = optionalContactType.get();
-        log.info("**/getting contact type by id = " + contactType);
+//        log.info("**/getting contact type by id = " + contactType);
         return contactType;
     }
 

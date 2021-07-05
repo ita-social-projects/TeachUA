@@ -6,6 +6,7 @@ import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -33,6 +34,8 @@ public class Center implements Convertible, Archivable {
     private String urlBackgroundPicture;
 
     @Column(columnDefinition="TEXT", length = 1500)
+    @Pattern(regexp = "^[А-Яа-яёЁЇїІіЄєҐґa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]{40,1500}$",
+            message = "This description isn`t correct")
     private String description;
 
     @Column

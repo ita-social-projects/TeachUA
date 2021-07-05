@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
+import com.softserve.teachua.model.GalleryPhoto;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -36,6 +38,8 @@ public class Club implements Convertible, Archivable {
     private String name;
 
     @Column(columnDefinition = "TEXT", length = 1500)
+    @Pattern(regexp = "^[А-Яа-яёЁЇїІіЄєҐґa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]{40,1500}$",
+            message = "This description isn`t correct")
     private String description;
 
     @Column
@@ -46,6 +50,11 @@ public class Club implements Convertible, Archivable {
 
     @Column
     private String urlBackground;
+
+    @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    @ToString.Exclude
+    private List<GalleryPhoto> urlGallery;
 
     @Column
     private String workTime;

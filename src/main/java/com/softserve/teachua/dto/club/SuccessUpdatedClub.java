@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -22,6 +24,7 @@ public class SuccessUpdatedClub implements Convertible {
     private String urlWeb;
     private String urlLogo;
     private String urlBackground;
+    private List<GalleryPhoto> urlGallery;
     private String workTime;
     private Set<Category> categories;
     private User user;

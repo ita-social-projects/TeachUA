@@ -5,6 +5,7 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
@@ -41,6 +42,7 @@ public class CenterServiceImpl implements CenterService {
     private static final String CENTER_NOT_FOUND_BY_NAME = "Center not found by name: %s";
     private static final String CENTER_DELETING_ERROR = "Can't delete center cause of relationship";
 
+    private final LocationService locationService;
     private final CenterRepository centerRepository;
     private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
@@ -55,7 +57,7 @@ public class CenterServiceImpl implements CenterService {
 
 
     @Autowired
-    public CenterServiceImpl(CenterRepository centerRepository,
+    public CenterServiceImpl(LocationService locationService, CenterRepository centerRepository,
                              ArchiveService archiveService,
                              DtoConverter dtoConverter,
                              ClubService clubService,
@@ -66,6 +68,7 @@ public class CenterServiceImpl implements CenterService {
                              ClubRepository clubRepository,
                              UserRepository userRepository,
                              CenterToCenterResponseConverter centerToCenterResponseConverter) {
+        this.locationService = locationService;
         this.centerRepository = centerRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
@@ -110,26 +113,24 @@ public class CenterServiceImpl implements CenterService {
         if(centerProfile.getUserId() != null){
             log.info("CenterServiceImpl=> centerProfile.userId == "+centerProfile.getUserId());
             user = userRepository.getOne(centerProfile.getUserId());
-        }
+        }else {log.info("CenterServiceImpl=> centerProfile.userId == null");}
 
-        log.info("CenterServiceImpl=> centerProfile.userId == null");
 
         Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
                     .withUser(user));
 
         List<LocationProfile> locations = centerProfile.getLocations();
-
         if ( locations != null && !locations.isEmpty()) {
             center.setLocations(locations
                     .stream()
                     .map(locationProfile -> locationRepository.save(
                             dtoConverter.convertToEntity(locationProfile, new Location())
                                     .withCenter(center)
-                                    .withCity(cityService.getCityById(locationProfile.getCityId()))
-                                    .withDistrict(districtService.getDistrictById(
-                                            locationProfile.getDistrictId()))
-                                    .withStation(stationService.getStationById(
-                                            locationProfile.getStationId()) )
+                                    .withCity(cityService.getCityByName(locationProfile.getCityName()))
+                                    .withDistrict(districtService.getDistrictByName(
+                                            locationProfile.getDistrictName()))
+                                    .withStation(stationService.getStationByName(
+                                            locationProfile.getStationName()) )
                     ))
                     .collect(Collectors.toSet())
             );
@@ -202,9 +203,19 @@ public class CenterServiceImpl implements CenterService {
     public CenterResponse deleteCenterById(Long id) {
         Center center = getCenterById(id);
 
+
         archiveService.saveModel(center);
 
         try {
+            log.info("delete Center");
+            clubRepository.findAll()
+                    .stream()
+                    .filter(club -> club.getCenter() !=null && club.getCenter().getId().equals(id))
+                    .forEach(club -> club.setCenter(null));
+            locationRepository.findAll()
+                    .stream()
+                    .filter(location -> location.getCenter() != null && location.getCenter().getId().equals(id))
+                    .forEach(location -> location.setCenter(null));
             centerRepository.deleteById(id);
             centerRepository.flush();
         } catch (DataAccessException | ValidationException e) {
@@ -289,7 +300,7 @@ public class CenterServiceImpl implements CenterService {
                 .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
                 .collect(Collectors.toList());
 
-//        log.info("**/getting list of centers = " + centerResponses);
+        log.info("**/getting list of centers = " + centerResponses);
         return centerResponses;
     }
 

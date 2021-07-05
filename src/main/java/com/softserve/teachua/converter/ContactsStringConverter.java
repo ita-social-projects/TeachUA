@@ -62,7 +62,7 @@ public class ContactsStringConverter {
             return result;
         }
 
-        log.info("contacts field =="+result.toString());
+//        log.info("contacts field =="+result.toString());
         return result;
     }
 }
