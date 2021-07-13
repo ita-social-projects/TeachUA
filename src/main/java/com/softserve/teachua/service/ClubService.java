@@ -16,6 +16,8 @@ public interface ClubService {
 
     ClubResponse getClubResponseById(Long id);
 
+    ClubProfile getClubProfileById(Long id);
+
     Club getClubById(Long id);
 
     Club addClubsFromExcel(ClubProfile clubProfile);

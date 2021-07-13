@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -107,6 +108,16 @@ public class ClubServiceImpl implements ClubService {
         return toClubResponseConverter.convertToClubResponse(getClubById(id));
     }
 
+    @Override
+    public ClubProfile getClubProfileById(Long id) {
+        Club club = getClubById(id);
+        ClubProfile clubProfile = dtoConverter.convertToDto(club, ClubProfile.class);
+        List<String> categoriesName = new ArrayList<>();
+        club.getCategories().forEach(category -> categoriesName.add(category.getName()));
+        clubProfile.setCategoriesName(categoriesName);
+        return clubProfile;
+    }
+
     /**
      * The method returns entity {@code Club} of club by id.
      *
@@ -171,15 +182,17 @@ public class ClubServiceImpl implements ClubService {
     public SuccessUpdatedClub updateClub(Long id, ClubProfile clubProfile) {
         convertLocationProfile(clubProfile);
 
-        Club club = getClubById(id);
+        User user = getClubById(id).getUser();
 
-        Club newClub = clubRepository.save(dtoConverter.convertToEntity(clubProfile, club))
+        Club club = dtoConverter.convertToEntity(clubProfile, getClubById(id))
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
                         .map(categoryService::getCategoryByName)
                         .collect(Collectors.toSet()))
-                .withUser(club.getUser())
+                .withUser(user)
                 .withId(id);
+
+        Club newClub = clubRepository.save(club);
 
         setLocationsToClubProfile(clubProfile, newClub);
 
@@ -409,7 +422,7 @@ public class ClubServiceImpl implements ClubService {
                     .findAllByCategoryNameAndCity(searchClubProfile.getCategoryName(),
                             searchClubProfile.getCityName(),
                             pageable);
-        }else{
+        } else {
             clubResponses = clubRepository.findAllByParameters(
                     searchClubProfile.getClubName(),
                     searchClubProfile.getCityName(),
