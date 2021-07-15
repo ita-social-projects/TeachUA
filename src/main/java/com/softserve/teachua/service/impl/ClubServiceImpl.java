@@ -35,6 +35,7 @@ import javax.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,9 +113,13 @@ public class ClubServiceImpl implements ClubService {
     public ClubProfile getClubProfileById(Long id) {
         Club club = getClubById(id);
         ClubProfile clubProfile = dtoConverter.convertToDto(club, ClubProfile.class);
+
         List<String> categoriesName = new ArrayList<>();
         club.getCategories().forEach(category -> categoriesName.add(category.getName()));
         clubProfile.setCategoriesName(categoriesName);
+
+        ClubResponse clubResponse = getClubResponseById(id);
+        clubProfile.setContactsArray(clubResponse.getContacts());
         return clubProfile;
     }
 
@@ -208,18 +213,41 @@ public class ClubServiceImpl implements ClubService {
                             .stream()
                             .map(locationProfile -> locationRepository.save(
                                     dtoConverter.convertToEntity(locationProfile, new Location())
+                                            .withId(locationProfile.getId())
                                             .withClub(newClub)
                                             .withCity(cityService.getCityById(locationProfile.getCityId()))
                                             .withDistrict(districtService.getDistrictById(
-                                                    locationProfile.getDistrictId())
-                                            )
+                                                    locationProfile.getDistrictId()))
                                             .withStation(stationService.getStationById(
                                                     locationProfile.getStationId()))
                             ))
                             .collect(Collectors.toSet())
             );
         }
+        log.info("" + newClub);
     }
+//    private void setLocationsToClubProfile(ClubProfile clubProfile, Club newClub) {
+//        List<LocationProfile> locations = clubProfile.getLocations();
+//        if (locations != null && !locations.isEmpty()) {
+//            newClub.setLocations(
+//                    clubProfile.getLocations()
+//                            .stream()
+//                            .map(locationProfile -> locationRepository.save(
+//                                    dtoConverter.convertToEntity(locationProfile, new Location())
+//                                            .withId(locationProfile.getId())
+//                                            .withClub(newClub)
+//                                            .withCity(cityService.getCityById(locationProfile.getCityId()))
+//                                            .withDistrict(districtService.getDistrictById(
+//                                                    locationProfile.getDistrictId())
+//                                            )
+//                                            .withStation(stationService.getStationById(
+//                                                    locationProfile.getStationId()))
+//                            ))
+//                            .collect(Collectors.toSet())
+//            );
+//        }
+//        log.info("" + newClub);
+//    }
 
     private void convertLocationProfile(ClubProfile clubProfile) {
         List<LocationProfile> locations = clubProfile.getLocations();
