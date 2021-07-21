@@ -33,4 +33,6 @@ public interface UserService {
     SuccessVerification verify(String verificationCode);
 
     void validateUserId(Long id, HttpServletRequest httpServletRequest);
+
+    UserVerifyPassword validateUser(UserVerifyPassword userVerifyPassword);//delete
 }
