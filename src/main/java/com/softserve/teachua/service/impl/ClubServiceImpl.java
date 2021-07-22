@@ -226,28 +226,6 @@ public class ClubServiceImpl implements ClubService {
         }
         log.info("" + newClub);
     }
-//    private void setLocationsToClubProfile(ClubProfile clubProfile, Club newClub) {
-//        List<LocationProfile> locations = clubProfile.getLocations();
-//        if (locations != null && !locations.isEmpty()) {
-//            newClub.setLocations(
-//                    clubProfile.getLocations()
-//                            .stream()
-//                            .map(locationProfile -> locationRepository.save(
-//                                    dtoConverter.convertToEntity(locationProfile, new Location())
-//                                            .withId(locationProfile.getId())
-//                                            .withClub(newClub)
-//                                            .withCity(cityService.getCityById(locationProfile.getCityId()))
-//                                            .withDistrict(districtService.getDistrictById(
-//                                                    locationProfile.getDistrictId())
-//                                            )
-//                                            .withStation(stationService.getStationById(
-//                                                    locationProfile.getStationId()))
-//                            ))
-//                            .collect(Collectors.toSet())
-//            );
-//        }
-//        log.info("" + newClub);
-//    }
 
     private void convertLocationProfile(ClubProfile clubProfile) {
         List<LocationProfile> locations = clubProfile.getLocations();
