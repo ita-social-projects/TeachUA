@@ -1,9 +1,7 @@
 package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.user.SuccessUpdatedUser;
-import com.softserve.teachua.dto.user.UserProfile;
-import com.softserve.teachua.dto.user.UserResponse;
+import com.softserve.teachua.dto.user.*;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.UserService;
@@ -50,7 +48,8 @@ public class UserController implements Api {
 
 
     @GetMapping("/user")
-    public User getUserByEmail(@RequestParam("email") String email) {
+    public User getUserByEmail(@RequestParam("email") String email, HttpServletRequest httpServletRequest) {
+        userService.validateUserId(userService.getUserByEmail(email).getId(), httpServletRequest);
         return userService.getUserByEmail(email);
     }
 
@@ -75,14 +74,14 @@ public class UserController implements Api {
     public SuccessUpdatedUser updateUser(
             @PathVariable Long id,
             @Valid
-            @RequestBody UserProfile userProfile, HttpServletRequest httpServletRequest) {
+            @RequestBody UserUpdateProfile userProfile, HttpServletRequest httpServletRequest) {
         userService.validateUserId(id, httpServletRequest);
         return userService.updateUser(id, userProfile);
     }
     @PutMapping("/user/update")
     public SuccessUpdatedUser updateUserByManager(
             @Valid
-            @RequestBody UserProfile userProfile, HttpServletRequest httpServletRequest) {
+            @RequestBody UserUpdateProfile userProfile, HttpServletRequest httpServletRequest) {
 //        userService.validateUserId(userProfile.getId(), httpServletRequest); == todo think about validation
         return userService.updateUser(userProfile.getId(), userProfile);
     }
@@ -103,5 +102,15 @@ public class UserController implements Api {
             System.out.println("auth is null");
         }
         return userService.deleteUserById(id);
+    }
+
+
+    @PostMapping("/resetPassword")
+    public UserLogin resetPassword(
+            @Valid
+            @RequestBody UserLogin userProfile, HttpServletRequest httpServletRequest) {
+        log.info("Controller \"reset\", userProfile = " + userProfile.toString());
+      //  userService.validateUserId(userProfile., httpServletRequest);
+        return userService.resetPassword(userProfile);//, userProfile);
     }
 }

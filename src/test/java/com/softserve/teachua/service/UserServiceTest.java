@@ -159,7 +159,7 @@ import static org.mockito.Mockito.*;
             userService.validateUser(userLogin);
         }).isInstanceOf(WrongAuthenticationException.class);
     }
-
+/*
     @Test
     public void updateUserTest() {
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
@@ -180,7 +180,7 @@ import static org.mockito.Mockito.*;
         assertThatThrownBy(() -> {
             userService.updateUser(NOT_EXISTING_ID, userProfile);
         }).isInstanceOf(NotExistException.class);
-    }
+    }*/
 
     @Test
     public void deleteUserByIdTest() {

@@ -210,13 +210,18 @@ public class UserServiceImpl implements UserService {
      *
      * @param userVerifyPassword- place dto with all params.
      * @return new {@code UserVerifyPassword}.
-     * @throws NotVerifiedUserException     if user password is incorrect.
+     * @throws NotVerifiedUserException if user password is incorrect.
      */
     @Override
-    public UserVerifyPassword validateUser(UserVerifyPassword userVerifyPassword){
+    public UserVerifyPassword validateUser(UserVerifyPassword userVerifyPassword) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-        if(passwordEncoder.matches(userVerifyPassword.getPassword(), getUserById(userVerifyPassword.getId()).getPassword())||userVerifyPassword.getPassword().length()==60){
+        if (userVerifyPassword.getPassword() == null) {
+            userVerifyPassword.setPassword(userRepository.findById(userVerifyPassword.getId()).get().getPassword());
+            return userVerifyPassword;
+        }
+
+        if (passwordEncoder.matches(userVerifyPassword.getPassword(), getUserById(userVerifyPassword.getId()).getPassword())) {
             return userVerifyPassword;
         }
         throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userVerifyPassword.getId()));
@@ -262,22 +267,23 @@ public class UserServiceImpl implements UserService {
      * @throws NotExistException if user id is incorrect.
      */
     @Override
-    public SuccessUpdatedUser updateUser(Long id, UserProfile userProfile) {
+    public SuccessUpdatedUser updateUser(Long id, UserUpdateProfile userProfile) {
+
         User user = getUserById(id);
         User newUser = null;
-        log.info(user.getPassword() + "  userProfile " + userProfile.getPassword());
-        if (userProfile.getPassword().length() > 20) {
+
+        if (userProfile.getPassword() != null) {
             newUser = dtoConverter.convertToEntity(userProfile, user)
                     .withId(id)
+                    .withPassword(encodeService.encodePassword(userProfile.getPassword()));
+            //.withRole(roleService.findByName(userProfile.getRoleName()));
+        } else {
+            newUser = dtoConverter.convertToEntity(userProfile, user)
                     .withPassword(user.getPassword())
-                    .withRole(roleService.findByName(userProfile.getRoleName()));
+                    .withId(id);
         }
-        if (userProfile.getPassword().length() <= 20) {
-            newUser = dtoConverter.convertToEntity(userProfile, user)
-                    .withId(id)
-                    .withPassword(encodeService.encodePassword(userProfile.getPassword()))
-                    .withRole(roleService.findByName(userProfile.getRoleName()));
-        }
+        log.info("updating role by id {}", newUser);
+
 
         log.info("updating role by id {}", newUser);
         return dtoConverter.convertToDto(userRepository.save(newUser), SuccessUpdatedUser.class);
@@ -401,5 +407,24 @@ public class UserServiceImpl implements UserService {
 
     private Optional<User> getOptionalUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public UserLogin resetPassword(UserLogin userLogin) { //todo
+        SuccessLogin validatedUser = validateUser(userLogin);
+
+        try {
+            sendVerificationEmail(getUserByEmail(validatedUser.getEmail()));
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        User user = getUserByEmail(validatedUser.getEmail());
+        userRepository.save(user);
+
+        return userLogin;
+
+
     }
 }

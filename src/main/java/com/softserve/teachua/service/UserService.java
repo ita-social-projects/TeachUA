@@ -26,7 +26,7 @@ public interface UserService {
 
     SuccessLogin validateUser(UserLogin userLogin);
 
-    SuccessUpdatedUser updateUser(Long id, UserProfile userProfile);
+    SuccessUpdatedUser updateUser(Long id, UserUpdateProfile userProfile);
 
     void updateUser(User user);
 
@@ -35,4 +35,6 @@ public interface UserService {
     void validateUserId(Long id, HttpServletRequest httpServletRequest);
 
     UserVerifyPassword validateUser(UserVerifyPassword userVerifyPassword);//delete
+
+    UserLogin resetPassword(UserLogin userLogin);
 }
