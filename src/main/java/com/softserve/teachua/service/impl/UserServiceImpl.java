@@ -22,6 +22,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -202,6 +204,30 @@ public class UserServiceImpl implements UserService {
         return dtoConverter.convertToDto(user, SuccessRegistration.class);
     }
 
+
+    /**
+     * The method returns dto {@code UserVerifyPassword} if user successfully logged.
+     *
+     * @param userVerifyPassword- place dto with all params.
+     * @return new {@code UserVerifyPassword}.
+     * @throws NotVerifiedUserException if user password is incorrect.
+     */
+    @Override
+    public UserVerifyPassword validateUser(UserVerifyPassword userVerifyPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        if (userVerifyPassword.getPassword() == null) {
+            userVerifyPassword.setPassword(userRepository.findById(userVerifyPassword.getId()).get().getPassword());
+            return userVerifyPassword;
+        }
+
+        if (passwordEncoder.matches(userVerifyPassword.getPassword(), getUserById(userVerifyPassword.getId()).getPassword())) {
+            return userVerifyPassword;
+        }
+        throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userVerifyPassword.getId()));
+    }
+
+
     /**
      * The method returns dto {@code SuccessLogin} if user successfully logged.
      *
@@ -241,12 +267,23 @@ public class UserServiceImpl implements UserService {
      * @throws NotExistException if user id is incorrect.
      */
     @Override
-    public SuccessUpdatedUser updateUser(Long id, UserProfile userProfile) {
-        User user = getUserById(id);
+    public SuccessUpdatedUser updateUser(Long id, UserUpdateProfile userProfile) {
 
-        User newUser = dtoConverter.convertToEntity(userProfile, user)
-                .withId(id)
-                .withRole(roleService.findByName(userProfile.getRoleName()));
+        User user = getUserById(id);
+        User newUser = null;
+
+        if (userProfile.getPassword() != null) {
+            newUser = dtoConverter.convertToEntity(userProfile, user)
+                    .withId(id)
+                    .withPassword(encodeService.encodePassword(userProfile.getPassword()));
+            //.withRole(roleService.findByName(userProfile.getRoleName()));
+        } else {
+            newUser = dtoConverter.convertToEntity(userProfile, user)
+                    .withPassword(user.getPassword())
+                    .withId(id);
+        }
+        log.info("updating role by id {}", newUser);
+
 
         log.info("updating role by id {}", newUser);
         return dtoConverter.convertToDto(userRepository.save(newUser), SuccessUpdatedUser.class);
@@ -295,8 +332,8 @@ public class UserServiceImpl implements UserService {
 
         SuccessVerification successVerificationUser = dtoConverter.convertToDto(user, SuccessVerification.class);
         successVerificationUser.setMessage(String.format("Користувач %s %s успішно зареєстрований",
-                                                        user.getFirstName(),
-                                                        user.getLastName()));
+                user.getFirstName(),
+                user.getLastName()));
         return successVerificationUser;
     }
 
@@ -370,5 +407,24 @@ public class UserServiceImpl implements UserService {
 
     private Optional<User> getOptionalUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public UserLogin resetPassword(UserLogin userLogin) { //todo
+        SuccessLogin validatedUser = validateUser(userLogin);
+
+        try {
+            sendVerificationEmail(getUserByEmail(validatedUser.getEmail()));
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        User user = getUserByEmail(validatedUser.getEmail());
+        userRepository.save(user);
+
+        return userLogin;
+
+
     }
 }

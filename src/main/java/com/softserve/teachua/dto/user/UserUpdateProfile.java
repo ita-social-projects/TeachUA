@@ -12,32 +12,29 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @Builder
 @Data
-public class UserProfile implements Convertible {
+public class UserUpdateProfile implements Convertible {
 
     private Long id;
 
-    @NotEmpty
+    //@NotEmpty
     private String email;
 
-    @NotEmpty
+    //@NotEmpty
     private String firstName;
 
-    @NotEmpty
+    //@NotEmpty
     private String lastName;
 
-    @NotEmpty
+    //@NotEmpty
     private String phone;
 
     //@NotEmpty
     private String password;
 
-    @NotEmpty
-    private String roleName;
-
-    private String verificationCode;
-
+    //private byte[] urlLogo;
     private String urlLogo;
 
     private String status;
 
+    private String roleName;
 }
