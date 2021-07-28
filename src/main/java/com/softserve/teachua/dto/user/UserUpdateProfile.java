@@ -1,8 +1,6 @@
 package com.softserve.teachua.dto.user;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.dto.marker.Convertible;
-import javafx.scene.image.Image;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
