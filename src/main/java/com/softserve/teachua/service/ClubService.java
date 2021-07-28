@@ -34,6 +34,8 @@ public interface ClubService {
 
     List<ClubResponse> getListOfClubs();
 
+    List<ClubResponse> getListOfClubsByCenterId(Long id);
+
     List<ClubResponse> getListClubsByUserId(Long id);
 
     Page<ClubResponse> getClubsByUserId(Long id, Pageable pageable);

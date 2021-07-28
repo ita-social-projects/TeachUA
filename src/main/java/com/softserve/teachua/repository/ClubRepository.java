@@ -34,6 +34,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     Page<Club> findAllByUserId(Long id, Pageable pageable);
 
+    List<Club> findAllByCenterId(@Param("id")Long id);
+
     @Query("SELECT DISTINCT club from Club AS club " +
             "JOIN club.categories AS category " +
             "LEFT JOIN club.locations AS locations " +

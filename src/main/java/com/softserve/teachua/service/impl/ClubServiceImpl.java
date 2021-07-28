@@ -183,7 +183,6 @@ public class ClubServiceImpl implements ClubService {
      * @param name - put club name.
      * @return new {@code ClubResponse}.
      */
-    @Override
     public ClubResponse getClubProfileByName(String name) {
 
         return toClubResponseConverter.convertToClubResponse(getClubByName(name));
@@ -317,6 +316,15 @@ public class ClubServiceImpl implements ClubService {
                 .collect(Collectors.toList());
 
         log.info("getting list of clubs {}", clubResponses);
+        return clubResponses;
+    }
+
+    @Override
+    public List<ClubResponse> getListOfClubsByCenterId(Long id) {
+        List<ClubResponse> clubResponses = clubRepository.findAllByCenterId(id)
+                .stream()
+                .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
+                .collect(Collectors.toList());
         return clubResponses;
     }
 

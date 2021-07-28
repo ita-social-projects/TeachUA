@@ -43,6 +43,12 @@ public class ClubController implements Api {
     }
 
 
+    @GetMapping("/clubs/center/{id}")
+    public List<ClubResponse> getListOfClubsByCenterId(@PathVariable Long id){
+        return clubService.getListOfClubsByCenterId(id);
+    }
+
+
     /**
      * The controller returns information {@code ClubResponse} about club.
      *
