@@ -5,7 +5,6 @@ import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
-import com.softserve.teachua.model.Club;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.service.ClubService;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +38,13 @@ public class ClubController implements Api {
      */
     @GetMapping("/club/{id}")
     public ClubResponse getClubById(@PathVariable Long id) {
-        return clubService.getClubProfileById(id);
+        return clubService.getClubResponseById(id);
     }
 
+    @GetMapping("/clubProfile/{id}")
+    public ClubProfile getClubProfileByClubId(@PathVariable Long id) {
+        return clubService.getClubProfileById(id);
+    }
 
     @GetMapping("/clubs/center/{id}")
     public List<ClubResponse> getListOfClubsByCenterId(@PathVariable Long id){
@@ -148,7 +151,7 @@ public class ClubController implements Api {
     public SuccessUpdatedClub updateClub(
             @PathVariable Long id,
             @Valid
-            @RequestBody ClubResponse clubProfile) {
+            @RequestBody ClubProfile clubProfile) {
         return clubService.updateClub(id, clubProfile);
     }
 

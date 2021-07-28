@@ -45,12 +45,14 @@ public class Center implements Convertible, Archivable {
     private String urlLogo;
 
     @OneToMany(mappedBy = "center")
-    @JsonManagedReference
+    @JsonManagedReference(value = "location-center")
+//    @JsonManagedReference
     @ToString.Exclude
     private Set<Location> locations;
 
     @OneToMany(mappedBy = "center")
-    @JsonManagedReference
+//    @JsonManagedReference
+    @JsonManagedReference(value = "club-center")
     @ToString.Exclude
     private Set<Club> clubs;
 

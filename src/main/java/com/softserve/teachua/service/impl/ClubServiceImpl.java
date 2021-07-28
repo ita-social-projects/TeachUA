@@ -32,8 +32,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -103,8 +105,22 @@ public class ClubServiceImpl implements ClubService {
      * @return new {@code ClubResponse}.
      */
     @Override
-    public ClubResponse getClubProfileById(Long id) {
+    public ClubResponse getClubResponseById(Long id) {
         return toClubResponseConverter.convertToClubResponse(getClubById(id));
+    }
+
+    @Override
+    public ClubProfile getClubProfileById(Long id) {
+        Club club = getClubById(id);
+        ClubProfile clubProfile = dtoConverter.convertToDto(club, ClubProfile.class);
+
+        List<String> categoriesName = new ArrayList<>();
+        club.getCategories().forEach(category -> categoriesName.add(category.getName()));
+        clubProfile.setCategoriesName(categoriesName);
+
+        ClubResponse clubResponse = getClubResponseById(id);
+        clubProfile.setContactsArray(clubResponse.getContacts());
+        return clubProfile;
     }
 
     /**
@@ -168,13 +184,66 @@ public class ClubServiceImpl implements ClubService {
      * @throws NotExistException if club not exists by id.
      */
     @Override
-    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile) {
-        Club club = getClubById(id);
-        Club newClub = dtoConverter.convertToEntity(clubProfile, club)
+    public SuccessUpdatedClub updateClub(Long id, ClubProfile clubProfile) {
+        convertLocationProfile(clubProfile);
+
+        User user = getClubById(id).getUser();
+
+        Club club = dtoConverter.convertToEntity(clubProfile, getClubById(id))
+                .withCategories(clubProfile.getCategoriesName()
+                        .stream()
+                        .map(categoryService::getCategoryByName)
+                        .collect(Collectors.toSet()))
+                .withUser(user)
                 .withId(id);
 
+        Club newClub = clubRepository.save(club);
+
+        setLocationsToClubProfile(clubProfile, newClub);
+
         log.info("updating club by id {}", newClub);
-        return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);
+        return dtoConverter.convertToDto(newClub, SuccessUpdatedClub.class);
+    }
+
+    private void setLocationsToClubProfile(ClubProfile clubProfile, Club newClub) {
+        List<LocationProfile> locations = clubProfile.getLocations();
+        if (locations != null && !locations.isEmpty()) {
+            newClub.setLocations(
+                    clubProfile.getLocations()
+                            .stream()
+                            .map(locationProfile -> locationRepository.save(
+                                    dtoConverter.convertToEntity(locationProfile, new Location())
+                                            .withId(locationProfile.getId())
+                                            .withClub(newClub)
+                                            .withCity(cityService.getCityById(locationProfile.getCityId()))
+                                            .withDistrict(districtService.getDistrictById(
+                                                    locationProfile.getDistrictId()))
+                                            .withStation(stationService.getStationById(
+                                                    locationProfile.getStationId()))
+                            ))
+                            .collect(Collectors.toSet())
+            );
+        }
+        log.info("" + newClub);
+    }
+
+    private void convertLocationProfile(ClubProfile clubProfile) {
+        List<LocationProfile> locations = clubProfile.getLocations();
+
+        if (locations != null && !locations.isEmpty()) {
+            for (LocationProfile profile : locations) {
+                if (profile.getCoordinates() != null) coordinatesConverter.LocationProfileConverterToDb(profile);
+                if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
+                    profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
+                }
+                if (profile.getDistrictName() != null && !profile.getDistrictName().isEmpty()) {
+                    profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
+                }
+                if (profile.getStationName() != null && !profile.getStationName().isEmpty()) {
+                    profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
+                }
+            }
+        }
     }
 
     /**
@@ -197,22 +266,7 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public SuccessCreatedClub addClub(ClubProfile clubProfile) {
-        List<LocationProfile> locations = clubProfile.getLocations();
-
-        if (locations != null && !locations.isEmpty()) {
-            for (LocationProfile profile : locations) {
-                coordinatesConverter.LocationProfileConverterToDb(profile);
-                if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
-                    profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
-                }
-                if (profile.getDistrictName() != null && !profile.getDistrictName().isEmpty()) {
-                    profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
-                }
-                if (profile.getStationName() != null && !profile.getStationName().isEmpty()) {
-                    profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
-                }
-            }
-        }
+        convertLocationProfile(clubProfile);
 
         if (isClubExistByName(clubProfile.getName())) {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
@@ -223,10 +277,6 @@ public class ClubServiceImpl implements ClubService {
             user = userService.getUserById(clubProfile.getUserId());
         }
 
-        //todo delete or replace this block
-        log.info("== add method");
-
-        log.info("==clubService=?  clubProfile.centerID" + clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
@@ -234,37 +284,26 @@ public class ClubServiceImpl implements ClubService {
                         .collect(Collectors.toSet())))
                 .withUser(user);
 
-        if (locations != null && !locations.isEmpty()) {
-            club.setLocations(
-                    clubProfile.getLocations()
-                            .stream()
-                            .map(locationProfile -> locationRepository.save(
-                                    dtoConverter.convertToEntity(locationProfile, new Location())
-                                            .withClub(club)
-                                            .withCity(cityService.getCityById(locationProfile.getCityId()))
-                                            .withDistrict(districtService.getDistrictById(
-                                                    locationProfile.getDistrictId())
-                                            )
-                                            .withStation(stationService.getStationById(
-                                                    locationProfile.getStationId()))
-                            ))
-                            .collect(Collectors.toSet())
-            );
-        }
+
+        setLocationsToClubProfile(clubProfile, club);
 
         List<GalleryPhotoProfile> galleryPhotos = clubProfile.getUrlGallery();
         if (galleryPhotos != null && !galleryPhotos.isEmpty()) {
             club.setUrlGallery(
                     galleryPhotos.stream()
-                        .map(url -> galleryRepository.save(dtoConverter.convertToEntity(url, new GalleryPhoto()).
-                                withClub(club).
-                                withUrl(url.getUrlGallery())))
-                        .collect(Collectors.toList())
+                            .map(url -> galleryRepository.save(dtoConverter.convertToEntity(url, new GalleryPhoto()).
+                                    withClub(club).
+                                    withUrl(url.getUrlGallery())))
+                            .collect(Collectors.toList())
             );
         }
 
         log.info("adding club with name : {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
+    }
+
+    private boolean isClubExistByName(String name) {
+        return clubRepository.existsByName(name);
     }
 
     @Override
@@ -397,7 +436,7 @@ public class ClubServiceImpl implements ClubService {
                     .findAllByCategoryNameAndCity(searchClubProfile.getCategoryName(),
                             searchClubProfile.getCityName(),
                             pageable);
-        }else{
+        } else {
             clubResponses = clubRepository.findAllByParameters(
                     searchClubProfile.getClubName(),
                     searchClubProfile.getCityName(),
@@ -457,6 +496,7 @@ public class ClubServiceImpl implements ClubService {
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
 
+    @Override
     public List<ClubResponse> getClubByCategoryAndCity(SearchClubProfile searchClubProfile) {
         List<Club> clubResponses = clubRepository.findAllClubsByParameters(
                 searchClubProfile.getCityName(), searchClubProfile.getCategoryName());
@@ -495,7 +535,7 @@ public class ClubServiceImpl implements ClubService {
                     .filter(location -> location.getClub() != null && location.getClub().getId().equals(id))
                     .forEach(location -> locationService.addLocation(dtoConverter.convertToDto(location.withClub(null), LocationProfile.class)));
             fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground(), club.getUrlGallery());
-            updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class));
+            clubRepository.save(club.withLocations(null));
 
             clubRepository.deleteById(id);
             clubRepository.flush();
@@ -505,10 +545,6 @@ public class ClubServiceImpl implements ClubService {
 
         log.info("club {} was successfully deleted", club);
         return toClubResponseConverter.convertToClubResponse(club);
-    }
-
-    private boolean isClubExistByName(String name) {
-        return clubRepository.existsByName(name);
     }
 
     private Optional<Club> getOptionalClubById(Long id) {

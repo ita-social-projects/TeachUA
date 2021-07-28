@@ -72,7 +72,6 @@ public class StationServiceImpl implements StationService {
         Optional<Station> optionalStation = id == null ? Optional.empty() : getOptionalStationById(id);
         if (!optionalStation.isPresent()) {
             return null;
-//            throw new NotExistException(String.format(STATION_NOT_FOUND_BY_ID, id));
         }
 
         Station station = optionalStation.get();

@@ -68,7 +68,6 @@ public class DistrictServiceImpl implements DistrictService {
         Optional<District> optionalDistrict = id == null ? Optional.empty() : getOptionalDistrictById(id);
         if (!optionalDistrict.isPresent()) {
             return null;
-//            throw new NotExistException(String.format(DISTRICT_NOT_FOUND_BY_ID, id));
         }
 
         District district = optionalDistrict.get();
