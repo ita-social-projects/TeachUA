@@ -275,12 +275,13 @@ public class UserServiceImpl implements UserService {
         if (userProfile.getPassword() != null) {
             newUser = dtoConverter.convertToEntity(userProfile, user)
                     .withId(id)
-                    .withPassword(encodeService.encodePassword(userProfile.getPassword()));
-            //.withRole(roleService.findByName(userProfile.getRoleName()));
+                    .withPassword(encodeService.encodePassword(userProfile.getPassword()))
+                    .withRole(roleService.findByName(userProfile.getRoleName()));
         } else {
             newUser = dtoConverter.convertToEntity(userProfile, user)
                     .withPassword(user.getPassword())
-                    .withId(id);
+                    .withId(id)
+                    .withRole(roleService.findByName(userProfile.getRoleName()));
         }
         log.info("updating role by id {}", newUser);
 
