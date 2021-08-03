@@ -6,6 +6,7 @@ import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,9 +27,11 @@ public class User implements Convertible, Archivable {
     private String password;
 
     @Column
+    @Pattern(regexp = "^[А-Яа-яёЁЇїІіЄєҐґa-zA-Z()]{1,25}$", message = "This first name isn`t correct")
     private String firstName;
 
     @Column
+    @Pattern(regexp = "^[А-Яа-яёЁЇїІіЄєҐґa-zA-Z()]{1,25}$", message = "This last name isn`t correct")
     private String lastName;
 
     @Column
