@@ -8,6 +8,7 @@ import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -105,12 +106,26 @@ public class UserController implements Api {
     }
 
 
-    @PostMapping("/resetPassword")
-    public UserLogin resetPassword(
+    @PostMapping("/resetpassword")
+    public SuccessUserPasswordReset resetPassword(
             @Valid
-            @RequestBody UserLogin userProfile, HttpServletRequest httpServletRequest) {
+            @RequestBody UserResetPassword userProfile, HttpServletRequest httpServletRequest) {
         log.info("Controller \"reset\", userProfile = " + userProfile.toString());
-      //  userService.validateUserId(userProfile., httpServletRequest);
-        return userService.resetPassword(userProfile);//, userProfile);
+        return userService.resetPassword(userProfile);
     }
+
+    @GetMapping("/verifyreset")
+    public SuccessVerification verifyUser(@Param("code") String code) {
+        log.info("Controller \"verify\",  code = " + code);
+        return userService.verifyChange(code);
+    }
+
+    @PostMapping("/verifyreset")
+    public SuccessUserPasswordReset changePassword(
+            @Valid
+            @RequestBody SuccessUserPasswordReset userProfile, HttpServletRequest httpServletRequest) {
+        return userService.verifyChangePassword(userProfile);
+    }
+
+
 }

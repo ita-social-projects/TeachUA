@@ -34,7 +34,12 @@ public interface UserService {
 
     void validateUserId(Long id, HttpServletRequest httpServletRequest);
 
-    UserVerifyPassword validateUser(UserVerifyPassword userVerifyPassword);//delete
+    UserVerifyPassword validateUser(UserVerifyPassword userVerifyPassword);
 
-    UserLogin resetPassword(UserLogin userLogin);
+    SuccessUserPasswordReset resetPassword(UserResetPassword userLogin);
+
+    SuccessUserPasswordReset verifyChangePassword(SuccessUserPasswordReset userResetPassword);
+
+//    SuccessUserPasswordReset verifyChange(String verificationCode);
+SuccessVerification verifyChange(String verificationCode);
 }
