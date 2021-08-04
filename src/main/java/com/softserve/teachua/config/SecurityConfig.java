@@ -95,6 +95,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/clubs",
                         "/challenge",
                         "/challenge/*",
+                        "/marathon",
+                        "/marathon/*",
                         "/about",
                         "/centers",
                         "/center/*",
