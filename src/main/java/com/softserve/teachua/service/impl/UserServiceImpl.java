@@ -371,8 +371,8 @@ public class UserServiceImpl implements UserService {
 
         content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
 
-   //     String verifyURL = baseUrl + "/verify?code=" + user.getVerificationCode();
-       String verifyURL = "http://localhost:3000/dev/verify?code=" + user.getVerificationCode();
+        String verifyURL = baseUrl + "/verify?code=" + user.getVerificationCode();
+     //  String verifyURL = "http://localhost:3000/dev/verify?code=" + user.getVerificationCode();
 
         content = content.replace("[[URL]]", verifyURL);
         helper.setText(content, true);
