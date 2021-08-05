@@ -104,28 +104,4 @@ public class UserController implements Api {
         }
         return userService.deleteUserById(id);
     }
-
-
-    @PostMapping("/resetpassword")
-    public SuccessUserPasswordReset resetPassword(
-            @Valid
-            @RequestBody UserResetPassword userProfile, HttpServletRequest httpServletRequest) {
-        log.info("Controller \"reset\", userProfile = " + userProfile.toString());
-        return userService.resetPassword(userProfile);
-    }
-
-    @GetMapping("/verifyreset")
-    public SuccessVerification verifyUser(@Param("code") String code) {
-        log.info("Controller \"verify\",  code = " + code);
-        return userService.verifyChange(code);
-    }
-
-    @PostMapping("/verifyreset")
-    public SuccessUserPasswordReset changePassword(
-            @Valid
-            @RequestBody SuccessUserPasswordReset userProfile, HttpServletRequest httpServletRequest) {
-        return userService.verifyChangePassword(userProfile);
-    }
-
-
 }

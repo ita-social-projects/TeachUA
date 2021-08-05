@@ -40,6 +40,5 @@ public interface UserService {
 
     SuccessUserPasswordReset verifyChangePassword(SuccessUserPasswordReset userResetPassword);
 
-//    SuccessUserPasswordReset verifyChange(String verificationCode);
-SuccessVerification verifyChange(String verificationCode);
+    SuccessVerification verifyChange(String verificationCode);
 }
