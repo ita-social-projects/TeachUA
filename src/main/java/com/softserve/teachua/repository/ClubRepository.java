@@ -41,8 +41,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "LEFT JOIN locations.district AS district " +
             "LEFT JOIN locations.station AS station WHERE " +
             "((:city NOT LIKE 'online' AND (:isOnline IS NULL OR club.isOnline = :isOnline) AND city.name = :city) OR " +
-            "(:city LIKE 'online' AND club.isOnline = true AND city IS NULL)) OR " +
-            "(:city IS NULL OR city.name = :city) AND " +
+            "(:city LIKE 'online' AND club.isOnline = true AND city IS NULL) OR " +
+            "(:city IS NULL OR city.name = :city))AND " +
             "(club.ageFrom <= :age AND club.ageTo >= :age OR :age IS NULL) AND " +
             "(category.name IN (:categories) OR :categories IS NULL) AND " +
             "(:district IS NULL OR district.name = :district) AND " +
@@ -87,8 +87,9 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "locations.city.name LIKE CONCAT('%', :city , '%') AND " +
             "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
     List<Club> findAllClubsByParameters(
-            @Param("category") String categoryName,
-            @Param("city") String cityName);
+            @Param("city") String cityName,
+            @Param("category") String categoryName);
+
 
     @Query("SELECT c FROM Club AS c " +
             "JOIN c.locations AS locations " +

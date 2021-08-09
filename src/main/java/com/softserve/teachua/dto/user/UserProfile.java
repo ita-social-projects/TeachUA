@@ -28,7 +28,7 @@ public class UserProfile implements Convertible {
     @NotEmpty
     private String phone;
 
-    //@NotEmpty
+//    @NotEmpty
     private String password;
 
     @NotEmpty
