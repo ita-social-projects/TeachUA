@@ -403,6 +403,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private Optional<User> getOptionalUserByVerificationCode(String verificationCode) {
+        log.info(verificationCode);
         return userRepository.findByVerificationCode(verificationCode);
     }
 
@@ -410,22 +411,84 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email);
     }
 
-    public UserLogin resetPassword(UserLogin userLogin) { //todo
-        SuccessLogin validatedUser = validateUser(userLogin);
+    public SuccessUserPasswordReset resetPassword(UserResetPassword userResetPassword) { //todo
 
+        User user = getUserByEmail(userResetPassword.getEmail());
+        user.setVerificationCode(RandomString.make(64));
         try {
-            sendVerificationEmail(getUserByEmail(validatedUser.getEmail()));
+            String toAddress = user.getEmail();
+            String fromAddress = (System.getenv("USER_EMAIL"));
+            String senderName = "TeachUA";
+            String subject = "Відновлення паролю";
+            String content = "Шановний/а [[userFullName]]!<br>"
+                    + "Для відновлення Вашого паролю, будь ласка, перейдіть за посиланням нижче: \n<br>"
+                    + "<h3><a href=\"[[URL]]\" target=\"_self\">Змінити пароль</a></h3>"
+                    + "Дякуємо!<br>"
+                    + "Ініціатива \"Навчай українською\"";
+
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+
+            helper.setFrom(fromAddress, senderName);
+            helper.setTo(toAddress);
+            helper.setSubject(subject);
+
+            content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
+
+            String verifyURL = baseUrl + "/verifyreset?code=" + user.getVerificationCode();
+
+            content = content.replace("[[URL]]", verifyURL);
+            helper.setText(content, true);
+
+            javaMailSender.send(message);
+            log.info("Email has been sent\" {}", user.getEmail());
+
         } catch (MessagingException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        User user = getUserByEmail(validatedUser.getEmail());
-        userRepository.save(user);
-
-        return userLogin;
-
+        return dtoConverter.convertToDto(user, SuccessUserPasswordReset.class);
 
     }
+
+    public SuccessVerification verifyChange(String verificationCode) {
+        log.info("step1: " + verificationCode);
+        User user = getUserByVerificationCode(verificationCode);
+        user.setStatus(true);
+        SuccessUserPasswordReset userPasswordReset = new SuccessUserPasswordReset();
+        userPasswordReset.setVerificationCode(verificationCode);
+        userPasswordReset.setEmail(user.getEmail());
+        userPasswordReset.setId(user.getId());
+        SuccessVerification
+                successVerificationUser = dtoConverter.convertToDto(user, SuccessVerification.class);
+        successVerificationUser.setMessage(String.format("Користувач %s %s верифікований",
+                user.getFirstName(),
+                user.getLastName()));
+
+        log.info("step 2: " + userPasswordReset.getVerificationCode() + " " + userPasswordReset.getEmail());
+       // return userPasswordReset;
+        return successVerificationUser;
+
+    }
+
+    public SuccessUserPasswordReset verifyChangePassword(SuccessUserPasswordReset userResetPassword) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        log.info("step 3: " + userResetPassword.getVerificationCode() + " " + userResetPassword.getEmail());
+        User user = getUserByVerificationCode(userResetPassword.getVerificationCode());
+        user.setStatus(true);
+        if (bCryptPasswordEncoder.matches(userResetPassword.getPassword(), user.getPassword())) {
+            throw new MatchingPasswordException();
+        }
+        userResetPassword.setEmail(user.getEmail());
+        userResetPassword.setId(user.getId());
+        user.setPassword(encodeService.encodePassword(userResetPassword.getPassword()));
+        user.setVerificationCode(null);
+
+        userRepository.save(user);
+        log.info("password reset {}", user);
+        return userResetPassword;
+    }
+
 }

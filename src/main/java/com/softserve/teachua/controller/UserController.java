@@ -8,6 +8,7 @@ import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -102,15 +103,5 @@ public class UserController implements Api {
             System.out.println("auth is null");
         }
         return userService.deleteUserById(id);
-    }
-
-
-    @PostMapping("/resetPassword")
-    public UserLogin resetPassword(
-            @Valid
-            @RequestBody UserLogin userProfile, HttpServletRequest httpServletRequest) {
-        log.info("Controller \"reset\", userProfile = " + userProfile.toString());
-      //  userService.validateUserId(userProfile., httpServletRequest);
-        return userService.resetPassword(userProfile);//, userProfile);
     }
 }
