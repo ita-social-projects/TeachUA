@@ -34,19 +34,20 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     Page<Club> findAllByUserId(Long id, Pageable pageable);
 
-    @Query("SELECT DISTINCT club from Club AS club " +
-            "JOIN club.categories AS category " +
-            "LEFT JOIN club.locations AS locations " +
-            "LEFT JOIN locations.city AS city " +
-            "LEFT JOIN locations.district AS district " +
-            "LEFT JOIN locations.station AS station WHERE " +
-            "((:city NOT LIKE 'online' AND (:isOnline IS NULL OR club.isOnline = :isOnline) AND city.name = :city) OR " +
-            "(:city LIKE 'online' AND club.isOnline = true AND city IS NULL) OR " +
-            "(:city IS NULL OR city.name = :city))AND " +
-            "(club.ageFrom <= :age AND club.ageTo >= :age OR :age IS NULL) AND " +
-            "(category.name IN (:categories) OR :categories IS NULL) AND " +
-            "(:district IS NULL OR district.name = :district) AND " +
-            "(:station IS NULL OR station.name = :station)")
+  @Query("SELECT DISTINCT club from Club AS club " +
+        "JOIN club.categories AS category " +
+        "LEFT JOIN club.locations AS locations " +
+        "LEFT JOIN locations.city AS city " +
+        "LEFT JOIN locations.district AS district " +
+        "LEFT JOIN locations.station AS station WHERE " +
+        "((:city NOT LIKE 'online' AND (:isOnline IS NULL OR club.isOnline = :isOnline) AND city.name = :city) OR " +
+        "(:city LIKE 'online' AND club.isOnline = true) OR " +
+        "(:city IS NULL OR city.name = :city)) AND " +
+        "(:isOnline is null or club.isOnline=:isOnline) AND "+
+        "(:age IS NULL or club.ageFrom <= :age AND club.ageTo >= :age) AND " +
+        "(:categories IS NULL OR category.name IN (:categories)) AND " +
+        "(:district IS NULL OR district.name = :district) AND " +
+        "(:station IS NULL OR station.name = :station)")
     Page<Club> findAllBylAdvancedSearch(
             @Param("age") Integer age,
             @Param("city") String cityName,
@@ -61,7 +62,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "LEFT JOIN locations.city AS city " +
             "JOIN club.categories AS category WHERE " +
             "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) OR " +
-            "LOWER(club.description) LIKE LOWER(CONCAT('%', :name , '%')) AND " +
+            "LOWER(club.description) LIKE LOWER(CONCAT('%', :name , '%'))AND " +
             "((:isOnline = false AND city.name = :city ) OR " +
             "(:isOnline = true AND club.isOnline = true AND city IS NULL)) AND " +
             "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
