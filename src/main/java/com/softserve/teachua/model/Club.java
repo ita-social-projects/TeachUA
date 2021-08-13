@@ -38,7 +38,7 @@ public class Club implements Convertible, Archivable {
     private String name;
 
     @Column(columnDefinition = "TEXT", length = 1500)
-    @Pattern(regexp = "^[А-Яа-яёЁЇїІіЄєҐґa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]{40,1500}$",
+    @Pattern(regexp = "^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]{40,1500}$",
             message = "This description isn`t correct")
     private String description;
 
