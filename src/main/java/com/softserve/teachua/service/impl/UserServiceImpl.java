@@ -384,7 +384,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void validateUserId(Long id, HttpServletRequest httpServletRequest) {
         String token = jwtProvider.getJwtFromRequest(httpServletRequest);
-        if (jwtProvider.getUserIdFromToken(token) != id) {
+        if (!jwtProvider.getUserIdFromToken(token).equals(id)) {
             throw new BadRequestException("Wrong id");
         }
     }
