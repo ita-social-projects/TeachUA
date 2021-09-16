@@ -34,6 +34,8 @@ import javax.validation.ValidationException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -185,6 +187,12 @@ public class UserServiceImpl implements UserService {
     public SuccessRegistration registerUser(UserProfile userProfile) {
         if (isUserExistByEmail(userProfile.getEmail())) {
             throw new WrongAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
+        }
+
+        Pattern pattern = Pattern.compile("^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+\\n,-.:\\r;<=>?|@_`{}~/^\\[\\]]{8,20}$");
+        Matcher matcher = pattern.matcher(userProfile.getPassword());
+        if (!matcher.matches()){
+            throw new WrongAuthenticationException("Incorrect password!");
         }
 
         User user = dtoConverter.convertToEntity(userProfile, new User())
