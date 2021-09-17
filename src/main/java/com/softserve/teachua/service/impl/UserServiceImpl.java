@@ -380,7 +380,7 @@ public class UserServiceImpl implements UserService {
         content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
 
         String verifyURL = baseUrl + "/verify?code=" + user.getVerificationCode();
-     //  String verifyURL = "http://localhost:3000/dev/verify?code=" + user.getVerificationCode();
+//       String verifyURL = "http://localhost:3000/dev/verify?code=" + user.getVerificationCode();
 
         content = content.replace("[[URL]]", verifyURL);
         helper.setText(content, true);
@@ -444,6 +444,7 @@ public class UserServiceImpl implements UserService {
             content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
 
             String verifyURL = baseUrl + "/verifyreset?code=" + user.getVerificationCode();
+//            String verifyURL = "http://localhost:3000/dev/verifyreset?code=" + user.getVerificationCode();
 
             content = content.replace("[[URL]]", verifyURL);
             helper.setText(content, true);
@@ -457,8 +458,8 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace();
         }
 
-        return dtoConverter.convertToDto(user, SuccessUserPasswordReset.class);
-
+//        return dtoConverter.convertToDto(user, SuccessUserPasswordReset.class);
+        return null;
     }
 
     public SuccessVerification verifyChange(String verificationCode) {
