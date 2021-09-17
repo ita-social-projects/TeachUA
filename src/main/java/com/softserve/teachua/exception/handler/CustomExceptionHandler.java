@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
+
 import static org.springframework.http.HttpStatus.*;
 
 
@@ -96,4 +98,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(exceptionResponse);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public final ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException exception) {
+        return buildExceptionBody(exception, BAD_REQUEST);
+    }
 }

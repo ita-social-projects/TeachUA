@@ -4,12 +4,15 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.search.CombinedPossibleResponse;
 import com.softserve.teachua.service.CategoryService;
 import com.softserve.teachua.service.ClubService;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Validated
 public class SearchController implements Api {
     private final CategoryService categoryService;
     private final ClubService clubService;
@@ -28,7 +31,7 @@ public class SearchController implements Api {
      */
     @GetMapping("/search")
     public CombinedPossibleResponse possibleResponses(
-            @RequestParam String text,
+            @RequestParam @Length(max = 50) String text,
             @RequestParam String cityName) {
         return CombinedPossibleResponse.builder()
                 .categories(categoryService.getPossibleCategoryByName(text))
