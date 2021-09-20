@@ -22,7 +22,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,10 +49,6 @@ public class UserServiceImpl implements UserService {
     private static final String NOT_VERIFIED = "User is not verified: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
-
-    @Value("${baseURL}")
-    private String baseUrl;
-
     private final UserRepository userRepository;
     private final EncoderService encodeService;
     private final RoleService roleService;
@@ -62,6 +57,8 @@ public class UserServiceImpl implements UserService {
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
     private final JavaMailSender javaMailSender;
+    @Value("${baseURL}")
+    private String baseUrl;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
@@ -185,13 +182,14 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public SuccessRegistration registerUser(UserProfile userProfile) {
+        userProfile.setEmail(userProfile.getEmail().toLowerCase());
         if (isUserExistByEmail(userProfile.getEmail())) {
             throw new WrongAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
         }
 
         Pattern pattern = Pattern.compile("^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+\\n,-.:\\r;<=>?|@_`{}~/^\\[\\]]{8,20}$");
         Matcher matcher = pattern.matcher(userProfile.getPassword());
-        if (!matcher.matches()){
+        if (!matcher.matches()) {
             throw new WrongAuthenticationException("Incorrect password!");
         }
 
@@ -246,6 +244,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public SuccessLogin validateUser(UserLogin userLogin) {
+        userLogin.setEmail(userLogin.getEmail().toLowerCase());
         UserEntity userEntity = getUserEntity(userLogin.getEmail());
         if (encodeService.isValidStatus(userLogin, userEntity)) {
             throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userLogin.getEmail()));
@@ -477,7 +476,7 @@ public class UserServiceImpl implements UserService {
                 user.getLastName()));
 
         log.info("step 2: " + userPasswordReset.getVerificationCode() + " " + userPasswordReset.getEmail());
-       // return userPasswordReset;
+        // return userPasswordReset;
         return successVerificationUser;
 
     }
