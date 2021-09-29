@@ -44,6 +44,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildExceptionBody(exception, NOT_FOUND);
     }
 
+    @ExceptionHandler(IncorrectInputException.class)
+    public final ResponseEntity<Object> handleIncorrectInputException(IncorrectInputException exception) {
+        return buildExceptionBody(exception, BAD_REQUEST);
+    }
+
     @ExceptionHandler(AlreadyExistException.class)
     public final ResponseEntity<Object> handleAlreadyExistException(AlreadyExistException exception) {
         return buildExceptionBody(exception, FORBIDDEN);
