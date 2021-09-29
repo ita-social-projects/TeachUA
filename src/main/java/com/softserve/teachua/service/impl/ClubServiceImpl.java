@@ -12,6 +12,7 @@ import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
+import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.*;
 import com.softserve.teachua.repository.CenterRepository;
@@ -44,6 +45,7 @@ public class ClubServiceImpl implements ClubService {
     private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
     private static final String CLUB_DELETING_ERROR = "Can't delete club cause of relationship";
+    private static final String CLUB_CREATING_ERROR = "Club without \"%s\" isn't created.";
 
     private final ClubRepository clubRepository;
     private final LocationRepository locationRepository;
@@ -195,6 +197,7 @@ public class ClubServiceImpl implements ClubService {
      * @param clubProfile- place dto with all params.
      * @return new {@code SuccessCreatedClub}.
      * @throws AlreadyExistException if club already exists.
+     * @throws IncorrectInputException if mandatory fields are empty.
      */
     @Override
     public SuccessCreatedClub addClub(ClubProfile clubProfile) {
@@ -213,6 +216,10 @@ public class ClubServiceImpl implements ClubService {
                     profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
                 }
             }
+        }
+
+        if (!ifClubToCreateHaveEmptyFields(clubProfile).isEmpty()) {
+            throw new IncorrectInputException(String.format(CLUB_CREATING_ERROR, ifClubToCreateHaveEmptyFields(clubProfile)));
         }
 
         if (isClubExistByName(clubProfile.getName())) {
@@ -509,5 +516,13 @@ public class ClubServiceImpl implements ClubService {
 
     private Optional<Club> getOptionalClubByName(String name) {
         return clubRepository.findByName(name);
+    }
+
+    private String ifClubToCreateHaveEmptyFields(ClubProfile clubProfile){
+        if(clubProfile.getName().trim().isEmpty()){ return "Назва"; }
+        if(clubProfile.getContacts().trim().isEmpty()){ return "Контакти"; }
+        if(clubProfile.getDescription().trim().isEmpty()){ return "Опис"; }
+        if(clubProfile.getCategoriesName().isEmpty()){ return "Категорії"; }
+        return "";
     }
 }
