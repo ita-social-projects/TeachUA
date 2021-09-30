@@ -1,18 +1,17 @@
 package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.user.*;
+import com.softserve.teachua.dto.user.SuccessUpdatedUser;
+import com.softserve.teachua.dto.user.UserPasswordUpdate;
+import com.softserve.teachua.dto.user.UserResponse;
+import com.softserve.teachua.dto.user.UserUpdateProfile;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,6 +78,7 @@ public class UserController implements Api {
         userService.validateUserId(id, httpServletRequest);
         return userService.updateUser(id, userProfile);
     }
+
     @PutMapping("/user/update")
     public SuccessUpdatedUser updateUserByManager(
             @Valid
@@ -97,11 +97,28 @@ public class UserController implements Api {
     public UserResponse deleteUser(@PathVariable Long id) {
         log.info("=======");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth!=null){
+        if (auth != null) {
             auth.getAuthorities().stream().forEach(a -> a.getAuthority());
-        }else{
+        } else {
             System.out.println("auth is null");
         }
         return userService.deleteUserById(id);
     }
+
+    /**
+     * Method to change user password
+     *
+     * @param id - put user id.
+     * @param passwordUpdate put old, new and verify password
+     *
+     * @return nothing
+     */
+    @PatchMapping("/user/{id}")
+    public void changePassword(@PathVariable("id") Long id,
+                               @Valid @RequestBody UserPasswordUpdate passwordUpdate,
+                               HttpServletRequest httpServletRequest) {
+        userService.validateUserId(id, httpServletRequest);
+        userService.updatePassword(id, passwordUpdate);
+    }
+
 }

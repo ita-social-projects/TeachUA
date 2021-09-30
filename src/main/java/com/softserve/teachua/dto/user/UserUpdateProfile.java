@@ -23,8 +23,6 @@ public class UserUpdateProfile implements Convertible {
 
     private String phone;
 
-    private String password;
-
     private String urlLogo;
 
     private String status;

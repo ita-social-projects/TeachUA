@@ -41,4 +41,6 @@ public interface UserService {
     SuccessUserPasswordReset verifyChangePassword(SuccessUserPasswordReset userResetPassword);
 
     SuccessVerification verifyChange(String verificationCode);
+
+    void updatePassword(Long id,UserPasswordUpdate passwordUpdate);
 }

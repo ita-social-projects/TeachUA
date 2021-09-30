@@ -22,7 +22,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +59,7 @@ public class UserServiceImpl implements UserService {
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
     private final JavaMailSender javaMailSender;
+    private final PasswordEncoder passwordEncoder;
     @Value("${baseURL}")
     private String baseUrl;
 
@@ -68,7 +71,8 @@ public class UserServiceImpl implements UserService {
                            ArchiveService archiveService,
                            JwtProvider jwtProvider,
                            AuthenticationManager authenticationManager,
-                           JavaMailSender javaMailSender) {
+                           JavaMailSender javaMailSender,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.encodeService = encodeService;
         this.roleService = roleService;
@@ -77,6 +81,7 @@ public class UserServiceImpl implements UserService {
         this.jwtProvider = jwtProvider;
         this.authenticationManager = authenticationManager;
         this.javaMailSender = javaMailSender;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -277,21 +282,10 @@ public class UserServiceImpl implements UserService {
     public SuccessUpdatedUser updateUser(Long id, UserUpdateProfile userProfile) {
 
         User user = getUserById(id);
-        User newUser = null;
-
-        if (userProfile.getPassword() != null) {
-            newUser = dtoConverter.convertToEntity(userProfile, user)
-                    .withId(id)
-                    .withPassword(encodeService.encodePassword(userProfile.getPassword()))
-                    .withRole(roleService.findByName(userProfile.getRoleName()));
-        } else {
-            newUser = dtoConverter.convertToEntity(userProfile, user)
-                    .withPassword(user.getPassword())
-                    .withId(id)
-                    .withRole(roleService.findByName(userProfile.getRoleName()));
-        }
-        log.info("updating role by id {}", newUser);
-
+        User newUser = dtoConverter.convertToEntity(userProfile, user)
+                .withPassword(user.getPassword())
+                .withId(id)
+                .withRole(roleService.findByName(userProfile.getRoleName()));
 
         log.info("updating role by id {}", newUser);
         return dtoConverter.convertToDto(userRepository.save(newUser), SuccessUpdatedUser.class);
@@ -479,6 +473,27 @@ public class UserServiceImpl implements UserService {
         // return userPasswordReset;
         return successVerificationUser;
 
+    }
+
+    @Override
+    public void updatePassword(Long id, UserPasswordUpdate passwordUpdate) {
+        User user = getUserById(id);
+
+        if (!passwordEncoder.matches(passwordUpdate.getOldPassword(), user.getPassword())) {
+            throw new UpdatePasswordException("Wrong old password");
+        }
+
+        if (!passwordUpdate.getNewPassword().equals(passwordUpdate.getNewPasswordVerify())) {
+            throw new UpdatePasswordException("Verify password doesnt match to new");
+        }
+
+        if (passwordEncoder.matches(passwordUpdate.getNewPassword(), user.getPassword())) {
+            throw new UpdatePasswordException("New password equals to old");
+        }
+
+        user.setPassword(passwordEncoder.encode(passwordUpdate.getNewPassword()));
+
+        userRepository.save(user);
     }
 
     public SuccessUserPasswordReset verifyChangePassword(SuccessUserPasswordReset userResetPassword) {
