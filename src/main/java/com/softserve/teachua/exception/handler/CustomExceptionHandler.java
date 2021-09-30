@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -17,6 +18,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -54,6 +58,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildExceptionBody(exception, FORBIDDEN);
     }
 
+    @ExceptionHandler(UpdatePasswordException.class)
+    public final ResponseEntity<Object> handleUpdatePasswordException(UpdatePasswordException exception) {
+        return buildExceptionBody(exception, BAD_REQUEST);
+    }
+
     @ExceptionHandler(DatabaseRepositoryException.class)
     public final ResponseEntity<Object> handleDatabaseRepositoryException(DatabaseRepositoryException exception) {
         return buildExceptionBody(exception, BAD_GATEWAY);
@@ -71,11 +80,14 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String exceptionMessage = exception.getMessage();
-        String message = String.format(BadRequestException.CANT_FIND_FIELD_IN_JSON,
-                exceptionMessage.substring(exceptionMessage.indexOf("field"), exceptionMessage.indexOf("':") + 1));
-        return buildExceptionBody(new BadRequestException(message), status);
+        StringBuilder sb = new StringBuilder();
+        exception.getBindingResult().getAllErrors().forEach((error) -> {
+            sb.append(error.getDefaultMessage()).append(" and ");
+        });
+        sb.setLength(sb.length()-5);
+        return buildExceptionBody(new BadRequestException(sb.toString()), status);
     }
+
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
