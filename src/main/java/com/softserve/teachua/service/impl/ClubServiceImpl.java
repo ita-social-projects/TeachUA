@@ -359,6 +359,10 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public Page<ClubResponse> getAdvancedSearchClubs(AdvancedSearchClubProfile advancedSearchClubProfile, Pageable pageable) {
 
+        if (advancedSearchClubProfile.getAge() < 2 || advancedSearchClubProfile.getAge() > 18) {
+            throw new IncorrectInputException("Age should be from 2 to 18 years inclusive");
+        }
+
         log.info("getAdvancedSearchClubs, advClubProf :" + advancedSearchClubProfile.toString());
 
         Page<Club> clubResponses = clubRepository.findAllBylAdvancedSearch(
