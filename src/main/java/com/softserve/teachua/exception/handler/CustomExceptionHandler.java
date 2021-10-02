@@ -73,6 +73,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildExceptionBody(exception, CONFLICT);
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    public final ResponseEntity<Object> handleDatabaseRepositoryException(BadRequestException exception) {
+        return buildExceptionBody(exception, BAD_REQUEST);
+    }
+
     @ExceptionHandler(FileUploadException.class)
     public final ResponseEntity<Object> handleFileUploadException(JsonWriteException exception) {
         return buildExceptionBody(exception, FORBIDDEN);

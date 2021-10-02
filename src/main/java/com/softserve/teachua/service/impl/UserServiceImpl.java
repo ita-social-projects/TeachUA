@@ -198,6 +198,10 @@ public class UserServiceImpl implements UserService {
             throw new WrongAuthenticationException("Incorrect password!");
         }
 
+        if ("ROLE_ADMIN".equals(userProfile.getRoleName())) {
+            throw new BadRequestException("Illegal role argument: ROLE_ADMIN");
+        }
+
         User user = dtoConverter.convertToEntity(userProfile, new User())
                 .withPassword(encodeService.encodePassword(userProfile.getPassword()))
                 .withRole(roleService.findByName(userProfile.getRoleName()));
