@@ -52,4 +52,5 @@ public class RegistrationController implements Api {
         log.info("Controller \"signup\", userProfile = " + userProfile.toString());
         return userService.registerUser(userProfile);
     }
+
 }
