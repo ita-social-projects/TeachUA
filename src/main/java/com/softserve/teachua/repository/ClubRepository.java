@@ -45,7 +45,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
         "(:city IS NULL OR city.name = :city)) AND " +
         "(:isOnline is null or club.isOnline=:isOnline) AND "+
         "(:age IS NULL or club.ageFrom <= :age AND club.ageTo >= :age) AND " +
-        "(:categories IS NULL OR category.name IN (:categories)) AND " +
+        "((:categories) IS NULL OR category.name IN (:categories)) AND " +
         "(:district IS NULL OR district.name = :district) AND " +
         "(:station IS NULL OR station.name = :station)")
     Page<Club> findAllBylAdvancedSearch(
