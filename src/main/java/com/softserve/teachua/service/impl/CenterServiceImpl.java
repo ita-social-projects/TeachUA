@@ -127,10 +127,8 @@ public class CenterServiceImpl implements CenterService {
                             dtoConverter.convertToEntity(locationProfile, new Location())
                                     .withCenter(center)
                                     .withCity(cityService.getCityByName(locationProfile.getCityName()))
-                                    .withDistrict(districtService.getDistrictByName(
-                                            locationProfile.getDistrictName()))
-                                    .withStation(stationService.getStationByName(
-                                            locationProfile.getStationName()) )
+                                    .withDistrict(locationProfile.getDistrictName() == null ? null : districtService.getDistrictByName(locationProfile.getDistrictName()))
+                                    .withStation(locationProfile.getStationName() == null ? null : stationService.getStationByName(locationProfile.getStationName()))
                     ))
                     .collect(Collectors.toSet())
             );
