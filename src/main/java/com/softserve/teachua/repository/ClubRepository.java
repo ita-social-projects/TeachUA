@@ -33,7 +33,6 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     List<Club> findAllByUserId(@Param("id") Long id);
 
     Page<Club> findAllByUserId(Long id, Pageable pageable);
-
   @Query("SELECT DISTINCT club from Club AS club " +
         "JOIN club.categories AS category " +
         "LEFT JOIN club.locations AS locations " +
@@ -66,6 +65,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "((:isOnline = false AND city.name = :city ) OR " +
             "(:isOnline = true AND club.isOnline = true AND city IS NULL)) AND " +
             "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
+
     Page<Club> findAllByParameters(
             @Param("name") String name,
             @Param("city") String cityName,
