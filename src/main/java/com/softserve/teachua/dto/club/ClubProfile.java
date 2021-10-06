@@ -8,6 +8,7 @@ import lombok.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @AllArgsConstructor
@@ -24,9 +25,10 @@ public class ClubProfile implements Convertible {
     @Valid
     private List<LocationProfile> locations;
 
-//    @Pattern(regexp = "^(?!\\s)([\\wА-ЩЬЮЯҐЄІЇа-щьюяґєії \\/\\\\'’.,\"!?:*|><]){39,1500}\\S$" ,
-//            message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
-//    @Pattern(regexp = "^.*\\S$",
+    @Pattern(regexp = "\\{(.*(\\\"text\\\":\\\"(\\s+[^.!?]*[.!?]).*\\\").*)\\}",
+            message = "Некоректно заповнений опис.")
+    @Valid
+//    @Pattern(regexp = "^[А-Яа-яёЁЇїІіЄєҐґa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]{40,1500}$" ,
 //            message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
     private String description;
 
