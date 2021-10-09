@@ -395,6 +395,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserFromRequest(HttpServletRequest httpServletRequest) {
+        return userRepository.findById(
+                jwtProvider.getUserIdFromToken(
+                        jwtProvider.getJwtFromRequest(httpServletRequest))).orElseThrow(
+                                () -> {throw new WrongAuthenticationException();});
+    }
+
+    @Override
     public void updateUser(User user) {
         userRepository.save(user);
     }

@@ -14,6 +14,8 @@ public interface UserService {
 
     User getUserById(Long id);
 
+    User getUserFromRequest(HttpServletRequest httpServletRequest);
+
     UserResponse deleteUserById(Long id);
 
     User getUserByEmail(String email);
