@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,10 +20,13 @@ public class UserProfile implements Convertible {
     @NotEmpty
     private String email;
 
+
     @NotEmpty
+    @Pattern(regexp ="^[^-ЁёЪъЫыЭэ]*$",message = "Last name not can have russian letters ")
     private String firstName;
 
     @NotEmpty
+    @Pattern(regexp ="^[^-ЁёЪъЫыЭэ]*$",message = "Last name not can have russian letters ")
     private String lastName;
 
     @NotEmpty
