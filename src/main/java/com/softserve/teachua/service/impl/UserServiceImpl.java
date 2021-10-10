@@ -22,7 +22,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,7 +50,7 @@ public class UserServiceImpl implements UserService {
     private static final String NOT_VERIFIED = "User is not verified: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
-    private static final String USER_UPDATING_ERROR = "User without \"%s\" can`t be saved";
+    private static final String USER_UPDATING_ERROR = "Incorrect input \"%s\" field";
     private final UserRepository userRepository;
     private final EncoderService encodeService;
     private final RoleService roleService;
@@ -288,8 +287,8 @@ public class UserServiceImpl implements UserService {
 
         User user = getUserById(id);
 
-        if (!ifUserToUpdateHaveEmptyFields(userProfile).isEmpty()) {
-            throw new IncorrectInputException(String.format(USER_UPDATING_ERROR, ifUserToUpdateHaveEmptyFields(userProfile)));
+        if (!ifIncorrectInputInUpdatingFields(userProfile).isEmpty()) {
+            throw new IncorrectInputException(String.format(USER_UPDATING_ERROR, ifIncorrectInputInUpdatingFields(userProfile)));
         }
 
         User newUser = dtoConverter.convertToEntity(userProfile, user)
@@ -524,14 +523,16 @@ public class UserServiceImpl implements UserService {
         return userResetPassword;
     }
 
-    private String ifUserToUpdateHaveEmptyFields(UserUpdateProfile userProfile) {
+    private String ifIncorrectInputInUpdatingFields(UserUpdateProfile userProfile) {
         if (userProfile.getFirstName() == null || userProfile.getFirstName().trim().isEmpty()) {
             return "Ім'я";
         }
         if (userProfile.getLastName() == null || userProfile.getLastName().trim().isEmpty()) {
             return "Прізвище";
         }
-        if (userProfile.getPhone() == null || userProfile.getPhone().trim().isEmpty()) {
+        if (userProfile.getPhone() == null || userProfile.getPhone().trim().isEmpty()
+                || userProfile.getPhone().length() != 9
+                || !Pattern.compile("[0-9]{9}").matcher(userProfile.getPhone()).find()) {
             return "Телефон";
         }
         return "";
