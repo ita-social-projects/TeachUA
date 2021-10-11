@@ -16,6 +16,5 @@ public class TaskProfile implements Convertible {
     private String description;
     private String picture;
     private LocalDate startDate;
-
-
+    private Long challengeId;
 }

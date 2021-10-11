@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,7 +32,7 @@ public class ChallengeController implements Api {
 
     @PostMapping("/challenge")
     public SuccessCreatedChallenge createChallenge(
-            @RequestBody CreateChallenge createChallenge,
+            @Valid @RequestBody CreateChallenge createChallenge,
             HttpServletRequest httpServletRequest) {
         return challengeService.createChallenge(createChallenge, httpServletRequest);
     }
@@ -39,7 +40,7 @@ public class ChallengeController implements Api {
     @PutMapping("/challenge/{id}")
     public SuccessUpdatedChallenge updateChallenge(
             @PathVariable Long id,
-            @RequestBody UpdateChallenge updateChallenge) {
+            @Valid @RequestBody UpdateChallenge updateChallenge) {
         return challengeService.updateChallenge(id, updateChallenge);
     }
 

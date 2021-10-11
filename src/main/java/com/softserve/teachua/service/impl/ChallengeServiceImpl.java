@@ -2,7 +2,7 @@ package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.challenge.*;
-import com.softserve.teachua.dto.task.TaskPreview;
+import com.softserve.teachua.dto.task.TaskNameProfile;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
@@ -12,15 +12,17 @@ import com.softserve.teachua.utils.HtmlValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -95,7 +97,7 @@ public class ChallengeServiceImpl implements ChallengeService {
             fileUploadService.deleteFile(challenge.getPicture());
         }
         BeanUtils.copyProperties(updateChallenge, challenge);
-        return dtoConverter.convertToDto(challenge, SuccessUpdatedChallenge.class);
+        return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdatedChallenge.class);
     }
 
     @Override
@@ -104,11 +106,15 @@ public class ChallengeServiceImpl implements ChallengeService {
         ChallengeDeleteResponse challengeResponse =
                 dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class);
         challengeResponse.setTasks(new HashSet<>());
+        Set<Task> taskSet = challenge.getTasks();
+        challenge.setTasks(null);
         archiveService.saveModel(challenge);
-        challenge.getTasks().forEach((task) ->
-                challengeResponse.getTasks().add(taskService.deleteTask(task.getId())));
+        taskSet.forEach((task) ->
+                challengeResponse.getTasks().add(
+                        dtoConverter.convertFromDtoToDto(
+                                taskService.deleteTask(task.getId()),
+                                new TaskNameProfile())));
         fileUploadService.deleteFile(challenge.getPicture());
-        // TODO: exc
         challengeRepository.deleteById(id);
         challengeRepository.flush();
         return challengeResponse;
@@ -119,11 +125,11 @@ public class ChallengeServiceImpl implements ChallengeService {
         Challenge challenge = getChallengeById(id);
         ChallengeProfile challengeProfile =
                 dtoConverter.convertToDto(challenge, ChallengeProfile.class);
-        Function<Task, TaskPreview> function =
-                (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
-        challengeProfile.setTasks(challenge.getTasks().stream()
-                .map(function)
-                .collect(Collectors.toSet()));
+        challengeProfile.setTasks(new PageImpl<>(
+                taskService.getTasksByChallengeId(id)
+                        .stream()
+                        .filter(task -> task.getStartDate().isAfter(LocalDate.now().minusDays(1)))
+                        .collect(Collectors.toList())));
         return challengeProfile;
     }
 }

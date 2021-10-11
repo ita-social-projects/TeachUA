@@ -12,9 +12,11 @@ import com.softserve.teachua.service.FileUploadService;
 import com.softserve.teachua.service.TaskService;
 import com.softserve.teachua.utils.HtmlValidator;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,14 +50,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskNameProfile deleteTask(Long id) {
+    public TaskProfile deleteTask(Long id) {
         Task task = getTaskById(id);
+        TaskProfile taskProfile = dtoConverter.convertToDto(task, TaskProfile.class);
+        taskProfile.setChallengeId(task.getChallenge().getId());
+        task.setChallenge(null);
         archiveService.saveModel(task);
         fileUploadService.deleteFile(task.getPicture());
         taskRepository.deleteById(id);
         taskRepository.flush();
-        // TODO: exc
-        return dtoConverter.convertToDto(task, TaskNameProfile.class);
+        return taskProfile;
     }
 
     @Override
@@ -79,8 +83,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public Page<TaskPreview> getTasksByChallengeId(Long id) {
+        return getTasksByChallengeId(id, PageRequest.of(0, 2));
+    }
+
+    @Override
     public TaskProfile getTask(Long taskId) {
-        return dtoConverter.convertToDto(getTaskById(taskId), TaskProfile.class);
+        Task task = getTaskById(taskId);
+        TaskProfile taskProfile = dtoConverter.convertToDto(task, TaskProfile.class);
+        taskProfile.setChallengeId(task.getChallenge().getId());
+        return taskProfile;
     }
 
     @Override
@@ -90,5 +102,19 @@ public class TaskServiceImpl implements TaskService {
         Task task = dtoConverter.convertToEntity(createTask, new Task());
         task.setChallenge(challenge);
         return dtoConverter.convertToDto(taskRepository.save(task), SuccessCreatedTask.class);
+    }
+
+    @Override
+    public SuccessUpdatedTask updateTask(Long id, UpdateTask updateTask) {
+        HtmlValidator.validateDescription(updateTask.getDescription());
+        Task task = getTaskById(id);
+        if (!task.getPicture().equals(updateTask.getPicture())) {
+            fileUploadService.deleteFile(task.getPicture());
+        }
+        BeanUtils.copyProperties(updateTask, task);
+        task.setChallenge(challengeService.getChallengeById(updateTask.getChallengeId()));
+        SuccessUpdatedTask updatedTask = dtoConverter.convertToDto(taskRepository.save(task), SuccessUpdatedTask.class);
+        updatedTask.setChallengeId(updatedTask.getChallengeId());
+        return updatedTask;
     }
 }

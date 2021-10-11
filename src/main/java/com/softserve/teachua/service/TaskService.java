@@ -6,13 +6,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface TaskService {
-    TaskNameProfile deleteTask(Long id);
+    TaskProfile deleteTask(Long id);
 
     Task getTaskById(Long id);
 
     Page<TaskPreview> getTasksByChallengeId(Long id, Pageable pageable);
 
+    Page<TaskPreview> getTasksByChallengeId(Long id);
+
     TaskProfile getTask(Long id);
 
     SuccessCreatedTask createTask(Long id, CreateTask createTask);
+
+    SuccessUpdatedTask updateTask(Long id, UpdateTask updateTask);
 }

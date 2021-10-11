@@ -4,6 +4,7 @@ import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -31,6 +32,7 @@ public class Task implements Convertible, Archivable {
 
     @ManyToOne
     @JoinColumn(name = "challenge_id", referencedColumnName = "id")
+    @EqualsAndHashCode.Exclude
     private Challenge challenge;
 
     @Column

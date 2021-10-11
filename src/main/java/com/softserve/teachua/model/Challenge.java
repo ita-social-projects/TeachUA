@@ -4,6 +4,7 @@ import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -43,6 +44,7 @@ public class Challenge implements Convertible, Archivable {
     private Boolean isActive;
 
     @OneToMany(mappedBy = "challenge")
+    @EqualsAndHashCode.Exclude
     private Set<Task> tasks;
 
 }
