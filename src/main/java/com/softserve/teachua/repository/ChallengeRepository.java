@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
-    List<Challenge> getByIsActive(Boolean isActive);
+    List<Challenge> getByIsActiveOrderBySortIdDesc(Boolean isActive);
 }

@@ -12,6 +12,7 @@ import com.softserve.teachua.utils.HtmlValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,8 +32,8 @@ public class ChallengeServiceImpl implements ChallengeService {
     private final DtoConverter dtoConverter;
     private final UserService userService;
     private final ArchiveService archiveService;
-    private final TaskService taskService;
     private final FileUploadService fileUploadService;
+    private TaskService taskService;
 
     @Autowired
     public ChallengeServiceImpl(
@@ -40,22 +41,27 @@ public class ChallengeServiceImpl implements ChallengeService {
             DtoConverter dtoConverter,
             UserService userService,
             ArchiveService archiveService,
-            TaskService taskService,
             FileUploadService fileUploadService
     ) {
         this.challengeRepository = challengeRepository;
         this.dtoConverter = dtoConverter;
         this.userService = userService;
         this.archiveService = archiveService;
-        this.taskService = taskService;
         this.fileUploadService = fileUploadService;
+    }
+
+    @Autowired
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @Override
     public List<ChallengePreview> getAllChallenges(Boolean isActive) {
         List<ChallengePreview> resultList = new LinkedList<>();
         List<Challenge> list;
-        list = isActive != null ? challengeRepository.getByIsActive(isActive) : challengeRepository.findAll();
+        list = isActive != null
+                ? challengeRepository.getByIsActiveOrderBySortIdDesc(isActive)
+                : challengeRepository.findAll(Sort.by(Sort.Direction.DESC, "sortId"));
         list.forEach((challenge ->
                 resultList.add(dtoConverter.convertToDto(challenge, ChallengePreview.class))));
         return resultList;

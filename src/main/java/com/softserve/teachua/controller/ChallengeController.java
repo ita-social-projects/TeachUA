@@ -3,7 +3,6 @@ package com.softserve.teachua.controller;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.challenge.*;
 import com.softserve.teachua.service.ChallengeService;
-import com.softserve.teachua.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

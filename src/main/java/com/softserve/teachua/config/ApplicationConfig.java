@@ -1,6 +1,7 @@
 package com.softserve.teachua.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -52,6 +53,8 @@ public class ApplicationConfig {
 
 	@Bean
 	public ObjectMapper objectMapper() {
-		return new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		return mapper;
 	}
 }
