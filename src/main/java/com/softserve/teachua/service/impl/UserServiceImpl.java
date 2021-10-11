@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl implements UserService {
     private static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
+    private static final String EMAIL_UPDATING_ERROR = "Email can`t be updated";
     private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
     private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
     private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
@@ -289,6 +290,10 @@ public class UserServiceImpl implements UserService {
 
         if (!ifIncorrectInputInUpdatingFields(userProfile).isEmpty()) {
             throw new IncorrectInputException(String.format(USER_UPDATING_ERROR, ifIncorrectInputInUpdatingFields(userProfile)));
+        }
+
+        if (userProfile.getEmail() == null || !userProfile.getEmail().equals(user.getEmail())) {
+            throw new IncorrectInputException(EMAIL_UPDATING_ERROR);
         }
 
         User newUser = dtoConverter.convertToEntity(userProfile, user)
