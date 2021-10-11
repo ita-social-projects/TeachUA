@@ -4,6 +4,7 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.*;
 import com.softserve.teachua.exception.*;
+import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.JwtProvider;
@@ -44,6 +45,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
     private static final String EMAIL_UPDATING_ERROR = "Email can`t be updated";
+    private static final String ROLE_UPDATING_ERROR = "Role can`t be changed to Admin";
     private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
     private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
     private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
@@ -294,6 +296,11 @@ public class UserServiceImpl implements UserService {
 
         if (userProfile.getEmail() == null || !userProfile.getEmail().equals(user.getEmail())) {
             throw new IncorrectInputException(EMAIL_UPDATING_ERROR);
+        }
+
+        if (userProfile.getRoleName().equals("ROLE_ADMIN")
+                && !user.getRole().getName().equals("ROLE_ADMIN")) {
+            throw new IncorrectInputException(ROLE_UPDATING_ERROR);
         }
 
         User newUser = dtoConverter.convertToEntity(userProfile, user)
