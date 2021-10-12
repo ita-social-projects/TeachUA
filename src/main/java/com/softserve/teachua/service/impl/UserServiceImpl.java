@@ -209,6 +209,14 @@ public class UserServiceImpl implements UserService {
                 .withPassword(encodeService.encodePassword(userProfile.getPassword()))
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
+
+        String phoneFormat  = "+380"+user.getPhone();
+        String Formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
+
+        user.setPhone(Formated);
+
+        log.info(user.getPhone());
+
         user.setVerificationCode(RandomString.make(64));
         user.setStatus(false);
         user = userRepository.save(user);
