@@ -58,11 +58,11 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Override
-    public List<ChallengePreview> getAllChallenges(Boolean isActive) {
+    public List<ChallengePreview> getAllChallenges(Boolean active) {
         List<ChallengePreview> resultList = new LinkedList<>();
         List<Challenge> list;
-        list = isActive != null
-                ? challengeRepository.getByIsActiveOrderBySortIdDesc(isActive)
+        list = active != null
+                ? challengeRepository.getByIsActiveOrderBySortIdDesc(active)
                 : challengeRepository.findAll(Sort.by(Sort.Direction.DESC, "sortId"));
         list.forEach((challenge ->
                 resultList.add(dtoConverter.convertToDto(challenge, ChallengePreview.class))));
