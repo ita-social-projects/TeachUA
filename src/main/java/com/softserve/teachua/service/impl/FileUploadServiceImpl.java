@@ -7,8 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.*;
-import java.nio.file.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Service
@@ -19,6 +25,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final String UPLOAD_LOCATION = "/upload";
 
 
+    @Override
     public String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile) {
         Path uploadPath = Paths.get(uploadDir);
 
@@ -41,6 +48,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
     }
 
+    @Override
     public void deleteImages(String urlLogo, String urlBackground, List<GalleryPhoto> urlGallery) {
         // assuming that path to folder will look like target/upload/clubs/uuidv4
 
@@ -49,7 +57,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             if (urlLogo != null && urlLogo.contains(UPLOAD_LOCATION)) {
                 folderName = urlLogo.substring(0, ordinalIndexOf(urlLogo, "/", 4, false));
             } else if (urlBackground != null && urlBackground.contains(UPLOAD_LOCATION)) {
-                folderName = urlBackground.substring(0, ordinalIndexOf(urlBackground, "/", 4, false));;
+                folderName = urlBackground.substring(0, ordinalIndexOf(urlBackground, "/", 4, false));
             } else if (urlGallery != null && !urlGallery.isEmpty()) {
                 String url = urlGallery.get(0).getUrl();
                 folderName = url.substring(0, ordinalIndexOf(url, "/", 4, false));
@@ -64,6 +72,22 @@ public class FileUploadServiceImpl implements FileUploadService {
             } catch (IOException ex) {
                 log.error("Folder " + folderName + " can not be deleted");
             }
+        }
+    }
+
+    @Override
+    public void deleteFile(String filePath) {
+        if (filePath == null || filePath.isEmpty()) {
+            throw new IllegalArgumentException("File path can not be null or empty");
+        }
+        if (!filePath.contains(UPLOAD_LOCATION)) {
+            throw new IllegalArgumentException("Wrong uploaded file path");
+        }
+        String dirPath = filePath.substring(0, ordinalIndexOf(filePath, "/", 4, false));
+        try {
+            FileUtils.deleteDirectory(new File("target" + dirPath));
+        } catch (IOException e) {
+            throw new FileUploadException(String.format("Can't delete directory with path: %s", dirPath));
         }
     }
 
