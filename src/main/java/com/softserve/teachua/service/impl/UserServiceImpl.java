@@ -4,6 +4,7 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.*;
 import com.softserve.teachua.exception.*;
+import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.JwtProvider;
@@ -22,7 +23,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,6 +44,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl implements UserService {
     private static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
+    private static final String EMAIL_UPDATING_ERROR = "Email can`t be updated";
+    private static final String ROLE_UPDATING_ERROR = "Role can`t be changed to Admin";
     private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
     private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
     private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
@@ -51,6 +53,7 @@ public class UserServiceImpl implements UserService {
     private static final String NOT_VERIFIED = "User is not verified: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
+    private static final String USER_UPDATING_ERROR = "Incorrect input \"%s\" field";
     private final UserRepository userRepository;
     private final EncoderService encodeService;
     private final RoleService roleService;
@@ -206,6 +209,14 @@ public class UserServiceImpl implements UserService {
                 .withPassword(encodeService.encodePassword(userProfile.getPassword()))
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
+
+        String phoneFormat  = "+380"+user.getPhone();
+        String Formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
+
+        user.setPhone(Formated);
+
+        log.info(user.getPhone());
+
         user.setVerificationCode(RandomString.make(64));
         user.setStatus(false);
         user = userRepository.save(user);
@@ -286,6 +297,20 @@ public class UserServiceImpl implements UserService {
     public SuccessUpdatedUser updateUser(Long id, UserUpdateProfile userProfile) {
 
         User user = getUserById(id);
+
+        if (!ifIncorrectInputInUpdatingFields(userProfile).isEmpty()) {
+            throw new IncorrectInputException(String.format(USER_UPDATING_ERROR, ifIncorrectInputInUpdatingFields(userProfile)));
+        }
+
+        if (userProfile.getEmail() == null || !userProfile.getEmail().equals(user.getEmail())) {
+            throw new IncorrectInputException(EMAIL_UPDATING_ERROR);
+        }
+
+        if (userProfile.getRoleName().equals("ROLE_ADMIN")
+                && !user.getRole().getName().equals("ROLE_ADMIN")) {
+            throw new IncorrectInputException(ROLE_UPDATING_ERROR);
+        }
+
         User newUser = dtoConverter.convertToEntity(userProfile, user)
                 .withPassword(user.getPassword())
                 .withId(id)
@@ -392,6 +417,14 @@ public class UserServiceImpl implements UserService {
         if (!jwtProvider.getUserIdFromToken(token).equals(id)) {
             throw new BadRequestException("Wrong id");
         }
+    }
+
+    @Override
+    public User getUserFromRequest(HttpServletRequest httpServletRequest) {
+        return userRepository.findById(
+                jwtProvider.getUserIdFromToken(
+                        jwtProvider.getJwtFromRequest(httpServletRequest))).orElseThrow(
+                                () -> {throw new WrongAuthenticationException();});
     }
 
     @Override
@@ -518,4 +551,18 @@ public class UserServiceImpl implements UserService {
         return userResetPassword;
     }
 
+    private String ifIncorrectInputInUpdatingFields(UserUpdateProfile userProfile) {
+        if (userProfile.getFirstName() == null || userProfile.getFirstName().trim().isEmpty()) {
+            return "Ім'я";
+        }
+        if (userProfile.getLastName() == null || userProfile.getLastName().trim().isEmpty()) {
+            return "Прізвище";
+        }
+        if (userProfile.getPhone() == null || userProfile.getPhone().trim().isEmpty()
+                || userProfile.getPhone().length() != 9
+                || !Pattern.compile("[0-9]{9}").matcher(userProfile.getPhone()).find()) {
+            return "Телефон";
+        }
+        return "";
+    }
 }

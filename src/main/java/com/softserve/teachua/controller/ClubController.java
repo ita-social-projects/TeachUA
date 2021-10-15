@@ -5,9 +5,14 @@ import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
+import com.softserve.teachua.exception.BadRequestException;
+import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.ClubRepository;
+import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.ClubService;
+import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -25,10 +31,15 @@ public class ClubController implements Api {
     private static final int CLUBS_PER_USER_PAGE = 3;
 
     private final ClubService clubService;
+    private final UserService userService;
 
     @Autowired
-    public ClubController(ClubService clubService,ClubRepository clubRepository) {
+    JwtProvider jwtProvider;
+
+    @Autowired
+    public ClubController(ClubService clubService, ClubRepository clubRepository, UserService userService) {
         this.clubService = clubService;
+        this.userService = userService;
     }
 
     /**
@@ -142,7 +153,14 @@ public class ClubController implements Api {
     public SuccessUpdatedClub updateClub(
             @PathVariable Long id,
             @Valid
-            @RequestBody ClubResponse clubProfile) {
+            @RequestBody ClubResponse clubProfile,
+            HttpServletRequest httpServletRequest) throws WrongAuthenticationException{
+        User userFromClub = clubService.getClubById(id).getUser();
+        Long userIdFromRequest = jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest));
+
+        if(userFromClub == null || !userIdFromRequest.equals(userFromClub.getId())){
+            throw new WrongAuthenticationException("A user cannot update club that does not belong to the user");
+        }
         return clubService.updateClub(id, clubProfile);
     }
 
@@ -150,7 +168,14 @@ public class ClubController implements Api {
     public ClubResponse changeClubOwner(
             @PathVariable Long id,
             @Valid
-            @RequestBody ClubOwnerProfile clubOwnerProfile){
+            @RequestBody ClubOwnerProfile clubOwnerProfile,
+            HttpServletRequest httpServletRequest) throws WrongAuthenticationException{
+        User userFromClub = clubService.getClubById(id).getUser();
+        Long userIdFromRequest = jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest));
+
+        if(userFromClub == null || !userIdFromRequest.equals(userFromClub.getId())){
+            throw new WrongAuthenticationException("A user cannot change owner of a club that does not belong to the user");
+        }
         return clubService.changeClubOwner(id, clubOwnerProfile);
     }
 
@@ -162,7 +187,15 @@ public class ClubController implements Api {
      * @return new {@code ClubResponse}.
      */
     @DeleteMapping("/club/{id}")
-    public ClubResponse deleteClub(@PathVariable Long id) {
+    public ClubResponse deleteClub(@PathVariable Long id,
+                                   HttpServletRequest httpServletRequest) throws WrongAuthenticationException {
+        User userFromClub = clubService.getClubById(id).getUser();
+        Long userIdFromRequest = jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest));
+
+        if(userFromClub == null || !userIdFromRequest.equals(userFromClub.getId())){
+            throw new WrongAuthenticationException("A user cannot delete a club that does not belong to the user");
+        }
+
         return clubService.deleteClubById(id);
     }
 }
