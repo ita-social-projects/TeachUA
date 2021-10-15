@@ -37,6 +37,7 @@ public class CenterProfile implements Convertible {
 
     private User user;
 
+    @NotEmpty(message = "Clubs are not selected")
     private List<Long> clubsId;
 
     private Long userId;
