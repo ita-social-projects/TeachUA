@@ -49,7 +49,7 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
                 "\"entityMap\":{}}";
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         Description descriptionClub = objectMapper.readValue(description, Description.class);
-        System.out.println(descriptionClub);
+        System.out.println(descriptionClub);//?
     }
 
     @Override

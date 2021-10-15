@@ -100,7 +100,7 @@ public class UserController implements Api {
         if (auth != null) {
             auth.getAuthorities().stream().forEach(a -> a.getAuthority());
         } else {
-            System.out.println("auth is null");
+            System.out.println("auth is null");//?
         }
         return userService.deleteUserById(id);
     }
