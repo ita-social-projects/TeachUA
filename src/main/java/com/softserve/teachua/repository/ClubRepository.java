@@ -1,5 +1,6 @@
 package com.softserve.teachua.repository;
 
+import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -128,5 +129,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     void updateRating(@Param("club_id") Long club_id, @Param("rating") double rating);
 
     List<Club> findClubByClubExternalId(Long id);
+
+    List<Club> findClubsByCenter(Center center);
 
 }
