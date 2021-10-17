@@ -19,17 +19,17 @@ import javax.validation.constraints.Size;
 public class CreateChallenge {
     @NotNull
     @Pattern(regexp = "^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+ ,-.:;<=>?|@_`{}~^&&[^ыЫъЪёЁэЭ]]+$",
-            message = "Name can contains only letters of ukrainian and english languages, numbers, and some special symbols like: [\"#$%&'*+ ,-.:;<=>?|@_`{}~]")
+            message = "can contains only letters of ukrainian and english languages, numbers, and some special symbols like: [\"#$%&'*+ ,-.:;<=>?|@_`{}~]")
     @Size(min = 5, max = 30, message = "Name must contain a minimum of 5 and a maximum of 30 letters")
     private String name;
     @NotNull
     @Pattern(regexp = "^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+ ,-.:;<=>?|@_`{}~^&&[^ыЫъЪёЁэЭ]]+$",
-            message = "Title can contains only letters of ukrainian and english languages, numbers, and some special symbols like: [\"#$%&'*+ ,-.:;<=>?|@_`{}~]")
+            message = "can contains only letters of ukrainian and english languages, numbers, and some special symbols like: [\"#$%&'*+ ,-.:;<=>?|@_`{}~]")
     @Size(min = 5, max = 30, message = "Title must contain a minimum of 5 and a maximum of 30 letters")
     private String title;
     @NotNull
     @NotEmpty
-    @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "Description cant contain letters of russian languages")
+    @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "cant contain letters of russian languages")
     private String description;
     @NotNull
     @Pattern(regexp = "/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path")

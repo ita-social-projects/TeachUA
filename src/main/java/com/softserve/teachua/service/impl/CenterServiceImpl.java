@@ -190,6 +190,9 @@ public class CenterServiceImpl implements CenterService {
     @Override
     public CenterProfile updateCenter(Long id, CenterProfile centerProfile) {
         Center center = getCenterById(id);
+        if (isCenterExistByName(centerProfile.getName())) {
+            throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
+        }
         Center newCenter = dtoConverter.convertToEntity(centerProfile, center)
                 .withId(id);
 
@@ -206,14 +209,8 @@ public class CenterServiceImpl implements CenterService {
 
         try {
             log.info("delete Center");
-            clubRepository.findAll()
-                    .stream()
-                    .filter(club -> club.getCenter() !=null && club.getCenter().getId().equals(id))
-                    .forEach(club -> club.setCenter(null));
-            locationRepository.findAll()
-                    .stream()
-                    .filter(location -> location.getCenter() != null && location.getCenter().getId().equals(id))
-                    .forEach(location -> location.setCenter(null));
+            clubRepository.findClubsByCenter(center).forEach(club -> club.setCenter(null));
+            locationRepository.findLocationsByCenter(center).forEach(location -> location.setCenter(null));
             centerRepository.deleteById(id);
             centerRepository.flush();
         } catch (DataAccessException | ValidationException e) {
