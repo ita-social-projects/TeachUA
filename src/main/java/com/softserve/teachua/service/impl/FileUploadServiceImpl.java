@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.service.FileUploadService;
@@ -81,7 +82,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             throw new IllegalArgumentException("File path can not be null or empty");
         }
         if (!filePath.contains(UPLOAD_LOCATION)) {
-            throw new IllegalArgumentException("Wrong uploaded file path");
+            throw new BadRequestException("Wrong uploaded file path");
         }
         String dirPath = filePath.substring(0, ordinalIndexOf(filePath, "/", 4, false));
         try {

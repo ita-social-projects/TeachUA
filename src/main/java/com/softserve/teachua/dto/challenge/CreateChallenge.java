@@ -29,10 +29,10 @@ public class CreateChallenge {
     private String title;
     @NotNull
     @NotEmpty
-    @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "cant contain letters of russian languages")
+    @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "can not contain letters of russian languages")
     private String description;
     @NotNull
-    @Pattern(regexp = "/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path")
+    @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.png")
     private String picture;
     @NotNull
     private Long sortId;
