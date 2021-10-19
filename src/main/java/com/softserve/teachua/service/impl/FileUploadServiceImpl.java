@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.service.FileUploadService;
@@ -23,6 +24,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final String FILE_UPLOAD_EXCEPTION = "Could not save image file: %s";
     private final String DIRECTORY_CREATE_EXCEPTION = "Could not create directory with name: %s";
     private final String UPLOAD_LOCATION = "/upload";
+    private static final String UPLOAD_PLUG = "/upload/test/test.png";
 
 
     @Override
@@ -77,11 +79,14 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     @Override
     public void deleteFile(String filePath) {
+        if (filePath.contains(UPLOAD_PLUG)) {
+            return;
+        }
         if (filePath == null || filePath.isEmpty()) {
             throw new IllegalArgumentException("File path can not be null or empty");
         }
         if (!filePath.contains(UPLOAD_LOCATION)) {
-            throw new IllegalArgumentException("Wrong uploaded file path");
+            throw new BadRequestException("Wrong uploaded file path");
         }
         String dirPath = filePath.substring(0, ordinalIndexOf(filePath, "/", 4, false));
         try {

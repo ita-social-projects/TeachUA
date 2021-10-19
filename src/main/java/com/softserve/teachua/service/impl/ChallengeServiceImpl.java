@@ -3,6 +3,7 @@ package com.softserve.teachua.service.impl;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.challenge.*;
 import com.softserve.teachua.dto.task.TaskNameProfile;
+import com.softserve.teachua.dto.task.TaskPreview;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
@@ -72,10 +73,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     @Override
     public Challenge getChallengeById(Long id) {
         return challengeRepository.findById(id)
-                .orElseThrow(()
-                        -> {
-                    throw new NotExistException(String.format("Challenge not found by id: %s", id));
-                });
+                .orElseThrow(() -> new NotExistException(String.format("Challenge not found by id: %s", id)));
     }
 
     @Override
@@ -125,11 +123,13 @@ public class ChallengeServiceImpl implements ChallengeService {
         Challenge challenge = getChallengeById(id);
         ChallengeProfile challengeProfile =
                 dtoConverter.convertToDto(challenge, ChallengeProfile.class);
-        challengeProfile.setTasks(new PageImpl<>(
-                taskService.getTasksByChallengeId(id)
-                        .stream()
-                        .filter(task -> task.getStartDate().isAfter(LocalDate.now().minusDays(1)))
-                        .collect(Collectors.toList())));
+        List<TaskPreview> tasks = taskService.getTasksByChallengeId(id)
+                .stream()
+                .filter(task -> {
+                    System.out.println(task.getStartDate().isAfter(LocalDate.now().minusDays(1)));
+                    return task.getStartDate().isBefore(LocalDate.now().plusDays(1));})
+                .collect(Collectors.toList());
+        challengeProfile.setTasks(new PageImpl<>(tasks));
         return challengeProfile;
     }
 }

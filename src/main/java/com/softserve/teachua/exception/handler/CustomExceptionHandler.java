@@ -8,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -18,9 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.time.format.DateTimeParseException;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -89,7 +86,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         exception.getBindingResult().getFieldErrors().forEach((error) -> {
             sb.append(error.getField()).append(" ").append(error.getDefaultMessage()).append(" and ");
         });
-        sb.setLength(sb.length()-5);
+        sb.setLength(sb.length() - 5);
         return buildExceptionBody(new BadRequestException(sb.toString()), status);
     }
 

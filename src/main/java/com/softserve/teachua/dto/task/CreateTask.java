@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.task;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
@@ -7,10 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -25,11 +23,14 @@ public class CreateTask implements Convertible {
     private String name;
     @NotNull
     @NotEmpty
-    @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "cant contain letters of russian languages")
+    @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "can not contain letters of russian languages")
+    @Size(min = 40, max = 3000, message = "must contain a minimum of 40 and a maximum of 3000 letters")
     private String description;
     @NotNull
-    @Pattern(regexp = "/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path")
+    @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.png")
     private String picture;
     @NotNull
+    @Future
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 }
