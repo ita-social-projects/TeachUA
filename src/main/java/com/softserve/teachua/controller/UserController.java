@@ -70,7 +70,6 @@ public class UserController implements Api {
      * The controller returns information {@code UserResponse} about updated user.
      *
      * @param userProfile - Place dto with all parameters for update existed user.
-     * if user is admin then needn't validate user id
      * @return new {@code UserProfile}.
      */
     @PutMapping("/user/{id}")
@@ -78,22 +77,11 @@ public class UserController implements Api {
             @PathVariable Long id,
             @Valid
             @RequestBody UserUpdateProfile userProfile, HttpServletRequest httpServletRequest) {
-        User userFromRequest = userService.getUserFromRequest(httpServletRequest);
-        //if user is admin then needn't validate user id
-        if(!userFromRequest.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
-            userService.validateUserId(id, httpServletRequest);
-        }
+
+        userService.validateUserId(id, httpServletRequest);
 
         return userService.updateUser(id, userProfile);
     }
-
-//    @PutMapping("/user/update")
-//    public SuccessUpdatedUser updateUserByManager(
-//            @Valid
-//            @RequestBody UserUpdateProfile userProfile, HttpServletRequest httpServletRequest) {
-////        userService.validateUserId(userProfile.getId(), httpServletRequest);
-//        return userService.updateUser(userProfile.getId(), userProfile);
-//    }
 
     /**
      * The controller returns dto {@code UserResponse} of deleted user by id.
