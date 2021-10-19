@@ -24,6 +24,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final String FILE_UPLOAD_EXCEPTION = "Could not save image file: %s";
     private final String DIRECTORY_CREATE_EXCEPTION = "Could not create directory with name: %s";
     private final String UPLOAD_LOCATION = "/upload";
+    private static final String UPLOAD_PLUG = "/upload/test/test.png";
 
 
     @Override
@@ -78,6 +79,9 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     @Override
     public void deleteFile(String filePath) {
+        if (filePath.contains(UPLOAD_PLUG)) {
+            return;
+        }
         if (filePath == null || filePath.isEmpty()) {
             throw new IllegalArgumentException("File path can not be null or empty");
         }
