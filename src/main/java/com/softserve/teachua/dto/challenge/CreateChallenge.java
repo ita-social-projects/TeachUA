@@ -30,6 +30,7 @@ public class CreateChallenge {
     @NotNull
     @NotEmpty
     @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "can not contain letters of russian languages")
+    @Size(min = 40, max = 3000, message = "must contain a minimum of 40 and a maximum of 3000 letters")
     private String description;
     @NotNull
     @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.png")

@@ -22,6 +22,12 @@ public class HtmlValidator {
             "Also you can use form tag only with action=\"link\" attribute," +
             "input with type=\"submit\" value=\"Go to link\" to add a button to description and " +
             "div and span with style to decorate description.";
+    private static final Safelist DESC_SAFELIST = Safelist.relaxed()
+            .addTags("form").addAttributes("form", "action")
+            .addTags("input").addAttributes("input", "type", "value")
+            .addAttributes("div", "style")
+            .addAttributes("span", "style")
+            .addAttributes("a", "href");
 
 
     /**
@@ -35,17 +41,10 @@ public class HtmlValidator {
      * @throws IncorrectInputException throws if the code has forbidden tags and attributes
      */
     public static void validateDescription(String desc) {
-        String descCleaned = Jsoup.clean(desc, Safelist.relaxed()
-                .addTags("form").addAttributes("form", "action")
-                .addTags("input").addAttributes("input", "type", "value")
-                .addAttributes("div", "style")
-                .addAttributes("span", "style")
-                .addAttributes("a", "href")
-        );
-        if (desc.length() > descCleaned.length()) {
+        if (!Jsoup.isValid(desc, DESC_SAFELIST)) {
             throw new IncorrectInputException(FORBIDDEN_DESC_TAGS);
         }
-        Document document = Jsoup.parse(descCleaned);
+        Document document = Jsoup.parse(desc);
         if(document.getElementsByTag("input").stream()
                 .anyMatch(element -> !element.attr("type").equals("submit")))
         {
