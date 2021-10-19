@@ -6,12 +6,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.List;
 
+@Slf4j
 public class DescriptionValidation implements ConstraintValidator<ClubDescription, String> {
 
     @Getter
@@ -49,7 +51,7 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
                 "\"entityMap\":{}}";
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         Description descriptionClub = objectMapper.readValue(description, Description.class);
-        System.out.println(descriptionClub);
+        log.info(descriptionClub.toString());
     }
 
     @Override

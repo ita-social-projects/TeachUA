@@ -31,15 +31,12 @@ public class ClubController implements Api {
     private static final int CLUBS_PER_USER_PAGE = 3;
 
     private final ClubService clubService;
-    private final UserService userService;
+    private final JwtProvider jwtProvider;
 
     @Autowired
-    JwtProvider jwtProvider;
-
-    @Autowired
-    public ClubController(ClubService clubService, ClubRepository clubRepository, UserService userService) {
+    public ClubController(ClubService clubService, JwtProvider jwtProvider) {
         this.clubService = clubService;
-        this.userService = userService;
+        this.jwtProvider = jwtProvider;
     }
 
     /**
