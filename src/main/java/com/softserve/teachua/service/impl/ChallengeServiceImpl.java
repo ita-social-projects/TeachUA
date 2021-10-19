@@ -20,7 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,10 +73,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     @Override
     public Challenge getChallengeById(Long id) {
         return challengeRepository.findById(id)
-                .orElseThrow(()
-                        -> {
-                    throw new NotExistException(String.format("Challenge not found by id: %s", id));
-                });
+                .orElseThrow(() -> new NotExistException(String.format("Challenge not found by id: %s", id)));
     }
 
     @Override
