@@ -1,10 +1,12 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.user.SuccessUpdatedUser;
 import com.softserve.teachua.dto.user.UserPasswordUpdate;
 import com.softserve.teachua.dto.user.UserResponse;
 import com.softserve.teachua.dto.user.UserUpdateProfile;
+import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.UserService;
@@ -75,16 +77,10 @@ public class UserController implements Api {
             @PathVariable Long id,
             @Valid
             @RequestBody UserUpdateProfile userProfile, HttpServletRequest httpServletRequest) {
-        userService.validateUserId(id, httpServletRequest);
-        return userService.updateUser(id, userProfile);
-    }
 
-    @PutMapping("/user/update")
-    public SuccessUpdatedUser updateUserByManager(
-            @Valid
-            @RequestBody UserUpdateProfile userProfile, HttpServletRequest httpServletRequest) {
-//        userService.validateUserId(userProfile.getId(), httpServletRequest); == todo think about validation
-        return userService.updateUser(userProfile.getId(), userProfile);
+        userService.validateUserId(id, httpServletRequest);
+
+        return userService.updateUser(id, userProfile);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.*;
@@ -54,6 +55,8 @@ public class UserServiceImpl implements UserService {
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
     private static final String USER_UPDATING_ERROR = "Incorrect input \"%s\" field";
+    private static final String WRONG_ID = "Wrong id";
+    private static final String INACCESSIBLE_ADMIN_PROFILE = "No one have access to admin profile";
     private final UserRepository userRepository;
     private final EncoderService encodeService;
     private final RoleService roleService;
@@ -295,9 +298,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public SuccessUpdatedUser updateUser(Long id, UserUpdateProfile userProfile) {
-
         User user = getUserById(id);
-
         if (!ifIncorrectInputInUpdatingFields(userProfile).isEmpty()) {
             throw new IncorrectInputException(String.format(USER_UPDATING_ERROR, ifIncorrectInputInUpdatingFields(userProfile)));
         }
@@ -413,9 +414,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void validateUserId(Long id, HttpServletRequest httpServletRequest) {
-        String token = jwtProvider.getJwtFromRequest(httpServletRequest);
-        if (!jwtProvider.getUserIdFromToken(token).equals(id)) {
-            throw new BadRequestException("Wrong id");
+        User userFromRequest = getUserFromRequest(httpServletRequest);
+        User updUser = getUserById(id);
+
+        if (!userFromRequest.getId().equals(id)) {
+            if (updUser.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
+                throw new BadRequestException(INACCESSIBLE_ADMIN_PROFILE);
+            }
+            if (!userFromRequest.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
+                throw new BadRequestException(WRONG_ID);
+            }
         }
     }
 
