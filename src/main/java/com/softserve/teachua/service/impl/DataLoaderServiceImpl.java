@@ -200,7 +200,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 SuccessCreatedCenter createdCenter = centerService.addCenter(CenterProfile
                         .builder()
                         .description(center.getDescription())
-                        .user(userService.getUserById(DEFAULT_USER_OWNER_ID))
+                        .userId(DEFAULT_USER_OWNER_ID)
                         .name(center.getName())
                         .urlWeb(CENTER_DEFAULT_URL_WEB)
                         .urlLogo(CENTER_DEFAULT_LOGO_URL)

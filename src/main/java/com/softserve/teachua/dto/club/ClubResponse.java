@@ -1,6 +1,9 @@
 package com.softserve.teachua.dto.club;
 
+import com.softserve.teachua.dto.category.CategoryResponse;
+import com.softserve.teachua.dto.center.CenterForClub;
 import com.softserve.teachua.dto.contact_data.ContactDataResponse;
+import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.*;
 import lombok.AllArgsConstructor;
@@ -26,11 +29,11 @@ public class ClubResponse implements Convertible {
     private String urlBackground;
     private List<GalleryPhoto> urlGallery;
     private String workTime;
-    private Set<Category> categories;
-    private User user;
-    private Center center;
+    private Set<CategoryResponse> categories;
+    private Long userId;
+    private CenterForClub club;
     private Double rating;
-    private Set<Location> locations;
+    private Set<LocationResponse> locations;
     private Boolean isApproved;
     private Boolean isOnline;
 
