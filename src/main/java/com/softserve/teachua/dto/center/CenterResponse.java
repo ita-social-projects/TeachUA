@@ -4,6 +4,7 @@ import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.contact_data.ContactDataResponse;
 import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.dto.user.UserPreview;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,6 +35,8 @@ public class CenterResponse implements Convertible {
     private String urlLogo;
 
     private String socialLinks;
+
+    private UserPreview user;
 
     private Set<LocationResponse> locations;
 
