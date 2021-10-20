@@ -272,7 +272,7 @@ public class UserServiceImpl implements UserService {
         log.info("User DB status"+ userEntity.isStatus());
         log.info("Login user status "+ userLogin.isStatus());
         log.info("Status "+encodeService.isValidStatus(userLogin,userEntity));
-        if (!encodeService.isValidStatus(userLogin, userEntity)) {
+        if (encodeService.isValidStatus(userLogin, userEntity)) {
             throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userLogin.getEmail()));
         } else if (!encodeService.isValidPassword(userLogin, userEntity)) {
             throw new WrongAuthenticationException(String.format(WRONG_PASSWORD, userLogin.getPassword()));
