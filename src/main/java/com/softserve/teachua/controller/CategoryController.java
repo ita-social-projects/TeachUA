@@ -44,9 +44,7 @@ public class CategoryController implements Api {
 
     @GetMapping("/categories/search")
     public Page<CategoryResponse> getListOfCategories(
-            @PageableDefault(
-                    value = 4,
-                    sort = "id") Pageable pageable) {
+            @PageableDefault(value = 4,sort = "id") Pageable pageable) {
         return categoryService.getListOfCategories(pageable);
     }
 

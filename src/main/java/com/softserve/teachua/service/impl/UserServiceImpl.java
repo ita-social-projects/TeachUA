@@ -269,12 +269,16 @@ public class UserServiceImpl implements UserService {
     public SuccessLogin validateUser(UserLogin userLogin) {
         userLogin.setEmail(userLogin.getEmail().toLowerCase());
         UserEntity userEntity = getUserEntity(userLogin.getEmail());
+        log.info("User DB status"+ userEntity.isStatus());
+        log.info("Login user status "+ userLogin.isStatus());
+        log.info("Status "+encodeService.isValidStatus(userLogin,userEntity));
         if (encodeService.isValidStatus(userLogin, userEntity)) {
             throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userLogin.getEmail()));
         } else if (!encodeService.isValidPassword(userLogin, userEntity)) {
             throw new WrongAuthenticationException(String.format(WRONG_PASSWORD, userLogin.getPassword()));
         }
         log.info("user {} logged successfully", userLogin);
+
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

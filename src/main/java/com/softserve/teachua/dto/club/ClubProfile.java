@@ -1,7 +1,6 @@
 package com.softserve.teachua.dto.club;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.softserve.teachua.dto.club.validation.ClubDescription;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
@@ -20,15 +19,12 @@ import java.util.List;
 
 public class ClubProfile implements Convertible {
 
-    private Long id;
-
     private List<String> categoriesName;
 
     @Valid
     private List<LocationProfile> locations;
 
     @Valid
-    @ClubDescription
     @JsonIgnoreProperties(ignoreUnknown = true)
     @NotEmpty
     @Size(
@@ -46,6 +42,9 @@ public class ClubProfile implements Convertible {
             min = 5,
             max = 100,
             message = "Довжина назви має бути від 5 до 100 символів")
+    @Pattern(
+            regexp = "^[А-Яа-яіІєЄїЇґҐ\\'a-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+[^:эЭъЪыЫёЁ]$" ,
+            message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
     private String name;
 
     @Min(2)

@@ -57,8 +57,6 @@ public class CenterProfile implements Convertible {
 
     private String urlLogo;
 
-    private User user;
-
     @NotEmpty(message = "Clubs are not selected")
     private List<Long> clubsId;
 
