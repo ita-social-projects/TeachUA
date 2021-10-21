@@ -41,7 +41,7 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
     public DescriptionValidation() throws JsonProcessingException {
         String description = "{\"blocks\":[" +
                 "{\"key\":\"brl63\"," +
-                "\"text\":\"dscsdcsdcsdcvsdvsdvsvsrvervgergfergergergergerg\"," +
+                "\"text\":\"\"," +
                 "\"type\":\"unstyled\"," +
                 "\"depth\":0," +
                 "\"inlineStyleRanges\":[]," +
@@ -60,7 +60,7 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
             objectMapper.readValue(s, Description.class);
             return true;
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error("An exception occurred!");
         }
         return false;
     }
