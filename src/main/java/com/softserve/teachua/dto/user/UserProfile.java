@@ -22,12 +22,12 @@ public class UserProfile implements Convertible {
 
 
     @NotEmpty
-    @Pattern(regexp ="^[^-ЁёЪъЫыЭэ]*$",message = "Last name not can have russian letters ")
+    @Pattern(regexp ="^[^-ЁёЪъЫыЭэ]*$",message = "Last name cannot contain russian letters ")
     private String firstName;
 
 
     @NotEmpty
-    @Pattern(regexp ="^[^-ЁёЪъЫыЭэё]*$",message = "Last name not can have russian letters ")
+    @Pattern(regexp ="^[^-ЁёЪъЫыЭэё]*$",message = "Last name cannot contain russian letters ")
 
     private String lastName;
 

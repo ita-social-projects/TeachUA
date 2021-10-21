@@ -8,9 +8,7 @@ import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.util.List;
 
 @AllArgsConstructor
@@ -32,10 +30,22 @@ public class ClubProfile implements Convertible {
     @Valid
     @ClubDescription
     @JsonIgnoreProperties(ignoreUnknown = true)
-//    @Pattern(regexp = "^[А-Яа-яёЁЇїІіЄєҐґa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]{40,1500}$" ,
-//            message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
+    @NotEmpty
+    @Size(
+            min=40,
+            max=1500,
+            message = "Довжина тексту не відповідає критеріям: від 40 до 1500 символів."
+    )
+    @Pattern(regexp = "^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+[^:эЭъЪыЫёЁ]$" ,
+            message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
     public String description;
 
+    @Valid
+    @NotEmpty
+    @Size(
+            min = 5,
+            max = 100,
+            message = "Довжина назви має бути від 5 до 100 символів")
     private String name;
 
     @Min(2)
