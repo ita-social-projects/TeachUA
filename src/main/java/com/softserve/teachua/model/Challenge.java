@@ -27,14 +27,14 @@ public class Challenge implements Convertible, Archivable {
     @EqualsAndHashCode.Include
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10000)
     private String description;
 
     @Column(nullable = false)
     private String picture;
 
     @Column(nullable = false)
-    private Long sortId;
+    private Long sortNumber;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

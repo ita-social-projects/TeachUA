@@ -1,16 +1,15 @@
 package com.softserve.teachua.dto.challenge;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.utils.TrimDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,26 +17,27 @@ import javax.validation.constraints.Size;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateChallenge implements Convertible {
-    @NotNull
+    @JsonDeserialize(using = TrimDeserialize.class)
+    @NotBlank
     @Pattern(regexp = "^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+ ,-.:;<=>?|@_`{}~^&&[^ыЫъЪёЁэЭ]]+$",
             message = "can contains only letters of ukrainian and english languages, numbers, and some special symbols like: [\"#$%&'*+ ,-.:;<=>?|@_`{}~]")
     @Size(min = 5, max = 30, message = "Name must contain a minimum of 5 and a maximum of 30 letters")
     private String name;
-    @NotNull
+    @JsonDeserialize(using = TrimDeserialize.class)
+    @NotBlank
     @Pattern(regexp = "^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+ ,-.:;<=>?|@_`{}~^&&[^ыЫъЪёЁэЭ]]+$",
             message = "can contains only letters of ukrainian and english languages, numbers, and some special symbols like: [\"#$%&'*+ ,-.:;<=>?|@_`{}~]")
     @Size(min = 5, max = 30, message = "Name must contain a minimum of 5 and a maximum of 30 letters")
     private String title;
-    @NotNull
-    @NotEmpty
+    @NotBlank
     @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "can not contain letters of russian languages")
     @Size(min = 40, max = 3000, message = "must contain a minimum of 40 and a maximum of 3000 letters")
     private String description;
-    @NotNull
+    @NotBlank
     @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.png")
     private String picture;
     @NotNull
-    private Long sortId;
+    private Long sortNumber;
     @NotNull
     private Boolean isActive;
 }

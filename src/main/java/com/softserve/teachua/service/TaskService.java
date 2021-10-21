@@ -12,8 +12,6 @@ public interface TaskService {
 
     Page<TaskPreview> getTasksByChallengeId(Long id, Pageable pageable);
 
-    Page<TaskPreview> getTasksByChallengeId(Long id);
-
     TaskProfile getTask(Long id);
 
     SuccessCreatedTask createTask(Long id, CreateTask createTask);
