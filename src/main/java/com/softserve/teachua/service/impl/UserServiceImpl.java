@@ -270,7 +270,7 @@ public class UserServiceImpl implements UserService {
         userLogin.setEmail(userLogin.getEmail().toLowerCase());
         UserEntity userEntity = getUserEntity(userLogin.getEmail());
         log.info("User DB status"+ userEntity.isStatus());
-        log.info("Login user status "+ userLogin.isStatus());
+        log.info("Login user status " /*userLogin.isStatus()*/);
         log.info("Status "+encodeService.isValidStatus(userLogin,userEntity));
         if (!encodeService.isValidStatus(userLogin, userEntity)) {
             throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userLogin.getEmail()));
