@@ -7,6 +7,7 @@ import lombok.*;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -20,10 +21,14 @@ public class LocationProfile {
 
     private Long id;
 
-    @Pattern(regexp = "^(?!\\s)([\\wА-ЩЬЮЯҐЄІЇа-щьюяґєії !\\\"#$%&'()*+,\\-.\\/:;<=>?@\\]\\[^_`{}~]){5,100}$" ,
+    @NotEmpty
+    @Size(
+            min=5,
+            max=100,
+            message = "Довжина назви не відповідає критеріям: від 5 до 100 символів."
+    )
+    @Pattern(regexp = "^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+[^:эЭъЪыЫёЁ]$" ,
              message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
-    @Pattern(regexp = "^.*\\S$",
-            message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
     private String name;
 
     private String address;
