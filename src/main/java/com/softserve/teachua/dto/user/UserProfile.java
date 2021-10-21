@@ -6,8 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,6 +31,7 @@ public class UserProfile implements Convertible {
     private String lastName;
 
     @NotEmpty
+    @Pattern(regexp = "^[0-9]{10}$",message = "Phone can have only numbers")
     private String phone;
 
 
