@@ -40,6 +40,7 @@ public class CenterProfile implements Convertible {
             message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
     private String name;
 
+    @Valid
     private List<LocationProfile> locations;
 
     @Valid
