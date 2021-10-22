@@ -23,7 +23,7 @@ public class ChallengeProfile implements Convertible {
     private String title;
     private String description;
     private String picture;
-    private Long sortId;
+    private Long sortNumber;
     private Boolean isActive;
     private Page<TaskPreview> tasks;
     private UserPreview user;

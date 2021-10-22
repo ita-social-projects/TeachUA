@@ -4,6 +4,8 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.challenge.*;
 import com.softserve.teachua.service.ChallengeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,8 +40,8 @@ public class ChallengeController implements Api {
      * @return {@code ChallengeProfile}.
      */
     @GetMapping("/challenge/{id}")
-    public ChallengeProfile getChallenge(@PathVariable Long id) {
-        return challengeService.getChallenge(id);
+    public ChallengeProfile getChallenge(@PathVariable Long id, @PageableDefault(value = 2, sort = "startDate") Pageable pageable) {
+        return challengeService.getChallenge(id, pageable);
     }
 
     /**

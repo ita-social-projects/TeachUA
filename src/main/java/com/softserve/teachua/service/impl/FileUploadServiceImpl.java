@@ -83,7 +83,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             return;
         }
         if (filePath == null || filePath.isEmpty()) {
-            throw new IllegalArgumentException("File path can not be null or empty");
+            throw new BadRequestException("File path can not be null or empty");
         }
         if (!filePath.contains(UPLOAD_LOCATION)) {
             throw new BadRequestException("Wrong uploaded file path");

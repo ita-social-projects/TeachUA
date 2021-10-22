@@ -8,12 +8,15 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.repository.ChallengeRepository;
+import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.service.*;
 import com.softserve.teachua.utils.HtmlValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +40,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     private final UserService userService;
     private final ArchiveService archiveService;
     private final FileUploadService fileUploadService;
+    private final TaskRepository taskRepository;
     private TaskService taskService;
 
     @Autowired
@@ -44,13 +49,15 @@ public class ChallengeServiceImpl implements ChallengeService {
             DtoConverter dtoConverter,
             UserService userService,
             ArchiveService archiveService,
-            FileUploadService fileUploadService
+            FileUploadService fileUploadService,
+            TaskRepository taskRepository
     ) {
         this.challengeRepository = challengeRepository;
         this.dtoConverter = dtoConverter;
         this.userService = userService;
         this.archiveService = archiveService;
         this.fileUploadService = fileUploadService;
+        this.taskRepository = taskRepository;
     }
 
     @Autowired
@@ -63,8 +70,8 @@ public class ChallengeServiceImpl implements ChallengeService {
         List<ChallengePreview> resultList = new LinkedList<>();
         List<Challenge> list;
         list = active != null
-                ? challengeRepository.getByIsActiveOrderBySortIdDesc(active)
-                : challengeRepository.findAll(Sort.by(Sort.Direction.DESC, "sortId"));
+                ? challengeRepository.getByIsActiveOrderBySortNumberDesc(active)
+                : challengeRepository.findAll(Sort.by(Sort.Direction.DESC, "sortNumber"));
         list.forEach((challenge ->
                 resultList.add(dtoConverter.convertToDto(challenge, ChallengePreview.class))));
         return resultList;
@@ -91,9 +98,6 @@ public class ChallengeServiceImpl implements ChallengeService {
     public SuccessUpdatedChallenge updateChallenge(Long id, UpdateChallenge updateChallenge) {
         HtmlValidator.validateDescription(updateChallenge.getDescription());
         Challenge challenge = getChallengeById(id);
-        if (!challenge.getPicture().equals(updateChallenge.getPicture())) {
-            fileUploadService.deleteFile(challenge.getPicture());
-        }
         BeanUtils.copyProperties(updateChallenge, challenge);
         return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdatedChallenge.class);
     }
@@ -112,24 +116,20 @@ public class ChallengeServiceImpl implements ChallengeService {
                         dtoConverter.convertFromDtoToDto(
                                 taskService.deleteTask(task.getId()),
                                 new TaskNameProfile())));
-        fileUploadService.deleteFile(challenge.getPicture());
         challengeRepository.deleteById(id);
         challengeRepository.flush();
         return challengeResponse;
     }
 
     @Override
-    public ChallengeProfile getChallenge(Long id) {
+    public ChallengeProfile getChallenge(Long id, Pageable pageable) {
         Challenge challenge = getChallengeById(id);
         ChallengeProfile challengeProfile =
                 dtoConverter.convertToDto(challenge, ChallengeProfile.class);
-        List<TaskPreview> tasks = taskService.getTasksByChallengeId(id)
-                .stream()
-                .filter(task -> {
-                    System.out.println(task.getStartDate().isAfter(LocalDate.now().minusDays(1)));
-                    return task.getStartDate().isBefore(LocalDate.now().plusDays(1));})
-                .collect(Collectors.toList());
-        challengeProfile.setTasks(new PageImpl<>(tasks));
+        Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
+        Page<Task> pageableTasks = taskRepository.findTasksByChallengeAndStartDateBefore(challenge, LocalDate.now(), pageable);
+        List<TaskPreview> tasks = pageableTasks.stream().map(function).collect(Collectors.toList());
+        challengeProfile.setTasks(new PageImpl<>(tasks, pageableTasks.getPageable(), pageableTasks.getTotalElements()));
         return challengeProfile;
     }
 }
