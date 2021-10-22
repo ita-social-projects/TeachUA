@@ -523,11 +523,19 @@ public class ClubServiceImpl implements ClubService {
         return clubRepository.findByName(name);
     }
 
-    private String ifClubToCreateHaveEmptyFields(ClubProfile clubProfile){
-        if(clubProfile.getName().trim().isEmpty()){ return "Назва"; }
-        if(clubProfile.getContacts().trim().isEmpty()){ return "Контакти"; }
-        if(clubProfile.getDescription().trim().isEmpty()){ return "Опис"; }
-        if(clubProfile.getCategoriesName().isEmpty()){ return "Категорії"; }
+    private String ifClubToCreateHaveEmptyFields(ClubProfile clubProfile) {
+        if (clubProfile.getName() == null || clubProfile.getName().trim().isEmpty()) {
+            return "Назва";
+        }
+        if (clubProfile.getContacts() == null || clubProfile.getContacts().trim().isEmpty()) {
+            return "Контакти";
+        }
+        if (clubProfile.getDescription() == null || clubProfile.getDescription().trim().isEmpty()) {
+            return "Опис";
+        }
+        if (clubProfile.getCategoriesName() == null || clubProfile.getCategoriesName().isEmpty()) {
+            return "Категорії";
+        }
         return "";
     }
 }
