@@ -60,7 +60,7 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
             objectMapper.readValue(s, Description.class);
             return true;
         } catch (JsonProcessingException e) {
-            log.error("An exception occurred!");
+            log.error("An exception occurred.");
         }
         return false;
     }
