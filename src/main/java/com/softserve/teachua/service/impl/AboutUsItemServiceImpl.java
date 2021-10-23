@@ -22,8 +22,9 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class AboutUsItemServiceImpl implements AboutUsItemService {
-    private static final String ABOUT_US_ITEM_NOT_FOUND_BY_ID = "About us item was not found by id: %s";
-    private static final String ABOUT_US_ITEM_NULL_FIELD_ERROR = "About us item cannot exist without \"%s\"";
+    private static final String ABOUT_US_ITEM_ALREADY_EXIST = "AboutUsItem with number: %s already exist";
+    private static final String ABOUT_US_ITEM_NOT_FOUND_BY_ID = "AboutUsItem was not found by id: %s";
+    private static final String ABOUT_US_ITEM_NULL_FIELD_ERROR = "AboutUsItem cannot exist without \"%s\"";
 
     private final AboutUsItemRepository aboutUsItemRepository;
     private final ArchiveService archiveService;
@@ -85,5 +86,7 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
         aboutUsItemRepository.flush();
         return dtoConverter.convertToDto(aboutUsItem, AboutUsItemResponse.class);
     }
+
+//    private void validateNumberOfItem()
 
 }

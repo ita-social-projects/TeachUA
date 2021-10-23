@@ -29,5 +29,5 @@ public class AboutUsItem implements Convertible, Archivable {
     private Long type;
 
     @Column(nullable = false)
-    private Long order;
+    private Long number;
 }

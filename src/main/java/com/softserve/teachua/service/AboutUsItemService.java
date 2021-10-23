@@ -11,7 +11,7 @@ public interface AboutUsItemService {
 
     AboutUsItem getAboutUsItemById(Long id);
 
-    Object getAboutUsItemResponseById(Long id);
+    AboutUsItemResponse getAboutUsItemResponseById(Long id);
 
     List<AboutUsItem> getListOfAboutUsItems();
 

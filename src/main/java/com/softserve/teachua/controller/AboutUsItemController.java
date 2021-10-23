@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
 import com.softserve.teachua.service.AboutUsItemService;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-public class AboutUsItemController {
+public class AboutUsItemController implements Api {
 
     private final AboutUsItemService aboutUsItemService;
 
@@ -24,6 +25,13 @@ public class AboutUsItemController {
     @GetMapping("/about_us_items")
     public List<AboutUsItemResponse> getAboutUsItems(){
         return aboutUsItemService.getListOfAboutUsItemResponses();
+    }
+
+    @GetMapping("/about_us_item/{id}")
+    public AboutUsItemResponse getAboutUsItems(
+            @PathVariable Long id
+    ){
+        return aboutUsItemService.getAboutUsItemResponseById(id);
     }
 
     @PostMapping("/about_us_item")

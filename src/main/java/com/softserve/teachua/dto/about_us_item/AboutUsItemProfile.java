@@ -24,6 +24,6 @@ public class AboutUsItemProfile implements Convertible {
     private Long type;
 
     @NotNull
-    private Long order;
+    private Long number;
 
 }
