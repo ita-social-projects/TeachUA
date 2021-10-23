@@ -8,12 +8,19 @@ import com.softserve.teachua.model.AboutUsItem;
 import com.softserve.teachua.repository.AboutUsItemRepository;
 import com.softserve.teachua.service.AboutUsItemService;
 import com.softserve.teachua.service.ArchiveService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
+@Transactional
+@Slf4j
 public class AboutUsItemServiceImpl implements AboutUsItemService {
     private static final String ABOUT_US_ITEM_NOT_FOUND_BY_ID = "About us item was not found by id: %s";
     private static final String ABOUT_US_ITEM_NULL_FIELD_ERROR = "About us item cannot exist without \"%s\"";
@@ -59,7 +66,7 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
     }
 
     @Override
-    public AboutUsItemResponse createAboutUsItem(AboutUsItemProfile aboutUsItemProfile) {
+    public AboutUsItemResponse addAboutUsItem(AboutUsItemProfile aboutUsItemProfile) {
         AboutUsItem aboutUsItem = dtoConverter.convertToEntity(aboutUsItemProfile, new AboutUsItem());
         return dtoConverter.convertToDto(aboutUsItemRepository.save(aboutUsItem), AboutUsItemResponse.class);
     }
