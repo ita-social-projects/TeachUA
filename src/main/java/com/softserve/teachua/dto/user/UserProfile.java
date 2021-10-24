@@ -31,7 +31,7 @@ public class UserProfile implements Convertible {
     private String lastName;
 
     @NotEmpty
-    @Pattern(regexp = "^[0-9]{10}$",message = "Phone can have only numbers")
+    @Pattern(regexp = "^[0-9]{9}$",message = "Phone can have only numbers and length 9")
     private String phone;
 
 
