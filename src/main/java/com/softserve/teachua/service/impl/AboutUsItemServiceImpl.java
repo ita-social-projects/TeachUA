@@ -75,6 +75,7 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
     @Override
     public AboutUsItemResponse updateAboutUsItem(Long id, AboutUsItemProfile aboutUsItemProfile) {
         AboutUsItem aboutUsItem = getAboutUsItemById(id);
+        aboutUsItemProfile.setNumber(aboutUsItem.getNumber());
         BeanUtils.copyProperties(aboutUsItemProfile, aboutUsItem);
         return dtoConverter.convertToDto(aboutUsItemRepository.save(aboutUsItem), AboutUsItemResponse.class);
     }
