@@ -19,6 +19,8 @@ import java.util.List;
 
 public class ClubProfile implements Convertible {
 
+    private Long id;
+
     private List<String> categoriesName;
 
     @Valid
