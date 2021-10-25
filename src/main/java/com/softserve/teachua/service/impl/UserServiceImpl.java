@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
     private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
     private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
-    private static final String WRONG_PASSWORD = "Wrong password: %s";
+    private static final String WRONG_PASSWORD = "Wrong password";
     private static final String NOT_VERIFIED = "User is not verified: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
@@ -213,8 +213,8 @@ public class UserServiceImpl implements UserService {
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
 
-        String phoneFormat  = "+380"+user.getPhone();
-        String Formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
+        String phoneFormat = "+380" + user.getPhone();
+        String Formated = String.format("%s (%s) %s %s %s", phoneFormat.substring(0, 3), phoneFormat.substring(3, 6), phoneFormat.substring(6, 9), phoneFormat.substring(9, 11), phoneFormat.substring(11, 13));
 
         user.setPhone(Formated);
 
@@ -269,13 +269,13 @@ public class UserServiceImpl implements UserService {
     public SuccessLogin validateUser(UserLogin userLogin) {
         userLogin.setEmail(userLogin.getEmail().toLowerCase());
         UserEntity userEntity = getUserEntity(userLogin.getEmail());
-        log.info("User DB status"+ userEntity.isStatus());
-        log.info("Login user status "+ userLogin.isStatus());
-        log.info("Status "+encodeService.isValidStatus(userLogin,userEntity));
+        log.info("User DB status" + userEntity.isStatus());
+        log.info("Login user status " + userLogin.isStatus());
+        log.info("Status " + encodeService.isValidStatus(userLogin, userEntity));
         if (encodeService.isValidStatus(userLogin, userEntity)) {
             throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userLogin.getEmail()));
         } else if (!encodeService.isValidPassword(userLogin, userEntity)) {
-            throw new WrongAuthenticationException(String.format(WRONG_PASSWORD, userLogin.getPassword()));
+            throw new WrongAuthenticationException(WRONG_PASSWORD);
         }
         log.info("user {} logged successfully", userLogin);
 
@@ -436,7 +436,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(
                 jwtProvider.getUserIdFromToken(
                         jwtProvider.getJwtFromRequest(httpServletRequest))).orElseThrow(
-                                () -> new WrongAuthenticationException());
+                () -> new WrongAuthenticationException());
     }
 
     @Override
