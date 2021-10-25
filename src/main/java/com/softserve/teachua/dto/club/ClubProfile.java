@@ -51,10 +51,12 @@ public class ClubProfile implements Convertible {
 
     @Min(2)
     @Max(17)
+    @NotNull(message = "'AgeFrom' поле не може бути пустим")
     private Integer ageFrom;
 
     @Min(3)
     @Max(18)
+    @NotNull(message = "'AgeTo' поле не може бути пустим")
     private Integer ageTo;
 
     private String urlBackground;
