@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
     private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
     private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
-    private static final String WRONG_PASSWORD = "Wrong password: %s";
+    private static final String WRONG_PASSWORD = "Wrong password";
     private static final String NOT_VERIFIED = "User is not verified: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
@@ -272,7 +272,7 @@ public class UserServiceImpl implements UserService {
         if (!encodeService.isValidStatus(userEntity)) {
             throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userLogin.getEmail()));
         } else if (!encodeService.isValidPassword(userLogin, userEntity)) {
-            throw new WrongAuthenticationException(String.format(WRONG_PASSWORD, userLogin.getPassword()));
+            throw new WrongAuthenticationException(WRONG_PASSWORD);
         }
         log.info("user {} logged successfully", userLogin);
 
