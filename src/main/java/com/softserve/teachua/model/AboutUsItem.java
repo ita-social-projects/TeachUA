@@ -6,11 +6,14 @@ import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Data
+@With
+@Builder
 @Entity
 @Table(name = "about_us_items")
 public class AboutUsItem implements Convertible, Archivable {
@@ -19,6 +22,7 @@ public class AboutUsItem implements Convertible, Archivable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 6000)
     private String text;
 
     private String picture;

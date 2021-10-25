@@ -54,12 +54,12 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
 
     @Override
     public List<AboutUsItem> getListOfAboutUsItems() {
-        return aboutUsItemRepository.findAll();
+        return aboutUsItemRepository.findAllByOrderByNumberAsc();
     }
 
     @Override
     public List<AboutUsItemResponse> getListOfAboutUsItemResponses() {
-        List<AboutUsItemResponse> aboutUsItemResponses = aboutUsItemRepository.findAll()
+        List<AboutUsItemResponse> aboutUsItemResponses = aboutUsItemRepository.findAllByOrderByNumberAsc()
                 .stream()
                 .map(item -> (AboutUsItemResponse)dtoConverter.convertToDto(item, AboutUsItemResponse.class))
                 .collect(Collectors.toList());
