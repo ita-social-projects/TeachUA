@@ -54,7 +54,6 @@ public class UserServiceImpl implements UserService {
     private static final String NOT_VERIFIED = "User is not verified: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
-    private static final String USER_UPDATING_ERROR = "Incorrect input \"%s\" field";
     private static final String WRONG_ID = "Wrong id";
     private static final String INACCESSIBLE_ADMIN_PROFILE = "No one have access to admin profile";
     private final UserRepository userRepository;
@@ -300,11 +299,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public SuccessUpdatedUser updateUser(Long id, UserUpdateProfile userProfile) {
         User user = getUserById(id);
-        if (!ifIncorrectInputInUpdatingFields(userProfile).isEmpty()) {
-            throw new IncorrectInputException(String.format(USER_UPDATING_ERROR, ifIncorrectInputInUpdatingFields(userProfile)));
-        }
 
-        if (userProfile.getEmail() == null || !userProfile.getEmail().equals(user.getEmail())) {
+        if (!userProfile.getEmail().equals(user.getEmail())) {
             throw new IncorrectInputException(EMAIL_UPDATING_ERROR);
         }
 
@@ -558,20 +554,5 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         log.info("password reset {}", user);
         return userResetPassword;
-    }
-
-    private String ifIncorrectInputInUpdatingFields(UserUpdateProfile userProfile) {
-        if (userProfile.getFirstName() == null || userProfile.getFirstName().trim().isEmpty()) {
-            return "Ім'я";
-        }
-        if (userProfile.getLastName() == null || userProfile.getLastName().trim().isEmpty()) {
-            return "Прізвище";
-        }
-        if (userProfile.getPhone() == null || userProfile.getPhone().trim().isEmpty()
-                || userProfile.getPhone().length() != 9
-                || !Pattern.compile("[0-9]{9}").matcher(userProfile.getPhone()).find()) {
-            return "Телефон";
-        }
-        return "";
     }
 }
