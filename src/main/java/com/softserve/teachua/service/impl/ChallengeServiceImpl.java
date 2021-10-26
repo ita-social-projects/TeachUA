@@ -87,7 +87,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     public SuccessCreatedChallenge createChallenge(
             CreateChallenge createChallenge,
             HttpServletRequest httpServletRequest) {
-        HtmlValidator.validateDescription(createChallenge.getDescription());
+        createChallenge.setDescription(HtmlValidator.validateDescription(createChallenge.getDescription()));
         Challenge challenge = dtoConverter.convertToEntity(createChallenge, new Challenge());
         challenge.setUser(userService.getUserFromRequest(httpServletRequest));
         challenge.setIsActive(true);
@@ -96,7 +96,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public SuccessUpdatedChallenge updateChallenge(Long id, UpdateChallenge updateChallenge) {
-        HtmlValidator.validateDescription(updateChallenge.getDescription());
+        updateChallenge.setDescription(HtmlValidator.validateDescription(updateChallenge.getDescription()));
         Challenge challenge = getChallengeById(id);
         BeanUtils.copyProperties(updateChallenge, challenge);
         return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdatedChallenge.class);

@@ -88,7 +88,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public SuccessCreatedTask createTask(Long id, CreateTask createTask) {
-        HtmlValidator.validateDescription(createTask.getDescription());
+        createTask.setDescription(HtmlValidator.validateDescription(createTask.getDescription()));
         Challenge challenge = challengeService.getChallengeById(id);
         Task task = dtoConverter.convertToEntity(createTask, new Task());
         task.setChallenge(challenge);
@@ -97,7 +97,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public SuccessUpdatedTask updateTask(Long id, UpdateTask updateTask) {
-        HtmlValidator.validateDescription(updateTask.getDescription());
+        updateTask.setDescription(HtmlValidator.validateDescription(updateTask.getDescription()));
         Task task = getTaskById(id);
         BeanUtils.copyProperties(updateTask, task);
         task.setChallenge(challengeService.getChallengeById(updateTask.getChallengeId()));
