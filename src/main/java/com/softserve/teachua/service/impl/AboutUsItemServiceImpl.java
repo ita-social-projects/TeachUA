@@ -25,6 +25,8 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
     private static final String ABOUT_US_ITEM_ALREADY_EXIST = "AboutUsItem with number: %s already exist";
     private static final String ABOUT_US_ITEM_NOT_FOUND_BY_ID = "AboutUsItem was not found by id: %s";
     private static final String ABOUT_US_ITEM_NULL_FIELD_ERROR = "AboutUsItem cannot exist without \"%s\"";
+    private static final String VIDEO_PARAM = "watch?v=";
+    private static final String EMBED_VIDEO_URL = "https://www.youtube.com/embed/";
 
     private final AboutUsItemRepository aboutUsItemRepository;
     private final ArchiveService archiveService;
@@ -68,6 +70,7 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
 
     @Override
     public AboutUsItemResponse addAboutUsItem(AboutUsItemProfile aboutUsItemProfile) {
+        validateVideoUrl(aboutUsItemProfile);
         AboutUsItem aboutUsItem = dtoConverter.convertToEntity(aboutUsItemProfile, new AboutUsItem());
         return dtoConverter.convertToDto(aboutUsItemRepository.save(aboutUsItem), AboutUsItemResponse.class);
     }
@@ -76,6 +79,8 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
     public AboutUsItemResponse updateAboutUsItem(Long id, AboutUsItemProfile aboutUsItemProfile) {
         AboutUsItem aboutUsItem = getAboutUsItemById(id);
         aboutUsItemProfile.setNumber(aboutUsItem.getNumber());
+        validateVideoUrl(aboutUsItemProfile);
+        log.info(aboutUsItemProfile.toString());
         BeanUtils.copyProperties(aboutUsItemProfile, aboutUsItem);
         return dtoConverter.convertToDto(aboutUsItemRepository.save(aboutUsItem), AboutUsItemResponse.class);
     }
@@ -88,6 +93,16 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
         return dtoConverter.convertToDto(aboutUsItem, AboutUsItemResponse.class);
     }
 
-//    private void validateNumberOfItem()
-
+    @Override
+    public void validateVideoUrl(AboutUsItemProfile aboutUsItemProfile) {
+        String video_url = aboutUsItemProfile.getVideo();
+        if(video_url != null) {
+            int position = video_url.indexOf(VIDEO_PARAM);
+            if(position != -1) {
+                video_url = EMBED_VIDEO_URL + video_url.substring(position + VIDEO_PARAM.length());
+                aboutUsItemProfile.setVideo(video_url);
+                log.info(video_url);
+            }
+        }
+    }
 }

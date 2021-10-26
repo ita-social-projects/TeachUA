@@ -22,4 +22,6 @@ public interface AboutUsItemService {
     AboutUsItemResponse updateAboutUsItem(Long id, AboutUsItemProfile aboutUsItemProfile);
 
     AboutUsItemResponse deleteAboutUsItemById(Long id);
+
+    void validateVideoUrl(AboutUsItemProfile aboutUsItemProfile);
 }
