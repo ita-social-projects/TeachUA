@@ -43,7 +43,7 @@ public class HtmlValidator {
      * @see Safelist
      * @throws IncorrectInputException throws if the code has forbidden tags and attributes
      */
-    public static String validateDescription(String desc) {
+    public static void validateDescription(String desc) {
         System.out.println(Jsoup.clean(desc, DESC_SAFELIST)); //Use this to debug which tags are not valid
         if (!Jsoup.isValid(desc, DESC_SAFELIST)) {
             throw new IncorrectInputException(FORBIDDEN_DESC_TAGS);
@@ -54,6 +54,5 @@ public class HtmlValidator {
         {
             throw new IncorrectInputException(FORBIDDEN_DESC_TAGS);
         }
-        return desc.replace("class", "className");
     }
 }
