@@ -23,7 +23,7 @@ public class CreateTask implements Convertible {
     @NotBlank
     @Pattern(regexp = "^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+ ,-.:;<=>?|@_`{}~^&&[^ыЫъЪёЁэЭ]]+$",
             message = "can contains only letters of ukrainian and english languages, numbers, and some special symbols like: [\"#$%&'*+ ,-.:;<=>?|@_`{}~]")
-    @Size(min = 5, max = 30, message = "must contain a minimum of 5 and a maximum of 30 letters")
+    @Size(min = 5, max = 50, message = "must contain a minimum of 5 and a maximum of 50 letters")
     private String name;
     @NotBlank
     @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "can not contain letters of russian languages")

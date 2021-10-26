@@ -24,10 +24,13 @@ public class HtmlValidator {
             "div and span with style to decorate description.";
     private static final Safelist DESC_SAFELIST = Safelist.relaxed()
             .addTags("form").addAttributes("form", "action")
-            .addTags("input").addAttributes("input", "type", "value")
+            .addTags("input").addAttributes("input", "type", "value", "class")
+            .addTags("/input")
             .addAttributes("div", "style")
             .addAttributes("span", "style")
-            .addAttributes("a", "href");
+            .addAttributes("a", "href")
+            .addAttributes("a", "style")
+            .addAttributes("div", "class");
 
 
     /**
@@ -41,6 +44,7 @@ public class HtmlValidator {
      * @throws IncorrectInputException throws if the code has forbidden tags and attributes
      */
     public static void validateDescription(String desc) {
+        System.out.println(Jsoup.clean(desc, DESC_SAFELIST)); //Use this to debug which tags are not valid
         if (!Jsoup.isValid(desc, DESC_SAFELIST)) {
             throw new IncorrectInputException(FORBIDDEN_DESC_TAGS);
         }
@@ -50,6 +54,5 @@ public class HtmlValidator {
         {
             throw new IncorrectInputException(FORBIDDEN_DESC_TAGS);
         }
-
     }
 }
