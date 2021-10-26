@@ -88,11 +88,14 @@ public class FileUploadServiceImpl implements FileUploadService {
         if (!filePath.contains(UPLOAD_LOCATION)) {
             throw new BadRequestException("Wrong uploaded file path");
         }
-        String dirPath = filePath.substring(0, ordinalIndexOf(filePath, "/", 4, false));
+//        String dirPath = filePath.substring(0, ordinalIndexOf(filePath, "/", 4, false));
         try {
-            FileUtils.deleteDirectory(new File("target" + dirPath));
+            File file = new File("target/" + filePath);
+            log.info("file: " + file);
+            FileUtils.forceDelete(file);
+            FileUtils.deleteDirectory(file);
         } catch (IOException e) {
-            throw new FileUploadException(String.format("Can't delete directory with path: %s", dirPath));
+            throw new FileUploadException(String.format("Can't delete directory with path: %s", filePath));
         }
     }
 
