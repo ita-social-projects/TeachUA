@@ -92,7 +92,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         try {
             FileUtils.forceDelete(new File("target" + filePath));
         } catch (IOException e) {
-            throw new FileUploadException(String.format("Can't delete directory with path: %s", filePath));
+            throw new FileUploadException(String.format("Can't delete file with path: %s", filePath));
         }
     }
 
