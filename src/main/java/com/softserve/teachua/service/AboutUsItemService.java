@@ -24,4 +24,7 @@ public interface AboutUsItemService {
     AboutUsItemResponse deleteAboutUsItemById(Long id);
 
     void validateVideoUrl(AboutUsItemProfile aboutUsItemProfile);
+
+    void changeOrder(Long id, Long position);
+
 }

@@ -3,6 +3,7 @@ package com.softserve.teachua.controller;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
+import com.softserve.teachua.dto.about_us_item.NumberDto;
 import com.softserve.teachua.service.AboutUsItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,15 @@ public class AboutUsItemController implements Api {
             @PathVariable Long id
     ){
         return aboutUsItemService.deleteAboutUsItemById(id);
+    }
+
+    @PatchMapping("/about_us_item/{id}")
+    public String changeOrder(
+            @PathVariable Long id,
+            @RequestBody NumberDto number
+    ){
+        aboutUsItemService.changeOrder(id, number.getNumber());
+        return "success";
     }
 
 }

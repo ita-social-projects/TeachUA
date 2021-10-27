@@ -6,23 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class AboutUsItemProfile implements Convertible {
-
-    private String text;
-
-    private String picture;
-
-    private String video;
-
-    @NotNull
-    private Long type;
-
+public class NumberDto implements Convertible {
     private Long number;
-
 }
