@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +20,7 @@ public class ComplaintResponse implements Convertible {
 
     private String text;
 
-    private Timestamp date;
+    private LocalDate date;
 
     private User user;
 
