@@ -23,19 +23,19 @@ public class AboutUsItemController implements Api {
         this.aboutUsItemService = aboutUsItemService;
     }
 
-    @GetMapping("/about_us_items")
+    @GetMapping("/about")
     public List<AboutUsItemResponse> getAboutUsItems(){
         return aboutUsItemService.getListOfAboutUsItemResponses();
     }
 
-    @GetMapping("/about_us_item/{id}")
+    @GetMapping("/about/{id}")
     public AboutUsItemResponse getAboutUsItems(
             @PathVariable Long id
     ){
         return aboutUsItemService.getAboutUsItemResponseById(id);
     }
 
-    @PostMapping("/about_us_item")
+    @PostMapping("/about")
     public AboutUsItemResponse addAboutUsItem(
             @Valid
             @RequestBody AboutUsItemProfile aboutUsItemProfile
@@ -43,7 +43,7 @@ public class AboutUsItemController implements Api {
         return aboutUsItemService.addAboutUsItem(aboutUsItemProfile);
     }
 
-    @PutMapping("/about_us_item/{id}")
+    @PutMapping("/about/{id}")
     public AboutUsItemResponse updateAboutUsItem(
             @PathVariable Long id,
             @Valid
@@ -52,14 +52,14 @@ public class AboutUsItemController implements Api {
         return aboutUsItemService.updateAboutUsItem(id, aboutUsItemProfile);
     }
 
-    @DeleteMapping("/about_us_item/{id}")
+    @DeleteMapping("/about/{id}")
     public AboutUsItemResponse deleteAboutUsItem(
             @PathVariable Long id
     ){
         return aboutUsItemService.deleteAboutUsItemById(id);
     }
 
-    @PatchMapping("/about_us_item/{id}")
+    @PatchMapping("/about/{id}")
     public String changeOrder(
             @PathVariable Long id,
             @RequestBody NumberDto number

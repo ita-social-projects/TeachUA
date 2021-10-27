@@ -116,9 +116,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/about",
                         "/centers",
                         "/center/*",
-                        "/service",
-                        "/api/about_us_items",
-                        "/api/about_us_item/**").permitAll()
+                        "/service").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/*").permitAll()
                 .antMatchers(HttpMethod.GET,"/admin/*","/manager/*").permitAll()
                 .antMatchers("/verify", "/verifyreset").permitAll()
@@ -157,10 +155,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/challenge/**", "/api/challenge").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/challenge/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/challenge/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/about_us_items", "/api/about_us_item/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/about_us_item", "/api/about_us_item/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/about_us_item/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/api/about_us_item/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/about", "/api/about/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/about", "/api/about/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/about/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/about/**").hasRole("ADMIN")
 
                 //TODO: only for admin
                 .antMatchers(HttpMethod.GET, "/api/logs").permitAll()
