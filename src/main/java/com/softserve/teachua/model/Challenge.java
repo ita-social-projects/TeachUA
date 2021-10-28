@@ -36,6 +36,9 @@ public class Challenge implements Convertible, Archivable {
     @Column(nullable = false)
     private Long sortNumber;
 
+    @Column
+    private String registrationLink;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ToString.Exclude
