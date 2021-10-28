@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.exception.BadRequestException;
+import com.softserve.teachua.exception.IncorrectInputException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,15 +50,15 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
             }
 
             if(!text.matches("^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+[^:эЭъЪыЫёЁ]$")){
-                throw new BadRequestException("Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи");
+                throw new IncorrectInputException("Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи");
             }
 
             if(text.length() < 40){
-                throw new BadRequestException("Довжина опису не може бути меншою за 40 символів");
+                throw new IncorrectInputException("Довжина опису не може бути меншою за 40 символів");
             }
 
             if(text.length() > 1500){
-                throw new BadRequestException("Довжина опису не може бути більшою за 1500 символів");
+                throw new IncorrectInputException("Довжина опису не може бути більшою за 1500 символів");
             }
 
             return true;
