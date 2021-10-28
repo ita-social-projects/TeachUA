@@ -18,7 +18,7 @@ import javax.validation.constraints.*;
 public class CreateChallenge {
     @NotBlank
     @JsonDeserialize(using = TrimDeserialize.class)
-    @Pattern(regexp = "^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+ ,-.:;<=>?|@_`{}~^&&[^ыЫъЪёЁэЭ]]+$",
+    @Pattern(regexp = "^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+ ,-.:;<=>?|@_`{}~\\\\^&&[^ыЫъЪёЁэЭ]]+$",
             message = "can contains only letters of ukrainian and english languages, numbers, and some special symbols like: [\"#$%&'*+ ,-.:;<=>?|@_`{}~]")
     @Size(min = 5, max = 30, message = " must contain a minimum of 5 and a maximum of 30 letters")
     private String name;
