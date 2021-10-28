@@ -47,6 +47,7 @@ public class ComplaintServiceImpl implements ComplaintService {
      *
      * @param id - complaint id.
      * @return new {@code ComplaintResponse}
+     * @throws NotExistException if complaint not exists.
      **/
     @Override
     public ComplaintResponse getComplaintProfileById(Long id) {
@@ -70,6 +71,7 @@ public class ComplaintServiceImpl implements ComplaintService {
      *
      * @param complaintProfile profile with new Complaint data
      * @return SuccessCreatedComplaint
+     * @throws NotExistException if complaint not exists.
      **/
     @Override
     public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile) {
@@ -83,6 +85,7 @@ public class ComplaintServiceImpl implements ComplaintService {
      * Method get all {@link Complaint}s
      *
      * @return new {@code List<ComplaintResponse>}
+     * @throws NotExistException if complaint not exists.
      **/
     @Override
     public List<ComplaintResponse> getAll() {
@@ -100,6 +103,7 @@ public class ComplaintServiceImpl implements ComplaintService {
      *
      * @param clubId - club id
      * @return new {@code List<ComplaintResponse>}
+     * @throws NotExistException if complaint not exists.
      **/
     @Override
     public List<ComplaintResponse> getAllByClubId(Long clubId) {
@@ -118,11 +122,11 @@ public class ComplaintServiceImpl implements ComplaintService {
      * @param id               - complaint id
      * @param complaintProfile profile with data for Complaint
      * @return ComplaintProfile
+     * @throws NotExistException if complaint not exists.
      **/
     @Override
     public ComplaintProfile updateComplaintProfileById(Long id, ComplaintProfile complaintProfile) {
         Complaint complaint = getComplaintById(id);
-
         Complaint newComplaint = dtoConverter.convertToEntity(complaintProfile, complaint).withId(id);
 
         complaintRepository.save(newComplaint);
@@ -136,6 +140,7 @@ public class ComplaintServiceImpl implements ComplaintService {
      *
      * @param id - complaint id
      * @return new {@code ComplaintResponse}
+     * @throws NotExistException if complaint not exists.
      **/
     @Override
     public ComplaintResponse deleteComplaintById(Long id) {

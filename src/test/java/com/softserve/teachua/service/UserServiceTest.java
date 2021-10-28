@@ -127,7 +127,7 @@ import static org.mockito.Mockito.*;
 
     @Test
      void validateUserWithValidPasswordTest() {
-        UserLogin userLogin = new UserLogin(NEW_EMAIL, PASSWORD, IS_STATUS);
+        UserLogin userLogin = new UserLogin(NEW_EMAIL, PASSWORD);
         User newUser = User.builder().email(NEW_EMAIL).password(PASSWORD).status(IS_STATUS).build();
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
         when(dtoConverter.convertToDto(newUser, UserEntity.class))
@@ -146,7 +146,7 @@ import static org.mockito.Mockito.*;
     @Test
     public void validateUserWithInvalidPasswordTest() {
         String invalidPassword = "invalid password";
-        UserLogin userLogin = new UserLogin(NEW_EMAIL, invalidPassword, IS_STATUS);
+        UserLogin userLogin = new UserLogin(NEW_EMAIL, invalidPassword);
         User newUser = User.builder().email(NEW_EMAIL).password(invalidPassword).build();
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
         when(dtoConverter.convertToDto(newUser, UserEntity.class))

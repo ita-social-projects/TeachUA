@@ -9,7 +9,10 @@ import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.repository.ChallengeRepository;
 import com.softserve.teachua.repository.TaskRepository;
-import com.softserve.teachua.service.*;
+import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.ChallengeService;
+import com.softserve.teachua.service.TaskService;
+import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.utils.HtmlValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -39,7 +42,6 @@ public class ChallengeServiceImpl implements ChallengeService {
     private final DtoConverter dtoConverter;
     private final UserService userService;
     private final ArchiveService archiveService;
-    private final FileUploadService fileUploadService;
     private final TaskRepository taskRepository;
     private TaskService taskService;
 
@@ -49,14 +51,12 @@ public class ChallengeServiceImpl implements ChallengeService {
             DtoConverter dtoConverter,
             UserService userService,
             ArchiveService archiveService,
-            FileUploadService fileUploadService,
             TaskRepository taskRepository
     ) {
         this.challengeRepository = challengeRepository;
         this.dtoConverter = dtoConverter;
         this.userService = userService;
         this.archiveService = archiveService;
-        this.fileUploadService = fileUploadService;
         this.taskRepository = taskRepository;
     }
 

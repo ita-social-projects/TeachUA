@@ -8,7 +8,6 @@ import com.softserve.teachua.model.Task;
 import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ChallengeService;
-import com.softserve.teachua.service.FileUploadService;
 import com.softserve.teachua.service.TaskService;
 import com.softserve.teachua.utils.HtmlValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,6 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final ArchiveService archiveService;
-    private final FileUploadService fileUploadService;
     private final DtoConverter dtoConverter;
     private final ChallengeService challengeService;
 
@@ -38,12 +36,10 @@ public class TaskServiceImpl implements TaskService {
     public TaskServiceImpl(
             TaskRepository taskRepository,
             ArchiveService archiveService,
-            FileUploadService fileUploadService,
             DtoConverter dtoConverter,
             ChallengeService challengeService) {
         this.taskRepository = taskRepository;
         this.archiveService = archiveService;
-        this.fileUploadService = fileUploadService;
         this.dtoConverter = dtoConverter;
         this.challengeService = challengeService;
     }
@@ -89,6 +85,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public SuccessCreatedTask createTask(Long id, CreateTask createTask) {
         HtmlValidator.validateDescription(createTask.getDescription());
+        HtmlValidator.validateDescription(createTask.getHeaderText());
         Challenge challenge = challengeService.getChallengeById(id);
         Task task = dtoConverter.convertToEntity(createTask, new Task());
         task.setChallenge(challenge);
@@ -98,6 +95,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public SuccessUpdatedTask updateTask(Long id, UpdateTask updateTask) {
         HtmlValidator.validateDescription(updateTask.getDescription());
+        HtmlValidator.validateDescription(updateTask.getHeaderText());
         Task task = getTaskById(id);
         BeanUtils.copyProperties(updateTask, task);
         task.setChallenge(challengeService.getChallengeById(updateTask.getChallengeId()));

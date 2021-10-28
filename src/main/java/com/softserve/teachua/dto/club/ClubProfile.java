@@ -1,6 +1,11 @@
 package com.softserve.teachua.dto.club;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.softserve.teachua.dto.club.validation.ClubDescription;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
@@ -19,21 +24,15 @@ import java.util.List;
 
 public class ClubProfile implements Convertible {
 
+    private Long id;
+
     private List<String> categoriesName;
 
     @Valid
     private List<LocationProfile> locations;
 
     @Valid
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    @NotEmpty
-    @Size(
-            min=40,
-            max=1500,
-            message = "Довжина тексту не відповідає критеріям: від 40 до 1500 символів."
-    )
-    @Pattern(regexp = "^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+[^:эЭъЪыЫёЁ]$" ,
-            message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
+    @ClubDescription
     public String description;
 
     @Valid
@@ -49,10 +48,12 @@ public class ClubProfile implements Convertible {
 
     @Min(2)
     @Max(17)
+    @NotNull(message = "'AgeFrom' поле не може бути пустим")
     private Integer ageFrom;
 
     @Min(3)
     @Max(18)
+    @NotNull(message = "'AgeTo' поле не може бути пустим")
     private Integer ageTo;
 
     private String urlBackground;
