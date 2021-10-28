@@ -27,4 +27,5 @@ public class ChallengeProfile implements Convertible {
     private Boolean isActive;
     private Page<TaskPreview> tasks;
     private UserPreview user;
+    private String registrationLink;
 }
