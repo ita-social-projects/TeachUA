@@ -42,27 +42,23 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
         try {
             Description descriptionClub = objectMapper.readValue(s, Description.class);
 
-            Long summaryLength = 0L;
             String text = "";
 
             for(Block block : descriptionClub.blocks){
                 text += block.text;
-                summaryLength += block.text.length();
             }
 
             if(!text.matches("^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+[^:эЭъЪыЫёЁ]$")){
                 throw new BadRequestException("Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи");
             }
 
-            if(summaryLength < 40){
+            if(text.length() < 40){
                 throw new BadRequestException("Довжина опису не може бути меншою за 40 символів");
             }
 
-            if(summaryLength > 1500){
+            if(text.length() > 1500){
                 throw new BadRequestException("Довжина опису не може бути більшою за 1500 символів");
             }
-
-            log.info("len: " + summaryLength);
 
             return true;
         } catch (JsonProcessingException e) {
