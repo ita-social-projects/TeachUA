@@ -37,7 +37,7 @@ public class Club implements Convertible, Archivable {
     @EqualsAndHashCode.Include
     private String name;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column
