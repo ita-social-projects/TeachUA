@@ -61,11 +61,13 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "LEFT JOIN club.locations AS locations " +
             "LEFT JOIN locations.city AS city " +
             "JOIN club.categories AS category WHERE " +
+            "(:name IS NULL OR " +
             "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) OR " +
-            "LOWER(club.description) LIKE LOWER(CONCAT('%', :name , '%'))AND " +
-            "((:isOnline = false AND city.name = :city ) OR " +
-            "(:isOnline = true AND club.isOnline = true AND city IS NULL)) AND " +
-            "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
+            "LOWER(club.description) LIKE LOWER(CONCAT('%', :name , '%'))) AND " +
+            "(((:isOnline = false OR :isOnline IS NULL) AND city.name = :city ) OR " +
+            "(:isOnline = true AND club.isOnline = true AND city IS NULL) OR " +
+            "(:isOnline IS NULL AND :city IS NULL)) AND " +
+            "(:category IS NULL OR LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%')))")
 
     Page<Club> findAllByParameters(
             @Param("name") String name,
