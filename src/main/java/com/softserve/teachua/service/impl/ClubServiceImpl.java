@@ -334,7 +334,7 @@ public class ClubServiceImpl implements ClubService {
                 .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                 .collect(Collectors.toList());
 
-        log.info("getting list of clubs by user id {}", clubResponses);
+//        log.info("getting list of clubs by user id {}", clubResponses);
         return clubResponses;
     }
 

@@ -295,7 +295,7 @@ public class CenterServiceImpl implements CenterService {
                 .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of centers = " + centerResponses);
+//        log.info("**/getting list of centers = " + centerResponses);
         return centerResponses;
     }
 
