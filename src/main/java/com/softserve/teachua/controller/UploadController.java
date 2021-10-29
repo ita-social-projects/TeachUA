@@ -34,7 +34,7 @@ public class UploadController implements Api {
     }
 
     @DeleteMapping("/delete-file")
-    public String deleteFile(@RequestParam String filePath) {
+    public String deleteFile(@RequestParam("filePath") String filePath) {
         fileUploadServiceImpl.deleteFile(filePath);
         return filePath+" successfully deleted.";
     }

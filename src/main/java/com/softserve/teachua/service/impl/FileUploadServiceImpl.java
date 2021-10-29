@@ -77,6 +77,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
     }
 
+    //filePath - '/upload/...../fileName.extension'
     @Override
     public void deleteFile(String filePath) {
         if (filePath.contains(UPLOAD_PLUG)) {
@@ -88,11 +89,10 @@ public class FileUploadServiceImpl implements FileUploadService {
         if (!filePath.contains(UPLOAD_LOCATION)) {
             throw new BadRequestException("Wrong uploaded file path");
         }
-        String dirPath = filePath.substring(0, ordinalIndexOf(filePath, "/", 4, false));
         try {
-            FileUtils.deleteDirectory(new File("target" + dirPath));
+            FileUtils.forceDelete(new File("target" + filePath));
         } catch (IOException e) {
-            throw new FileUploadException(String.format("Can't delete directory with path: %s", dirPath));
+            throw new FileUploadException(String.format("Can't delete file with path: %s", filePath));
         }
     }
 
