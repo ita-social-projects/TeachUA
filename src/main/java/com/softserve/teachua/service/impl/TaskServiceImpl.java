@@ -13,12 +13,10 @@ import com.softserve.teachua.utils.HtmlValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -63,16 +61,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskPreview> getTasksByChallengeId(Long id, Pageable pageable) {
-        Function<Task, TaskPreview> function =
-                (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
-        Page<Task> tasks = taskRepository.findTasksByChallenge(challengeService.getChallengeById(id), pageable);
-        return new PageImpl<>(tasks
-                .stream()
-                .map(function)
-                .collect(Collectors.toList()),
-                tasks.getPageable(), tasks.getTotalElements());
+    public List<TaskPreview> getTasksByChallengeId(Long id) {
+        Challenge challenge = challengeService.getChallengeById(id);
+        Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
+        return taskRepository.findTasksByChallenge(challenge)
+                .stream().map(function).collect(Collectors.toList());
     }
+
 
     @Override
     public TaskProfile getTask(Long taskId) {
