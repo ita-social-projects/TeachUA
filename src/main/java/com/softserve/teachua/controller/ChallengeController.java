@@ -4,8 +4,6 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.challenge.*;
 import com.softserve.teachua.service.ChallengeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,21 +32,21 @@ public class ChallengeController implements Api {
     }
 
     /**
-     * Use this endpoint to get full information about challenge with tasks that have already begun .
+     * Use this endpoint to get full information about challenge with tasks that have already begun.
      *
      * @param id - put challenge id here.
      * @return {@code ChallengeProfile}.
      */
     @GetMapping("/challenge/{id}")
-    public ChallengeProfile getChallenge(@PathVariable Long id, @PageableDefault(value = 2, sort = "startDate") Pageable pageable) {
-        return challengeService.getChallenge(id, pageable);
+    public ChallengeProfile getChallenge(@PathVariable Long id) {
+        return challengeService.getChallenge(id);
     }
 
     /**
      * Use this endpoint to create new challenge.
      * This feature available only for admins.
      *
-     * @param createChallenge - put required parameters here.
+     * @param createChallenge    - put required parameters here.
      * @param httpServletRequest - autowired by spring to get user from request.
      * @return {@code SuccessCreatedChallenge}
      */
@@ -63,7 +61,7 @@ public class ChallengeController implements Api {
      * Use this endpoint to update some values of challenge.
      * This feature available only for admins.
      *
-     * @param id - put challenge id here.
+     * @param id              - put challenge id here.
      * @param updateChallenge - put new and old parameters here.
      * @return {@code SuccessUpdatedChallenge} - shows result of updating challenge.
      */

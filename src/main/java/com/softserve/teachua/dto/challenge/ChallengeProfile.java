@@ -8,9 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
 
-import java.util.Set;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,7 +24,7 @@ public class ChallengeProfile implements Convertible {
     private String picture;
     private Long sortNumber;
     private Boolean isActive;
-    private Page<TaskPreview> tasks;
+    private List<TaskPreview> tasks;
     private UserPreview user;
     private String registrationLink;
 }
