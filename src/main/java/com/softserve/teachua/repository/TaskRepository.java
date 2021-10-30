@@ -13,6 +13,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findTasksByChallenge(Challenge challenge);
 
-    List<Task> findTasksByChallengeAndStartDateBefore(Challenge challenge, LocalDate date);
+    List<Task> findTasksByChallengeAndStartDateBeforeOrderByStartDate(Challenge challenge, LocalDate date);
 
 }

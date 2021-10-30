@@ -124,7 +124,8 @@ public class ChallengeServiceImpl implements ChallengeService {
         ChallengeProfile challengeProfile =
                 dtoConverter.convertToDto(challenge, ChallengeProfile.class);
         Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
-        List<TaskPreview> tasks = taskRepository.findTasksByChallengeAndStartDateBefore(challenge, LocalDate.now())
+        List<TaskPreview> tasks = taskRepository
+                .findTasksByChallengeAndStartDateBeforeOrderByStartDate(challenge, LocalDate.now().plusDays(1))
                 .stream().map(function).collect(Collectors.toList());
         challengeProfile.setTasks(tasks);
         return challengeProfile;
