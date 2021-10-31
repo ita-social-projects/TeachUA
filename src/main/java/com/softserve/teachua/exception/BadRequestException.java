@@ -12,7 +12,7 @@ import org.springframework.lang.Nullable;
  *
  * @author Denis Burko
  */
-public class BadRequestException extends Exception {
+public class BadRequestException extends IllegalStateException {
     public static final String CANT_FIND_FIELD_IN_JSON = "Can't find %s in JSON body";
     public static final String JSON_IS_NOT_READABLE = "JSON is not readable";
 

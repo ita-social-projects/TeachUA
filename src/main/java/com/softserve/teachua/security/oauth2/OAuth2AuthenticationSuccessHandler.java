@@ -6,6 +6,7 @@ import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.security.util.CookieUtils;
 import com.softserve.teachua.service.RoleService;
 import com.softserve.teachua.service.UserService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,15 +77,14 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      *
      * @return uri
      */
+    @SneakyThrows
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
         Optional<Object> userRole = CookieUtils.getCookie(request, USER_ROLE_PARAMETER)
                 .map(Cookie::getValue);
         if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
-            throw new NotAuthorizedException(
-                    tokenProvider.getJwtFromRequest(request),
-                    "Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
+            throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
