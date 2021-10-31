@@ -5,7 +5,6 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.*;
 import com.softserve.teachua.exception.*;
-import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.JwtProvider;
@@ -204,7 +203,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if ("ROLE_ADMIN".equals(userProfile.getRoleName())) {
-            throw new BadRequestException("Illegal role argument: ROLE_ADMIN");
+            throw new IncorrectInputException("Illegal role argument: ROLE_ADMIN");
         }
 
         User user = dtoConverter.convertToEntity(userProfile, new User())
@@ -416,10 +415,10 @@ public class UserServiceImpl implements UserService {
 
         if (!userFromRequest.getId().equals(id)) {
             if (updUser.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
-                throw new BadRequestException(INACCESSIBLE_ADMIN_PROFILE);
+                throw new IncorrectInputException(INACCESSIBLE_ADMIN_PROFILE);
             }
             if (!userFromRequest.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
-                throw new BadRequestException(WRONG_ID);
+                throw new IncorrectInputException(WRONG_ID);
             }
         }
     }
