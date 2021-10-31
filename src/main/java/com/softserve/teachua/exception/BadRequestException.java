@@ -25,7 +25,5 @@ public class BadRequestException extends IllegalStateException {
 
     public BadRequestException() {
         super(BAD_REQUEST_EXCEPTION);
-
-        new BadHttpRequest();
     }
 }
