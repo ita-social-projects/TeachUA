@@ -1,5 +1,6 @@
 package com.softserve.teachua.exception;
 
+import javassist.tools.web.BadHttpRequest;
 import org.springframework.lang.Nullable;
 
 /**
@@ -11,7 +12,7 @@ import org.springframework.lang.Nullable;
  *
  * @author Denis Burko
  */
-public class BadRequestException extends  {
+public class BadRequestException extends Exception {
     public static final String CANT_FIND_FIELD_IN_JSON = "Can't find %s in JSON body";
     public static final String JSON_IS_NOT_READABLE = "JSON is not readable";
 
@@ -24,5 +25,7 @@ public class BadRequestException extends  {
 
     public BadRequestException() {
         super(BAD_REQUEST_EXCEPTION);
+
+        new BadHttpRequest();
     }
 }
