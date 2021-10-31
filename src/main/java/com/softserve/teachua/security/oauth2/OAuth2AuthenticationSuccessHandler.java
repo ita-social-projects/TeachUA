@@ -77,7 +77,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      *
      * @return uri
      */
-    @SneakyThrows
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
