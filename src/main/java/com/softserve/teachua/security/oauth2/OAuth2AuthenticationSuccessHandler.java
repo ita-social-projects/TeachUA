@@ -6,16 +6,12 @@ import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.security.util.CookieUtils;
 import com.softserve.teachua.service.RoleService;
 import com.softserve.teachua.service.UserService;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.social.NotAuthorizedException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
