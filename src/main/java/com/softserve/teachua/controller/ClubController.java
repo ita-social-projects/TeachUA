@@ -5,7 +5,6 @@ import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
-import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;

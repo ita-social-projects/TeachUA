@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

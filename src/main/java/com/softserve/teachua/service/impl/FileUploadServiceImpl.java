@@ -1,7 +1,7 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.service.FileUploadService;
 import lombok.extern.slf4j.Slf4j;
@@ -84,10 +84,10 @@ public class FileUploadServiceImpl implements FileUploadService {
             return;
         }
         if (filePath == null || filePath.isEmpty()) {
-            throw new BadRequestException("File path can not be null or empty");
+            throw new IncorrectInputException("File path can not be null or empty");
         }
         if (!filePath.contains(UPLOAD_LOCATION)) {
-            throw new BadRequestException("Wrong uploaded file path");
+            throw new IncorrectInputException("Wrong uploaded file path");
         }
         try {
             FileUtils.forceDelete(new File("target" + filePath));
