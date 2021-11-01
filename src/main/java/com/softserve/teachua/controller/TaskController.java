@@ -34,6 +34,17 @@ public class TaskController implements Api {
     }
 
     /**
+     * The controller returns information {@code List <TaskPreview>} about tasks.
+     *
+     * @return new {@code List<TaskPreview>}
+     */
+    @GetMapping("/tasks")
+    public List<TaskPreview> getTasks() {
+        return taskService.getListOfTasks();
+    }
+
+
+    /**
      * Use this endpoint to get full information about task.
      *
      * @param id - put task id here.

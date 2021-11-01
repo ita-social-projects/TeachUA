@@ -1,6 +1,7 @@
 package com.softserve.teachua.dto.challenge;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.utils.TrimDeserialize;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class CreateChallenge {
     @Size(min = 5, max = 50, message = "must contain a minimum of 5 and a maximum of 50 letters")
     private String title;
     @NotBlank
-    @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "can not contain letters of russian languages")
+//    @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "can not contain letters of russian languages")
     @Size(min = 40, max = 3000, message = "must contain a minimum of 40 and a maximum of 3000 letters")
     private String description;
     @JsonDeserialize(using = TrimDeserialize.class)

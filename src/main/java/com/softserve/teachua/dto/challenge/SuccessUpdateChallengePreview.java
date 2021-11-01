@@ -12,8 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChallengePreview implements Convertible {
-    private Long id;
+public class SuccessUpdateChallengePreview implements Convertible {
     private String name;
     private Long sortNumber;
     private String title;

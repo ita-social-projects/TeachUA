@@ -18,4 +18,6 @@ public interface ChallengeService {
     SuccessUpdatedChallenge updateChallenge(Long id, UpdateChallenge updateChallenge);
 
     ChallengeDeleteResponse deleteChallenge(Long id);
+
+    SuccessUpdateChallengePreview updateChallengePreview(Long id, SuccessUpdateChallengePreview updateChallengePreview);
 }

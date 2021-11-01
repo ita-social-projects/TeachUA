@@ -83,4 +83,20 @@ public class ChallengeController implements Api {
     public ChallengeDeleteResponse deleteChallenge(@PathVariable Long id) {
         return challengeService.deleteChallenge(id);
     }
+
+    /**
+     * Use this endpoint to update some values of challenge.
+     * This feature available only for admins.
+     *
+     * @param id - put challenge id here.
+     * @param updateChallengePreview - put new and old parameters here.
+     * @return {@code SuccessUpdateChallengePreview} - shows result of updating challenge.
+     */
+    @PatchMapping("/challenge/{id}")
+    public SuccessUpdateChallengePreview updateChallengePreview(
+            @PathVariable Long id,
+            @Valid @RequestBody SuccessUpdateChallengePreview updateChallengePreview) {
+        return challengeService.updateChallengePreview(id, updateChallengePreview);
+    }
+
 }

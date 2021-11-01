@@ -78,6 +78,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<TaskPreview> getListOfTasks() {
+        List<TaskPreview> taskPreviewList = taskRepository.findAll()
+                .stream()
+                .map(task -> (TaskPreview) dtoConverter.convertToDto(task, TaskPreview.class))
+                .collect(Collectors.toList());
+
+        log.info("getting list of tasks {}", taskPreviewList);
+        return taskPreviewList;
+    }
+
+
+    @Override
     public SuccessCreatedTask createTask(Long id, CreateTask createTask) {
         HtmlValidator.validateDescription(createTask.getDescription());
         HtmlValidator.validateDescription(createTask.getHeaderText());

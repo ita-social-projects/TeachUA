@@ -130,4 +130,12 @@ public class ChallengeServiceImpl implements ChallengeService {
         challengeProfile.setTasks(tasks);
         return challengeProfile;
     }
+
+
+    @Override
+    public SuccessUpdateChallengePreview updateChallengePreview(Long id, SuccessUpdateChallengePreview updateChallengePreview) {
+        Challenge challenge = getChallengeById(id);
+        BeanUtils.copyProperties(updateChallengePreview, challenge);
+        return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdateChallengePreview.class);
+    }
 }
