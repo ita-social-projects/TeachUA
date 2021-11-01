@@ -239,7 +239,8 @@ public class ClubServiceImpl implements ClubService {
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
                         .map(categoryService::getCategoryByName)
-                        .collect(Collectors.toSet())))
+                        .collect(Collectors.toSet()))
+                        .withRating(0d))
                 .withUser(user);
 
         if (locations != null && !locations.isEmpty()) {
@@ -270,7 +271,6 @@ public class ClubServiceImpl implements ClubService {
                         .collect(Collectors.toList())
             );
         }
-
         log.info("adding club with name : {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
     }

@@ -66,7 +66,6 @@ public class CityServiceImpl implements CityService {
         if (!optionalCity.isPresent()) {
             throw new NotExistException(String.format(CITY_NOT_FOUND_BY_ID, id));
         }
-
         City city = optionalCity.get();
         log.info("**/getting city by id = " + city);
         return city;
