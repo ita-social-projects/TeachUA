@@ -16,4 +16,5 @@ public class ChallengePreview implements Convertible {
     private Long id;
     private String name;
     private Long sortNumber;
+    private String title;
 }

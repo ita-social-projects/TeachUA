@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -85,6 +86,18 @@ public class TaskServiceImpl implements TaskService {
         taskProfile.setChallengeId(task.getChallenge().getId());
         return taskProfile;
     }
+
+    @Override
+    public List<TaskPreview> getListOfTasks() {
+        List<TaskPreview> taskPreviewList = taskRepository.findAll()
+                .stream()
+                .map(task -> (TaskPreview) dtoConverter.convertToDto(task, TaskPreview.class))
+                .collect(Collectors.toList());
+
+        log.info("getting list of tasks {}", taskPreviewList);
+        return taskPreviewList;
+    }
+
 
     @Override
     public SuccessCreatedTask createTask(Long id, CreateTask createTask) {

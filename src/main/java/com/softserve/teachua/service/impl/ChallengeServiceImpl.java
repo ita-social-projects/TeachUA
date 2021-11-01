@@ -132,4 +132,12 @@ public class ChallengeServiceImpl implements ChallengeService {
         challengeProfile.setTasks(new PageImpl<>(tasks, pageableTasks.getPageable(), pageableTasks.getTotalElements()));
         return challengeProfile;
     }
+
+
+    @Override
+    public SuccessUpdateChallengePreview updateChallengePreview(Long id, SuccessUpdateChallengePreview updateChallengePreview) {
+        Challenge challenge = getChallengeById(id);
+        BeanUtils.copyProperties(updateChallengePreview, challenge);
+        return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdateChallengePreview.class);
+    }
 }
