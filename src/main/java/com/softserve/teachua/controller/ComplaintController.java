@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -27,7 +28,7 @@ public class ComplaintController implements Api {
      * The method to get Complaint by id
      *
      * @param id Complaint id
-     * @return ComplaintResponse
+     * @return {@link ComplaintResponse}
      */
     @GetMapping("/complaint/{id}")
     public ComplaintResponse getComplaintById(@PathVariable Long id) {
@@ -37,7 +38,7 @@ public class ComplaintController implements Api {
     /**
      * The method to get all Complaints
      *
-     * @return List of ComplaintResponse {@code List<ComplaintResponse>}
+     * @return {@code List<ComplaintResponse>}
      */
     @GetMapping("/complaints")
     public List<ComplaintResponse> getAllComplaints() {
@@ -47,7 +48,8 @@ public class ComplaintController implements Api {
     /**
      * The method to get all Complaints by club id
      *
-     * @return List of ComplaintResponse
+     * @param id - club id
+     * @return {@link List<ComplaintResponse>}
      */
     @GetMapping("/complaints/club/{id}")
     public List<ComplaintResponse> getAllComplaints(@PathVariable Long id) {
@@ -58,10 +60,11 @@ public class ComplaintController implements Api {
      * The method to create a new Complaint
      *
      * @param complaintProfile - object of DTO class
-     * @return SuccessCreatedComplaint
+     * @return new {@link SuccessCreatedComplaint}
      */
     @PostMapping("/complaint")
-    public SuccessCreatedComplaint addComplaint(@RequestBody ComplaintProfile complaintProfile) {
+    public SuccessCreatedComplaint addComplaint(
+            @Valid @RequestBody ComplaintProfile complaintProfile) {
         return complaintService.addComplaint(complaintProfile);
     }
 
@@ -70,10 +73,10 @@ public class ComplaintController implements Api {
      *
      * @param id               Complaint id
      * @param complaintProfile Complaint profile with new data
-     * @return ComplaintProfile
+     * @return {@link ComplaintProfile}
      */
     @PutMapping("/complaint/{id}")
-    public ComplaintProfile updateComplaint(@PathVariable Long id, @RequestBody ComplaintProfile complaintProfile) {
+    public ComplaintProfile updateComplaint(@PathVariable Long id,@Valid @RequestBody ComplaintProfile complaintProfile) {
         return complaintService.updateComplaintProfileById(id, complaintProfile);
     }
 
@@ -81,7 +84,7 @@ public class ComplaintController implements Api {
      * The method to delete Complaint
      *
      * @param id id of Complaint to be deleted
-     * @return ComplaintResponse
+     * @return {@link ComplaintResponse}
      */
     @DeleteMapping("/complaint/{id}")
     public ComplaintResponse deleteComplaintById(@PathVariable Long id) {

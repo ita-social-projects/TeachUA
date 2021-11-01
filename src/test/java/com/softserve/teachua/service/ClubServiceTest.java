@@ -274,7 +274,7 @@ class ClubServiceTest {
 
         List<ClubResponse> actual = clubService.getListClubsByUserId(USER_EXISTING_ID);
         assertEquals(clubResponse.getName(), actual.get(0).getName());
-        assertEquals(clubResponse.getUserId(), actual.get(0).getUserId());
+        assertEquals(clubResponse.getUser().getId(), actual.get(0).getUser().getId());
     }
 
 //    @Test

@@ -20,6 +20,7 @@ public class SuccessUpdatedChallenge implements Convertible {
     private String name;
     private String title;
     private String description;
+    private String registrationLink;
     private String picture;
     private Long sortNumber;
     private Boolean isActive;
