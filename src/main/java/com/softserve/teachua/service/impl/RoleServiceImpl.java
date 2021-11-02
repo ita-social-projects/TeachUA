@@ -51,7 +51,7 @@ public class RoleServiceImpl implements RoleService {
         log.info("**/getting all roles");
         return roleRepository.findAll()
                 .stream()
-                .map(role -> new RoleResponse(role.getId(), role.getName()))
+                .map(role -> (RoleResponse)dtoConverter.convertToDto(role, RoleResponse.class))
                 .collect(Collectors.toList());
     }
 
