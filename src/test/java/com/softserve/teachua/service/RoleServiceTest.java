@@ -36,11 +36,12 @@ public class RoleServiceTest {
 
     @InjectMocks
     private RoleServiceImpl roleService;
-
     private Role role;
+    private Role correctRole;
     private RoleProfile roleProfile;
+    private RoleResponse correctRoleResponse;
 
-    private final int EXISTING_ID = 1;
+    private final int CORRECT_ID = 1;
     private final int NOT_EXISTING_ID = 50;
 
     private final String EXISTING_NAME = "ROLE_ADMIN";
@@ -49,20 +50,20 @@ public class RoleServiceTest {
 
     @BeforeEach
     public void init() {
-        role = Role.builder().id(EXISTING_ID).name(EXISTING_NAME).build();
+        role = Role.builder().id(CORRECT_ID).name(EXISTING_NAME).build();
+        correctRole = Role.builder().id(CORRECT_ID).name(EXISTING_NAME).build();
         roleProfile = new RoleProfile(NEW_NAME);
     }
 
     @Test
-    public void getRoleByIdTest() {
-        when(roleRepository.findById(EXISTING_ID)).thenReturn(Optional.of(role));
-
-        Role actual = roleService.getRoleById(EXISTING_ID);
-        assertEquals(actual, role);
+    public void getRoleByCorrectIdShouldReturnCorrectRole() {
+        when(roleRepository.findById(CORRECT_ID)).thenReturn(Optional.of(correctRole));
+        Role actual = roleService.getRoleById(CORRECT_ID);
+        assertEquals(actual, correctRole);
     }
 
     @Test
-    public void getRoleByNotExistingIdTest() {
+    public void getRoleByWrongIdShouldReturnCorrectRole() {
         when(roleRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
@@ -72,13 +73,13 @@ public class RoleServiceTest {
 
     @Test
     public void updateRoleTest() {
-        when(roleRepository.findById(EXISTING_ID)).thenReturn(Optional.of(role));
+        when(roleRepository.findById(CORRECT_ID)).thenReturn(Optional.of(role));
         when(roleRepository.save(any())).thenReturn(role);
         when(dtoConverter.convertToEntity(roleProfile, role)).thenReturn(Role.builder()
-                .id(EXISTING_ID).name(roleProfile.getRoleName()).build());
+                .id(CORRECT_ID).name(roleProfile.getRoleName()).build());
         when(dtoConverter.convertToDto(role, RoleProfile.class)).thenReturn(new RoleProfile(roleProfile.getRoleName()));
 
-        RoleProfile updatedRole = roleService.updateRole(EXISTING_ID, roleProfile);
+        RoleProfile updatedRole = roleService.updateRole(CORRECT_ID, roleProfile);
         assertEquals(updatedRole.getRoleName(), roleProfile.getRoleName());
     }
 
@@ -134,13 +135,13 @@ public class RoleServiceTest {
 
     @Test
     public void deleteRoleByIdTest() {
-        when(roleRepository.findById(EXISTING_ID)).thenReturn(Optional.of(role));
+        when(roleRepository.findById(CORRECT_ID)).thenReturn(Optional.of(role));
         when(archiveService.saveModel(role)).thenReturn(role);
-        doNothing().when(roleRepository).deleteById(EXISTING_ID);
+        doNothing().when(roleRepository).deleteById(CORRECT_ID);
         doNothing().when(roleRepository).flush();
         when(dtoConverter.convertToDto(role, RoleResponse.class)).thenReturn(new RoleResponse(role.getId(), role.getName()));
 
-        RoleResponse roleResponse = roleService.deleteRoleById(EXISTING_ID);
+        RoleResponse roleResponse = roleService.deleteRoleById(CORRECT_ID);
         assertEquals(roleResponse.getRoleName(), role.getName());
     }
 
