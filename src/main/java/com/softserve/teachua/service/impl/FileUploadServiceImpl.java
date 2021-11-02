@@ -1,7 +1,7 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.repository.ClubRepository;
@@ -12,6 +12,8 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +29,14 @@ import java.util.Optional;
 public class FileUploadServiceImpl implements FileUploadService {
     private final String FILE_UPLOAD_EXCEPTION = "Could not save image file: %s";
     private final String DIRECTORY_CREATE_EXCEPTION = "Could not create directory with name: %s";
+    private final String IMAGE_SIZE_EXCEPTION = "Max image size should be %d bytes, your image size is %d bytes";
+    private final String IMAGE_RESOLUTION_EXCEPTION = "Image %s should be more than %d, your image %s is %d";
     private final String UPLOAD_LOCATION = "/upload";
     private static final String UPLOAD_PLUG = "/upload/test/test.png";
+    private static final Long IMAGE_SIZE_MB = 5L;
+    private static final Long IMAGE_SIZE_B = IMAGE_SIZE_MB * 1024 * 1024;
+    private static final Long MIN_IMAGE_WIDTH = 200L;
+    private static final Long MIN_IMAGE_HEIGHT = 200L;
 
     private final GalleryRepository galleryRepository;
     private final ClubRepository clubRepository;
@@ -41,6 +49,26 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Override
     public String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile,Long id) {
         Path uploadPath = Paths.get(uploadDir);
+
+        if(multipartFile.getSize() > IMAGE_SIZE_B){
+            throw new IncorrectInputException(String.format(IMAGE_SIZE_EXCEPTION, IMAGE_SIZE_B, multipartFile.getSize()));
+        }
+
+        try {
+            BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
+            int width = bufferedImage.getWidth();
+            int height = bufferedImage.getHeight();
+            if(width < MIN_IMAGE_WIDTH){
+                throw new IncorrectInputException(
+                        String.format(IMAGE_RESOLUTION_EXCEPTION, "width", MIN_IMAGE_WIDTH, "width", width));
+            }
+            if(height < MIN_IMAGE_HEIGHT){
+                throw new IncorrectInputException(
+                        String.format(IMAGE_RESOLUTION_EXCEPTION, "height", MIN_IMAGE_HEIGHT, "height", height));
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
 
         try {
             if (!Files.exists(uploadPath)) {
@@ -58,14 +86,13 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
 
         String actualPath = String.format("/%s/%s", uploadDir, fileName);
-
-        GalleryPhoto galleryPhoto = new GalleryPhoto();
         Optional<Club> optionalClub = clubRepository.findById(id);
         Club club = optionalClub.get();
-        galleryPhoto.setClub(club);
+        GalleryPhoto galleryPhoto = new GalleryPhoto();
         galleryPhoto.setUrl(actualPath);
-        galleryRepository.save(galleryPhoto);
+        galleryPhoto.setClub(club);
 
+        galleryRepository.save(galleryPhoto);
         return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
     }
 
@@ -96,22 +123,22 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
     }
 
+    //filePath - '/upload/...../fileName.extension'
     @Override
     public void deleteFile(String filePath) {
         if (filePath.contains(UPLOAD_PLUG)) {
             return;
         }
         if (filePath == null || filePath.isEmpty()) {
-            throw new BadRequestException("File path can not be null or empty");
+            throw new IncorrectInputException("File path can not be null or empty");
         }
         if (!filePath.contains(UPLOAD_LOCATION)) {
-            throw new BadRequestException("Wrong uploaded file path");
+            throw new IncorrectInputException("Wrong uploaded file path");
         }
-        String dirPath = filePath.substring(0, ordinalIndexOf(filePath, "/", 4, false));
         try {
-            FileUtils.deleteDirectory(new File("target" + dirPath));
+            FileUtils.forceDelete(new File("target" + filePath));
         } catch (IOException e) {
-            throw new FileUploadException(String.format("Can't delete directory with path: %s", dirPath));
+            throw new FileUploadException(String.format("Can't delete file with path: %s", filePath));
         }
     }
 
