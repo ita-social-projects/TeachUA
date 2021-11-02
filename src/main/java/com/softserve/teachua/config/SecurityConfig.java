@@ -1,5 +1,6 @@
 package com.softserve.teachua.config;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.security.JwtFilter;
 import com.softserve.teachua.security.RestAuthenticationEntryPoint;
@@ -24,6 +25,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import static com.softserve.teachua.constants.RoleData.ADMIN;
 
 @Configuration
 @EnableWebSecurity
@@ -114,8 +117,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/centers",
                         "/center/*",
                         "/service").permitAll()
+                .antMatchers(HttpMethod.GET, "/challengeUA", "/challengeUA/registration", "/challengeUA/task/*").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/*").permitAll()
-                .antMatchers(HttpMethod.GET,"/admin/*","/manager/*").permitAll()
+                .antMatchers(HttpMethod.GET,"/manager/**" ).hasAnyRole("MANAGER", "ADMIN")
+                .antMatchers(HttpMethod.GET,"/admin/**").hasRole("ADMIN")
                 .antMatchers("/verify", "/verifyreset").permitAll()
                 .antMatchers("/roles").hasRole("ADMIN")
                 .antMatchers("/index", "/api/signup", "/api/signin", "/api/signout", "/api/verify", "/api/resetpassword", "/api/verifyreset").permitAll()
@@ -157,6 +162,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/challenge/task/{\\d+}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/challenge/task/{\\d+}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/challenge/task/{\\d+}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/about", "/api/about/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/about", "/api/about/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/about/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/about/**").hasRole("ADMIN")
 
                 //TODO: only for admin
                 .antMatchers(HttpMethod.GET, "/api/logs").permitAll()

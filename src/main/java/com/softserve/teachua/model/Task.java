@@ -22,6 +22,9 @@ public class Task implements Convertible, Archivable {
     private String name;
 
     @Column(nullable = false, length = 10000)
+    private String headerText;
+
+    @Column(length = 10000)
     private String description;
 
     @Column(nullable = false)

@@ -1,6 +1,8 @@
 package com.softserve.teachua.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 /**
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * Use @code throw new NotVerifiedUserException("Authentication exception")
  */
 @Slf4j
+@ResponseStatus(HttpStatus.FORBIDDEN)
 public class NotVerifiedUserException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;

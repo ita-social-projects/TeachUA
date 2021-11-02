@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.club.validation;
 
-import com.softserve.teachua.exception.BadRequestException;
+import com.softserve.teachua.exception.IncorrectInputException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintValidator;
@@ -20,13 +20,13 @@ public class PhoneValidation implements ConstraintValidator<Phone, String> {
     public boolean isValid(String phoneNumber, ConstraintValidatorContext constraintValidatorContext) {
         try {
             if ( phoneNumber.length() < 10 ) {
-                throw new BadRequestException("Phone number length must be 10");
+                throw new IncorrectInputException("Phone number length must be 10");
             }
             if (phoneNumber.matches(".*[a-zA-Z]+.*")) {
-                throw new BadRequestException("Phone number cannot contain letters.");
+                throw new IncorrectInputException("Phone number cannot contain letters.");
             }
             if(phoneNumber.matches(".*[$&+,:;=?@#|'<>.-^*()%!]+.*")) {
-                throw new BadRequestException("Phone number contains illegal symbols");
+                throw new IncorrectInputException("Phone number contains illegal symbols");
             }
             Matcher matcher = PHONE_NUMBER_PATTERN.matcher(phoneNumber);
             return matcher.matches();

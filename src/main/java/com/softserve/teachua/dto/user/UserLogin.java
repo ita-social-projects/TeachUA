@@ -17,6 +17,4 @@ public class UserLogin {
     @NotEmpty
     private String password;
 
-    @NotNull
-    private boolean status;
 }

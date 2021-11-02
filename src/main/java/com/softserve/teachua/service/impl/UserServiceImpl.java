@@ -5,7 +5,6 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.*;
 import com.softserve.teachua.exception.*;
-import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.JwtProvider;
@@ -50,11 +49,10 @@ public class UserServiceImpl implements UserService {
     private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
     private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
     private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
-    private static final String WRONG_PASSWORD = "Wrong password: %s";
+    private static final String WRONG_PASSWORD = "Wrong password";
     private static final String NOT_VERIFIED = "User is not verified: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
-    private static final String USER_UPDATING_ERROR = "Incorrect input \"%s\" field";
     private static final String WRONG_ID = "Wrong id";
     private static final String INACCESSIBLE_ADMIN_PROFILE = "No one have access to admin profile";
     private final UserRepository userRepository;
@@ -205,7 +203,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if ("ROLE_ADMIN".equals(userProfile.getRoleName())) {
-            throw new BadRequestException("Illegal role argument: ROLE_ADMIN");
+            throw new IncorrectInputException("Illegal role argument: ROLE_ADMIN");
         }
 
         User user = dtoConverter.convertToEntity(userProfile, new User())
@@ -269,13 +267,10 @@ public class UserServiceImpl implements UserService {
     public SuccessLogin validateUser(UserLogin userLogin) {
         userLogin.setEmail(userLogin.getEmail().toLowerCase());
         UserEntity userEntity = getUserEntity(userLogin.getEmail());
-        log.info("User DB status"+ userEntity.isStatus());
-        log.info("Login user status "+ userLogin.isStatus());
-        log.info("Status "+encodeService.isValidStatus(userLogin,userEntity));
-        if (encodeService.isValidStatus(userLogin, userEntity)) {
+        if (!encodeService.isValidStatus(userEntity)) {
             throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userLogin.getEmail()));
         } else if (!encodeService.isValidPassword(userLogin, userEntity)) {
-            throw new WrongAuthenticationException(String.format(WRONG_PASSWORD, userLogin.getPassword()));
+            throw new WrongAuthenticationException(WRONG_PASSWORD);
         }
         log.info("user {} logged successfully", userLogin);
 
@@ -303,11 +298,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public SuccessUpdatedUser updateUser(Long id, UserUpdateProfile userProfile) {
         User user = getUserById(id);
-        if (!ifIncorrectInputInUpdatingFields(userProfile).isEmpty()) {
-            throw new IncorrectInputException(String.format(USER_UPDATING_ERROR, ifIncorrectInputInUpdatingFields(userProfile)));
-        }
 
-        if (userProfile.getEmail() == null || !userProfile.getEmail().equals(user.getEmail())) {
+        if (!userProfile.getEmail().equals(user.getEmail())) {
             throw new IncorrectInputException(EMAIL_UPDATING_ERROR);
         }
 
@@ -423,10 +415,10 @@ public class UserServiceImpl implements UserService {
 
         if (!userFromRequest.getId().equals(id)) {
             if (updUser.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
-                throw new BadRequestException(INACCESSIBLE_ADMIN_PROFILE);
+                throw new IncorrectInputException(INACCESSIBLE_ADMIN_PROFILE);
             }
             if (!userFromRequest.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
-                throw new BadRequestException(WRONG_ID);
+                throw new IncorrectInputException(WRONG_ID);
             }
         }
     }
@@ -551,7 +543,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserByVerificationCode(userResetPassword.getVerificationCode());
         user.setStatus(true);
         if (bCryptPasswordEncoder.matches(userResetPassword.getPassword(), user.getPassword())) {
-            throw new MatchingPasswordException();
+            throw new MatchingPasswordException("Новий пароль співпадає з старим");
         }
         userResetPassword.setEmail(user.getEmail());
         userResetPassword.setId(user.getId());
@@ -561,20 +553,5 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         log.info("password reset {}", user);
         return userResetPassword;
-    }
-
-    private String ifIncorrectInputInUpdatingFields(UserUpdateProfile userProfile) {
-        if (userProfile.getFirstName() == null || userProfile.getFirstName().trim().isEmpty()) {
-            return "Ім'я";
-        }
-        if (userProfile.getLastName() == null || userProfile.getLastName().trim().isEmpty()) {
-            return "Прізвище";
-        }
-        if (userProfile.getPhone() == null || userProfile.getPhone().trim().isEmpty()
-                || userProfile.getPhone().length() != 9
-                || !Pattern.compile("[0-9]{9}").matcher(userProfile.getPhone()).find()) {
-            return "Телефон";
-        }
-        return "";
     }
 }

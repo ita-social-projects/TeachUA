@@ -1,6 +1,4 @@
 package com.softserve.teachua.controller;
-
-
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
@@ -10,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -45,7 +44,7 @@ public class FeedbackController implements Api {
     }
 
     /**
-     * The method to get all Feedbacks
+     * The method to get all Feedbacks by Club id
      *
      * @return List of FeedbackResponse
      */
@@ -58,10 +57,12 @@ public class FeedbackController implements Api {
      * The method to create a new Feedback
      *
      * @param feedbackProfile - object of DTO class
-     * @return SuccessCrreatedFeedback
+     * @return SuccessCreatedFeedback
      */
     @PostMapping("/feedback")
-    public SuccessCreatedFeedback addFeedback(@RequestBody FeedbackProfile feedbackProfile) {
+    public SuccessCreatedFeedback addFeedback(
+            @Valid
+            @RequestBody FeedbackProfile feedbackProfile) {
         return feedbackService.addFeedback(feedbackProfile);
     }
 
@@ -73,7 +74,10 @@ public class FeedbackController implements Api {
      * @return FeedbackProfile
      */
     @PutMapping("/feedback/{id}")
-    public FeedbackProfile updateFeedback(@PathVariable Long id, @RequestBody FeedbackProfile feedbackProfile) {
+    public FeedbackProfile updateFeedback(
+            @PathVariable Long id,
+            @Valid
+            @RequestBody FeedbackProfile feedbackProfile) {
         return feedbackService.updateFeedbackProfileById(id, feedbackProfile);
     }
 

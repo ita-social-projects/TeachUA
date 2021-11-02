@@ -239,7 +239,8 @@ public class ClubServiceImpl implements ClubService {
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
                         .map(categoryService::getCategoryByName)
-                        .collect(Collectors.toSet())))
+                        .collect(Collectors.toSet()))
+                        .withRating(0d))
                 .withUser(user);
 
         if (locations != null && !locations.isEmpty()) {
@@ -270,7 +271,6 @@ public class ClubServiceImpl implements ClubService {
                         .collect(Collectors.toList())
             );
         }
-
         log.info("adding club with name : {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
     }
@@ -334,7 +334,7 @@ public class ClubServiceImpl implements ClubService {
                 .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                 .collect(Collectors.toList());
 
-        log.info("getting list of clubs by user id {}", clubResponses);
+//        log.info("getting list of clubs by user id {}", clubResponses);
         return clubResponses;
     }
 
@@ -394,21 +394,13 @@ public class ClubServiceImpl implements ClubService {
         log.info("getClubsBySearchParameters ===> ");
         log.info(searchClubProfile.toString());
 
-        Page<Club> clubResponses = null;
-        if (!searchClubProfile.getCategoryName().equals("")) {
-            log.info("find by category name ===>>>");
-            clubResponses = clubRepository
-                    .findAllByCategoryNameAndCity(searchClubProfile.getCategoryName(),
-                            searchClubProfile.getCityName(),
-                            pageable);
-        }else{
-            clubResponses = clubRepository.findAllByParameters(
+        Page<Club> clubResponses = clubRepository.findAllByParameters(
                     searchClubProfile.getClubName(),
                     searchClubProfile.getCityName(),
                     searchClubProfile.getCategoryName(),
                     searchClubProfile.getIsOnline(),
                     pageable);
-        }
+
 
         log.info("===find clubs : " + clubResponses.getNumberOfElements());
 
