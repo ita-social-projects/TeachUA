@@ -52,7 +52,7 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
                 throw new IncorrectInputException("Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи");
             }
 
-            if (!text.matches("^[^:эЭъЪыЫёЁ]+$")) {
+            if (!text.matches("^[^эЭъЪыЫёЁ]+$")) {
                 throw new IncorrectInputException("Опис гуртка не може містити російські літери");
             }
 
