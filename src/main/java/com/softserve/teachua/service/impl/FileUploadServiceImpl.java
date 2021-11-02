@@ -2,7 +2,10 @@ package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.GalleryPhoto;
+import com.softserve.teachua.repository.ClubRepository;
+import com.softserve.teachua.repository.GalleryRepository;
 import com.softserve.teachua.service.FileUploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -17,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -26,9 +30,16 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final String UPLOAD_LOCATION = "/upload";
     private static final String UPLOAD_PLUG = "/upload/test/test.png";
 
+    private final GalleryRepository galleryRepository;
+    private final ClubRepository clubRepository;
+
+    public FileUploadServiceImpl(GalleryRepository galleryRepository, ClubRepository clubRepository) {
+        this.galleryRepository = galleryRepository;
+        this.clubRepository = clubRepository;
+    }
 
     @Override
-    public String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile) {
+    public String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile,Long id) {
         Path uploadPath = Paths.get(uploadDir);
 
         try {
@@ -47,6 +58,14 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
 
         String actualPath = String.format("/%s/%s", uploadDir, fileName);
+
+        GalleryPhoto galleryPhoto = new GalleryPhoto();
+        Optional<Club> optionalClub = clubRepository.findById(id);
+        Club club = optionalClub.get();
+        galleryPhoto.setClub(club);
+        galleryPhoto.setUrl(actualPath);
+        galleryRepository.save(galleryPhoto);
+
         return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
     }
 

@@ -23,14 +23,15 @@ public class UploadController implements Api {
         this.fileUploadServiceImpl = fileUploadServiceImpl;
     }
 
-    @PostMapping("/upload-image")
+    @PostMapping("file")
     public String uploadPhoto(@RequestParam("image") MultipartFile image,
-                              @RequestParam("folder") String folder) {
+                              @RequestParam("folder") String folder,
+                              @RequestParam("clubId") Long id) {
 
         String fileName = StringUtils.cleanPath(image.getOriginalFilename());
         String uploadDir = String.format("%s/%s", uploadDirectory, folder);
 
-        return fileUploadServiceImpl.uploadImage(uploadDir, fileName, image);
+        return fileUploadServiceImpl.uploadImage(uploadDir, fileName, image,id);
     }
 
     @DeleteMapping("/delete-file")
