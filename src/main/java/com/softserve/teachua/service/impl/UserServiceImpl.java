@@ -210,6 +210,9 @@ public class UserServiceImpl implements UserService {
                 .withPassword(encodeService.encodePassword(userProfile.getPassword()))
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
+        if (user.getPhone().length() == 10){
+            user.setPhone(user.getPhone().substring(1,10));
+        }
 
         String phoneFormat  = "+380"+user.getPhone();
         String Formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
