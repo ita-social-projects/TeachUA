@@ -543,7 +543,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserByVerificationCode(userResetPassword.getVerificationCode());
         user.setStatus(true);
         if (bCryptPasswordEncoder.matches(userResetPassword.getPassword(), user.getPassword())) {
-            throw new MatchingPasswordException();
+            throw new MatchingPasswordException("Новий пароль співпадає з старим");
         }
         userResetPassword.setEmail(user.getEmail());
         userResetPassword.setId(user.getId());

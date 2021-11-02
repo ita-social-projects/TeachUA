@@ -80,6 +80,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildExceptionBody(exception, FORBIDDEN);
     }
 
+    @ExceptionHandler(MatchingPasswordException.class)
+    public final ResponseEntity<Object> handleMatchingPasswordException(IllegalArgumentException exception){
+        return buildExceptionBody(exception, NOT_FOUND);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
         StringBuilder sb = new StringBuilder();
