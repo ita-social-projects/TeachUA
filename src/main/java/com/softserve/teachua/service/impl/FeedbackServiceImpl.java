@@ -7,6 +7,7 @@ import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Feedback;
+import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.service.ArchiveService;
@@ -33,13 +34,15 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
+    private final UserServiceImpl userService;
 
     @Autowired
-    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService) {
+    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserServiceImpl userService) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
+        this.userService = userService;
     }
 
     /**
@@ -91,9 +94,9 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile) {
         Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, new Feedback()));
-
+        User user = userService.getUserById(feedbackProfile.getUserId());
+        System.err.println(user.getFirstName());
         Long clubId = feedback.getClub().getId();
-
         clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
 
         log.info("add new feedback - " + feedback);

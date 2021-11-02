@@ -10,7 +10,6 @@ import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.service.impl.FeedbackServiceImpl;
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,11 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,14 +65,14 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void getFeedbackByIdTest() {
+    public void getFeedbackByCorrectIdShouldReturnCorrectFeedBack() {
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         Feedback actual = feedbackService.getFeedbackById(EXISTING_ID);
         assertEquals(actual, feedback);
     }
 
     @Test
-    public void getFeedbackByNotExistingIdTest() {
+    public void getFeedbackByNotExistingIdTestShouldReturnNotExistException() {
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
@@ -84,7 +81,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void getAllByExistingClubId() {
+    public void getAllByExistingClubIdShouldReturnListOfFeedbackResponse() {
         List<Feedback> feedbackList = new ArrayList<>();
         feedbackList.add(feedback);
         //final long EXISTING_CLUB_ID = 3L;
@@ -96,7 +93,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void getAllByNotExistingClubId() {
+    public void getAllByNotExistingClubIdShouldReturnEmpty() {
         when(feedbackRepository.getAllByClubId(NOT_EXISTING_CLUB_ID)).thenReturn(new ArrayList<>());
 
         List<FeedbackResponse> actual = feedbackService.getAllByClubId(NOT_EXISTING_CLUB_ID);
@@ -104,7 +101,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void getFeedbackProfileByExistingId(){
+    public void getFeedbackProfileByExistingIdShouldReturnFeedbackResponse(){
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         when(dtoConverter.convertToDto(feedback, FeedbackResponse.class))
                 .thenReturn(feedbackResponse);
@@ -114,7 +111,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void getFeedbackProfileByNotExistingId(){
+    public void getFeedbackProfileByNotExistingIdShouldReturnNotExistException(){
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
@@ -123,7 +120,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void getListOfFeedbackTest(){
+    public void getListOfFeedbackTestShouldReturnListOfFeedbackResponse(){
         List<Feedback> feedbacks = new ArrayList<>();
         feedbacks.add(feedback);
 
@@ -136,7 +133,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void addNewFeedbackTest() {
+    public void addNewFeedbackShouldReturnSuccessCreatedFeedback() {
         Feedback newFeedback = Feedback.builder().id(NOT_EXISTING_ID).club(club).text(NEW_TEXT).build();
 
         when(dtoConverter.convertToEntity(feedbackProfile, new Feedback())).thenReturn(newFeedback);
@@ -152,7 +149,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void updateFeedbackProfileByExistingId(){
+    public void updateFeedbackProfileByExistingIdShouldReturnFeedbackProfile(){
 
 
         Feedback updFeedback = Feedback.builder().id(EXISTING_ID).club(club).text(NEW_TEXT).build();
@@ -174,7 +171,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void updateFeedbackProfileByNotExistingId(){
+    public void updateFeedbackProfileByNotExistingIdShouldReturnNotExistException(){
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         feedbackProfile.setClubId(club.getId());
@@ -184,7 +181,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void deleteFeedbackByExistingId(){
+    public void deleteFeedbackByExistingIdShouldReturnFeedbackResponse(){
         feedbackResponse.setId(EXISTING_ID);
 
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
@@ -203,7 +200,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void deleteFeedbackByNotExistingId(){
+    public void deleteFeedbackByNotExistingIdShouldReturnNotExistException(){
         feedbackResponse.setId(NOT_EXISTING_ID);
 
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
@@ -214,14 +211,14 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void getOptionalFeedbackByExistingId(){
+    public void getOptionalFeedbackByExistingIdShouldReturnOptionalOfFeedback(){
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         Optional<Feedback> actual = feedbackRepository.findById(EXISTING_ID);
         assertEquals(Optional.of(feedback), actual);
     }
 
     @Test
-    public void getOptionalFeedbackByNotExistingId(){
+    public void getOptionalFeedbackByNotExistingIdShouldReturnEmpty(){
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
         Optional<Feedback> actual = feedbackRepository.findById(NOT_EXISTING_ID);
         assertEquals(Optional.empty(), actual);
