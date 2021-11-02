@@ -23,5 +23,4 @@ public class SuccessUpdatedChallenge implements Convertible {
     private String picture;
     private Long sortNumber;
     private Boolean isActive;
-    private Set<Task> tasks;
 }

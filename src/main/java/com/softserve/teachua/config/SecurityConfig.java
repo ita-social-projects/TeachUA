@@ -154,6 +154,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/api/challenge/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/challenge/{\\d+}/task").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/tasks").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/challenge/task/{\\d+}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/challenge/task/{\\d+}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/challenge/task/{\\d+}").hasRole("ADMIN")
 
                 //TODO: only for admin
                 .antMatchers(HttpMethod.GET, "/api/logs").permitAll()
