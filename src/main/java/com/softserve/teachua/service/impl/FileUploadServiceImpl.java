@@ -53,7 +53,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                 throw new IncorrectInputException(String.format(IMAGE_RESOLUTION_EXCEPTION, "height", height));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
 
         try {
