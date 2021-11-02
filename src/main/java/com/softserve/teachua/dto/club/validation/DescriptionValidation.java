@@ -48,8 +48,12 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
                 text += block.text;
             }
 
-            if(!text.matches("^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+[^:эЭъЪыЫёЁ]$")){
+            if(!text.matches("^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+$")){
                 throw new IncorrectInputException("Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи");
+            }
+
+            if (!text.matches("^[^:эЭъЪыЫёЁ]+$")) {
+                throw new IncorrectInputException("Опис гуртка не може містити російські літери");
             }
 
             if(text.length() < 40){
