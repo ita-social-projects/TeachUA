@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -32,6 +33,8 @@ public class Feedback implements Convertible, Archivable {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
 
+    @NotNull
+    @NotEmpty(message = "Feedback cannot be empty")
     @Column(length = 1500)
     private String text;
 

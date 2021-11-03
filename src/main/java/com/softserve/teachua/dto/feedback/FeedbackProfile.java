@@ -21,10 +21,11 @@ public class FeedbackProfile implements Convertible {
     @Max(value = 5,message = "Rate cannot be more than 5 ")
     private Float rate;
 
+    @NotNull
     @NotEmpty
-    @Size(min = 10,max = 1500,message = " field:Відгук не може містити менше 10 символів та більше 1500 символів")
-    @Pattern(regexp = "^[А-Яа-яіІєЄїЇґҐ\\'a-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+[^:эЭъЪыЫёЁ]$",
-             message = "cannot contain Russian letters")
+    @Size(min = 10,max = 1500,message = "field should be between 10 and 1500 symbols")
+    @Pattern(regexp = "[a-zA-zа-яА-Я0-9іІїЇєЄґҐ!.,№;&'`~{}%:?*()_+=\"\\[\\]\\\\\\/\\-\\s&&[^ёЁъЁыЫэЭ]]+",
+            message = "You can use Ukrainian,English alphabet and some special char like: !.,№;&'`~{}%:?*()_+=\"[]\\/-")
     private String text;
 
     @NotNull

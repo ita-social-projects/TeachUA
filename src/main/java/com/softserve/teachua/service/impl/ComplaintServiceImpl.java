@@ -8,6 +8,7 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Complaint;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
+import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ComplaintService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,13 +33,15 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
+    private  final UserRepository userRepository;
 
     @Autowired
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService) {
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository) {
         this.complaintRepository = complaintRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -74,6 +77,13 @@ public class ComplaintServiceImpl implements ComplaintService {
      **/
     @Override
     public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile) {
+
+        if(!clubRepository.existsById(complaintProfile.getClubId())){
+            throw new NotExistException("Club with id "+complaintProfile.getClubId()+" does`nt exists");
+        }
+        if (!userRepository.existsById(complaintProfile.getUserId())){
+            throw new NotExistException("User with id "+complaintProfile.getUserId()+"does`nt exists");
+        }
         Complaint complaint = complaintRepository.save(dtoConverter.convertToEntity(complaintProfile, new Complaint()));
 
         log.info("add new complaint {}", complaint);
