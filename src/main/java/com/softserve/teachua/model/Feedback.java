@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 public class Feedback implements Convertible, Archivable {
 
     @Id
+    @NotNull(message = " id field cannot be Null")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

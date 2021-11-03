@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -19,15 +20,16 @@ import javax.validation.constraints.Size;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LocationProfile {
 
+    @NotNull
     private Long id;
 
     @NotEmpty
     @Size(
             min=5,
             max=100,
-            message = "Довжина назви не відповідає критеріям: від 5 до 100 символів."
+            message = "Length should be between 5 and 100 character"
     )
-    @Pattern(regexp = "^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+[^:эЭъЪыЫёЁ]$" ,
+    @Pattern(regexp = "^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+[^эЭъЪыЫёЁ]$" ,
              message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
     private String name;
 

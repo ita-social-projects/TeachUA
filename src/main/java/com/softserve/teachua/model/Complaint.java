@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 @Table(name = "complaints")
 public class Complaint implements Convertible, Archivable {
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

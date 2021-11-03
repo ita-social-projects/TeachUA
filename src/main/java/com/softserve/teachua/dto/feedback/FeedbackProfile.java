@@ -13,6 +13,7 @@ import javax.validation.constraints.*;
 @Builder
 @Data
 public class FeedbackProfile implements Convertible {
+    @NotNull(message = "cannot be Null")
     private Long id;
 
     @NotNull
@@ -22,6 +23,8 @@ public class FeedbackProfile implements Convertible {
 
     @NotEmpty
     @Size(min = 10,max = 1500,message = " field:Відгук не може містити менше 10 символів та більше 1500 символів")
+    @Pattern(regexp = "^[А-Яа-яіІєЄїЇґҐ\\'a-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+[^:эЭъЪыЫёЁ]$",
+             message = "cannot contain Russian letters")
     private String text;
 
     @NotNull

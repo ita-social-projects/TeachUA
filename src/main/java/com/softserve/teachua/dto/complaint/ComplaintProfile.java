@@ -16,10 +16,11 @@ import java.time.LocalDate;
 @Builder
 @Data
 public class ComplaintProfile implements Convertible {
+    @NotNull(message = "cannot equal Null")
     private Long id;
 
     @NotEmpty
-    @Length(min = 30,max = 255,message = "length exceeded available size")
+    @Length(min = 30,max = 1500,message = "Complaint size should be between 20 and 1500")
     private String text;
 
     @NotNull

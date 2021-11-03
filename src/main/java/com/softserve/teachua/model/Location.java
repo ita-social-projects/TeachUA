@@ -5,8 +5,7 @@ import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +16,7 @@ import java.util.Set;
 @Table(name = "locations")
 public class Location implements Convertible {
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
