@@ -124,8 +124,6 @@ public class ClubServiceImpl implements ClubService {
         }
 
         Club club = optionalClub.get();
-
-        log.info("getting club by id {}", id);
         return club;
     }
 
@@ -139,7 +137,6 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public List<Club> getClubByClubExternalId(Long clubExternalId) {
         List<Club> clubs = clubRepository.findClubByClubExternalId(clubExternalId);
-        log.info("getting club by external id {}", clubExternalId);
         return clubs;
     }
 
@@ -158,7 +155,6 @@ public class ClubServiceImpl implements ClubService {
         }
 
         Club club = optionalClub.get();
-        log.info("getting club by name {}", club.getName());
         return club;
     }
 
@@ -175,7 +171,7 @@ public class ClubServiceImpl implements ClubService {
         Club newClub = dtoConverter.convertToEntity(clubProfile, club)
                 .withId(id);
 
-        log.info("updating club by id {}", newClub);
+        log.debug("updating club by id {}", newClub);
         return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);
     }
 
@@ -232,9 +228,7 @@ public class ClubServiceImpl implements ClubService {
         }
 
         //todo delete or replace this block
-        log.info("== add method");
 
-        log.info("==clubService=?  clubProfile.centerID" + clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
@@ -271,7 +265,7 @@ public class ClubServiceImpl implements ClubService {
                         .collect(Collectors.toList())
             );
         }
-        log.info("adding club with name : {}", clubProfile.getName());
+        log.debug("adding club: {}", clubProfile);
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
     }
 
@@ -279,7 +273,7 @@ public class ClubServiceImpl implements ClubService {
     public Club addClubsFromExcel(ClubProfile clubProfile) {
 
         if (clubProfile.getCenterId() == null) {
-            log.info("(row 256, ClubServiceImpl)  addClubsFromExcel => " + clubProfile.getCenterExternalId() + " not found");
+            log.debug("addClubsFromExcel without center", clubProfile);
 
             try {
                 return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
@@ -291,16 +285,14 @@ public class ClubServiceImpl implements ClubService {
                         .withCenter(null);
             } catch (Exception e) {
                 //todo bad solution .... do refactor !!!!!
-                log.info("(row 268, ClubServiceImpl)    saving club ");
-                log.info(e.getMessage());
-
+                log.info("addClubsFromExcel", e);
                 return new Club();
             }
 
         } else {
             Center center = centerRepository.findById(clubProfile.getCenterId()).get();
-            log.info("(clubServiceImpl) ==>  addClubsFromExcel = >  with EXTERNAL_center_id =" + center.getCenterExternalId());
-            log.info("addClubsFromExcel => " + clubProfile.getCenterId() + " with real center , id =" + center.getId());
+            log.debug("(clubServiceImpl) ==>  addClubsFromExcel = >  with EXTERNAL_center_id =" + center.getCenterExternalId());
+            log.debug("addClubsFromExcel => " + clubProfile.getCenterId() + " with real center , id =" + center.getId());
             return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                     .withCategories(clubProfile.getCategoriesName()
                             .stream()
@@ -322,8 +314,6 @@ public class ClubServiceImpl implements ClubService {
                 .stream()
                 .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                 .collect(Collectors.toList());
-
-        log.info("getting list of clubs {}", clubResponses);
         return clubResponses;
     }
 
@@ -333,8 +323,6 @@ public class ClubServiceImpl implements ClubService {
                 .stream()
                 .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                 .collect(Collectors.toList());
-
-//        log.info("getting list of clubs by user id {}", clubResponses);
         return clubResponses;
     }
 
@@ -364,8 +352,6 @@ public class ClubServiceImpl implements ClubService {
             throw new IncorrectInputException("Age should be from 2 to 18 years inclusive");
         }
 
-        log.info("getAdvancedSearchClubs, advClubProf :" + advancedSearchClubProfile.toString());
-
         Page<Club> clubResponses = clubRepository.findAllBylAdvancedSearch(
                 advancedSearchClubProfile.getAge(),
                 advancedSearchClubProfile.getCityName(),
@@ -390,10 +376,6 @@ public class ClubServiceImpl implements ClubService {
      */
     @Override
     public Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable) {
-
-        log.info("getClubsBySearchParameters ===> ");
-        log.info(searchClubProfile.toString());
-
         Page<Club> clubResponses = clubRepository.findAllByParameters(
                     searchClubProfile.getClubName(),
                     searchClubProfile.getCityName(),
@@ -401,17 +383,10 @@ public class ClubServiceImpl implements ClubService {
                     searchClubProfile.getIsOnline(),
                     pageable);
 
-
-        log.info("===find clubs : " + clubResponses.getNumberOfElements());
-
         if (clubResponses.getNumberOfElements() == 0) {
-            log.info("==============================");
-            log.info("clubResponses by club name is empty==> start search by center name " + searchClubProfile.getClubName());
             clubResponses = clubRepository.
                     findClubsByCenterName(searchClubProfile.getClubName(),
                             searchClubProfile.getCityName(), pageable);
-            log.info("result of search by centerName : " + clubResponses.getNumberOfElements());
-            log.info(clubResponses.toString());
         }
 
         return new PageImpl<>(clubResponses
@@ -468,7 +443,7 @@ public class ClubServiceImpl implements ClubService {
         Club club = getClubById(id);
         club.setUser(clubOwnerProfile.getUser());
 
-        log.info("changed club owner by id {}", club);
+        log.debug("changed club owner by id {}", club);
         return dtoConverter.convertToDto(clubRepository.save(club), ClubResponse.class);
     }
 
@@ -499,7 +474,7 @@ public class ClubServiceImpl implements ClubService {
             throw new DatabaseRepositoryException(CLUB_DELETING_ERROR);
         }
 
-        log.info("club {} was successfully deleted", club);
+        log.debug("club {} was successfully deleted", club);
         return toClubResponseConverter.convertToClubResponse(club);
     }
 

@@ -70,7 +70,6 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
 
         Feedback feedback = optionalFeedback.get();
-        log.info("get feedback by id - " + feedback);
         return feedback;
     }
 
@@ -81,7 +80,6 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .map(feedback -> (FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("get list of feedback -" + feedbackResponses);
         return feedbackResponses;
     }
 
@@ -99,7 +97,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         Long clubId = feedback.getClub().getId();
         clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
 
-        log.info("add new feedback - " + feedback);
+        log.debug("add new feedback - {}", feedback);
         return dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
     }
 
@@ -115,7 +113,6 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .map(feedback -> (FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("get list of feedback -" + feedbackResponses);
         return feedbackResponses;
     }
 
@@ -136,7 +133,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedbackRepository.save(newFeedback);
         clubRepository.updateRating(feedbackProfile.getClubId(), feedbackRepository.findAvgRating(feedbackProfile.getClubId()));
 
-        log.info("updated feedback " + newFeedback);
+        log.debug("updated feedback {}", newFeedback);
         return dtoConverter.convertToDto(newFeedback, FeedbackProfile.class);
     }
 
@@ -163,7 +160,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
 
-        log.info("feedback {} was successfully deleted", feedback);
+        log.debug("feedback {} was successfully deleted", feedback);
         return dtoConverter.convertToDto(feedback, FeedbackResponse.class);
     }
 

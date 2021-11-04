@@ -61,7 +61,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String targetUrl = determineTargetUrl(request, response, authentication);
 
         if (response.isCommitted()) {
-            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+            log.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
         }
         clearAuthenticationAttributes(request, response);
@@ -86,10 +86,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         User user = userService.getUserByEmail(authentication.getName());
         if (userRole.get() != "") {
             user.setRole(roleService.findByName((String) userRole.get()));
-            log.info("Set user role" + userRole.get());
+            log.debug("Set user role" + userRole.get());
         } else {
             user.setRole(roleService.findByName("ROLE_USER"));
-            log.info("Set default user role");
+            log.debug("Set default user role");
         }
         userService.updateUser(user);
 

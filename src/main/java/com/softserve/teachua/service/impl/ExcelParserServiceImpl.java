@@ -129,10 +129,6 @@ public class ExcelParserServiceImpl implements ExcelParserService {
 
         return parseSheet(excelBook, CLUB_SHEET_NAME, (row) -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
-
-            log.info("CLUB REPRESENTATION");
-            log.info("name = "+rowParser.getString(1, ExcelErrorType.CRITICAL));
-            log.info("club_ext_ID = "+rowParser.getString(13, ExcelErrorType.CRITICAL));
             ExcelClubEntity clubRepresentation = ExcelClubEntity.builder()
 
                     .centerExternalId(rowParser.getLong(0, ExcelErrorType.CRITICAL))
@@ -150,7 +146,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                     .clubExternalId(rowParser.getLong(13, ExcelErrorType.CRITICAL))
                     .build();
 
-            log.info(clubRepresentation.toString());
+            log.debug("save club {}", clubRepresentation.toString());
 
 //            if(!clubRepresentation.getName().isEmpty() & !clubRepresentation.getCoordinates().isEmpty()){
 //
@@ -171,9 +167,6 @@ public class ExcelParserServiceImpl implements ExcelParserService {
 
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
-            log.info("=CENTER REPRESENTATION ==>");
-            log.info("name = "+rowParser.getString(1, ExcelErrorType.CRITICAL));
-
             ExcelCenterEntity centerRepresentation = ExcelCenterEntity.builder()
 
                     .centerExternalId(rowParser.getLong(0, ExcelErrorType.CRITICAL))
@@ -188,13 +181,12 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                     .description(rowParser.getString(9, ExcelErrorType.CRITICAL))
                     .build();
 
-            log.info("ROW(194, ExcelParser)   === parse Center .... centerExcel : ");
-            log.info(centerRepresentation.toString());
-            log.info("END==========================");
-            if(!centerRepresentation.getName().isEmpty() && !centerRepresentation.getCoordinates().isEmpty()){
 
+            if(!centerRepresentation.getName().isEmpty() && !centerRepresentation.getCoordinates().isEmpty()){
+                log.debug("save center {}", centerRepresentation);
                 excelCenterEntityRepository.save(centerRepresentation);
             }
+
             centerEntities.add(centerRepresentation);
             return !rowParser.hasErrors();
         });
@@ -224,15 +216,11 @@ public class ExcelParserServiceImpl implements ExcelParserService {
         return parseSheet(excelBook, CENTER_SHEET_NAME, (row) -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
-            log.info("=CENTER REPRESENTATION ==>");
-            log.info("name = "+rowParser.getString(1, ExcelErrorType.CRITICAL));
-
             if (rowParser.isColumnEmpty(1)) {
                 if(rowParser.isColumnEmpty(4)){
                     return false;
                 }
                 Double[] coordinates = rowParser.parseCoordinates(4, true);
-                log.info("centerCoordinates in NEXT center location: " + Arrays.toString(coordinates));
 
                 LocationExcel locationExcel = LocationExcel.builder()
                         .clubExternalId(null)
@@ -251,10 +239,9 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                 return !rowParser.hasErrors();
             }
             Double[] coordinates = rowParser.parseCoordinates(4, true);
-            log.info("centerCoordinates : " + Arrays.toString(coordinates));
-            log.info("center contacts in excelParser: "+rowParser.getString(7, ExcelErrorType.NON_CRITICAL)+" , "
+            log.debug("center contacts in excelParser: "+rowParser.getString(7, ExcelErrorType.NON_CRITICAL)+" , "
             +rowParser.getString(8, ExcelErrorType.CRITICAL));
-            log.info("==  centerExt_Id :  "+rowParser.getLong(0,ExcelErrorType.CRITICAL));
+            log.debug("==  centerExt_Id :  "+rowParser.getLong(0,ExcelErrorType.CRITICAL));
 
             previousName = rowParser.getString(1, ExcelErrorType.CRITICAL);
 
@@ -280,10 +267,6 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                     .name("center_location_first.....")
                     .build();
 
-            log.info("ROW(283, ExcelParser)   === parse Center .... centerExcel : ");
-            log.info(centerExcel.toString());
-            log.info("END==========================");
-
             centersOutput.add( centerExcel);
             locationsOutput.add(locationExcel);
 
@@ -298,7 +281,6 @@ public class ExcelParserServiceImpl implements ExcelParserService {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
             if ( rowParser.isColumnEmpty(0)) {
-                log.info("club without center !!!!!!!!!");
                 //this club has no center and has its own locations
                     if(rowParser.isColumnEmpty(1) && rowParser.isColumnEmpty(4)){ //and has no coordinates -- return false !!!
                         return false;
@@ -341,13 +323,12 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                                 .station(rowParser.getString(6, ExcelErrorType.NON_CRITICAL))
                                 .build();
 
-                        log.info("new club without center,  Location : "+location.getAddress());
+                        log.debug("new club without center,  Location : " + location.getAddress());
                         locationsOutput.add(location);
                         return !rowParser.hasErrors();
                     }
 
             }else{
-                log.info(" (row 345,ExelParser..).... club has center   !!!!!! ");
                 // the case when club has center and we can skip parsing coordinates
                 Integer[] ages = rowParser.parseAges(11);
 
@@ -371,7 +352,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                         .description(rowParser.getString(12, ExcelErrorType.CRITICAL))
                         .build();
 
-                log.info("new club with center's Locations : "+clubExcel.getCenterExternalId());
+                log.debug("new club with center's Locations : "+clubExcel.getCenterExternalId());
 
                 clubExcels.add(clubExcel);
 

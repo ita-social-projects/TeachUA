@@ -35,7 +35,7 @@ public class ResetPasswordController implements Api {
     public SuccessUserPasswordReset resetPassword(
             @Valid
             @RequestBody UserResetPassword userProfile) {
-        log.info("Controller \"resetpassword\", userProfile = " + userProfile.toString());
+        log.debug("Controller \"resetpassword\", userProfile = " + userProfile.toString());
         return userService.resetPassword(userProfile);
     }
 
@@ -47,7 +47,7 @@ public class ResetPasswordController implements Api {
      */
     @GetMapping("/verifyreset")
     public SuccessVerification verifyUser(@Param("code") String code) {
-        log.info("Controller \"verifyreset\",  code = " + code);
+        log.debug("Controller \"verifyreset\",  code = " + code);
         return userService.verifyChange(code);
     }
 

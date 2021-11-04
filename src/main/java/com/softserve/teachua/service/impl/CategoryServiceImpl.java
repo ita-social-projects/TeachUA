@@ -74,8 +74,6 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category category = optionalCategory.get();
-
-        log.info("Getting category by id = {}", category);
         return category;
     }
 
@@ -94,8 +92,6 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category category = optionalCategory.get();
-
-        log.info("Getting category by name = {}", category);
         return category;
     }
 
@@ -123,7 +119,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         Category category = categoryRepository.save(dtoConverter.convertToEntity(categoryProfile, new Category()));
-        log.info("Adding new category = {}", category);
+        log.debug("Adding new category = {}", category);
         return dtoConverter.convertToDto(category, SuccessCreatedCategory.class);
     }
 
@@ -139,7 +135,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
                 .sorted(Comparator.comparing(CategoryResponse::getSortby))
                 .collect(Collectors.toList());
-        log.info("Getting list of categories = {}", categoryResponses);
         return categoryResponses;
     }
 
@@ -179,7 +174,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new DatabaseRepositoryException(CATEGORY_DELETING_ERROR);
         }
 
-        log.info("Category {} was successfully deleted", category);
+        log.debug("Category {} was successfully deleted", category);
         return dtoConverter.convertToDto(category, CategoryResponse.class);
     }
 
@@ -208,7 +203,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category newCategory = dtoConverter.convertToEntity(categoryProfile, category)
                 .withId(id);
 
-        log.info("Updating category by id = {}", newCategory);
+        log.debug("Updating category by id = {}", newCategory);
         return dtoConverter.convertToDto(categoryRepository.save(newCategory), CategoryProfile.class);
     }
 

@@ -48,7 +48,6 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public List<RoleResponse> getListOfRoles() {
-        log.info("**/getting all roles");
         return roleRepository.findAll()
                 .stream()
                 .map(role -> (RoleResponse)dtoConverter.convertToDto(role, RoleResponse.class))
@@ -74,7 +73,6 @@ public class RoleServiceImpl implements RoleService {
             throw new NotExistException(String.format(ROLE_NOT_FOUND_BY_ID, id));
         }
 
-        log.info("**/getting RoleResponse by id = " + id);
         return optionalRole.get();
     }
 
@@ -92,7 +90,7 @@ public class RoleServiceImpl implements RoleService {
         Role newRole = dtoConverter.convertToEntity(roleProfile, role)
                 .withId(id);
 
-        log.info("**/updating role by id = " + newRole);
+        log.debug("**/updating role by id = {}", newRole);
         return dtoConverter.convertToDto(roleRepository.save(newRole), RoleProfile.class);
     }
 
@@ -110,7 +108,6 @@ public class RoleServiceImpl implements RoleService {
             throw new NotExistException(String.format(ROLE_NOT_FOUND_BY_NAME, name));
         }
 
-        log.info("**/getting role by name = " + name);
         return optionalRole.get();
     }
 
@@ -128,7 +125,7 @@ public class RoleServiceImpl implements RoleService {
         }
 
         Role role = roleRepository.save(dtoConverter.convertToEntity(roleProfile, new Role()));
-        log.info("**/adding new role = " + roleProfile.getRoleName());
+        log.debug("**/adding new role = {}", roleProfile);
         return dtoConverter.convertToDto(role, RoleProfile.class);
     }
 
@@ -153,7 +150,7 @@ public class RoleServiceImpl implements RoleService {
             throw new DatabaseRepositoryException(ROLE_DELETING_ERROR);
         }
 
-        log.info("role {} was successfully deleted", role);
+        log.debug("role {} was successfully deleted", role);
         return dtoConverter.convertToDto(role, RoleResponse.class);
     }
 

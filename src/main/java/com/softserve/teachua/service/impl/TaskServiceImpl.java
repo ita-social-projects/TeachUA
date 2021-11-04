@@ -84,7 +84,6 @@ public class TaskServiceImpl implements TaskService {
                 .map(task -> (TaskPreview) dtoConverter.convertToDto(task, TaskPreview.class))
                 .collect(Collectors.toList());
 
-        log.info("getting list of tasks {}", taskPreviewList);
         return taskPreviewList;
     }
 

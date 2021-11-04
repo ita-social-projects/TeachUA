@@ -116,7 +116,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(httpStatus.value())
                 .message(exception.getMessage())
                 .build();
-        log.warn(exception.getMessage());
+        log.debug("buildExceptionBody", exception);
         return ResponseEntity
                 .status(httpStatus)
                 .body(exceptionResponse);

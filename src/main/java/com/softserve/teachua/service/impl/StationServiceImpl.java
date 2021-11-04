@@ -76,7 +76,6 @@ public class StationServiceImpl implements StationService {
         }
 
         Station station = optionalStation.get();
-        log.info("**/getting station by id = " + station);
         return station;
     }
 
@@ -95,7 +94,6 @@ public class StationServiceImpl implements StationService {
         }
 
         Station station = optionalStation.get();
-        log.info("**/getting city by id = " + station);
         return station;
     }
 
@@ -118,7 +116,7 @@ public class StationServiceImpl implements StationService {
         }
         Station station = stationRepository.save(dtoConverter.convertToEntity(stationProfile, new Station())
                 .withCity(cityService.getCityByName(stationProfile.getCityName())));
-        log.info("**/adding new station = " + station);
+        log.debug("**/adding new station = {}", station);
         return dtoConverter.convertToDto(station, SuccessCreatedStation.class);
     }
 
@@ -134,7 +132,6 @@ public class StationServiceImpl implements StationService {
                 .map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of stations = " + stationResponses);
         return stationResponses;
     }
 
@@ -151,7 +148,6 @@ public class StationServiceImpl implements StationService {
                 .map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of stations = " + stationResponses);
         return stationResponses;
     }
 
@@ -168,7 +164,7 @@ public class StationServiceImpl implements StationService {
                 .withId(id)
                 .withCity(cityService.getCityByName(stationProfile.getCityName()));
 
-        log.info("**/updating station by id = " + newStation);
+        log.debug("**/updating station by id = {}", newStation);
         return dtoConverter.convertToDto(stationRepository.save(newStation), StationProfile.class);
     }
 
@@ -192,7 +188,7 @@ public class StationServiceImpl implements StationService {
             throw new DatabaseRepositoryException(STATION_DELETING_ERROR);
         }
 
-        log.info("station {} was successfully deleted", station);
+        log.debug("station {} was successfully deleted", station);
         return dtoConverter.convertToDto(station, StationResponse.class);
     }
 

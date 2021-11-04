@@ -32,7 +32,7 @@ public class PhoneValidation implements ConstraintValidator<Phone, String> {
             return matcher.matches();
 
         } catch (ValidationException e) {
-            log.error("An exception occurred!");
+            log.debug("PhoneValidation ", e);
         }
         return false;
 

@@ -55,8 +55,6 @@ public class JwtProvider {
                 .getBody();
         String claimsId = claims.getId();
         claimsId = claimsId == null ? "0" : claimsId;
-        log.info("claims.getId() = " + claimsId);
-        //return Long.parseLong(claims.getId());
         return Long.parseLong(claimsId);
     }
 
@@ -72,7 +70,7 @@ public class JwtProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            log.error("invalid token");
+            log.debug("Invalid token", e);
         }
         return false;
     }

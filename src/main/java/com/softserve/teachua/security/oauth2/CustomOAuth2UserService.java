@@ -62,7 +62,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         " to log in.");
             }
             user = updateExistingUser(user, oAuth2UserInfo);
-            log.info("Successfull log in user - " + user);
+            log.debug("Successful log in user - " + user);
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
         }
@@ -84,7 +84,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setEmail(oAuth2UserInfo.getEmail());
         user.setUrlLogo(oAuth2UserInfo.getImageUrl());
         user.setStatus(true);
-        log.info("Successfull registrate new user - " + user);
+        log.debug("Successful register new user - " + user);
         return userRepository.save(user);
     }
 

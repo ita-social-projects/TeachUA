@@ -100,8 +100,8 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         // todo tmp load data is in parser
 //        loadExcelEntityToDB(excelParsingData);
 
-        log.info("=========LOADING DATA TO DB STEP: all locations form dto =========");
-        log.info(excelParsingData.getLocations().toString());
+        log.debug("=========LOADING DATA TO DB STEP: all locations form dto =========");
+        log.debug(excelParsingData.getLocations().toString());
 
         loadDistricts(excelParsingData);
         loadStations(excelParsingData);
@@ -126,11 +126,11 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     }
 
     private void loadLocations(ExcelParsingData excelParsingData) {
-        log.info("==============load locations DataLoaderService =========");
-        log.info("locations.length : "+excelParsingData.getLocations().size());
+        log.debug("==============load locations DataLoaderService =========");
+        log.debug("locations.length : "+excelParsingData.getLocations().size());
 
         for (LocationExcel location : excelParsingData.getLocations()) {
-            log.info("(row 133, DataLoader : "+location.toString());
+            log.debug("(row 133, DataLoader : "+location.toString());
             try{
 
                 String cityName = location.getCity();
@@ -161,40 +161,34 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 if (location.getClubExternalId() == null) {
                     locationProfile = locationProfile.withClubId(null);
                     if(location.getCenterExternalId() == null) {
-                        log.info("location has no ref of club or center !!!");
+                        log.debug("location has no ref of club or center !!!");
                         throw new DataFormatException();
                     }else{
-                        log.info("getCenterByExternalId = " + location.getCenterExternalId());
                         locationProfile = locationProfile.withCenterId(centerService.getCenterByExternalId(location.getCenterExternalId()).getId());
                     }
                 } else {
-                    log.info("Review Club Location location.getClubExternalId() = " + location.getClubExternalId());
                     while(clubService.getClubByClubExternalId(location.getClubExternalId()).size() == 0) {
                         location.setClubExternalId(location.getClubExternalId() - 1);
                     }
                     locationProfile = locationProfile.withClubId(clubService.getClubByClubExternalId(location.getClubExternalId()).get(0).getId());
                 }
-                log.info("LocationProfile before saving : "+locationProfile);
 
                 locationService.addLocation(locationProfile);
 
-                log.info("====== location added ==");
-                log.info(location.getName()+" ");
+                log.debug("location added", location);
 
             }catch (AlreadyExistException | NoSuchElementException | DataFormatException | NullPointerException e){
-                log.info("AlreadyExist = " + location.getClubExternalId());
-                log.info(e.getMessage());
+                log.debug("AlreadyExist = " + location.getClubExternalId(), e);
             }
         }
     }
 
     private void loadCenters(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId) {
 
-        log.info("======= load_CENTERS DataLoaderService =========");
+        log.debug("======= load_CENTERS DataLoaderService =========");
 
         for (CenterExcel center : excelParsingData.getCenters()) {
-
-            log.info("CENTER_EXCEL obj: "+ center.toString());
+            log.debug("CENTER_EXCEL obj: "+ center.toString());
             try {
 
                 SuccessCreatedCenter createdCenter = centerService.addCenter(CenterProfile
@@ -209,11 +203,11 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .build());
                 excelIdToDbId.put(center.getCenterExternalId(), createdCenter.getId());
             } catch (AlreadyExistException e) {
-            	log.error("***###ERROR CENTER to DB: "+ center.toString());
-                log.error("Trying to add already exists center from excel");
+            	log.debug("***###ERROR CENTER to DB: "+ center.toString(), e);
+                log.debug("Trying to add already exists center from excel", e);
             }catch (Exception constraintViolationException) {
-                log.error("Validation in description center: " + center.getCenterExternalId());
-                log.error(constraintViolationException.getMessage());
+                log.debug("Validation in description center: " + center.getCenterExternalId(),
+                        constraintViolationException);
             }
 
         }
@@ -221,9 +215,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
     private void loadClubs(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId, Set<String> categories) {
 
-        log.info("(row 219, DataLoader) ======= loadClubs DataLoaderService =========");
+        log.debug("(row 219, DataLoader) ======= loadClubs DataLoaderService =========");
         for (ClubExcel club : excelParsingData.getClubs()) {
-            log.info(club.toString());
+            log.debug(club.toString());
             try {
                 if (club.getAgeFrom() == null) {
                     club.setAgeFrom(2);
@@ -266,9 +260,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 if(club.getCenterExternalId() == null) {
                     clubProfile = clubProfile.withCenterId(null);
                 } else {
-                    log.info(" was  PROBLEM POINT");
                     if(center == null) {
-                        log.info("==(row-261,DataLoaderServiceImpl)==Center with external_id" + club.getCenterExternalId() + " is null");
                         clubProfile = clubProfile.withCenterId(null);
                     } else {
                         clubProfile = clubProfile.withCenterId(center.getId());
@@ -278,11 +270,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 clubService.addClubsFromExcel(clubProfile);
 
             } catch (AlreadyExistException e) {
-            	log.error("***###ERROR Club to DB: "+ club.toString());
-                log.error(e.getMessage());
+            	log.debug("***###ERROR Club to DB: "+ club, e);
             }catch (Exception constraintViolationException) {
-                log.error("Validation in description: " + club.getClubExternalId());
-                log.error(constraintViolationException.getMessage());
+                log.error("Validation in description: " + club.getClubExternalId(), constraintViolationException);
             }
         }
     }
@@ -296,7 +286,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .name(district.getName())
                         .build());
             } catch (AlreadyExistException e) {
-                log.warn("Trying to add already exists district from excel");
+                log.debug("Trying to add already exists district from excel", e);
             }
         }
     }
@@ -310,7 +300,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .name(station.getName())
                         .build());
             } catch (AlreadyExistException e) {
-                log.warn("Trying to add already exists station from excel");
+                log.debug("Trying to add already exists station from excel", e);
             }
         }
     }

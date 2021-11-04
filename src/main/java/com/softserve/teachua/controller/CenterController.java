@@ -107,7 +107,6 @@ public class CenterController implements Api {
             @PageableDefault(
                     value = 6,
                     sort = "id") Pageable pageable) {
-        log.info("===== centerController started ======");
         return centerService.getAdvancedSearchCenters(advancedSearchCenterProfile, pageable);
     }
 

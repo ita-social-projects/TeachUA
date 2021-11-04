@@ -55,7 +55,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                         String.format(IMAGE_RESOLUTION_EXCEPTION, "height", MIN_IMAGE_HEIGHT, "height", height));
             }
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.debug("upload image", e);
         }
 
         try {
@@ -92,14 +92,14 @@ public class FileUploadServiceImpl implements FileUploadService {
                 folderName = url.substring(0, ordinalIndexOf(url, "/", 4, false));
             }
         } catch (IndexOutOfBoundsException ex) {
-            log.error("Incorrect photo url");
+            log.debug("Incorrect photo url", ex);
         }
 
         if (folderName != null) {
             try {
                 FileUtils.deleteDirectory(new File("target" + folderName));
             } catch (IOException ex) {
-                log.error("Folder " + folderName + " can not be deleted");
+                log.debug("Folder " + folderName + " can not be deleted", ex);
             }
         }
     }

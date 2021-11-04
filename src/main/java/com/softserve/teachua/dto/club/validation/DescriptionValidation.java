@@ -66,7 +66,7 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
 
             return true;
         } catch (JsonProcessingException e) {
-            log.error("An exception occurred.");
+            log.debug("DescriptionValidation ", e);
         }
         return false;
     }

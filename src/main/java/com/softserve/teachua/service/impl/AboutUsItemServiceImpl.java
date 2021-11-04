@@ -89,7 +89,6 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
             aboutUsItemProfile.setNumber(aboutUsItem.getNumber());
         }
         validateVideoUrl(aboutUsItemProfile);
-        log.info(aboutUsItemProfile.toString());
         BeanUtils.copyProperties(aboutUsItemProfile, aboutUsItem);
         return dtoConverter.convertToDto(aboutUsItemRepository.save(aboutUsItem), AboutUsItemResponse.class);
     }
@@ -115,7 +114,6 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
                 }
                 video_url = EMBED_VIDEO_URL + video_url;
                 aboutUsItemProfile.setVideo(video_url);
-                log.info(video_url);
             }
         }
     }

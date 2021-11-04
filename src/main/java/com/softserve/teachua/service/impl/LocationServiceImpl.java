@@ -28,7 +28,6 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Location addLocation(LocationProfile locationProfile) {
 
-        log.info(locationProfile.toString());
 //        if(locationRepository.existsById(locationExcel.getId())){
 //            throw new AlreadyExistException("this location already exist");
 //        }
@@ -36,8 +35,11 @@ public class LocationServiceImpl implements LocationService {
         try{
             location = locationRepository.save(dtoConverter.convertToEntity(locationProfile, new Location()));
         }catch(Exception e){
-            log.info(e.getMessage());
+            log.debug("location not saved", e);
         }
+
+        log.debug("add location {}", location);
+
         return location;
     }
 

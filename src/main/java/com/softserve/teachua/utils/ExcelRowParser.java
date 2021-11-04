@@ -64,11 +64,11 @@ public class ExcelRowParser {
         if (cell != null) {
             if (cell.getCellType() == CellType.STRING && !cell.getStringCellValue().isEmpty()) {
                 String cellValue = cell.getStringCellValue();
-                log.info("Cell Type String, not empty, cell value =" + cellValue + " Column = " + column);
+                log.debug("Cell Type String, not empty, cell value =" + cellValue + " Column = " + column);
                 return cellValue == null ? "" : cellValue;
             } else {
                 String cellValue = cell.getRawValue();
-                log.info("Cell Type Not String, cell value =" + cellValue + " Column = " + column);
+                log.debug("Cell Type Not String, cell value =" + cellValue + " Column = " + column);
                 return cellValue == null ? "" : cellValue;
             }
         } else if (mistakes != null) {
@@ -91,16 +91,13 @@ public class ExcelRowParser {
 
     public boolean isColumnEmpty(int column) {
         XSSFCell cell = row.getCell(column);
-        log.info("========================================");
-        log.info("== columnNumber : "+column);
 
         if (cell != null) {
-            log.info("===isColumnEmpty method==== cell: ");
-            log.info(cell.toString());
+            log.debug("===isColumnEmpty method==== cell: {}", cell);
             if (cell.getCellType() == CellType.STRING) {
                 return cell.getStringCellValue().isEmpty();
             } else {
-                log.info("++++ cell type is not a string");
+                log.debug("===isColumnEmpty method==== cell type is not a string");
 
                 if(cell.getRawValue() == null)
                     return true;
@@ -120,8 +117,6 @@ public class ExcelRowParser {
 
         if (!coordinates.isEmpty()) {
             String[] coordinateStrings = coordinates.split(",");
-            log.info("===coordinates ====");
-            log.info(Arrays.toString(coordinateStrings));
             if (coordinateStrings.length != 2 || coordinateStrings[0].isEmpty() || coordinateStrings[1].isEmpty()) {
 
                 errorsFlag = true;
@@ -191,8 +186,6 @@ public class ExcelRowParser {
             // regEx that replace all word characters and space to nothing
             try{
                 String formattedAges = ages.replaceAll("[a-zA-Z.,:' ]", "");
-                log.info("  ages : "+ ages);
-                log.info("=== ageString after replace : " +formattedAges);
                 String [] fromToAges = formattedAges.split("-");
                 if(fromToAges.length<2){
                     return new Integer[]{null, null};
@@ -201,7 +194,7 @@ public class ExcelRowParser {
                         {Integer.parseInt(fromToAges[0]),Integer.parseInt(fromToAges[1])};
 
             }catch (NumberFormatException e){
-                log.info(e.getMessage());
+                log.debug("parseAges", e);
             }
         }
 

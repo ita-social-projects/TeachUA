@@ -72,7 +72,6 @@ public class DistrictServiceImpl implements DistrictService {
         }
 
         District district = optionalDistrict.get();
-        log.info("**/getting district by id = " + district);
         return district;
     }
 
@@ -91,7 +90,6 @@ public class DistrictServiceImpl implements DistrictService {
         }
 
         District district = optionalDistrict.get();
-        log.info("**/getting district by id = " + district);
         return district;
     }
 
@@ -116,7 +114,7 @@ public class DistrictServiceImpl implements DistrictService {
         District district = districtRepository.save(dtoConverter.convertToEntity(districtProfile, new District())
                 .withCity(cityService.getCityByName(districtProfile.getCityName())));
 
-        log.info("**/adding new district = " + district);
+        log.debug("**/adding new district = {}", district);
         return dtoConverter.convertToDto(district, SuccessCreatedDistrict.class);
     }
 
@@ -132,7 +130,6 @@ public class DistrictServiceImpl implements DistrictService {
                 .map(district -> (DistrictResponse) dtoConverter.convertToDto(district, DistrictResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of districts = " + districtResponses);
         return districtResponses;
     }
 
@@ -148,7 +145,6 @@ public class DistrictServiceImpl implements DistrictService {
                 .map(district -> (DistrictResponse) dtoConverter.convertToDto(district, DistrictResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of districts = " + districtResponses);
         return districtResponses;
     }
 
@@ -165,7 +161,7 @@ public class DistrictServiceImpl implements DistrictService {
                 .withId(id)
                 .withCity(cityService.getCityByName(districtProfile.getCityName()));
 
-        log.info("**/updating district by id = " + newDistrict);
+        log.debug("**/updating district by id = {}", newDistrict);
         return dtoConverter.convertToDto(districtRepository.save(newDistrict), DistrictProfile.class);
     }
 
@@ -189,7 +185,7 @@ public class DistrictServiceImpl implements DistrictService {
             throw new DatabaseRepositoryException(DISTRICT_DELETING_ERROR);
         }
 
-        log.info("district {} was successfully deleted", district);
+        log.debug("district {} was successfully deleted", district);
         return dtoConverter.convertToDto(district, DistrictResponse.class);
     }
 
