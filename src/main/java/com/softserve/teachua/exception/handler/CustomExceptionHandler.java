@@ -85,6 +85,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildExceptionBody(exception, NOT_FOUND);
     }
 
+    @ExceptionHandler(NotVerifiedUserException.class)
+    public final ResponseEntity<Object> handleFileUploadException(RuntimeException exception) {
+        return buildExceptionBody(exception, FORBIDDEN);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
         StringBuilder sb = new StringBuilder();
