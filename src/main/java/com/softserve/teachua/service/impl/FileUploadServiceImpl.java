@@ -50,6 +50,9 @@ public class FileUploadServiceImpl implements FileUploadService {
     public String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile,Long id) {
         Path uploadPath = Paths.get(uploadDir);
 
+
+        System.out.println(uploadDir);
+
         if(multipartFile.getSize() > IMAGE_SIZE_B){
             throw new IncorrectInputException(String.format(IMAGE_SIZE_EXCEPTION, IMAGE_SIZE_B, multipartFile.getSize()));
         }
@@ -87,6 +90,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         String actualPath = String.format("/%s/%s", uploadDir, fileName);
         Optional<Club> optionalClub = clubRepository.findById(id);
+        actualPath = actualPath.substring(7,actualPath.length());
         Club club = optionalClub.get();
         GalleryPhoto galleryPhoto = new GalleryPhoto();
         galleryPhoto.setUrl(actualPath);

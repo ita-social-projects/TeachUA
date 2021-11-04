@@ -29,6 +29,7 @@ public class UploadController implements Api {
                               @RequestParam("clubId") Long id) {
 
         String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+        System.out.println(uploadDirectory);
         String uploadDir = String.format("%s/%s", uploadDirectory, folder);
 
         return fileUploadServiceImpl.uploadImage(uploadDir, fileName, image,id);
