@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
 
@@ -20,11 +21,12 @@ public class FeedbackProfile implements Convertible {
     @Max(value = 5,message = "Rate cannot be more than 5 ")
     private Float rate;
 
+
     @NotEmpty
-    @Size(min = 10,max = 1500,message = " field:Відгук не може містити менше 10 символів та більше 1500 символів")
+    @Length(min = 10,max = 1500,message = " should be between 10 and 1500 symbols")
     private String text;
 
-    @NotNull
+    @NotNull(message = " shouldn`t be null")
     private Long userId;
 
     @NotNull

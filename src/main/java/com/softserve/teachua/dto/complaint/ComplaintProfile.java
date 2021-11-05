@@ -19,10 +19,10 @@ public class ComplaintProfile implements Convertible {
     private Long id;
 
     @NotEmpty
-    @Length(min = 30,max = 255,message = "length exceeded available size")
+    @Length(min = 30,max = 1500,message = "should be between 30 and 1500 symbols")
     private String text;
 
-    @NotNull
+    @NotNull(message = " shouldn`t be null")
     private Long userId;
 
     @NotNull
