@@ -117,6 +117,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/centers",
                         "/center/*",
                         "/service").permitAll()
+                .antMatchers(HttpMethod.GET, "/challengeUA", "/challengeUA/registration", "/challengeUA/task/*").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/*").permitAll()
                 .antMatchers(HttpMethod.GET,"/manager/**" ).hasAnyRole("MANAGER", "ADMIN")
                 .antMatchers(HttpMethod.GET,"/admin/**").hasRole("ADMIN")
@@ -158,11 +159,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/api/challenge/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/challenge/{\\d+}/task").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/tasks").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/challenge/task/{\\d+}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/challenge/task/{\\d+}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/challenge/task/{\\d+}").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/about", "/api/about/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/about", "/api/about/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/about/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/about/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/challengeUA", "/challengeUA/registration").permitAll()
 
                 //TODO: only for admin
                 .antMatchers(HttpMethod.GET, "/api/logs").permitAll()

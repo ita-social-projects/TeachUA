@@ -26,7 +26,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final String FILE_UPLOAD_EXCEPTION = "Could not save image file: %s";
     private final String DIRECTORY_CREATE_EXCEPTION = "Could not create directory with name: %s";
     private final String IMAGE_SIZE_EXCEPTION = "Max image size should be %d bytes, your image size is %d bytes";
-    private final String IMAGE_RESOLUTION_EXCEPTION = "Image %s should be more than %d";
+    private final String IMAGE_RESOLUTION_EXCEPTION = "Image %s should be more than %d, your image %s is %d";
     private final String UPLOAD_LOCATION = "/upload";
     private static final String UPLOAD_PLUG = "/upload/test/test.png";
     private static final Long IMAGE_SIZE_MB = 5L;
@@ -46,11 +46,13 @@ public class FileUploadServiceImpl implements FileUploadService {
             BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
             int width = bufferedImage.getWidth();
             int height = bufferedImage.getHeight();
-            if(MIN_IMAGE_WIDTH < 200){
-                throw new IncorrectInputException(String.format(IMAGE_RESOLUTION_EXCEPTION, "width", width));
+            if(width < MIN_IMAGE_WIDTH){
+                throw new IncorrectInputException(
+                        String.format(IMAGE_RESOLUTION_EXCEPTION, "width", MIN_IMAGE_WIDTH, "width", width));
             }
-            if(MIN_IMAGE_HEIGHT < 200){
-                throw new IncorrectInputException(String.format(IMAGE_RESOLUTION_EXCEPTION, "height", height));
+            if(height < MIN_IMAGE_HEIGHT){
+                throw new IncorrectInputException(
+                        String.format(IMAGE_RESOLUTION_EXCEPTION, "height", MIN_IMAGE_HEIGHT, "height", height));
             }
         } catch (IOException e) {
             log.error(e.getMessage());

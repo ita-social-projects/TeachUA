@@ -3,12 +3,14 @@ package com.softserve.teachua.dto.challenge;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.dto.task.TaskPreview;
+import com.softserve.teachua.model.Task;
 import com.softserve.teachua.utils.TrimDeserialize;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import javax.persistence.OneToMany;
+import javax.validation.constraints.*;
+import java.util.Set;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -48,4 +50,7 @@ public class UpdateChallenge implements Convertible {
     private Long sortNumber;
     @NotNull
     private Boolean isActive;
+    @NotNull
+    @ToString.Exclude
+    private Set<TaskPreview> tasks;
 }
