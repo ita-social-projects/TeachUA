@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.complaint;
 
+import com.softserve.teachua.dto.club.validation.CheckRussian;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,15 +20,16 @@ public class ComplaintProfile implements Convertible {
     private Long id;
 
     @NotEmpty
-    @Length(min = 30,max = 255,message = "length exceeded available size")
+    @CheckRussian
+    @Length(min = 30,max = 1500,message = "length should be between 30 and 1500 symbols")
     private String text;
 
-    @NotNull
+    @NotNull(message = "cannot be null")
     private Long userId;
 
-    @NotNull
+    @NotNull(message = "cannot be null")
     private LocalDate date;
 
-    @NotNull
+    @NotNull(message = "cannot be null")
     private Long clubId;
 }
