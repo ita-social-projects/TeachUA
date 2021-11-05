@@ -7,9 +7,9 @@ import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Feedback;
-import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
+import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.FeedbackService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,15 +34,15 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
-    private final UserServiceImpl userService;
+    private  final UserRepository userRepository;
 
     @Autowired
-    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserServiceImpl userService) {
+    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService,UserRepository userRepository) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
-        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -93,9 +93,14 @@ public class FeedbackServiceImpl implements FeedbackService {
      **/
     @Override
     public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile) {
+        if(!clubRepository.existsById(feedbackProfile.getClubId())){
+            throw new NotExistException("Club with id "+feedbackProfile.getClubId()+" does`nt exists");
+        }
+        if (!userRepository.existsById(feedbackProfile.getUserId())){
+            throw new NotExistException("User with id "+feedbackProfile.getUserId()+" does`nt exists");
+        }
+
         Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, new Feedback()));
-        User user = userService.getUserById(feedbackProfile.getUserId());
-        System.err.println(user.getFirstName());
         Long clubId = feedback.getClub().getId();
         clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
 

@@ -19,7 +19,7 @@ import java.time.LocalDate;
 public class ComplaintProfile implements Convertible {
     private Long id;
 
-    @NotEmpty
+
     @CheckRussian
     @Length(min = 30,max = 1500,message = "length should be between 30 and 1500 symbols")
     private String text;
