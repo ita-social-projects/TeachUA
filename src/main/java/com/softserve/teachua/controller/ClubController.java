@@ -80,8 +80,9 @@ public class ClubController implements Api {
     @PostMapping("/club")
     public SuccessCreatedClub addClub(
             @Valid
-            @RequestBody ClubProfile clubProfile) {
-        return clubService.addClub(clubProfile);
+            @RequestBody ClubProfile clubProfile,
+            HttpServletRequest httpServletRequest) {
+        return clubService.addClub(clubProfile, httpServletRequest);
     }
 
     @GetMapping("/clubs/search/similar")

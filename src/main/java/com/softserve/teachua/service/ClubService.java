@@ -31,7 +31,7 @@ public interface ClubService {
 
     ClubResponse deleteClubById(Long id, HttpServletRequest httpServletRequest);
 
-    SuccessCreatedClub addClub(ClubProfile clubProfile);
+    SuccessCreatedClub addClub(ClubProfile clubProfile, HttpServletRequest httpServletRequest);
 
     List<ClubResponse> getListOfClubs();
 

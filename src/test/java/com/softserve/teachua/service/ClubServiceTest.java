@@ -247,24 +247,27 @@ class ClubServiceTest {
         when(clubRepository.save(any())).thenReturn(newClub);
         when(dtoConverter.convertToDto(newClub, SuccessCreatedClub.class))
                 .thenReturn(SuccessCreatedClub.builder().name(NEW_NAME).build());
+        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
 
-        SuccessCreatedClub actual = clubService.addClub(clubProfile);
+        SuccessCreatedClub actual = clubService.addClub(clubProfile, httpServletRequest);
         assertEquals(clubProfile.getName(), actual.getName());
     }
 
     @Test
     void addClubIfExistShouldThrowAlreadyExistException() {
         when(clubRepository.existsByName(NEW_NAME)).thenReturn(true);
+        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
 
         assertThatThrownBy(() -> {
-            clubService.addClub(clubProfile);
+            clubService.addClub(clubProfile, httpServletRequest);
         }).isInstanceOf(AlreadyExistException.class);
     }
 
     @Test
     void addClubWithEmptyDataShouldThrowIncorrectInputException() {
+        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
         assertThatThrownBy(() -> {
-            clubService.addClub(ClubProfile.builder().build());
+            clubService.addClub(ClubProfile.builder().build(), httpServletRequest);
         }).isInstanceOf(IncorrectInputException.class);
     }
 

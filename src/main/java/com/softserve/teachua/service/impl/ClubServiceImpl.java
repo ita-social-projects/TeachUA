@@ -200,7 +200,7 @@ public class ClubServiceImpl implements ClubService {
      * @throws IncorrectInputException if mandatory fields are empty.
      */
     @Override
-    public SuccessCreatedClub addClub(ClubProfile clubProfile) {
+    public SuccessCreatedClub addClub(ClubProfile clubProfile, HttpServletRequest httpServletRequest) {
         List<LocationProfile> locations = clubProfile.getLocations();
 
         if (locations != null && !locations.isEmpty()) {
@@ -217,7 +217,6 @@ public class ClubServiceImpl implements ClubService {
                 }
             }
         }
-
         if (!ifClubToCreateHaveEmptyFields(clubProfile).isEmpty()) {
             throw new IncorrectInputException(String.format(CLUB_CREATING_ERROR, ifClubToCreateHaveEmptyFields(clubProfile)));
         }
@@ -226,10 +225,8 @@ public class ClubServiceImpl implements ClubService {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }
 
-        User user = null;
-        if (clubProfile.getUserId() != null) {
-            user = userService.getUserById(clubProfile.getUserId());
-        }
+        User user = userService.getUserFromRequest(httpServletRequest);
+        clubProfile.setUserId(user.getId());
 
         //todo delete or replace this block
         log.info("== add method");
