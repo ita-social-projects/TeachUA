@@ -5,7 +5,6 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
-import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
@@ -29,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,6 +53,7 @@ public class CenterServiceImpl implements CenterService {
     private final StationService stationService;
     private final ClubRepository clubRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final CenterToCenterResponseConverter centerToCenterResponseConverter;
 
 
@@ -67,7 +68,7 @@ public class CenterServiceImpl implements CenterService {
                              StationService stationService,
                              ClubRepository clubRepository,
                              UserRepository userRepository,
-                             CenterToCenterResponseConverter centerToCenterResponseConverter) {
+                             UserService userService, CenterToCenterResponseConverter centerToCenterResponseConverter) {
         this.locationService = locationService;
         this.centerRepository = centerRepository;
         this.archiveService = archiveService;
@@ -79,6 +80,7 @@ public class CenterServiceImpl implements CenterService {
         this.stationService = stationService;
         this.clubRepository = clubRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
         this.centerToCenterResponseConverter=centerToCenterResponseConverter;
     }
 
@@ -144,6 +146,15 @@ public class CenterServiceImpl implements CenterService {
 
         log.info("**/adding new center = " + centerProfile.getName());
         return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
+    }
+
+    @Override
+    public SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile, HttpServletRequest httpServletRequest) {
+        if(centerProfile.getUserId() != null){
+            centerProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
+        }
+
+        return addCenter(centerProfile);
     }
 
 
