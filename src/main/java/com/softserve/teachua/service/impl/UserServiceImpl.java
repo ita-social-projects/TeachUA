@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
     private static final String WRONG_ID = "Wrong id";
     private static final String INACCESSIBLE_ADMIN_PROFILE = "No one have access to admin profile";
+    private static final String ONLY_ADMIN_CONTENT = "Only the admin have permit to view this content";
     private final UserRepository userRepository;
     private final EncoderService encodeService;
     private final RoleService roleService;
@@ -429,6 +430,17 @@ public class UserServiceImpl implements UserService {
                 jwtProvider.getUserIdFromToken(
                         jwtProvider.getJwtFromRequest(httpServletRequest))).orElseThrow(
                                 () -> new WrongAuthenticationException());
+    }
+
+    @Override
+    public void verifyIsUserAdmin() {
+        User user = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(
+                        () -> new WrongAuthenticationException(ONLY_ADMIN_CONTENT)
+                );
+        if (!user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
+            throw new WrongAuthenticationException(ONLY_ADMIN_CONTENT);
+        }
     }
 
     @Override

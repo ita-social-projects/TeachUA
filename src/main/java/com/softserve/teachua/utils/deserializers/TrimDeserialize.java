@@ -1,4 +1,4 @@
-package com.softserve.teachua.utils;
+package com.softserve.teachua.utils.deserializers;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
