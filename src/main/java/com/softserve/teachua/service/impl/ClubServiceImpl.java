@@ -10,10 +10,7 @@ import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
-import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.teachua.exception.IncorrectInputException;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.exception.*;
 import com.softserve.teachua.model.*;
 import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
@@ -32,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +44,7 @@ public class ClubServiceImpl implements ClubService {
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
     private static final String CLUB_DELETING_ERROR = "Can't delete club cause of relationship";
     private static final String CLUB_CREATING_ERROR = "Club without \"%s\" isn't created.";
+    private static final String CLUB_CANT_BE_MANAGE_BY_USER = "A user cannot manage a club that does not belong to the user";
 
     private final ClubRepository clubRepository;
     private final LocationRepository locationRepository;
@@ -170,7 +169,8 @@ public class ClubServiceImpl implements ClubService {
      * @throws NotExistException if club not exists by id.
      */
     @Override
-    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile) {
+    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile, HttpServletRequest httpServletRequest) {
+        validateClubOwner(id, httpServletRequest);
         Club club = getClubById(id);
         Club newClub = dtoConverter.convertToEntity(clubProfile, club)
                 .withId(id);
@@ -200,7 +200,7 @@ public class ClubServiceImpl implements ClubService {
      * @throws IncorrectInputException if mandatory fields are empty.
      */
     @Override
-    public SuccessCreatedClub addClub(ClubProfile clubProfile) {
+    public SuccessCreatedClub addClub(ClubProfile clubProfile, HttpServletRequest httpServletRequest) {
         List<LocationProfile> locations = clubProfile.getLocations();
 
         if (locations != null && !locations.isEmpty()) {
@@ -217,7 +217,6 @@ public class ClubServiceImpl implements ClubService {
                 }
             }
         }
-
         if (!ifClubToCreateHaveEmptyFields(clubProfile).isEmpty()) {
             throw new IncorrectInputException(String.format(CLUB_CREATING_ERROR, ifClubToCreateHaveEmptyFields(clubProfile)));
         }
@@ -226,10 +225,8 @@ public class ClubServiceImpl implements ClubService {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }
 
-        User user = null;
-        if (clubProfile.getUserId() != null) {
-            user = userService.getUserById(clubProfile.getUserId());
-        }
+        User user = userService.getUserFromRequest(httpServletRequest);
+        clubProfile.setUserId(user.getId());
 
         //todo delete or replace this block
         log.info("== add method");
@@ -464,7 +461,12 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile) {
+    public ClubResponse changeClubOwner(
+            Long id,
+            ClubOwnerProfile clubOwnerProfile,
+            HttpServletRequest httpServletRequest
+    ) {
+        validateClubOwner(id, httpServletRequest);
         Club club = getClubById(id);
         club.setUser(clubOwnerProfile.getUser());
 
@@ -480,7 +482,9 @@ public class ClubServiceImpl implements ClubService {
      * @throws DatabaseRepositoryException if club contain foreign keys.
      */
     @Override
-    public ClubResponse deleteClubById(Long id) {
+    public ClubResponse deleteClubById(Long id, HttpServletRequest httpServletRequest) {
+        validateClubOwner(id, httpServletRequest);
+
         Club club = getClubById(id);
 
         archiveService.saveModel(club);
@@ -491,7 +495,7 @@ public class ClubServiceImpl implements ClubService {
                     .filter(location -> location.getClub() != null && location.getClub().getId().equals(id))
                     .forEach(location -> locationService.addLocation(dtoConverter.convertToDto(location.withClub(null), LocationProfile.class)));
             fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground(), club.getUrlGallery());
-            updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class));
+            updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class), httpServletRequest);
 
             clubRepository.deleteById(id);
             clubRepository.flush();
@@ -529,5 +533,15 @@ public class ClubServiceImpl implements ClubService {
             return "Категорії";
         }
         return "";
+    }
+
+    @Override
+    public void validateClubOwner(Long id, HttpServletRequest httpServletRequest) {
+        User userFromClub = getClubById(id).getUser();
+        User userFromRequest = userService.getUserFromRequest(httpServletRequest);
+
+        if(!(userFromClub != null && userFromRequest != null && userFromRequest.equals(userFromClub))) {
+            throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);
+        }
     }
 }

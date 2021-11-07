@@ -8,6 +8,7 @@ import com.softserve.teachua.model.Center;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface CenterService {
@@ -20,6 +21,8 @@ public interface CenterService {
     Center getCenterByName(String name);
 
     SuccessCreatedCenter addCenter(CenterProfile centerProfile);
+
+    SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile, HttpServletRequest httpServletRequest);
 
     List<CenterResponse> getListOfCenters();
 
