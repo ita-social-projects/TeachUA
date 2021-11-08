@@ -561,7 +561,6 @@ public class ClubServiceImpl implements ClubService {
                 .stream()
                 .map(club -> {
                     SuccessUpdatedClub successUpdatedClub = recalculateRating(club.getId());
-                    log.info("club recal - " + successUpdatedClub);
                     return successUpdatedClub;
                 })
                 .collect(Collectors.toList());
