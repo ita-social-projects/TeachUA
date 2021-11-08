@@ -198,4 +198,9 @@ public class ClubController implements Api {
 
         return clubService.deleteClubById(id);
     }
+
+    @GetMapping("/club/updateContacts")
+    public void updateContacts(){
+         clubService.updateContacts();
+    }
 }

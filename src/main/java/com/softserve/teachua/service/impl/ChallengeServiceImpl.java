@@ -73,9 +73,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     public Challenge getChallengeById(Long id) {
         return challengeRepository.findById(id)
                 .orElseThrow(()
-                        -> {
-                    throw new NotExistException(String.format("Challenge not found by id: %s", id));
-                });
+                        -> new NotExistException(String.format("Challenge not found by id: %s", id)));
     }
 
     @Override

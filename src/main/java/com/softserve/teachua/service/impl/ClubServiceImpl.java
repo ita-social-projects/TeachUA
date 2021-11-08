@@ -1,5 +1,12 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
@@ -23,6 +30,8 @@ import com.softserve.teachua.service.*;
 import com.softserve.teachua.utils.CategoryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JsonParseException;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -36,6 +45,7 @@ import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS)
@@ -479,6 +489,191 @@ public class ClubServiceImpl implements ClubService {
         log.info("changed club owner by id {}", club);
         return dtoConverter.convertToDto(clubRepository.save(club), ClubResponse.class);
     }
+
+    @Override
+    public void updateContacts() {
+        List<Center> centers = centerRepository.findAll();
+        List<Center> updatedCenters = centers
+                .stream()
+                .filter(center -> !this.isValidJSON(center.getContacts()))
+                .peek(center -> {
+                    JsonNodeFactory factory = JsonNodeFactory.instance;
+                    if(center.getContacts().startsWith("{")){
+                        String contacts = center.getContacts().replace("::", ":");
+                        ObjectNode node = (ObjectNode) toJSON(contacts);
+
+                        if(node.has("1")) {
+                            ArrayNode array = factory.arrayNode();
+                            array.add(convert(node.get("1").asText()));
+                            node.set("1", array);
+                        }
+
+                        center.setContacts(node.toString());
+                    }
+                    else {
+                        ObjectNode json = factory.objectNode();
+                        Stream.of(center.getContacts().split(","))
+                                .map(String::trim)
+                                .filter(contact -> !contact.isEmpty())
+                                .filter(contact -> !contact.endsWith("::"))
+                                .map(contact -> contact.split("::"))
+                                .forEach(contact -> {
+                                    String key = contact[0];
+                                    String value = contact[1];
+
+                                    if (key.equals("1")) {
+                                        ArrayNode array = json.has(key)
+                                                ? (ArrayNode) json.get(key)
+                                                : factory.arrayNode();
+
+                                        String convertedValue = convert(value);
+
+                                        if (convertedValue.equals("+3804442732290443600106")) {
+                                            array.add("+380444273229");
+                                            array.add("+380443600106");
+                                        }
+                                        else {
+                                            array.add(convertedValue);
+                                        }
+
+                                        json.set(key, array);
+                                    }
+                                    else {
+                                        json.put(key, value);
+                                    }
+                                });
+
+                        center.setContacts(json.toString());
+                    }
+
+                    log.info(center.getContacts());
+                })
+                .collect(Collectors.toList());
+
+       List<Club> clubs = clubRepository.findAll();
+        List<Club> updatedClubs = clubs
+                .stream()
+                .filter((club) -> !this.isValidJSON(club.getContacts()))
+                .peek((club) -> {
+                    JsonNodeFactory factory = JsonNodeFactory.instance;
+                    if (club.getContacts().startsWith("{")) {
+                        String contacts = club.getContacts().replace("::", ":");
+                        ObjectNode node = (ObjectNode) toJSON(contacts);
+
+                        if (node.has("1")) {
+                            ArrayNode array = factory.arrayNode();
+                            array.add(convert(node.get("1").asText()));
+                            node.set("1", array);
+                        }
+
+                        club.setContacts(node.toString());
+                    }
+                    else {
+                        ObjectNode json = factory.objectNode();
+
+                        Stream.of(club.getContacts().split(","))
+                                .map(String::trim)
+                                .filter(contact -> !contact.isEmpty())
+                                .filter(contact -> !contact.endsWith("::"))
+                                .map(contact -> contact.split("::"))
+                                .forEach(contact -> {
+                                    String key = contact[0];
+                                    String value = contact[1];
+
+                                    if (key.equals("1")) {
+                                        ArrayNode array = json.has(key)
+                                                ? (ArrayNode) json.get(key)
+                                                : factory.arrayNode();
+
+                                        String convertedValue = convert(value);
+
+                                        if (convertedValue.equals("+380950993545093138461606328812020958114277")) {
+                                            array.add("+380950993545");
+                                            array.add("+380931384616");
+                                            array.add("+380632881202");
+                                            array.add("+380958114277");
+                                        }
+                                        else if (convertedValue.equals("+38044517699704451761880445178279")) {
+                                            array.add("+380445176997");
+                                            array.add("+380445176188");
+                                            array.add("+380445178279");
+                                        }
+                                        else if (convertedValue.equals("+38044599612309640318")) {
+                                            array.add("+380445996123");
+                                        }
+                                        else if (convertedValue.equals("+3804456499930445749818")) {
+                                            array.add("+380445649993");
+                                            array.add("+380445749818");
+                                        }
+                                        else if (convertedValue.equals("+3804456462130445608993")) {
+                                            array.add("+380445646213");
+                                            array.add("+380445608993");
+                                        }
+                                        else if (convertedValue.equals("+3804456254940445640218")) {
+                                            array.add("+380445625494");
+                                            array.add("+380445640218");
+                                        }
+                                        else if (convertedValue.equals("+380938380570994517940")) {
+                                            array.add("+380938380570");
+                                            array.add("+380994517940");
+                                        }
+                                        else {
+                                            array.add(convertedValue);
+                                        }
+
+                                        json.set(key, array);
+                                    }
+                                    else {
+                                        json.put(key, value);
+                                    }
+                                });
+
+                        club.setContacts(json.toString());
+                    }
+
+                    log.info(club.getContacts());
+                })
+                .collect(Collectors.toList());
+    }
+
+
+    public JsonNode toJSON(String json) {
+        try{
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readTree(json);
+
+        } catch(JsonProcessingException e){
+            return null;
+        }
+    }
+
+    public boolean isValidJSON(final String json) {
+        JsonNode jsonNode = toJSON(json);
+        return jsonNode != null;
+    }
+
+    public String convert(String value) {
+
+        String updatedValue = value.replaceAll("\\D", "");
+
+        if(updatedValue.startsWith("+380")){
+            return updatedValue;
+        }
+        else if (updatedValue.startsWith("0")) {
+           updatedValue = updatedValue.replaceFirst("0", "+380");
+        }
+        else if(updatedValue.startsWith("380")){
+            updatedValue = updatedValue.replaceFirst("3", "+3");
+        }
+        else if(updatedValue.startsWith("800")){
+            updatedValue = updatedValue.replaceFirst("8", "+3808");
+        }
+        else { updatedValue = "+380" + updatedValue; }
+
+
+        return updatedValue;
+    }
+
 
     /**
      * The method returns dto {@code ClubResponse} of deleted club by id.

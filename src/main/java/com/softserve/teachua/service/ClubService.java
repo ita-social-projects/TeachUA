@@ -49,4 +49,6 @@ public interface ClubService {
     List<ClubResponse> getClubByCategoryAndCity(SearchClubProfile searchClubProfile);
 
     ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile);
+
+    void updateContacts();
 }

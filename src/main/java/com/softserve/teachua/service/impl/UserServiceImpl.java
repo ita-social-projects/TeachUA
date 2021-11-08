@@ -424,7 +424,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(
                 jwtProvider.getUserIdFromToken(
                         jwtProvider.getJwtFromRequest(httpServletRequest))).orElseThrow(
-                                () -> {throw new WrongAuthenticationException();});
+                                () -> new WrongAuthenticationException());
     }
 
     @Override
