@@ -33,6 +33,7 @@ public class ChallengeController implements Api {
 
     /**
      * Use this endpoint to get full information about challenge with tasks that have already begun.
+     * Only the admin can get the challenge if it is not active.
      *
      * @param id - put challenge id here.
      * @return {@code ChallengeProfile}.
