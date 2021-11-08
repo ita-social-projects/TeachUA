@@ -122,4 +122,9 @@ public class CenterController implements Api {
     public CenterResponse deleteCenter(@PathVariable Long id) {
         return centerService.deleteCenterById(id);
     }
+
+    @PatchMapping("/centers/rating")
+    public List<CenterResponse> updateCentersRating(){
+        return centerService.recalculateRatingForAll();
+    }
 }

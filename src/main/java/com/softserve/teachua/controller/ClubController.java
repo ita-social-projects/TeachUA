@@ -1,6 +1,7 @@
 package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
@@ -170,5 +171,11 @@ public class ClubController implements Api {
             HttpServletRequest httpServletRequest){
 
         return clubService.deleteClubById(id, httpServletRequest);
+    }
+
+
+    @PatchMapping("/clubs/rating")
+    public List<SuccessUpdatedClub> updateClubsRating(){
+        return clubService.recalculateRatingForAll();
     }
 }

@@ -618,18 +618,33 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public SuccessUpdatedClub updateRatingDeleteFeedback(FeedbackProfile feedbackProfile) {
-        SuccessUpdatedClub successUpdatedClub = recalculateRating(feedbackProfile.getClubId());
-
         Club club = getClubById(feedbackProfile.getClubId());
 
-        if(club.getCenter() != null){
+        Double rating = club.getRating();
+        Long feedbackCount = club.getFeedbackCount();
+        Long newFeedbackCount = feedbackCount - 1;
+        Double newRating = (rating * feedbackCount - feedbackProfile.getRate()) / newFeedbackCount;
+
+        club.setRating(newRating);
+        club.setFeedbackCount(newFeedbackCount);
+
+        clubRepository.updateRating(
+                club.getId(),
+                newRating
+        );
+        clubRepository.updateFeedbackCount(
+                club.getId(),
+                newFeedbackCount
+        );
+
+        if(club.getCenter() != null) {
             centerRepository.updateRating(
                     club.getCenter().getId(),
                     clubRepository.findAvgRating(club.getCenter().getId())
             );
         }
 
-        return successUpdatedClub;
+        return dtoConverter.convertToDto(club, SuccessUpdatedClub.class);
     }
 
     @Override
