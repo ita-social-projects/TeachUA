@@ -139,13 +139,13 @@ public class CenterServiceImpl implements CenterService {
             );
         }
 
-//        List<Long> clubsId =centerProfile.getClubsId();
-//        if(clubsId != null &&  !clubsId.isEmpty())
-//        for(Long id : clubsId ){
-//            Club club = clubService.getClubById(id);
-//            club.setCenter(center);
-//            clubRepository.save(club);
-//        }
+        List<Long> clubsId =centerProfile.getClubsId();
+        if(clubsId != null &&  !clubsId.isEmpty())
+        for(Long id : clubsId ){
+            Club club = clubService.getClubById(id);
+            club.setCenter(center);
+            clubRepository.save(club);
+        }
 
         log.info("**/adding new center = " + centerProfile.getName());
         return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
