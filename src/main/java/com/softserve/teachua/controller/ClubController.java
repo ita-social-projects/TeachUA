@@ -171,10 +171,4 @@ public class ClubController implements Api {
 
         return clubService.deleteClubById(id, httpServletRequest);
     }
-
-    @PutMapping("/clubs/rating")
-    public List<SuccessUpdatedClub> recalculateRating(){
-        return clubService.recalculateRatingForAll();
-    }
-
 }
