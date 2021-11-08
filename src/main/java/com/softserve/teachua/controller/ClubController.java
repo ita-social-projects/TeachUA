@@ -1,7 +1,6 @@
 package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dao.AlterTableDao;
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
@@ -26,14 +25,10 @@ public class ClubController implements Api {
     private static final int CLUBS_PER_USER_PAGE = 3;
 
     private final ClubService clubService;
-    private final JwtProvider jwtProvider;
-    private final AlterTableDao alterTableDao;
 
     @Autowired
-    public ClubController(ClubService clubService, JwtProvider jwtProvider, AlterTableDao alterTableDao) {
+    public ClubController(ClubService clubService) {
         this.clubService = clubService;
-        this.jwtProvider = jwtProvider;
-        this.alterTableDao = alterTableDao;
     }
 
     /**
@@ -178,10 +173,8 @@ public class ClubController implements Api {
     }
 
     @PutMapping("/clubs/rating")
-    public List<SuccessUpdatedClub> recalculateRating(
-            HttpServletRequest httpServletRequest
-    ){
-        return clubService.recalculateRatingForAll(httpServletRequest);
+    public List<SuccessUpdatedClub> recalculateRating(){
+        return clubService.recalculateRatingForAll();
     }
 
 }

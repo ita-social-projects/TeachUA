@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -61,4 +62,8 @@ public class Center implements Convertible, Archivable {
 
     @Column(name = "center_external_id")
     private Long centerExternalId;
+
+    @Column(name = "rating")
+    @ColumnDefault(value = "0")
+    private Double rating;
 }

@@ -5,6 +5,9 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.club.ClubResponse;
+import com.softserve.teachua.dto.club.SuccessUpdatedClub;
+import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
@@ -136,13 +139,13 @@ public class CenterServiceImpl implements CenterService {
             );
         }
 
-        List<Long> clubsId =centerProfile.getClubsId();
-        if(clubsId != null &&  !clubsId.isEmpty())
-        for(Long id : clubsId ){
-            Club club = clubService.getClubById(id);
-            club.setCenter(center);
-            clubRepository.save(club);
-        }
+//        List<Long> clubsId =centerProfile.getClubsId();
+//        if(clubsId != null &&  !clubsId.isEmpty())
+//        for(Long id : clubsId ){
+//            Club club = clubService.getClubById(id);
+//            club.setCenter(center);
+//            clubRepository.save(club);
+//        }
 
         log.info("**/adding new center = " + centerProfile.getName());
         return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
@@ -308,6 +311,14 @@ public class CenterServiceImpl implements CenterService {
 
 //        log.info("**/getting list of centers = " + centerResponses);
         return centerResponses;
+    }
+
+    @Override
+    public List<CenterResponse> recalculateRatingForAll() {
+        return getListOfCenters().stream().map(center -> {
+            centerRepository.updateRating(center.getId(), clubRepository.findAvgRating(center.getId()));
+            return getCenterByProfileId(center.getId());
+        }).collect(Collectors.toList());
     }
 
     private boolean isCenterExistByName(String name) {

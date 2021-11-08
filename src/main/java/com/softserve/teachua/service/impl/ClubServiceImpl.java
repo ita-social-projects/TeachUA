@@ -5,6 +5,8 @@ import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.*;
+import com.softserve.teachua.dto.feedback.FeedbackProfile;
+import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
@@ -27,11 +29,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.ls.LSInput;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -80,7 +80,9 @@ public class ClubServiceImpl implements ClubService {
                            LocationService locationService,
                            FileUploadService fileUploadService,
                            CoordinatesConverter coordinatesConverter,
-                           GalleryRepository galleryRepository, FeedbackRepository feedbackRepository) {
+                           GalleryRepository galleryRepository,
+                           FeedbackRepository feedbackRepository
+    ) {
 
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
@@ -554,26 +556,95 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public List<SuccessUpdatedClub> recalculateRatingForAll(HttpServletRequest httpServletRequest) {
-        return getListOfClubs().stream().map(club -> {
-            club.setRating(feedbackRepository.findAvgRating(club.getId()));
-            club.setFeedbackCount(feedbackRepository.getAllByClubId(club.getId()).stream().count());
-            return updateClub(club.getId(), club, httpServletRequest);
-        }).collect(Collectors.toList());
+    public List<SuccessUpdatedClub> recalculateRatingForAll() {
+        return getListOfClubs()
+                .stream()
+                .map(club -> {
+                    SuccessUpdatedClub successUpdatedClub = recalculateRating(club.getId());
+                    log.info("club recal - " + successUpdatedClub);
+                    return successUpdatedClub;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
-    public SuccessUpdatedClub newFeedback(SuccessCreatedFeedback feedback) {
-        Club club = getClubById(feedback.getClubId());
+    public SuccessUpdatedClub updateRatingNewFeedback(FeedbackProfile feedbackProfile) {
+        Club club = getClubById(feedbackProfile.getClubId());
 
         Double rating = club.getRating();
         Long feedbackCount = club.getFeedbackCount();
         Long newFeedbackCount = feedbackCount + 1;
-        Double newRating = (rating * feedbackCount + feedback.getRate()) / newFeedbackCount;
+        Double newRating = (rating * feedbackCount + feedbackProfile.getRate()) / newFeedbackCount;
 
         club.setRating(newRating);
         club.setFeedbackCount(newFeedbackCount);
 
-        return dtoConverter.convertToDto(clubRepository.save(club), SuccessUpdatedClub.class);
+        clubRepository.updateRating(
+                club.getId(),
+                newRating
+        );
+        clubRepository.updateFeedbackCount(
+                club.getId(),
+                newFeedbackCount
+        );
+
+        if(club.getCenter() != null) {
+            centerRepository.updateRating(
+                    club.getCenter().getId(),
+                    clubRepository.findAvgRating(club.getCenter().getId())
+            );
+        }
+
+        return dtoConverter.convertToDto(club, SuccessUpdatedClub.class);
+    }
+
+    @Override
+    public SuccessUpdatedClub updateRatingEditFeedback(FeedbackProfile feedbackProfile){
+        clubRepository.updateRating(
+                feedbackProfile.getClubId(),
+                feedbackRepository.findAvgRating(feedbackProfile.getClubId())
+        );
+
+        Club club = getClubById(feedbackProfile.getClubId());
+
+        if(club.getCenter() != null){
+            centerRepository.updateRating(
+                    club.getCenter().getId(),
+                    clubRepository.findAvgRating(club.getCenter().getId())
+            );
+        }
+
+        return dtoConverter.convertToDto(club, SuccessUpdatedClub.class);
+    }
+
+    @Override
+    public SuccessUpdatedClub updateRatingDeleteFeedback(FeedbackProfile feedbackProfile) {
+        SuccessUpdatedClub successUpdatedClub = recalculateRating(feedbackProfile.getClubId());
+
+        Club club = getClubById(feedbackProfile.getClubId());
+
+        if(club.getCenter() != null){
+            centerRepository.updateRating(
+                    club.getCenter().getId(),
+                    clubRepository.findAvgRating(club.getCenter().getId())
+            );
+        }
+
+        return successUpdatedClub;
+    }
+
+    @Override
+    @Transactional
+    public SuccessUpdatedClub recalculateRating(Long clubId){
+        clubRepository.updateRating(
+                clubId,
+                feedbackRepository.findAvgRating(clubId)
+        );
+        clubRepository.updateFeedbackCount(
+                clubId,
+                feedbackRepository.getAllByClubId(clubId).stream().count()
+        );
+
+        return dtoConverter.convertToDto(getClubById(clubId), SuccessUpdatedClub.class);
     }
 }

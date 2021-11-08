@@ -104,11 +104,10 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
 
         Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, new Feedback()));
-        SuccessCreatedFeedback successCreatedFeedback = dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
-        clubService.newFeedback(successCreatedFeedback);
+        clubService.updateRatingNewFeedback(dtoConverter.convertToDto(feedback, FeedbackProfile.class));
 
         log.info("add new feedback - " + feedback);
-        return successCreatedFeedback;
+        return dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
     }
 
     /**
@@ -142,10 +141,12 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .withId(id);
 
         feedbackRepository.save(newFeedback);
-        clubRepository.updateRating(feedbackProfile.getClubId(), feedbackRepository.findAvgRating(feedbackProfile.getClubId()));
+
+        FeedbackProfile profile = dtoConverter.convertToDto(newFeedback, FeedbackProfile.class);
+        clubService.updateRatingEditFeedback(profile);
 
         log.info("updated feedback " + newFeedback);
-        return dtoConverter.convertToDto(newFeedback, FeedbackProfile.class);
+        return profile;
     }
 
     /**
@@ -169,7 +170,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             throw new DatabaseRepositoryException(FEEDBACK_DELETING_ERROR);
         }
 
-        clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
+        clubService.updateRatingDeleteFeedback(dtoConverter.convertToDto(feedback, FeedbackProfile.class));
 
         log.info("feedback {} was successfully deleted", feedback);
         return dtoConverter.convertToDto(feedback, FeedbackResponse.class);

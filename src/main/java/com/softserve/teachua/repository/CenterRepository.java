@@ -1,10 +1,12 @@
 package com.softserve.teachua.repository;
 
+import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -39,4 +41,8 @@ public interface CenterRepository extends JpaRepository<Center, Long> {
                                           Pageable pageable);
 
     Center findCenterByCenterExternalId (Long id);
+
+    @Modifying
+    @Query(value = "UPDATE centers SET rating = :rating where id = :centerId", nativeQuery = true)
+    void updateRating(Long centerId, Double rating);
 }

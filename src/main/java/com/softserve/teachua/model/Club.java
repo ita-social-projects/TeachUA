@@ -6,6 +6,7 @@ import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 import com.softserve.teachua.model.GalleryPhoto;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -58,17 +59,18 @@ public class Club implements Convertible, Archivable {
     private String workTime;
 
     @Column
+    @ColumnDefault(value = "0")
     private Double rating;
 
     @Column
     private Boolean isOnline;
 
-    @OneToMany(mappedBy = "club")
+    @OneToMany(mappedBy = "club", fetch = FetchType.EAGER)
     @JsonManagedReference
     @ToString.Exclude
     private Set<Location> locations;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "club_category",
             joinColumns = {@JoinColumn(name = "club_id")},
             inverseJoinColumns = {@JoinColumn(name = "category_id")})
@@ -99,5 +101,6 @@ public class Club implements Convertible, Archivable {
     private Long centerExternalId;
 
     @Column(name = "feedback_count")
+    @ColumnDefault(value = "0")
     private Long feedbackCount;
 }

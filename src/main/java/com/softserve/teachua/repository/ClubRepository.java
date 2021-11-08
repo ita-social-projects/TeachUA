@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -126,12 +127,23 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
                                      @Param("cityName") String cityName,
                                      Pageable pageable);
 
+    @Transactional
     @Modifying
     @Query(value = "UPDATE clubs SET rating=:rating WHERE id = :club_id", nativeQuery = true)
     void updateRating(@Param("club_id") Long club_id, @Param("rating") double rating);
 
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE clubs SET feedback_count=:feedback_count WHERE id = :club_id", nativeQuery = true)
+    void updateFeedbackCount(@Param("club_id") Long club_id, @Param("feedback_count") double feedbackCount);
+
     List<Club> findClubByClubExternalId(Long id);
 
     List<Club> findClubsByCenter(Center center);
+
+    @Query("SELECT case  when (AVG(club.rating)) is null then 0.0 else AVG(club.rating)  end FROM Club AS club WHERE club.center.id = :centerId")
+    Double findAvgRating(@Param("centerId") Long centerId);
+
+    List<Club> getAllByCenterId(Long centerId);
 
 }

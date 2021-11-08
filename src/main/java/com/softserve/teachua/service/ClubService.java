@@ -2,12 +2,14 @@ package com.softserve.teachua.service;
 
 
 import com.softserve.teachua.dto.club.*;
+import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.Feedback;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -54,7 +56,13 @@ public interface ClubService {
 
     void validateClubOwner(Long id, HttpServletRequest httpServletRequest);
 
-    List<SuccessUpdatedClub> recalculateRatingForAll(HttpServletRequest httpServletRequest);
+    List<SuccessUpdatedClub> recalculateRatingForAll();
 
-    SuccessUpdatedClub newFeedback(SuccessCreatedFeedback feedback);
+    SuccessUpdatedClub updateRatingNewFeedback(FeedbackProfile feedbackProfile);
+
+    SuccessUpdatedClub updateRatingEditFeedback(FeedbackProfile feedbackProfile);
+
+    SuccessUpdatedClub updateRatingDeleteFeedback(FeedbackProfile feedbackProfile);
+
+    SuccessUpdatedClub recalculateRating(Long idClub);
 }

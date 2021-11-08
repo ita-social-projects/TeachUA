@@ -43,5 +43,7 @@ public class CenterResponse implements Convertible {
     private Set<ClubResponse> clubs;
 
     private Set<ContactDataResponse> contacts;
+
+    private Double rating;
 }
 
