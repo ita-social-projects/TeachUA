@@ -48,45 +48,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     @Override
     public String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile,Long id) {
-        Path uploadPath = Paths.get(uploadDir);
-
-
-        System.out.println(uploadDir);
-
-        if(multipartFile.getSize() > IMAGE_SIZE_B){
-            throw new IncorrectInputException(String.format(IMAGE_SIZE_EXCEPTION, IMAGE_SIZE_B, multipartFile.getSize()));
-        }
-
-        try {
-            BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
-            int width = bufferedImage.getWidth();
-            int height = bufferedImage.getHeight();
-            if(width < MIN_IMAGE_WIDTH){
-                throw new IncorrectInputException(
-                        String.format(IMAGE_RESOLUTION_EXCEPTION, "width", MIN_IMAGE_WIDTH, "width", width));
-            }
-            if(height < MIN_IMAGE_HEIGHT){
-                throw new IncorrectInputException(
-                        String.format(IMAGE_RESOLUTION_EXCEPTION, "height", MIN_IMAGE_HEIGHT, "height", height));
-            }
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-
-        try {
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-        } catch (IOException e) {
-            throw new FileUploadException(String.format(DIRECTORY_CREATE_EXCEPTION, fileName));
-        }
-
-        try (InputStream inputStream = multipartFile.getInputStream()) {
-            Path filePath = uploadPath.resolve(fileName);
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException ioe) {
-            throw new FileUploadException(String.format(FILE_UPLOAD_EXCEPTION, fileName));
-        }
+        saveFile(uploadDir, fileName, multipartFile);
 
         String actualPath = String.format("/%s/%s", uploadDir, fileName);
         Optional<Club> optionalClub = clubRepository.findById(id);
@@ -129,9 +91,84 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     //filePath - '/upload/...../fileName.extension'
     @Override
-    public void deleteFile(String filePath) {
+    public String deleteFile(String filePath) {
+        delete(filePath);
+        GalleryPhoto galleryPhoto = galleryRepository.findByUrl(filePath);
+        galleryRepository.delete(galleryPhoto);
+        return filePath+" successfully deleted.";
+    }
+
+    @Override
+    public String updatePhoto(MultipartFile file,String filePath,String uploadDirectory) {
+        // filePath --/upload/.../file.
+      delete(filePath);
+        //System.out.println(uploadDirectory+"/"+filePath);
+
+        //  System.out.println(filePath.substring(filePath.indexOf("/"),filePath.lastIndexOf("/")));
+        int firstEnter = (filePath.indexOf("/"));
+        String clearPath = filePath.substring(filePath.indexOf("/",firstEnter+1)+1,filePath.lastIndexOf("/")) ;
+        //+ "/" +file.getOriginalFilename();
+        System.out.println(clearPath);
+        String uploadDir = String.format("%s/%s", uploadDirectory, clearPath);
+        System.out.println(uploadDir);
+        saveFile(uploadDir, file.getOriginalFilename(), file);
+        GalleryPhoto galleryPhoto = galleryRepository.findByUrl(filePath);
+        galleryPhoto.setUrl(uploadDir+"/"+ file.getOriginalFilename());
+        System.out.println(galleryPhoto.getUrl());
+        galleryRepository.save(galleryPhoto);
+        return null;
+    }
+
+    private void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) {
+        Path uploadPath = Paths.get(uploadDir);
+
+
+        System.out.println(uploadDir);
+
+        if(multipartFile.getSize() > IMAGE_SIZE_B){
+            throw new IncorrectInputException(String.format(IMAGE_SIZE_EXCEPTION, IMAGE_SIZE_B, multipartFile.getSize()));
+        }
+
+        try {
+            BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
+            int width = bufferedImage.getWidth();
+            int height = bufferedImage.getHeight();
+            if(width < MIN_IMAGE_WIDTH){
+                throw new IncorrectInputException(
+                        String.format(IMAGE_RESOLUTION_EXCEPTION, "width", MIN_IMAGE_WIDTH, "width", width));
+            }
+            if(height < MIN_IMAGE_HEIGHT){
+                throw new IncorrectInputException(
+                        String.format(IMAGE_RESOLUTION_EXCEPTION, "height", MIN_IMAGE_HEIGHT, "height", height));
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+
+        try {
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+        } catch (IOException e) {
+            throw new FileUploadException(String.format(DIRECTORY_CREATE_EXCEPTION, fileName));
+        }
+
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ioe) {
+            throw new FileUploadException(String.format(FILE_UPLOAD_EXCEPTION, fileName));
+        }
+    }
+
+    @Override
+    public String getPhoto(String filePath) {
+        return null;
+    }
+
+    private void delete(String filePath){
         if (filePath.contains(UPLOAD_PLUG)) {
-            return;
+
         }
         if (filePath == null || filePath.isEmpty()) {
             throw new IncorrectInputException("File path can not be null or empty");
@@ -139,10 +176,15 @@ public class FileUploadServiceImpl implements FileUploadService {
         if (!filePath.contains(UPLOAD_LOCATION)) {
             throw new IncorrectInputException("Wrong uploaded file path");
         }
+        File file = new File("/target" + filePath);
+        if(!file.isDirectory()){
+            file.deleteOnExit();
+            file.exists();
+        }
         try {
             FileUtils.forceDelete(new File("target" + filePath));
         } catch (IOException e) {
-            throw new FileUploadException(String.format("Can't delete file with path: %s", filePath));
+            e.printStackTrace();
         }
     }
 

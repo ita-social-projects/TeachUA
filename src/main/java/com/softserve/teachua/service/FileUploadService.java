@@ -8,5 +8,7 @@ import java.util.List;
 public interface FileUploadService {
     String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile,Long id);
     void deleteImages(String urlLogo, String urlBackground, List<GalleryPhoto> urlGallery);
-    void deleteFile(String filePath);
+    String deleteFile(String filePath);
+    String updatePhoto(MultipartFile file,String filePath,String uploadDirectory);
+    String getPhoto(String filePath);
 }

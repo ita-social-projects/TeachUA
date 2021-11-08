@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface GalleryRepository extends JpaRepository<GalleryPhoto, Long> {
     List<GalleryPhoto> findAllByClubId(@Param("club_id") Long id);
+    GalleryPhoto findByUrl(String url);
 }
