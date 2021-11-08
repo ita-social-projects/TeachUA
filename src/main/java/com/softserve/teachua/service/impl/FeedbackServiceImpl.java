@@ -11,6 +11,7 @@ import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.service.FeedbackService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,15 +35,17 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
-    private  final UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final ClubService clubService;
 
     @Autowired
-    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService,UserRepository userRepository) {
+    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository, ClubService clubService) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
         this.userRepository = userRepository;
+        this.clubService = clubService;
     }
 
     /**
@@ -101,11 +104,11 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
 
         Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, new Feedback()));
-        Long clubId = feedback.getClub().getId();
-        clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
+        SuccessCreatedFeedback successCreatedFeedback = dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
+        clubService.newFeedback(successCreatedFeedback);
 
         log.info("add new feedback - " + feedback);
-        return dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
+        return successCreatedFeedback;
     }
 
     /**

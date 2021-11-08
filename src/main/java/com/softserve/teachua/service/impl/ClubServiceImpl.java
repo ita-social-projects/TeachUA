@@ -1,9 +1,11 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.*;
+import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
@@ -12,10 +14,7 @@ import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.exception.*;
 import com.softserve.teachua.model.*;
-import com.softserve.teachua.repository.CenterRepository;
-import com.softserve.teachua.repository.ClubRepository;
-import com.softserve.teachua.repository.GalleryRepository;
-import com.softserve.teachua.repository.LocationRepository;
+import com.softserve.teachua.repository.*;
 import com.softserve.teachua.service.*;
 import com.softserve.teachua.utils.CategoryUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +27,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.ls.LSInput;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,6 +46,7 @@ public class ClubServiceImpl implements ClubService {
     private static final String CLUB_DELETING_ERROR = "Can't delete club cause of relationship";
     private static final String CLUB_CREATING_ERROR = "Club without \"%s\" isn't created.";
     private static final String CLUB_CANT_BE_MANAGE_BY_USER = "A user cannot manage a club that does not belong to the user";
+    private static final String NOT_LOGGED_USER = "User must be logged in";
 
     private final ClubRepository clubRepository;
     private final LocationRepository locationRepository;
@@ -61,7 +63,7 @@ public class ClubServiceImpl implements ClubService {
     private final FileUploadService fileUploadService;
     private final CoordinatesConverter coordinatesConverter;
     private final GalleryRepository galleryRepository;
-
+    private final FeedbackRepository feedbackRepository;
 
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository,
@@ -78,7 +80,7 @@ public class ClubServiceImpl implements ClubService {
                            LocationService locationService,
                            FileUploadService fileUploadService,
                            CoordinatesConverter coordinatesConverter,
-                           GalleryRepository galleryRepository) {
+                           GalleryRepository galleryRepository, FeedbackRepository feedbackRepository) {
 
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
@@ -95,6 +97,7 @@ public class ClubServiceImpl implements ClubService {
         this.fileUploadService = fileUploadService;
         this.coordinatesConverter = coordinatesConverter;
         this.galleryRepository = galleryRepository;
+        this.feedbackRepository = feedbackRepository;
     }
 
     /**
@@ -540,8 +543,37 @@ public class ClubServiceImpl implements ClubService {
         User userFromClub = getClubById(id).getUser();
         User userFromRequest = userService.getUserFromRequest(httpServletRequest);
 
-        if(!(userFromClub != null && userFromRequest != null && userFromRequest.equals(userFromClub))) {
+        if(userFromRequest == null){
+            throw new NotVerifiedUserException(NOT_LOGGED_USER);
+        }
+
+        if(!(userFromClub != null && userFromRequest.equals(userFromClub))
+                && !userFromRequest.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
             throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);
         }
+    }
+
+    @Override
+    public List<SuccessUpdatedClub> recalculateRatingForAll(HttpServletRequest httpServletRequest) {
+        return getListOfClubs().stream().map(club -> {
+            club.setRating(feedbackRepository.findAvgRating(club.getId()));
+            club.setFeedbackCount(feedbackRepository.getAllByClubId(club.getId()).stream().count());
+            return updateClub(club.getId(), club, httpServletRequest);
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public SuccessUpdatedClub newFeedback(SuccessCreatedFeedback feedback) {
+        Club club = getClubById(feedback.getClubId());
+
+        Double rating = club.getRating();
+        Long feedbackCount = club.getFeedbackCount();
+        Long newFeedbackCount = feedbackCount + 1;
+        Double newRating = (rating * feedbackCount + feedback.getRate()) / newFeedbackCount;
+
+        club.setRating(newRating);
+        club.setFeedbackCount(newFeedbackCount);
+
+        return dtoConverter.convertToDto(clubRepository.save(club), SuccessUpdatedClub.class);
     }
 }

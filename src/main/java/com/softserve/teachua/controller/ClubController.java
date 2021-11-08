@@ -1,17 +1,13 @@
 package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dao.AlterTableDao;
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
-import com.softserve.teachua.exception.WrongAuthenticationException;
-import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.User;
-import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.ClubService;
-import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,11 +27,13 @@ public class ClubController implements Api {
 
     private final ClubService clubService;
     private final JwtProvider jwtProvider;
+    private final AlterTableDao alterTableDao;
 
     @Autowired
-    public ClubController(ClubService clubService, JwtProvider jwtProvider) {
+    public ClubController(ClubService clubService, JwtProvider jwtProvider, AlterTableDao alterTableDao) {
         this.clubService = clubService;
         this.jwtProvider = jwtProvider;
+        this.alterTableDao = alterTableDao;
     }
 
     /**
@@ -178,4 +176,12 @@ public class ClubController implements Api {
 
         return clubService.deleteClubById(id, httpServletRequest);
     }
+
+    @PutMapping("/clubs/rating")
+    public List<SuccessUpdatedClub> recalculateRating(
+            HttpServletRequest httpServletRequest
+    ){
+        return clubService.recalculateRatingForAll(httpServletRequest);
+    }
+
 }

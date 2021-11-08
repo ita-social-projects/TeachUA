@@ -49,7 +49,7 @@ public class Club implements Convertible, Archivable {
     @Column
     private String urlBackground;
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JsonManagedReference
     @ToString.Exclude
     private List<GalleryPhoto> urlGallery;
@@ -97,4 +97,7 @@ public class Club implements Convertible, Archivable {
 
     @Column(name = "center_external_id")
     private Long centerExternalId;
+
+    @Column(name = "feedback_count")
+    private Long feedbackCount;
 }
