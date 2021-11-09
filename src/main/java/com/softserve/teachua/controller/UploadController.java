@@ -1,13 +1,15 @@
 package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.file.FileDeleteRequest;
+import com.softserve.teachua.dto.file.FilePathRequest;
 import com.softserve.teachua.service.impl.FileUploadServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 
 @RestController
 public class UploadController implements Api {
@@ -22,10 +24,10 @@ public class UploadController implements Api {
     }
 
 
-    //@GetMapping("file")
-    /*public Fi getPhoto(@RequestBody String filePath){
-      //  return fileUploadServiceImpl.getPhoto(filePath);
-    }*/
+    @GetMapping("file")
+    public File  getPhoto(@RequestBody FilePathRequest filePath){
+        return fileUploadServiceImpl.getPhoto(filePath);
+    }
 
     @PostMapping("file")
     public String uploadPhoto(@RequestParam("image") MultipartFile image,
@@ -33,7 +35,6 @@ public class UploadController implements Api {
                               @RequestParam("clubId") Long id) {
 
         String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-        //System.out.println(uploadDirectory);
         String uploadDir = String.format("%s/%s", uploadDirectory, folder);
 
         return fileUploadServiceImpl.uploadImage(uploadDir, fileName, image,id);
@@ -48,7 +49,7 @@ public class UploadController implements Api {
 
     @DeleteMapping("/file")
     public String deleteFile(
-            @RequestBody FileDeleteRequest fileDeleteRequest) {
+            @RequestBody FilePathRequest fileDeleteRequest) {
        return fileUploadServiceImpl.deleteFile(fileDeleteRequest.getFilePath());
 
     }

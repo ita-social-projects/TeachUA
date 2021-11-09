@@ -2,9 +2,12 @@ package com.softserve.teachua.dto.file;
 
 import lombok.Data;
 
-@Data
-public class FileDeleteRequest {
+import javax.validation.constraints.NotEmpty;
 
+@Data
+public class FilePathRequest {
+
+    @NotEmpty
     private String filePath;
 
 }

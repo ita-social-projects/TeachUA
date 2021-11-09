@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.dto.file.FilePathRequest;
 import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.model.Club;
@@ -47,6 +48,14 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     @Override
+    public File getPhoto(FilePathRequest filePath) {
+        GalleryPhoto galleryPhoto  = galleryRepository.findByUrl(filePath.getFilePath());
+        //TODO : set right correctly return image
+        return new File("\\target"+filePath.getFilePath());
+      //  return new File("\\target\\upload\\imag\\logo400x400.png");
+    }
+
+    @Override
     public String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile,Long id) {
         saveFile(uploadDir, fileName, multipartFile);
 
@@ -88,8 +97,8 @@ public class FileUploadServiceImpl implements FileUploadService {
             }
         }
     }
-
     //filePath - '/upload/...../fileName.extension'
+
     @Override
     public String deleteFile(String filePath) {
         delete(filePath);
@@ -101,22 +110,23 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Override
     public String updatePhoto(MultipartFile file,String filePath,String uploadDirectory) {
         // filePath --/upload/.../file.
-      delete(filePath);
-        //System.out.println(uploadDirectory+"/"+filePath);
+       delete(filePath);
 
-        //  System.out.println(filePath.substring(filePath.indexOf("/"),filePath.lastIndexOf("/")));
         int firstEnter = (filePath.indexOf("/"));
         String clearPath = filePath.substring(filePath.indexOf("/",firstEnter+1)+1,filePath.lastIndexOf("/")) ;
-        //+ "/" +file.getOriginalFilename();
-        System.out.println(clearPath);
         String uploadDir = String.format("%s/%s", uploadDirectory, clearPath);
-        System.out.println(uploadDir);
+
         saveFile(uploadDir, file.getOriginalFilename(), file);
+
         GalleryPhoto galleryPhoto = galleryRepository.findByUrl(filePath);
-        galleryPhoto.setUrl(uploadDir+"/"+ file.getOriginalFilename());
-        System.out.println(galleryPhoto.getUrl());
+
+        uploadDir = uploadDir+"/"+ file.getOriginalFilename();
+        uploadDir = uploadDir.substring(uploadDir.indexOf("/"));
+
+        galleryPhoto.setUrl(uploadDir);
         galleryRepository.save(galleryPhoto);
-        return null;
+
+        return "File changed successful";
     }
 
     private void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) {
@@ -159,11 +169,6 @@ public class FileUploadServiceImpl implements FileUploadService {
         } catch (IOException ioe) {
             throw new FileUploadException(String.format(FILE_UPLOAD_EXCEPTION, fileName));
         }
-    }
-
-    @Override
-    public String getPhoto(String filePath) {
-        return null;
     }
 
     private void delete(String filePath){
