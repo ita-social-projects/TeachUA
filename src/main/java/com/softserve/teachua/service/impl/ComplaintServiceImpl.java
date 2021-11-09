@@ -11,12 +11,14 @@ import com.softserve.teachua.repository.ComplaintRepository;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ComplaintService;
+import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
@@ -34,14 +36,16 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
     private final UserRepository userRepository;
+    private  final UserService userService;
 
     @Autowired
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository) {
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository, UserService userService) {
         this.complaintRepository = complaintRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     /**
@@ -76,7 +80,10 @@ public class ComplaintServiceImpl implements ComplaintService {
      * @throws NotExistException if complaint not exists.
      **/
     @Override
-    public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile) {
+    public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest) {
+
+        complaintProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
+
         if(!clubRepository.existsById(complaintProfile.getClubId())){
             throw new NotExistException("Club with id "+complaintProfile.getClubId()+" does`nt exists");
         }

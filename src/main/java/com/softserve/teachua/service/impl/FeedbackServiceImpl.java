@@ -12,12 +12,14 @@ import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.FeedbackService;
+import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
@@ -35,14 +37,16 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
     private  final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService,UserRepository userRepository) {
+    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository, UserService userService) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     /**
@@ -92,11 +96,14 @@ public class FeedbackServiceImpl implements FeedbackService {
      * @return SuccessCreatedFeedback
      **/
     @Override
-    public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile) {
+    public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile, HttpServletRequest httpServletRequest) {
+
+        feedbackProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
+
         if(!clubRepository.existsById(feedbackProfile.getClubId())){
             throw new NotExistException("Club with id "+feedbackProfile.getClubId()+" does`nt exists");
         }
-        if (!userRepository.existsById(feedbackProfile.getUserId())){
+        if(!userRepository.existsById(feedbackProfile.getUserId())){
             throw new NotExistException("User with id "+feedbackProfile.getUserId()+" does`nt exists");
         }
 

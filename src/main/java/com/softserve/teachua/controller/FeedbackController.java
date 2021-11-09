@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -62,8 +63,8 @@ public class FeedbackController implements Api {
     @PostMapping("/feedback")
     public SuccessCreatedFeedback addFeedback(
             @Valid
-            @RequestBody FeedbackProfile feedbackProfile) {
-        return feedbackService.addFeedback(feedbackProfile);
+            @RequestBody FeedbackProfile feedbackProfile, HttpServletRequest httpServletRequest) {
+        return feedbackService.addFeedback(feedbackProfile,httpServletRequest);
     }
 
     /**

@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.model.Feedback;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface FeedbackService {
@@ -13,7 +14,7 @@ public interface FeedbackService {
 
     Feedback getFeedbackById(Long id);
 
-    SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile);
+    SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile, HttpServletRequest httpServletRequest);
 
     List<FeedbackResponse> getListOfFeedback();
 
