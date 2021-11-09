@@ -4,6 +4,7 @@ import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.*;
+import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
@@ -543,5 +544,58 @@ public class ClubServiceImpl implements ClubService {
         if(!(userFromClub != null && userFromRequest != null && userFromRequest.equals(userFromClub))) {
             throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);
         }
+    }
+
+    @Override
+    public SuccessUpdatedClub updateRatingNewFeedback(FeedbackResponse feedbackResponse){
+        Club club = getClubById(feedbackResponse.getClub().getId());
+
+        Long newFeedbackCount = club.getFeedbackCount() + 1;
+        Double newRating = (club.getRating() * club.getFeedbackCount() +  feedbackResponse.getRate()) / newFeedbackCount;
+
+        clubRepository.updateRating(club.getId(), newRating, newFeedbackCount);
+
+        Club updClub = getClubById(club.getId());
+
+        //upd center rating;
+
+        return dtoConverter.convertToDto(updClub, SuccessUpdatedClub.class);
+    }
+
+    @Override
+    public SuccessUpdatedClub updateRatingEditFeedback(
+            FeedbackResponse previousFeedback,
+            FeedbackResponse editedFeedback
+    ){
+        Club club = getClubById(previousFeedback.getClub().getId());
+
+        Double newRating =
+                (club.getRating() * club.getFeedbackCount() - previousFeedback.getRate() + editedFeedback.getRate())
+                        / club.getFeedbackCount();
+
+        clubRepository.updateRating(club.getId(), newRating, club.getFeedbackCount());
+
+        Club updClub = getClubById(club.getId());
+
+        //upd center rating;
+
+        return dtoConverter.convertToDto(updClub, SuccessUpdatedClub.class);
+    }
+
+    @Override
+    public SuccessUpdatedClub updateRatingDeleteFeedback(FeedbackResponse feedbackResponse){
+        Club club = getClubById(feedbackResponse.getClub().getId());
+
+        Long newFeedbackCount = club.getFeedbackCount() - 1;
+        Double newRating = newFeedbackCount == 0 ? 0 :
+                (club.getRating() * club.getFeedbackCount() -  feedbackResponse.getRate()) / newFeedbackCount;
+
+        clubRepository.updateRating(club.getId(), newRating, newFeedbackCount);
+
+        Club updClub = getClubById(club.getId());
+
+        //upd center rating;
+
+        return dtoConverter.convertToDto(updClub, SuccessUpdatedClub.class);
     }
 }
