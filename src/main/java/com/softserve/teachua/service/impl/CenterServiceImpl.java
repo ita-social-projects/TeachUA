@@ -331,24 +331,21 @@ public class CenterServiceImpl implements CenterService {
     public CenterResponse updateRatingUpdateClub(ClubResponse previousClub, ClubResponse updatedClub){
         Center center = getCenterById(previousClub.getCenter().getId());
 
-        Double newRating = null;
-        Long newClubCount = null;
+        Double newRating;
+        Long newClubCount;
 
         if(updatedClub.getFeedbackCount() == 0){
             newClubCount = center.getClubCount() - 1;
             newRating = newClubCount == 0 ? 0 :
                     (center.getRating() * center.getClubCount() - previousClub.getRating())/ newClubCount;
-            log.info("2) " + newRating + " " + newClubCount);
         }else if(previousClub.getFeedbackCount() == 0){
             newClubCount = center.getClubCount() + 1;
             newRating = (center.getRating() * center.getClubCount() + updatedClub.getRating())/ newClubCount;
-            log.info("3) " + newRating + " " + newClubCount);
         }else{
             newClubCount = center.getClubCount();
             newRating = newClubCount == 0 ? 0 :
                     (center.getRating() * center.getClubCount() - previousClub.getRating() + updatedClub.getRating())
                             / newClubCount;
-            log.info("1) " + newRating + " " + newClubCount);
         }
 
         centerRepository.updateRating(center.getId(), newRating, newClubCount);
