@@ -5,6 +5,8 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.club.ClubResponse;
+import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
@@ -41,12 +43,12 @@ public class CenterServiceImpl implements CenterService {
     private static final String CENTER_NOT_FOUND_BY_ID = "Center not found by id: %s";
     private static final String CENTER_NOT_FOUND_BY_NAME = "Center not found by name: %s";
     private static final String CENTER_DELETING_ERROR = "Can't delete center cause of relationship";
+    private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
 
     private final LocationService locationService;
     private final CenterRepository centerRepository;
     private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
-    private final ClubService clubService;
     private final LocationRepository locationRepository;
     private final CityService cityService;
     private final DistrictService districtService;
@@ -61,19 +63,18 @@ public class CenterServiceImpl implements CenterService {
     public CenterServiceImpl(LocationService locationService, CenterRepository centerRepository,
                              ArchiveService archiveService,
                              DtoConverter dtoConverter,
-                             ClubService clubService,
                              LocationRepository locationRepository,
                              CityService cityService,
                              DistrictService districtService,
                              StationService stationService,
                              ClubRepository clubRepository,
                              UserRepository userRepository,
-                             UserService userService, CenterToCenterResponseConverter centerToCenterResponseConverter) {
+                             UserService userService,
+                             CenterToCenterResponseConverter centerToCenterResponseConverter) {
         this.locationService = locationService;
         this.centerRepository = centerRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
-        this.clubService = clubService;
         this.locationRepository = locationRepository;
         this.cityService = cityService;
         this.districtService = districtService;
@@ -139,7 +140,8 @@ public class CenterServiceImpl implements CenterService {
         List<Long> clubsId =centerProfile.getClubsId();
         if(clubsId != null &&  !clubsId.isEmpty())
         for(Long id : clubsId ){
-            Club club = clubService.getClubById(id);
+            Club club = clubRepository.findById(id).orElseThrow(
+                    () -> new NotExistException(String.format(CLUB_NOT_FOUND_BY_ID, id)));
             club.setCenter(center);
             clubRepository.save(club);
         }
@@ -324,4 +326,60 @@ public class CenterServiceImpl implements CenterService {
     private Optional<Center> getOptionalCenterByName(String name) {
         return centerRepository.findByName(name);
     }
+
+    @Override
+    public CenterResponse updateRatingUpdateClub(ClubResponse previousClub, ClubResponse updatedClub){
+        Center center = getCenterById(previousClub.getCenter().getId());
+
+        Double newRating = null;
+        Long newClubCount = null;
+
+        if(updatedClub.getFeedbackCount() == 0){
+            newClubCount = center.getClubCount() - 1;
+            newRating = newClubCount == 0 ? 0 :
+                    (center.getRating() * center.getClubCount() - previousClub.getRating())/ newClubCount;
+            log.info("2) " + newRating + " " + newClubCount);
+        }else if(previousClub.getFeedbackCount() == 0){
+            newClubCount = center.getClubCount() + 1;
+            newRating = (center.getRating() * center.getClubCount() + updatedClub.getRating())/ newClubCount;
+            log.info("3) " + newRating + " " + newClubCount);
+        }else{
+            newClubCount = center.getClubCount();
+            newRating = newClubCount == 0 ? 0 :
+                    (center.getRating() * center.getClubCount() - previousClub.getRating() + updatedClub.getRating())
+                            / newClubCount;
+            log.info("1) " + newRating + " " + newClubCount);
+        }
+
+        centerRepository.updateRating(center.getId(), newRating, newClubCount);
+
+        return getCenterByProfileId(center.getId());
+    }
+
+    @Override
+    public CenterResponse updateRatingDeleteClub(ClubResponse clubResponse){
+        Center center = getCenterById(clubResponse.getCenter().getId());
+
+        Long newClubCount = center.getClubCount() - 1;
+        Double newRating = newClubCount == 0 ? 0 :
+                    (center.getRating() * center.getClubCount() - clubResponse.getRating())/ newClubCount;
+
+        clubRepository.updateRating(center.getId(), newRating, newClubCount);
+
+        return getCenterByProfileId(center.getId());
+    }
+
+
+    @Override
+    public List<CenterResponse> updateRatingForAllCenters(){
+        return getListOfCenters().stream().map(centerResponse -> {
+            Center updCenter = getCenterById(centerResponse.getId());
+            updCenter.setClubCount(clubRepository.findClubsByCenter(updCenter)
+                    .stream().filter(club -> club.getFeedbackCount() > 0).count());
+            updCenter.setRating(clubRepository.findAvgRating(centerResponse.getId()));
+            centerRepository.save(updCenter);
+            return centerResponse;
+        }).collect(Collectors.toList());
+    }
+
 }

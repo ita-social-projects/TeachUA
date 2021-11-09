@@ -13,10 +13,7 @@ import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.exception.*;
 import com.softserve.teachua.model.*;
-import com.softserve.teachua.repository.CenterRepository;
-import com.softserve.teachua.repository.ClubRepository;
-import com.softserve.teachua.repository.GalleryRepository;
-import com.softserve.teachua.repository.LocationRepository;
+import com.softserve.teachua.repository.*;
 import com.softserve.teachua.service.*;
 import com.softserve.teachua.utils.CategoryUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +59,8 @@ public class ClubServiceImpl implements ClubService {
     private final FileUploadService fileUploadService;
     private final CoordinatesConverter coordinatesConverter;
     private final GalleryRepository galleryRepository;
-
+    private final CenterService centerService;
+    private final FeedbackRepository feedbackRepository;
 
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository,
@@ -79,7 +77,7 @@ public class ClubServiceImpl implements ClubService {
                            LocationService locationService,
                            FileUploadService fileUploadService,
                            CoordinatesConverter coordinatesConverter,
-                           GalleryRepository galleryRepository) {
+                           GalleryRepository galleryRepository, CenterService centerService, FeedbackRepository feedbackRepository) {
 
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
@@ -96,6 +94,8 @@ public class ClubServiceImpl implements ClubService {
         this.fileUploadService = fileUploadService;
         this.coordinatesConverter = coordinatesConverter;
         this.galleryRepository = galleryRepository;
+        this.centerService = centerService;
+        this.feedbackRepository = feedbackRepository;
     }
 
     /**
@@ -553,33 +553,21 @@ public class ClubServiceImpl implements ClubService {
         Long newFeedbackCount = club.getFeedbackCount() + 1;
         Double newRating = (club.getRating() * club.getFeedbackCount() +  feedbackResponse.getRate()) / newFeedbackCount;
 
-        clubRepository.updateRating(club.getId(), newRating, newFeedbackCount);
-
-        Club updClub = getClubById(club.getId());
-
-        //upd center rating;
-
-        return dtoConverter.convertToDto(updClub, SuccessUpdatedClub.class);
+        return updateClubRating(club, newRating, newFeedbackCount);
     }
 
     @Override
     public SuccessUpdatedClub updateRatingEditFeedback(
             FeedbackResponse previousFeedback,
-            FeedbackResponse editedFeedback
+            FeedbackResponse updatedFeedback
     ){
         Club club = getClubById(previousFeedback.getClub().getId());
 
         Double newRating =
-                (club.getRating() * club.getFeedbackCount() - previousFeedback.getRate() + editedFeedback.getRate())
+                (club.getRating() * club.getFeedbackCount() - previousFeedback.getRate() + updatedFeedback.getRate())
                         / club.getFeedbackCount();
 
-        clubRepository.updateRating(club.getId(), newRating, club.getFeedbackCount());
-
-        Club updClub = getClubById(club.getId());
-
-        //upd center rating;
-
-        return dtoConverter.convertToDto(updClub, SuccessUpdatedClub.class);
+        return updateClubRating(club, newRating, club.getFeedbackCount());
     }
 
     @Override
@@ -590,12 +578,33 @@ public class ClubServiceImpl implements ClubService {
         Double newRating = newFeedbackCount == 0 ? 0 :
                 (club.getRating() * club.getFeedbackCount() -  feedbackResponse.getRate()) / newFeedbackCount;
 
-        clubRepository.updateRating(club.getId(), newRating, newFeedbackCount);
+        return updateClubRating(club, newRating, newFeedbackCount);
+    }
 
-        Club updClub = getClubById(club.getId());
+    @Override
+    public List<ClubResponse> updateRatingForAllClubs(){
+        return getListOfClubs().stream().map(clubResponse -> {
+           Club updClub = getClubById(clubResponse.getId());
+           updClub.setRating(feedbackRepository.findAvgRating(clubResponse.getId()));
+           updClub.setFeedbackCount(feedbackRepository.getAllByClubId(clubResponse.getId()).stream().count());
+            clubRepository.save(updClub);
+           return clubResponse;
+        }).collect(Collectors.toList());
+    }
 
-        //upd center rating;
+    public SuccessUpdatedClub updateClubRating(Club club, Double raring, Long feedbackCount){
+        ClubResponse previousClub = dtoConverter.convertToDto(club, ClubResponse.class);
+
+        club.setRating(raring);
+        club.setFeedbackCount(feedbackCount);
+        Club updClub = clubRepository.save(club);
+
+        centerService.updateRatingUpdateClub(
+                previousClub,
+                dtoConverter.convertToDto(updClub, ClubResponse.class)
+        );
 
         return dtoConverter.convertToDto(updClub, SuccessUpdatedClub.class);
     }
+
 }

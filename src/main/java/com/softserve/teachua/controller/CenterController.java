@@ -4,10 +4,7 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
-import com.softserve.teachua.dto.club.ClubProfile;
-import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
-import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.service.CenterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,5 +122,9 @@ public class CenterController implements Api {
         return centerService.deleteCenterById(id);
     }
 
+    @PatchMapping("/centers/rating")
+    public List<CenterResponse> updateCentersRating(){
+        return centerService.updateRatingForAllCenters();
+    }
 
 }

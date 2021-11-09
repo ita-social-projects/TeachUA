@@ -56,7 +56,9 @@ public interface ClubService {
 
     SuccessUpdatedClub updateRatingNewFeedback(FeedbackResponse feedbackResponse);
 
-    SuccessUpdatedClub updateRatingEditFeedback(FeedbackResponse previousFeedback, FeedbackResponse editedFeedback);
+    SuccessUpdatedClub updateRatingEditFeedback(FeedbackResponse previousFeedback, FeedbackResponse updatedFeedback);
 
     SuccessUpdatedClub updateRatingDeleteFeedback(FeedbackResponse feedbackResponse);
+
+    List<ClubResponse> updateRatingForAllClubs();
 }

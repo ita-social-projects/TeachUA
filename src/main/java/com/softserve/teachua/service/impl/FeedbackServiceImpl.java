@@ -187,7 +187,8 @@ public class FeedbackServiceImpl implements FeedbackService {
         Feedback updFeedback = dtoConverter.convertToEntity(feedbackProfile, feedback)
                 .withId(id)
                 .withClub(feedback.getClub())
-                .withUser(feedback.getUser());
+                .withUser(feedback.getUser())
+                .withDate(feedback.getDate());
 
         FeedbackResponse feedbackResponse = dtoConverter.convertToDto(feedback, FeedbackResponse.class);
         FeedbackResponse updFeedbackResponse =

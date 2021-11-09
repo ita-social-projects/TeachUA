@@ -128,7 +128,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     @Modifying
     @Query(value = "UPDATE clubs SET rating=:rating, feedback_count = :feedback_count WHERE id = :club_id", nativeQuery = true)
-    void updateRating(
+    int updateRating(
             @Param("club_id") Long club_id,
             @Param("rating") double rating,
             @Param("feedback_count") Long feedback_count
@@ -137,5 +137,9 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     List<Club> findClubByClubExternalId(Long id);
 
     List<Club> findClubsByCenter(Center center);
+
+    @Query("SELECT case  when (AVG(club.rating)) is null then 0.0 else AVG(club.rating)  end FROM Club AS club" +
+            " WHERE club.center.id = :centerId and club.feedbackCount > 0")
+    Double findAvgRating(@Param("centerId") Long centerId);
 
 }
