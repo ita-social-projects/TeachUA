@@ -128,7 +128,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     @Modifying
     @Query(value = "UPDATE clubs SET rating=:rating, feedback_count = :feedback_count WHERE id = :club_id", nativeQuery = true)
-    int updateRating(
+    void updateRating(
             @Param("club_id") Long club_id,
             @Param("rating") double rating,
             @Param("feedback_count") Long feedback_count
