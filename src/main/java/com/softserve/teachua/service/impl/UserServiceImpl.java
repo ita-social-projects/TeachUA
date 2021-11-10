@@ -315,9 +315,9 @@ public class UserServiceImpl implements UserService {
 
         log.info("updating role by id {}", newUser);
         String phoneFormat  = "+38"+userProfile.getPhone();
-        String Formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
+        String formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
 
-        newUser.setPhone(Formated);
+        newUser.setPhone(formated);
         return dtoConverter.convertToDto(userRepository.save(newUser), SuccessUpdatedUser.class);
     }
 
