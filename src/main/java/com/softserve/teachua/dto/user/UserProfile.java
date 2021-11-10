@@ -23,14 +23,14 @@ public class UserProfile implements Convertible {
 
     @NotBlank
     @Size(min = 1, max = 25)
-    @Pattern(regexp = "[a-zA-Zа-яА-ЯіІєЄїЇґҐ]*$", message = "can contain only ukrainian and english letters")
+    @Pattern(regexp = "^[a-zA-Zа-яА-ЯіІєЄїЇґҐ]*$", message = "can contain only ukrainian and english letters")
     @Pattern(regexp = "^[^ЁёЪъЫыЭэ]*$", message = "cannot contain russian letters ")
     private String firstName;
 
 
     @NotBlank
     @Size(min = 1, max = 25)
-    @Pattern(regexp = "[a-zA-Zа-яА-ЯіІєЄїЇґҐ]*$", message = "can contain only ukrainian and english letters")
+    @Pattern(regexp = "^[a-zA-Zа-яА-ЯіІєЄїЇґҐ]*$", message = "can contain only ukrainian and english letters")
     @Pattern(regexp = "^[^ЁёЪъЫыЭэ]*$", message = "cannot contain russian letters ")
     private String lastName;
 
@@ -39,9 +39,12 @@ public class UserProfile implements Convertible {
     private String phone;
 
     @NotBlank
-    @Size(min=8,max=20)
-    @Pattern(regexp = "^[a-zA-Z0-9()!\"#$%&'*+,-.:;<=>?|@_`{}~/^\\[\\]]*$",
-            message = "is not valid! Password can contain only latin letters, numbers and some special symbols")
+    @Size(min = 8, max = 20)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).*$",
+            message = "must contain at least one uppercase and lowercase letter")
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[~`!@#$%^&()_=+{}\\[\\]/|:;,\"<>?]).*$",
+            message = "must contain at least one number and special symbol")
+    @Pattern(regexp = "^[^А-Яа-яЇїІіЄєҐґЁёЪъЫыЭэ]+$", message = "must contain only latin letters")
     private String password;
 
     @NotBlank
