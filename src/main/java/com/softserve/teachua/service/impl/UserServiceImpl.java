@@ -197,12 +197,6 @@ public class UserServiceImpl implements UserService {
             throw new WrongAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
         }
 
-        Pattern pattern = Pattern.compile("^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+\\n,-.:\\r;<=>?|@_`{}~/^\\[\\]]{8,20}$");
-        Matcher matcher = pattern.matcher(userProfile.getPassword());
-        if (!matcher.matches()) {
-            throw new WrongAuthenticationException("Incorrect password!");
-        }
-
         if ("ROLE_ADMIN".equals(userProfile.getRoleName())) {
             throw new IncorrectInputException("Illegal role argument: ROLE_ADMIN");
         }

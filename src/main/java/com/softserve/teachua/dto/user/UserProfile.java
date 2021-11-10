@@ -16,29 +16,35 @@ public class UserProfile implements Convertible {
 
     private Long id;
 
-    @NotEmpty
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z0-9-\\.]+@([a-zA-Z-]+\\.)+[a-zA-Z-]{2,4}$", message = "is not valid")
     private String email;
 
 
-    @NotEmpty
-    @Pattern(regexp ="^[^-ЁёЪъЫыЭэ]*$",message = "Last name cannot contain russian letters ")
+    @NotBlank
+    @Size(min = 1, max = 25)
+    @Pattern(regexp = "[a-zA-Zа-яА-ЯіІєЄїЇґҐ]*$", message = "can contain only ukrainian and english letters")
+    @Pattern(regexp = "^[^ЁёЪъЫыЭэ]*$", message = "cannot contain russian letters ")
     private String firstName;
 
 
-    @NotEmpty
-    @Pattern(regexp ="^[^-ЁёЪъЫыЭэё]*$",message = "Last name cannot contain russian letters ")
-
+    @NotBlank
+    @Size(min = 1, max = 25)
+    @Pattern(regexp = "[a-zA-Zа-яА-ЯіІєЄїЇґҐ]*$", message = "can contain only ukrainian and english letters")
+    @Pattern(regexp = "^[^ЁёЪъЫыЭэ]*$", message = "cannot contain russian letters ")
     private String lastName;
 
-    @NotEmpty
-    @Pattern(regexp = "^[0-9]{9}$",message = "Phone can have only numbers and length 9")
+    @NotBlank
+    @Pattern(regexp = "^[0-9]{9}$", message = "Phone can have only numbers and length 9")
     private String phone;
 
-
-//    @NotEmpty
+    @NotBlank
+    @Size(min=8,max=20)
+    @Pattern(regexp = "^[a-zA-Z0-9()!\"#$%&'*+,-.:;<=>?|@_`{}~/^\\[\\]]*$",
+            message = "is not valid! Password can contain only latin letters, numbers and some special symbols")
     private String password;
 
-    @NotEmpty
+    @NotBlank
     private String roleName;
 
     private String verificationCode;
