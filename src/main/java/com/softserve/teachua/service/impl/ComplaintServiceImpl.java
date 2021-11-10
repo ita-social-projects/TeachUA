@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,6 +78,9 @@ public class ComplaintServiceImpl implements ComplaintService {
      **/
     @Override
     public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile) {
+
+        complaintProfile.setDate(LocalDate.now());
+
         if(!clubRepository.existsById(complaintProfile.getClubId())){
             throw new NotExistException("Club with id "+complaintProfile.getClubId()+" does`nt exists");
         }
