@@ -178,4 +178,9 @@ public class ClubController implements Api {
 
         return clubService.deleteClubById(id, httpServletRequest);
     }
+
+    @PatchMapping("/clubs/rating")
+    public List<ClubResponse> updateClubsRating(){
+        return clubService.updateRatingForAllClubs();
+    }
 }
