@@ -43,16 +43,18 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final ArchiveService archiveService;
     private  final UserRepository userRepository;
     private final UserService userService;
+    private final ClubService clubService;
 
   @Autowired
-    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository, UserService userService) {
+    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository, UserService userService, ClubService clubService) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
         this.userRepository = userRepository;
         this.userService = userService;
-    }
+      this.clubService = clubService;
+  }
 
     /**
      * Method find {@link Feedback}, and convert it to object of DTO class

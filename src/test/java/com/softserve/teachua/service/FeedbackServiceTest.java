@@ -63,6 +63,9 @@ public class FeedbackServiceTest {
     @Mock
     private HttpServletRequestWrapper httpServletRequest;
 
+    @Mock
+    private ClubService clubService;
+
     @InjectMocks
     private FeedbackServiceImpl feedbackService;
 
@@ -77,6 +80,7 @@ public class FeedbackServiceTest {
     private final long NOT_EXISTING_ID = 2L;
     private final long EXISTING_CLUB_ID = 10L;
     private final long NOT_EXISTING_CLUB_ID = 20L;
+    private final long FEEDBACK_COUNT = 1;
     private final long EXISTING_USER_ID= 100L;
     private final double CLUB_RATING = 4.0;;
     private final String EXISTING_TEXT = "Existing feedback";
@@ -172,7 +176,7 @@ public class FeedbackServiceTest {
         when(feedbackRepository.save(feedback)).thenReturn(feedback);
 
         when(feedbackRepository.findAvgRating(EXISTING_CLUB_ID)).thenReturn(CLUB_RATING);
-        doNothing().when(clubRepository).updateRating(EXISTING_CLUB_ID, CLUB_RATING);
+        doNothing().when(clubRepository).updateRating(EXISTING_CLUB_ID, CLUB_RATING, FEEDBACK_COUNT);
         when(dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class))
                 .thenReturn(SuccessCreatedFeedback.builder().text(NEW_TEXT).build());
 
