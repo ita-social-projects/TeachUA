@@ -35,7 +35,7 @@ public class ResetPasswordController implements Api {
     public SuccessUserPasswordReset resetPassword(
             @Valid
             @RequestBody UserResetPassword userProfile) {
-        log.info("Controller \"resetpassword\", userProfile = " + userProfile.toString());
+        log.debug("Controller \"resetpassword\", userProfile = " + userProfile.toString());
         return userService.resetPassword(userProfile);
     }
 

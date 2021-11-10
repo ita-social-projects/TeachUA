@@ -68,7 +68,7 @@ public class NewsServiceImpl implements NewsService {
         }
 
         News news = optionalNews.get();
-        log.info("get news by id - " + news);
+        log.debug("get news by id - " + news);
         return news;
     }
 
@@ -95,7 +95,7 @@ public class NewsServiceImpl implements NewsService {
                 .stream()
                 .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
                 .collect(Collectors.toList());
-        log.info("get list of cities = " + newsResponses);
+        log.debug("get list of cities = " + newsResponses);
         return newsResponses;
     }
 
@@ -122,7 +122,7 @@ public class NewsServiceImpl implements NewsService {
         News newNews = dtoConverter.convertToEntity(newsProfile, news)
                 .withId(id);
 
-        log.info("**/updating club by id = " + newNews);
+        log.debug("**/updating club by id = " + newNews);
         return dtoConverter.convertToDto(newsRepository.save(newNews), NewsProfile.class);
     }
 
@@ -144,7 +144,7 @@ public class NewsServiceImpl implements NewsService {
             throw new DatabaseRepositoryException(CATEGORY_DELETING_ERROR);
         }
 
-        log.info("news {} was successfully deleted", deletedNews);
+        log.debug("news {} was successfully deleted", deletedNews);
         return dtoConverter.convertToDto(deletedNews, NewsResponse.class);
     }
 

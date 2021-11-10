@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.dto.task.TaskPreview;
-import com.softserve.teachua.model.Task;
-import com.softserve.teachua.utils.TrimDeserialize;
+import com.softserve.teachua.utils.deserializers.HtmlModifyDeserialize;
+import com.softserve.teachua.utils.deserializers.TrimDeserialize;
 import lombok.*;
 
-import javax.persistence.OneToMany;
-import javax.validation.constraints.*;
 import java.util.Set;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -34,6 +32,7 @@ public class UpdateChallenge implements Convertible {
             message = "can contains only letters of ukrainian and english languages, numbers, and some special symbols like: [\"#$%&'*+ ,-.:;<=>?|@_`{}~]")
     @Size(min = 5, max = 50, message = "must contain a minimum of 5 and a maximum of 50 letters")
     private String title;
+    @JsonDeserialize(using = HtmlModifyDeserialize.class)
     @NotBlank
     @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "can not contain letters of russian languages")
     @Size(min = 40, max = 3000, message = "must contain a minimum of 40 and a maximum of 3000 letters")
@@ -50,7 +49,4 @@ public class UpdateChallenge implements Convertible {
     private Long sortNumber;
     @NotNull
     private Boolean isActive;
-    @NotNull
-    @ToString.Exclude
-    private Set<TaskPreview> tasks;
 }

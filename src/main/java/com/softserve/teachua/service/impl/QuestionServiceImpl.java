@@ -54,7 +54,7 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         Question question = optionalQuestion.get();
-        log.info("get question by id - " + question);
+        log.debug("get question by id - " + question);
         return question;
     }
 
@@ -72,7 +72,7 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         Question question = questionRepository.save(dtoConverter.convertToEntity(questionProfile, new Question()));
-        log.info("**/adding new question = " + question);
+        log.debug("**/adding new question = " + question);
         return dtoConverter.convertToDto(question, QuestionResponse.class);
     }
 
@@ -88,7 +88,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = getQuestionById(id);
         Question newQuestion = dtoConverter.convertToEntity(questionProfile, question)
                 .withId(id);
-        log.info("**/updating question by id = " + newQuestion);
+        log.debug("**/updating question by id = " + newQuestion);
 
         return dtoConverter.convertToDto(questionRepository.save(newQuestion), QuestionProfile.class);
     }
@@ -113,7 +113,7 @@ public class QuestionServiceImpl implements QuestionService {
             throw new DatabaseRepositoryException(QUESTION_DELETING_ERROR);
         }
 
-        log.info("question {} was successfully deleted", deletedQuestion);
+        log.debug("question {} was successfully deleted", deletedQuestion);
         return dtoConverter.convertToDto(deletedQuestion, QuestionProfile.class);
     }
 
@@ -129,7 +129,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .map(question -> (QuestionResponse) dtoConverter.convertToDto(question, QuestionResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of questions = " + questionResponses);
+        log.debug("**/getting list of questions = " + questionResponses);
 
         return questionResponses;
     }

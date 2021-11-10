@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -64,8 +65,8 @@ public class ComplaintController implements Api {
      */
     @PostMapping("/complaint")
     public SuccessCreatedComplaint addComplaint(
-            @Valid @RequestBody ComplaintProfile complaintProfile) {
-        return complaintService.addComplaint(complaintProfile);
+            @Valid @RequestBody ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest) {
+        return complaintService.addComplaint(complaintProfile,httpServletRequest);
     }
 
     /**
