@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
     private static final String WRONG_ID = "Wrong id";
     private static final String INACCESSIBLE_ADMIN_PROFILE = "No one have access to admin profile";
+    private static final String ONLY_ADMIN_CONTENT = "Only the admin have permit to view this content";
     private final UserRepository userRepository;
     private final EncoderService encodeService;
     private final RoleService roleService;
@@ -126,7 +127,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = optionalUser.get();
-        log.info("getting user by id {}", user);
+        log.debug("getting user by id {}", user);
         return user;
     }
 
@@ -144,7 +145,7 @@ public class UserServiceImpl implements UserService {
             throw new NotExistException(String.format(USER_NOT_FOUND_BY_EMAIL, email));
         }
 
-        log.info("getting user by email {}", userRepository.findByEmail(email));
+        log.debug("getting user by email {}", userRepository.findByEmail(email));
         return optionalUser.get();
     }
 
@@ -162,7 +163,7 @@ public class UserServiceImpl implements UserService {
             throw new NotExistException(USER_NOT_FOUND_BY_VERIFICATION_CODE);
         }
 
-        log.info("getting user by verificationCode {}", userRepository.findByVerificationCode(verificationCode));
+        log.debug("getting user by verificationCode {}", userRepository.findByVerificationCode(verificationCode));
         return optionalUser.get();
     }
 
@@ -178,7 +179,7 @@ public class UserServiceImpl implements UserService {
                 .map(user -> (UserResponse) dtoConverter.convertToDto(user, UserResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("getting list of users {}", userResponses);
+        log.debug("getting list of users {}", userResponses);
         return userResponses;
     }
 
@@ -216,12 +217,12 @@ public class UserServiceImpl implements UserService {
 
         user.setPhone(Formated);
 
-        log.info(user.getPhone());
+        log.debug(user.getPhone());
 
         user.setVerificationCode(RandomString.make(64));
         user.setStatus(false);
         user = userRepository.save(user);
-        log.info("user {} registered successfully", user);
+        log.debug("user {} registered successfully", user);
         try {
             sendVerificationEmail(user);
         } catch (UnsupportedEncodingException | MessagingException ignored) {
@@ -272,7 +273,7 @@ public class UserServiceImpl implements UserService {
         } else if (!encodeService.isValidPassword(userLogin, userEntity)) {
             throw new WrongAuthenticationException(WRONG_PASSWORD);
         }
-        log.info("user {} logged successfully", userLogin);
+        log.debug("user {} logged successfully", userLogin);
 
 
         Authentication authentication = authenticationManager.authenticate(
@@ -313,7 +314,7 @@ public class UserServiceImpl implements UserService {
                 .withId(id)
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
-        log.info("updating role by id {}", newUser);
+        log.debug("updating role by id {}", newUser);
         return dtoConverter.convertToDto(userRepository.save(newUser), SuccessUpdatedUser.class);
     }
 
@@ -337,7 +338,7 @@ public class UserServiceImpl implements UserService {
             throw new DatabaseRepositoryException(USER_DELETING_ERROR);
         }
 
-        log.info("user {} was successfully deleted", user);
+        log.debug("user {} was successfully deleted", user);
         return dtoConverter.convertToDto(user, UserResponse.class);
     }
 
@@ -355,7 +356,7 @@ public class UserServiceImpl implements UserService {
 
         user.setStatus(true);
         user.setVerificationCode(null);
-        log.info("user {} was successfully registered", user);
+        log.debug("user {} was successfully registered", user);
         userRepository.save(user);
 
         SuccessVerification successVerificationUser = dtoConverter.convertToDto(user, SuccessVerification.class);
@@ -405,7 +406,7 @@ public class UserServiceImpl implements UserService {
         helper.setText(content, true);
 
         javaMailSender.send(message);
-        log.info("Email has been sent\" {}", user.getEmail());
+        log.debug("Email has been sent\" {}", user.getEmail());
     }
 
     @Override
@@ -432,6 +433,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void verifyIsUserAdmin() {
+        User user = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
+                .orElseThrow(
+                        () -> new WrongAuthenticationException(ONLY_ADMIN_CONTENT)
+                );
+        if (!user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
+            throw new WrongAuthenticationException(ONLY_ADMIN_CONTENT);
+        }
+    }
+
+    @Override
     public void updateUser(User user) {
         userRepository.save(user);
     }
@@ -445,7 +457,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private Optional<User> getOptionalUserByVerificationCode(String verificationCode) {
-        log.info(verificationCode);
+        log.debug(verificationCode);
         return userRepository.findByVerificationCode(verificationCode);
     }
 
@@ -484,12 +496,12 @@ public class UserServiceImpl implements UserService {
             helper.setText(content, true);
 
             javaMailSender.send(message);
-            log.info("Email has been sent\" {}", user.getEmail());
+            log.debug("Email has been sent\" {}", user.getEmail());
 
         } catch (MessagingException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
 
 //        return dtoConverter.convertToDto(user, SuccessUserPasswordReset.class);
@@ -497,7 +509,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public SuccessVerification verifyChange(String verificationCode) {
-        log.info("step1: " + verificationCode);
+        log.debug("step1: " + verificationCode);
         User user = getUserByVerificationCode(verificationCode);
         user.setStatus(true);
         SuccessUserPasswordReset userPasswordReset = new SuccessUserPasswordReset();
@@ -510,7 +522,7 @@ public class UserServiceImpl implements UserService {
                 user.getFirstName(),
                 user.getLastName()));
 
-        log.info("step 2: " + userPasswordReset.getVerificationCode() + " " + userPasswordReset.getEmail());
+        log.debug("step 2: " + userPasswordReset.getVerificationCode() + " " + userPasswordReset.getEmail());
         // return userPasswordReset;
         return successVerificationUser;
 
@@ -539,7 +551,7 @@ public class UserServiceImpl implements UserService {
 
     public SuccessUserPasswordReset verifyChangePassword(SuccessUserPasswordReset userResetPassword) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        log.info("step 3: " + userResetPassword.getVerificationCode() + " " + userResetPassword.getEmail());
+        log.debug("step 3: " + userResetPassword.getVerificationCode() + " " + userResetPassword.getEmail());
         User user = getUserByVerificationCode(userResetPassword.getVerificationCode());
         user.setStatus(true);
         if (bCryptPasswordEncoder.matches(userResetPassword.getPassword(), user.getPassword())) {
@@ -551,7 +563,7 @@ public class UserServiceImpl implements UserService {
         user.setVerificationCode(null);
 
         userRepository.save(user);
-        log.info("password reset {}", user);
+        log.debug("password reset {}", user);
         return userResetPassword;
     }
 }

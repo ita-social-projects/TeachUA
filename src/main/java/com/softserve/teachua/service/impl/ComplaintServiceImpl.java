@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -80,8 +81,10 @@ public class ComplaintServiceImpl implements ComplaintService {
      * @throws NotExistException if complaint not exists.
      **/
     @Override
+
     public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest) {
 
+        complaintProfile.setDate(LocalDate.now());
         complaintProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
 
         if(!clubRepository.existsById(complaintProfile.getClubId())){
@@ -93,7 +96,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
         Complaint complaint = complaintRepository.save(dtoConverter.convertToEntity(complaintProfile, new Complaint()));
 
-        log.info("add new complaint {}", complaint);
+        log.debug("add new complaint {}", complaint);
         return dtoConverter.convertToDto(complaint, SuccessCreatedComplaint.class);
     }
 
@@ -110,7 +113,7 @@ public class ComplaintServiceImpl implements ComplaintService {
                 .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("get all complaints for club: {} ", complaintResponses);
+        log.debug("get all complaints for club: {} ", complaintResponses);
         return complaintResponses;
     }
 
@@ -128,7 +131,7 @@ public class ComplaintServiceImpl implements ComplaintService {
                 .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("get all complaints: {} ", complaintResponses);
+        log.debug("get all complaints: {} ", complaintResponses);
         return complaintResponses;
     }
 
@@ -147,7 +150,7 @@ public class ComplaintServiceImpl implements ComplaintService {
 
         complaintRepository.save(newComplaint);
 
-        log.info("updated complaint {} ", newComplaint);
+        log.debug("updated complaint {} ", newComplaint);
         return dtoConverter.convertToDto(newComplaint, ComplaintProfile.class);
     }
 
@@ -171,7 +174,7 @@ public class ComplaintServiceImpl implements ComplaintService {
             throw new DatabaseRepositoryException(COMPLAINT_DELETING_ERROR);
         }
 
-        log.info("complaint {} was successfully deleted", complaint);
+        log.debug("complaint {} was successfully deleted", complaint);
         return dtoConverter.convertToDto(complaint, ComplaintResponse.class);
     }
 

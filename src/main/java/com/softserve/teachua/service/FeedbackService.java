@@ -20,7 +20,9 @@ public interface FeedbackService {
 
     List<FeedbackResponse> getAllByClubId(Long id);
 
-    FeedbackProfile updateFeedbackProfileById(Long id, FeedbackProfile feedbackProfile);
-
     FeedbackResponse deleteFeedbackById(Long id);
+
+    FeedbackResponse updateFeedbackProfileById(Long id, FeedbackProfile feedbackProfile, HttpServletRequest httpServletRequest);
+
+    void validateFeedbackOwner(Long id, HttpServletRequest httpServletRequest);
 }

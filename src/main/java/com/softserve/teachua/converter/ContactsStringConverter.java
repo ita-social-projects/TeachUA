@@ -41,7 +41,7 @@ public class ContactsStringConverter {
      */
     public Set<ContactDataResponse> convertStringToContactDataResponses(String contacts){
         if(contacts==null || contacts.isEmpty()){
-            log.info("contacts string is null or empty");
+            log.debug("contacts string is null or empty");
             return new HashSet<>();
         }
 
@@ -58,11 +58,9 @@ public class ContactsStringConverter {
                 result.add(new ContactDataResponse(contactType,data[1]));
             }
         }catch (NumberFormatException e){
-            log.info(e.getMessage());
+            log.error(e.getMessage());
             return result;
         }
-
-//        log.info("contacts field =="+result.toString());
         return result;
     }
 }

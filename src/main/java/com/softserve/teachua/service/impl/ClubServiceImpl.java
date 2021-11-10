@@ -4,21 +4,16 @@ import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.*;
+import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
-import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.teachua.exception.IncorrectInputException;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.exception.*;
 import com.softserve.teachua.model.*;
-import com.softserve.teachua.repository.CenterRepository;
-import com.softserve.teachua.repository.ClubRepository;
-import com.softserve.teachua.repository.GalleryRepository;
-import com.softserve.teachua.repository.LocationRepository;
+import com.softserve.teachua.repository.*;
 import com.softserve.teachua.service.*;
 import com.softserve.teachua.utils.CategoryUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +42,7 @@ public class ClubServiceImpl implements ClubService {
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
     private static final String CLUB_DELETING_ERROR = "Can't delete club cause of relationship";
     private static final String CLUB_CREATING_ERROR = "Club without \"%s\" isn't created.";
+    private static final String CLUB_CANT_BE_MANAGE_BY_USER = "A user cannot manage a club that does not belong to the user";
 
     private final ClubRepository clubRepository;
     private final LocationRepository locationRepository;
@@ -62,7 +59,8 @@ public class ClubServiceImpl implements ClubService {
     private final FileUploadService fileUploadService;
     private final CoordinatesConverter coordinatesConverter;
     private final GalleryRepository galleryRepository;
-
+    private final CenterService centerService;
+    private final FeedbackRepository feedbackRepository;
 
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository,
@@ -79,7 +77,7 @@ public class ClubServiceImpl implements ClubService {
                            LocationService locationService,
                            FileUploadService fileUploadService,
                            CoordinatesConverter coordinatesConverter,
-                           GalleryRepository galleryRepository) {
+                           GalleryRepository galleryRepository, CenterService centerService, FeedbackRepository feedbackRepository) {
 
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
@@ -96,6 +94,8 @@ public class ClubServiceImpl implements ClubService {
         this.fileUploadService = fileUploadService;
         this.coordinatesConverter = coordinatesConverter;
         this.galleryRepository = galleryRepository;
+        this.centerService = centerService;
+        this.feedbackRepository = feedbackRepository;
     }
 
     /**
@@ -125,7 +125,7 @@ public class ClubServiceImpl implements ClubService {
 
         Club club = optionalClub.get();
 
-        log.info("getting club by id {}", id);
+        log.debug("getting club by id {}", id);
         return club;
     }
 
@@ -139,7 +139,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public List<Club> getClubByClubExternalId(Long clubExternalId) {
         List<Club> clubs = clubRepository.findClubByClubExternalId(clubExternalId);
-        log.info("getting club by external id {}", clubExternalId);
+        log.debug("getting club by external id {}", clubExternalId);
         return clubs;
     }
 
@@ -158,7 +158,7 @@ public class ClubServiceImpl implements ClubService {
         }
 
         Club club = optionalClub.get();
-        log.info("getting club by name {}", club.getName());
+        log.debug("getting club by name {}", club.getName());
         return club;
     }
 
@@ -170,12 +170,13 @@ public class ClubServiceImpl implements ClubService {
      * @throws NotExistException if club not exists by id.
      */
     @Override
-    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile) {
+    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile, HttpServletRequest httpServletRequest) {
+        validateClubOwner(id, httpServletRequest);
         Club club = getClubById(id);
         Club newClub = dtoConverter.convertToEntity(clubProfile, club)
                 .withId(id);
 
-        log.info("updating club by id {}", newClub);
+        log.debug("updating club by id {}", newClub);
         return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);
     }
 
@@ -200,7 +201,7 @@ public class ClubServiceImpl implements ClubService {
      * @throws IncorrectInputException if mandatory fields are empty.
      */
     @Override
-    public SuccessCreatedClub addClub(ClubProfile clubProfile) {
+    public SuccessCreatedClub addClub(ClubProfile clubProfile, HttpServletRequest httpServletRequest) {
         List<LocationProfile> locations = clubProfile.getLocations();
 
         if (locations != null && !locations.isEmpty()) {
@@ -217,7 +218,6 @@ public class ClubServiceImpl implements ClubService {
                 }
             }
         }
-
         if (!ifClubToCreateHaveEmptyFields(clubProfile).isEmpty()) {
             throw new IncorrectInputException(String.format(CLUB_CREATING_ERROR, ifClubToCreateHaveEmptyFields(clubProfile)));
         }
@@ -226,15 +226,13 @@ public class ClubServiceImpl implements ClubService {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }
 
-        User user = null;
-        if (clubProfile.getUserId() != null) {
-            user = userService.getUserById(clubProfile.getUserId());
-        }
+        User user = userService.getUserFromRequest(httpServletRequest);
+        clubProfile.setUserId(user.getId());
 
         //todo delete or replace this block
-        log.info("== add method");
+        log.debug("== add method");
 
-        log.info("==clubService=?  clubProfile.centerID" + clubProfile.getCenterId());
+        log.debug("==clubService=?  clubProfile.centerID" + clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                 .withCategories(clubProfile.getCategoriesName()
                         .stream()
@@ -271,7 +269,7 @@ public class ClubServiceImpl implements ClubService {
                         .collect(Collectors.toList())
             );
         }
-        log.info("adding club with name : {}", clubProfile.getName());
+        log.debug("adding club with name : {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
     }
 
@@ -279,7 +277,7 @@ public class ClubServiceImpl implements ClubService {
     public Club addClubsFromExcel(ClubProfile clubProfile) {
 
         if (clubProfile.getCenterId() == null) {
-            log.info("(row 256, ClubServiceImpl)  addClubsFromExcel => " + clubProfile.getCenterExternalId() + " not found");
+            log.debug("(row 256, ClubServiceImpl)  addClubsFromExcel => " + clubProfile.getCenterExternalId() + " not found");
 
             try {
                 return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
@@ -291,16 +289,16 @@ public class ClubServiceImpl implements ClubService {
                         .withCenter(null);
             } catch (Exception e) {
                 //todo bad solution .... do refactor !!!!!
-                log.info("(row 268, ClubServiceImpl)    saving club ");
-                log.info(e.getMessage());
+                log.debug("(row 268, ClubServiceImpl)    saving club ");
+                log.debug(e.getMessage());
 
                 return new Club();
             }
 
         } else {
             Center center = centerRepository.findById(clubProfile.getCenterId()).get();
-            log.info("(clubServiceImpl) ==>  addClubsFromExcel = >  with EXTERNAL_center_id =" + center.getCenterExternalId());
-            log.info("addClubsFromExcel => " + clubProfile.getCenterId() + " with real center , id =" + center.getId());
+            log.debug("(clubServiceImpl) ==>  addClubsFromExcel = >  with EXTERNAL_center_id =" + center.getCenterExternalId());
+            log.debug("addClubsFromExcel => " + clubProfile.getCenterId() + " with real center , id =" + center.getId());
             return clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
                     .withCategories(clubProfile.getCategoriesName()
                             .stream()
@@ -323,7 +321,7 @@ public class ClubServiceImpl implements ClubService {
                 .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                 .collect(Collectors.toList());
 
-        log.info("getting list of clubs {}", clubResponses);
+        log.debug("getting list of clubs {}", clubResponses);
         return clubResponses;
     }
 
@@ -333,8 +331,6 @@ public class ClubServiceImpl implements ClubService {
                 .stream()
                 .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                 .collect(Collectors.toList());
-
-//        log.info("getting list of clubs by user id {}", clubResponses);
         return clubResponses;
     }
 
@@ -364,7 +360,7 @@ public class ClubServiceImpl implements ClubService {
             throw new IncorrectInputException("Age should be from 2 to 18 years inclusive");
         }
 
-        log.info("getAdvancedSearchClubs, advClubProf :" + advancedSearchClubProfile.toString());
+        log.debug("getAdvancedSearchClubs, advClubProf :" + advancedSearchClubProfile.toString());
 
         Page<Club> clubResponses = clubRepository.findAllBylAdvancedSearch(
                 advancedSearchClubProfile.getAge(),
@@ -391,8 +387,8 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable) {
 
-        log.info("getClubsBySearchParameters ===> ");
-        log.info(searchClubProfile.toString());
+        log.debug("getClubsBySearchParameters ===> ");
+        log.debug(searchClubProfile.toString());
 
         Page<Club> clubResponses = clubRepository.findAllByParameters(
                     searchClubProfile.getClubName(),
@@ -402,16 +398,16 @@ public class ClubServiceImpl implements ClubService {
                     pageable);
 
 
-        log.info("===find clubs : " + clubResponses.getNumberOfElements());
+        log.debug("===find clubs : " + clubResponses.getNumberOfElements());
 
         if (clubResponses.getNumberOfElements() == 0) {
-            log.info("==============================");
-            log.info("clubResponses by club name is empty==> start search by center name " + searchClubProfile.getClubName());
+            log.debug("==============================");
+            log.debug("clubResponses by club name is empty==> start search by center name " + searchClubProfile.getClubName());
             clubResponses = clubRepository.
                     findClubsByCenterName(searchClubProfile.getClubName(),
                             searchClubProfile.getCityName(), pageable);
-            log.info("result of search by centerName : " + clubResponses.getNumberOfElements());
-            log.info(clubResponses.toString());
+            log.debug("result of search by centerName : " + clubResponses.getNumberOfElements());
+            log.debug(clubResponses.toString());
         }
 
         return new PageImpl<>(clubResponses
@@ -464,11 +460,16 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile) {
+    public ClubResponse changeClubOwner(
+            Long id,
+            ClubOwnerProfile clubOwnerProfile,
+            HttpServletRequest httpServletRequest
+    ) {
+        validateClubOwner(id, httpServletRequest);
         Club club = getClubById(id);
         club.setUser(clubOwnerProfile.getUser());
 
-        log.info("changed club owner by id {}", club);
+        log.debug("changed club owner by id {}", club);
         return dtoConverter.convertToDto(clubRepository.save(club), ClubResponse.class);
     }
 
@@ -480,7 +481,9 @@ public class ClubServiceImpl implements ClubService {
      * @throws DatabaseRepositoryException if club contain foreign keys.
      */
     @Override
-    public ClubResponse deleteClubById(Long id) {
+    public ClubResponse deleteClubById(Long id, HttpServletRequest httpServletRequest) {
+        validateClubOwner(id, httpServletRequest);
+
         Club club = getClubById(id);
 
         archiveService.saveModel(club);
@@ -491,7 +494,7 @@ public class ClubServiceImpl implements ClubService {
                     .filter(location -> location.getClub() != null && location.getClub().getId().equals(id))
                     .forEach(location -> locationService.addLocation(dtoConverter.convertToDto(location.withClub(null), LocationProfile.class)));
             fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground(), club.getUrlGallery());
-            updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class));
+            updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class), httpServletRequest);
 
             clubRepository.deleteById(id);
             clubRepository.flush();
@@ -499,7 +502,7 @@ public class ClubServiceImpl implements ClubService {
             throw new DatabaseRepositoryException(CLUB_DELETING_ERROR);
         }
 
-        log.info("club {} was successfully deleted", club);
+        log.debug("club {} was successfully deleted", club);
         return toClubResponseConverter.convertToClubResponse(club);
     }
 
@@ -530,4 +533,78 @@ public class ClubServiceImpl implements ClubService {
         }
         return "";
     }
+
+    @Override
+    public void validateClubOwner(Long id, HttpServletRequest httpServletRequest) {
+        User userFromClub = getClubById(id).getUser();
+        User userFromRequest = userService.getUserFromRequest(httpServletRequest);
+
+        if(!(userFromClub != null && userFromRequest != null && userFromRequest.equals(userFromClub))) {
+            throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);
+        }
+    }
+
+    @Override
+    public SuccessUpdatedClub updateRatingNewFeedback(FeedbackResponse feedbackResponse){
+        Club club = getClubById(feedbackResponse.getClub().getId());
+
+        Long newFeedbackCount = club.getFeedbackCount() + 1;
+        Double newRating = (club.getRating() * club.getFeedbackCount() +  feedbackResponse.getRate()) / newFeedbackCount;
+
+        return updateClubRating(club, newRating, newFeedbackCount);
+    }
+
+    @Override
+    public SuccessUpdatedClub updateRatingEditFeedback(
+            FeedbackResponse previousFeedback,
+            FeedbackResponse updatedFeedback
+    ){
+        Club club = getClubById(previousFeedback.getClub().getId());
+
+        Double newRating =
+                (club.getRating() * club.getFeedbackCount() - previousFeedback.getRate() + updatedFeedback.getRate())
+                        / club.getFeedbackCount();
+
+        return updateClubRating(club, newRating, club.getFeedbackCount());
+    }
+
+    @Override
+    public SuccessUpdatedClub updateRatingDeleteFeedback(FeedbackResponse feedbackResponse){
+        Club club = getClubById(feedbackResponse.getClub().getId());
+
+        Long newFeedbackCount = club.getFeedbackCount() - 1;
+        Double newRating = newFeedbackCount == 0 ? 0 :
+                (club.getRating() * club.getFeedbackCount() -  feedbackResponse.getRate()) / newFeedbackCount;
+
+        return updateClubRating(club, newRating, newFeedbackCount);
+    }
+
+    @Override
+    public List<ClubResponse> updateRatingForAllClubs(){
+        return getListOfClubs().stream().map(clubResponse -> {
+           Club updClub = getClubById(clubResponse.getId());
+           updClub.setRating(feedbackRepository.findAvgRating(clubResponse.getId()));
+           updClub.setFeedbackCount(feedbackRepository.getAllByClubId(clubResponse.getId()).stream().count());
+            clubRepository.save(updClub);
+           return clubResponse;
+        }).collect(Collectors.toList());
+    }
+
+    public SuccessUpdatedClub updateClubRating(Club club, Double raring, Long feedbackCount){
+        ClubResponse previousClub = dtoConverter.convertToDto(club, ClubResponse.class);
+
+        club.setRating(raring);
+        club.setFeedbackCount(feedbackCount);
+        Club updClub = clubRepository.save(club);
+
+        if(updClub.getCenter() != null) {
+            centerService.updateRatingUpdateClub(
+                    previousClub,
+                    dtoConverter.convertToDto(updClub, ClubResponse.class)
+            );
+        }
+
+        return dtoConverter.convertToDto(updClub, SuccessUpdatedClub.class);
+    }
+
 }

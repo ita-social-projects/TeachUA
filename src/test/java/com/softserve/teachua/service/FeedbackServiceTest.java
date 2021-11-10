@@ -1,6 +1,7 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
@@ -23,8 +24,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.HttpServletRequestWrapper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -79,8 +81,10 @@ public class FeedbackServiceTest {
     private final double CLUB_RATING = 4.0;;
     private final String EXISTING_TEXT = "Existing feedback";
     private final String NEW_TEXT = "New feedback";
+    private final Long USER_ID = 12L;
+    private final String USER_EMAIL = "test@gmail.com";
 
-    @BeforeEach
+     @BeforeEach
     public void setMocks() {
         club = Club.builder().id(EXISTING_CLUB_ID).build();
         feedback = Feedback.builder().id(EXISTING_ID).text(EXISTING_TEXT).club(club).build();
@@ -178,21 +182,19 @@ public class FeedbackServiceTest {
 
     @Test
     public void updateFeedbackProfileByExistingIdShouldReturnFeedbackProfile(){
-
-
-        Feedback updFeedback = Feedback.builder().id(EXISTING_ID).club(club).text(NEW_TEXT).build();
+        Feedback updFeedback = Feedback.builder().id(EXISTING_ID).club(club).user(user).text(NEW_TEXT).build();
+        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
         feedbackProfile.setClubId(club.getId());
-
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         when(dtoConverter.convertToEntity(feedbackProfile, feedback)).thenReturn(updFeedback);
         when(feedbackRepository.save(updFeedback)).thenReturn(updFeedback);
-        when(feedbackRepository.findAvgRating(EXISTING_CLUB_ID)).thenReturn(CLUB_RATING);
-        doNothing().when(clubRepository).updateRating(EXISTING_CLUB_ID, CLUB_RATING);
-        when(dtoConverter.convertToDto(updFeedback, FeedbackProfile.class))
-                .thenReturn(FeedbackProfile.builder().id(EXISTING_ID).text(NEW_TEXT).build());
 
+//        when(feedbackRepository.findAvgRating(EXISTING_CLUB_ID)).thenReturn(CLUB_RATING);
+//        doNothing().when(clubRepository).updateRating(EXISTING_CLUB_ID, CLUB_RATING);
+        when(dtoConverter.convertToDto(updFeedback, FeedbackResponse.class))
+                .thenReturn(FeedbackResponse.builder().id(EXISTING_ID).text(NEW_TEXT).club(club).user(user).build());
 
-        FeedbackProfile actual = feedbackService.updateFeedbackProfileById(EXISTING_ID, feedbackProfile);
+        FeedbackResponse actual = feedbackService.updateFeedbackProfileById(EXISTING_ID, feedbackProfile, httpServletRequest);
 
         assertEquals(updFeedback.getText(), actual.getText());
         assertEquals(updFeedback.getId(), actual.getId());
@@ -204,7 +206,7 @@ public class FeedbackServiceTest {
 
         feedbackProfile.setClubId(club.getId());
         assertThatThrownBy(() -> {
-            feedbackService.updateFeedbackProfileById(NOT_EXISTING_ID, feedbackProfile);
+            feedbackService.updateFeedbackProfileById(NOT_EXISTING_ID, feedbackProfile, httpServletRequest);
         }).isInstanceOf(NotExistException.class);
     }
 
@@ -216,8 +218,8 @@ public class FeedbackServiceTest {
 
         when(archiveService.saveModel(feedback)).thenReturn(feedback);
 
-        when(feedbackRepository.findAvgRating(EXISTING_CLUB_ID)).thenReturn(CLUB_RATING);
-        doNothing().when(clubRepository).updateRating(EXISTING_CLUB_ID, CLUB_RATING);
+//        when(feedbackRepository.findAvgRating(EXISTING_CLUB_ID)).thenReturn(CLUB_RATING);
+        when(clubService.updateRatingDeleteFeedback(feedbackResponse)).thenReturn(SuccessUpdatedClub.builder().build());
 
         when(dtoConverter.convertToDto(feedback, FeedbackResponse.class))
                 .thenReturn(feedbackResponse);

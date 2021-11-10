@@ -75,11 +75,12 @@ public class FeedbackController implements Api {
      * @return FeedbackProfile
      */
     @PutMapping("/feedback/{id}")
-    public FeedbackProfile updateFeedback(
+    public FeedbackResponse updateFeedback(
             @PathVariable Long id,
             @Valid
-            @RequestBody FeedbackProfile feedbackProfile) {
-        return feedbackService.updateFeedbackProfileById(id, feedbackProfile);
+            @RequestBody FeedbackProfile feedbackProfile,
+            HttpServletRequest httpServletRequest) {
+        return feedbackService.updateFeedbackProfileById(id, feedbackProfile, httpServletRequest);
     }
 
     /**
