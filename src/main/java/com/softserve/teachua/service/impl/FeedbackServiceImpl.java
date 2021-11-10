@@ -110,13 +110,10 @@ public class FeedbackServiceImpl implements FeedbackService {
         if (!userRepository.existsById(feedbackProfile.getUserId())){
             throw new NotExistException("User with id "+feedbackProfile.getUserId()+" does`nt exists");
         }
-
         Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, new Feedback()));
 //        Long clubId = feedback.getClub().getId();
-
         clubService.updateRatingNewFeedback(dtoConverter.convertToDto(feedback, FeedbackResponse.class));
 //        clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
-
         log.debug("add new feedback - " + feedback);
         return dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
     }

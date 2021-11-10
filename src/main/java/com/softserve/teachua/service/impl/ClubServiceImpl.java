@@ -597,10 +597,12 @@ public class ClubServiceImpl implements ClubService {
         club.setFeedbackCount(feedbackCount);
         Club updClub = clubRepository.save(club);
 
-        centerService.updateRatingUpdateClub(
-                previousClub,
-                dtoConverter.convertToDto(updClub, ClubResponse.class)
-        );
+        if(updClub.getCenter() != null) {
+            centerService.updateRatingUpdateClub(
+                    previousClub,
+                    dtoConverter.convertToDto(updClub, ClubResponse.class)
+            );
+        }
 
         return dtoConverter.convertToDto(updClub, SuccessUpdatedClub.class);
     }

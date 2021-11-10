@@ -272,7 +272,7 @@ public class CenterServiceImpl implements CenterService {
         return new PageImpl<>(centersOnPage
                 .stream()
                 .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
-                .peek(System.out::println)
+                .peek(centerResponse -> log.debug(centerResponse.toString()))
                 .collect(Collectors.toList()),
                 centersOnPage.getPageable(), centersOnPage.getTotalElements());
     }
