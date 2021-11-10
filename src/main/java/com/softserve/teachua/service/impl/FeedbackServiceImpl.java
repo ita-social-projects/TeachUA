@@ -81,7 +81,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
 
         Feedback feedback = optionalFeedback.get();
-        log.info("get feedback by id - " + feedback);
+        log.debug("get feedback by id - " + feedback);
         return feedback;
     }
 
@@ -92,7 +92,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .map(feedback -> (FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("get list of feedback -" + feedbackResponses);
+        log.debug("get list of feedback -" + feedbackResponses);
         return feedbackResponses;
     }
 
@@ -117,7 +117,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         clubService.updateRatingNewFeedback(dtoConverter.convertToDto(feedback, FeedbackResponse.class));
 //        clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
 
-        log.info("add new feedback - " + feedback);
+        log.debug("add new feedback - " + feedback);
         return dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
     }
 
@@ -133,7 +133,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .map(feedback -> (FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("get list of feedback -" + feedbackResponses);
+        log.debug("get list of feedback -" + feedbackResponses);
         return feedbackResponses;
     }
 
@@ -161,7 +161,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         clubService.updateRatingDeleteFeedback(feedbackResponse);
 
-        log.info("feedback {} was successfully deleted", feedback);
+        log.debug("feedback {} was successfully deleted", feedback);
         return feedbackResponse;
     }
 

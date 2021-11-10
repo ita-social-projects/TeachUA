@@ -40,7 +40,6 @@ public class CenterToCenterResponseConverter {
         CenterResponse centerResponse=dtoConverter.convertToDto(center,CenterResponse.class);
         centerResponse.setContacts(
                 contactsStringConverter.convertStringToContactDataResponses(center.getContacts()));
-//        log.info("===  convertToClubResponse method"+centerResponse);
         return centerResponse;
     }
 
