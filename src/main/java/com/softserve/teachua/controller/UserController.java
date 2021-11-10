@@ -91,12 +91,11 @@ public class UserController implements Api {
      */
     @DeleteMapping("/user/{id}")
     public UserResponse deleteUser(@PathVariable Long id) {
-        log.info("=======");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             auth.getAuthorities().stream().forEach(a -> a.getAuthority());
         } else {
-            log.info("auth is null");
+            log.debug("auth is null");
         }
         return userService.deleteUserById(id);
     }

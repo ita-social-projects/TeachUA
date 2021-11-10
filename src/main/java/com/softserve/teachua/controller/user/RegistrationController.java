@@ -34,7 +34,7 @@ public class RegistrationController implements Api {
      */
     @GetMapping("/verify")
     public SuccessVerification verifyUser(@Param("code") String code) {
-        log.info("Controller \"verify\",  code = " + code);
+        log.debug("Controller \"verify\",  code = " + code);
         return userService.verify(code);
     }
 
@@ -49,7 +49,7 @@ public class RegistrationController implements Api {
             @Valid
             @RequestBody
                     UserProfile userProfile) {
-        log.info("Controller \"signup\", userProfile = " + userProfile.toString());
+        log.debug("Controller \"signup\", userProfile = " + userProfile.toString());
         return userService.registerUser(userProfile);
     }
 }

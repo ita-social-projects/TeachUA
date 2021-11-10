@@ -106,7 +106,7 @@ public class CenterServiceImpl implements CenterService {
     @Override
     public SuccessCreatedCenter addCenter(CenterProfile centerProfile) {
 
-        log.info("centerName = "+centerProfile.getName());
+        log.debug("centerName = "+centerProfile.getName());
 
         if (isCenterExistByName(centerProfile.getName())) {
             throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
@@ -114,9 +114,9 @@ public class CenterServiceImpl implements CenterService {
 
         User user = null;
         if(centerProfile.getUserId() != null){
-            log.info("CenterServiceImpl=> centerProfile.userId == "+centerProfile.getUserId());
+            log.debug("CenterServiceImpl=> centerProfile.userId == "+centerProfile.getUserId());
             user = userRepository.getOne(centerProfile.getUserId());
-        }else {log.info("CenterServiceImpl=> centerProfile.userId == null");}
+        }else {log.debug("CenterServiceImpl=> centerProfile.userId == null");}
 
 
         Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
@@ -146,7 +146,7 @@ public class CenterServiceImpl implements CenterService {
             clubRepository.save(club);
         }
 
-        log.info("**/adding new center = " + centerProfile.getName());
+        log.debug("**/adding new center = " + centerProfile.getName());
         return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
     }
 
@@ -175,7 +175,7 @@ public class CenterServiceImpl implements CenterService {
         }
 
         Center center = optionalCenter.get();
-        log.info("**/getting center by id = " + center);
+        log.debug("**/getting center by id = " + center);
         return center;
     }
 
@@ -189,7 +189,7 @@ public class CenterServiceImpl implements CenterService {
     @Override
     public Center getCenterByExternalId(Long centerExternalId) {
         Center center = centerRepository.findCenterByCenterExternalId(centerExternalId);
-        log.info("**/getting center by external id = " + center);
+        log.debug("**/getting center by external id = " + center);
         return center;
     }
 
@@ -209,7 +209,7 @@ public class CenterServiceImpl implements CenterService {
         Center newCenter = dtoConverter.convertToEntity(centerProfile, center)
                 .withId(id);
 
-        log.info("**/updating center by id = " + newCenter);
+        log.debug("**/updating center by id = " + newCenter);
         return dtoConverter.convertToDto(centerRepository.save(newCenter), CenterProfile.class);
     }
 
@@ -221,7 +221,7 @@ public class CenterServiceImpl implements CenterService {
         archiveService.saveModel(center);
 
         try {
-            log.info("delete Center");
+            log.debug("delete Center");
             clubRepository.findClubsByCenter(center).forEach(club -> club.setCenter(null));
             locationRepository.findLocationsByCenter(center).forEach(location -> location.setCenter(null));
             centerRepository.deleteById(id);
@@ -230,7 +230,7 @@ public class CenterServiceImpl implements CenterService {
             throw new DatabaseRepositoryException(CENTER_DELETING_ERROR);
         }
 
-        log.info("center {} was successfully deleted", center);
+        log.debug("center {} was successfully deleted", center);
         return dtoConverter.convertToDto(center, CenterResponse.class);
     }
 
@@ -292,7 +292,7 @@ public class CenterServiceImpl implements CenterService {
         }
 
         Center center = optionalCenter.get();
-        log.info("**/getting center by name = " + name);
+        log.debug("**/getting center by name = " + name);
         return center;
     }
 
@@ -308,7 +308,6 @@ public class CenterServiceImpl implements CenterService {
                 .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
                 .collect(Collectors.toList());
 
-//        log.info("**/getting list of centers = " + centerResponses);
         return centerResponses;
     }
 
