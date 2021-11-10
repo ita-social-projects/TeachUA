@@ -3,11 +3,13 @@ package com.softserve.teachua.service;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.model.Center;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface CenterService {
@@ -21,6 +23,8 @@ public interface CenterService {
 
     SuccessCreatedCenter addCenter(CenterProfile centerProfile);
 
+    SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile, HttpServletRequest httpServletRequest);
+
     List<CenterResponse> getListOfCenters();
 
     CenterProfile updateCenter(Long id, CenterProfile centerProfile);
@@ -31,4 +35,10 @@ public interface CenterService {
 
     Page<CenterResponse> getAdvancedSearchCenters(AdvancedSearchCenterProfile advancedSearchCenterProfile,
                                                   Pageable pageable);
+
+    CenterResponse updateRatingUpdateClub(ClubResponse previousClub, ClubResponse updatedClub);
+
+    CenterResponse updateRatingDeleteClub(ClubResponse clubResponse);
+
+    List<CenterResponse> updateRatingForAllCenters();
 }

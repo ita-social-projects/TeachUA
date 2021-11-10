@@ -30,13 +30,13 @@ public class ArchiveServiceImpl implements ArchiveService {
 
     @Override
     public List<Archive> findArchivesByClassName(String className) {
-        log.info("**/finding list of Archives by class name = {}", className);
+        log.debug("**/finding list of Archives by class name = {}", className);
         return archiveRepository.findAllByClassName(className);
     }
 
     @Override
     public List<Archive> findAllArchives() {
-        log.info("**/getting list of all Archives");
+        log.debug("**/getting list of all Archives");
         return archiveRepository.findAll();
     }
 
@@ -52,7 +52,7 @@ public class ArchiveServiceImpl implements ArchiveService {
         } catch (JsonProcessingException e) {
             throw new JsonWriteException(String.format(JSON_WRITE_EXCEPTION, model.getClass().getName()));
         }
-        log.info("**/Model {} adding to archive", model.getClass().getName());
+        log.debug("**/Model {} adding to archive", model.getClass().getName());
         archiveRepository.save(archive);
         return model;
     }

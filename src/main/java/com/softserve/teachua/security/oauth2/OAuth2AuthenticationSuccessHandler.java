@@ -86,10 +86,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         User user = userService.getUserByEmail(authentication.getName());
         if (userRole.get() != "") {
             user.setRole(roleService.findByName((String) userRole.get()));
-            log.info("Set user role" + userRole.get());
+            log.debug("Set user role" + userRole.get());
         } else {
             user.setRole(roleService.findByName("ROLE_USER"));
-            log.info("Set default user role");
+            log.debug("Set default user role");
         }
         userService.updateUser(user);
 

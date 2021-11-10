@@ -23,11 +23,8 @@ public class CheckRussianValidator implements ConstraintValidator<CheckRussian,S
     @Override
     public boolean isValid(String text, ConstraintValidatorContext constraintValidatorContext) {
 
-        if (text == null){
-            return true;
-        }
 
-        if (text.isEmpty()){
+        if ( text == null || text.isEmpty()){
             throw new IncorrectInputException("Text cannot be empty or null");
         }
 
