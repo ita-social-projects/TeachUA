@@ -41,19 +41,17 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
-    private final UserRepository userRepository;
+    private  final UserRepository userRepository;
     private final UserService userService;
-    private final ClubService clubService;
 
-    @Autowired
-    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository, UserService userService, ClubService clubService) {
+  @Autowired
+    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository, UserService userService) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
         this.userRepository = userRepository;
         this.userService = userService;
-        this.clubService = clubService;
     }
 
     /**
@@ -103,11 +101,14 @@ public class FeedbackServiceImpl implements FeedbackService {
      * @return SuccessCreatedFeedback
      **/
     @Override
-    public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile) {
+    public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile, HttpServletRequest httpServletRequest) {
+
+        feedbackProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
+
         if(!clubRepository.existsById(feedbackProfile.getClubId())){
             throw new NotExistException("Club with id "+feedbackProfile.getClubId()+" does`nt exists");
         }
-        if (!userRepository.existsById(feedbackProfile.getUserId())){
+        if(!userRepository.existsById(feedbackProfile.getUserId())){
             throw new NotExistException("User with id "+feedbackProfile.getUserId()+" does`nt exists");
         }
         Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, new Feedback()));

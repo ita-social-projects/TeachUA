@@ -14,7 +14,7 @@ public interface FeedbackService {
 
     Feedback getFeedbackById(Long id);
 
-    SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile);
+    SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile, HttpServletRequest httpServletRequest);
 
     List<FeedbackResponse> getListOfFeedback();
 

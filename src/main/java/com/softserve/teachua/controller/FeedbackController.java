@@ -63,8 +63,8 @@ public class FeedbackController implements Api {
     @PostMapping("/feedback")
     public SuccessCreatedFeedback addFeedback(
             @Valid
-            @RequestBody FeedbackProfile feedbackProfile) {
-        return feedbackService.addFeedback(feedbackProfile);
+            @RequestBody FeedbackProfile feedbackProfile, HttpServletRequest httpServletRequest) {
+        return feedbackService.addFeedback(feedbackProfile,httpServletRequest);
     }
 
     /**
