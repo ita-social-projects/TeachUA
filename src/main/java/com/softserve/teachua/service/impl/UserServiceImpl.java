@@ -17,6 +17,7 @@ import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,8 +36,6 @@ import javax.validation.ValidationException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -197,12 +196,6 @@ public class UserServiceImpl implements UserService {
             throw new WrongAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
         }
 
-        Pattern pattern = Pattern.compile("^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+\\n,-.:\\r;<=>?|@_`{}~/^\\[\\]]{8,20}$");
-        Matcher matcher = pattern.matcher(userProfile.getPassword());
-        if (!matcher.matches()) {
-            throw new WrongAuthenticationException("Incorrect password!");
-        }
-
         if ("ROLE_ADMIN".equals(userProfile.getRoleName())) {
             throw new IncorrectInputException("Illegal role argument: ROLE_ADMIN");
         }
@@ -211,9 +204,8 @@ public class UserServiceImpl implements UserService {
                 .withPassword(encodeService.encodePassword(userProfile.getPassword()))
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
-
-        String phoneFormat  = "38"+user.getPhone();
-   //     String Formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
+        String phoneFormat = "38" + user.getPhone();
+//        String Formated = String.format("%s (%s) %s %s %s", phoneFormat.substring(0, 3), phoneFormat.substring(3, 6), phoneFormat.substring(6, 9), phoneFormat.substring(9, 11), phoneFormat.substring(11, 13));
 
         user.setPhone(phoneFormat);
 
@@ -225,6 +217,8 @@ public class UserServiceImpl implements UserService {
         log.debug("user {} registered successfully", user);
         try {
             sendVerificationEmail(user);
+        } catch (MailSendException ex) {
+            throw new MailSendException("Email connection failed!");
         } catch (UnsupportedEncodingException | MessagingException ignored) {
             throw new DatabaseRepositoryException(USER_REGISTRATION_ERROR);
         }
@@ -437,7 +431,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(
                 jwtProvider.getUserIdFromToken(
                         jwtProvider.getJwtFromRequest(httpServletRequest))).orElseThrow(
-                                () -> new WrongAuthenticationException());
+                () -> new WrongAuthenticationException());
     }
 
     @Override
