@@ -204,7 +204,6 @@ public class UserServiceImpl implements UserService {
                 .withPassword(encodeService.encodePassword(userProfile.getPassword()))
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
-
         String phoneFormat = "38" + user.getPhone();
 //        String Formated = String.format("%s (%s) %s %s %s", phoneFormat.substring(0, 3), phoneFormat.substring(3, 6), phoneFormat.substring(6, 9), phoneFormat.substring(9, 11), phoneFormat.substring(11, 13));
 
@@ -309,7 +308,15 @@ public class UserServiceImpl implements UserService {
                 .withId(id)
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
+
+        log.info("updating role by id {}", newUser);
+        String phoneFormat  = "38"+userProfile.getPhone();
+      //  String formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
+
+        newUser.setPhone(phoneFormat);
+
         log.debug("updating role by id {}", newUser);
+
         return dtoConverter.convertToDto(userRepository.save(newUser), SuccessUpdatedUser.class);
     }
 
@@ -560,5 +567,20 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         log.debug("password reset {}", user);
         return userResetPassword;
+    }
+
+    private String ifIncorrectInputInUpdatingFields(UserUpdateProfile userProfile) {
+        if (userProfile.getFirstName() == null || userProfile.getFirstName().trim().isEmpty()) {
+            return "Ім'я";
+        }
+        if (userProfile.getLastName() == null || userProfile.getLastName().trim().isEmpty()) {
+            return "Прізвище";
+        }
+        if (userProfile.getPhone() == null || userProfile.getPhone().trim().isEmpty()
+                || userProfile.getPhone().length() != 9
+                || !Pattern.compile("[0-9]{9}").matcher(userProfile.getPhone()).find()) {
+            return "Телефон";
+        }
+        return "";
     }
 }

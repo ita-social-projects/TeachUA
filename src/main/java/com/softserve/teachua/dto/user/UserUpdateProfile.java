@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.user;
 
+import com.softserve.teachua.dto.club.validation.Phone;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +36,9 @@ public class UserUpdateProfile implements Convertible {
     private String lastName;
 
     @NotBlank
-    @Pattern(regexp = "[0-9]{9}", message = "Phone number must contain 9 numbers and can`t contain other symbols")
+    @Pattern(regexp = "[0-9]{10}", message = "Phone number must contain 10 numbers and can`t contain other symbols")
+    //@Phone
+
     private String phone;
 
     private String urlLogo;

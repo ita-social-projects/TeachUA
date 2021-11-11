@@ -50,6 +50,8 @@ public interface ClubService {
 
     List<ClubResponse> getClubByCategoryAndCity(SearchClubProfile searchClubProfile);
 
+    void updateContacts();
+
     ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile, HttpServletRequest httpServletRequest);
 
     void validateClubOwner(Long id, HttpServletRequest httpServletRequest);

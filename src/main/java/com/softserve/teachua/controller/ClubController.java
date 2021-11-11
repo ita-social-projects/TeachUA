@@ -183,4 +183,9 @@ public class ClubController implements Api {
     public List<ClubResponse> updateClubsRating(){
         return clubService.updateRatingForAllClubs();
     }
+
+    @GetMapping("/club/updateContacts")
+    public void updateContacts(){
+         clubService.updateContacts();
+    }
 }
