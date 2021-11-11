@@ -1,6 +1,7 @@
 package com.softserve.teachua.dto.user;
 
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.utils.validations.Name;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,18 +21,10 @@ public class UserProfile implements Convertible {
     @Pattern(regexp = "^[a-zA-Z0-9-\\.]+@([a-zA-Z-]+\\.)+[a-zA-Z-]{2,4}$", message = "is not valid")
     private String email;
 
-
-    @NotBlank
-    @Size(min = 1, max = 25)
-    @Pattern(regexp = "^[a-zA-Zа-яА-ЯіІєЄїЇґҐ]*$", message = "can contain only ukrainian and english letters")
-    @Pattern(regexp = "^[^ЁёЪъЫыЭэ]*$", message = "cannot contain russian letters ")
+    @Name
     private String firstName;
 
-
-    @NotBlank
-    @Size(min = 1, max = 25)
-    @Pattern(regexp = "^[a-zA-Zа-яА-ЯіІєЄїЇґҐ]*$", message = "can contain only ukrainian and english letters")
-    @Pattern(regexp = "^[^ЁёЪъЫыЭэ]*$", message = "cannot contain russian letters ")
+    @Name
     private String lastName;
 
     @NotBlank
