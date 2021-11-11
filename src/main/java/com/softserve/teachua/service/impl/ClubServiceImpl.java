@@ -546,7 +546,7 @@ public class ClubServiceImpl implements ClubService {
                         center.setContacts(json.toString());
                     }
 
-                    log.info(center.getContacts());
+                    log.debug(center.getContacts());
                 })
                 .collect(Collectors.toList());
 
@@ -631,7 +631,7 @@ public class ClubServiceImpl implements ClubService {
                         club.setContacts(json.toString());
                     }
 
-                    log.info(club.getContacts());
+                    log.debug(club.getContacts());
                 })
                 .collect(Collectors.toList());
     }
