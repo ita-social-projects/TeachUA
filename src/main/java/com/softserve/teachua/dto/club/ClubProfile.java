@@ -1,6 +1,10 @@
 package com.softserve.teachua.dto.club;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.softserve.teachua.dto.club.validation.ClubDescription;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
@@ -8,9 +12,7 @@ import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.util.List;
 
 @AllArgsConstructor
@@ -31,19 +33,27 @@ public class ClubProfile implements Convertible {
 
     @Valid
     @ClubDescription
-    @JsonIgnoreProperties(ignoreUnknown = true)
-//    @Pattern(regexp = "^[А-Яа-яёЁЇїІіЄєҐґa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]{40,1500}$" ,
-//            message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
     public String description;
 
+    @Valid
+    @NotEmpty
+    @Size(
+            min = 5,
+            max = 100,
+            message = "Довжина назви має бути від 5 до 100 символів")
+    @Pattern(
+            regexp = "^[А-Яа-яіІєЄїЇґҐ\\'a-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+[^:эЭъЪыЫёЁ]$" ,
+            message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
     private String name;
 
     @Min(2)
     @Max(17)
+    @NotNull(message = "'AgeFrom' поле не може бути пустим")
     private Integer ageFrom;
 
     @Min(3)
     @Max(18)
+    @NotNull(message = "'AgeTo' поле не може бути пустим")
     private Integer ageTo;
 
     private String urlBackground;

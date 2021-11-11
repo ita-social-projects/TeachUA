@@ -1,13 +1,13 @@
 package com.softserve.teachua.dto.user;
 
+import com.softserve.teachua.dto.club.validation.Phone;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,16 +22,18 @@ public class UserProfile implements Convertible {
 
 
     @NotEmpty
-    @Pattern(regexp ="^[^-ЁёЪъЫыЭэ]*$",message = "Last name not can have russian letters ")
+    @Pattern(regexp ="^[^-ЁёЪъЫыЭэ]*$",message = "Last name cannot contain russian letters ")
     private String firstName;
 
 
     @NotEmpty
-    @Pattern(regexp ="^[^-ЁёЪъЫыЭэё]*$",message = "Last name not can have russian letters ")
+    @Pattern(regexp ="^[^-ЁёЪъЫыЭэё]*$",message = "Last name cannot contain russian letters ")
 
     private String lastName;
 
     @NotEmpty
+    @Pattern(regexp = "^[0-9]{10}$",message = "Phone can have only numbers and length 10")
+    //@Phone
     private String phone;
 
 

@@ -7,9 +7,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.FIELD) // enable addition @annotation to class
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = DescriptionValidation.class) // class to process logic: valid / not valid
+@Constraint(validatedBy = DescriptionValidation.class)
 
 public @interface ClubDescription {
     String message() default "Invalid description";

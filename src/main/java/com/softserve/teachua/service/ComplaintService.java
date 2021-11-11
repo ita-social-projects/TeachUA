@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.complaint.ComplaintResponse;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.model.Complaint;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface ComplaintService {
@@ -12,7 +13,7 @@ public interface ComplaintService {
 
     Complaint getComplaintById(Long id);
 
-    SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile);
+    SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest);
 
     List<ComplaintResponse> getAll();
 

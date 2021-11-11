@@ -2,17 +2,19 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.task.*;
 import com.softserve.teachua.model.Task;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
+import java.util.List;
 
 public interface TaskService {
     TaskProfile deleteTask(Long id);
 
     Task getTaskById(Long id);
 
-    Page<TaskPreview> getTasksByChallengeId(Long id, Pageable pageable);
+    List<TaskPreview> getTasksByChallengeId(Long id);
 
-    Page<TaskPreview> getTasksByChallengeId(Long id);
+    List<TaskPreview> getListOfTasks();
 
     TaskProfile getTask(Long id);
 

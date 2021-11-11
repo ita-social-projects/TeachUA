@@ -1,12 +1,15 @@
 package com.softserve.teachua.dto.challenge;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.softserve.teachua.utils.deserializers.HtmlModifyDeserialize;
+import com.softserve.teachua.utils.deserializers.TrimDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -17,23 +20,31 @@ import javax.validation.constraints.Size;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateChallenge {
-    @NotNull
-    @Pattern(regexp = "^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+ ,-.:;<=>?|@_`{}~^&&[^ыЫъЪёЁэЭ]]+$",
+    @NotBlank
+    @JsonDeserialize(using = TrimDeserialize.class)
+    @Pattern(regexp = "^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+ ,-.:;<=>?|@_`{}~\\\\^&&[^ыЫъЪёЁэЭ]]+$",
             message = "can contains only letters of ukrainian and english languages, numbers, and some special symbols like: [\"#$%&'*+ ,-.:;<=>?|@_`{}~]")
-    @Size(min = 5, max = 30, message = "Name must contain a minimum of 5 and a maximum of 30 letters")
+    @Size(min = 5, max = 30, message = " must contain a minimum of 5 and a maximum of 30 letters")
     private String name;
-    @NotNull
+    @JsonDeserialize(using = TrimDeserialize.class)
+    @NotBlank
     @Pattern(regexp = "^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*+ ,-.:;<=>?|@_`{}~^&&[^ыЫъЪёЁэЭ]]+$",
             message = "can contains only letters of ukrainian and english languages, numbers, and some special symbols like: [\"#$%&'*+ ,-.:;<=>?|@_`{}~]")
-    @Size(min = 5, max = 30, message = "Title must contain a minimum of 5 and a maximum of 30 letters")
+    @Size(min = 5, max = 50, message = "must contain a minimum of 5 and a maximum of 50 letters")
     private String title;
-    @NotNull
-    @NotEmpty
-    @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "cant contain letters of russian languages")
+    @NotBlank
+    @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "can not contain letters of russian languages")
+    @Size(max = 3000, message = "must contain a maximum of 3000 letters")
+    @JsonDeserialize(using = HtmlModifyDeserialize.class)
     private String description;
-    @NotNull
-    @Pattern(regexp = "/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path")
+    @JsonDeserialize(using = TrimDeserialize.class)
+    @Pattern(regexp = "^https://docs\\.google\\.com/forms/d/e/[A-z0-9_-]+/viewform\\?embedded=true$",
+            message = "must match https://docs.google.com/forms/d/e/{formCode}/viewform?embedded=true")
+    @Size(max = 130, message = "must contain a maximum of 130 letters")
+    private String registrationLink;
+    @NotBlank
+    @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.png")
     private String picture;
     @NotNull
-    private Long sortId;
+    private Long sortNumber;
 }

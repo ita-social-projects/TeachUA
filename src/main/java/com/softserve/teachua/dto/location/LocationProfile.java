@@ -1,13 +1,9 @@
 package com.softserve.teachua.dto.location;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.softserve.teachua.model.Club;
+import com.softserve.teachua.dto.club.validation.CheckRussian;
 import lombok.*;
-
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @AllArgsConstructor
@@ -20,10 +16,13 @@ public class LocationProfile {
 
     private Long id;
 
-    @Pattern(regexp = "^(?!\\s)([\\wА-ЩЬЮЯҐЄІЇа-щьюяґєії !\\\"#$%&'()*+,\\-.\\/:;<=>?@\\]\\[^_`{}~]){5,100}$" ,
-             message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
-    @Pattern(regexp = "^.*\\S$",
-            message = "Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи’")
+    @NotEmpty
+    @Size(
+            min=5,
+            max=100,
+            message = "Довжина назви не відповідає критеріям: від 5 до 100 символів."
+    )
+    @CheckRussian
     private String name;
 
     private String address;
@@ -31,8 +30,11 @@ public class LocationProfile {
     private Long districtId;
     private Long stationId;
 
+    @CheckRussian
     private String cityName;
+    @CheckRussian
     private String districtName;
+    @CheckRussian
     private String stationName;
 
     private String coordinates;

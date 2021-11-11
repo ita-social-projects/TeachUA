@@ -1,5 +1,6 @@
 package com.softserve.teachua.config;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.security.JwtFilter;
 import com.softserve.teachua.security.RestAuthenticationEntryPoint;
@@ -14,7 +15,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,8 +26,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import static com.softserve.teachua.constants.RoleData.ADMIN;
+
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -47,13 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
-    @Override
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-                .userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder());
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -72,6 +71,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.jwtFilter = jwtFilter;
     }
 
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        web
+//            .ignoring()
+//            .antMatchers(
+//                    "/v3/api-docs/**",
+//                    "/swagger-ui/**",
+//                    "/swagger-ui.html",
+//                    "/swagger-resources/**",
+//                    "/swagger-resources"
+//            );
+//    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -84,6 +96,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
+//                .authorizeRequests()
+//                .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+//                .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/static/**").permitAll()
@@ -95,19 +110,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/clubs",
                         "/challenge",
                         "/challenge/*",
+                        "/challenge/**",
+                        "/challenge/task/**",
                         "/marathon",
                         "/marathon/*",
                         "/marathon/task/*",
                         "/about",
+                        "/banners",
+                        "/banner/*",
                         "/centers",
                         "/center/*",
                         "/service").permitAll()
-                .antMatchers(HttpMethod.GET,"/user/*").permitAll()
-                .antMatchers(HttpMethod.GET," /admin/*","/manager/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/challengeUA", "/challengeUA/registration", "/challengeUA/task/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/user/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/manager/**").hasAnyRole("MANAGER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
                 .antMatchers("/verify", "/verifyreset").permitAll()
                 .antMatchers("/roles").hasRole("ADMIN")
                 .antMatchers("/index", "/api/signup", "/api/signin", "/api/signout", "/api/verify", "/api/resetpassword", "/api/verifyreset").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/user/**","/api/verify","/api/verifyreset").hasAnyRole("USER", "ADMIN", "MANAGER")
+                .antMatchers(HttpMethod.GET, "/api/user/**", "/api/verify", "/api/verifyreset").hasAnyRole("USER", "ADMIN", "MANAGER")
                 .antMatchers(HttpMethod.PUT, "/api/user/**").hasAnyRole("USER", "ADMIN", "MANAGER")
                 .antMatchers(HttpMethod.GET, "/api/cities", "/api/city/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/city").hasRole("ADMIN")
@@ -127,6 +148,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/club").hasAnyRole("MANAGER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/complaint", "/api/feedback").hasAnyRole("USER", "MANAGER", "ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/center/**", "/api/centers/**", "/api/feedbacks/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/center").hasAnyRole("MANAGER", "ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/center/**").hasAnyRole("MANAGER", "ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/search").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/questions", "/api/question/**").permitAll()
@@ -140,6 +162,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/challenge/**", "/api/challenge").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/challenge/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/challenge/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/challenge/{\\d+}/task").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/tasks").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/challenge/task/{\\d+}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/challenge/task/{\\d+}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/challenge/task/{\\d+}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/about", "/api/about/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/about", "/api/about/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/about/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/about/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/api/clubs/rating").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/api/centers/rating").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/banners", "/api/banner/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/banner").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/banner/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/banner/**").hasRole("ADMIN")
 
                 //TODO: only for admin
                 .antMatchers(HttpMethod.GET, "/api/logs").permitAll()
@@ -150,8 +187,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/log/**").permitAll()
 
                 .antMatchers("/oauth2/**").permitAll()
-                .antMatchers("/api/upload-image").permitAll()
-                .antMatchers("/api/users","/api/user/update").permitAll()
+                .antMatchers("/api/upload-image/**").permitAll()
+                .antMatchers("/api/users", "/api/user/update").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

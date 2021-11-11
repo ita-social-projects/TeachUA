@@ -32,7 +32,8 @@ public class ChallengeController implements Api {
     }
 
     /**
-     * Use this endpoint to get full information about challenge with tasks that have already begun .
+     * Use this endpoint to get full information about challenge with tasks that have already begun.
+     * Only the admin can get the challenge if it is not active.
      *
      * @param id - put challenge id here.
      * @return {@code ChallengeProfile}.
@@ -46,7 +47,7 @@ public class ChallengeController implements Api {
      * Use this endpoint to create new challenge.
      * This feature available only for admins.
      *
-     * @param createChallenge - put required parameters here.
+     * @param createChallenge    - put required parameters here.
      * @param httpServletRequest - autowired by spring to get user from request.
      * @return {@code SuccessCreatedChallenge}
      */
@@ -61,7 +62,7 @@ public class ChallengeController implements Api {
      * Use this endpoint to update some values of challenge.
      * This feature available only for admins.
      *
-     * @param id - put challenge id here.
+     * @param id              - put challenge id here.
      * @param updateChallenge - put new and old parameters here.
      * @return {@code SuccessUpdatedChallenge} - shows result of updating challenge.
      */
@@ -83,4 +84,20 @@ public class ChallengeController implements Api {
     public ChallengeDeleteResponse deleteChallenge(@PathVariable Long id) {
         return challengeService.deleteChallenge(id);
     }
+
+    /**
+     * Use this endpoint to update some values of challenge.
+     * This feature available only for admins.
+     *
+     * @param id - put challenge id here.
+     * @param updateChallengePreview - put new and old parameters here.
+     * @return {@code SuccessUpdateChallengePreview} - shows result of updating challenge.
+     */
+    @PatchMapping("/challenge/{id}")
+    public SuccessUpdateChallengePreview updateChallengePreview(
+            @PathVariable Long id,
+            @Valid @RequestBody SuccessUpdateChallengePreview updateChallengePreview) {
+        return challengeService.updateChallengePreview(id, updateChallengePreview);
+    }
+
 }

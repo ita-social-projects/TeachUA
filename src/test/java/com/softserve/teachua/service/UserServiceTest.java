@@ -42,6 +42,9 @@ import static org.mockito.Mockito.*;
     @Mock
     private ArchiveService archiveService;
 
+    @Mock
+    private UserUpdateProfile userUpdateProfile;
+
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -127,7 +130,7 @@ import static org.mockito.Mockito.*;
 
     @Test
      void validateUserWithValidPasswordTest() {
-        UserLogin userLogin = new UserLogin(NEW_EMAIL, PASSWORD, IS_STATUS);
+        UserLogin userLogin = new UserLogin(NEW_EMAIL, PASSWORD);
         User newUser = User.builder().email(NEW_EMAIL).password(PASSWORD).status(IS_STATUS).build();
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
         when(dtoConverter.convertToDto(newUser, UserEntity.class))
@@ -146,7 +149,7 @@ import static org.mockito.Mockito.*;
     @Test
     public void validateUserWithInvalidPasswordTest() {
         String invalidPassword = "invalid password";
-        UserLogin userLogin = new UserLogin(NEW_EMAIL, invalidPassword, IS_STATUS);
+        UserLogin userLogin = new UserLogin(NEW_EMAIL, invalidPassword);
         User newUser = User.builder().email(NEW_EMAIL).password(invalidPassword).build();
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
         when(dtoConverter.convertToDto(newUser, UserEntity.class))
@@ -159,18 +162,18 @@ import static org.mockito.Mockito.*;
             userService.validateUser(userLogin);
         }).isInstanceOf(WrongAuthenticationException.class);
     }
-/*
-    @Test
+
+   @Test
     public void updateUserTest() {
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
         when(userRepository.save(any())).thenReturn(user);
-        when(dtoConverter.convertToEntity(userProfile, user)).thenReturn(User.builder()
-                .email(userProfile.getEmail()).firstName(userProfile.getFirstName()).build());
+        when(dtoConverter.convertToEntity(userUpdateProfile, user)).thenReturn(User.builder()
+                .email(userUpdateProfile.getEmail()).firstName(userUpdateProfile.getFirstName()).build());
         when(dtoConverter.convertToDto(user, SuccessUpdatedUser.class)).thenReturn(SuccessUpdatedUser
-                .builder().email(userProfile.getEmail()).build());
+                .builder().email(userUpdateProfile.getEmail()).build());
 
-        SuccessUpdatedUser updatedUser = userService.updateUser(EXISTING_ID, userProfile);
-        assertEquals(updatedUser.getEmail(), userProfile.getEmail());
+        SuccessUpdatedUser updatedUser = userService.updateUser(EXISTING_ID, userUpdateProfile);
+        assertEquals(updatedUser.getEmail(), userUpdateProfile.getEmail());
     }
 
     @Test
@@ -178,9 +181,9 @@ import static org.mockito.Mockito.*;
         when(userRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
-            userService.updateUser(NOT_EXISTING_ID, userProfile);
+            userService.updateUser(NOT_EXISTING_ID, userUpdateProfile);
         }).isInstanceOf(NotExistException.class);
-    }*/
+    }
 
     @Test
     public void deleteUserByIdTest() {

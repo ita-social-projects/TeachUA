@@ -40,10 +40,6 @@
 
 
 	<dependencies>
-<!-- 		<dependency> -->
-<!-- 			<groupId>mysql</groupId> -->
-<!-- 			<artifactId>mysql-connector-java</artifactId> -->
-<!-- 		</dependency> -->
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -65,7 +61,6 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
@@ -135,26 +130,28 @@
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>2.13.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.13.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.13.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.13.0</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client -->
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-client</artifactId>
 		</dependency>
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.slf4j</groupId> -->
-		<!-- <artifactId>slf4j-api</artifactId> -->
-		<!-- <version>${org.slf4j.version}</version> -->
-		<!-- <scope>compile</scope> -->
-		<!-- </dependency> -->
-
-<!-- 		<dependency> -->
-<!-- 		<groupId>org.slf4j</groupId> -->
-<!-- 		<artifactId>slf4j-log4j12</artifactId> -->
-<!-- 		<version>${org.slf4j.version}</version> -->
-<!-- 		<scope>runtime</scope> -->
-<!-- 		</dependency> -->
 
 		<!--<dependency> <groupId>org.powermock</groupId> <artifactId>powermock-api-mockito</artifactId> 
 			<version>1.7.4</version> <scope>test</scope> </dependency> -->
@@ -205,6 +202,7 @@
 			<version>2.6</version>
 		</dependency>
 	</dependencies>
+
 
 	<build>
 		<finalName>dev</finalName>

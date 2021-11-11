@@ -13,6 +13,7 @@ import java.time.LocalDate;
 public class TaskProfile implements Convertible {
     private Long id;
     private String name;
+    private String headerText;
     private String description;
     private String picture;
     private LocalDate startDate;

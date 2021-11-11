@@ -27,8 +27,8 @@ public class EncoderServiceImpl implements EncoderService {
     }
 
 
-    public boolean isValidStatus(UserLogin userLogin, UserEntity userEntity) {
-        return (userLogin.isStatus() == (userEntity.isStatus()));
+    public boolean isValidStatus(UserEntity userEntity) {
+        return (userEntity.isStatus());
     }
 
     public String encodePassword(String rawPassword) {

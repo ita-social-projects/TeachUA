@@ -34,7 +34,6 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     List<Club> findAllByUserId(@Param("id") Long id);
 
     Page<Club> findAllByUserId(Long id, Pageable pageable);
-
   @Query("SELECT DISTINCT club from Club AS club " +
         "JOIN club.categories AS category " +
         "LEFT JOIN club.locations AS locations " +
@@ -62,11 +61,14 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             "LEFT JOIN club.locations AS locations " +
             "LEFT JOIN locations.city AS city " +
             "JOIN club.categories AS category WHERE " +
+            "(:name IS NULL OR " +
             "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) OR " +
-            "LOWER(club.description) LIKE LOWER(CONCAT('%', :name , '%'))AND " +
-            "((:isOnline = false AND city.name = :city ) OR " +
-            "(:isOnline = true AND club.isOnline = true AND city IS NULL)) AND " +
-            "LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%'))")
+            "LOWER(club.description) LIKE LOWER(CONCAT('%', :name , '%'))) AND " +
+            "(((:isOnline = false OR :isOnline IS NULL) AND city.name = :city ) OR " +
+            "(:isOnline = true AND club.isOnline = true AND city IS NULL) OR " +
+            "(:isOnline IS NULL AND :city IS NULL)) AND " +
+            "(:category IS NULL OR LOWER(category.name) LIKE LOWER(CONCAT('%', :category ,'%')))")
+
     Page<Club> findAllByParameters(
             @Param("name") String name,
             @Param("city") String cityName,
@@ -125,11 +127,19 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
                                      Pageable pageable);
 
     @Modifying
-    @Query(value = "UPDATE clubs SET rating=:rating WHERE id = :club_id", nativeQuery = true)
-    void updateRating(@Param("club_id") Long club_id, @Param("rating") double rating);
+    @Query(value = "UPDATE clubs SET rating=:rating, feedback_count = :feedback_count WHERE id = :club_id", nativeQuery = true)
+    void updateRating(
+            @Param("club_id") Long club_id,
+            @Param("rating") double rating,
+            @Param("feedback_count") Long feedback_count
+    );
 
     List<Club> findClubByClubExternalId(Long id);
 
     List<Club> findClubsByCenter(Center center);
+
+    @Query("SELECT case  when (AVG(club.rating)) is null then 0.0 else AVG(club.rating)  end FROM Club AS club" +
+            " WHERE club.center.id = :centerId and club.feedbackCount > 0")
+    Double findAvgRating(@Param("centerId") Long centerId);
 
 }

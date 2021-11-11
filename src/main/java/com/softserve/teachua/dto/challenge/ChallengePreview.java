@@ -15,5 +15,6 @@ import lombok.NoArgsConstructor;
 public class ChallengePreview implements Convertible {
     private Long id;
     private String name;
-    private Long sortId;
+    private Long sortNumber;
+    private String title;
 }

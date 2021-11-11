@@ -5,9 +5,7 @@ import com.softserve.teachua.service.impl.FileUploadServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -22,7 +20,7 @@ public class UploadController implements Api {
         this.fileUploadServiceImpl = fileUploadServiceImpl;
     }
 
-    @PostMapping("/upload-image")
+    @PostMapping("/upload-image") @CrossOrigin
     public String uploadPhoto(@RequestParam("image") MultipartFile image,
                               @RequestParam("folder") String folder) {
 
@@ -30,5 +28,11 @@ public class UploadController implements Api {
         String uploadDir = String.format("%s/%s", uploadDirectory, folder);
 
         return fileUploadServiceImpl.uploadImage(uploadDir, fileName, image);
+    }
+
+    @DeleteMapping("/delete-file")
+    public String deleteFile(@RequestParam("filePath") String filePath) {
+        fileUploadServiceImpl.deleteFile(filePath);
+        return filePath+" successfully deleted.";
     }
 }
