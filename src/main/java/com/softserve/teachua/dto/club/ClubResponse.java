@@ -37,6 +37,6 @@ public class ClubResponse implements Convertible {
     private Set<LocationResponse> locations;
     private Boolean isApproved;
     private Boolean isOnline;
-
+    private Long feedbackCount;
     private Set<ContactDataResponse> contacts;
 }

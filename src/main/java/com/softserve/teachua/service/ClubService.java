@@ -2,6 +2,7 @@ package com.softserve.teachua.service;
 
 
 import com.softserve.teachua.dto.club.*;
+import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
@@ -49,7 +50,17 @@ public interface ClubService {
 
     List<ClubResponse> getClubByCategoryAndCity(SearchClubProfile searchClubProfile);
 
+    void updateContacts();
+
     ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile, HttpServletRequest httpServletRequest);
 
     void validateClubOwner(Long id, HttpServletRequest httpServletRequest);
+
+    SuccessUpdatedClub updateRatingNewFeedback(FeedbackResponse feedbackResponse);
+
+    SuccessUpdatedClub updateRatingEditFeedback(FeedbackResponse previousFeedback, FeedbackResponse updatedFeedback);
+
+    SuccessUpdatedClub updateRatingDeleteFeedback(FeedbackResponse feedbackResponse);
+
+    List<ClubResponse> updateRatingForAllClubs();
 }

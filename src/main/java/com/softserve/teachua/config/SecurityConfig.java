@@ -110,6 +110,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/clubs",
                         "/challenge",
                         "/challenge/*",
+                        "/challenge/**",
+                        "/challenge/task/**",
                         "/marathon",
                         "/marathon/*",
                         "/marathon/task/*",
@@ -120,13 +122,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/center/*",
                         "/service").permitAll()
                 .antMatchers(HttpMethod.GET, "/challengeUA", "/challengeUA/registration", "/challengeUA/task/*").permitAll()
-                .antMatchers(HttpMethod.GET,"/user/*").permitAll()
-                .antMatchers(HttpMethod.GET,"/manager/**" ).hasAnyRole("MANAGER", "ADMIN")
-                .antMatchers(HttpMethod.GET,"/admin/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/user/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/manager/**").hasAnyRole("MANAGER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
                 .antMatchers("/verify", "/verifyreset").permitAll()
                 .antMatchers("/roles").hasRole("ADMIN")
                 .antMatchers("/index", "/api/signup", "/api/signin", "/api/signout", "/api/verify", "/api/resetpassword", "/api/verifyreset").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/user/**","/api/verify","/api/verifyreset").hasAnyRole("USER", "ADMIN", "MANAGER")
+                .antMatchers(HttpMethod.GET, "/api/user/**", "/api/verify", "/api/verifyreset").hasAnyRole("USER", "ADMIN", "MANAGER")
                 .antMatchers(HttpMethod.PUT, "/api/user/**").hasAnyRole("USER", "ADMIN", "MANAGER")
                 .antMatchers(HttpMethod.GET, "/api/cities", "/api/city/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/city").hasRole("ADMIN")
@@ -146,6 +148,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/api/club").hasAnyRole("MANAGER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/complaint", "/api/feedback").hasAnyRole("USER", "MANAGER", "ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/center/**", "/api/centers/**", "/api/feedbacks/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/center").hasAnyRole("MANAGER", "ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/center/**").hasAnyRole("MANAGER", "ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/search").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/questions", "/api/question/**").permitAll()
@@ -168,10 +171,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/about", "/api/about/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/about/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/about/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET,"/api/banners","/api/banner/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/banner").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT,"/api/banner/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE,"/api/banner/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/api/clubs/rating").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/api/centers/rating").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/banners", "/api/banner/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/banner").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/banner/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/banner/**").hasRole("ADMIN")
 
                 //TODO: only for admin
                 .antMatchers(HttpMethod.GET, "/api/logs").permitAll()
@@ -183,7 +188,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers("/oauth2/**").permitAll()
                 .antMatchers("/api/upload-image/**").permitAll()
-                .antMatchers("/api/users","/api/user/update").permitAll()
+                .antMatchers("/api/users", "/api/user/update").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

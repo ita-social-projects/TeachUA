@@ -17,6 +17,7 @@ import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,8 +36,6 @@ import javax.validation.ValidationException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -127,7 +126,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = optionalUser.get();
-        log.info("getting user by id {}", user);
+        log.debug("getting user by id {}", user);
         return user;
     }
 
@@ -145,7 +144,7 @@ public class UserServiceImpl implements UserService {
             throw new NotExistException(String.format(USER_NOT_FOUND_BY_EMAIL, email));
         }
 
-        log.info("getting user by email {}", userRepository.findByEmail(email));
+        log.debug("getting user by email {}", userRepository.findByEmail(email));
         return optionalUser.get();
     }
 
@@ -163,7 +162,7 @@ public class UserServiceImpl implements UserService {
             throw new NotExistException(USER_NOT_FOUND_BY_VERIFICATION_CODE);
         }
 
-        log.info("getting user by verificationCode {}", userRepository.findByVerificationCode(verificationCode));
+        log.debug("getting user by verificationCode {}", userRepository.findByVerificationCode(verificationCode));
         return optionalUser.get();
     }
 
@@ -179,7 +178,7 @@ public class UserServiceImpl implements UserService {
                 .map(user -> (UserResponse) dtoConverter.convertToDto(user, UserResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("getting list of users {}", userResponses);
+        log.debug("getting list of users {}", userResponses);
         return userResponses;
     }
 
@@ -205,20 +204,21 @@ public class UserServiceImpl implements UserService {
                 .withPassword(encodeService.encodePassword(userProfile.getPassword()))
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
+        String phoneFormat = "38" + user.getPhone();
+//        String Formated = String.format("%s (%s) %s %s %s", phoneFormat.substring(0, 3), phoneFormat.substring(3, 6), phoneFormat.substring(6, 9), phoneFormat.substring(9, 11), phoneFormat.substring(11, 13));
 
-        String phoneFormat  = "+380"+user.getPhone();
-        String Formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
+        user.setPhone(phoneFormat);
 
-        user.setPhone(Formated);
-
-        log.info(user.getPhone());
+        log.debug(user.getPhone());
 
         user.setVerificationCode(RandomString.make(64));
         user.setStatus(false);
         user = userRepository.save(user);
-        log.info("user {} registered successfully", user);
+        log.debug("user {} registered successfully", user);
         try {
             sendVerificationEmail(user);
+        } catch (MailSendException ex) {
+            throw new MailSendException("Email connection failed!");
         } catch (UnsupportedEncodingException | MessagingException ignored) {
             throw new DatabaseRepositoryException(USER_REGISTRATION_ERROR);
         }
@@ -267,7 +267,7 @@ public class UserServiceImpl implements UserService {
         } else if (!encodeService.isValidPassword(userLogin, userEntity)) {
             throw new WrongAuthenticationException(WRONG_PASSWORD);
         }
-        log.info("user {} logged successfully", userLogin);
+        log.debug("user {} logged successfully", userLogin);
 
 
         Authentication authentication = authenticationManager.authenticate(
@@ -308,7 +308,15 @@ public class UserServiceImpl implements UserService {
                 .withId(id)
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
+
         log.info("updating role by id {}", newUser);
+        String phoneFormat  = "38"+userProfile.getPhone();
+      //  String formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
+
+        newUser.setPhone(phoneFormat);
+
+        log.debug("updating role by id {}", newUser);
+
         return dtoConverter.convertToDto(userRepository.save(newUser), SuccessUpdatedUser.class);
     }
 
@@ -332,7 +340,7 @@ public class UserServiceImpl implements UserService {
             throw new DatabaseRepositoryException(USER_DELETING_ERROR);
         }
 
-        log.info("user {} was successfully deleted", user);
+        log.debug("user {} was successfully deleted", user);
         return dtoConverter.convertToDto(user, UserResponse.class);
     }
 
@@ -350,7 +358,7 @@ public class UserServiceImpl implements UserService {
 
         user.setStatus(true);
         user.setVerificationCode(null);
-        log.info("user {} was successfully registered", user);
+        log.debug("user {} was successfully registered", user);
         userRepository.save(user);
 
         SuccessVerification successVerificationUser = dtoConverter.convertToDto(user, SuccessVerification.class);
@@ -400,7 +408,7 @@ public class UserServiceImpl implements UserService {
         helper.setText(content, true);
 
         javaMailSender.send(message);
-        log.info("Email has been sent\" {}", user.getEmail());
+        log.debug("Email has been sent\" {}", user.getEmail());
     }
 
     @Override
@@ -423,7 +431,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(
                 jwtProvider.getUserIdFromToken(
                         jwtProvider.getJwtFromRequest(httpServletRequest))).orElseThrow(
-                                () -> new WrongAuthenticationException());
+                () -> new WrongAuthenticationException());
     }
 
     @Override
@@ -451,7 +459,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private Optional<User> getOptionalUserByVerificationCode(String verificationCode) {
-        log.info(verificationCode);
+        log.debug(verificationCode);
         return userRepository.findByVerificationCode(verificationCode);
     }
 
@@ -490,12 +498,12 @@ public class UserServiceImpl implements UserService {
             helper.setText(content, true);
 
             javaMailSender.send(message);
-            log.info("Email has been sent\" {}", user.getEmail());
+            log.debug("Email has been sent\" {}", user.getEmail());
 
         } catch (MessagingException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
 
 //        return dtoConverter.convertToDto(user, SuccessUserPasswordReset.class);
@@ -503,7 +511,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public SuccessVerification verifyChange(String verificationCode) {
-        log.info("step1: " + verificationCode);
+        log.debug("step1: " + verificationCode);
         User user = getUserByVerificationCode(verificationCode);
         user.setStatus(true);
         SuccessUserPasswordReset userPasswordReset = new SuccessUserPasswordReset();
@@ -516,7 +524,7 @@ public class UserServiceImpl implements UserService {
                 user.getFirstName(),
                 user.getLastName()));
 
-        log.info("step 2: " + userPasswordReset.getVerificationCode() + " " + userPasswordReset.getEmail());
+        log.debug("step 2: " + userPasswordReset.getVerificationCode() + " " + userPasswordReset.getEmail());
         // return userPasswordReset;
         return successVerificationUser;
 
@@ -545,7 +553,7 @@ public class UserServiceImpl implements UserService {
 
     public SuccessUserPasswordReset verifyChangePassword(SuccessUserPasswordReset userResetPassword) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        log.info("step 3: " + userResetPassword.getVerificationCode() + " " + userResetPassword.getEmail());
+        log.debug("step 3: " + userResetPassword.getVerificationCode() + " " + userResetPassword.getEmail());
         User user = getUserByVerificationCode(userResetPassword.getVerificationCode());
         user.setStatus(true);
         if (bCryptPasswordEncoder.matches(userResetPassword.getPassword(), user.getPassword())) {
@@ -557,7 +565,22 @@ public class UserServiceImpl implements UserService {
         user.setVerificationCode(null);
 
         userRepository.save(user);
-        log.info("password reset {}", user);
+        log.debug("password reset {}", user);
         return userResetPassword;
+    }
+
+    private String ifIncorrectInputInUpdatingFields(UserUpdateProfile userProfile) {
+        if (userProfile.getFirstName() == null || userProfile.getFirstName().trim().isEmpty()) {
+            return "Ім'я";
+        }
+        if (userProfile.getLastName() == null || userProfile.getLastName().trim().isEmpty()) {
+            return "Прізвище";
+        }
+        if (userProfile.getPhone() == null || userProfile.getPhone().trim().isEmpty()
+                || userProfile.getPhone().length() != 9
+                || !Pattern.compile("[0-9]{9}").matcher(userProfile.getPhone()).find()) {
+            return "Телефон";
+        }
+        return "";
     }
 }

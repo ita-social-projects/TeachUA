@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.user;
 
+import com.softserve.teachua.dto.club.validation.Phone;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.utils.validations.Name;
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ public class UserProfile implements Convertible {
     private String lastName;
 
     @NotBlank
-    @Pattern(regexp = "^[0-9]{9}$", message = "Phone can have only numbers and length 9")
+    @Pattern(regexp = "^[0-9]{10}$",message = "Phone can have only numbers and length 10")
     private String phone;
 
     @NotBlank

@@ -3,6 +3,7 @@ package com.softserve.teachua.service;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.model.Center;
 import org.springframework.data.domain.Page;
@@ -34,4 +35,10 @@ public interface CenterService {
 
     Page<CenterResponse> getAdvancedSearchCenters(AdvancedSearchCenterProfile advancedSearchCenterProfile,
                                                   Pageable pageable);
+
+    CenterResponse updateRatingUpdateClub(ClubResponse previousClub, ClubResponse updatedClub);
+
+    CenterResponse updateRatingDeleteClub(ClubResponse clubResponse);
+
+    List<CenterResponse> updateRatingForAllCenters();
 }

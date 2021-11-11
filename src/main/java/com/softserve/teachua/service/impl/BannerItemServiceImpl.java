@@ -75,7 +75,7 @@ public class BannerItemServiceImpl implements BannerItemService {
                 .map(item -> (BannerItemResponse) dtoConverter.convertToDto(item, BannerItemResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of cities = " + itemResponses);
+        log.debug("**/getting list of cities = " + itemResponses);
         return itemResponses;
     }
 
@@ -90,7 +90,7 @@ public class BannerItemServiceImpl implements BannerItemService {
         BannerItem bannerItem =
                 bannerItemRepository.save(dtoConverter.convertToEntity(bannerItemProfile, new BannerItem()));
 
-        log.info("**/adding new banner item = " + bannerItem);
+        log.debug("**/adding new banner item = " + bannerItem);
         return dtoConverter.convertToDto(bannerItem, SuccessCreatedBannerItem.class);
     }
 

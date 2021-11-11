@@ -67,7 +67,7 @@ public class CityServiceImpl implements CityService {
             throw new NotExistException(String.format(CITY_NOT_FOUND_BY_ID, id));
         }
         City city = optionalCity.get();
-        log.info("**/getting city by id = " + city);
+        log.debug("**/getting city by id = " + city);
         return city;
     }
 
@@ -86,7 +86,7 @@ public class CityServiceImpl implements CityService {
         }
 
         City city = optionalCity.get();
-        log.info("**/getting city by id = " + city);
+        log.debug("**/getting city by id = " + city);
         return city;
     }
 
@@ -103,7 +103,7 @@ public class CityServiceImpl implements CityService {
             throw new AlreadyExistException(String.format(CITY_ALREADY_EXIST, cityProfile.getName()));
         }
         City city = cityRepository.save(dtoConverter.convertToEntity(cityProfile, new City()));
-        log.info("**/adding new city = " + city);
+        log.debug("**/adding new city = " + city);
         return dtoConverter.convertToDto(city, SuccessCreatedCity.class);
     }
 
@@ -119,7 +119,7 @@ public class CityServiceImpl implements CityService {
                 .map(city -> (CityResponse) dtoConverter.convertToDto(city, CityResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of cities = " + cityResponses);
+        log.debug("**/getting list of cities = " + cityResponses);
         return cityResponses;
     }
 
@@ -135,7 +135,7 @@ public class CityServiceImpl implements CityService {
         City newCity = dtoConverter.convertToEntity(cityProfile, city)
                 .withId(id);
 
-        log.info("**/updating city by id = " + newCity);
+        log.debug("**/updating city by id = " + newCity);
         return dtoConverter.convertToDto(cityRepository.save(newCity), CityProfile.class);
     }
 
@@ -159,7 +159,7 @@ public class CityServiceImpl implements CityService {
             throw new DatabaseRepositoryException(CITY_DELETING_ERROR);
         }
 
-        log.info("city {} was successfully deleted", city);
+        log.debug("city {} was successfully deleted", city);
         return dtoConverter.convertToDto(city, CityResponse.class);
     }
 
