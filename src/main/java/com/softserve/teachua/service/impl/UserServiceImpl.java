@@ -574,4 +574,19 @@ public class UserServiceImpl implements UserService {
         log.debug("password reset {}", user);
         return userResetPassword;
     }
+
+    private String ifIncorrectInputInUpdatingFields(UserUpdateProfile userProfile) {
+        if (userProfile.getFirstName() == null || userProfile.getFirstName().trim().isEmpty()) {
+            return "Ім'я";
+        }
+        if (userProfile.getLastName() == null || userProfile.getLastName().trim().isEmpty()) {
+            return "Прізвище";
+        }
+        if (userProfile.getPhone() == null || userProfile.getPhone().trim().isEmpty()
+                || userProfile.getPhone().length() != 9
+                || !Pattern.compile("[0-9]{9}").matcher(userProfile.getPhone()).find()) {
+            return "Телефон";
+        }
+        return "";
+    }
 }
