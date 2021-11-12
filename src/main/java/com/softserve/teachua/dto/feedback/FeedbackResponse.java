@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @AllArgsConstructor
@@ -22,7 +24,7 @@ public class FeedbackResponse implements Convertible {
 
     private String text;
 
-    private Timestamp date;
+    private LocalDateTime date;
 
     private User user;
 

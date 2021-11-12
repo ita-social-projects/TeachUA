@@ -5,7 +5,6 @@ import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
-import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
@@ -81,8 +80,9 @@ public class ClubController implements Api {
     @PostMapping("/club")
     public SuccessCreatedClub addClub(
             @Valid
-            @RequestBody ClubProfile clubProfile) {
-        return clubService.addClub(clubProfile);
+            @RequestBody ClubProfile clubProfile,
+            HttpServletRequest httpServletRequest) {
+        return clubService.addClub(clubProfile, httpServletRequest);
     }
 
     @GetMapping("/clubs/search/similar")
@@ -151,14 +151,8 @@ public class ClubController implements Api {
             @PathVariable Long id,
             @Valid
             @RequestBody ClubResponse clubProfile,
-            HttpServletRequest httpServletRequest) throws WrongAuthenticationException{
-        User userFromClub = clubService.getClubById(id).getUser();
-        Long userIdFromRequest = jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest));
-
-        if(userFromClub == null || !userIdFromRequest.equals(userFromClub.getId())){
-            throw new WrongAuthenticationException("A user cannot update club that does not belong to the user");
-        }
-        return clubService.updateClub(id, clubProfile);
+            HttpServletRequest httpServletRequest) {
+        return clubService.updateClub(id, clubProfile, httpServletRequest);
     }
 
     @PatchMapping("/club/{id}")
@@ -166,14 +160,8 @@ public class ClubController implements Api {
             @PathVariable Long id,
             @Valid
             @RequestBody ClubOwnerProfile clubOwnerProfile,
-            HttpServletRequest httpServletRequest) throws WrongAuthenticationException{
-        User userFromClub = clubService.getClubById(id).getUser();
-        Long userIdFromRequest = jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest));
-
-        if(userFromClub == null || !userIdFromRequest.equals(userFromClub.getId())){
-            throw new WrongAuthenticationException("A user cannot change owner of a club that does not belong to the user");
-        }
-        return clubService.changeClubOwner(id, clubOwnerProfile);
+            HttpServletRequest httpServletRequest){
+        return clubService.changeClubOwner(id, clubOwnerProfile, httpServletRequest);
     }
 
 
@@ -184,15 +172,20 @@ public class ClubController implements Api {
      * @return new {@code ClubResponse}.
      */
     @DeleteMapping("/club/{id}")
-    public ClubResponse deleteClub(@PathVariable Long id,
-                                   HttpServletRequest httpServletRequest) throws WrongAuthenticationException {
-        User userFromClub = clubService.getClubById(id).getUser();
-        Long userIdFromRequest = jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest));
+    public ClubResponse deleteClub(
+            @PathVariable Long id,
+            HttpServletRequest httpServletRequest){
 
-        if(userFromClub == null || !userIdFromRequest.equals(userFromClub.getId())){
-            throw new WrongAuthenticationException("A user cannot delete a club that does not belong to the user");
-        }
+        return clubService.deleteClubById(id, httpServletRequest);
+    }
 
-        return clubService.deleteClubById(id);
+    @PatchMapping("/clubs/rating")
+    public List<ClubResponse> updateClubsRating(){
+        return clubService.updateRatingForAllClubs();
+    }
+
+    @GetMapping("/club/updateContacts")
+    public void updateContacts(){
+         clubService.updateContacts();
     }
 }

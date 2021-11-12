@@ -44,7 +44,7 @@ public class ClubToClubResponseConverter {
         ClubResponse clubResponse=dtoConverter.convertToDto(club,ClubResponse.class);
         clubResponse.setContacts(
                 contactsStringConverter.convertStringToContactDataResponses(club.getContacts()));
-        log.info("===  convertToClubResponse method"+clubResponse);
+        log.debug("===  convertToClubResponse method"+clubResponse);
         return clubResponse;
     }
 }

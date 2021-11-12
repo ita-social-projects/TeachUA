@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.teachua.exception.IncorrectInputException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,46 +19,51 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
 
     @Getter
     @NoArgsConstructor
-    static class Description {
-        List<Block> blocks;
-        Object entityMap;
+    static class Block {
         String key;
+        String text;
         String type;
-        String inlineStyleRanges[];
-        String entityRanges[];
+        Long depth;
+        Object inlineStyleRanges[];
+        Object entityRanges[];
         Object data;
     }
 
     @Getter
     @NoArgsConstructor
-    static class Block {
-        String text;
-    }
-
-    ObjectMapper objectMapper = new ObjectMapper();
-
-    @Autowired
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public DescriptionValidation() throws JsonProcessingException {
-        String description = "{\"blocks\":[" +
-                "{\"key\":\"brl63\"," +
-                "\"text\":\"\"," +
-                "\"type\":\"unstyled\"," +
-                "\"depth\":0," +
-                "\"inlineStyleRanges\":[]," +
-                "\"entityRanges\":[]," +
-                "\"data\":{}}" +
-                "]," +
-                "\"entityMap\":{}}";
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        Description descriptionClub = objectMapper.readValue(description, Description.class);
-        log.info(descriptionClub.toString());
+    static class Description {
+        Block blocks[];
+        Object entityMap;
     }
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            objectMapper.readValue(s, Description.class);
+            Description descriptionClub = objectMapper.readValue(s, Description.class);
+
+            String text = "";
+
+            for(Block block : descriptionClub.blocks){
+                text += block.text;
+            }
+
+            if(!text.matches("^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+$")){
+                throw new IncorrectInputException("Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи");
+            }
+
+            if (!text.matches("^[^эЭъЪыЫёЁ]+$")) {
+                throw new IncorrectInputException("Опис гуртка не може містити російські літери");
+            }
+
+            if(text.length() < 40){
+                throw new IncorrectInputException("Довжина опису не може бути меншою за 40 символів");
+            }
+
+            if(text.length() > 1500){
+                throw new IncorrectInputException("Довжина опису не може бути більшою за 1500 символів");
+            }
+
             return true;
         } catch (JsonProcessingException e) {
             log.error("An exception occurred.");

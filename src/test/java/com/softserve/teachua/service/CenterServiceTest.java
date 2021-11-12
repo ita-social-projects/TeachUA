@@ -25,6 +25,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -57,6 +58,9 @@ public class CenterServiceTest {
     private ArchiveService archiveService;
     @Mock
     private CenterToCenterResponseConverter centerToCenterResponseConverter;
+    @Mock
+    private UserService userService;
+
     @InjectMocks
     private CenterServiceImpl centerService;
     private Center correctCenter;
@@ -64,6 +68,7 @@ public class CenterServiceTest {
     private CenterProfile centerProfile;
     private Center createCenter;
     private SuccessCreatedCenter successCreatedCenter;
+    private HttpServletRequest httpServletRequest;
 
     @BeforeAll
     public static void setUp() {
@@ -143,12 +148,13 @@ public class CenterServiceTest {
                 .thenReturn(new Center());
         when(clubService.getClubById(any())).thenReturn(new Club());
         when(dtoConverter.convertToDto(createCenter, SuccessCreatedCenter.class)).thenReturn(successCreatedCenter);
+        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(new User());
     }
 
     @Test
     public void addCenterShouldReturnSuccessCreatedCenterWithUserAndWithoutLocations() {
         setAddCenterMocks();
-        assertThat(centerService.addCenter(centerProfile)).isEqualTo(successCreatedCenter);
+        assertThat(centerService.addCenterRequest(centerProfile, httpServletRequest)).isEqualTo(successCreatedCenter);
     }
 
     @Test
@@ -164,13 +170,15 @@ public class CenterServiceTest {
         when(dtoConverter.convertToEntity(locationProfile, new Location())).thenReturn(location);
         when(locationRepository.save(location)).thenReturn(location);
         when(cityService.getCityByName(null)).thenReturn(null);
-        assertThat(centerService.addCenter(centerProfile)).isEqualTo(successCreatedCenter);
+        assertThat(centerService.addCenterRequest(centerProfile, httpServletRequest)).isEqualTo(successCreatedCenter);
     }
 
     @Test
     public void addCenterShouldThrowAlreadyExistExceptionWhenCenterExist() {
         when(centerRepository.existsByName(centerProfile.getName())).thenReturn(true);
-        AlreadyExistException exception = assertThrows(AlreadyExistException.class, () -> centerService.addCenter(centerProfile));
+        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(User.builder().build());
+        AlreadyExistException exception = assertThrows(AlreadyExistException.class, ()
+                -> centerService.addCenterRequest(centerProfile, httpServletRequest));
         assertThat(exception.getMessage()).contains(centerProfile.getName());
     }
 

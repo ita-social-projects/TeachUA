@@ -2,7 +2,6 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.challenge.*;
 import com.softserve.teachua.model.Challenge;
-import org.springframework.data.domain.Pageable;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.List;
 public interface ChallengeService {
     List<ChallengePreview> getAllChallenges(Boolean isActive);
 
-    ChallengeProfile getChallenge(Long id, Pageable pageable);
+    ChallengeProfile getChallenge(Long id);
 
     Challenge getChallengeById(Long id);
 
@@ -19,4 +18,6 @@ public interface ChallengeService {
     SuccessUpdatedChallenge updateChallenge(Long id, UpdateChallenge updateChallenge);
 
     ChallengeDeleteResponse deleteChallenge(Long id);
+
+    SuccessUpdateChallengePreview updateChallengePreview(Long id, SuccessUpdateChallengePreview updateChallengePreview);
 }

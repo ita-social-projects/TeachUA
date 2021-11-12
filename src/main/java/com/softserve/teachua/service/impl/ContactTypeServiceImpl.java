@@ -54,7 +54,7 @@ public class ContactTypeServiceImpl implements ContactTypeService {
                 .map(type -> (ContactTypeResponse) dtoConverter.convertToDto(type, ContactTypeResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of contact type = " + contactTypeResponses);
+        log.debug("**/getting list of contact type = " + contactTypeResponses);
 
         return contactTypeResponses;
     }
@@ -73,7 +73,7 @@ public class ContactTypeServiceImpl implements ContactTypeService {
         }
 
         ContactType contactType = contactTypeRepository.save(dtoConverter.convertToEntity(contactTypeProfile, new ContactType()));
-        log.info("**/adding new contact type = " + contactType);
+        log.debug("**/adding new contact type = " + contactType);
         return dtoConverter.convertToDto(contactType, SuccessCreatedContactType.class);
     }
 
@@ -91,7 +91,7 @@ public class ContactTypeServiceImpl implements ContactTypeService {
         ContactType newContactType = dtoConverter.convertToEntity(contactTypeProfile, contactType)
                 .withId(id);
 
-        log.info("**/updating contact type by id = " + newContactType);
+        log.debug("**/updating contact type by id = " + newContactType);
 
         return dtoConverter.convertToDto(contactTypeRepository.save(newContactType), ContactTypeProfile.class);
     }
@@ -116,7 +116,7 @@ public class ContactTypeServiceImpl implements ContactTypeService {
             throw new DatabaseRepositoryException(CONTACT_TYPE_DELETING_ERROR);
         }
 
-        log.info("contact type {} was successfully deleted", contactType);
+        log.debug("contact type {} was successfully deleted", contactType);
         return dtoConverter.convertToDto(contactType, ContactTypeResponse.class);
     }
 
@@ -134,7 +134,6 @@ public class ContactTypeServiceImpl implements ContactTypeService {
         }
 
         ContactType contactType = optionalContactType.get();
-//        log.info("**/getting contact type by id = " + contactType);
         return contactType;
     }
 

@@ -20,6 +20,12 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     void deleteById(Long id);
 
-    @Query("SELECT AVG(feedback.rate) FROM Feedback AS feedback WHERE feedback.club.id = :clubId")
+    /**
+     * Method to get average rating by club id
+     *
+     * @param clubId
+     * @return Double if club have any feedback
+     */
+    @Query("SELECT case  when (AVG(feedback.rate)) is null then 0.0 else AVG(feedback.rate)  end FROM Feedback AS feedback WHERE feedback.club.id = :clubId")
     Double findAvgRating(@Param("clubId") Long clubId);
 }

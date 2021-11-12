@@ -30,6 +30,8 @@ public interface UserService {
 
     SuccessUpdatedUser updateUser(Long id, UserUpdateProfile userProfile);
 
+    void verifyIsUserAdmin();
+
     void updateUser(User user);
 
     SuccessVerification verify(String verificationCode);

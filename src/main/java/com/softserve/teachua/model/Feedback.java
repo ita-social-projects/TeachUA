@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,17 +23,14 @@ public class Feedback implements Convertible, Archivable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String userName;
-
     @Column(nullable = false)
     private Float rate;
 
     @CreationTimestamp
-    @Column
-    private Timestamp date;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime date;
 
-    @Column
+    @Column(length = 1500)
     private String text;
 
     @ManyToOne

@@ -10,6 +10,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "сhallenges")
@@ -35,6 +36,9 @@ public class Challenge implements Convertible, Archivable {
 
     @Column(nullable = false)
     private Long sortNumber;
+
+    @Column
+    private String registrationLink;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
