@@ -115,7 +115,7 @@ public class TaskServiceImpl implements TaskService {
         BeanUtils.copyProperties(updateTask, task);
         task.setChallenge(challengeService.getChallengeById(updateTask.getChallengeId()));
         SuccessUpdatedTask updatedTask = dtoConverter.convertToDto(taskRepository.save(task), SuccessUpdatedTask.class);
-        updatedTask.setChallengeId(updatedTask.getChallengeId());
+//        updatedTask.setChallengeId(updatedTask.getChallengeId());
         return updatedTask;
     }
 }
