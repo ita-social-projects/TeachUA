@@ -24,7 +24,7 @@ public class UploadController implements Api {
 
 
     @GetMapping("file")
-    public String  getPhoto(@RequestBody FilePathRequest filePath){
+    public String  getPhoto(@RequestParam String filePath){
         return fileUploadServiceImpl.getPhoto(filePath);
     }
 

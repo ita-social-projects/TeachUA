@@ -1,6 +1,5 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.teachua.dto.file.FilePathRequest;
 import com.softserve.teachua.dto.file.FileUpdateProfile;
 import com.softserve.teachua.dto.file.FileUploadProfile;
 import com.softserve.teachua.exception.FileUploadException;
@@ -15,7 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -54,9 +52,9 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     @Override
-    public String getPhoto(FilePathRequest filePath) {
-        GalleryPhoto galleryPhoto  = galleryRepository.findByUrl(filePath.getFilePath());
-        File file =  new File("target"+filePath.getFilePath());
+    public String getPhoto(String filePath) {
+        GalleryPhoto galleryPhoto  = galleryRepository.findByUrl(filePath);
+        File file =  new File("target"+filePath);
         try {
             byte [] baseImage = FileUtils.readFileToByteArray(file);
             return Base64.getEncoder().encodeToString(baseImage);
