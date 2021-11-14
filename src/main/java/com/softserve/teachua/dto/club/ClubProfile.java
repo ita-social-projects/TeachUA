@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.softserve.teachua.dto.club.validation.CheckRussian;
 import com.softserve.teachua.dto.club.validation.ClubDescription;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
@@ -32,7 +33,8 @@ public class ClubProfile implements Convertible {
     private List<LocationProfile> locations;
 
     @Valid
-    @ClubDescription
+    @CheckRussian
+    @Size(min = 40,max = 1500,message = "Description should be between 40 and 1500 chars")
     public String description;
 
     @Valid

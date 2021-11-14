@@ -7,6 +7,7 @@ import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
+import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
@@ -29,8 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -173,8 +176,30 @@ public class ClubServiceImpl implements ClubService {
     public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile, HttpServletRequest httpServletRequest) {
         validateClubOwner(id, httpServletRequest);
         Club club = getClubById(id);
+        Set<LocationResponse> locations = null;
+
+        if (clubProfile.getLocations()!=null) {
+            locations = new HashSet<>(clubProfile.getLocations());
+            if (!locations.isEmpty()) {
+                for (LocationResponse profile : locations) {
+                    coordinatesConverter.locationResponseConverterToDb(profile);
+                    if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
+                        profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
+                    }
+                    if (profile.getDistrictName() != null && !profile.getDistrictName().isEmpty()) {
+                        profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
+                    }
+                    if (profile.getStationName() != null && !profile.getStationName().isEmpty()) {
+                        profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
+                    }
+                    profile.setClubId(id);
+                }
+            }
+        }
+
         Club newClub = dtoConverter.convertToEntity(clubProfile, club)
-                .withId(id);
+                .withId(id)
+                .withLocations(locationService.updateLocationByClub(locations,club));
 
         log.debug("updating club by id {}", newClub);
         return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);
