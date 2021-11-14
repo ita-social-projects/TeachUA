@@ -63,7 +63,7 @@ public class CityServiceTest {
     }
 
     @Test
-    void getCityProfileByExistingId() {
+    void getCityProfileByExistingIdShouldReturnCorrectCityProfile() {
         when(cityRepository.findById(EXISTING_ID)).thenReturn(Optional.of(city));
         when(dtoConverter.convertToDto(city, CityResponse.class)).thenReturn(CityResponse.builder().name(EXISTING_NAME).build());
 
@@ -72,7 +72,7 @@ public class CityServiceTest {
     }
 
     @Test
-    void getCityProfileByNotExistingId() {
+    void getCityProfileByNotExistingIdShouldThrowNotExistException() {
         when(cityRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
@@ -81,7 +81,7 @@ public class CityServiceTest {
     }
 
     @Test
-    public void getCityByExistingId() {
+    public void getCityByExistingIdShouldReturnCorrectCity() {
         when(cityRepository.findById(EXISTING_ID)).thenReturn(Optional.of(city));
 
         City actual = cityService.getCityById(EXISTING_ID);
@@ -89,7 +89,7 @@ public class CityServiceTest {
     }
 
     @Test
-    public void getCityByNotExistingId() {
+    public void getCityByNotExistingIdShouldThrowNotExistException() {
         when(cityRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
@@ -98,7 +98,7 @@ public class CityServiceTest {
     }
 
     @Test
-    void getCityByExistingName() {
+    void getCityByExistingNameShouldReturnCorrectCity() {
         when(cityRepository.findByName(EXISTING_NAME)).thenReturn(Optional.of(city));
 
         City actual = cityService.getCityByName(EXISTING_NAME);
@@ -106,7 +106,7 @@ public class CityServiceTest {
     }
 
     @Test
-    void getCityByNotExistingName() {
+    void getCityByNotExistingNameShouldThrowNotExistException() {
         when(cityRepository.findByName(NOT_EXISTING_NAME)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
@@ -115,7 +115,7 @@ public class CityServiceTest {
     }
 
     @Test
-    void addNewCity() {
+    void addNewCityShouldReturnSuccessCreatedCity() {
         City newCity = City.builder().name(NEW_NAME).build();
 
         when(cityRepository.existsByName(NEW_NAME)).thenReturn(false);
@@ -128,7 +128,7 @@ public class CityServiceTest {
     }
 
     @Test
-    void addExistingCity() {
+    void addExistingCityShouldThrowAlreadyExistException() {
         cityProfile.setName(EXISTING_NAME);
         when(cityRepository.existsByName(EXISTING_NAME)).thenReturn(true);
 
@@ -138,7 +138,7 @@ public class CityServiceTest {
     }
 
     @Test
-    void getListOfCities() {
+    void getListOfCitiesShouldReturnListOfCitiResponces() {
         List<City> cities = Arrays.asList(city);
 
         when(dtoConverter.convertToDto(city, CityResponse.class)).thenReturn(cityResponse);
@@ -150,7 +150,7 @@ public class CityServiceTest {
     }
 
     @Test
-    void updateCityByExistingId() {
+    void updateCityByExistingIdShouldReturnCorrectCityProfile() {
         when(cityRepository.findById(EXISTING_ID)).thenReturn(Optional.of(city));
         when(cityRepository.save(any())).thenReturn(city);
         when(dtoConverter.convertToEntity(cityProfile, city)).thenReturn(City.builder()
@@ -162,7 +162,7 @@ public class CityServiceTest {
     }
 
     @Test
-    void updateCityByNotExistingId() {
+    void updateCityByNotExistingIdShouldThrowNotExistException() {
         when(cityRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
@@ -171,7 +171,7 @@ public class CityServiceTest {
     }
 
     @Test
-    void deleteCityByExistingId() {
+    void deleteCityByExistingIdShouldReturnCityResponse() {
         when(cityRepository.findById(EXISTING_ID)).thenReturn(Optional.of(city));
         when(archiveService.saveModel(city)).thenReturn(city);
         doNothing().when(cityRepository).deleteById(EXISTING_ID);
@@ -184,7 +184,7 @@ public class CityServiceTest {
     }
 
     @Test
-    void deleteCityByNotExistingId() {
+    void deleteCityByNotExistingIdShouldThrowNotExistException() {
         when(cityRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {

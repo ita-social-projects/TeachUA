@@ -2,13 +2,17 @@ package com.softserve.teachua.dto.challenge;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.softserve.teachua.utils.TrimDeserialize;
+import com.softserve.teachua.utils.deserializers.HtmlModifyDeserialize;
+import com.softserve.teachua.utils.deserializers.TrimDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,8 +34,14 @@ public class CreateChallenge {
     private String title;
     @NotBlank
     @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "can not contain letters of russian languages")
-    @Size(min = 40, max = 3000, message = "must contain a minimum of 40 and a maximum of 3000 letters")
+    @Size(max = 3000, message = "must contain a maximum of 3000 letters")
+    @JsonDeserialize(using = HtmlModifyDeserialize.class)
     private String description;
+    @JsonDeserialize(using = TrimDeserialize.class)
+    @Pattern(regexp = "^https://docs\\.google\\.com/forms/d/e/[A-z0-9_-]+/viewform\\?embedded=true$",
+            message = "must match https://docs.google.com/forms/d/e/{formCode}/viewform?embedded=true")
+    @Size(max = 130, message = "must contain a maximum of 130 letters")
+    private String registrationLink;
     @NotBlank
     @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.png")
     private String picture;

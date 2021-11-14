@@ -6,6 +6,7 @@ import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 import com.softserve.teachua.model.GalleryPhoto;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -37,9 +38,7 @@ public class Club implements Convertible, Archivable {
     @EqualsAndHashCode.Include
     private String name;
 
-    @Column(columnDefinition = "TEXT", length = 1500)
-    @Pattern(regexp = "^[А-Яа-яёЁЇїІіЄєҐґa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]{40,1500}$",
-            message = "This description isn`t correct")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column
@@ -60,7 +59,12 @@ public class Club implements Convertible, Archivable {
     private String workTime;
 
     @Column
+    @ColumnDefault(value = "0")
     private Double rating;
+
+    @Column(name = "feedback_count")
+    @ColumnDefault(value = "0")
+    private Long feedbackCount;
 
     @Column
     private Boolean isOnline;

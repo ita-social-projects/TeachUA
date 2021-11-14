@@ -32,24 +32,24 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
-        log.info("**doFilter start, requestURI {}", httpServletRequest.getRequestURI());
+        log.debug("**doFilter start, requestURI {}", httpServletRequest.getRequestURI());
         try {
             String jwt = jwtProvider.getJwtFromRequest(httpServletRequest);
 
             if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
                 Long userId = jwtProvider.getUserIdFromToken(jwt);
                 String currentEmail = jwtProvider.getEmailFromToken(jwt);
-                log.info("email user = " + currentEmail);
+                log.debug("email user = " + currentEmail);
                 UserDetails userDetails = customUserDetailsService.loadUserById(userId);
                 if (!userDetails.getUsername().equals(currentEmail)) {
                     throw new RuntimeException("Invalid email");
                 }
-                log.info("USER AUTHORITIES");
-                log.info(userDetails.getAuthorities().toString());
+                log.debug("USER AUTHORITIES");
+                log.debug(userDetails.getAuthorities().toString());
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.info("User " + userDetails.getUsername() + "successfully authenticate with token" + jwt);
+                log.debug("User " + userDetails.getUsername() + "successfully authenticate with token" + jwt);
             } else {
                 log.error("User is not authenticate");
             }
@@ -57,7 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
             logger.error("Could not set user authentication in security context", ex);
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
-        log.info("**doFilter done");
+        log.debug("**doFilter done");
     }
 
 }

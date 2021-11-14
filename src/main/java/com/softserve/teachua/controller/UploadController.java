@@ -8,9 +8,15 @@ import com.softserve.teachua.service.impl.FileUploadServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+=======
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @RestController
 public class UploadController implements Api {
@@ -22,12 +28,11 @@ public class UploadController implements Api {
         this.fileUploadServiceImpl = fileUploadServiceImpl;
     }
 
-
     @GetMapping("file")
     public String  getPhoto(@RequestParam String filePath){
         return fileUploadServiceImpl.getPhoto(filePath);
     }
-
+    
     @PostMapping("file")
     public String uploadPhoto(@RequestBody FileUploadProfile uploadProfile) {
         return fileUploadServiceImpl.uploadImage(uploadProfile);}
@@ -37,4 +42,5 @@ public class UploadController implements Api {
 
     @DeleteMapping("/file")
     public String deleteFile(@RequestBody FilePathRequest fileDeleteRequest) {return fileUploadServiceImpl.deleteFile(fileDeleteRequest.getFilePath());}
+
 }

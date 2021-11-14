@@ -5,6 +5,10 @@ import com.softserve.teachua.dto.file.FileUploadProfile;
 import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.model.Club;
+
+import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.teachua.exception.IncorrectInputException;
+
 import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.GalleryRepository;
@@ -18,6 +22,7 @@ import org.springframework.util.StringUtils;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,10 +51,12 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final GalleryRepository galleryRepository;
     private final ClubRepository clubRepository;
 
+
     public FileUploadServiceImpl(GalleryRepository galleryRepository, ClubRepository clubRepository) {
         this.galleryRepository = galleryRepository;
         this.clubRepository = clubRepository;
     }
+
 
     @Override
     public String getPhoto(String filePath) {
@@ -123,6 +130,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         return filePath+" successfully deleted.";
     }
 
+    //filePath - '/upload/...../fileName.extension'
     @Override
     public String updatePhoto(FileUpdateProfile fileUpdateProfile) {
         // filePath --/upload/.../file.
@@ -230,16 +238,15 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
         if (!filePath.contains(UPLOAD_LOCATION)) {
             throw new IncorrectInputException("Wrong uploaded file path");
+
         }
         File file = new File("/target" + filePath);
         if(!file.isDirectory()){
             file.deleteOnExit();
             file.exists();
+
         }
-        try {
-            FileUtils.forceDelete(new File("target" + filePath));
-        } catch (IOException e) {
-            e.printStackTrace();
+   
         }
     }
 

@@ -13,13 +13,10 @@ import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ChallengeService;
 import com.softserve.teachua.service.TaskService;
 import com.softserve.teachua.service.UserService;
-import com.softserve.teachua.utils.HtmlValidator;
+import com.softserve.teachua.utils.HtmlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,7 +84,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     public SuccessCreatedChallenge createChallenge(
             CreateChallenge createChallenge,
             HttpServletRequest httpServletRequest) {
-        HtmlValidator.validateDescription(createChallenge.getDescription());
+        HtmlUtils.validateDescription(createChallenge.getDescription());
         Challenge challenge = dtoConverter.convertToEntity(createChallenge, new Challenge());
         challenge.setUser(userService.getUserFromRequest(httpServletRequest));
         challenge.setIsActive(true);
@@ -96,7 +93,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public SuccessUpdatedChallenge updateChallenge(Long id, UpdateChallenge updateChallenge) {
-        HtmlValidator.validateDescription(updateChallenge.getDescription());
+        HtmlUtils.validateDescription(updateChallenge.getDescription());
         Challenge challenge = getChallengeById(id);
         BeanUtils.copyProperties(updateChallenge, challenge);
         return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdatedChallenge.class);
@@ -122,14 +119,26 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Override
-    public ChallengeProfile getChallenge(Long id, Pageable pageable) {
+    public ChallengeProfile getChallenge(Long id) {
         Challenge challenge = getChallengeById(id);
+        if (!challenge.getIsActive()) {
+            userService.verifyIsUserAdmin();
+        }
         ChallengeProfile challengeProfile =
                 dtoConverter.convertToDto(challenge, ChallengeProfile.class);
         Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
-        Page<Task> pageableTasks = taskRepository.findTasksByChallengeAndStartDateBefore(challenge, LocalDate.now(), pageable);
-        List<TaskPreview> tasks = pageableTasks.stream().map(function).collect(Collectors.toList());
-        challengeProfile.setTasks(new PageImpl<>(tasks, pageableTasks.getPageable(), pageableTasks.getTotalElements()));
+        List<TaskPreview> tasks = taskRepository
+                .findTasksByChallengeAndStartDateBeforeOrderByStartDate(challenge, LocalDate.now().plusDays(1))
+                .stream().map(function).collect(Collectors.toList());
+        challengeProfile.setTasks(tasks);
         return challengeProfile;
+    }
+
+
+    @Override
+    public SuccessUpdateChallengePreview updateChallengePreview(Long id, SuccessUpdateChallengePreview updateChallengePreview) {
+        Challenge challenge = getChallengeById(id);
+        BeanUtils.copyProperties(updateChallengePreview, challenge);
+        return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdateChallengePreview.class);
     }
 }

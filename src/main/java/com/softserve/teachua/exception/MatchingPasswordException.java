@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Denis Burko
  */
 @Slf4j
-@ResponseStatus(HttpStatus.NOT_FOUND)
 public class MatchingPasswordException extends IllegalArgumentException {
     private static final long serialVersionUID = 1L;
     private static final String PASSWORD_MATCH_EXCEPTION = "Old and new passwords match";
