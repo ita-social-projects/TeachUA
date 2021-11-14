@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -111,17 +111,6 @@ public class CategoryServiceImpl implements CategoryService {
         if (isCategoryExistByName(categoryProfile.getName())) {
             throw new AlreadyExistException(String.format(CATEGORY_ALREADY_EXIST, categoryProfile.getName()));
         }
-
-        if(categoryProfile.getSortby() == null){
-            Category lastCategory = categoryRepository.findLastCategory();
-            Integer currentLastSortNumber = lastCategory.getSortby();
-
-            categoryProfile.setSortby(currentLastSortNumber);
-
-            lastCategory.setSortby(currentLastSortNumber+=10);
-            categoryRepository.save(lastCategory);
-        }
-
         Category category = categoryRepository.save(dtoConverter.convertToEntity(categoryProfile, new Category()));
         log.debug("Adding new category = {}", category);
         return dtoConverter.convertToDto(category, SuccessCreatedCategory.class);
@@ -134,11 +123,14 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public List<CategoryResponse> getAllCategories() {
-        List<CategoryResponse> categoryResponses = categoryRepository.findAll()
-                .stream()
-                .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
-                .sorted(Comparator.comparing(CategoryResponse::getSortby))
-                .collect(Collectors.toList());
+        List<Category> categoryList = categoryRepository.findInSortedOrder();
+        if (categoryList == null) {
+            return Collections.emptyList();
+        }
+        List<CategoryResponse> categoryResponses =
+                categoryList.stream()
+                        .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
+                        .collect(Collectors.toList());
         log.debug("Getting list of categories = {}", categoryResponses);
         return categoryResponses;
     }
@@ -152,6 +144,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Page<CategoryResponse> getListOfCategories(Pageable pageable) {
         Page<Category> categoryResponses = categoryRepository.findAll(pageable);
+        if (categoryResponses == null) {
+            return Page.empty(pageable);
+        }
         return new PageImpl<>(categoryResponses
                 .stream()
                 .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
@@ -190,7 +185,11 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public List<SearchPossibleResponse> getPossibleCategoryByName(String text) {
-        return categoryRepository.findRandomTop3ByName(text)
+        List<Category> categories = categoryRepository.findRandomTop3ByName(text);
+        if (categories == null) {
+            return Collections.emptyList();
+        }
+        return categories
                 .stream()
                 .map(category -> (SearchPossibleResponse) dtoConverter.convertToDto(category, SearchPossibleResponse.class))
                 .collect(Collectors.toList());

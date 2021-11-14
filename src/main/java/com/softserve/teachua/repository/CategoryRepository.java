@@ -21,12 +21,12 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Optional<Category> findByName(String name);
 
+    @Query("from Category c order by c.sortby")
+    List<Category> findInSortedOrder();
+
     Page<Category> findAll(Pageable pageable);
 
     @Query(value = "SELECT *  FROM categories AS c WHERE LOWER(c.name) LIKE LOWER('%' || :text || '%') ORDER BY RANDOM() LIMIT 3",
             nativeQuery = true)
     List<Category> findRandomTop3ByName(@Param("text") String enteredText);
-
-    @Query(value = "select * FROM categories AS c ORDER BY sortBy DESC LIMIT 1 ", nativeQuery = true)
-    Category findLastCategory();
 }
