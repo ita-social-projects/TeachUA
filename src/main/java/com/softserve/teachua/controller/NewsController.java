@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.service.NewsService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Tag(name="news", description="the News API")
 public class NewsController implements Api {
 
     private final NewsService newsService;
@@ -23,10 +25,10 @@ public class NewsController implements Api {
     }
 
     /**
-     * The method to get News by id
-     *
-     * @param id of News
-     * @return NewsResponse
+     * Use this endpoint to get News by id.
+     * The controller returns {@code NewsResponse}.
+     * @param id - put News id here.
+     * @return {@code NewsResponse}
      */
     @GetMapping("/news/{id}")
     public NewsResponse getNews(@PathVariable Long id) {
@@ -34,10 +36,10 @@ public class NewsController implements Api {
     }
 
     /**
-     * The method to create a new News
-     *
-     * @param newsProfile - object of DTO class
-     * @return SuccessCrreatedNews
+     * Use this endpoint to create new News.
+     * The controller returns {@code SuccessCreatedNews}.
+     * @param newsProfile - object of DTO class.
+     * @return new {@code SuccessCrreatedNews}.
      */
     @PostMapping("/news")
     public SuccessCreatedNews addNews(@RequestBody NewsProfile newsProfile) {
@@ -45,11 +47,11 @@ public class NewsController implements Api {
     }
 
     /**
-     * The method to update News
-     *
-     * @param id
-     * @param newsProfile
-     * @return NewsProfile
+     * Use this endpoint to update News
+     * The controller returns {@code NewsProfile}.
+     * @param id - put news id here.
+     * @param newsProfile - put news information here.
+     * @return {@code NewsProfile}
      */
     @PutMapping("/news/{id}")
     public NewsProfile updateNewsById(@PathVariable Long id, @RequestBody NewsProfile newsProfile) {
@@ -57,27 +59,31 @@ public class NewsController implements Api {
     }
 
     /**
-     * The method to delete News
-     *
-     * @param id
-     * @return NewsResponse
+     * Use this endpoint to delete News.
+     * The controller returns {@code NewsResponse}.
+     * @param id - put news id here.
+     * @return NewsResponse {@code NewsResponse}
      */
     @DeleteMapping("/news/{id}")
     public NewsResponse deleteNews(@PathVariable Long id) {
-
         return newsService.deleteNewsById(id);
     }
 
     /**
-     * The method to get all News
-     *
-     * @return List of NewsResponse
+     * Use this endpoint to get all News.
+     * The controller returns {@code List<NewsResponse>}.
+     * @return {@code List<NewsResponse>}
      */
     @GetMapping("/newslist")
     public List<NewsResponse> getAllNews() {
         return newsService.getAllNews();
     }
 
+    /**
+     * Use this endpoint to get news search result with pagination.
+     * The controller returns {@code Page<NewsResponse>}.
+     * @return {@code Page<NewsResponse>}
+     */
     @GetMapping("/newslist/search")
     public Page<NewsResponse> getListOfNews(Pageable pageable) {
         return newsService.getListOfNews(pageable);

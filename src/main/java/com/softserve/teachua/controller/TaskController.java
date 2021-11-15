@@ -26,7 +26,7 @@ public class TaskController implements Api {
      * This feature available only for admins.
      *
      * @param id - put challenge id here.
-     * @return {@code Page<TaskPreview} - all tasks with pagination
+     * @return {@code Page<TaskPreview>} - all tasks with pagination
      */
     @GetMapping("/challenge/{id}/tasks")
     public List<TaskPreview> getTasksByChallenge(@PathVariable Long id) {

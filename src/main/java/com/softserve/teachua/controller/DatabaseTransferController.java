@@ -8,6 +8,7 @@ import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.service.DataLoaderService;
 import com.softserve.teachua.service.ExcelParserService;
 import com.softserve.teachua.service.SqlDataExportService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -24,6 +25,7 @@ import java.nio.file.Files;
 import java.sql.SQLException;
 
 @RestController
+@Hidden
 public class DatabaseTransferController implements Api {
     private static final String FILE_LOAD_EXCEPTION = "Could not load excel file";
 

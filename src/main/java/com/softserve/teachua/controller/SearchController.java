@@ -4,6 +4,7 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.search.CombinedPossibleResponse;
 import com.softserve.teachua.service.CategoryService;
 import com.softserve.teachua.service.ClubService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
+@Tag(name="search", description="the Search API")
 public class SearchController implements Api {
     private final CategoryService categoryService;
     private final ClubService clubService;
@@ -24,8 +26,8 @@ public class SearchController implements Api {
     }
 
     /**
-     * The method which return possible results of search by entered text.
-     *
+     * Use this endpoint to get possible results of search by entered text.
+     * The controller returns {@code CombinedPossibleResponse}.
      * @param text - put search text.
      * @return {@link CombinedPossibleResponse }
      */

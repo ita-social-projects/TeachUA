@@ -9,6 +9,7 @@ import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.service.CenterService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@Tag(name="center", description="the Center API")
 public class CenterController implements Api {
     private static final int CENTERS_PER_USER_PAGE = 9;
 
@@ -33,8 +35,8 @@ public class CenterController implements Api {
     }
 
     /**
-     * The controller returns information {@code CenterResponse} about center.
-     *
+     * Use this endpoint to get a center by its id.
+     * The controller returns {@code CenterResponse}.
      * @param id - put center id.
      * @return new {@code CenterResponse}.
      */
@@ -45,8 +47,8 @@ public class CenterController implements Api {
 
 
     /**
-     * The controller returns information {@code List<CenterResponse>} about centers by id of user-owner
-     *
+     * Use this endpoint to get information about centers by id of user-owner with pagination.
+     * The controller returns {@code List<CenterResponse>}.
      * @param id - put user id.
      * @return new {@code Page<CenterResponse>}.
      */
@@ -61,8 +63,8 @@ public class CenterController implements Api {
 
 
     /**
-     * The controller returns dto {@code SuccessCreatedCenter} of created center.
-     *
+     * Use this endpoint to create a center.
+     * The controller returns {@code SuccessCreatedCenter}.
      * @return new {@code SuccessCreatedCenter}.
      */
     @PostMapping("/center")
@@ -73,8 +75,10 @@ public class CenterController implements Api {
     }
 
     /**
-     * The controller returns dto {@code  CenterProfile} about center.
-     *
+     * Use this endpoint to update the center.
+     * The controller returns {@code  CenterProfile}.
+     * @param id - put center id here.
+     * @param centerProfile - put center information here.
      * @return new {@code CenterProfile}.
      */
     @PutMapping("/center/{id}")
@@ -86,8 +90,8 @@ public class CenterController implements Api {
     }
 
     /**
-     * The controller returns information {@code List <CenterResponse>} about center.
-     *
+     * Use this endpoint to get information about all centers.
+     * The controller returns {@code List <CenterResponse>}.
      * @return new {@code List <CenterResponse>}.
      */
     @GetMapping("/centers")
@@ -96,8 +100,8 @@ public class CenterController implements Api {
     }
 
     /**
-     * The controller returns dto {@code {@link CenterProfile }} of the club.
-     *
+     * Use this endpoint to get the advanced search result for center with pagination.
+     * The controller returns {@code {@link CenterProfile }}.
      * @param advancedSearchCenterProfile - Place dto with all parameters for searched club.
      * @return new {@code ClubProfile}.
      */
@@ -112,12 +116,11 @@ public class CenterController implements Api {
     }
 
     /**
-     * The controller returns dto {@code ...} of deleted center.
-     *
+     * Use this endpoint to delete center by id.
+     * The controller returns dto {@code CenterResponse} of deleted center.
      * @param id - put category id.
-     * @return new {@code ...}.
+     * @return new {@code CenterResponse}.
      */
-    //TODO
     @DeleteMapping("/center/{id}")
     public CenterResponse deleteCenter(@PathVariable Long id) {
         return centerService.deleteCenterById(id);

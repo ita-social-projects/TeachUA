@@ -2,6 +2,7 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.LogService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@Hidden
 public class LogController implements Api {
 
     private final LogService logService;

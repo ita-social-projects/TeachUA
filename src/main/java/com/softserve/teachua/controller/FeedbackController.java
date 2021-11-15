@@ -4,6 +4,7 @@ import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.service.FeedbackService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@Tag(name="feedback", description="the Feedback API")
 public class FeedbackController implements Api {
 
     private final FeedbackService feedbackService;
@@ -23,10 +25,10 @@ public class FeedbackController implements Api {
     }
 
     /**
-     * The method to get Feedback by id
-     *
-     * @param id of Feedback
-     * @return FeedbackResponse
+     * Use this endpoint to get Feedback by id.
+     * The controller returns {@code FeedbackResponse}.
+     * @param id - put id of Feedback here.
+     * @return {@code FeedbackResponse}.
      */
     @GetMapping("/feedback/{id}")
     public FeedbackResponse getFeedbackById(@PathVariable Long id) {
@@ -34,9 +36,9 @@ public class FeedbackController implements Api {
     }
 
     /**
-     * The method to get all Feedbacks
-     *
-     * @return List of FeedbackResponse
+     * Use this endpoint to get all Feedbacks.
+     * The controller returns {@code List<FeedbackResponse>}.
+     * @return {@code List<FeedbackResponse>}.
      */
     @GetMapping("/feedbacks")
     public List<FeedbackResponse> getAllFeedback() {
@@ -44,9 +46,9 @@ public class FeedbackController implements Api {
     }
 
     /**
-     * The method to get all Feedbacks by Club id
-     *
-     * @return List of FeedbackResponse
+     * Use this endpoint to get all Feedbacks by Club id.
+     * The controller returns {@code List<FeedbackResponse>}.
+     * @return {@code List<FeedbackResponse>}
      */
     @GetMapping("/feedbacks/{id}")
     public List<FeedbackResponse> getAllFeedback(@PathVariable Long id) {
@@ -54,10 +56,10 @@ public class FeedbackController implements Api {
     }
 
     /**
-     * The method to create a new Feedback
-     *
-     * @param feedbackProfile - object of DTO class
-     * @return SuccessCreatedFeedback
+     * Use this endpoint to create a new Feedback.
+     * The controller returns {@code SuccessCreatedFeedback}.
+     * @param feedbackProfile - object of DTO class.
+     * @return {@code SuccessCreatedFeedback}
      */
     @PostMapping("/feedback")
     public SuccessCreatedFeedback addFeedback(
@@ -67,11 +69,11 @@ public class FeedbackController implements Api {
     }
 
     /**
-     * The method to update Feedback
-     *
-     * @param id
-     * @param feedbackProfile
-     * @return FeedbackProfile
+     * Use this endpoint to update Feedback by id.
+     * The controller returns {@code FeedbackProfile}.
+     * @param id - put feedback id here.
+     * @param feedbackProfile - put feedback information here.
+     * @return {@code FeedbackProfile}.
      */
     @PutMapping("/feedback/{id}")
     public FeedbackProfile updateFeedback(
@@ -82,10 +84,10 @@ public class FeedbackController implements Api {
     }
 
     /**
-     * The method to delete Feedback
-     *
-     * @param id
-     * @return FeedbackResponse
+     * Use this endpoint to delete Feedback by id.
+     * The controller returns {@code FeedbackResponse}.
+     * @param id - put feedback id here.
+     * @return {@code FeedbackResponse}
      */
     @DeleteMapping("/feedback/{id}")
     public FeedbackResponse deleteFeedbackById(@PathVariable Long id) {

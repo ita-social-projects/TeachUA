@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.service.ComplaintService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@Tag(name="complaint", description="the Complaint API")
 public class ComplaintController implements Api {
 
     private final ComplaintService complaintService;
@@ -25,9 +27,9 @@ public class ComplaintController implements Api {
     }
 
     /**
-     * The method to get Complaint by id
-     *
-     * @param id Complaint id
+     * Use this endpoint to get Complaint by id.
+     * The controller returns {@code ComplaintResponse}.
+     * @param id - put complaint id here.
      * @return {@link ComplaintResponse}
      */
     @GetMapping("/complaint/{id}")
@@ -36,8 +38,8 @@ public class ComplaintController implements Api {
     }
 
     /**
-     * The method to get all Complaints
-     *
+     * Use this endpoint to get all Complaints.
+     * The controller returns {@code List<ComplaintResponse>}.
      * @return {@code List<ComplaintResponse>}
      */
     @GetMapping("/complaints")
@@ -46,9 +48,9 @@ public class ComplaintController implements Api {
     }
 
     /**
-     * The method to get all Complaints by club id
-     *
-     * @param id - club id
+     * Use this endpoint to get all Complaints by club id
+     * The controller returns {@code List<ComplaintResponse>}.
+     * @param id - put club id here.
      * @return {@link List<ComplaintResponse>}
      */
     @GetMapping("/complaints/club/{id}")
@@ -57,9 +59,9 @@ public class ComplaintController implements Api {
     }
 
     /**
-     * The method to create a new Complaint
-     *
-     * @param complaintProfile - object of DTO class
+     * Use this endpoint to create a new Complaint
+     * The controller returns {@code SuccessCreatedComplaint}.
+     * @param complaintProfile - put complaint information here.
      * @return new {@link SuccessCreatedComplaint}
      */
     @PostMapping("/complaint")
@@ -69,8 +71,8 @@ public class ComplaintController implements Api {
     }
 
     /**
-     * The method to update Complaint
-     *
+     * Use this endpoint to update Complaint.
+     * The controller returns {@code ComplaintProfile}.
      * @param id               Complaint id
      * @param complaintProfile Complaint profile with new data
      * @return {@link ComplaintProfile}
@@ -81,9 +83,9 @@ public class ComplaintController implements Api {
     }
 
     /**
-     * The method to delete Complaint
-     *
-     * @param id id of Complaint to be deleted
+     * Use this endpoint to delete Complaint
+     * The controller returns {@code ComplaintResponse}.
+     * @param id - put complaint id here.
      * @return {@link ComplaintResponse}
      */
     @DeleteMapping("/complaint/{id}")

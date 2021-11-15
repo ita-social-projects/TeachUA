@@ -50,7 +50,6 @@
 <!-- 			<groupId>com.h2database</groupId> -->
 <!-- 			<artifactId>h2</artifactId> -->
 <!-- 		</dependency> -->
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -109,7 +108,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.18</version>
+			<version>1.18.22</version>
 			<!-- <optional>true</optional> -->
 		</dependency>
 
@@ -117,6 +116,17 @@
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
 			<version>2.3.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.5.12</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-javadoc</artifactId>
+			<version>1.5.12</version>
 		</dependency>
 
 		<dependency>
@@ -145,17 +155,10 @@
 			<artifactId>jackson-annotations</artifactId>
 			<version>2.13.0</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client -->
-
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-client</artifactId>
 		</dependency>
-
-		<!--<dependency> <groupId>org.powermock</groupId> <artifactId>powermock-api-mockito</artifactId> 
-			<version>1.7.4</version> <scope>test</scope> </dependency> -->
-
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
@@ -201,6 +204,22 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.6</version>
 		</dependency>
+
+<!--		&lt;!&ndash; Annotation processor &ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>com.github.therapi</groupId>-->
+<!--			<artifactId>therapi-runtime-javadoc-scribe</artifactId>-->
+<!--			<version>0.12.0</version>-->
+<!--			<scope>provided</scope>-->
+<!--		</dependency>-->
+
+<!--		&lt;!&ndash; Runtime library &ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>com.github.therapi</groupId>-->
+<!--			<artifactId>therapi-runtime-javadoc</artifactId>-->
+<!--			<version>0.12.0</version>-->
+<!--		</dependency>-->
+
 	</dependencies>
 
 
@@ -233,6 +252,20 @@
 					</includes>
 				</configuration>
 			</plugin>
+
+<!--			<plugin>-->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-compiler-plugin</artifactId>-->
+<!--				<configuration>-->
+<!--					<annotationProcessorPaths>-->
+<!--						<path>-->
+<!--							<groupId>com.github.therapi</groupId>-->
+<!--							<artifactId>therapi-runtime-javadoc-scribe</artifactId>-->
+<!--							<version>0.12.0</version>-->
+<!--						</path>-->
+<!--					</annotationProcessorPaths>-->
+<!--				</configuration>-->
+<!--			</plugin>-->
 <!--             <plugin> -->
 <!--                 <groupId>org.apache.maven.plugins</groupId> -->
 <!--                <artifactId>maven-compiler-plugin</artifactId> -->
