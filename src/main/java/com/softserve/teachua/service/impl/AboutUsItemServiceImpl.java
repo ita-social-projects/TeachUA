@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -25,6 +24,7 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
     private static final String ABOUT_US_ITEM_ALREADY_EXIST = "AboutUsItem with number: %s already exist";
     private static final String ABOUT_US_ITEM_NOT_FOUND_BY_ID = "AboutUsItem was not found by id: %s";
     private static final String ABOUT_US_ITEM_NULL_FIELD_ERROR = "AboutUsItem cannot exist without \"%s\"";
+    private static final String WRONG_LINK = "Youtube link should contain 'watch?v='";
     private static final String VIDEO_PARAM = "watch?v=";
     private static final String EMBED_VIDEO_URL = "https://www.youtube.com/embed/";
     private static final Long STEP = 20L;
@@ -103,21 +103,23 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
     }
 
     @Override
-    public void validateVideoUrl(AboutUsItemProfile aboutUsItemProfile) {
+    public String validateVideoUrl(AboutUsItemProfile aboutUsItemProfile) {
         String video_url = aboutUsItemProfile.getVideo();
         if(video_url != null) {
             int position = video_url.indexOf(VIDEO_PARAM);
-            if(position != -1) {
-                video_url = video_url.substring(position + VIDEO_PARAM.length());
-                int end = video_url.indexOf('&');
-                if(end != -1){
-                    video_url = video_url.substring(0, end);
-                }
-                video_url = EMBED_VIDEO_URL + video_url;
-                aboutUsItemProfile.setVideo(video_url);
-                log.debug(video_url);
+            if(position == -1){
+                throw new IllegalArgumentException(WRONG_LINK);
             }
+            video_url = video_url.substring(position + VIDEO_PARAM.length());
+            int end = video_url.indexOf('&');
+            if(end != -1){
+                video_url = video_url.substring(0, end);
+            }
+            video_url = EMBED_VIDEO_URL + video_url;
+            aboutUsItemProfile.setVideo(video_url);
+            log.debug(video_url);
         }
+        return video_url;
     }
 
     @Override
