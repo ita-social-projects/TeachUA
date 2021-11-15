@@ -1,6 +1,8 @@
 package com.softserve.teachua.converter;
 
 import com.softserve.teachua.dto.location.LocationProfile;
+import com.softserve.teachua.dto.location.LocationResponse;
+import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.service.impl.LocationServiceImpl;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,6 +27,15 @@ public class CoordinatesConverter {
     }
 
     public void LocationProfileConverterToDb(LocationProfile location){
+        String coordinates = location.getCoordinates();
+        String[] latAndLng = coordinates.replaceAll(" ","").split(",");
+        location.setLatitude(Double.valueOf(latAndLng[0]));
+        location.setLongitude(Double.valueOf(latAndLng[1]));
+
+    }
+
+    public void locationResponseConverterToDb(LocationResponse location){
+
         String coordinates = location.getCoordinates();
         String[] latAndLng = coordinates.replaceAll(" ","").split(",");
         location.setLatitude(Double.valueOf(latAndLng[0]));

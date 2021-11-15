@@ -1,6 +1,7 @@
 package com.softserve.teachua.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
@@ -18,6 +19,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "centers")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Center implements Convertible, Archivable {
 
     @Id
@@ -46,12 +48,10 @@ public class Center implements Convertible, Archivable {
     private String urlLogo;
 
     @OneToMany(mappedBy = "center")
-    @JsonManagedReference
     @ToString.Exclude
     private Set<Location> locations;
 
     @OneToMany(mappedBy = "center")
-    @JsonManagedReference
     @ToString.Exclude
     private Set<Club> clubs;
 

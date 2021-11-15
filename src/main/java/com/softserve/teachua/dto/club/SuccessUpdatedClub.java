@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.club;
 
+import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.*;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class SuccessUpdatedClub implements Convertible {
     private String urlWeb;
     private String urlLogo;
     private List<GalleryPhoto> urlGallery;
+    private Set<LocationResponse> locations;
     private Double rating;
     private District district;
     private Station station;
