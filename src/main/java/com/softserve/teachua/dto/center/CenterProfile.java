@@ -28,7 +28,6 @@ public class CenterProfile implements Convertible {
     private Long id;
 
     @Valid
-    @NotBlank
     @Size(min = 5, max = 100, message = "Length should be between 5 and 100 chars")
     @CheckRussian
     private String name;
@@ -38,7 +37,6 @@ public class CenterProfile implements Convertible {
     private List<LocationProfile> locations;
 
     @Valid
-    @NotBlank
     @Size(min = 40, max = 1500, message = "Length should be between 5 and 100 chars")
     @CheckRussian
     private String description;

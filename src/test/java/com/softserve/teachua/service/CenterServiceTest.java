@@ -1,6 +1,7 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.converter.CenterToCenterResponseConverter;
+import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
@@ -23,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +40,8 @@ public class CenterServiceTest {
 
     private static final Long CORRECT_CENTER_ID = 1L;
     private static final Long WRONG_CENTER_ID = 1000L;
+    private  static  final  Long CORRECT_LOCATION_ID = 1l;
+    private  static  final  Long CLUB_ID = 1l;
     private static final List<Long> CLUBS_ID = new LinkedList<>();
     private static final Set<Club> CLUBS = new HashSet<>();
     @Mock
@@ -60,6 +64,8 @@ public class CenterServiceTest {
     private CenterToCenterResponseConverter centerToCenterResponseConverter;
     @Mock
     private UserService userService;
+    @Mock
+    private CoordinatesConverter coordinatesConverter;
 
     @InjectMocks
     private CenterServiceImpl centerService;
@@ -69,17 +75,19 @@ public class CenterServiceTest {
     private Center createCenter;
     private SuccessCreatedCenter successCreatedCenter;
     private HttpServletRequest httpServletRequest;
+    private Club club;
 
     @BeforeAll
     public static void setUp() {
         CLUBS_ID.add(1L);
-        CLUBS_ID.add(2L);
+//        CLUBS_ID.add(2L);
         CLUBS.add(Club.builder().id(1L).build());
-        CLUBS.add(Club.builder().id(2L).build());
+//        CLUBS.add(Club.builder().id(2L).build());
     }
 
     @BeforeEach
     public void setMocks() {
+
         correctCenter = Center.builder()
                 .id(CORRECT_CENTER_ID)
                 .name("Correct center")
@@ -115,6 +123,8 @@ public class CenterServiceTest {
                 .id(1L)
                 .name(centerProfile.getName())
                 .build();
+        club = Club.builder()
+                .id(CLUB_ID).build();
     }
 
     @Test
@@ -141,14 +151,13 @@ public class CenterServiceTest {
     }
 
     private void setAddCenterMocks() {
-        when(userRepository.getOne(1L)).thenReturn(new User());
         when(centerRepository.save(any(Center.class)))
                 .thenReturn(createCenter);
         when(dtoConverter.convertToEntity(any(CenterProfile.class), any(Center.class)))
                 .thenReturn(new Center());
-        when(clubService.getClubById(any())).thenReturn(new Club());
         when(dtoConverter.convertToDto(createCenter, SuccessCreatedCenter.class)).thenReturn(successCreatedCenter);
         when(userService.getUserFromRequest(httpServletRequest)).thenReturn(new User());
+        when(clubRepository.findById(1l)).thenReturn(Optional.of(club));
     }
 
     @Test
@@ -159,8 +168,8 @@ public class CenterServiceTest {
 
     @Test
     public void addCenterShouldReturnSuccessCreatedCenterWithUserAndLocations() {
-        LocationProfile locationProfile = LocationProfile.builder().id(1L).name("Location").build();
-        Location location = Location.builder().id(1L).name(locationProfile.getName()).center(createCenter).build();
+        LocationProfile locationProfile = LocationProfile.builder().build();
+        Location location = Location.builder().id(1L).center(createCenter).build();
         Set<Location> locations = new HashSet<>();
         locations.add(location);
         centerProfile.setLocations(Collections.singletonList(locationProfile));

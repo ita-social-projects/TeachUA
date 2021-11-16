@@ -157,9 +157,7 @@ public class CenterServiceImpl implements CenterService {
 
     @Override
     public SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile, HttpServletRequest httpServletRequest) {
-        centerProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
             centerProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
-
         return addCenter(centerProfile);
     }
 

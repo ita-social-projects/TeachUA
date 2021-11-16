@@ -2,6 +2,7 @@ package com.softserve.teachua.dto.club.validation;
 
 import com.softserve.teachua.exception.IncorrectInputException;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -10,8 +11,6 @@ import javax.validation.ConstraintValidatorContext;
 public class CheckRussianValidator implements ConstraintValidator<CheckRussian,String> {
 
     private String message;
-
-
 
     @Override
     public void initialize(CheckRussian constraintAnnotation) {
@@ -23,9 +22,17 @@ public class CheckRussianValidator implements ConstraintValidator<CheckRussian,S
     @Override
     public boolean isValid(String text, ConstraintValidatorContext constraintValidatorContext) {
 
+        String fieldName = ((ConstraintValidatorContextImpl) constraintValidatorContext)
+                .getConstraintViolationCreationContexts().get(0).getPath().toString();
 
-        if ( text == null || text.isEmpty()){
-            throw new IncorrectInputException("Text cannot be empty or null");
+        if ( text == null ){
+            throw new IncorrectInputException(fieldName+ " is null");
+        }
+        if (text.isEmpty()){
+            throw new IncorrectInputException(fieldName+" is empty");
+        }
+        if (text.trim().isEmpty()){
+            throw new IncorrectInputException(fieldName+" is blank");
         }
 
         if (!text.matches("[^ёЁъЪэЭыЫ]+")){

@@ -30,10 +30,8 @@ public class ClubResponse implements Convertible {
     @Min(3)
     @Max(18)
     private Integer ageTo;
-    @NotBlank(message = "name cannot be empty")
     @CheckRussian
     private String name;
-    @NotBlank(message = "description cannot be empty")
     @CheckRussian
     @Size(min = 40, max = 1500, message = "description should be between 40 and 1500 chars")
     private String description;
