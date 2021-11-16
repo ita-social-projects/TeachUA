@@ -10,6 +10,7 @@ import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@Tag(name="user", description="the User API")
 public class UserController implements Api {
 
     private final UserService userService;
@@ -36,10 +38,10 @@ public class UserController implements Api {
     }
 
     /**
-     * The controller returns information {@code UserResponse} about user.
-     *
+     * Use this endpoint to get user by id.
+     * The controller returns {@code UserResponse}.
      * @param id - put user id.
-     * @return new {@code UserResponse}.
+     * @return {@code UserResponse}.
      */
     @GetMapping("/user/{id}")
     public UserResponse getUserById(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
@@ -48,17 +50,22 @@ public class UserController implements Api {
         return userService.getUserProfileById(id);
     }
 
-
+    /**
+     * Use this endpoint to get user by email.
+     * The controller returns {@code User}.
+     * @param email - put user email.
+     * @param httpServletRequest - http request.
+     * @return {@code User}.
+     */
     @GetMapping("/user")
     public User getUserByEmail(@RequestParam("email") String email, HttpServletRequest httpServletRequest) {
         userService.validateUserId(userService.getUserByEmail(email).getId(), httpServletRequest);
         return userService.getUserByEmail(email);
     }
 
-
     /**
-     * The controller returns information {@code List <UserResponse>} about users.
-     *
+     * Use this endpoint to get users.
+     * The controller returns {@code List <UserResponse>}.
      * @return new {@code List <UserResponse>}.
      */
     @GetMapping("/users")
@@ -67,10 +74,12 @@ public class UserController implements Api {
     }
 
     /**
-     * The controller returns information {@code UserResponse} about updated user.
-     *
+     * Use this endpoint to update user by id.
+     * The controller returns {@code SuccessUpdatedUser}.
+     * @param id - put user id.
      * @param userProfile - Place dto with all parameters for update existed user.
-     * @return new {@code UserProfile}.
+     * @param httpServletRequest - http request.
+     * @return {@code SuccessUpdatedUser}.
      */
     @PutMapping("/user/{id}")
     public SuccessUpdatedUser updateUser(
@@ -84,30 +93,24 @@ public class UserController implements Api {
     }
 
     /**
-     * The controller returns dto {@code UserResponse} of deleted user by id.
-     *
-     * @param id - put user id.
-     * @return new {@code UserResponse}.
+     * Use this endpoint to delete user by id.
+     * The controller returns {@code UserResponse}.
      */
     @DeleteMapping("/user/{id}")
     public UserResponse deleteUser(@PathVariable Long id) {
-        log.info("=======");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             auth.getAuthorities().stream().forEach(a -> a.getAuthority());
-        } else {
-            log.info("auth is null");
         }
         return userService.deleteUserById(id);
     }
 
     /**
-     * Method to change user password
-     *
-     * @param id - put user id.
-     * @param passwordUpdate put old, new and verify password
-     *
-     * @return nothing
+     * Use this endpoint to change user password.
+     *The controller returns {@code UserResponse}.
+     * @param httpServletRequest - http request
+     * @param passwordUpdate - password
+     * @param id - id
      */
     @PatchMapping("/user/{id}")
     public void changePassword(@PathVariable("id") Long id,

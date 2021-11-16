@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @RequestMapping("/api")
 @CrossOrigin
-//@OpenAPIDefinition(info = @Info(title = "Teach UA API", version = "v0.1"))
+@OpenAPIDefinition(info = @Info(title = "Teach UA API", version = "v0.1"))
 //@SecurityScheme(
 //        name = "api",
 //        scheme = "basic",

@@ -36,7 +36,7 @@ public class StationController implements Api {
     /**
      * Use this endpoint to create station.
      * The controller returns {@code SuccessCreatedStation}.
-     * @param stationProfile - place body to {@link StationProfile}.
+     * @param stationProfile - place body to {@code StationProfile}.
      * @return new {@code SuccessCreatedStation}.
      */
     @PostMapping("/station")

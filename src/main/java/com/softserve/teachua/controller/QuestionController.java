@@ -25,7 +25,7 @@ public class QuestionController implements Api {
      * Use this endpoint to get Question by id.
      * The controller returns {@code Question}.
      * @param id - put Question id here.
-     * @return Question {@code }
+     * @return  {@code Question}
      */
     @GetMapping("/question/{id}")
     public Question getNews(@PathVariable Long id) {

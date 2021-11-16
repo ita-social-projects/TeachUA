@@ -4,6 +4,7 @@ package com.softserve.teachua.controller.user;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.user.*;
 import com.softserve.teachua.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 @Slf4j
 @RestController
+@Tag(name="reset password", description="the Password Reset API")
 public class ResetPasswordController implements Api {
 
     private final UserService userService;

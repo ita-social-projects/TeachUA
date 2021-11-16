@@ -2,6 +2,7 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.impl.FileUploadServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@Tag(name="upload", description="the Image Upload API")
 public class UploadController implements Api {
 
     @Value("${application.upload.path}")
@@ -20,6 +22,13 @@ public class UploadController implements Api {
         this.fileUploadServiceImpl = fileUploadServiceImpl;
     }
 
+    /**
+     * Use this endpoint to create an image.
+     * The controller returns image and folder names.
+     * @param folder - folder name.
+     * @param image - image title.
+     * @return new {@code uploadPhoto}.
+     */
     @PostMapping("/upload-image") @CrossOrigin
     public String uploadPhoto(@RequestParam("image") MultipartFile image,
                               @RequestParam("folder") String folder) {
@@ -30,6 +39,11 @@ public class UploadController implements Api {
         return fileUploadServiceImpl.uploadImage(uploadDir, fileName, image);
     }
 
+    /**
+     * Use this endpoint to delete an image.
+     * @param filePath - file path.
+     * @return new {@code deleteFile}.
+     */
     @DeleteMapping("/delete-file")
     public String deleteFile(@RequestParam("filePath") String filePath) {
         fileUploadServiceImpl.deleteFile(filePath);
