@@ -5,10 +5,6 @@ import com.softserve.teachua.dto.file.FileUploadProfile;
 import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.model.Club;
-
-import com.softserve.teachua.exception.FileUploadException;
-import com.softserve.teachua.exception.IncorrectInputException;
-
 import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.GalleryRepository;
@@ -22,7 +18,6 @@ import org.springframework.util.StringUtils;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,22 +29,21 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class FileUploadServiceImpl implements FileUploadService {
+    private static final String UPLOAD_PLUG = "/upload/test/test.png";
+    private static final Long IMAGE_SIZE_MB = 5L;
+    private static final Long IMAGE_SIZE_B = IMAGE_SIZE_MB * 1024 * 1024;
+    private static final Long MIN_IMAGE_WIDTH = 200L;
+    private static final Long MIN_IMAGE_HEIGHT = 200L;
     private final String FILE_UPLOAD_EXCEPTION = "Could not save image file: %s";
     private final String DIRECTORY_CREATE_EXCEPTION = "Could not create directory with name: %s";
     private final String IMAGE_SIZE_EXCEPTION = "Max image size should be %d bytes, your image size is %d bytes";
     private final String IMAGE_RESOLUTION_EXCEPTION = "Image %s should be more than %d, your image %s is %d";
     private final String UPLOAD_LOCATION = "/upload";
     private final String TEMP_FILE_STORAGE = "src/tempImage/";
-    @Value("${application.upload.path}")
-    private String uploadDirectory;
-    private static final String UPLOAD_PLUG = "/upload/test/test.png";
-    private static final Long IMAGE_SIZE_MB = 5L;
-    private static final Long IMAGE_SIZE_B = IMAGE_SIZE_MB * 1024 * 1024;
-    private static final Long MIN_IMAGE_WIDTH = 200L;
-    private static final Long MIN_IMAGE_HEIGHT = 200L;
-
     private final GalleryRepository galleryRepository;
     private final ClubRepository clubRepository;
+    @Value("${application.upload.path}")
+    private String uploadDirectory;
 
 
     public FileUploadServiceImpl(GalleryRepository galleryRepository, ClubRepository clubRepository) {
@@ -60,13 +54,13 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     @Override
     public String getPhoto(String filePath) {
-        GalleryPhoto galleryPhoto  = galleryRepository.findByUrl(filePath);
-        File file =  new File("target"+filePath);
+        GalleryPhoto galleryPhoto = galleryRepository.findByUrl(filePath);
+        File file = new File("target" + filePath);
         try {
-            byte [] baseImage = FileUtils.readFileToByteArray(file);
+            byte[] baseImage = FileUtils.readFileToByteArray(file);
             return Base64.getEncoder().encodeToString(baseImage);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.debug(e.getMessage());
         }
         return "File not found";
     }
@@ -75,16 +69,16 @@ public class FileUploadServiceImpl implements FileUploadService {
     public String uploadImage(FileUploadProfile uploadProfile) {
 
         String uploadDir = String.format("%s/%s", uploadDirectory, uploadProfile.getFolder());
+        System.out.println(uploadDirectory);
+        encodeBase64(uploadProfile);
 
-        EncodeBase64(uploadProfile);
-
-        File file = new File("src/tempImage/"+uploadProfile.getFileName());
+        File file = new File("src/tempImage/" + uploadProfile.getFileName());
         String fileName = StringUtils.cleanPath(file.getName());
-        saveFile(uploadDir, fileName, file,uploadProfile.getBase64());
+        saveFile(uploadDir, fileName, file, uploadProfile.getBase64());
 
         String actualPath = String.format("/%s/%s", uploadDir, fileName);
         Optional<Club> optionalClub = clubRepository.findById(uploadProfile.getId());
-        actualPath = actualPath.substring(7,actualPath.length());
+        actualPath = actualPath.substring(7);
         Club club = optionalClub.get();
         GalleryPhoto galleryPhoto = new GalleryPhoto();
         galleryPhoto.setUrl(actualPath);
@@ -123,16 +117,16 @@ public class FileUploadServiceImpl implements FileUploadService {
     //filePath - '/upload/...../fileName.extension'
 
     @Override
-    public String deleteFile(String filePath) {
+    public Boolean deleteFile(String filePath) {
         delete(filePath);
         GalleryPhoto galleryPhoto = galleryRepository.findByUrl(filePath);
         galleryRepository.delete(galleryPhoto);
-        return filePath+" successfully deleted.";
+        return true;
     }
 
     //filePath - '/upload/...../fileName.extension'
     @Override
-    public String updatePhoto(FileUpdateProfile fileUpdateProfile) {
+    public Boolean updatePhoto(FileUpdateProfile fileUpdateProfile) {
         // filePath --/upload/.../file.
 
         String filePath = fileUpdateProfile.getFilePath();
@@ -141,23 +135,23 @@ public class FileUploadServiceImpl implements FileUploadService {
         delete(filePath);
 
         int firstEnter = (filePath.indexOf("/"));
-        String clearPath = filePath.substring(filePath.indexOf("/",firstEnter+1)+1,filePath.lastIndexOf("/")) ;
+        String clearPath = filePath.substring(filePath.indexOf("/", firstEnter + 1) + 1, filePath.lastIndexOf("/"));
         String uploadDir = String.format("%s/%s", uploadDirectory, clearPath);
 
-        EncodeBase64(fileUpdateProfile);
-        File file = new File(TEMP_FILE_STORAGE+fileUpdateProfile.getFileName());
-        saveFile(uploadDir, fileUpdateProfile.getFileName(), file,fileUpdateProfile.getBase64());
+        encodeBase64(fileUpdateProfile);
+        File file = new File(TEMP_FILE_STORAGE + fileUpdateProfile.getFileName());
+        saveFile(uploadDir, fileUpdateProfile.getFileName(), file, fileUpdateProfile.getBase64());
 
-        uploadDir = uploadDir+"/"+ fileUpdateProfile.getFileName();
+        uploadDir = uploadDir + "/" + fileUpdateProfile.getFileName();
         uploadDir = uploadDir.substring(uploadDir.indexOf("/"));
 
         galleryPhoto.setUrl(uploadDir);
         galleryRepository.save(galleryPhoto);
 
-        return "File changed successful";
+        return true;
     }
 
-    private void saveFile(String uploadDir, String fileName, File file,String byte64) {
+    private void saveFile(String uploadDir, String fileName, File file, String byte64) {
         Path uploadPath = Paths.get(uploadDir);
 
         InputStream inputStream = null;
@@ -167,14 +161,14 @@ public class FileUploadServiceImpl implements FileUploadService {
             e.printStackTrace();
         }
 
-        if(file.length() > IMAGE_SIZE_B){
+        if (file.length() > IMAGE_SIZE_B) {
             try {
                 file.deleteOnExit();
                 FileUtils.forceDelete(file);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            throw new IncorrectInputException(String.format(IMAGE_SIZE_EXCEPTION, IMAGE_SIZE_B, file.length()/(1024*1024)));
+            throw new IncorrectInputException(String.format(IMAGE_SIZE_EXCEPTION, IMAGE_SIZE_B, file.length() / (1024 * 1024)));
         }
 
         try {
@@ -183,12 +177,12 @@ public class FileUploadServiceImpl implements FileUploadService {
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decod));
             int width = bufferedImage.getWidth();
             int height = bufferedImage.getHeight();
-            if(width < MIN_IMAGE_WIDTH){
+            if (width < MIN_IMAGE_WIDTH) {
                 FileUtils.forceDelete(file);
                 throw new IncorrectInputException(
                         String.format(IMAGE_RESOLUTION_EXCEPTION, "width", MIN_IMAGE_WIDTH, "width", width));
             }
-            if(height < MIN_IMAGE_HEIGHT){
+            if (height < MIN_IMAGE_HEIGHT) {
                 FileUtils.forceDelete(file);
                 throw new IncorrectInputException(
                         String.format(IMAGE_RESOLUTION_EXCEPTION, "height", MIN_IMAGE_HEIGHT, "height", height));
@@ -210,7 +204,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             throw new FileUploadException(String.format(DIRECTORY_CREATE_EXCEPTION, fileName));
         }
 
-        try  {
+        try {
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ioe) {
@@ -221,15 +215,14 @@ public class FileUploadServiceImpl implements FileUploadService {
             }
             throw new FileUploadException(String.format(FILE_UPLOAD_EXCEPTION, fileName));
         }
-
-        if (file.exists()){
+        if (file.exists()) {
             System.out.println("File delete" + file.delete());
-        }else {
+        } else {
             System.out.println("File not exist");
         }
     }
 
-    private void delete(String filePath){
+    private void delete(String filePath) {
         if (filePath.contains(UPLOAD_PLUG)) {
 
         }
@@ -241,12 +234,12 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         }
         File file = new File("/target" + filePath);
-        if(!file.isDirectory()){
+        if (!file.isDirectory()) {
             file.deleteOnExit();
             file.exists();
 
         }
-   
+
     }
 
     private int ordinalIndexOf(final String str, final String searchStr, final int ordinal, final boolean lastIndex) {
@@ -272,16 +265,17 @@ public class FileUploadServiceImpl implements FileUploadService {
         return index;
     }
 
-  private void EncodeBase64(FileUploadProfile uploadProfile){
-        Encode(uploadProfile.getBase64(), uploadProfile.getFileName());
+    private void encodeBase64(FileUploadProfile uploadProfile) {
+        encode(uploadProfile.getBase64(), uploadProfile.getFileName());
 
 
     }
-    private void EncodeBase64(FileUpdateProfile uploadProfile) {
-        Encode(uploadProfile.getBase64(), uploadProfile.getFileName());
+
+    private void encodeBase64(FileUpdateProfile uploadProfile) {
+        encode(uploadProfile.getBase64(), uploadProfile.getFileName());
     }
 
-    private void Encode(String base64, String fileName ) {
+    private void encode(String base64, String fileName) {
         Base64.Decoder decoder = Base64.getMimeDecoder();
         byte[] decod = decoder.decode(base64);
 

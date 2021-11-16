@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
-=======
+
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,9 +38,9 @@ public class UploadController implements Api {
         return fileUploadServiceImpl.uploadImage(uploadProfile);}
 
     @PutMapping("/file")
-    public String updatePhoto(@RequestBody FileUpdateProfile fileUpdateProfile){return fileUploadServiceImpl.updatePhoto(fileUpdateProfile);}
+    public Boolean updatePhoto(@RequestBody FileUpdateProfile fileUpdateProfile){return fileUploadServiceImpl.updatePhoto(fileUpdateProfile);}
 
     @DeleteMapping("/file")
-    public String deleteFile(@RequestBody FilePathRequest fileDeleteRequest) {return fileUploadServiceImpl.deleteFile(fileDeleteRequest.getFilePath());}
+    public Boolean deleteFile(@RequestBody FilePathRequest fileDeleteRequest) {return fileUploadServiceImpl.deleteFile(fileDeleteRequest.getFilePath());}
 
 }

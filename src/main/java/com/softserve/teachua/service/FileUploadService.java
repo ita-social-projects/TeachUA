@@ -9,7 +9,7 @@ import java.util.List;
 public interface FileUploadService {
     String uploadImage(FileUploadProfile fileUploadProfile);
     void deleteImages(String urlLogo, String urlBackground, List<GalleryPhoto> urlGallery);
-    String deleteFile(String filePath);
+    Boolean deleteFile(String filePath);
     String getPhoto(String filePath);
-    String updatePhoto(FileUpdateProfile fileUpdateProfile);
+    Boolean updatePhoto(FileUpdateProfile fileUpdateProfile);
 }
