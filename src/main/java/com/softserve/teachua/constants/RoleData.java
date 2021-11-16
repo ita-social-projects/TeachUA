@@ -2,7 +2,8 @@ package com.softserve.teachua.constants;
 
 public enum RoleData {
     ADMIN("ADMIN"),
-    USER("USER");
+    USER("USER"),
+    MANAGER("MANAGER");
 
     private final String DB_PREFIX = "ROLE_";
     private String name;

@@ -1,5 +1,6 @@
 package com.softserve.teachua.security;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,7 +33,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
                     singletonList(new SimpleGrantedAuthority(user.getRole().getName()));
         } else {
             authorities = Collections.
-                    singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+                    singletonList(new SimpleGrantedAuthority(RoleData.USER.getDBRoleName()));
         }
 
         return new UserPrincipal(

@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.*;
@@ -109,7 +110,7 @@ import static org.mockito.Mockito.*;
         when(dtoConverter.convertToEntity(userProfile, new User())).thenReturn(newUser);
         when(encodeService.encodePassword(PASSWORD)).thenReturn("encoded password");
         when(userRepository.save(any())).thenReturn(newUser);
-        String ROLE_NAME = "ROLE_USER";
+        String ROLE_NAME = RoleData.USER.getDBRoleName();
         when(roleService.findByName(ROLE_NAME)).thenReturn(Role.builder().id(2).name(ROLE_NAME).build());
         when(dtoConverter.convertToDto(newUser, SuccessRegistration.class))
                 .thenReturn(SuccessRegistration.builder().email(NEW_EMAIL).build());
