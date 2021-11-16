@@ -8,9 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,9 +24,6 @@ public class ComplaintProfile implements Convertible {
 
     @NotNull(message = "cannot be null")
     private Long userId;
-
-    @NotNull(message = "cannot be null")
-    private LocalDate date;
 
     @NotNull(message = "cannot be null")
     private Long clubId;
