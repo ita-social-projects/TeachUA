@@ -1,7 +1,7 @@
 package com.softserve.teachua.dto.location;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.softserve.teachua.dto.club.validation.CheckRussian;
+import com.softserve.teachua.utils.validations.CheckRussian;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;

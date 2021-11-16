@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.club.validation;
+package com.softserve.teachua.utils.validations;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

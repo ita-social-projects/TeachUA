@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.utils.deserializers.HtmlModifyDeserialize;
 import com.softserve.teachua.utils.deserializers.TrimDeserialize;
+import com.softserve.teachua.utils.validations.CheckRussian;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,17 +23,16 @@ import java.time.LocalDate;
 public class CreateTask implements Convertible {
     @JsonDeserialize(using = TrimDeserialize.class)
     @NotBlank
-    @Pattern(regexp = "^[А-Яа-яЇїІіЄєҐґa-zA-Z0-9()!\"#$%&'*№+ ,-.:;<=>?|@_`{}~\\\\^&&[^ыЫъЪёЁэЭ]]+$",
-            message = "can contains only letters of ukrainian and english languages, numbers, and some special symbols like: [\"#$%&'*№+ ,-.:;<=>?|@_`{}~]")
+    @CheckRussian
     @Size(min = 5, max = 50, message = "must contain a minimum of 5 and a maximum of 50 letters")
     private String name;
     @JsonDeserialize(using = HtmlModifyDeserialize.class)
     @NotBlank
-    @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "can not contain letters of russian languages")
+    @CheckRussian
     @Size(min = 40, max = 3000, message = "must contain a minimum of 40 and a maximum of 3000 letters")
     private String headerText;
     @JsonDeserialize(using = HtmlModifyDeserialize.class)
-    @Pattern(regexp = "^[^ыЫъЪёЁэЭ]+$", message = "can not contain letters of russian languages")
+    @CheckRussian
     @Size(min = 40, max = 3000, message = "must contain a minimum of 40 and a maximum of 3000 letters")
     private String description;
     @NotBlank
