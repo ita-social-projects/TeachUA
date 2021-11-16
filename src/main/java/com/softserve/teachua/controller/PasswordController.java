@@ -5,6 +5,7 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.user.UserVerifyPassword;
 import com.softserve.teachua.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -27,6 +28,7 @@ public class PasswordController implements Api {
      * @param userLogin - dto with all params.
      * @return new {@code UserVerifyPassword}.
      */
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/verify")
     public UserVerifyPassword verify(
             @Valid

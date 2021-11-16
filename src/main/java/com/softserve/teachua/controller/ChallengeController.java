@@ -4,6 +4,7 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.challenge.*;
 import com.softserve.teachua.service.ChallengeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +52,7 @@ public class ChallengeController implements Api {
      * @param httpServletRequest - autowired by spring to get user from request.
      * @return {@code SuccessCreatedChallenge}
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PostMapping("/challenge")
     public SuccessCreatedChallenge createChallenge(
             @Valid @RequestBody CreateChallenge createChallenge,
@@ -66,6 +68,7 @@ public class ChallengeController implements Api {
      * @param updateChallenge - put new and old parameters here.
      * @return {@code SuccessUpdatedChallenge} - shows result of updating challenge.
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PutMapping("/challenge/{id}")
     public SuccessUpdatedChallenge updateChallenge(
             @PathVariable Long id,
@@ -80,6 +83,7 @@ public class ChallengeController implements Api {
      * @param id - put challenge id here.
      * @return {@code ChallengeDeleteResponse} - shows which challenge and tasks was removed.
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @DeleteMapping("/challenge/{id}")
     public ChallengeDeleteResponse deleteChallenge(@PathVariable Long id) {
         return challengeService.deleteChallenge(id);
@@ -93,6 +97,7 @@ public class ChallengeController implements Api {
      * @param updateChallengePreview - put new and old parameters here.
      * @return {@code SuccessUpdateChallengePreview} - shows result of updating challenge.
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PatchMapping("/challenge/{id}")
     public SuccessUpdateChallengePreview updateChallengePreview(
             @PathVariable Long id,

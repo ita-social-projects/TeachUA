@@ -8,6 +8,7 @@ import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,7 @@ public class RegistrationController implements Api {
      * @param code - code of user verification
      * @return new {@code SuccessRegistration}.
      */
+    @PreAuthorize("!isAuthenticated()")
     @GetMapping("/verify")
     public SuccessVerification verifyUser(@Param("code") String code) {
         log.debug("Controller \"verify\",  code = " + code);
@@ -44,6 +46,7 @@ public class RegistrationController implements Api {
      * @param userProfile - dto with all params.
      * @return new {@code SuccessRegistration}.
      */
+    @PreAuthorize("!isAuthenticated()")
     @PostMapping("/signup")
     public SuccessRegistration signUp(
             @Valid

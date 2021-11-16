@@ -8,6 +8,7 @@ import com.softserve.teachua.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class NewsController implements Api {
      * @param newsProfile - object of DTO class
      * @return SuccessCrreatedNews
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PostMapping("/news")
     public SuccessCreatedNews addNews(@RequestBody NewsProfile newsProfile) {
         return newsService.addNews(newsProfile);
@@ -51,6 +53,7 @@ public class NewsController implements Api {
      * @param newsProfile
      * @return NewsProfile
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PutMapping("/news/{id}")
     public NewsProfile updateNewsById(@PathVariable Long id, @RequestBody NewsProfile newsProfile) {
         return newsService.updateNewsProfileById(id, newsProfile);
@@ -62,6 +65,7 @@ public class NewsController implements Api {
      * @param id
      * @return NewsResponse
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @DeleteMapping("/news/{id}")
     public NewsResponse deleteNews(@PathVariable Long id) {
 

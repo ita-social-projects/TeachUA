@@ -7,6 +7,7 @@ import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.service.ComplaintService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,6 +64,9 @@ public class ComplaintController implements Api {
      * @param complaintProfile - object of DTO class
      * @return new {@link SuccessCreatedComplaint}
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
+            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName()," +
+            "T(com.softserve.teachua.constants.RoleData).USER.getDBRoleName())")
     @PostMapping("/complaint")
     public SuccessCreatedComplaint addComplaint(
             @Valid @RequestBody ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest) {
@@ -76,6 +80,9 @@ public class ComplaintController implements Api {
      * @param complaintProfile Complaint profile with new data
      * @return {@link ComplaintProfile}
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
+            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName()," +
+            "T(com.softserve.teachua.constants.RoleData).USER.getDBRoleName())")
     @PutMapping("/complaint/{id}")
     public ComplaintProfile updateComplaint(@PathVariable Long id,@Valid @RequestBody ComplaintProfile complaintProfile) {
         return complaintService.updateComplaintProfileById(id, complaintProfile);
@@ -87,6 +94,9 @@ public class ComplaintController implements Api {
      * @param id id of Complaint to be deleted
      * @return {@link ComplaintResponse}
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
+            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName()," +
+            "T(com.softserve.teachua.constants.RoleData).USER.getDBRoleName())")
     @DeleteMapping("/complaint/{id}")
     public ComplaintResponse deleteComplaintById(@PathVariable Long id) {
         return complaintService.deleteComplaintById(id);
