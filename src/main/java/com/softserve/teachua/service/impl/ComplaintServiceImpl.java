@@ -4,6 +4,7 @@ import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
+import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Complaint;
 import com.softserve.teachua.repository.ClubRepository;
@@ -84,7 +85,6 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest) {
 
-        complaintProfile.setDate(LocalDate.now());
         complaintProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
 
         if(!clubRepository.existsById(complaintProfile.getClubId())){
@@ -94,7 +94,7 @@ public class ComplaintServiceImpl implements ComplaintService {
             throw new NotExistException("User with id "+complaintProfile.getUserId()+"does`nt exists");
         }
 
-        Complaint complaint = complaintRepository.save(dtoConverter.convertToEntity(complaintProfile, new Complaint()));
+        Complaint complaint = complaintRepository.save(dtoConverter.convertToEntity(complaintProfile, new Complaint()).withDate(LocalDate.now()));
 
         log.debug("add new complaint {}", complaint);
         return dtoConverter.convertToDto(complaint, SuccessCreatedComplaint.class);
