@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -54,6 +55,7 @@ public class CategoryController implements Api {
      * @param categoryProfile - Place dto with all parameters for adding new category.
      * @return new {@code SuccessCreatedCategory}.
      */
+    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PostMapping("/category")
     public SuccessCreatedCategory addCategory(
             @Valid
@@ -66,6 +68,7 @@ public class CategoryController implements Api {
      *
      * @return new {@code CategoryProfile}.
      */
+    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PutMapping("/category/{id}")
     public CategoryProfile updateCategory(
             @PathVariable Long id,
@@ -80,6 +83,7 @@ public class CategoryController implements Api {
      * @param id - put category id.
      * @return new {@code CategoryResponse}.
      */
+    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @DeleteMapping("/category/{id}")
     public CategoryResponse deleteCategory(@PathVariable("id") Long id) {
         return categoryService.deleteCategoryById(id);

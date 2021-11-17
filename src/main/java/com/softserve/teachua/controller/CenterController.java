@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,6 +64,8 @@ public class CenterController implements Api {
      *
      * @return new {@code SuccessCreatedCenter}.
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
+            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @PostMapping("/center")
     public SuccessCreatedCenter addCenter(
             @Valid
@@ -76,6 +79,8 @@ public class CenterController implements Api {
      *
      * @return new {@code CenterProfile}.
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
+            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @PutMapping("/center/{id}")
     public CenterProfile updateCenter(
             @PathVariable Long id,
@@ -117,11 +122,14 @@ public class CenterController implements Api {
      * @return new {@code ...}.
      */
     //TODO
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
+            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @DeleteMapping("/center/{id}")
     public CenterResponse deleteCenter(@PathVariable Long id) {
         return centerService.deleteCenterById(id);
     }
 
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PatchMapping("/centers/rating")
     public List<CenterResponse> updateCentersRating(){
         return centerService.updateRatingForAllCenters();

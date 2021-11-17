@@ -4,6 +4,7 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.impl.FileUploadServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ public class UploadController implements Api {
         this.fileUploadServiceImpl = fileUploadServiceImpl;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/upload-image") @CrossOrigin
     public String uploadPhoto(@RequestParam("image") MultipartFile image,
                               @RequestParam("folder") String folder) {
@@ -30,6 +32,7 @@ public class UploadController implements Api {
         return fileUploadServiceImpl.uploadImage(uploadDir, fileName, image);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/delete-file")
     public String deleteFile(@RequestParam("filePath") String filePath) {
         fileUploadServiceImpl.deleteFile(filePath);

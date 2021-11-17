@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.role.RoleProfile;
 import com.softserve.teachua.dto.role.RoleResponse;
 import com.softserve.teachua.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,6 +27,7 @@ public class RoleController implements Api {
      * @param id - put role id.
      * @return {@link RoleResponse}
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @GetMapping("/role/{id}")
     public RoleResponse getRole(@PathVariable Integer id) {
         return roleService.getRoleProfileById(id);
@@ -37,6 +39,7 @@ public class RoleController implements Api {
      * @param roleProfile - put json role
      * @return {@link RoleProfile}
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PostMapping("/role")
     public RoleProfile addRole(@Valid @RequestBody RoleProfile roleProfile) {
         return roleService.addNewRole(roleProfile);
@@ -49,6 +52,7 @@ public class RoleController implements Api {
      * @param roleProfile - put json role
      * @return {@link RoleProfile}
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PutMapping("/role/{id}")
     public RoleProfile addRole(
             @PathVariable Integer id,
@@ -62,6 +66,7 @@ public class RoleController implements Api {
      *
      * @return {...}
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @DeleteMapping("/role/{id}")
     public RoleResponse deleteRole(@PathVariable Integer id) {
         return roleService.deleteRoleById(id);
@@ -73,6 +78,7 @@ public class RoleController implements Api {
      *
      * @return {@link RoleResponse}
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @GetMapping("/roles")
     public List<RoleResponse> getRoles() {
         return roleService.getListOfRoles();

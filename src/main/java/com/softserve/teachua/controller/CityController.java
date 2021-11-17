@@ -6,6 +6,7 @@ import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.city.SuccessCreatedCity;
 import com.softserve.teachua.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
@@ -36,6 +37,7 @@ public class CityController implements Api {
      * @param cityProfile - place body to {@link CityProfile}.
      * @return new {@code SuccessCreatedCity}.
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PostMapping("/city")
     public SuccessCreatedCity addCity(
             @Valid
@@ -48,6 +50,7 @@ public class CityController implements Api {
      *
      * @return new {@code CityProfile}.
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PutMapping("/city/{id}")
     public CityProfile updateCity(
             @PathVariable Long id,
@@ -66,6 +69,7 @@ public class CityController implements Api {
         return cityService.getListOfCities();
     }
 
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @DeleteMapping("/city/{id}")
     public CityResponse deleteCity(@PathVariable long id) {
         return cityService.deleteCityById(id);

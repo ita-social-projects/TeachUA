@@ -5,18 +5,14 @@ import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
-import com.softserve.teachua.exception.WrongAuthenticationException;
-import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.User;
-import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.ClubService;
-import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,6 +73,8 @@ public class ClubController implements Api {
      * @param clubProfile - Place dto with all parameters for adding new club.
      * @return new {@code SuccessCreatedClub}.
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
+            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @PostMapping("/club")
     public SuccessCreatedClub addClub(
             @Valid
@@ -146,6 +144,8 @@ public class ClubController implements Api {
      * @param clubProfile - Place dto with all parameters for updating existed club.
      * @return new {@code ClubProfile}.
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
+            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @PutMapping("/club/{id}")
     public SuccessUpdatedClub updateClub(
             @PathVariable Long id,
@@ -155,6 +155,8 @@ public class ClubController implements Api {
         return clubService.updateClub(id, clubProfile, httpServletRequest);
     }
 
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
+            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @PatchMapping("/club/{id}")
     public ClubResponse changeClubOwner(
             @PathVariable Long id,
@@ -171,6 +173,8 @@ public class ClubController implements Api {
      * @param id - put club id.
      * @return new {@code ClubResponse}.
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
+            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @DeleteMapping("/club/{id}")
     public ClubResponse deleteClub(
             @PathVariable Long id,
@@ -179,6 +183,7 @@ public class ClubController implements Api {
         return clubService.deleteClubById(id, httpServletRequest);
     }
 
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PatchMapping("/clubs/rating")
     public List<ClubResponse> updateClubsRating(){
         return clubService.updateRatingForAllClubs();
