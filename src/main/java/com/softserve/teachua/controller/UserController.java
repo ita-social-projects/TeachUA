@@ -54,7 +54,7 @@ public class UserController implements Api {
      * Use this endpoint to get user by email.
      * The controller returns {@code User}.
      * @param email - put user email.
-     * @param httpServletRequest - http request.
+     * @param httpServletRequest - autowired by spring.
      * @return {@code User}.
      */
     @GetMapping("/user")
@@ -78,7 +78,7 @@ public class UserController implements Api {
      * The controller returns {@code SuccessUpdatedUser}.
      * @param id - put user id.
      * @param userProfile - Place dto with all parameters for update existed user.
-     * @param httpServletRequest - http request.
+     * @param httpServletRequest - autowired by spring.
      * @return {@code SuccessUpdatedUser}.
      */
     @PutMapping("/user/{id}")
@@ -108,7 +108,7 @@ public class UserController implements Api {
     /**
      * Use this endpoint to change user password.
      *The controller returns {@code UserResponse}.
-     * @param httpServletRequest - http request
+     * @param httpServletRequest - autowired by spring.
      * @param passwordUpdate - password
      * @param id - id
      */

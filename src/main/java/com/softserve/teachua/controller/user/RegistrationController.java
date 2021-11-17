@@ -30,13 +30,12 @@ public class RegistrationController implements Api {
 
     /**
      * The controller returns dto {@code SuccessRegistration} of sign-upped user.
-     * @param log
      * @param code - code of user verification
      * @return new {@code SuccessRegistration}.
      */
     @GetMapping("/verify")
     public SuccessVerification verifyUser(@Param("code") String code) {
-        log.info("Controller \"verify\",  code = " + code);
+        //log.info("Controller \"verify\",  code = " + code);
         return userService.verify(code);
     }
 
@@ -51,7 +50,7 @@ public class RegistrationController implements Api {
             @Valid
             @RequestBody
                     UserProfile userProfile) {
-        log.info("Controller \"signup\", userProfile = " + userProfile.toString());
+        //log.info("Controller \"signup\", userProfile = " + userProfile.toString());
         return userService.registerUser(userProfile);
     }
 }

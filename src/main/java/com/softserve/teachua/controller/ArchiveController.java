@@ -36,7 +36,7 @@ public class ArchiveController implements Api {
      *
      * @return new {@code List <Archive>}.
      */
-    @GetMapping(value ="/archives", produces = {"application/json", "application/xml"})
+    @GetMapping("/archives")
     public List<Archive> getArchives() {
         return archiveService.findAllArchives();
     }
@@ -48,7 +48,7 @@ public class ArchiveController implements Api {
      * @param className - put className here.
      * @return new {@code List <Archive>}.
      */
-    @GetMapping(value = "/archives/{className}", produces = {"application/json", "application/xml"})
+    @GetMapping( "/archives/{className}")
     public List<Archive> getArchivesByClassName(@PathVariable String className) {
         return archiveService.findArchivesByClassName(className);
     }

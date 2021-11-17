@@ -50,7 +50,4 @@ public class UpdateChallenge implements Convertible {
     private Long sortNumber;
     @NotNull
     private Boolean isActive;
-    @NotNull
-    @ToString.Exclude
-    private Set<TaskPreview> tasks;
 }

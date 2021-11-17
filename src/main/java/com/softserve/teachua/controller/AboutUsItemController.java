@@ -25,6 +25,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @Tag(name="about us", description="the About Us API")
+@SecurityRequirement(name = "api")
 public class AboutUsItemController implements Api {
 
     private final AboutUsItemService aboutUsItemService;

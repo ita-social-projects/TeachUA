@@ -39,7 +39,7 @@ public class NewsController implements Api {
      * Use this endpoint to create new News.
      * The controller returns {@code SuccessCreatedNews}.
      * @param newsProfile - object of DTO class.
-     * @return new {@code SuccessCrreatedNews}.
+     * @return new {@code SuccessCreatedNews}.
      */
     @PostMapping("/news")
     public SuccessCreatedNews addNews(@RequestBody NewsProfile newsProfile) {

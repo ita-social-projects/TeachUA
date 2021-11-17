@@ -188,6 +188,7 @@ public class ClubController implements Api {
      * Use this endpoint to update some values of club by id.
      * The controller returns {@code ClubResponse}.
      * @param id - put club id here.
+     * @param httpServletRequest - autowired by spring.
      * @param clubOwnerProfile - Place dto with all parameters for updating existing club.
      * @return new {@code ClubProfile}.
      */
@@ -209,7 +210,8 @@ public class ClubController implements Api {
 
     /**
      * Use this endpoint to delete club by id.
-     * The controller returns {@code ClubResponse} .
+     * The controller returns {@code ClubResponse}.
+     * @param httpServletRequest - autowired by spring.
      * @param id - put club id.
      * @return new {@code ClubResponse}.
      */
