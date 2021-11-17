@@ -13,18 +13,17 @@ import org.springframework.stereotype.Component;
 @Data
 @EqualsAndHashCode
 @Slf4j
-
 @Component
 public class CenterToCenterResponseConverter {
-
     private DtoConverter dtoConverter;
     private ContactsStringConverter contactsStringConverter;
 
     @Autowired
-    public CenterToCenterResponseConverter(ContactsStringConverter contactsStringConverter,
-                                           DtoConverter dtoConverter){
-        this.dtoConverter=dtoConverter;
-        this.contactsStringConverter=contactsStringConverter;
+    public CenterToCenterResponseConverter(
+            ContactsStringConverter contactsStringConverter,
+            DtoConverter dtoConverter) {
+        this.dtoConverter = dtoConverter;
+        this.contactsStringConverter = contactsStringConverter;
     }
 
     /**
@@ -35,12 +34,10 @@ public class CenterToCenterResponseConverter {
      * @return new {@code ClubResponse}.
      * @author Vasyl Khula
      */
-    public CenterResponse convertToCenterResponse(Center center){
-
-        CenterResponse centerResponse=dtoConverter.convertToDto(center,CenterResponse.class);
+    public CenterResponse convertToCenterResponse(Center center) {
+        CenterResponse centerResponse = dtoConverter.convertToDto(center, CenterResponse.class);
         centerResponse.setContacts(
                 contactsStringConverter.convertStringToContactDataResponses(center.getContacts()));
         return centerResponse;
     }
-
 }

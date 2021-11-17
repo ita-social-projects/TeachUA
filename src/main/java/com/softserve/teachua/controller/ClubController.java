@@ -24,7 +24,6 @@ import java.util.List;
 public class ClubController implements Api {
     private static final int CLUBS_PER_PAGE = 8;
     private static final int CLUBS_PER_USER_PAGE = 3;
-
     private final ClubService clubService;
     private final JwtProvider jwtProvider;
 
@@ -44,7 +43,6 @@ public class ClubController implements Api {
     public ClubResponse getClubById(@PathVariable Long id) {
         return clubService.getClubProfileById(id);
     }
-
 
     /**
      * The controller returns information {@code ClubResponse} about club.
@@ -68,13 +66,13 @@ public class ClubController implements Api {
     }
 
     /**
-     * The controller returns dto {@code SuccessCreatedClub} of created club
+     * The controller returns dto {@code SuccessCreatedClub} of created club.
      *
      * @param clubProfile - Place dto with all parameters for adding new club.
      * @return new {@code SuccessCreatedClub}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), "
+            + "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @PostMapping("/club")
     public SuccessCreatedClub addClub(
             @Valid
@@ -89,7 +87,7 @@ public class ClubController implements Api {
     }
 
     /**
-     * The controller returns information {@code Page<ClubResponse>} about clubs by id of user-owner
+     * The controller returns information {@code Page<ClubResponse>} about clubs by id of user-owner.
      *
      * @param id - put user id.
      * @return new {@code Page<ClubResponse>}.
@@ -104,7 +102,7 @@ public class ClubController implements Api {
     }
 
     @GetMapping("/clubs/user/{id}")
-    public List<ClubResponse> getListClubsByUserId(@PathVariable Long id){
+    public List<ClubResponse> getListClubsByUserId(@PathVariable Long id) {
         return clubService.getListClubsByUserId(id);
     }
 
@@ -116,7 +114,6 @@ public class ClubController implements Api {
                     sort = "id") Pageable pageable) {
         return clubService.getClubsBySearchParameters(searchClubProfile, pageable);
     }
-
 
     /**
      * The controller returns dto {@code {@link ClubProfile}} of the club.
@@ -144,8 +141,8 @@ public class ClubController implements Api {
      * @param clubProfile - Place dto with all parameters for updating existed club.
      * @return new {@code ClubProfile}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), "
+            + "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @PutMapping("/club/{id}")
     public SuccessUpdatedClub updateClub(
             @PathVariable Long id,
@@ -155,17 +152,16 @@ public class ClubController implements Api {
         return clubService.updateClub(id, clubProfile, httpServletRequest);
     }
 
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), "
+            + "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @PatchMapping("/club/{id}")
     public ClubResponse changeClubOwner(
             @PathVariable Long id,
             @Valid
             @RequestBody ClubOwnerProfile clubOwnerProfile,
-            HttpServletRequest httpServletRequest){
+            HttpServletRequest httpServletRequest) {
         return clubService.changeClubOwner(id, clubOwnerProfile, httpServletRequest);
     }
-
 
     /**
      * The controller returns dto {@code ClubResponse} of deleted club by id.
@@ -173,24 +169,23 @@ public class ClubController implements Api {
      * @param id - put club id.
      * @return new {@code ClubResponse}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), "
+            + "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @DeleteMapping("/club/{id}")
     public ClubResponse deleteClub(
             @PathVariable Long id,
-            HttpServletRequest httpServletRequest){
-
+            HttpServletRequest httpServletRequest) {
         return clubService.deleteClubById(id, httpServletRequest);
     }
 
     @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PatchMapping("/clubs/rating")
-    public List<ClubResponse> updateClubsRating(){
+    public List<ClubResponse> updateClubsRating() {
         return clubService.updateRatingForAllClubs();
     }
 
     @GetMapping("/club/updateContacts")
-    public void updateContacts(){
-         clubService.updateContacts();
+    public void updateContacts() {
+        clubService.updateContacts();
     }
 }

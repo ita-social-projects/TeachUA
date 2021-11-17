@@ -6,6 +6,7 @@ import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.dto.station.StationResponse;
 import com.softserve.teachua.dto.station.SuccessCreatedStation;
 import com.softserve.teachua.service.StationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import java.util.List;
 public class StationController implements Api {
     private final StationService stationService;
 
+    @Autowired
     public StationController(StationService stationService) {
         this.stationService = stationService;
     }

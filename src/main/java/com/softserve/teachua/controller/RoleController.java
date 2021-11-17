@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 public class RoleController implements Api {
-
     private final RoleService roleService;
 
     @Autowired
@@ -71,7 +70,6 @@ public class RoleController implements Api {
     public RoleResponse deleteRole(@PathVariable Integer id) {
         return roleService.deleteRoleById(id);
     }
-
 
     /**
      * The method which return array of existing roles.

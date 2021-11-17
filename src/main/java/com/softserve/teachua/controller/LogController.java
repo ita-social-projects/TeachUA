@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 public class LogController implements Api {
-
     private final LogService logService;
 
     @Autowired
@@ -24,21 +23,18 @@ public class LogController implements Api {
     @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @GetMapping("/logs")
     public List<String> getLogs() {
-
         return logService.getAllLogs();
     }
 
     @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @GetMapping("/log/{name}")
     public List<String> getLogByName(@PathVariable String name) {
-
         return logService.getLogByName(name);
     }
 
     @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @DeleteMapping("/logs")
     public Boolean deleteAllLogs() {
-
         return logService.deleteAllLogs();
     }
 }

@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 public class ContactTypeController implements Api {
-
     private final ContactTypeService contactTypeService;
 
     @Autowired
@@ -36,7 +35,9 @@ public class ContactTypeController implements Api {
 
     @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PutMapping("/contact-type/{id}")
-    public ContactTypeProfile updateContactType(@PathVariable Long id, @Valid @RequestBody ContactTypeProfile contactTypeProfile) {
+    public ContactTypeProfile updateContactType(
+            @PathVariable Long id,
+            @Valid @RequestBody ContactTypeProfile contactTypeProfile) {
         return contactTypeService.updateContactType(id, contactTypeProfile);
     }
 

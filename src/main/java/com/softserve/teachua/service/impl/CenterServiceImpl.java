@@ -127,7 +127,7 @@ public class CenterServiceImpl implements CenterService {
         List<LocationProfile> locations = centerProfile.getLocations();
         if ( locations != null && !locations.isEmpty()) {
             for (LocationProfile profile : locations) {
-                coordinatesConverter.LocationProfileConverterToDb(profile);
+                coordinatesConverter.locationProfileConverterToDb(profile);
             }
             center.setLocations(locations
                     .stream()
@@ -215,7 +215,7 @@ public class CenterServiceImpl implements CenterService {
         if (!locations.isEmpty()) {
 
             for (LocationProfile profile : locations) {
-                coordinatesConverter.LocationProfileConverterToDb(profile);
+                coordinatesConverter.locationProfileConverterToDb(profile);
                 if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
                     profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
                 }

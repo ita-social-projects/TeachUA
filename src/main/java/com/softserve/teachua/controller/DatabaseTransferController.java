@@ -26,11 +26,9 @@ import java.sql.SQLException;
 @RestController
 public class DatabaseTransferController implements Api {
     private static final String FILE_LOAD_EXCEPTION = "Could not load excel file";
-
     private final ExcelParserService excelParserService;
     private final SqlDataExportService sqlDataExportService;
     private final DataLoaderService dataLoaderService;
-
 
     @Autowired
     public DatabaseTransferController(ExcelParserService excelParserService, SqlDataExportService sqlDataExportService,
@@ -55,7 +53,6 @@ public class DatabaseTransferController implements Api {
     public ExcelLoadSuccess loadExecelToDatabase(@RequestBody ExcelParsingData dataToLoad) {
         dataLoaderService.loadToDatabase(dataToLoad);
         return null;
-
     }
 
     @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
@@ -68,12 +65,10 @@ public class DatabaseTransferController implements Api {
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=data.sql.txt");
 
-
         return ResponseEntity.ok()
                 .headers(header)
                 .contentLength(bytes.length)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
-
 }
