@@ -3,7 +3,7 @@ package com.softserve.teachua.dto.club;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.center.CenterForClub;
-import com.softserve.teachua.dto.club.validation.CheckRussian;
+import com.softserve.teachua.utils.validations.CheckRussian;
 import com.softserve.teachua.dto.contact_data.ContactDataResponse;
 import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.dto.marker.Convertible;

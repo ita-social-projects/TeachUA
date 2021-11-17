@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.club.validation;
+package com.softserve.teachua.utils.validations;
 
 
 import javax.validation.Constraint;
@@ -9,16 +9,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *   Use this annotation to check  field on containing Russian letters like -ёЁыЫъЪэЭ
- *   Allowed Ukrainian,English alphabet and special symbols
- *
+ *   Use this annotation to field that can't contain Russian letters like ёЁыЫъЪэЭ
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = CheckRussianValidator.class)
 public @interface CheckRussian {
 
-    String message() default "Text can contain only English and Ukrainian letter and special symbols";
+    String message() default "can't contain russian letters";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

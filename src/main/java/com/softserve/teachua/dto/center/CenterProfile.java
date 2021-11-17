@@ -1,22 +1,17 @@
 package com.softserve.teachua.dto.center;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.softserve.teachua.dto.club.validation.CheckRussian;
+import com.softserve.teachua.utils.validations.CheckRussian;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Column;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
