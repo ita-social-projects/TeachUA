@@ -61,9 +61,7 @@ public class FeedbackController implements Api {
      * @param feedbackProfile - object of DTO class
      * @return SuccessCreatedFeedback
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName()," +
-            "T(com.softserve.teachua.constants.RoleData).USER.getDBRoleName())")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/feedback")
     public SuccessCreatedFeedback addFeedback(
             @Valid
@@ -78,9 +76,7 @@ public class FeedbackController implements Api {
      * @param feedbackProfile
      * @return FeedbackProfile
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName()," +
-            "T(com.softserve.teachua.constants.RoleData).USER.getDBRoleName())")
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/feedback/{id}")
     public FeedbackResponse updateFeedback(
             @PathVariable Long id,
@@ -96,9 +92,7 @@ public class FeedbackController implements Api {
      * @param id
      * @return FeedbackResponse
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName()," +
-            "T(com.softserve.teachua.constants.RoleData).USER.getDBRoleName())")
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/feedback/{id}")
     public FeedbackResponse deleteFeedbackById(@PathVariable Long id) {
         return feedbackService.deleteFeedbackById(id);

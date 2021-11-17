@@ -64,9 +64,7 @@ public class ComplaintController implements Api {
      * @param complaintProfile - object of DTO class
      * @return new {@link SuccessCreatedComplaint}
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName()," +
-            "T(com.softserve.teachua.constants.RoleData).USER.getDBRoleName())")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/complaint")
     public SuccessCreatedComplaint addComplaint(
             @Valid @RequestBody ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest) {
@@ -80,9 +78,7 @@ public class ComplaintController implements Api {
      * @param complaintProfile Complaint profile with new data
      * @return {@link ComplaintProfile}
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName()," +
-            "T(com.softserve.teachua.constants.RoleData).USER.getDBRoleName())")
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/complaint/{id}")
     public ComplaintProfile updateComplaint(@PathVariable Long id,@Valid @RequestBody ComplaintProfile complaintProfile) {
         return complaintService.updateComplaintProfileById(id, complaintProfile);
@@ -94,9 +90,7 @@ public class ComplaintController implements Api {
      * @param id id of Complaint to be deleted
      * @return {@link ComplaintResponse}
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName()," +
-            "T(com.softserve.teachua.constants.RoleData).USER.getDBRoleName())")
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/complaint/{id}")
     public ComplaintResponse deleteComplaintById(@PathVariable Long id) {
         return complaintService.deleteComplaintById(id);

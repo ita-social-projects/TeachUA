@@ -190,9 +190,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 //                //TODO: only for admin
 //                .antMatchers(HttpMethod.GET, "/api/logs").permitAll()
-//                .antMatchers(HttpMethod.GET, "/logs").permitAll()
+                .antMatchers(HttpMethod.GET, "/logs").permitAll()
 //                .antMatchers(HttpMethod.DELETE, "/api/logs").permitAll()
-//                .antMatchers(HttpMethod.DELETE, "/logs").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/logs").permitAll()
 //                .antMatchers(HttpMethod.GET, "/api/log/**").permitAll()
 //                .antMatchers(HttpMethod.GET, "/log/**").permitAll()
 
@@ -218,7 +218,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/signout")).logoutSuccessUrl("/signin");
     }
-
 
 
     @Autowired
