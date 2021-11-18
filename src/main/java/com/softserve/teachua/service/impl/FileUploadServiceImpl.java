@@ -12,6 +12,8 @@ import com.softserve.teachua.service.FileUploadService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.jasper.runtime.ExceptionUtils;
+import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -63,8 +66,9 @@ public class FileUploadServiceImpl implements FileUploadService {
             byte[] baseImage = FileUtils.readFileToByteArray(file);
             return Base64.getEncoder().encodeToString(baseImage);
         } catch (IOException e) {
-            log.error(e.toString());
+            log.error(e.getMessage(),e);
         }
+        log.debug("get file from path" + filePath);
         return "File not found";
     }
 
@@ -88,6 +92,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         galleryPhoto.setClub(club);
 
         galleryRepository.save(galleryPhoto);
+        log.debug("added to db " + galleryPhoto.getUrl());
         return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
     }
 
@@ -107,6 +112,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             }
         } catch (IndexOutOfBoundsException ex) {
             log.error("Incorrect photo url");
+            log.error(e.getMessage(),e);
         }
 
         if (folderName != null) {
@@ -114,6 +120,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                 FileUtils.deleteDirectory(new File(TARGET + folderName));
             } catch (IOException ex) {
                 log.error("Folder " + folderName + " can not be deleted");
+                log.error(e.getMessage(),e);
             }
         }
     }
@@ -125,6 +132,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         localDelete(TEMP_FILE_STORAGE + fileName);
         GalleryPhoto galleryPhoto = galleryRepository.findByUrl(filePath);
         galleryRepository.delete(galleryPhoto);
+        log.debug("Deleted from db successful");
         return true;
     }
 
@@ -154,7 +162,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         galleryPhoto.setUrl(uploadDir);
         galleryRepository.save(galleryPhoto);
-
+        log.debug("Saved to db successful");
         return true;
     }
 
@@ -165,7 +173,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         try {
             inputStream = new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            log.error(e.toString());
+            log.error(e.getMessage(),e);
         }
 
         if (file.length() > IMAGE_SIZE_B) {
@@ -173,7 +181,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                 file.deleteOnExit();
                 FileUtils.forceDelete(file);
             } catch (IOException e) {
-                log.error(e.toString());
+                log.error(e.getMessage(),e);
             }
             throw new IncorrectInputException(String.format(IMAGE_SIZE_EXCEPTION, IMAGE_SIZE_B, file.length() / (1024 * 1024)));
         }
@@ -193,7 +201,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                         String.format(IMAGE_RESOLUTION_EXCEPTION, "height", MIN_IMAGE_HEIGHT, "height", height));
             }
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(),e);
         }
 
         try {
@@ -213,7 +221,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             try {
                 inputStream.close();
             } catch (IOException e) {
-                log.error(e.toString());
+                log.error(e.getMessage(),e);
             }
         }
     }
@@ -230,7 +238,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             try {
                 FileUtils.forceDelete(file);
             } catch (IOException e) {
-                log.error(e.toString());
+                log.error(e.getMessage(),e);
             }
         }
     }
@@ -250,7 +258,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             try {
                 FileUtils.forceDelete(file);
             } catch (IOException e) {
-                log.error(e.toString());
+                log.error(e.getMessage(),e);
             }
         }
     }
@@ -305,12 +313,12 @@ public class FileUploadServiceImpl implements FileUploadService {
             fileOutputStream.write(decod);
             fileOutputStream.flush();
         } catch (IOException e) {
-            log.error(e.toString());
+            log.error(e.getMessage(),e);
         } finally {
             try {
                 fileOutputStream.close();
             } catch (IOException e) {
-                log.error(e.toString());
+                log.error(e.getMessage(),e);
             }
         }
 
@@ -319,7 +327,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             try {
                 Files.createDirectories(path);
             } catch (IOException e) {
-                log.error(e.toString());
+                log.error(e.getMessage(),e);
             }
         }
     }
