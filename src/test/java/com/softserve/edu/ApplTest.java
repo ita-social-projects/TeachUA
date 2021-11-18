@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ApplTest {
 	//private static final Logger log = LoggerFactory.getLogger(ApplTest.class);
 
-	@Test
+//	@Test
     public void checkApp() {
         // From Maven
         //System.out.println("surefire.application.password = " + System.getProperty("surefire.application.password"));
