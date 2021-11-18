@@ -9,10 +9,12 @@ import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.GalleryRepository;
 import com.softserve.teachua.service.FileUploadService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.imageio.ImageIO;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @Slf4j
 public class FileUploadServiceImpl implements FileUploadService {
     private static final String UPLOAD_PLUG = "/upload/test/test.png";
@@ -39,7 +42,8 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final String IMAGE_SIZE_EXCEPTION = "Max image size should be %d bytes, your image size is %d bytes";
     private final String IMAGE_RESOLUTION_EXCEPTION = "Image %s should be more than %d, your image %s is %d";
     private final String UPLOAD_LOCATION = "/upload";
-    private final String TEMP_FILE_STORAGE = "src/tempImage/";
+    private final String TEMP_FILE_STORAGE = "src/main/resources/tempImage/";
+    private final String TARGET = "target";
     private final GalleryRepository galleryRepository;
     private final ClubRepository clubRepository;
     @Value("${application.upload.path}")
@@ -51,36 +55,35 @@ public class FileUploadServiceImpl implements FileUploadService {
         this.clubRepository = clubRepository;
     }
 
-
     @Override
     public String getPhoto(String filePath) {
         GalleryPhoto galleryPhoto = galleryRepository.findByUrl(filePath);
-        File file = new File("target" + filePath);
+        File file = new File(TARGET + filePath);
         try {
             byte[] baseImage = FileUtils.readFileToByteArray(file);
             return Base64.getEncoder().encodeToString(baseImage);
         } catch (IOException e) {
-            log.debug(e.getMessage());
+            log.error(e.toString());
         }
         return "File not found";
     }
 
     @Override
     public String uploadImage(FileUploadProfile uploadProfile) {
+        //filePath - '/upload/...../fileName.extension'
 
         String uploadDir = String.format("%s/%s", uploadDirectory, uploadProfile.getFolder());
-        System.out.println(uploadDirectory);
         encodeBase64(uploadProfile);
 
-        File file = new File("src/tempImage/" + uploadProfile.getFileName());
+        File file = new File(TEMP_FILE_STORAGE + uploadProfile.getFileName());
         String fileName = StringUtils.cleanPath(file.getName());
         saveFile(uploadDir, fileName, file, uploadProfile.getBase64());
 
         String actualPath = String.format("/%s/%s", uploadDir, fileName);
         Optional<Club> optionalClub = clubRepository.findById(uploadProfile.getId());
-        actualPath = actualPath.substring(7);
         Club club = optionalClub.get();
         GalleryPhoto galleryPhoto = new GalleryPhoto();
+        actualPath = actualPath.substring(7);
         galleryPhoto.setUrl(actualPath);
         galleryPhoto.setClub(club);
 
@@ -90,7 +93,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     @Override
     public void deleteImages(String urlLogo, String urlBackground, List<GalleryPhoto> urlGallery) {
-        // assuming that path to folder will look like target/upload/clubs/uuidv4
+        //filePath - '/upload/...../fileName.extension'
 
         String folderName = null;
         try {
@@ -108,42 +111,46 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         if (folderName != null) {
             try {
-                FileUtils.deleteDirectory(new File("target" + folderName));
+                FileUtils.deleteDirectory(new File(TARGET + folderName));
             } catch (IOException ex) {
                 log.error("Folder " + folderName + " can not be deleted");
             }
         }
     }
-    //filePath - '/upload/...../fileName.extension'
 
     @Override
     public Boolean deleteFile(String filePath) {
         delete(filePath);
+        String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+        localDelete(TEMP_FILE_STORAGE + fileName);
         GalleryPhoto galleryPhoto = galleryRepository.findByUrl(filePath);
         galleryRepository.delete(galleryPhoto);
         return true;
     }
 
-    //filePath - '/upload/...../fileName.extension'
     @Override
     public Boolean updatePhoto(FileUpdateProfile fileUpdateProfile) {
-        // filePath --/upload/.../file.
+        //filePath - '/upload/...../fileName.extension'
 
         String filePath = fileUpdateProfile.getFilePath();
         GalleryPhoto galleryPhoto = galleryRepository.findByUrl(filePath);
 
         delete(filePath);
 
+        String oldFileName = filePath.substring(filePath.lastIndexOf("/")+1);
+        localDelete(TEMP_FILE_STORAGE+oldFileName);
+
         int firstEnter = (filePath.indexOf("/"));
         String clearPath = filePath.substring(filePath.indexOf("/", firstEnter + 1) + 1, filePath.lastIndexOf("/"));
         String uploadDir = String.format("%s/%s", uploadDirectory, clearPath);
 
-        encodeBase64(fileUpdateProfile);
         File file = new File(TEMP_FILE_STORAGE + fileUpdateProfile.getFileName());
+        encodeBase64(fileUpdateProfile);
         saveFile(uploadDir, fileUpdateProfile.getFileName(), file, fileUpdateProfile.getBase64());
 
         uploadDir = uploadDir + "/" + fileUpdateProfile.getFileName();
         uploadDir = uploadDir.substring(uploadDir.indexOf("/"));
+
 
         galleryPhoto.setUrl(uploadDir);
         galleryRepository.save(galleryPhoto);
@@ -158,7 +165,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         try {
             inputStream = new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error(e.toString());
         }
 
         if (file.length() > IMAGE_SIZE_B) {
@@ -166,7 +173,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                 file.deleteOnExit();
                 FileUtils.forceDelete(file);
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e.toString());
             }
             throw new IncorrectInputException(String.format(IMAGE_SIZE_EXCEPTION, IMAGE_SIZE_B, file.length() / (1024 * 1024)));
         }
@@ -178,12 +185,10 @@ public class FileUploadServiceImpl implements FileUploadService {
             int width = bufferedImage.getWidth();
             int height = bufferedImage.getHeight();
             if (width < MIN_IMAGE_WIDTH) {
-                FileUtils.forceDelete(file);
                 throw new IncorrectInputException(
                         String.format(IMAGE_RESOLUTION_EXCEPTION, "width", MIN_IMAGE_WIDTH, "width", width));
             }
             if (height < MIN_IMAGE_HEIGHT) {
-                FileUtils.forceDelete(file);
                 throw new IncorrectInputException(
                         String.format(IMAGE_RESOLUTION_EXCEPTION, "height", MIN_IMAGE_HEIGHT, "height", height));
             }
@@ -196,11 +201,6 @@ public class FileUploadServiceImpl implements FileUploadService {
                 Files.createDirectories(uploadPath);
             }
         } catch (IOException e) {
-            try {
-                FileUtils.forceDelete(file);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
             throw new FileUploadException(String.format(DIRECTORY_CREATE_EXCEPTION, fileName));
         }
 
@@ -208,40 +208,52 @@ public class FileUploadServiceImpl implements FileUploadService {
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ioe) {
+            throw new FileUploadException(String.format(FILE_UPLOAD_EXCEPTION, fileName));
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                log.error(e.toString());
+            }
+        }
+    }
+
+    private void localDelete(String filePath) {
+        if (filePath == null || filePath.isEmpty()) {
+            throw new IncorrectInputException("File path can not be null or empty");
+        }
+        if (!filePath.contains(TEMP_FILE_STORAGE)) {
+            throw new IncorrectInputException("Wrong uploaded file path");
+        }
+        File file = new File(filePath);
+        if (!file.isDirectory()) {
             try {
                 FileUtils.forceDelete(file);
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e.toString());
             }
-            throw new FileUploadException(String.format(FILE_UPLOAD_EXCEPTION, fileName));
-        }
-        if (file.exists()) {
-            System.out.println("File delete" + file.delete());
-        } else {
-            System.out.println("File not exist");
         }
     }
 
     private void delete(String filePath) {
         if (filePath.contains(UPLOAD_PLUG)) {
-
         }
         if (filePath == null || filePath.isEmpty()) {
             throw new IncorrectInputException("File path can not be null or empty");
         }
         if (!filePath.contains(UPLOAD_LOCATION)) {
             throw new IncorrectInputException("Wrong uploaded file path");
-
         }
-        File file = new File("/target" + filePath);
+        File file = new File("target" + filePath);
         if (!file.isDirectory()) {
             file.deleteOnExit();
-            file.exists();
-
+            try {
+                FileUtils.forceDelete(file);
+            } catch (IOException e) {
+                log.error(e.toString());
+            }
         }
-
     }
-
 
     private int ordinalIndexOf(final String str, final String searchStr, final int ordinal, final boolean lastIndex) {
         if (str == null || searchStr == null || ordinal <= 0) {
@@ -268,8 +280,6 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     private void encodeBase64(FileUploadProfile uploadProfile) {
         encode(uploadProfile.getBase64(), uploadProfile.getFileName());
-
-
     }
 
     private void encodeBase64(FileUpdateProfile uploadProfile) {
@@ -277,24 +287,39 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     private void encode(String base64, String fileName) {
+        Path folderPath = Paths.get(TEMP_FILE_STORAGE);
+        if (!Files.exists(folderPath)) {
+            try {
+                Files.createDirectories(folderPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         Base64.Decoder decoder = Base64.getMimeDecoder();
         byte[] decod = decoder.decode(base64);
 
-        FileOutputStream fileOutputStream;
+        FileOutputStream fileOutputStream = null;
         try {
-            fileOutputStream = new FileOutputStream("./src/tempImage/" + fileName);
+            fileOutputStream = new FileOutputStream("./" + TEMP_FILE_STORAGE + fileName);
             fileOutputStream.write(decod);
-            fileOutputStream.close();
+            fileOutputStream.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.toString());
+        } finally {
+            try {
+                fileOutputStream.close();
+            } catch (IOException e) {
+                log.error(e.toString());
+            }
         }
 
-        Path path = Paths.get("src/tempImage/");
+        Path path = Paths.get(TEMP_FILE_STORAGE);
         if (!Files.exists(path)) {
             try {
                 Files.createDirectories(path);
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e.toString());
             }
         }
     }

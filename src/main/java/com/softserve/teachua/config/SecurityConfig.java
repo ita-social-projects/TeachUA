@@ -177,6 +177,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/banner").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/api/banner/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/banner/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE,"/api/file").hasAnyRole("MANAGER","ADMIN")
+                .antMatchers(HttpMethod.POST,"/api/file").hasAnyRole("MANAGER","ADMIN")
+                .antMatchers(HttpMethod.PUT,"/api/file").hasAnyRole("MANAGER","ADMIN")
 
                 //TODO: only for admin
                 .antMatchers(HttpMethod.GET, "/api/logs").permitAll()
@@ -187,7 +190,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/log/**").permitAll()
 
                 .antMatchers("/oauth2/**").permitAll()
-                .antMatchers("/api/upload-image/**").permitAll()
+                .antMatchers("/api/file").permitAll()
                 .antMatchers("/api/users", "/api/user/update").permitAll()
                 .anyRequest()
                 .authenticated()

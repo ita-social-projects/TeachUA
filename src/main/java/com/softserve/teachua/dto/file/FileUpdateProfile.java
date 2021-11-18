@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class FileUpdateProfile {
+
     @NotEmpty
     private String filePath;
     @NotEmpty
@@ -15,4 +16,5 @@ public class FileUpdateProfile {
     private String base64;
     @NotNull
     private Long clubId;
+
 }
