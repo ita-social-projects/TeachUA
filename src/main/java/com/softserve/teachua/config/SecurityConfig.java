@@ -28,10 +28,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private final static String ADMIN = RoleData.ADMIN.getRoleName();
-    private final static String USER = RoleData.USER.getRoleName();
-    private final static String MANAGER = RoleData.MANAGER.getRoleName();
+    private static final String ADMIN = RoleData.ADMIN.getRoleName();
+    private static final String USER = RoleData.USER.getRoleName();
+    private static final String MANAGER = RoleData.MANAGER.getRoleName();
     private final JwtFilter jwtFilter;
     private CustomUserDetailsService customUserDetailsService;
     private CustomOAuth2UserService customOAuth2UserService;
@@ -60,19 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        web
-//            .ignoring()
-//            .antMatchers(
-//                    "/v3/api-docs/**",
-//                    "/swagger-ui/**",
-//                    "/swagger-ui.html",
-//                    "/swagger-resources/**",
-//                    "/swagger-resources"
-//            );
-//    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -85,9 +71,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
-//                .authorizeRequests()
-//                .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-//                .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/static/**").permitAll()
@@ -111,7 +94,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/center/*",
                         "/service").permitAll()
                 .antMatchers("/api/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/challengeUA", "/challengeUA/registration", "/challengeUA/task/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/challengeUA",
+                        "/challengeUA/registration", "/challengeUA/task/*").permitAll()
                 .antMatchers(HttpMethod.GET, "/user/*").permitAll()
                 .antMatchers(HttpMethod.GET, "/manager/**").hasAnyRole(MANAGER, ADMIN)
                 .antMatchers(HttpMethod.GET, "/admin/**").hasRole(ADMIN)
@@ -120,84 +104,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/roles").hasRole(ADMIN)
                 .antMatchers("/index").permitAll()
                 .antMatchers("/oauth2/**").permitAll()
-
-//                .antMatchers("/api/signup", "/api/signin", "/api/signout", "/api/verify", "/api/resetpassword", "/api/verifyreset").permitAll()
-//                .antMatchers(HttpMethod.GET, "/api/user/**", "/api/verify", "/api/verifyreset").hasAnyRole(USER, ADMIN, MANAGER)
-
-
-//                .antMatchers(HttpMethod.GET, "/api/cities", "/api/city/**").permitAll()
-//                .antMatchers(HttpMethod.POST, "/api/city").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.PUT, "/api/city/**").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.DELETE, "/api/city/**").hasRole(ADMIN)
-
-//                .antMatchers(HttpMethod.GET, "/api/categories/**", "/api/category/**").permitAll()
-//                .antMatchers(HttpMethod.POST, "/api/category").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.PUT, "/api/category/**").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.DELETE, "/api/category/**").hasRole(ADMIN)
-
-//                .antMatchers(HttpMethod.GET, "/api/newslist", "/api/newslist/search").permitAll()
-
-//                .antMatchers(HttpMethod.GET, "/api/club/**", "/api/clubs/**").permitAll()
-//                .antMatchers(HttpMethod.POST, "/api/club").hasAnyRole(MANAGER, ADMIN)
-//                .antMatchers(HttpMethod.PUT, "/api/club").hasAnyRole(MANAGER, ADMIN)
-//                .antMatchers(HttpMethod.DELETE, "/api/club/**").hasAnyRole(MANAGER, ADMIN)
-//                .antMatchers(HttpMethod.PATCH, "/api/clubs/rating").hasRole(ADMIN)
-
-//                .antMatchers(HttpMethod.POST, "/api/upload-excel").permitAll() // TODO: only for admins
-//                .antMatchers(HttpMethod.POST, "/api/load-excel-to-db").permitAll() // TODO: only for admins
-//                .antMatchers(HttpMethod.GET, "/api/download-database-sql").permitAll() // TODO: only for admins
-
-//                .antMatchers(HttpMethod.POST, "/api/complaint", "/api/feedback").hasAnyRole(USER, MANAGER, ADMIN)
-
-//                .antMatchers(HttpMethod.GET, "/api/centers/search/advanced").permitAll()
-//                .antMatchers(HttpMethod.GET, "/api/center/**", "/api/centers/**", "/api/feedbacks/**").permitAll()
-//                .antMatchers(HttpMethod.POST, "/api/center").hasAnyRole(MANAGER, ADMIN)
-//                .antMatchers(HttpMethod.DELETE, "/api/center/**").hasAnyRole(MANAGER, ADMIN)
-//                .antMatchers(HttpMethod.PATCH, "/api/centers/rating").hasRole(ADMIN)
-
-//                .antMatchers(HttpMethod.GET, "/api/search").permitAll()
-
-//                .antMatchers(HttpMethod.GET, "/api/questions", "/api/question/**").permitAll()
-//                .antMatchers(HttpMethod.POST, "/api/question").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.PUT, "/api/question/**").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.DELETE, "/api/question/**").hasRole(ADMIN)
-
-//                .antMatchers(HttpMethod.GET, "/api/contact-types", "/api/districts/**").permitAll()
-
-//                .antMatchers(HttpMethod.GET, "/api/stations/**").permitAll()
-
-//                .antMatchers(HttpMethod.GET, "/api/challenge/{\\d+}/tasks").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.GET, "/api/challenges", "/api/challenge/**").permitAll()
-//                .antMatchers(HttpMethod.POST, "/api/challenge/**", "/api/challenge").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.PUT, "/api/challenge/**").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.DELETE, "/api/challenge/**").hasRole(ADMIN)
-
-//                .antMatchers(HttpMethod.POST, "/api/challenge/{\\d+}/task").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.GET, "/api/challenge/task/{\\d+}").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.PUT, "/api/challenge/task/{\\d+}").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.DELETE, "/api/challenge/task/{\\d+}").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.POST, "/api/tasks").hasRole(ADMIN)
-
-//                .antMatchers(HttpMethod.GET, "/api/about", "/api/about/**").permitAll()
-//                .antMatchers(HttpMethod.POST, "/api/about", "/api/about/**").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.PUT, "/api/about/**").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.DELETE, "/api/about/**").hasRole(ADMIN)
-
-//                .antMatchers(HttpMethod.GET, "/api/banners", "/api/banner/**").permitAll()
-//                .antMatchers(HttpMethod.POST, "/api/banner").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.PUT, "/api/banner/**").hasRole(ADMIN)
-//                .antMatchers(HttpMethod.DELETE, "/api/banner/**").hasRole(ADMIN)
-
-//                //TODO: only for admin
-//                .antMatchers(HttpMethod.GET, "/api/logs").permitAll()
+                //TODO: only for admin
                 .antMatchers(HttpMethod.GET, "/logs").permitAll()
-//                .antMatchers(HttpMethod.DELETE, "/api/logs").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/logs").permitAll()
-//                .antMatchers(HttpMethod.GET, "/api/log/**").permitAll()
-//                .antMatchers(HttpMethod.GET, "/log/**").permitAll()
-
-//                .antMatchers("/api/upload-image/**").permitAll()
-//                .antMatchers("/api/users", "/api/user/update").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -219,7 +128,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/signout")).logoutSuccessUrl("/signin");
     }
 
-
     @Autowired
     public void setCustomUserDetailsService(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
@@ -231,17 +139,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void setoAuth2AuthenticationSuccessHandler(OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler) {
-        this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
+    public void setoAuth2AuthenticationSuccessHandler(OAuth2AuthenticationSuccessHandler oAuth2AuthSuccessHandler) {
+        this.oAuth2AuthenticationSuccessHandler = oAuth2AuthSuccessHandler;
     }
 
     @Autowired
-    public void setoAuth2AuthenticationFailureHandler(OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler) {
-        this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
+    public void setoAuth2AuthenticationFailureHandler(OAuth2AuthenticationFailureHandler oAuth2AuthFailureHandler) {
+        this.oAuth2AuthenticationFailureHandler = oAuth2AuthFailureHandler;
     }
 
     @Autowired
-    public void setHttpCookieOAuth2AuthorizationRequestRepository(HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
-        this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
+    public void setHttpCookieOAuth2Authorization(HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth) {
+        this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth;
     }
 }

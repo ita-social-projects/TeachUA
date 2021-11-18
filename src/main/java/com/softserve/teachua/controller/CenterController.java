@@ -22,8 +22,6 @@ import java.util.List;
 @RestController
 public class CenterController implements Api {
     private static final int CENTERS_PER_USER_PAGE = 9;
-
-
     private final CenterService centerService;
 
     @Autowired
@@ -42,9 +40,8 @@ public class CenterController implements Api {
         return centerService.getCenterByProfileId(id);
     }
 
-
     /**
-     * The controller returns information {@code List<CenterResponse>} about centers by id of user-owner
+     * The controller returns information {@code List<CenterResponse>} about centers by id of user-owner.
      *
      * @param id - put user id.
      * @return new {@code Page<CenterResponse>}.
@@ -58,14 +55,13 @@ public class CenterController implements Api {
         return centerService.getCentersByUserId(id, pageable);
     }
 
-
     /**
      * The controller returns dto {@code SuccessCreatedCenter} of created center.
      *
      * @return new {@code SuccessCreatedCenter}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), "
+            + "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @PostMapping("/center")
     public SuccessCreatedCenter addCenter(
             @Valid
@@ -79,8 +75,8 @@ public class CenterController implements Api {
      *
      * @return new {@code CenterProfile}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), "
+            + "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @PutMapping("/center/{id}")
     public CenterProfile updateCenter(
             @PathVariable Long id,
@@ -122,17 +118,21 @@ public class CenterController implements Api {
      * @return new {@code ...}.
      */
     //TODO
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), "
+            + "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
     @DeleteMapping("/center/{id}")
     public CenterResponse deleteCenter(@PathVariable Long id) {
         return centerService.deleteCenterById(id);
     }
 
+    /**
+     * Call this endpoint to update all centers rating.
+     *
+     * @return list of updated centers
+     */
     @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PatchMapping("/centers/rating")
-    public List<CenterResponse> updateCentersRating(){
+    public List<CenterResponse> updateCentersRating() {
         return centerService.updateRatingForAllCenters();
     }
-
 }

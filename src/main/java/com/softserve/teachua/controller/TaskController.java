@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @Slf4j
 public class TaskController implements Api {
-
     private final TaskService taskService;
 
     @Autowired
@@ -45,7 +44,6 @@ public class TaskController implements Api {
     public List<TaskPreview> getTasks() {
         return taskService.getListOfTasks();
     }
-
 
     /**
      * Use this endpoint to get full information about task.
