@@ -1,5 +1,7 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.utils.annotation.AllowedRoles;
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
@@ -73,8 +75,9 @@ public class ClubController implements Api {
      * @param clubProfile - Place dto with all parameters for adding new club.
      * @return new {@code SuccessCreatedClub}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+//    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
+//            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+    @AllowedRoles({RoleData.ADMIN, RoleData.USER})
     @PostMapping("/club")
     public SuccessCreatedClub addClub(
             @Valid
@@ -173,8 +176,9 @@ public class ClubController implements Api {
      * @param id - put club id.
      * @return new {@code ClubResponse}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+//    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
+//            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+    @AllowedRoles({RoleData.ADMIN})
     @DeleteMapping("/club/{id}")
     public ClubResponse deleteClub(
             @PathVariable Long id,
