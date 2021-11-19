@@ -131,6 +131,3 @@ workspace.xml
 /**/node_modules/
 
 
-open
-sshKey
-sshKey.pub
