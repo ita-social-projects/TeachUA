@@ -1,6 +1,5 @@
 package com.softserve.teachua.service.impl;
 
-import ch.qos.logback.core.joran.action.NewRuleAction;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
@@ -12,6 +11,7 @@ import com.softserve.teachua.model.News;
 import com.softserve.teachua.repository.NewsRepository;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.NewsService;
+import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +22,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,12 +38,14 @@ public class NewsServiceImpl implements NewsService {
     private final NewsRepository newsRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
+    private final UserService userService;
 
     @Autowired
-    NewsServiceImpl(NewsRepository newsRepository, DtoConverter dtoConverter, ArchiveService archiveService) {
+    NewsServiceImpl(NewsRepository newsRepository, DtoConverter dtoConverter, ArchiveService archiveService, UserService userService) {
         this.newsRepository = newsRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
+        this.userService = userService;
     }
 
     /**
@@ -82,8 +84,9 @@ public class NewsServiceImpl implements NewsService {
      * @return SuccessCreatedNews
      **/
     @Override
-    public SuccessCreatedNews addNews(NewsProfile newsProfile) {
+    public SuccessCreatedNews addNews(NewsProfile newsProfile, HttpServletRequest httpServletRequest) {
         News news = newsRepository.save(dtoConverter.convertToEntity(newsProfile, new News()));
+        news.setUser(userService.getUserFromRequest(httpServletRequest));
         return dtoConverter.convertToDto(news, SuccessCreatedNews.class);
     }
 
@@ -127,7 +130,6 @@ public class NewsServiceImpl implements NewsService {
 ////                .withDate(date);
 ////        log.info("**/updating news by id = " + newNews);
         BeanUtils.copyProperties(newsProfile, news);
-
         return dtoConverter.convertToDto(newsRepository.save(news), SuccessCreatedNews.class);
     }
 

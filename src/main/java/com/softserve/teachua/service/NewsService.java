@@ -7,6 +7,7 @@ import com.softserve.teachua.model.News;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface NewsService {
 
     News getNewsById(Long id);
 
-    SuccessCreatedNews addNews(NewsProfile newsProfile);
+    SuccessCreatedNews addNews(NewsProfile newsProfile, HttpServletRequest httpServletRequest);
 
     List<NewsResponse> getAllNews();
 

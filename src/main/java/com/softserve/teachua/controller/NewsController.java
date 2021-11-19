@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -41,8 +42,8 @@ public class NewsController implements Api {
      * @return SuccessCrreatedNews
      */
     @PostMapping("/news")
-    public SuccessCreatedNews addNews(@RequestBody NewsProfile newsProfile) {
-        return newsService.addNews(newsProfile);
+    public SuccessCreatedNews addNews(@RequestBody NewsProfile newsProfile, HttpServletRequest httpServletRequest) {
+        return newsService.addNews(newsProfile, httpServletRequest);
     }
 
     /**

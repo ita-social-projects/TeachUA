@@ -27,5 +27,4 @@ public class NewsProfile implements Convertible {
 
     private Boolean isActive;
 
-    private Long userId;
 }
