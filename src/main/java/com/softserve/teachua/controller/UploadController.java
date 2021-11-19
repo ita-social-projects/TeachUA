@@ -9,7 +9,10 @@ import com.softserve.teachua.service.impl.FileUploadServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 
 @RestController
@@ -30,7 +33,7 @@ public class UploadController implements Api {
      * @return String byte code of file
      */
     @GetMapping("file")
-    public String  getPhoto(@RequestParam String filePath){
+    public String getPhoto(@RequestParam String filePath){
         return fileUploadService.getPhoto(filePath);
     }
 
@@ -41,7 +44,8 @@ public class UploadController implements Api {
      * @param  uploadProfile - put path and some values of file for save file
      * @return String new file path
      */
-    
+
+    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PostMapping("file")
     public String uploadPhoto(@RequestBody FileUploadProfile uploadProfile) {
         return fileUploadService.uploadImage(uploadProfile);}
@@ -54,6 +58,7 @@ public class UploadController implements Api {
      * @return if done successed return true else false
      */
 
+    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PutMapping("file")
     public Boolean updatePhoto(@RequestBody FileUpdateProfile fileUpdateProfile){
         return fileUploadService.updatePhoto(fileUpdateProfile);}
@@ -65,6 +70,8 @@ public class UploadController implements Api {
      * @param fileDeleteRequest - put path to file
      * @return if done successed return true else false
      */
+
+    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @DeleteMapping("file")
     public Boolean deleteFile(@RequestBody FilePathRequest fileDeleteRequest) {
         return fileUploadService.deleteFile(fileDeleteRequest.getFilePath());}

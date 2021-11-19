@@ -4,16 +4,14 @@ import com.softserve.teachua.dto.file.FileUpdateProfile;
 import com.softserve.teachua.dto.file.FileUploadProfile;
 import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.exception.IncorrectInputException;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.GalleryRepository;
 import com.softserve.teachua.service.FileUploadService;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.apache.jasper.runtime.ExceptionUtils;
-import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +44,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     private final String UPLOAD_LOCATION = "/upload";
     private final String TEMP_FILE_STORAGE = "src/main/resources/tempImage/";
     private final String TARGET = "target";
+    private final int TARGET_LENGTH = 7;
     private final GalleryRepository galleryRepository;
     private final ClubRepository clubRepository;
     @Value("${application.upload.path}")
@@ -60,40 +58,49 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     @Override
     public String getPhoto(String filePath) {
-        GalleryPhoto galleryPhoto = galleryRepository.findByUrl(filePath);
-        File file = new File(TARGET + filePath);
-        try {
-            byte[] baseImage = FileUtils.readFileToByteArray(file);
-            return Base64.getEncoder().encodeToString(baseImage);
-        } catch (IOException e) {
-            log.error(e.getMessage(),e);
+        Optional<GalleryPhoto> galleryPhoto = Optional.ofNullable(galleryRepository.findByUrl(filePath));
+        if (galleryPhoto.isPresent()) {
+            File file = new File(TARGET + filePath);
+            try {
+                byte[] baseImage = FileUtils.readFileToByteArray(file);
+                Optional<String> s = Optional.ofNullable(Base64.getEncoder().encodeToString(baseImage));
+                return s.isPresent() ? s.get() : "null";
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+                log.debug("get file from path" + filePath);
+                throw new FileUploadException("Some problems while file reading ");
+            }
+        }else{
+            throw new FileUploadException("File not exist "+ filePath);
         }
-        log.debug("get file from path" + filePath);
-        return "File not found";
     }
 
     @Override
     public String uploadImage(FileUploadProfile uploadProfile) {
         //filePath - '/upload/...../fileName.extension'
-
-        String uploadDir = String.format("%s/%s", uploadDirectory, uploadProfile.getFolder());
-        encodeBase64(uploadProfile);
-
-        File file = new File(TEMP_FILE_STORAGE + uploadProfile.getFileName());
-        String fileName = StringUtils.cleanPath(file.getName());
-        saveFile(uploadDir, fileName, file, uploadProfile.getBase64());
-
-        String actualPath = String.format("/%s/%s", uploadDir, fileName);
         Optional<Club> optionalClub = clubRepository.findById(uploadProfile.getId());
-        Club club = optionalClub.get();
-        GalleryPhoto galleryPhoto = new GalleryPhoto();
-        actualPath = actualPath.substring(7);
-        galleryPhoto.setUrl(actualPath);
-        galleryPhoto.setClub(club);
+        if (optionalClub.isPresent()) {
+            Club club = optionalClub.get();
 
-        galleryRepository.save(galleryPhoto);
-        log.debug("added to db " + galleryPhoto.getUrl());
-        return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
+            String uploadDir = String.format("%s/%s", uploadDirectory, uploadProfile.getFolder());
+            encodeBase64(uploadProfile);
+
+            File file = new File(TEMP_FILE_STORAGE + uploadProfile.getFileName());
+            String fileName = StringUtils.cleanPath(file.getName());
+            saveFile(uploadDir, fileName, file, uploadProfile.getBase64());
+
+            String actualPath = String.format("/%s/%s", uploadDir, fileName);
+            GalleryPhoto galleryPhoto = new GalleryPhoto();
+            actualPath = actualPath.substring(TARGET_LENGTH);
+            galleryPhoto.setUrl(actualPath);
+            galleryPhoto.setClub(club);
+
+            galleryRepository.save(galleryPhoto);
+            log.debug("added to db " + galleryPhoto.getUrl());
+            return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
+        }else {
+            throw new NotExistException("Club not found in db {} "+uploadProfile.getId());
+        }
     }
 
     @Override
@@ -112,7 +119,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             }
         } catch (IndexOutOfBoundsException ex) {
             log.error("Incorrect photo url");
-            log.error(e.getMessage(),e);
+            log.error(ex.getMessage(),ex);
         }
 
         if (folderName != null) {
@@ -120,20 +127,25 @@ public class FileUploadServiceImpl implements FileUploadService {
                 FileUtils.deleteDirectory(new File(TARGET + folderName));
             } catch (IOException ex) {
                 log.error("Folder " + folderName + " can not be deleted");
-                log.error(e.getMessage(),e);
+                log.error(ex.getMessage(),ex);
             }
         }
     }
 
     @Override
     public Boolean deleteFile(String filePath) {
-        delete(filePath);
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-        localDelete(TEMP_FILE_STORAGE + fileName);
-        GalleryPhoto galleryPhoto = galleryRepository.findByUrl(filePath);
-        galleryRepository.delete(galleryPhoto);
-        log.debug("Deleted from db successful");
-        return true;
+        Optional<GalleryPhoto> gallery = Optional.ofNullable(galleryRepository.findByUrl(filePath));
+        if (gallery.isPresent()) {
+            delete(filePath);
+            localDelete(TEMP_FILE_STORAGE + fileName);
+            GalleryPhoto galleryPhoto = gallery.get();
+            galleryRepository.delete(galleryPhoto);
+            log.debug("Deleted from db successful");
+            return true;
+        }else{
+            throw new NotExistException("File not found in db {}"+fileName);
+        }
     }
 
     @Override
@@ -141,29 +153,35 @@ public class FileUploadServiceImpl implements FileUploadService {
         //filePath - '/upload/...../fileName.extension'
 
         String filePath = fileUpdateProfile.getFilePath();
-        GalleryPhoto galleryPhoto = galleryRepository.findByUrl(filePath);
+        Optional<GalleryPhoto> gallery = Optional.ofNullable(galleryRepository.findByUrl(filePath));
+        if (gallery.isPresent()){
+            GalleryPhoto galleryPhoto = gallery.get();
+            delete(filePath);
 
-        delete(filePath);
+            String oldFileName = filePath.substring(filePath.lastIndexOf("/")+1);
+            localDelete(TEMP_FILE_STORAGE+oldFileName);
 
-        String oldFileName = filePath.substring(filePath.lastIndexOf("/")+1);
-        localDelete(TEMP_FILE_STORAGE+oldFileName);
+            int firstEnter = (filePath.indexOf("/"));
+            String clearPath = filePath.substring(filePath.indexOf("/", firstEnter + 1) + 1, filePath.lastIndexOf("/"));
+            String uploadDir = String.format("%s/%s", uploadDirectory, clearPath);
 
-        int firstEnter = (filePath.indexOf("/"));
-        String clearPath = filePath.substring(filePath.indexOf("/", firstEnter + 1) + 1, filePath.lastIndexOf("/"));
-        String uploadDir = String.format("%s/%s", uploadDirectory, clearPath);
+            File file = new File(TEMP_FILE_STORAGE + fileUpdateProfile.getFileName());
+            encodeBase64(fileUpdateProfile);
+            saveFile(uploadDir, fileUpdateProfile.getFileName(), file, fileUpdateProfile.getBase64());
 
-        File file = new File(TEMP_FILE_STORAGE + fileUpdateProfile.getFileName());
-        encodeBase64(fileUpdateProfile);
-        saveFile(uploadDir, fileUpdateProfile.getFileName(), file, fileUpdateProfile.getBase64());
-
-        uploadDir = uploadDir + "/" + fileUpdateProfile.getFileName();
-        uploadDir = uploadDir.substring(uploadDir.indexOf("/"));
+            uploadDir = uploadDir + "/" + fileUpdateProfile.getFileName();
+            uploadDir = uploadDir.substring(uploadDir.indexOf("/"));
 
 
-        galleryPhoto.setUrl(uploadDir);
-        galleryRepository.save(galleryPhoto);
-        log.debug("Saved to db successful");
-        return true;
+            galleryPhoto.setUrl(uploadDir);
+            galleryRepository.save(galleryPhoto);
+            log.debug("Saved to db successful");
+            return true;
+        }
+        else {
+            throw new NotExistException("File not found in db {}"+fileUpdateProfile.getFilePath());
+        }
+
     }
 
     private void saveFile(String uploadDir, String fileName, File file, String byte64) {
@@ -244,8 +262,6 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     private void delete(String filePath) {
-        if (filePath.contains(UPLOAD_PLUG)) {
-        }
         if (filePath == null || filePath.isEmpty()) {
             throw new IncorrectInputException("File path can not be null or empty");
         }
@@ -300,7 +316,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             try {
                 Files.createDirectories(folderPath);
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(),e);
             }
         }
 
