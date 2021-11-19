@@ -1,12 +1,12 @@
 package com.softserve.teachua.utils.annotation;
 
 import com.softserve.teachua.constants.RoleData;
-import com.softserve.teachua.exception.WrongAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AllowedRolesAspect {
 
+    private static final String ACCESS_DENIED_EXCEPTION = "do not have permission";
+
     @Around("@annotation(com.softserve.teachua.utils.annotation.AllowedRoles)")
     public Object doSomething(ProceedingJoinPoint jp) throws Throwable {
         Set<RoleData> roles = Arrays.stream(((MethodSignature) jp.getSignature()).getMethod()
@@ -33,11 +35,13 @@ public class AllowedRolesAspect {
             }
         }
 
-        throw new WrongAuthenticationException();
+        throw new AccessDeniedException(ACCESS_DENIED_EXCEPTION);
+//        throw new WrongAuthenticationException(ACCESS_DENIED_EXCEPTION);
     }
 
     private HttpServletRequest getRequest() {
-        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        return sra.getRequest();
+        ServletRequestAttributes servletRequestAttributes =
+                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        return servletRequestAttributes.getRequest();
     }
 }
