@@ -3,7 +3,6 @@ package com.softserve.teachua.service;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
 import com.softserve.teachua.model.AboutUsItem;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public interface AboutUsItemService {
 
     AboutUsItemResponse deleteAboutUsItemById(Long id);
 
-    void validateVideoUrl(AboutUsItemProfile aboutUsItemProfile);
+    String validateVideoUrl(AboutUsItemProfile aboutUsItemProfile);
 
     void changeOrder(Long id, Long position);
 

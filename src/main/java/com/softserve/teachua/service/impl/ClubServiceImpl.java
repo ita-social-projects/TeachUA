@@ -1,6 +1,5 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +13,7 @@ import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
+import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
@@ -25,8 +25,6 @@ import com.softserve.teachua.service.*;
 import com.softserve.teachua.utils.CategoryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JsonParseException;
-import org.springframework.boot.json.JsonParser;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -38,8 +36,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -183,8 +183,30 @@ public class ClubServiceImpl implements ClubService {
     public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile, HttpServletRequest httpServletRequest) {
         validateClubOwner(id, httpServletRequest);
         Club club = getClubById(id);
+        Set<LocationResponse> locations = null;
+
+        if (clubProfile.getLocations()!=null) {
+            locations = new HashSet<>(clubProfile.getLocations());
+            if (!locations.isEmpty()) {
+                for (LocationResponse profile : locations) {
+                    coordinatesConverter.locationResponseConverterToDb(profile);
+                    if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
+                        profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
+                    }
+                    if (profile.getDistrictName() != null && !profile.getDistrictName().isEmpty()) {
+                        profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
+                    }
+                    if (profile.getStationName() != null && !profile.getStationName().isEmpty()) {
+                        profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
+                    }
+                    profile.setClubId(id);
+                }
+            }
+        }
+
         Club newClub = dtoConverter.convertToEntity(clubProfile, club)
-                .withId(id);
+                .withId(id)
+                .withLocations(locationService.updateLocationByClub(locations,club));
 
         log.debug("updating club by id {}", newClub);
         return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);
@@ -216,7 +238,7 @@ public class ClubServiceImpl implements ClubService {
 
         if (locations != null && !locations.isEmpty()) {
             for (LocationProfile profile : locations) {
-                coordinatesConverter.LocationProfileConverterToDb(profile);
+                coordinatesConverter.locationProfileConverterToDb(profile);
                 if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
                     profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
                 }

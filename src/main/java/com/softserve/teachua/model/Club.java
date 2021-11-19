@@ -1,7 +1,6 @@
 package com.softserve.teachua.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
@@ -22,6 +21,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "clubs")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Club implements Convertible, Archivable {
 
     @Id
@@ -51,7 +51,6 @@ public class Club implements Convertible, Archivable {
     private String urlBackground;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
-    @JsonManagedReference
     @ToString.Exclude
     private List<GalleryPhoto> urlGallery;
 
@@ -70,7 +69,6 @@ public class Club implements Convertible, Archivable {
     private Boolean isOnline;
 
     @OneToMany(mappedBy = "club")
-    @JsonManagedReference
     @ToString.Exclude
     private Set<Location> locations;
 
@@ -88,7 +86,6 @@ public class Club implements Convertible, Archivable {
 
     @ManyToOne
     @JoinColumn(name = "center_id", referencedColumnName = "id")
-    @JsonBackReference
     @ToString.Exclude
     private Center center;
 

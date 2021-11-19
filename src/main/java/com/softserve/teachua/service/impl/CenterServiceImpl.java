@@ -1,12 +1,12 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.CenterToCenterResponseConverter;
+import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.club.ClubResponse;
-import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
@@ -57,6 +57,7 @@ public class CenterServiceImpl implements CenterService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final CenterToCenterResponseConverter centerToCenterResponseConverter;
+    private  final CoordinatesConverter coordinatesConverter;
 
 
     @Autowired
@@ -70,7 +71,8 @@ public class CenterServiceImpl implements CenterService {
                              ClubRepository clubRepository,
                              UserRepository userRepository,
                              UserService userService,
-                             CenterToCenterResponseConverter centerToCenterResponseConverter) {
+                             CenterToCenterResponseConverter centerToCenterResponseConverter,
+                             CoordinatesConverter coordinatesConverter) {
         this.locationService = locationService;
         this.centerRepository = centerRepository;
         this.archiveService = archiveService;
@@ -83,6 +85,7 @@ public class CenterServiceImpl implements CenterService {
         this.userRepository = userRepository;
         this.userService = userService;
         this.centerToCenterResponseConverter=centerToCenterResponseConverter;
+        this.coordinatesConverter = coordinatesConverter;
     }
 
     /**
@@ -107,7 +110,6 @@ public class CenterServiceImpl implements CenterService {
     public SuccessCreatedCenter addCenter(CenterProfile centerProfile) {
 
         log.debug("centerName = "+centerProfile.getName());
-
         if (isCenterExistByName(centerProfile.getName())) {
             throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
         }
@@ -124,6 +126,9 @@ public class CenterServiceImpl implements CenterService {
 
         List<LocationProfile> locations = centerProfile.getLocations();
         if ( locations != null && !locations.isEmpty()) {
+            for (LocationProfile profile : locations) {
+                coordinatesConverter.locationProfileConverterToDb(profile);
+            }
             center.setLocations(locations
                     .stream()
                     .map(locationProfile -> locationRepository.save(
@@ -152,9 +157,8 @@ public class CenterServiceImpl implements CenterService {
 
     @Override
     public SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile, HttpServletRequest httpServletRequest) {
-        if(centerProfile.getUserId() != null){
+        centerProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
             centerProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
-        }
 
         return addCenter(centerProfile);
     }
@@ -206,8 +210,28 @@ public class CenterServiceImpl implements CenterService {
         if (isCenterExistByName(centerProfile.getName())) {
             throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
         }
+        Set<LocationProfile> locations = new HashSet<>(centerProfile.getLocations());
+
+        if (!locations.isEmpty()) {
+
+            for (LocationProfile profile : locations) {
+                coordinatesConverter.locationProfileConverterToDb(profile);
+                if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
+                    profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
+                }
+                if (profile.getDistrictName() != null && !profile.getDistrictName().isEmpty()) {
+                    profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
+                }
+                if (profile.getStationName() != null && !profile.getStationName().isEmpty()) {
+                    profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
+                }
+                profile.setCenterId(id);
+            }
+        }
+
         Center newCenter = dtoConverter.convertToEntity(centerProfile, center)
-                .withId(id);
+                .withId(id)
+                .withLocations(locationService.updateCenterLocation(locations,center));
 
         log.debug("**/updating center by id = " + newCenter);
         return dtoConverter.convertToDto(centerRepository.save(newCenter), CenterProfile.class);

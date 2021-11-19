@@ -6,6 +6,7 @@ import com.softserve.teachua.dto.question.QuestionResponse;
 import com.softserve.teachua.model.Question;
 import com.softserve.teachua.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class QuestionController implements Api {
     }
 
     /**
-     * The method to get Question by id
+     * The method to get Question by id.
      *
      * @param id of Question
      * @return Question
@@ -31,41 +32,44 @@ public class QuestionController implements Api {
     }
 
     /**
-     * The method to create a new Question
+     * The method to create a new Question.
      *
      * @param questionProfile - object of DTO class
      * @return QuestionResponse
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PostMapping("/question")
     public QuestionResponse addNews(@RequestBody QuestionProfile questionProfile) {
         return questionService.addQuestion(questionProfile);
     }
 
     /**
-     * The method to update Question
+     * The method to update Question.
      *
-     * @param id
-     * @param questionProfile
+     * @param id              - put question id in path
+     * @param questionProfile - put new values of question
      * @return QuestionProfile
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PutMapping("/question/{id}")
     public QuestionProfile updateNewsById(@PathVariable Long id, @RequestBody QuestionProfile questionProfile) {
         return questionService.updateQuestionById(id, questionProfile);
     }
 
     /**
-     * The method to delete Question
+     * The method to delete Question.
      *
-     * @param id
+     * @param id - put question id in path
      * @return QuestionProfile
      */
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @DeleteMapping("/question/{id}")
     public QuestionProfile deleteNews(@PathVariable Long id) {
         return questionService.deleteQuestionById(id);
     }
 
     /**
-     * The method to get all Questions
+     * The method to get all Questions.
      *
      * @return List of QuestionResponse
      */

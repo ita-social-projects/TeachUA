@@ -196,8 +196,8 @@ public class UserServiceImpl implements UserService {
             throw new WrongAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
         }
 
-        if ("ROLE_ADMIN".equals(userProfile.getRoleName())) {
-            throw new IncorrectInputException("Illegal role argument: ROLE_ADMIN");
+        if (RoleData.ADMIN.getDBRoleName().equals(userProfile.getRoleName())) {
+            throw new IncorrectInputException("Illegal role argument: " + RoleData.ADMIN.getDBRoleName());
         }
 
         User user = dtoConverter.convertToEntity(userProfile, new User())
@@ -298,8 +298,8 @@ public class UserServiceImpl implements UserService {
             throw new IncorrectInputException(EMAIL_UPDATING_ERROR);
         }
 
-        if (userProfile.getRoleName().equals("ROLE_ADMIN")
-                && !user.getRole().getName().equals("ROLE_ADMIN")) {
+        if (userProfile.getRoleName().equals(RoleData.ADMIN.getDBRoleName())
+                && !user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
             throw new IncorrectInputException(ROLE_UPDATING_ERROR);
         }
 

@@ -1,6 +1,5 @@
 package com.softserve.teachua.dto.user;
 
-import com.softserve.teachua.dto.club.validation.Phone;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.utils.validations.Name;
 import lombok.AllArgsConstructor;

@@ -7,6 +7,7 @@ import com.softserve.teachua.dto.contactType.SuccessCreatedContactType;
 import com.softserve.teachua.model.ContactType;
 import com.softserve.teachua.service.ContactTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -14,7 +15,6 @@ import java.util.List;
 
 @RestController
 public class ContactTypeController implements Api {
-
     private final ContactTypeService contactTypeService;
 
     @Autowired
@@ -27,16 +27,21 @@ public class ContactTypeController implements Api {
         return contactTypeService.getContactTypeById(id);
     }
 
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PostMapping("/contact-type")
     public SuccessCreatedContactType addContactType(@Valid @RequestBody ContactTypeProfile contactTypeProfile) {
         return contactTypeService.addContactType(contactTypeProfile);
     }
 
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PutMapping("/contact-type/{id}")
-    public ContactTypeProfile updateContactType(@PathVariable Long id, @Valid @RequestBody ContactTypeProfile contactTypeProfile) {
+    public ContactTypeProfile updateContactType(
+            @PathVariable Long id,
+            @Valid @RequestBody ContactTypeProfile contactTypeProfile) {
         return contactTypeService.updateContactType(id, contactTypeProfile);
     }
 
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @DeleteMapping("/contact-type/{id}")
     public ContactTypeResponse deleteContactType(@PathVariable Long id) {
         return contactTypeService.deleteContactTypeById(id);

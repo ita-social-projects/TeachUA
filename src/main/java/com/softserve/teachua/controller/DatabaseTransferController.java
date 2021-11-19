@@ -14,23 +14,21 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.sql.SQLException;
 
 @RestController
 public class DatabaseTransferController implements Api {
     private static final String FILE_LOAD_EXCEPTION = "Could not load excel file";
-
     private final ExcelParserService excelParserService;
     private final SqlDataExportService sqlDataExportService;
     private final DataLoaderService dataLoaderService;
-
 
     @Autowired
     public DatabaseTransferController(ExcelParserService excelParserService, SqlDataExportService sqlDataExportService,
@@ -40,6 +38,7 @@ public class DatabaseTransferController implements Api {
         this.dataLoaderService = dataLoaderService;
     }
 
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PostMapping("/upload-excel")
     public ExcelParsingResponse uploadExcel(@RequestParam("excel-file") MultipartFile multipartFile) {
         try (InputStream inputStream = multipartFile.getInputStream()) {
@@ -49,12 +48,14 @@ public class DatabaseTransferController implements Api {
         }
     }
 
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PostMapping("/load-excel-to-db")
     public ExcelLoadSuccess loadExecelToDatabase(@RequestBody ExcelParsingData dataToLoad) {
         dataLoaderService.loadToDatabase(dataToLoad);
         return null;
-
     }
+
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @GetMapping("/download-database-sql")
     public ResponseEntity<Resource> download(String param) throws SQLException {
         String sqlScript = sqlDataExportService.createScript();
@@ -64,12 +65,10 @@ public class DatabaseTransferController implements Api {
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=data.sql.txt");
 
-
         return ResponseEntity.ok()
                 .headers(header)
                 .contentLength(bytes.length)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
-
 }

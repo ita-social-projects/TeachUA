@@ -6,6 +6,7 @@ import com.softserve.teachua.dto.banner_item.BannerItemResponse;
 import com.softserve.teachua.dto.banner_item.SuccessCreatedBannerItem;
 import com.softserve.teachua.service.BannerItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -48,6 +49,7 @@ public class BannerItemController implements Api {
      * @param bannerItemProfile - place body to {@link BannerItemProfile}.
      * @return new {@code SuccessCreatedBannerItem}.
      */
+    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PostMapping("/banner")
     public SuccessCreatedBannerItem addBannerItem(
             @Valid
@@ -62,6 +64,7 @@ public class BannerItemController implements Api {
      * @param bannerItemProfile - place body to {@link BannerItemProfile}.
      * @return new {@code BannerItemResponse}.
      */
+    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @PutMapping("/banner/{id}")
     public BannerItemResponse updateBannerItem(
             @PathVariable Long id,
@@ -76,6 +79,7 @@ public class BannerItemController implements Api {
      * @param id - put BannerItem id.
      * @return new {@code BannerItemResponse}.
      */
+    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @DeleteMapping("/banner/{id}")
     public BannerItemResponse deleteBannerItem(@PathVariable Long id) {
         return bannerItemService.deleteBannerItemById(id);

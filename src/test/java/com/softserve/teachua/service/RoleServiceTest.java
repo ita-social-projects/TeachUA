@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.role.RoleProfile;
 import com.softserve.teachua.dto.role.RoleResponse;
@@ -49,7 +50,7 @@ public class RoleServiceTest {
     private final int WRONG_ID = 50;
     private final int NEW_ID = 2;
 
-    private final String CORRECT_NAME = "ROLE_ADMIN";
+    private final String CORRECT_NAME = RoleData.ADMIN.getDBRoleName();
     private final String WRONG_NAME = "NOT_EXIST";
     private final String NEW_NAME = "NEW_ROLE";
 
