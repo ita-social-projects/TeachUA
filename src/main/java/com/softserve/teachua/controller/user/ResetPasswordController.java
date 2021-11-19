@@ -1,8 +1,9 @@
 package com.softserve.teachua.controller.user;
 
-
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.user.*;
+import com.softserve.teachua.dto.user.SuccessUserPasswordReset;
+import com.softserve.teachua.dto.user.SuccessVerification;
+import com.softserve.teachua.dto.user.UserResetPassword;
 import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +15,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+
 @Slf4j
 @RestController
 public class ResetPasswordController implements Api {
-
     private final UserService userService;
 
     @Autowired
     public ResetPasswordController(UserService userService) {
         this.userService = userService;
     }
-
 
     /**
      * The controller returns dto {@code SuccessUserPasswordReset} of user.

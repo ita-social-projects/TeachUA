@@ -60,7 +60,7 @@
         </module>
 
         <module name="CatchParameterName">
-            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]*?$"/>
             <message key="name.invalidPattern" value="Catch parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
 
@@ -85,7 +85,7 @@
         </module>
 
         <module name="EmptyLineSeparator">
-            <property name="tokens" value="VARIABLE_DEF, METHOD_DEF"/>
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
         </module>
 
         <module name="FallThrough"/>
@@ -124,8 +124,20 @@
             <property name="allowMissingParamTags" value="true"/>
             <property name="allowMissingThrowsTags" value="true"/>
             <property name="allowMissingReturnTag" value="true"/>
-            <property name="allowedAnnotations" value="Override, Test, Autowired"/>
+            <property name="allowedAnnotations" value="Override, Test, Autowired, Bean"/>
+            <property name="ignoreMethodNamesRegex" value="main"/>
             <property name="allowThrowsTagsForSubclasses" value="true"/>
+        </module>
+
+        <module name="JavadocType">
+            <property name="allowedAnnotations"
+                      value="
+                      SpringBootApplication,
+                      Configuration,
+                      Repository,
+                      Service,
+                      Component,
+                      Data"/>
         </module>
 
         <module name="JavadocParagraph"/>
@@ -152,8 +164,10 @@
                      value="Local variable name ''{0}'' must match pattern ''{1}''."/>
         </module>
 
+        <module name="ConstantName"/>
+
         <module name="MemberName">
-            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
             <message key="name.invalidPattern" value="Member name ''{0}'' must match pattern ''{1}''."/>
         </module>
 
@@ -206,7 +220,7 @@
         <module name="PackageName"/>
 
         <module name="ParameterName">
-            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]*?$"/>
             <message key="name.invalidPattern" value="Parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
 

@@ -19,7 +19,6 @@ import javax.validation.Valid;
 @RestController
 @Slf4j
 public class RegistrationController implements Api {
-
     private final UserService userService;
 
     @Autowired

@@ -23,8 +23,6 @@ import java.util.List;
 @RestController
 public class CenterController implements Api {
     private static final int CENTERS_PER_USER_PAGE = 9;
-
-
     private final CenterService centerService;
 
     @Autowired
@@ -43,9 +41,8 @@ public class CenterController implements Api {
         return centerService.getCenterByProfileId(id);
     }
 
-
     /**
-     * The controller returns information {@code List<CenterResponse>} about centers by id of user-owner
+     * The controller returns information {@code List<CenterResponse>} about centers by id of user-owner.
      *
      * @param id - put user id.
      * @return new {@code Page<CenterResponse>}.
@@ -58,7 +55,6 @@ public class CenterController implements Api {
                     sort = "id") Pageable pageable) {
         return centerService.getCentersByUserId(id, pageable);
     }
-
 
     /**
      * The controller returns dto {@code SuccessCreatedCenter} of created center.
@@ -126,11 +122,15 @@ public class CenterController implements Api {
     public CenterResponse deleteCenter(@PathVariable Long id) {
         return centerService.deleteCenterById(id);
     }
-
+  
+    /**
+     * Call this endpoint to update all centers rating.
+     *
+     * @return list of updated centers
+     */
     @AllowedRoles({RoleData.ADMIN})
     @PatchMapping("/centers/rating")
-    public List<CenterResponse> updateCentersRating(){
+    public List<CenterResponse> updateCentersRating() {
         return centerService.updateRatingForAllCenters();
     }
-
 }

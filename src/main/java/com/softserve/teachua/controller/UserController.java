@@ -22,11 +22,8 @@ import java.util.List;
 @Slf4j
 @RestController
 public class UserController implements Api {
-
     private final UserService userService;
-
     private final JwtProvider jwtProvider;
-
 
     @Autowired
     public UserController(UserService userService, JwtProvider jwtProvider) {
@@ -42,18 +39,22 @@ public class UserController implements Api {
      */
     @GetMapping("/user/{id}")
     public UserResponse getUserById(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
-
         userService.validateUserId(id, httpServletRequest);
         return userService.getUserProfileById(id);
     }
 
-
+    /**
+     * Use this endpoint to get user by email.
+     *
+     * @param email              - put email as request parameter.
+     * @param httpServletRequest - autowired by spring.
+     * @return User DTO
+     */
     @GetMapping("/user")
     public User getUserByEmail(@RequestParam("email") String email, HttpServletRequest httpServletRequest) {
         userService.validateUserId(userService.getUserByEmail(email).getId(), httpServletRequest);
         return userService.getUserByEmail(email);
     }
-
 
     /**
      * The controller returns information {@code List <UserResponse>} about users.
@@ -77,7 +78,6 @@ public class UserController implements Api {
             @PathVariable Long id,
             @Valid
             @RequestBody UserUpdateProfile userProfile, HttpServletRequest httpServletRequest) {
-
         userService.validateUserId(id, httpServletRequest);
 
         return userService.updateUser(id, userProfile);
@@ -102,12 +102,10 @@ public class UserController implements Api {
     }
 
     /**
-     * Method to change user password
+     * Method to change user password.
      *
-     * @param id - put user id.
+     * @param id             - put user id.
      * @param passwordUpdate put old, new and verify password
-     *
-     * @return nothing
      */
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/user/{id}")
@@ -117,5 +115,4 @@ public class UserController implements Api {
         userService.validateUserId(id, httpServletRequest);
         userService.updatePassword(id, passwordUpdate);
     }
-
 }

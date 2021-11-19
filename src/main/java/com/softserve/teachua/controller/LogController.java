@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 public class LogController implements Api {
-
     private final LogService logService;
 
     @Autowired
@@ -25,21 +24,18 @@ public class LogController implements Api {
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/logs")
     public List<String> getLogs() {
-
         return logService.getAllLogs();
     }
 
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/log/{name}")
     public List<String> getLogByName(@PathVariable String name) {
-
         return logService.getLogByName(name);
     }
 
     @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/logs")
     public Boolean deleteAllLogs() {
-
         return logService.deleteAllLogs();
     }
 }

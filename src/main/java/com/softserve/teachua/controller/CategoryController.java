@@ -20,7 +20,6 @@ import java.util.List;
 @RestController
 @Slf4j
 public class CategoryController implements Api {
-
     private CategoryService categoryService;
 
     @Autowired
@@ -39,14 +38,25 @@ public class CategoryController implements Api {
         return categoryService.getCategoryProfileById(id);
     }
 
+    /**
+     * Endpoint returns list of all categories.
+     *
+     * @return new {@code List<CategoryResponse>}
+     */
     @GetMapping("/categories")
     public List<CategoryResponse> getAllCategories() {
         return categoryService.getAllCategories();
     }
 
+    /**
+     * Endpoint returns pageable of categories.
+     *
+     * @param pageable - put pageable parameters as request parameters.
+     * @return pageable of CategoryResponse
+     */
     @GetMapping("/categories/search")
     public Page<CategoryResponse> getListOfCategories(
-            @PageableDefault(value = 4,sort = "id") Pageable pageable) {
+            @PageableDefault(value = 4, sort = "id") Pageable pageable) {
         return categoryService.getListOfCategories(pageable);
     }
 

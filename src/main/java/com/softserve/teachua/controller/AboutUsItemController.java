@@ -18,7 +18,6 @@ import java.util.List;
 @Slf4j
 @RestController
 public class AboutUsItemController implements Api {
-
     private final AboutUsItemService aboutUsItemService;
 
     @Autowired
@@ -27,14 +26,14 @@ public class AboutUsItemController implements Api {
     }
 
     @GetMapping("/about")
-    public List<AboutUsItemResponse> getAboutUsItems(){
+    public List<AboutUsItemResponse> getAboutUsItems() {
         return aboutUsItemService.getListOfAboutUsItemResponses();
     }
 
     @GetMapping("/about/{id}")
     public AboutUsItemResponse getAboutUsItems(
             @PathVariable Long id
-    ){
+    ) {
         return aboutUsItemService.getAboutUsItemResponseById(id);
     }
 
@@ -43,7 +42,7 @@ public class AboutUsItemController implements Api {
     public AboutUsItemResponse addAboutUsItem(
             @Valid
             @RequestBody AboutUsItemProfile aboutUsItemProfile
-            ){
+    ) {
         return aboutUsItemService.addAboutUsItem(aboutUsItemProfile);
     }
 
@@ -53,7 +52,7 @@ public class AboutUsItemController implements Api {
             @PathVariable Long id,
             @Valid
             @RequestBody AboutUsItemProfile aboutUsItemProfile
-    ){
+    ) {
         return aboutUsItemService.updateAboutUsItem(id, aboutUsItemProfile);
     }
 
@@ -61,7 +60,7 @@ public class AboutUsItemController implements Api {
     @DeleteMapping("/about/{id}")
     public AboutUsItemResponse deleteAboutUsItem(
             @PathVariable Long id
-    ){
+    ) {
         return aboutUsItemService.deleteAboutUsItemById(id);
     }
 
@@ -70,9 +69,8 @@ public class AboutUsItemController implements Api {
     public String changeOrder(
             @PathVariable Long id,
             @RequestBody NumberDto number
-    ){
+    ) {
         aboutUsItemService.changeOrder(id, number.getNumber());
         return "success";
     }
-
 }

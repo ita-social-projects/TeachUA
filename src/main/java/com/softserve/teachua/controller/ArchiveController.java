@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @Slf4j
 public class ArchiveController implements Api {
-
     private final ArchiveService archiveService;
 
     @Autowired
@@ -34,7 +33,6 @@ public class ArchiveController implements Api {
     public List<Archive> getArchives() {
         return archiveService.findAllArchives();
     }
-
 
     /**
      * The controller returns information {@code List <Archive>} about archives by className.

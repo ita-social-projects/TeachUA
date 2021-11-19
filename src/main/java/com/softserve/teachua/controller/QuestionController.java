@@ -22,7 +22,7 @@ public class QuestionController implements Api {
     }
 
     /**
-     * The method to get Question by id
+     * The method to get Question by id.
      *
      * @param id of Question
      * @return Question
@@ -33,7 +33,7 @@ public class QuestionController implements Api {
     }
 
     /**
-     * The method to create a new Question
+     * The method to create a new Question.
      *
      * @param questionProfile - object of DTO class
      * @return QuestionResponse
@@ -45,10 +45,10 @@ public class QuestionController implements Api {
     }
 
     /**
-     * The method to update Question
+     * The method to update Question.
      *
-     * @param id
-     * @param questionProfile
+     * @param id              - put question id in path
+     * @param questionProfile - put new values of question
      * @return QuestionProfile
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -58,9 +58,9 @@ public class QuestionController implements Api {
     }
 
     /**
-     * The method to delete Question
+     * The method to delete Question.
      *
-     * @param id
+     * @param id - put question id in path
      * @return QuestionProfile
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -70,7 +70,7 @@ public class QuestionController implements Api {
     }
 
     /**
-     * The method to get all Questions
+     * The method to get all Questions.
      *
      * @return List of QuestionResponse
      */

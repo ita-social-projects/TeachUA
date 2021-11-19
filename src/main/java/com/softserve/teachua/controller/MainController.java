@@ -5,10 +5,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class MainController {
-
+    /**
+     * Method return frontend page when application is built as one.
+     *
+     * @return index page of frontend
+     */
     @GetMapping("/")
     public String index() {
         return "index.html";
     }
-
 }

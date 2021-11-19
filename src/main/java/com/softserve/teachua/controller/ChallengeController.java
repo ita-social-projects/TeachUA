@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 public class ChallengeController implements Api {
-
     private final ChallengeService challengeService;
 
     @Autowired
@@ -94,7 +93,7 @@ public class ChallengeController implements Api {
      * Use this endpoint to update some values of challenge.
      * This feature available only for admins.
      *
-     * @param id - put challenge id here.
+     * @param id                     - put challenge id here.
      * @param updateChallengePreview - put new and old parameters here.
      * @return {@code SuccessUpdateChallengePreview} - shows result of updating challenge.
      */
@@ -105,5 +104,4 @@ public class ChallengeController implements Api {
             @Valid @RequestBody SuccessUpdateChallengePreview updateChallengePreview) {
         return challengeService.updateChallengePreview(id, updateChallengePreview);
     }
-
 }
