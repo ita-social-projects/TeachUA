@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.databaseTransfer.ExcelLoadSuccess;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingData;
@@ -8,13 +9,13 @@ import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.service.DataLoaderService;
 import com.softserve.teachua.service.ExcelParserService;
 import com.softserve.teachua.service.SqlDataExportService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,7 +41,7 @@ public class DatabaseTransferController implements Api {
         this.dataLoaderService = dataLoaderService;
     }
 
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/upload-excel")
     public ExcelParsingResponse uploadExcel(@RequestParam("excel-file") MultipartFile multipartFile) {
         try (InputStream inputStream = multipartFile.getInputStream()) {
@@ -50,7 +51,7 @@ public class DatabaseTransferController implements Api {
         }
     }
 
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/load-excel-to-db")
     public ExcelLoadSuccess loadExecelToDatabase(@RequestBody ExcelParsingData dataToLoad) {
         dataLoaderService.loadToDatabase(dataToLoad);
@@ -58,7 +59,7 @@ public class DatabaseTransferController implements Api {
 
     }
 
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/download-database-sql")
     public ResponseEntity<Resource> download(String param) throws SQLException {
         String sqlScript = sqlDataExportService.createScript();

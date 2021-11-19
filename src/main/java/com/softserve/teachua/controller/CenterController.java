@@ -1,17 +1,18 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.service.CenterService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,8 +65,7 @@ public class CenterController implements Api {
      *
      * @return new {@code SuccessCreatedCenter}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @PostMapping("/center")
     public SuccessCreatedCenter addCenter(
             @Valid
@@ -79,8 +79,7 @@ public class CenterController implements Api {
      *
      * @return new {@code CenterProfile}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @PutMapping("/center/{id}")
     public CenterProfile updateCenter(
             @PathVariable Long id,
@@ -122,14 +121,13 @@ public class CenterController implements Api {
      * @return new {@code ...}.
      */
     //TODO
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName(), " +
-            "T(com.softserve.teachua.constants.RoleData).MANAGER.getDBRoleName())")
+    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @DeleteMapping("/center/{id}")
     public CenterResponse deleteCenter(@PathVariable Long id) {
         return centerService.deleteCenterById(id);
     }
 
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles({RoleData.ADMIN})
     @PatchMapping("/centers/rating")
     public List<CenterResponse> updateCentersRating(){
         return centerService.updateRatingForAllCenters();

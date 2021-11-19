@@ -6,12 +6,12 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.nio.file.AccessDeniedException;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AllowedRolesAspect {
 
-    private static final String ACCESS_DENIED_EXCEPTION = "do not have permission";
+//    private static final String ACCESS_DENIED_EXCEPTION = "do not have permission";
 
     @Around("@annotation(com.softserve.teachua.utils.annotation.AllowedRoles)")
     public Object doSomething(ProceedingJoinPoint jp) throws Throwable {
@@ -35,7 +35,7 @@ public class AllowedRolesAspect {
             }
         }
 
-        throw new AccessDeniedException(ACCESS_DENIED_EXCEPTION);
+        throw new AccessDeniedException("");
 //        throw new WrongAuthenticationException(ACCESS_DENIED_EXCEPTION);
     }
 

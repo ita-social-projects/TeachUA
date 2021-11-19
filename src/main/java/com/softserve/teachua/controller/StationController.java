@@ -1,12 +1,13 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.dto.station.StationResponse;
 import com.softserve.teachua.dto.station.SuccessCreatedStation;
 import com.softserve.teachua.service.StationService;
-import org.springframework.security.access.prepost.PreAuthorize;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,7 +38,7 @@ public class StationController implements Api {
      * @param stationProfile - place body to {@link StationProfile}.
      * @return new {@code SuccessCreatedStation}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/station")
     public SuccessCreatedStation addStation(
             @Valid
@@ -52,7 +53,7 @@ public class StationController implements Api {
      * @param stationProfile - place body to {@link CityProfile}.
      * @return new {@code StationProfile}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/station/{id}")
     public StationProfile updateStation(
             @PathVariable Long id,
@@ -88,7 +89,7 @@ public class StationController implements Api {
      * @param id - put station id.
      * @return new {@code StationResponse}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/station/{id}")
     public StationResponse deleteStation(@PathVariable Long id) {
         return stationService.deleteStationById(id);
