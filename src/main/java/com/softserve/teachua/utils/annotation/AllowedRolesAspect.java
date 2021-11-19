@@ -20,9 +20,6 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class AllowedRolesAspect {
-
-//    private static final String ACCESS_DENIED_EXCEPTION = "do not have permission";
-
     @Around("@annotation(com.softserve.teachua.utils.annotation.AllowedRoles)")
     public Object doSomething(ProceedingJoinPoint jp) throws Throwable {
         Set<RoleData> roles = Arrays.stream(((MethodSignature) jp.getSignature()).getMethod()
@@ -36,7 +33,6 @@ public class AllowedRolesAspect {
         }
 
         throw new AccessDeniedException("");
-//        throw new WrongAuthenticationException(ACCESS_DENIED_EXCEPTION);
     }
 
     private HttpServletRequest getRequest() {
