@@ -129,3 +129,8 @@ workspace.xml
 # npm
 /node_modules/
 /**/node_modules/
+
+
+open
+sshKey
+sshKey.pub
