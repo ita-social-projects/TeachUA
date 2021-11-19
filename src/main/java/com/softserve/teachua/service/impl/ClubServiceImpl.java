@@ -544,13 +544,15 @@ public class ClubServiceImpl implements ClubService {
                                 });
 
                         center.setContacts(json.toString());
-                    }
 
-                    log.debug(center.getContacts());
+                    }
+                    log.info(center.getContacts());
                 })
                 .collect(Collectors.toList());
+                updatedCenters.forEach((center -> centerRepository.save(center)));
 
-       List<Club> clubs = clubRepository.findAll();
+
+        List<Club> clubs = clubRepository.findAll();
         List<Club> updatedClubs = clubs
                 .stream()
                 .filter((club) -> !this.isValidJSON(club.getContacts()))
@@ -631,9 +633,11 @@ public class ClubServiceImpl implements ClubService {
                         club.setContacts(json.toString());
                     }
 
-                    log.debug(club.getContacts());
+                    log.info(club.getContacts());
                 })
                 .collect(Collectors.toList());
+                updatedClubs.forEach((club -> clubRepository.save(club)));
+
     }
 
 

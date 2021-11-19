@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import ch.qos.logback.core.joran.action.NewRuleAction;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
@@ -12,6 +13,7 @@ import com.softserve.teachua.repository.NewsRepository;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.NewsService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -95,7 +98,7 @@ public class NewsServiceImpl implements NewsService {
                 .stream()
                 .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
                 .collect(Collectors.toList());
-        log.info("get list of cities = " + newsResponses);
+        log.info("get list of news = " + newsResponses);
         return newsResponses;
     }
 
@@ -117,13 +120,15 @@ public class NewsServiceImpl implements NewsService {
      * @return NewsProfile
      **/
     @Override
-    public NewsProfile updateNewsProfileById(Long id, NewsProfile newsProfile) {
+    public SuccessCreatedNews updateNewsProfileById(Long id, NewsProfile newsProfile) {
         News news = getNewsById(id);
-        News newNews = dtoConverter.convertToEntity(newsProfile, news)
-                .withId(id);
+//        News newNews = dtoConverter.convertToEntity(newsProfile, news)
+////                .withId(id)
+////                .withDate(date);
+////        log.info("**/updating news by id = " + newNews);
+        BeanUtils.copyProperties(newsProfile, news);
 
-        log.info("**/updating club by id = " + newNews);
-        return dtoConverter.convertToDto(newsRepository.save(newNews), NewsProfile.class);
+        return dtoConverter.convertToDto(newsRepository.save(news), SuccessCreatedNews.class);
     }
 
     /**
@@ -144,7 +149,7 @@ public class NewsServiceImpl implements NewsService {
             throw new DatabaseRepositoryException(CATEGORY_DELETING_ERROR);
         }
 
-        log.info("news {} was successfully deleted", deletedNews);
+        log.info("news {} were successfully deleted", deletedNews);
         return dtoConverter.convertToDto(deletedNews, NewsResponse.class);
     }
 

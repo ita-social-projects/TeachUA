@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,12 +27,20 @@ public class News implements Convertible, Archivable {
 
     @CreationTimestamp
     @Column
-    private Timestamp date;
+    private LocalDate date;
 
     @Column
     private String urlTitleLogo;
 
     @Column
     private String description;
+
+    @Column
+    private Boolean isActive;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private User user;
 
 }
