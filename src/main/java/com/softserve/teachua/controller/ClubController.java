@@ -184,6 +184,7 @@ public class ClubController implements Api {
         return clubService.updateRatingForAllClubs();
     }
 
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
     @GetMapping("/club/updateContacts")
     public void updateContacts() {
         clubService.updateContacts();
