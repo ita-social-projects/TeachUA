@@ -26,7 +26,7 @@ public class News implements Convertible, Archivable {
     private String title;
 
     @CreationTimestamp
-    @Column
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDate date;
 
     @Column

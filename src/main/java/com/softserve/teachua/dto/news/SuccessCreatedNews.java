@@ -27,7 +27,7 @@ public class SuccessCreatedNews implements Convertible {
 
     private Boolean isActive;
 
-    private String date;
+    private LocalDate date;
 
     private Long userId;
 
