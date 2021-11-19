@@ -1,10 +1,12 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
 import com.softserve.teachua.dto.about_us_item.NumberDto;
 import com.softserve.teachua.service.AboutUsItemService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +37,7 @@ public class AboutUsItemController implements Api {
         return aboutUsItemService.getAboutUsItemResponseById(id);
     }
 
-    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/about")
     public AboutUsItemResponse addAboutUsItem(
             @Valid
@@ -44,7 +46,7 @@ public class AboutUsItemController implements Api {
         return aboutUsItemService.addAboutUsItem(aboutUsItemProfile);
     }
 
-    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/about/{id}")
     public AboutUsItemResponse updateAboutUsItem(
             @PathVariable Long id,
@@ -54,7 +56,7 @@ public class AboutUsItemController implements Api {
         return aboutUsItemService.updateAboutUsItem(id, aboutUsItemProfile);
     }
 
-    @PreAuthorize("hasRole(RoleD)")
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/about/{id}")
     public AboutUsItemResponse deleteAboutUsItem(
             @PathVariable Long id
@@ -62,7 +64,7 @@ public class AboutUsItemController implements Api {
         return aboutUsItemService.deleteAboutUsItemById(id);
     }
 
-    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PatchMapping("/about/{id}")
     public String changeOrder(
             @PathVariable Long id,

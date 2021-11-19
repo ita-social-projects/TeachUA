@@ -1,11 +1,12 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.district.DistrictProfile;
 import com.softserve.teachua.dto.district.DistrictResponse;
 import com.softserve.teachua.dto.district.SuccessCreatedDistrict;
 import com.softserve.teachua.service.DistrictService;
-import org.springframework.security.access.prepost.PreAuthorize;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,7 +37,7 @@ public class DistrictController implements Api {
      * @param districtProfile - place body to {@link DistrictProfile}.
      * @return new {@code SuccessCreatedDistrict}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/district")
     public SuccessCreatedDistrict addDistrict(
             @Valid
@@ -49,7 +50,7 @@ public class DistrictController implements Api {
      *
      * @return new {@code DistrictProfile}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/district/{id}")
     public DistrictProfile updateDistrict(
             @PathVariable Long id,
@@ -78,7 +79,7 @@ public class DistrictController implements Api {
         return districtService.getListOfDistricts();
     }
 
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/district/{id}")
     public DistrictResponse deleteDistrict(@PathVariable Long id) {
         return districtService.deleteDistrictById(id);

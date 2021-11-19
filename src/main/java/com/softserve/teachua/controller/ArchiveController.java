@@ -1,11 +1,12 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +28,7 @@ public class ArchiveController implements Api {
      *
      * @return new {@code List <Archive>}.
      */
-    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/archives")
     public List<Archive> getArchives() {
         return archiveService.findAllArchives();
@@ -38,7 +39,7 @@ public class ArchiveController implements Api {
      *
      * @return new {@code List <Archive>}.
      */
-    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/archives/{className}")
     public List<Archive> getArchivesByClassName(@PathVariable String className) {
         return archiveService.findArchivesByClassName(className);
