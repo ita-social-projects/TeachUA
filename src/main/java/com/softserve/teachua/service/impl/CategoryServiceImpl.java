@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 @Service
 @Slf4j
 @Transactional
@@ -36,7 +35,6 @@ public class CategoryServiceImpl implements CategoryService {
     private static final String CATEGORY_NOT_FOUND_BY_ID = "Category not found by id: %s";
     private static final String CATEGORY_NOT_FOUND_BY_NAME = "Category not found by name: %s";
     private static final String CATEGORY_DELETING_ERROR = "Can't delete category cause of relationship";
-
     private final CategoryRepository categoryRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
@@ -124,13 +122,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryResponse> getAllCategories() {
         List<Category> categoryList = categoryRepository.findInSortedOrder();
-        if (categoryList == null) {
-            return Collections.emptyList();
-        }
-        List<CategoryResponse> categoryResponses =
-                categoryList.stream()
-                        .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
-                        .collect(Collectors.toList());
+
+        List<CategoryResponse> categoryResponses = categoryList
+                .stream()
+                .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
+                .collect(Collectors.toList());
         log.debug("Getting list of categories = {}", categoryResponses);
         return categoryResponses;
     }
@@ -140,13 +136,9 @@ public class CategoryServiceImpl implements CategoryService {
      *
      * @return new {@code List<CategoryResponse>}.
      */
-
     @Override
     public Page<CategoryResponse> getListOfCategories(Pageable pageable) {
         Page<Category> categoryResponses = categoryRepository.findAll(pageable);
-        if (categoryResponses == null) {
-            return Page.empty(pageable);
-        }
         return new PageImpl<>(categoryResponses
                 .stream()
                 .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))

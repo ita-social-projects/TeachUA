@@ -79,7 +79,7 @@ WIP
 ### How to run tests
 - To run unit tests use `mvn test -D"checkstyle.skip"=true`
 - To run integration tests use `mvn failsafe:integration-test`
-- To tun unit and integration test use mvn clean verify -D"checkstyle.skip"=true
+- To tun unit and integration test use `mvn clean verify -D"checkstyle.skip"=true`
 ### How to Checkstyle
 - To run checstyle use `mvn validate`
 ---
