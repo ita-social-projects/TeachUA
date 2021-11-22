@@ -6,6 +6,7 @@ import com.softserve.teachua.dto.contactType.ContactTypeResponse;
 import com.softserve.teachua.dto.contactType.SuccessCreatedContactType;
 import com.softserve.teachua.model.ContactType;
 import com.softserve.teachua.service.ContactTypeService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @Tag(name="contact", description="the Contact API")
+@SecurityRequirement(name = "api")
 public class ContactTypeController implements Api {
 
     private final ContactTypeService contactTypeService;

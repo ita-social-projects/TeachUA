@@ -4,6 +4,7 @@ import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.service.FeedbackService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @Tag(name="feedback", description="the Feedback API")
+@SecurityRequirement(name = "api")
 public class FeedbackController implements Api {
 
     private final FeedbackService feedbackService;

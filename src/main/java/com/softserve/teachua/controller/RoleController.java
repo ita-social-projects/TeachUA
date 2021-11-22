@@ -4,6 +4,7 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.role.RoleProfile;
 import com.softserve.teachua.dto.role.RoleResponse;
 import com.softserve.teachua.service.RoleService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @Tag(name="role", description="the Role API")
+@SecurityRequirement(name = "api")
 public class RoleController implements Api {
 
     private final RoleService roleService;

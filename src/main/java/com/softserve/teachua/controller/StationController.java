@@ -7,6 +7,7 @@ import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.dto.station.StationResponse;
 import com.softserve.teachua.dto.station.SuccessCreatedStation;
 import com.softserve.teachua.service.StationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @Tag(name="station", description="the Station API")
+@SecurityRequirement(name = "api")
 public class StationController implements Api {
     private final StationService stationService;
 

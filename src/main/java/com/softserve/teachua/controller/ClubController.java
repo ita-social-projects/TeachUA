@@ -12,6 +12,7 @@ import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @Tag(name="club", description="the Club API")
+@SecurityRequirement(name = "api")
 public class ClubController implements Api {
     private static final int CLUBS_PER_PAGE = 8;
     private static final int CLUBS_PER_USER_PAGE = 3;

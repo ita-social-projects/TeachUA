@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.district.DistrictProfile;
 import com.softserve.teachua.dto.district.DistrictResponse;
 import com.softserve.teachua.dto.district.SuccessCreatedDistrict;
 import com.softserve.teachua.service.DistrictService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @Tag(name="district", description="the District API")
+@SecurityRequirement(name = "api")
 public class DistrictController implements Api {
     private final DistrictService districtService;
 

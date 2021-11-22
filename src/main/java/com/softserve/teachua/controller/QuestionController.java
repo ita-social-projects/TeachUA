@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.question.QuestionProfile;
 import com.softserve.teachua.dto.question.QuestionResponse;
 import com.softserve.teachua.model.Question;
 import com.softserve.teachua.service.QuestionService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @Tag(name="question", description="the Question API")
+@SecurityRequirement(name = "api")
 public class QuestionController implements Api {
     private final QuestionService questionService;
 

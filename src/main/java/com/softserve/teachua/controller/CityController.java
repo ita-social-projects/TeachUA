@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.city.SuccessCreatedCity;
 import com.softserve.teachua.service.CityService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @Tag(name="city", description="the City API")
+@SecurityRequirement(name = "api")
 public class CityController implements Api {
     private final CityService cityService;
 

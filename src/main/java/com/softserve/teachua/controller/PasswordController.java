@@ -4,6 +4,7 @@ package com.softserve.teachua.controller;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.user.UserVerifyPassword;
 import com.softserve.teachua.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import javax.validation.Valid;
 
 @RestController
 @Tag(name="password", description="the Password API")
+@SecurityRequirement(name = "api")
 public class PasswordController implements Api {
 
     private final UserService userService;

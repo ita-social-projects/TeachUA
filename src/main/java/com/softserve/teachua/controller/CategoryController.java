@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.category.SuccessCreatedCategory;
 import com.softserve.teachua.service.CategoryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @Tag(name="category", description="the Category API")
+@SecurityRequirement(name = "api")
 public class CategoryController implements Api {
 
     private CategoryService categoryService;

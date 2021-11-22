@@ -3,6 +3,7 @@ package com.softserve.teachua.controller;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.task.*;
 import com.softserve.teachua.service.TaskService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @Tag(name="task", description="the Task API")
+@SecurityRequirement(name = "api")
 public class TaskController implements Api {
 
     private final TaskService taskService;

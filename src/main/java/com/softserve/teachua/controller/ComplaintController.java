@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.service.ComplaintService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @Tag(name="complaint", description="the Complaint API")
+@SecurityRequirement(name = "api")
 public class ComplaintController implements Api {
 
     private final ComplaintService complaintService;

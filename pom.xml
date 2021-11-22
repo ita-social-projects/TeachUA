@@ -208,12 +208,10 @@
 			<groupId>com.github.therapi</groupId>
 			<artifactId>therapi-runtime-javadoc-scribe</artifactId>
 			<version>0.12.0</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.therapi</groupId>
 			<artifactId>therapi-runtime-javadoc</artifactId>
-			<version>0.12.0</version>
 		</dependency>
 
 	</dependencies>
@@ -251,6 +249,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
 				<configuration>
 					<annotationProcessorPaths>
 						<path>

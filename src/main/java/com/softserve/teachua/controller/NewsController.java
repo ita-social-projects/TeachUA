@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.service.NewsService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @Tag(name="news", description="the News API")
+@SecurityRequirement(name = "api")
 public class NewsController implements Api {
 
     private final NewsService newsService;

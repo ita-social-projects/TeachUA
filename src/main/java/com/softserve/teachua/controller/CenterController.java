@@ -9,6 +9,7 @@ import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.service.CenterService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @Tag(name="center", description="the Center API")
+@SecurityRequirement(name = "api")
 public class CenterController implements Api {
     private static final int CENTERS_PER_USER_PAGE = 9;
 

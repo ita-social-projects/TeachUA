@@ -10,6 +10,7 @@ import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @Tag(name="user", description="the User API")
+@SecurityRequirement(name = "api")
 public class UserController implements Api {
 
     private final UserService userService;
