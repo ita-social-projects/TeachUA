@@ -1,16 +1,19 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.service.NewsService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -40,10 +43,10 @@ public class NewsController implements Api {
      * @param newsProfile - object of DTO class
      * @return SuccessCrreatedNews
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/news")
-    public SuccessCreatedNews addNews(@RequestBody NewsProfile newsProfile) {
-        return newsService.addNews(newsProfile);
+    public SuccessCreatedNews addNews(@RequestBody NewsProfile newsProfile, HttpServletRequest httpServletRequest) {
+        return newsService.addNews(newsProfile, httpServletRequest);
     }
 
     /**
@@ -53,9 +56,9 @@ public class NewsController implements Api {
      * @param newsProfile
      * @return NewsProfile
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/news/{id}")
-    public NewsProfile updateNewsById(@PathVariable Long id, @RequestBody NewsProfile newsProfile) {
+    public SuccessCreatedNews updateNewsById(@PathVariable Long id, @RequestBody NewsProfile newsProfile) {
         return newsService.updateNewsProfileById(id, newsProfile);
     }
 
@@ -65,7 +68,7 @@ public class NewsController implements Api {
      * @param id
      * @return NewsResponse
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/news/{id}")
     public NewsResponse deleteNews(@PathVariable Long id) {
 
