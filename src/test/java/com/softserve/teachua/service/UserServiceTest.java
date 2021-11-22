@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
- class UserServiceTest {
+class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -64,7 +64,7 @@ import static org.mockito.Mockito.*;
 
 
     @BeforeEach
-     void init() {
+    void init() {
         user = User.builder().id(EXISTING_ID).email(EXISTING_EMAIL).status(IS_STATUS).build();
         userProfile = UserProfile.builder()
                 .email(NEW_EMAIL)
@@ -73,7 +73,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void getUserByIdTest() {
+    void getUserByIdTest() {
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
 
         User actual = userService.getUserById(EXISTING_ID);
@@ -81,14 +81,14 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void getUserByNotExistingIdTest() {
+    void getUserByNotExistingIdTest() {
         when(userRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.getUserById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
-     void getUserByIdEmailTest() {
+    void getUserByIdEmailTest() {
         when(userRepository.findByEmail(EXISTING_EMAIL)).thenReturn(Optional.of(user));
 
         User actual = userService.getUserByEmail(EXISTING_EMAIL);
@@ -96,14 +96,14 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void getUserByNotExistingEmailTest() {
+    void getUserByNotExistingEmailTest() {
         when(userRepository.findByEmail(NOT_EXISTING_EMAIL)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.getUserByEmail(NOT_EXISTING_EMAIL)).isInstanceOf(NotExistException.class);
     }
 
     @Test
-     void registerNewUserTest() {
+    void registerNewUserTest() {
         User newUser = User.builder().email(NEW_EMAIL).build();
 
         when(userRepository.existsByEmail(NEW_EMAIL)).thenReturn(false);
@@ -120,7 +120,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void registerExistingUserTest() {
+    void registerExistingUserTest() {
         userProfile.setEmail(EXISTING_EMAIL);
         when(userRepository.existsByEmail(EXISTING_EMAIL)).thenReturn(true);
 
@@ -130,7 +130,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void validateUserWithValidPasswordTest() {
+    void validateUserWithValidPasswordTest() {
         UserLogin userLogin = new UserLogin(NEW_EMAIL, PASSWORD);
         User newUser = User.builder().email(NEW_EMAIL).password(PASSWORD).status(IS_STATUS).build();
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
@@ -164,7 +164,7 @@ import static org.mockito.Mockito.*;
         }).isInstanceOf(WrongAuthenticationException.class);
     }
 
-   @Test
+    @Test
     public void updateUserTest() {
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
         when(userRepository.save(any())).thenReturn(user);
