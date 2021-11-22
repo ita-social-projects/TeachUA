@@ -48,7 +48,7 @@ public class UploadController implements Api {
      * @return String new file path
      */
 
-    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("file")
     public String uploadPhoto(@RequestBody FileUploadProfile uploadProfile) {
         return fileUploadService.uploadImage(uploadProfile);}
@@ -61,7 +61,7 @@ public class UploadController implements Api {
      * @return if done successed return true else false
      */
 
-    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("file")
     public Boolean updatePhoto(@RequestBody FileUpdateProfile fileUpdateProfile){
         return fileUploadService.updatePhoto(fileUpdateProfile);}
@@ -74,7 +74,7 @@ public class UploadController implements Api {
      * @return if done successed return true else false
      */
 
-    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("file")
     public Boolean deleteFile(@RequestBody FilePathRequest fileDeleteRequest) {
         return fileUploadService.deleteFile(fileDeleteRequest.getFilePath());}
