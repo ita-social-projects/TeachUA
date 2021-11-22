@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 public class TaskServiceImpl implements TaskService {
-
     private final TaskRepository taskRepository;
     private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
@@ -115,7 +114,7 @@ public class TaskServiceImpl implements TaskService {
         BeanUtils.copyProperties(updateTask, task);
         task.setChallenge(challengeService.getChallengeById(updateTask.getChallengeId()));
         SuccessUpdatedTask updatedTask = dtoConverter.convertToDto(taskRepository.save(task), SuccessUpdatedTask.class);
-//        updatedTask.setChallengeId(updatedTask.getChallengeId());
+        // updatedTask.setChallengeId(updatedTask.getChallengeId());
         return updatedTask;
     }
 }

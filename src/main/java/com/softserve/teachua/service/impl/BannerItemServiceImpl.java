@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class BannerItemServiceImpl implements BannerItemService {
-    private final String BANNER_ITEM_NOT_FOUND_BY_ID = "Banner Item not found by id: %s";
-    private final String BANNER_ITEM_DELETING_ERROR = "Banner Item can`t be deleted by id: %s";
+    private static final String BANNER_ITEM_NOT_FOUND_BY_ID = "Banner Item not found by id: %s";
+    private static final String BANNER_ITEM_DELETING_ERROR = "Banner Item can`t be deleted by id: %s";
 
     private final BannerItemRepository bannerItemRepository;
     private final ArchiveService archiveService;
@@ -39,35 +39,17 @@ public class BannerItemServiceImpl implements BannerItemService {
         this.dtoConverter = dtoConverter;
     }
 
-    /**
-     * The method returns dto {@code BannerItemResponse} of banner item by id.
-     *
-     * @param id - put BannerItem id.
-     * @return new {@code BannerItemResponse}.
-     */
     @Override
     public BannerItemResponse getBannerItemProfileById(Long id) {
         return dtoConverter.convertToDto(getBannerItemById(id), BannerItemResponse.class);
     }
 
-    /**
-     * The method returns entity {@code BannerItem} of banner item by id.
-     *
-     * @param id - put BannerItem id.
-     * @return new {@code BannerItem}.
-     * @throws NotExistException if banner item not exists.
-     */
     @Override
     public BannerItem getBannerItemById(Long id) {
         return bannerItemRepository.findById(id)
                 .orElseThrow(() -> new NotExistException(String.format(BANNER_ITEM_NOT_FOUND_BY_ID, id)));
     }
 
-    /**
-     * The method returns list of dto {@code List<BannerItemResponse>} of all banner items.
-     *
-     * @return new {@code List<BannerItemResponse>}.
-     */
     @Override
     public List<BannerItemResponse> getListOfBannerItems() {
         List<BannerItemResponse> itemResponses = bannerItemRepository.findAllByOrderBySequenceNumberAsc()
@@ -79,12 +61,6 @@ public class BannerItemServiceImpl implements BannerItemService {
         return itemResponses;
     }
 
-    /**
-     * The method returns dto {@code SuccessCreatedBannerItem} if banner item successfully added.
-     *
-     * @param bannerItemProfile - place body of dto {@code BannerItemProfile}.
-     * @return new {@code SuccessCreatedBannerItem}.
-     */
     @Override
     public SuccessCreatedBannerItem addBannerItem(BannerItemProfile bannerItemProfile) {
         BannerItem bannerItem =
@@ -94,13 +70,6 @@ public class BannerItemServiceImpl implements BannerItemService {
         return dtoConverter.convertToDto(bannerItem, SuccessCreatedBannerItem.class);
     }
 
-    /**
-     * The method returns dto {@code BannerItemResponse} of updated banner item.
-     *
-     * @param id - put BannerItem id.
-     * @param bannerItemProfile - place body of dto {@code BannerItemProfile}.
-     * @return new {@code BannerItemResponse}.
-     */
     @Override
     public BannerItemResponse updateBannerItem(Long id, BannerItemProfile bannerItemProfile) {
         BannerItem bannerItem = getBannerItemById(id);
@@ -111,14 +80,6 @@ public class BannerItemServiceImpl implements BannerItemService {
         return dtoConverter.convertToDto(bannerItemRepository.save(newBannerItem), BannerItemResponse.class);
     }
 
-    /**
-     * The method deletes entity {@code BannerItem} and
-     * returns dto {@code BannerItemResponse} of deleted banner item by id
-     *
-     * @param id - id of BannerItem to delete
-     * @return new {@code BannerItemResponse}.
-     * @throws NotExistException if banner item not exists.
-     */
     @Override
     public BannerItemResponse deleteBannerItemById(Long id) {
         BannerItem bannerItem = getBannerItemById(id);

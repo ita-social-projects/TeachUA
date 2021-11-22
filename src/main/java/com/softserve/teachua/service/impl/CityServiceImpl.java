@@ -42,24 +42,11 @@ public class CityServiceImpl implements CityService {
         this.cityRepository = cityRepository;
     }
 
-    /**
-     * The method returns dto {@code CityResponse} of city by id.
-     *
-     * @param id - put city id.
-     * @return new {@code CityResponse}.
-     */
     @Override
     public CityResponse getCityProfileById(Long id) {
         return dtoConverter.convertToDto(getCityById(id), CityResponse.class);
     }
 
-    /**
-     * The method returns entity {@code City} of city by id.
-     *
-     * @param id - put city id.
-     * @return new {@code City}.
-     * @throws NotExistException if city not exists.
-     */
     @Override
     public City getCityById(Long id) {
         Optional<City> optionalCity = getOptionalCityById(id);
@@ -71,13 +58,6 @@ public class CityServiceImpl implements CityService {
         return city;
     }
 
-    /**
-     * The method returns entity {@code City} of city by name.
-     *
-     * @param name - put center name.
-     * @return new {@code City}.
-     * @throws NotExistException if city not exists.
-     */
     @Override
     public City getCityByName(String name) {
         Optional<City> optionalCity = getOptionalCityByName(name);
@@ -90,13 +70,6 @@ public class CityServiceImpl implements CityService {
         return city;
     }
 
-    /**
-     * The method returns dto {@code SuccessCreatedCity} if city successfully added.
-     *
-     * @param cityProfile - place place body of dto {@code CityProfile}.
-     * @return new {@code SuccessCreatedCity}.
-     * @throws AlreadyExistException if city already exists.
-     */
     @Override
     public SuccessCreatedCity addCity(CityProfile cityProfile) {
         if (isCityExistByName(cityProfile.getName())) {
@@ -107,11 +80,6 @@ public class CityServiceImpl implements CityService {
         return dtoConverter.convertToDto(city, SuccessCreatedCity.class);
     }
 
-    /**
-     * The method returns list of dto {@code List<CityResponse>} of all cities.
-     *
-     * @return new {@code List<CityResponse>}.
-     */
     @Override
     public List<CityResponse> getListOfCities() {
         List<CityResponse> cityResponses = cityRepository.findAllByOrderByIdAsc()
@@ -123,12 +91,6 @@ public class CityServiceImpl implements CityService {
         return cityResponses;
     }
 
-    /**
-     * The method returns dto {@code CityProfile} of updated city.
-     *
-     * @param cityProfile - place body of dto {@code CityProfile}.
-     * @return new {@code CityProfile}.
-     */
     @Override
     public CityProfile updateCity(Long id, CityProfile cityProfile) {
         City city = getCityById(id);
@@ -139,13 +101,6 @@ public class CityServiceImpl implements CityService {
         return dtoConverter.convertToDto(cityRepository.save(newCity), CityProfile.class);
     }
 
-    /**
-     * The method deletes city {@link  City}
-     *
-     * @param id - id of city to delete
-     * @return CityResponse {@link  CityResponse}.
-     * @throws NotExistException {@link NotExistException} if the city doesn't exist.
-     */
     @Override
     public CityResponse deleteCityById(Long id) {
         City city = getCityById(id);

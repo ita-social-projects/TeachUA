@@ -3,6 +3,7 @@ package com.softserve.teachua.service;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
+import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.News;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,19 +12,63 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface NewsService {
+/**
+ * This interface contains all needed methods to manage news.
+ */
 
+public interface NewsService {
+    /**
+     * Method finds {@code News}, and converts it to object of DTO class {@code NewsResponce}.
+     *
+     * @param id - put News id.
+     * @return new {@code NewsResponce}.
+     **/
     NewsResponse getNewsProfileById(Long id);
 
+    /**
+     * Method finds {@link News}.
+     *
+     * @param id - put News id.
+     * @return new {@code News}
+     **/
     News getNewsById(Long id);
 
+    /**
+     * Method add and save new {@link Feedback}, returns dto {@code SuccessCreatedNews}.
+     *
+     * @param newsProfile - place body of dto {@code NewsProfile}.
+     * @return new {@code SuccessCreatedNews}.
+     **/
     SuccessCreatedNews addNews(NewsProfile newsProfile, HttpServletRequest httpServletRequest);
 
+    /**
+     * Method returns list of all news {@code List<NewsResponse>}.
+     *
+     * @return new {@code List<NewsResponse>}.
+     **/
     List<NewsResponse> getAllNews();
 
+    /**
+     * Method returns page of news {@code Page<NewsResponse>}.
+     *
+     * @return new {@code Page<NewsResponse>}.
+     **/
     Page<NewsResponse> getListOfNews(Pageable pageable);
 
+    /**
+     * Method find {@link News} by id, and update data.
+     *
+     * @param id          - put News id.
+     * @param newsProfile - place body of dto {@code NewsProfile}.
+     * @return new {@code SuccessCreatedNews}.
+     **/
     SuccessCreatedNews updateNewsProfileById(Long id, NewsProfile newsProfile);
 
+    /**
+     * The method deletes news by id and returns dto {@code NewsResponse}.
+     *
+     * @param id - put News id.
+     * @return new {@code NewsResponse}.
+     **/
     NewsResponse deleteNewsById(Long id);
 }
