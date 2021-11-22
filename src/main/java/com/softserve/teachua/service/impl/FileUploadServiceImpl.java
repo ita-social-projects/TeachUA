@@ -11,6 +11,7 @@ import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.GalleryRepository;
 import com.softserve.teachua.service.FileUploadService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -58,49 +59,32 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     @Override
     public String getPhoto(String filePath) {
-        Optional<GalleryPhoto> galleryPhoto = Optional.ofNullable(galleryRepository.findByUrl(filePath));
-        if (galleryPhoto.isPresent()) {
             File file = new File(TARGET + filePath);
-            try {
-                byte[] baseImage = FileUtils.readFileToByteArray(file);
-                Optional<String> s = Optional.ofNullable(Base64.getEncoder().encodeToString(baseImage));
-                return s.isPresent() ? s.get() : "null";
+        try {
+            byte[] baseImage = FileUtils.readFileToByteArray(file);
+            Optional<String> s = Optional.ofNullable(Base64.getEncoder().encodeToString(baseImage));
+            return s.isPresent() ? s.get() : s.orElseThrow(IOException::new);
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 log.debug("get file from path" + filePath);
                 throw new FileUploadException("Some problems while file reading ");
             }
-        }else{
-            throw new FileUploadException("File not exist "+ filePath);
-        }
     }
 
     @Override
     public String uploadImage(FileUploadProfile uploadProfile) {
         //filePath - '/upload/...../fileName.extension'
-        Optional<Club> optionalClub = clubRepository.findById(uploadProfile.getId());
-        if (optionalClub.isPresent()) {
-            Club club = optionalClub.get();
-
-            String uploadDir = String.format("%s/%s", uploadDirectory, uploadProfile.getFolder());
-            encodeBase64(uploadProfile);
-
-            File file = new File(TEMP_FILE_STORAGE + uploadProfile.getFileName());
-            String fileName = StringUtils.cleanPath(file.getName());
-            saveFile(uploadDir, fileName, file, uploadProfile.getBase64());
-
-            String actualPath = String.format("/%s/%s", uploadDir, fileName);
-            GalleryPhoto galleryPhoto = new GalleryPhoto();
-            actualPath = actualPath.substring(TARGET_LENGTH);
-            galleryPhoto.setUrl(actualPath);
-            galleryPhoto.setClub(club);
-
-            galleryRepository.save(galleryPhoto);
-            log.debug("added to db " + galleryPhoto.getUrl());
-            return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
-        }else {
-            throw new NotExistException("Club not found in db {} "+uploadProfile.getId());
+        String uploadDir = String.format("%s/%s", uploadDirectory, uploadProfile.getFolder());
+        File file = new File(TEMP_FILE_STORAGE + uploadProfile.getFileName());
+        String fileName = StringUtils.cleanPath(file.getName());
+        String actualPath = String.format("/%s/%s", uploadDir, fileName);
+        if (file.exists()){
+            throw new FileUploadException("File exist");
         }
+        encodeBase64(uploadProfile);
+        saveFile(uploadDir, fileName, file, uploadProfile.getBase64());
+        log.debug("File "+fileName+" wrote successful");
+        return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
     }
 
     @Override
@@ -135,17 +119,11 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Override
     public Boolean deleteFile(String filePath) {
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-        Optional<GalleryPhoto> gallery = Optional.ofNullable(galleryRepository.findByUrl(filePath));
-        if (gallery.isPresent()) {
-            delete(filePath);
-            localDelete(TEMP_FILE_STORAGE + fileName);
-            GalleryPhoto galleryPhoto = gallery.get();
-            galleryRepository.delete(galleryPhoto);
-            log.debug("Deleted from db successful");
-            return true;
-        }else{
-            throw new NotExistException("File not found in db {}"+fileName);
+        if(!delete(filePath) || !localDelete(TEMP_FILE_STORAGE + fileName)){
+            return false;
         }
+        log.debug("Deleted  successful");
+        return true;
     }
 
     @Override
@@ -153,35 +131,21 @@ public class FileUploadServiceImpl implements FileUploadService {
         //filePath - '/upload/...../fileName.extension'
 
         String filePath = fileUpdateProfile.getFilePath();
-        Optional<GalleryPhoto> gallery = Optional.ofNullable(galleryRepository.findByUrl(filePath));
-        if (gallery.isPresent()){
-            GalleryPhoto galleryPhoto = gallery.get();
-            delete(filePath);
+        String oldFileName = filePath.substring(filePath.lastIndexOf("/")+1);
 
-            String oldFileName = filePath.substring(filePath.lastIndexOf("/")+1);
-            localDelete(TEMP_FILE_STORAGE+oldFileName);
-
-            int firstEnter = (filePath.indexOf("/"));
-            String clearPath = filePath.substring(filePath.indexOf("/", firstEnter + 1) + 1, filePath.lastIndexOf("/"));
-            String uploadDir = String.format("%s/%s", uploadDirectory, clearPath);
-
-            File file = new File(TEMP_FILE_STORAGE + fileUpdateProfile.getFileName());
-            encodeBase64(fileUpdateProfile);
-            saveFile(uploadDir, fileUpdateProfile.getFileName(), file, fileUpdateProfile.getBase64());
-
-            uploadDir = uploadDir + "/" + fileUpdateProfile.getFileName();
-            uploadDir = uploadDir.substring(uploadDir.indexOf("/"));
-
-
-            galleryPhoto.setUrl(uploadDir);
-            galleryRepository.save(galleryPhoto);
-            log.debug("Saved to db successful");
-            return true;
-        }
-        else {
-            throw new NotExistException("File not found in db {}"+fileUpdateProfile.getFilePath());
+        if(!delete(filePath) || !localDelete(TEMP_FILE_STORAGE+oldFileName)){
+            return false;
         }
 
+        String clearPath = filePath.substring(filePath.indexOf("/", (filePath.indexOf("/")) + 1) + 1, filePath.lastIndexOf("/"));
+        String uploadDir = String.format("%s/%s", uploadDirectory, clearPath);
+
+        File file = new File(TEMP_FILE_STORAGE + fileUpdateProfile.getFileName());
+        encodeBase64(fileUpdateProfile);
+        saveFile(uploadDir, fileUpdateProfile.getFileName(), file, fileUpdateProfile.getBase64());
+
+        log.debug("File "+fileUpdateProfile.getFileName()+" deleted successful");
+        return true;
     }
 
     private void saveFile(String uploadDir, String fileName, File file, String byte64) {
@@ -244,7 +208,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
     }
 
-    private void localDelete(String filePath) {
+    private boolean localDelete(String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             throw new IncorrectInputException("File path can not be null or empty");
         }
@@ -257,26 +221,31 @@ public class FileUploadServiceImpl implements FileUploadService {
                 FileUtils.forceDelete(file);
             } catch (IOException e) {
                 log.error(e.getMessage(),e);
+                return false;
             }
         }
+        return true;
     }
 
-    private void delete(String filePath) {
+    private boolean delete(String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             throw new IncorrectInputException("File path can not be null or empty");
         }
         if (!filePath.contains(UPLOAD_LOCATION)) {
             throw new IncorrectInputException("Wrong uploaded file path");
         }
-        File file = new File("target" + filePath);
+        File file = new File(TARGET + filePath);
+
         if (!file.isDirectory()) {
             file.deleteOnExit();
             try {
                 FileUtils.forceDelete(file);
             } catch (IOException e) {
                 log.error(e.getMessage(),e);
+                return false;
             }
         }
+        return true;
     }
 
     private int ordinalIndexOf(final String str, final String searchStr, final int ordinal, final boolean lastIndex) {
