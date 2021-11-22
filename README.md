@@ -2,19 +2,6 @@
 
 # TeachUA BackEnd
 
-**Badges will go here**
-
-- build status
-- coverage
-- issues (waffle.io maybe)
-- devDependencies
-- npm package
-- slack
-- downloads
-- gitter chat
-- license
-- etc.
-
 [![Github Issues](https://img.shields.io/github/issues/ita-social-projects/TeachUA?style=flat-square)](https://github.com/ita-social-projects/TeachUA/issues)
 [![Pending Pull-Requests](https://img.shields.io/github/issues-pr/ita-social-projects/TeachUA?style=flat-square)](https://github.com/ita-social-projects/TeachUA/pulls)
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
@@ -77,11 +64,22 @@ WIP
 WIP
 
 ### How to run tests
-- To run unit tests use `mvn test -D"checkstyle.skip"=true`
-- To run integration tests use `mvn failsafe:integration-test`
 - To tun unit and integration test use `mvn clean verify -D"checkstyle.skip"=true`
+- To run unit tests use `mvn test -D"checkstyle.skip"=true`
+- To run integration tests use 
+  - `mvn failsafe:integration-test`
+  - `mvn clean verify -DskipUnitTests -D"checkstyle.skip"=true`
+  
+Parameters to skip test:
+- `-DskipTests`
+- `-DskipUnitTests`
+- `-DskipIntegrationTests`
 ### How to Checkstyle
-- To run checstyle use `mvn validate`
+- To run checkstyle use `mvn validate`
+
+To skip checkstyle use
+- PowerShell `-D"checkstyle.skip"=true`
+- cmd `-Dcheckstyle.skip`
 ---
 
 ## Documentation
