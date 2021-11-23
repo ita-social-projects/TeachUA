@@ -1,5 +1,6 @@
 package com.softserve.teachua.config;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.security.JwtFilter;
 import com.softserve.teachua.security.RestAuthenticationEntryPoint;
