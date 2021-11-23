@@ -76,7 +76,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(FileUploadException.class)
-    public final ResponseEntity<Object> handleFileUploadException(JsonWriteException exception) {
+    public final ResponseEntity<Object> handleFileUploadException(FileUploadException exception) {
         return buildExceptionBody(exception, FORBIDDEN);
     }
 

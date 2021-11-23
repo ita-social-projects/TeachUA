@@ -4,7 +4,9 @@ import com.softserve.teachua.dto.file.FileUpdateProfile;
 import com.softserve.teachua.dto.file.FileUploadProfile;
 import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.exception.IncorrectInputException;
+import com.softserve.teachua.exception.JsonWriteException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.exception.handler.CustomExceptionHandler;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.repository.ClubRepository;
@@ -63,7 +65,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         try {
             byte[] baseImage = FileUtils.readFileToByteArray(file);
             Optional<String> s = Optional.ofNullable(Base64.getEncoder().encodeToString(baseImage));
-            return s.isPresent() ? s.get() : s.orElseThrow(IOException::new);
+            return s.orElseThrow(() -> new NotExistException("File not exist"));
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 log.debug("get file from path" + filePath);
@@ -120,7 +122,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     public Boolean deleteFile(String filePath) {
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
         if(!delete(filePath) || !localDelete(TEMP_FILE_STORAGE + fileName)){
-            return false;
+            throw new NotExistException("File not exist");
         }
         log.debug("Deleted  successful");
         return true;
@@ -134,7 +136,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         String oldFileName = filePath.substring(filePath.lastIndexOf("/")+1);
 
         if(!delete(filePath) || !localDelete(TEMP_FILE_STORAGE+oldFileName)){
-            return false;
+            throw new NotExistException("File not exist");
         }
 
         String clearPath = filePath.substring(filePath.indexOf("/", (filePath.indexOf("/")) + 1) + 1, filePath.lastIndexOf("/"));
