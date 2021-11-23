@@ -1,6 +1,5 @@
 package com.softserve.teachua.config;
 
-import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.security.JwtFilter;
 import com.softserve.teachua.security.RestAuthenticationEntryPoint;
@@ -59,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+  
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -72,6 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
+                .antMatchers("/", "/main").permitAll()
+                .antMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/swagger", "/swagger-resources/**", "/swagger-resources").permitAll()
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/manifest.json").permitAll()
                 .antMatchers("/favicon**").permitAll()
@@ -110,7 +112,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .oauth2Login()
                 .authorizationEndpoint()
                 .baseUri("/oauth2/authorize")
-                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+               // .authorizationRequestRepository(cookieAuthorizationRequestRepository())
                 .and()
                 .redirectionEndpoint()
                 .baseUri("/oauth2/callback/*")

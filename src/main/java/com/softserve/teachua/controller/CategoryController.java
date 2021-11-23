@@ -6,6 +6,8 @@ import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.category.SuccessCreatedCategory;
 import com.softserve.teachua.service.CategoryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ import java.util.List;
 
 @RestController
 @Slf4j
+@Tag(name="category", description="the Category API")
+@SecurityRequirement(name = "api")
 public class CategoryController implements Api {
     private CategoryService categoryService;
 
@@ -28,10 +32,10 @@ public class CategoryController implements Api {
     }
 
     /**
-     * The controller returns dto {@code CategoryResponse} about category.
-     *
+     * Use this endpoint to get information on a specific category.
+     * The controller returns {@code CategoryResponse}.
      * @param id - put category id.
-     * @return new {@code CategoryResponse}.
+     * @return {@code CategoryResponse}.
      */
     @GetMapping("/category/{id}")
     public CategoryResponse getCategory(@PathVariable Long id) {
@@ -39,9 +43,9 @@ public class CategoryController implements Api {
     }
 
     /**
-     * Endpoint returns list of all categories.
-     *
-     * @return new {@code List<CategoryResponse>}
+     * Use this endpoint to get information on all categories.
+     * The controller returns {@code List<CategoryResponse>}.
+     * @return {@code CategoryResponse}.
      */
     @GetMapping("/categories")
     public List<CategoryResponse> getAllCategories() {
@@ -49,10 +53,10 @@ public class CategoryController implements Api {
     }
 
     /**
-     * Endpoint returns pageable of categories.
-     *
+     * Use this endpoint to get result of the categories search with pagination.
+     * The controller returns {@code Page<CategoryResponse>}.
+     * @return {@code Page<CategoryResponse>} - all Categories with pagination.
      * @param pageable - put pageable parameters as request parameters.
-     * @return pageable of CategoryResponse
      */
     @GetMapping("/categories/search")
     public Page<CategoryResponse> getListOfCategories(
@@ -61,8 +65,8 @@ public class CategoryController implements Api {
     }
 
     /**
-     * The controller returns dto {@code SuccessCreatedCategory} of created category.
-     *
+     * Use this endpoint to create a category.
+     * The controller returns {@code SuccessCreatedCategory}.
      * @param categoryProfile - Place dto with all parameters for adding new category.
      * @return new {@code SuccessCreatedCategory}.
      */
@@ -75,9 +79,11 @@ public class CategoryController implements Api {
     }
 
     /**
-     * The controller returns dto {@code  CategoryProfile} about category.
-     *
-     * @return new {@code CategoryProfile}.
+     * Use this endpoint to update the category by id.
+     * The controller returns {@code  CategoryProfile}.
+     * @param id - put Category id here.
+     * @param categoryProfile - put dto with all parameters here.
+     * @return {@code CategoryProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/category/{id}")
@@ -89,10 +95,10 @@ public class CategoryController implements Api {
     }
 
     /**
-     * The controller returns dto {@code CategoryResponse} of deleted category.
-     *
+     * Use this endpoint to archive a category by id.
+     * The controller returns {@code CategoryResponse}.
      * @param id - put category id.
-     * @return new {@code CategoryResponse}.
+     * @return {@code CategoryResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/category/{id}")

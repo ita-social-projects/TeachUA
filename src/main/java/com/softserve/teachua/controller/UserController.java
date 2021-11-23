@@ -8,6 +8,8 @@ import com.softserve.teachua.dto.user.UserUpdateProfile;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +23,8 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@Tag(name="user", description="the User API")
+@SecurityRequirement(name = "api")
 public class UserController implements Api {
     private final UserService userService;
     private final JwtProvider jwtProvider;
@@ -32,10 +36,10 @@ public class UserController implements Api {
     }
 
     /**
-     * The controller returns information {@code UserResponse} about user.
-     *
+     * Use this endpoint to get user by id.
+     * The controller returns {@code UserResponse}.
      * @param id - put user id.
-     * @return new {@code UserResponse}.
+     * @return {@code UserResponse}.
      */
     @GetMapping("/user/{id}")
     public UserResponse getUserById(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
@@ -45,10 +49,10 @@ public class UserController implements Api {
 
     /**
      * Use this endpoint to get user by email.
-     *
-     * @param email              - put email as request parameter.
+     * The controller returns {@code User}.
+     * @param email - put user email.
      * @param httpServletRequest - autowired by spring.
-     * @return User DTO
+     * @return {@code User}.
      */
     @GetMapping("/user")
     public User getUserByEmail(@RequestParam("email") String email, HttpServletRequest httpServletRequest) {
@@ -57,8 +61,8 @@ public class UserController implements Api {
     }
 
     /**
-     * The controller returns information {@code List <UserResponse>} about users.
-     *
+     * Use this endpoint to get users.
+     * The controller returns {@code List <UserResponse>}.
      * @return new {@code List <UserResponse>}.
      */
     @GetMapping("/users")
@@ -67,10 +71,12 @@ public class UserController implements Api {
     }
 
     /**
-     * The controller returns information {@code UserResponse} about updated user.
-     *
+     * Use this endpoint to update user by id.
+     * The controller returns {@code SuccessUpdatedUser}.
+     * @param id - put user id.
      * @param userProfile - Place dto with all parameters for update existed user.
-     * @return new {@code UserProfile}.
+     * @param httpServletRequest - autowired by spring.
+     * @return {@code SuccessUpdatedUser}.
      */
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/user/{id}")
@@ -84,10 +90,8 @@ public class UserController implements Api {
     }
 
     /**
-     * The controller returns dto {@code UserResponse} of deleted user by id.
-     *
-     * @param id - put user id.
-     * @return new {@code UserResponse}.
+     * Use this endpoint to delete user by id.
+     * The controller returns {@code UserResponse}.
      */
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/user/{id}")
@@ -102,10 +106,11 @@ public class UserController implements Api {
     }
 
     /**
-     * Method to change user password.
-     *
-     * @param id             - put user id.
-     * @param passwordUpdate put old, new and verify password
+     * Use this endpoint to change user password.
+     *The controller returns {@code UserResponse}.
+     * @param httpServletRequest - autowired by spring.
+     * @param passwordUpdate - password
+     * @param id - id
      */
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/user/{id}")
