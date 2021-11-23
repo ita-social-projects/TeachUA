@@ -22,6 +22,7 @@ public class ApplicationConfig {
 	private static final String STATIC_LOCATION = "/static/";
 	private static final String API_LOCATION = "/api/";
 	private static final String SLASH = "/";
+	private static final String SWAGGER_UI = "/swagger";
 
 	@Value("${server.servlet.context-path}")
 	private String rootUri; // ="";
@@ -40,7 +41,7 @@ public class ApplicationConfig {
 					&& !req.getRequestURI().startsWith(removeSecondSlash(rootUri + STATIC_LOCATION))
 					&& !req.getRequestURI().startsWith(removeSecondSlash(rootUri + API_LOCATION))
 					&& !req.getRequestURI().equals(removeSecondSlash(rootUri + SLASH))
-					&& req.getRequestURI().equals(removeSecondSlash(rootUri + "/swagger"))
+					&& req.getRequestURI().equals(removeSecondSlash(rootUri + SWAGGER_UI))
 			) {
 				RequestDispatcher requestDispatcher = request.getRequestDispatcher(SLASH);
 				requestDispatcher.forward(request, response);
