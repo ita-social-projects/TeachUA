@@ -1,4 +1,5 @@
 package com.softserve.teachua.service.impl;
+
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
@@ -38,10 +39,15 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
     private final UserRepository userRepository;
-    private  final UserService userService;
+    private final UserService userService;
 
     @Autowired
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository, UserService userService) {
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository,
+                                DtoConverter dtoConverter,
+                                ClubRepository clubRepository,
+                                ArchiveService archiveService,
+                                UserRepository userRepository,
+                                UserService userService) {
         this.complaintRepository = complaintRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
@@ -50,13 +56,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         this.userService = userService;
     }
 
-    /**
-     * Method to find {@link Complaint}, and convert it to object of DTO class
-     *
-     * @param id - complaint id.
-     * @return new {@code ComplaintResponse}
-     * @throws NotExistException if complaint not exists.
-     **/
     @Override
     public ComplaintResponse getComplaintProfileById(Long id) {
         return dtoConverter.convertToDto(getComplaintById(id), ComplaintResponse.class);
@@ -74,38 +73,25 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaint;
     }
 
-    /**
-     * Method add and save new {@link Complaint}
-     *
-     * @param complaintProfile profile with new Complaint data
-     * @return SuccessCreatedComplaint
-     * @throws NotExistException if complaint not exists.
-     **/
     @Override
-
-    public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest) {
-
+    public SuccessCreatedComplaint addComplaint(
+            ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest) {
         complaintProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
 
-        if(!clubRepository.existsById(complaintProfile.getClubId())){
-            throw new NotExistException("Club with id "+complaintProfile.getClubId()+" does`nt exists");
+        if (!clubRepository.existsById(complaintProfile.getClubId())) {
+            throw new NotExistException("Club with id " + complaintProfile.getClubId() + " does`nt exists");
         }
-        if (!userRepository.existsById(complaintProfile.getUserId())){
-            throw new NotExistException("User with id "+complaintProfile.getUserId()+"does`nt exists");
+        if (!userRepository.existsById(complaintProfile.getUserId())) {
+            throw new NotExistException("User with id " + complaintProfile.getUserId() + "does`nt exists");
         }
 
-        Complaint complaint = complaintRepository.save(dtoConverter.convertToEntity(complaintProfile, new Complaint()).withDate(LocalDate.now()));
+        Complaint complaint = complaintRepository.save(dtoConverter
+                .convertToEntity(complaintProfile, new Complaint()).withDate(LocalDate.now()));
 
         log.debug("add new complaint {}", complaint);
         return dtoConverter.convertToDto(complaint, SuccessCreatedComplaint.class);
     }
 
-    /**
-     * Method get all {@link Complaint}s
-     *
-     * @return new {@code List<ComplaintResponse>}
-     * @throws NotExistException if complaint not exists.
-     **/
     @Override
     public List<ComplaintResponse> getAll() {
         List<ComplaintResponse> complaintResponses = complaintRepository.findAll()
@@ -117,13 +103,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintResponses;
     }
 
-    /**
-     * Method get all {@link Complaint}s for club by club id
-     *
-     * @param clubId - club id
-     * @return new {@code List<ComplaintResponse>}
-     * @throws NotExistException if complaint not exists.
-     **/
     @Override
     public List<ComplaintResponse> getAllByClubId(Long clubId) {
         List<ComplaintResponse> complaintResponses = complaintRepository.getAllByClubId(clubId)
@@ -135,14 +114,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         return complaintResponses;
     }
 
-    /**
-     * Method find {@link Complaint} by id, and update data
-     *
-     * @param id               - complaint id
-     * @param complaintProfile profile with data for Complaint
-     * @return ComplaintProfile
-     * @throws NotExistException if complaint not exists.
-     **/
     @Override
     public ComplaintProfile updateComplaintProfileById(Long id, ComplaintProfile complaintProfile) {
         Complaint complaint = getComplaintById(id);
@@ -154,13 +125,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         return dtoConverter.convertToDto(newComplaint, ComplaintProfile.class);
     }
 
-    /**
-     * Method delete {@link Complaint}
-     *
-     * @param id - complaint id
-     * @return new {@code ComplaintResponse}
-     * @throws NotExistException if complaint not exists.
-     **/
     @Override
     public ComplaintResponse deleteComplaintById(Long id) {
         Complaint complaint = getComplaintById(id);
@@ -177,5 +141,4 @@ public class ComplaintServiceImpl implements ComplaintService {
         log.debug("complaint {} was successfully deleted", complaint);
         return dtoConverter.convertToDto(complaint, ComplaintResponse.class);
     }
-
 }
