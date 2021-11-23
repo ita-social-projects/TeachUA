@@ -52,7 +52,7 @@ public class NewsServiceImpl implements NewsService {
      * Method find {@link News}, and convert it to object of DTO class
      *
      * @param id
-     * @return NewsResponce
+     * @return NewsResponse
      **/
     @Override
     public NewsResponse getNewsProfileById(Long id) {
@@ -78,7 +78,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     /**
-     * Method add and save new {@link Feedback}
+     * Method add and save new {@link News}
      *
      * @param newsProfile
      * @return SuccessCreatedNews
@@ -120,15 +120,11 @@ public class NewsServiceImpl implements NewsService {
      *
      * @param id
      * @param newsProfile
-     * @return NewsProfile
+     * @return SuccessCreatedNews
      **/
     @Override
     public SuccessCreatedNews updateNewsProfileById(Long id, NewsProfile newsProfile) {
         News news = getNewsById(id);
-//        News newNews = dtoConverter.convertToEntity(newsProfile, news)
-////                .withId(id)
-////                .withDate(date);
-////        log.info("**/updating news by id = " + newNews);
         BeanUtils.copyProperties(newsProfile, news);
         return dtoConverter.convertToDto(newsRepository.save(news), SuccessCreatedNews.class);
     }
@@ -137,7 +133,7 @@ public class NewsServiceImpl implements NewsService {
      * Method delete {@link News}
      *
      * @param id
-     * @return NewsResponce
+     * @return NewsResponse
      **/
     @Override
     public NewsResponse deleteNewsById(Long id) {
