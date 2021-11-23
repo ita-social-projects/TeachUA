@@ -32,16 +32,16 @@ import java.util.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CenterServiceTest {
-
     private static final Long CORRECT_CENTER_ID = 1L;
     private static final Long WRONG_CENTER_ID = 1000L;
     private static final List<Long> CLUBS_ID = new LinkedList<>();
     private static final Set<Club> CLUBS = new HashSet<>();
-    private static  final Long CORRECT_LOCATION_ID =1l;
+    private static final Long CORRECT_LOCATION_ID = 1l;
     private static final Long CLUB_ID = 1l;
     @Mock
     private CenterRepository centerRepository;
@@ -65,7 +65,6 @@ public class CenterServiceTest {
     private UserService userService;
     @Mock
     private CoordinatesConverter coordinatesConverter;
-
     @InjectMocks
     private CenterServiceImpl centerService;
     private Center correctCenter;
@@ -81,7 +80,6 @@ public class CenterServiceTest {
         CLUBS_ID.add(1L);
 
         CLUBS.add(Club.builder().id(1L).build());
-
     }
 
     @BeforeEach
@@ -205,6 +203,4 @@ public class CenterServiceTest {
         AlreadyExistException exception = assertThrows(AlreadyExistException.class, () -> centerService.updateCenter(1L, centerProfile));
         assertThat(exception.getMessage()).contains(centerProfile.getName());
     }
-
-
 }

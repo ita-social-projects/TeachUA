@@ -88,36 +88,17 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * The method returns dto {@code UserResponse} of user by id.
-     *
-     * @param id - put user id.
-     * @return new {@code UserResponse}.
-     */
     @Override
     public UserResponse getUserProfileById(Long id) {
         User user = getUserById(id);
         return dtoConverter.convertToDto(user, UserResponse.class);
     }
 
-    /**
-     * The method returns entity {@code UserEntity} of user by email.
-     *
-     * @param email - put user email.
-     * @return new {@code UserEntity}.
-     */
     @Override
     public UserEntity getUserEntity(String email) {
         return dtoConverter.convertToDto(getUserByEmail(email), UserEntity.class);
     }
 
-    /**
-     * The method returns entity {@code User} of user by id.
-     *
-     * @param id - put user id.
-     * @return new {@code User}.
-     * @throws NotExistException if user not exists.
-     */
     @Override
     public User getUserById(Long id) {
         Optional<User> optionalUser = getOptionalUserById(id);
@@ -130,13 +111,6 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    /**
-     * The method returns entity {@code User} of user by id.
-     *
-     * @param email - put user email.
-     * @return new {@code User}.
-     * @throws NotExistException if user not exists.
-     */
     @Override
     public User getUserByEmail(String email) {
         Optional<User> optionalUser = getOptionalUserByEmail(email);
@@ -148,13 +122,6 @@ public class UserServiceImpl implements UserService {
         return optionalUser.get();
     }
 
-    /**
-     * The method returns entity {@code User} of user by verificationCode.
-     *
-     * @param verificationCode - put user verificationCode.
-     * @return new {@code User}.
-     * @throws NotExistException if user not exists.
-     */
     @Override
     public User getUserByVerificationCode(String verificationCode) {
         Optional<User> optionalUser = getOptionalUserByVerificationCode(verificationCode);
@@ -166,11 +133,6 @@ public class UserServiceImpl implements UserService {
         return optionalUser.get();
     }
 
-    /**
-     * The method returns list of dto {@code List<UserResponse>} of all users.
-     *
-     * @return new {@code List<UserResponse>}.
-     */
     @Override
     public List<UserResponse> getListOfUsers() {
         List<UserResponse> userResponses = userRepository.findAll()
@@ -182,13 +144,6 @@ public class UserServiceImpl implements UserService {
         return userResponses;
     }
 
-    /**
-     * The method returns dto {@code SuccessRegistration} if user successfully registered.
-     *
-     * @param userProfile- place dto with all params
-     * @return new {@code SuccessRegistration}.
-     * @throws AlreadyExistException if user with email already exists.
-     */
     @Override
     public SuccessRegistration registerUser(UserProfile userProfile) {
         userProfile.setEmail(userProfile.getEmail().toLowerCase());
@@ -205,7 +160,9 @@ public class UserServiceImpl implements UserService {
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
         String phoneFormat = "38" + user.getPhone();
-//        String Formated = String.format("%s (%s) %s %s %s", phoneFormat.substring(0, 3), phoneFormat.substring(3, 6), phoneFormat.substring(6, 9), phoneFormat.substring(9, 11), phoneFormat.substring(11, 13));
+        // String Formated = String.format("%s (%s) %s %s %s", phoneFormat.substring(0, 3),
+        // phoneFormat.substring(3, 6), phoneFormat.substring(6, 9), phoneFormat.substring(9, 11),
+        // phoneFormat.substring(11, 13));
 
         user.setPhone(phoneFormat);
 
@@ -226,14 +183,6 @@ public class UserServiceImpl implements UserService {
         return dtoConverter.convertToDto(user, SuccessRegistration.class);
     }
 
-
-    /**
-     * The method returns dto {@code UserVerifyPassword} if user successfully logged.
-     *
-     * @param userVerifyPassword- place dto with all params.
-     * @return new {@code UserVerifyPassword}.
-     * @throws NotVerifiedUserException if user password is incorrect.
-     */
     @Override
     public UserVerifyPassword validateUser(UserVerifyPassword userVerifyPassword) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -243,21 +192,13 @@ public class UserServiceImpl implements UserService {
             return userVerifyPassword;
         }
 
-        if (passwordEncoder.matches(userVerifyPassword.getPassword(), getUserById(userVerifyPassword.getId()).getPassword())) {
+        if (passwordEncoder.matches(userVerifyPassword.getPassword(),
+                getUserById(userVerifyPassword.getId()).getPassword())) {
             return userVerifyPassword;
         }
         throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userVerifyPassword.getId()));
     }
 
-
-    /**
-     * The method returns dto {@code SuccessLogin} if user successfully logged.
-     *
-     * @param userLogin- place dto with all params.
-     * @return new {@code SuccessLogin}.
-     * @throws WrongAuthenticationException if user password is incorrect.
-     * @throws NotVerifiedUserException     if user verification code is incorrect.
-     */
     @Override
     public SuccessLogin validateUser(UserLogin userLogin) {
         userLogin.setEmail(userLogin.getEmail().toLowerCase());
@@ -283,13 +224,6 @@ public class UserServiceImpl implements UserService {
                 .withAccessToken(jwtProvider.generateToken(authentication));
     }
 
-    /**
-     * The method returns dto {@code SuccessUpdatedUser} of updated user.
-     *
-     * @param userProfile - place dto with all params.
-     * @return new {@code SuccessUpdatedUser}.
-     * @throws NotExistException if user id is incorrect.
-     */
     @Override
     public SuccessUpdatedUser updateUser(Long id, UserUpdateProfile userProfile) {
         User user = getUserById(id);
@@ -310,8 +244,9 @@ public class UserServiceImpl implements UserService {
 
 
         log.info("updating role by id {}", newUser);
-        String phoneFormat  = "38"+userProfile.getPhone();
-      //  String formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
+        String phoneFormat = "38" + userProfile.getPhone();
+        // String formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),
+        // phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
 
         newUser.setPhone(phoneFormat);
 
@@ -320,13 +255,6 @@ public class UserServiceImpl implements UserService {
         return dtoConverter.convertToDto(userRepository.save(newUser), SuccessUpdatedUser.class);
     }
 
-    /**
-     * The method returns dto {@code UserResponse} of deleted user by id.
-     *
-     * @param id - put user id.
-     * @return new {@code UserResponse}.
-     * @throws DatabaseRepositoryException if user contain foreign keys.
-     */
     @Override
     public UserResponse deleteUserById(Long id) {
         User user = getUserById(id);
@@ -344,14 +272,6 @@ public class UserServiceImpl implements UserService {
         return dtoConverter.convertToDto(user, UserResponse.class);
     }
 
-    /**
-     * The method returns dto {@code SuccessVerification} of user by verification code
-     *
-     * @param verificationCode - put user verificationCode.
-     * @return new {@code SuccessVerification}.
-     * @throws NotExistException        if user not exist
-     * @throws NotVerifiedUserException if user status is inactive
-     */
     @Override
     public SuccessVerification verify(String verificationCode) {
         User user = getUserByVerificationCode(verificationCode);
@@ -369,7 +289,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * The method send message {@code message} to new user after registration
+     * The method send message {@code message} to new user after registration.
      *
      * @param user - put user entity
      * @throws MessagingException           if message isn`t sent
@@ -402,7 +322,7 @@ public class UserServiceImpl implements UserService {
         content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
 
         String verifyURL = baseUrl + "/verify?code=" + user.getVerificationCode();
-//       String verifyURL = "http://localhost:3000/dev/verify?code=" + user.getVerificationCode();
+        // String verifyURL = "http://localhost:3000/dev/verify?code=" + user.getVerificationCode();
 
         content = content.replace("[[URL]]", verifyURL);
         helper.setText(content, true);
@@ -429,17 +349,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserFromRequest(HttpServletRequest httpServletRequest) {
         return userRepository.findById(
-                jwtProvider.getUserIdFromToken(
-                        jwtProvider.getJwtFromRequest(httpServletRequest))).orElseThrow(
-                () -> new WrongAuthenticationException());
+                        jwtProvider.getUserIdFromToken(
+                                jwtProvider.getJwtFromRequest(httpServletRequest)))
+                .orElseThrow(() -> new WrongAuthenticationException());
     }
 
     @Override
     public void verifyIsUserAdmin() {
         User user = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(
-                        () -> new WrongAuthenticationException(ONLY_ADMIN_CONTENT)
-                );
+                .orElseThrow(() -> new WrongAuthenticationException(ONLY_ADMIN_CONTENT));
         if (!user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
             throw new WrongAuthenticationException(ONLY_ADMIN_CONTENT);
         }
@@ -467,8 +385,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email);
     }
 
+    @Override
     public SuccessUserPasswordReset resetPassword(UserResetPassword userResetPassword) { //todo
-
         User user = getUserByEmail(userResetPassword.getEmail());
         user.setVerificationCode(RandomString.make(64));
         try {
@@ -492,24 +410,24 @@ public class UserServiceImpl implements UserService {
             content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
 
             String verifyURL = baseUrl + "/verifyreset?code=" + user.getVerificationCode();
-//            String verifyURL = "http://localhost:3000/dev/verifyreset?code=" + user.getVerificationCode();
+            // String verifyURL = "http://localhost:3000/dev/verifyreset?code=" + user.getVerificationCode();
 
             content = content.replace("[[URL]]", verifyURL);
             helper.setText(content, true);
 
             javaMailSender.send(message);
             log.debug("Email has been sent\" {}", user.getEmail());
-
         } catch (MessagingException e) {
             log.error(e.getMessage());
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
 
-//        return dtoConverter.convertToDto(user, SuccessUserPasswordReset.class);
+        // return dtoConverter.convertToDto(user, SuccessUserPasswordReset.class);
         return null;
     }
 
+    @Override
     public SuccessVerification verifyChange(String verificationCode) {
         log.debug("step1: " + verificationCode);
         User user = getUserByVerificationCode(verificationCode);
@@ -527,7 +445,6 @@ public class UserServiceImpl implements UserService {
         log.debug("step 2: " + userPasswordReset.getVerificationCode() + " " + userPasswordReset.getEmail());
         // return userPasswordReset;
         return successVerificationUser;
-
     }
 
     @Override
@@ -551,6 +468,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
     public SuccessUserPasswordReset verifyChangePassword(SuccessUserPasswordReset userResetPassword) {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         log.debug("step 3: " + userResetPassword.getVerificationCode() + " " + userResetPassword.getEmail());

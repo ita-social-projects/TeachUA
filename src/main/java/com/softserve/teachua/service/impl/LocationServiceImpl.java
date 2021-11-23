@@ -9,91 +9,69 @@ import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.service.LocationService;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 @Service
 @Slf4j
 @Transactional
 public class LocationServiceImpl implements LocationService {
-
     private final LocationRepository locationRepository;
     private final DtoConverter dtoConverter;
 
+    @Autowired
     public LocationServiceImpl(LocationRepository locationRepository,
-                               DtoConverter dtoConverter){
+                               DtoConverter dtoConverter) {
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
     }
 
-    /**
-     *The method  return {@code Location} entity
-     *
-     * @param locationProfile
-     * @return
-     */
     @Override
     public Location addLocation(LocationProfile locationProfile) {
-
         log.debug(locationProfile.toString());
         Location location = null;
-        try{
+        try {
             location = locationRepository.save(dtoConverter.convertToEntity(locationProfile, new Location()));
-        }catch(Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
         return location;
     }
 
-    /**
-     *  The method return updated Set of  {@code Location} for Center
-     *
-     * @param locations
-     * @param center
-     * @return Set of Location
-     */
     @Override
     public Set<Location> updateCenterLocation(Set<LocationProfile> locations, Center center) {
-        if (locations == null || locations.isEmpty()){
-            throw  new IncorrectInputException("empty Location");
+        if (locations == null || locations.isEmpty()) {
+            throw new IncorrectInputException("empty Location");
         }
 
         locationRepository.deleteAllByCenter(center);
 
-        Set<Location> locationSet = locations.
-                stream().
-                map(locationProfile -> locationRepository.
-                        save(dtoConverter.convertToEntity(locationProfile,new Location()
+        Set<Location> locationSet = locations
+                .stream()
+                .map(locationProfile -> locationRepository
+                        .save(dtoConverter.convertToEntity(locationProfile, new Location()
                                 .withCenter(center))))
                 .collect(Collectors.toSet());
 
         return locationSet;
     }
 
-    /**
-     *  The method return updated Set of  {@code Location} for Club
-     *
-     * @param locations
-     * @param club
-     * @return
-     */
     @Override
     public Set<Location> updateLocationByClub(Set<LocationResponse> locations, Club club) {
-
-        if (locations == null || locations.isEmpty()){
+        if (locations == null || locations.isEmpty()) {
             return null;
         }
 
         locationRepository.deleteAllByClub(club);
 
-        Set<Location> locationSet = locations.
-                stream().
-                map(locationResponse -> locationRepository.
-                        save(dtoConverter.convertToEntity(locationResponse,new Location().withClub(club))))
+        Set<Location> locationSet = locations
+                .stream()
+                .map(locationResponse -> locationRepository
+                        .save(dtoConverter.convertToEntity(locationResponse, new Location().withClub(club))))
                 .collect(Collectors.toSet());
 
         return locationSet;

@@ -1,11 +1,12 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.task.*;
 import com.softserve.teachua.service.TaskService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,7 +29,7 @@ public class TaskController implements Api {
      * @param id - put challenge id here.
      * @return {@code Page<TaskPreview} - all tasks with pagination
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/challenge/{id}/tasks")
     public List<TaskPreview> getTasksByChallenge(@PathVariable Long id) {
         return taskService.getTasksByChallengeId(id);
@@ -39,7 +40,7 @@ public class TaskController implements Api {
      *
      * @return new {@code List<TaskPreview>}
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/tasks")
     public List<TaskPreview> getTasks() {
         return taskService.getListOfTasks();
@@ -51,7 +52,7 @@ public class TaskController implements Api {
      * @param id - put task id here.
      * @return {@code TaskProfile}
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/challenge/task/{id}")
     public TaskProfile getTask(@PathVariable("id") Long id) {
         return taskService.getTask(id);
@@ -65,7 +66,7 @@ public class TaskController implements Api {
      * @param createTask - put required parameters here.
      * @return {@code SuccessCreatedTask}
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/challenge/{id}/task")
     public SuccessCreatedTask createTask(@PathVariable Long id, @Valid @RequestBody CreateTask createTask) {
         return taskService.createTask(id, createTask);
@@ -79,7 +80,7 @@ public class TaskController implements Api {
      * @param updateTask - put new and old parameters here.
      * @return {@code SuccessUpdatedTask} - shows result of updating task.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/challenge/task/{id}")
     public SuccessUpdatedTask updateTask(@PathVariable Long id, @Valid @RequestBody UpdateTask updateTask) {
         return taskService.updateTask(id, updateTask);
@@ -92,7 +93,7 @@ public class TaskController implements Api {
      * @param id - put task id here.
      * @return {@code TaskProfile} - shows which task was removed.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/challenge/task/{id}")
     public TaskProfile deleteTask(@PathVariable Long id) {
         return taskService.deleteTask(id);

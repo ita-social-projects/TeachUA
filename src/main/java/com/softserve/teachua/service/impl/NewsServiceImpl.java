@@ -41,30 +41,21 @@ public class NewsServiceImpl implements NewsService {
     private final UserService userService;
 
     @Autowired
-    NewsServiceImpl(NewsRepository newsRepository, DtoConverter dtoConverter, ArchiveService archiveService, UserService userService) {
+    NewsServiceImpl(NewsRepository newsRepository,
+                    DtoConverter dtoConverter,
+                    ArchiveService archiveService,
+                    UserService userService) {
         this.newsRepository = newsRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
         this.userService = userService;
     }
 
-    /**
-     * Method find {@link News}, and convert it to object of DTO class
-     *
-     * @param id
-     * @return NewsResponse
-     **/
     @Override
     public NewsResponse getNewsProfileById(Long id) {
         return dtoConverter.convertToDto(getNewsById(id), NewsResponse.class);
     }
 
-    /**
-     * Method find {@link News}
-     *
-     * @param id
-     * @return News
-     **/
     @Override
     public News getNewsById(Long id) {
         Optional<News> optionalNews = getOptionalNewsById(id);
@@ -77,12 +68,6 @@ public class NewsServiceImpl implements NewsService {
         return news;
     }
 
-    /**
-     * Method add and save new {@link News}
-     *
-     * @param newsProfile
-     * @return SuccessCreatedNews
-     **/
     @Override
     public SuccessCreatedNews addNews(NewsProfile newsProfile, HttpServletRequest httpServletRequest) {
         News news = newsRepository.save(dtoConverter.convertToEntity(newsProfile, new News()));
@@ -90,11 +75,6 @@ public class NewsServiceImpl implements NewsService {
         return dtoConverter.convertToDto(news, SuccessCreatedNews.class);
     }
 
-    /**
-     * Method find all {@link News}
-     *
-     * @return List of {@link News}
-     **/
     @Override
     public List<NewsResponse> getAllNews() {
         List<NewsResponse> newsResponses = newsRepository.findAll()
@@ -115,13 +95,6 @@ public class NewsServiceImpl implements NewsService {
                 newsResponses.getPageable(), newsResponses.getTotalElements());
     }
 
-    /**
-     * Method find {@link News} by id, and update data
-     *
-     * @param id
-     * @param newsProfile
-     * @return SuccessCreatedNews
-     **/
     @Override
     public SuccessCreatedNews updateNewsProfileById(Long id, NewsProfile newsProfile) {
         News news = getNewsById(id);
@@ -129,12 +102,6 @@ public class NewsServiceImpl implements NewsService {
         return dtoConverter.convertToDto(newsRepository.save(news), SuccessCreatedNews.class);
     }
 
-    /**
-     * Method delete {@link News}
-     *
-     * @param id
-     * @return NewsResponse
-     **/
     @Override
     public NewsResponse deleteNewsById(Long id) {
         News deletedNews = getNewsById(id);

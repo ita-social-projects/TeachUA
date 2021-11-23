@@ -32,7 +32,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +47,6 @@ public class CenterServiceImpl implements CenterService {
     private static final String CENTER_NOT_FOUND_BY_NAME = "Center not found by name: %s";
     private static final String CENTER_DELETING_ERROR = "Can't delete center cause of relationship";
     private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
-
     private final LocationService locationService;
     private final CenterRepository centerRepository;
     private final ArchiveService archiveService;
@@ -57,9 +59,8 @@ public class CenterServiceImpl implements CenterService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final CenterToCenterResponseConverter centerToCenterResponseConverter;
-    private  final CoordinatesConverter coordinatesConverter;
-
-
+    private final CoordinatesConverter coordinatesConverter;
+  
     @Autowired
     public CenterServiceImpl(LocationService locationService, CenterRepository centerRepository,
                              ArchiveService archiveService,
@@ -84,48 +85,35 @@ public class CenterServiceImpl implements CenterService {
         this.clubRepository = clubRepository;
         this.userRepository = userRepository;
         this.userService = userService;
-        this.centerToCenterResponseConverter=centerToCenterResponseConverter;
+        this.centerToCenterResponseConverter = centerToCenterResponseConverter;
         this.coordinatesConverter = coordinatesConverter;
     }
 
-    /**
-     * The method returns dto {@code CenterResponse} of center by id.
-     *
-     * @param id - put center id.
-     * @return new {@code CenterResponse}.
-     */
     @Override
     public CenterResponse getCenterByProfileId(Long id) {
         return centerToCenterResponseConverter.convertToCenterResponse(getCenterById(id));
     }
 
-    /**
-     * The method returns dto {@code SuccessCreatedCenter} if center successfully added.
-     *
-     * @param centerProfile - place body of dto {@code CenterProfile}.
-     * @return new {@code SuccessCreatedCenter}.
-     * @throws AlreadyExistException if center already exists.
-     */
     @Override
     public SuccessCreatedCenter addCenter(CenterProfile centerProfile) {
-
-        log.debug("centerName = "+centerProfile.getName());
+        log.debug("centerName = " + centerProfile.getName());
         if (isCenterExistByName(centerProfile.getName())) {
             throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
         }
 
         User user = null;
-        if(centerProfile.getUserId() != null){
-            log.debug("CenterServiceImpl=> centerProfile.userId == "+centerProfile.getUserId());
+        if (centerProfile.getUserId() != null) {
+            log.debug("CenterServiceImpl=> centerProfile.userId == " + centerProfile.getUserId());
             user = userRepository.getOne(centerProfile.getUserId());
-        }else {log.debug("CenterServiceImpl=> centerProfile.userId == null");}
-
+        } else {
+            log.debug("CenterServiceImpl=> centerProfile.userId == null");
+        }
 
         Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
-                    .withUser(user));
+                .withUser(user));
 
         List<LocationProfile> locations = centerProfile.getLocations();
-        if ( locations != null && !locations.isEmpty()) {
+        if (locations != null && !locations.isEmpty()) {
             for (LocationProfile profile : locations) {
                 coordinatesConverter.locationProfileConverterToDb(profile);
             }
@@ -135,20 +123,24 @@ public class CenterServiceImpl implements CenterService {
                             dtoConverter.convertToEntity(locationProfile, new Location())
                                     .withCenter(center)
                                     .withCity(cityService.getCityByName(locationProfile.getCityName()))
-                                    .withDistrict(locationProfile.getDistrictName() == null ? null : districtService.getDistrictByName(locationProfile.getDistrictName()))
-                                    .withStation(locationProfile.getStationName() == null ? null : stationService.getStationByName(locationProfile.getStationName()))
+                                    .withDistrict(locationProfile.getDistrictName() == null ? null
+                                            : districtService.getDistrictByName(locationProfile.getDistrictName()))
+                                    .withStation(locationProfile.getStationName() == null ? null
+                                            : stationService.getStationByName(locationProfile.getStationName()))
                     ))
                     .collect(Collectors.toSet())
             );
         }
 
-        List<Long> clubsId =centerProfile.getClubsId();
-        if(clubsId != null &&  !clubsId.isEmpty())
-        for(Long id : clubsId ){
-            Club club = clubRepository.findById(id).orElseThrow(
-                    () -> new NotExistException(String.format(CLUB_NOT_FOUND_BY_ID, id)));
-            club.setCenter(center);
-            clubRepository.save(club);
+        List<Long> clubsId = centerProfile.getClubsId();
+      
+        if (clubsId != null && !clubsId.isEmpty()) {
+            for (Long id : clubsId) {
+                Club club = clubRepository.findById(id)
+                        .orElseThrow(() -> new NotExistException(String.format(CLUB_NOT_FOUND_BY_ID, id)));
+                club.setCenter(center);
+                clubRepository.save(club);
+            }
         }
 
         log.debug("**/adding new center = " + centerProfile.getName());
@@ -158,19 +150,11 @@ public class CenterServiceImpl implements CenterService {
     @Override
     public SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile, HttpServletRequest httpServletRequest) {
         centerProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
-            centerProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
+        centerProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
 
         return addCenter(centerProfile);
     }
 
-
-    /**
-     * The method returns entity {@code Center} of center by id.
-     *
-     * @param id - put center id.
-     * @return new {@code Center}.
-     * @throws NotExistException if center not exists.
-     */
     @Override
     public Center getCenterById(Long id) {
         Optional<Center> optionalCenter = getOptionalCenterById(id);
@@ -183,26 +167,12 @@ public class CenterServiceImpl implements CenterService {
         return center;
     }
 
-    /**
-     * The method returns entity {@code Center} of center by external id.
-     *
-     * @param centerExternalId - put centerExternalId id.
-     * @return new {@code Center}.
-     * @throws NotExistException if center not exists.
-     */
     @Override
     public Center getCenterByExternalId(Long centerExternalId) {
         Center center = centerRepository.findCenterByCenterExternalId(centerExternalId);
         log.debug("**/getting center by external id = " + center);
         return center;
     }
-
-    /**
-     * The method returns dto {@code CenterProfile} of updated club.
-     *
-     * @param centerProfile - place body of dto {@code CenterProfile}.
-     * @return new {@code CenterProfile}.
-     */
 
     @Override
     public CenterProfile updateCenter(Long id, CenterProfile centerProfile) {
@@ -213,7 +183,6 @@ public class CenterServiceImpl implements CenterService {
         Set<LocationProfile> locations = new HashSet<>(centerProfile.getLocations());
 
         if (!locations.isEmpty()) {
-
             for (LocationProfile profile : locations) {
                 coordinatesConverter.locationProfileConverterToDb(profile);
                 if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
@@ -231,7 +200,7 @@ public class CenterServiceImpl implements CenterService {
 
         Center newCenter = dtoConverter.convertToEntity(centerProfile, center)
                 .withId(id)
-                .withLocations(locationService.updateCenterLocation(locations,center));
+                .withLocations(locationService.updateCenterLocation(locations, center));
 
         log.debug("**/updating center by id = " + newCenter);
         return dtoConverter.convertToDto(centerRepository.save(newCenter), CenterProfile.class);
@@ -240,7 +209,6 @@ public class CenterServiceImpl implements CenterService {
     @Override
     public CenterResponse deleteCenterById(Long id) {
         Center center = getCenterById(id);
-
 
         archiveService.saveModel(center);
 
@@ -258,12 +226,6 @@ public class CenterServiceImpl implements CenterService {
         return dtoConverter.convertToDto(center, CenterResponse.class);
     }
 
-    /**
-     * The method returns list of dto {@code Page<CenterResponse>} of all centers by user-owner.
-     *
-     * @param id - put user id.
-     * @return new {@code Page<ClubResponse>}.
-     */
     @Override
     public Page<CenterResponse> getCentersByUserId(Long id, Pageable pageable) {
         Page<Center> centerResponses = centerRepository.findAllByUserId(id, pageable);
@@ -275,15 +237,6 @@ public class CenterServiceImpl implements CenterService {
                 centerResponses.getPageable(), centerResponses.getTotalElements());
     }
 
-    /**
-     * The method returns page of dto {@code Page<CenterResponse>} of all centers by advancedSearchCenterProfile.
-     *
-     * @param advancedSearchCenterProfile - put user id.
-     * @param pageable - pagination object.
-     * @return new {@code Page<ClubResponse>}.
-     *
-     * @author Vasyl Khula
-     */
     @Override
     public Page<CenterResponse> getAdvancedSearchCenters(AdvancedSearchCenterProfile advancedSearchCenterProfile,
                                                          Pageable pageable) {
@@ -301,13 +254,6 @@ public class CenterServiceImpl implements CenterService {
                 centersOnPage.getPageable(), centersOnPage.getTotalElements());
     }
 
-    /**
-     * The method returns entity {@code Center} of center by name.
-     *
-     * @param name - put center name.
-     * @return new {@code Center}.
-     * @throws NotExistException if center not exists.
-     */
     @Override
     public Center getCenterByName(String name) {
         Optional<Center> optionalCenter = getOptionalCenterByName(name);
@@ -320,11 +266,6 @@ public class CenterServiceImpl implements CenterService {
         return center;
     }
 
-    /**
-     * The method returns list of dto {@code List<CenterResponse>} of all centers.
-     *
-     * @return new {@code List<CenterResponse>}.
-     */
     @Override
     public List<CenterResponse> getListOfCenters() {
         List<CenterResponse> centerResponses = centerRepository.findAll()
@@ -340,7 +281,7 @@ public class CenterServiceImpl implements CenterService {
     }
 
     private Optional<Center> getOptionalCenterById(Long id) {
-        if(id == null){
+        if (id == null) {
             return Optional.empty();
         }
         return centerRepository.findById(id);
@@ -351,20 +292,20 @@ public class CenterServiceImpl implements CenterService {
     }
 
     @Override
-    public CenterResponse updateRatingUpdateClub(ClubResponse previousClub, ClubResponse updatedClub){
+    public CenterResponse updateRatingUpdateClub(ClubResponse previousClub, ClubResponse updatedClub) {
         Center center = getCenterById(previousClub.getCenter().getId());
 
         Double newRating;
         Long newClubCount;
 
-        if(updatedClub.getFeedbackCount() == 0){
+        if (updatedClub.getFeedbackCount() == 0) {
             newClubCount = center.getClubCount() - 1;
             newRating = newClubCount == 0 ? 0 :
-                    (center.getRating() * center.getClubCount() - previousClub.getRating())/ newClubCount;
-        }else if(previousClub.getFeedbackCount() == 0){
+                    (center.getRating() * center.getClubCount() - previousClub.getRating()) / newClubCount;
+        } else if (previousClub.getFeedbackCount() == 0) {
             newClubCount = center.getClubCount() + 1;
-            newRating = (center.getRating() * center.getClubCount() + updatedClub.getRating())/ newClubCount;
-        }else{
+            newRating = (center.getRating() * center.getClubCount() + updatedClub.getRating()) / newClubCount;
+        } else {
             newClubCount = center.getClubCount();
             newRating = newClubCount == 0 ? 0 :
                     (center.getRating() * center.getClubCount() - previousClub.getRating() + updatedClub.getRating())
@@ -377,21 +318,20 @@ public class CenterServiceImpl implements CenterService {
     }
 
     @Override
-    public CenterResponse updateRatingDeleteClub(ClubResponse clubResponse){
+    public CenterResponse updateRatingDeleteClub(ClubResponse clubResponse) {
         Center center = getCenterById(clubResponse.getCenter().getId());
 
         Long newClubCount = center.getClubCount() - 1;
         Double newRating = newClubCount == 0 ? 0 :
-                    (center.getRating() * center.getClubCount() - clubResponse.getRating())/ newClubCount;
+                (center.getRating() * center.getClubCount() - clubResponse.getRating()) / newClubCount;
 
         clubRepository.updateRating(center.getId(), newRating, newClubCount);
 
         return getCenterByProfileId(center.getId());
     }
 
-
     @Override
-    public List<CenterResponse> updateRatingForAllCenters(){
+    public List<CenterResponse> updateRatingForAllCenters() {
         return getListOfCenters().stream().map(centerResponse -> {
             Center updCenter = getCenterById(centerResponse.getId());
             updCenter.setClubCount(clubRepository.findClubsByCenter(updCenter)
@@ -401,5 +341,4 @@ public class CenterServiceImpl implements CenterService {
             return centerResponse;
         }).collect(Collectors.toList());
     }
-
 }

@@ -72,7 +72,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/manifest.json").permitAll()
                 .antMatchers("/favicon**").permitAll()
@@ -107,8 +106,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //TODO: only for admin
                 .antMatchers(HttpMethod.GET, "/logs").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/logs").permitAll()
-                .anyRequest()
-                .authenticated()
                 .and()
                 .oauth2Login()
                 .authorizationEndpoint()
