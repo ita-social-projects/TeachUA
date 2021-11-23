@@ -13,7 +13,7 @@ import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ChallengeService;
 import com.softserve.teachua.service.TaskService;
 import com.softserve.teachua.service.UserService;
-import com.softserve.teachua.utils.HtmlValidator;
+import com.softserve.teachua.utils.HtmlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 public class ChallengeServiceImpl implements ChallengeService {
-
     private final ChallengeRepository challengeRepository;
     private final DtoConverter dtoConverter;
     private final UserService userService;
@@ -84,7 +83,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     public SuccessCreatedChallenge createChallenge(
             CreateChallenge createChallenge,
             HttpServletRequest httpServletRequest) {
-        HtmlValidator.validateDescription(createChallenge.getDescription());
+        HtmlUtils.validateDescription(createChallenge.getDescription());
         Challenge challenge = dtoConverter.convertToEntity(createChallenge, new Challenge());
         challenge.setUser(userService.getUserFromRequest(httpServletRequest));
         challenge.setIsActive(true);
@@ -93,7 +92,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public SuccessUpdatedChallenge updateChallenge(Long id, UpdateChallenge updateChallenge) {
-        HtmlValidator.validateDescription(updateChallenge.getDescription());
+        HtmlUtils.validateDescription(updateChallenge.getDescription());
         Challenge challenge = getChallengeById(id);
         BeanUtils.copyProperties(updateChallenge, challenge);
         return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdatedChallenge.class);
@@ -121,6 +120,9 @@ public class ChallengeServiceImpl implements ChallengeService {
     @Override
     public ChallengeProfile getChallenge(Long id) {
         Challenge challenge = getChallengeById(id);
+        if (!challenge.getIsActive()) {
+            userService.verifyIsUserAdmin();
+        }
         ChallengeProfile challengeProfile =
                 dtoConverter.convertToDto(challenge, ChallengeProfile.class);
         Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
@@ -133,7 +135,8 @@ public class ChallengeServiceImpl implements ChallengeService {
 
 
     @Override
-    public SuccessUpdateChallengePreview updateChallengePreview(Long id, SuccessUpdateChallengePreview updateChallengePreview) {
+    public SuccessUpdateChallengePreview updateChallengePreview(Long id,
+                                                                SuccessUpdateChallengePreview updateChallengePreview) {
         Challenge challenge = getChallengeById(id);
         BeanUtils.copyProperties(updateChallengePreview, challenge);
         return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdateChallengePreview.class);

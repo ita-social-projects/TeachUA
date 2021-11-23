@@ -38,51 +38,32 @@ public class DistrictServiceImpl implements DistrictService {
     private final DistrictRepository districtRepository;
 
     @Autowired
-    public DistrictServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService, DistrictRepository districtRepository) {
+    public DistrictServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService,
+                               CityService cityService, DistrictRepository districtRepository) {
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
         this.cityService = cityService;
         this.districtRepository = districtRepository;
     }
 
-    /**
-     * The method returns dto {@code DistrictResponse} of district by id.
-     *
-     * @param id - put district id.
-     * @return new {@code DistrictResponse}.
-     */
     @Override
     public DistrictResponse getDistrictProfileById(Long id) {
         return dtoConverter.convertToDto(getDistrictById(id), DistrictResponse.class);
     }
 
-    /**
-     * The method returns entity {@code District} of district by id.
-     *
-     * @param id - put district id.
-     * @return new {@code District}.
-     * @throws NotExistException if district not exists.
-     */
     @Override
     public District getDistrictById(Long id) {
         Optional<District> optionalDistrict = id == null ? Optional.empty() : getOptionalDistrictById(id);
         if (!optionalDistrict.isPresent()) {
             return null;
-//            throw new NotExistException(String.format(DISTRICT_NOT_FOUND_BY_ID, id));
+            // throw new NotExistException(String.format(DISTRICT_NOT_FOUND_BY_ID, id));
         }
 
         District district = optionalDistrict.get();
-        log.info("**/getting district by id = " + district);
+        log.debug("**/getting district by id = " + district);
         return district;
     }
 
-    /**
-     * The method returns entity {@code District} of district by name.
-     *
-     * @param name - put center name.
-     * @return new {@code District}.
-     * @throws NotExistException if district not exists.
-     */
     @Override
     public District getDistrictByName(String name) {
         Optional<District> optionalDistrict = getOptionalDistrictByName(name);
@@ -91,7 +72,7 @@ public class DistrictServiceImpl implements DistrictService {
         }
 
         District district = optionalDistrict.get();
-        log.info("**/getting district by id = " + district);
+        log.debug("**/getting district by id = " + district);
         return district;
     }
 
@@ -100,13 +81,6 @@ public class DistrictServiceImpl implements DistrictService {
         return districtRepository.findFirstByName(name);
     }
 
-    /**
-     * The method returns dto {@code SuccessCreatedDistrict} if district successfully added.
-     *
-     * @param districtProfile - place place body of dto {@code DistrictProfile}.
-     * @return new {@code SuccessCreatedDistrict}.
-     * @throws AlreadyExistException if district already exists.
-     */
     @Override
     public SuccessCreatedDistrict addDistrict(DistrictProfile districtProfile) {
         if (isDistrictExistByName(districtProfile.getName())) {
@@ -116,15 +90,10 @@ public class DistrictServiceImpl implements DistrictService {
         District district = districtRepository.save(dtoConverter.convertToEntity(districtProfile, new District())
                 .withCity(cityService.getCityByName(districtProfile.getCityName())));
 
-        log.info("**/adding new district = " + district);
+        log.debug("**/adding new district = " + district);
         return dtoConverter.convertToDto(district, SuccessCreatedDistrict.class);
     }
 
-    /**
-     * The method returns list of dto {@code List<DistrictResponse>} of all cities.
-     *
-     * @return new {@code List<DistrictResponse>}.
-     */
     @Override
     public List<DistrictResponse> getListOfDistricts() {
         List<DistrictResponse> districtResponses = districtRepository.findAllByOrderByIdAsc()
@@ -132,15 +101,10 @@ public class DistrictServiceImpl implements DistrictService {
                 .map(district -> (DistrictResponse) dtoConverter.convertToDto(district, DistrictResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of districts = " + districtResponses);
+        log.debug("**/getting list of districts = " + districtResponses);
         return districtResponses;
     }
 
-    /**
-     * The method returns list of dto {@code List<DistrictResponse>} of all cities.
-     *
-     * @return new {@code List<DistrictResponse>}.
-     */
     @Override
     public List<DistrictResponse> getListOfDistrictsByCityName(String name) {
         List<DistrictResponse> districtResponses = districtRepository.findAllByCityName(name)
@@ -148,16 +112,10 @@ public class DistrictServiceImpl implements DistrictService {
                 .map(district -> (DistrictResponse) dtoConverter.convertToDto(district, DistrictResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of districts = " + districtResponses);
+        log.debug("**/getting list of districts = " + districtResponses);
         return districtResponses;
     }
 
-    /**
-     * The method returns dto {@code DistrictProfile} of updated district.
-     *
-     * @param districtProfile - place body of dto {@code DistrictProfile}.
-     * @return new {@code DistrictProfile}.
-     */
     @Override
     public DistrictProfile updateDistrict(Long id, DistrictProfile districtProfile) {
         District district = getDistrictById(id);
@@ -165,17 +123,10 @@ public class DistrictServiceImpl implements DistrictService {
                 .withId(id)
                 .withCity(cityService.getCityByName(districtProfile.getCityName()));
 
-        log.info("**/updating district by id = " + newDistrict);
+        log.debug("**/updating district by id = " + newDistrict);
         return dtoConverter.convertToDto(districtRepository.save(newDistrict), DistrictProfile.class);
     }
 
-    /**
-     * The method deletes district {@link  District}
-     *
-     * @param id - id of district to delete
-     * @return DistrictResponse {@link  DistrictResponse}.
-     * @throws NotExistException {@link NotExistException} if the district doesn't exist.
-     */
     @Override
     public DistrictResponse deleteDistrictById(Long id) {
         District district = getDistrictById(id);
@@ -189,7 +140,7 @@ public class DistrictServiceImpl implements DistrictService {
             throw new DatabaseRepositoryException(DISTRICT_DELETING_ERROR);
         }
 
-        log.info("district {} was successfully deleted", district);
+        log.debug("district {} was successfully deleted", district);
         return dtoConverter.convertToDto(district, DistrictResponse.class);
     }
 

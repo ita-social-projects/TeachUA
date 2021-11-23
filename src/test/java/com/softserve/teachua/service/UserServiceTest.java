@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.*;
@@ -41,6 +42,9 @@ import static org.mockito.Mockito.*;
 
     @Mock
     private ArchiveService archiveService;
+
+    @Mock
+    private UserUpdateProfile userUpdateProfile;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -106,7 +110,7 @@ import static org.mockito.Mockito.*;
         when(dtoConverter.convertToEntity(userProfile, new User())).thenReturn(newUser);
         when(encodeService.encodePassword(PASSWORD)).thenReturn("encoded password");
         when(userRepository.save(any())).thenReturn(newUser);
-        String ROLE_NAME = "ROLE_USER";
+        String ROLE_NAME = RoleData.USER.getDBRoleName();
         when(roleService.findByName(ROLE_NAME)).thenReturn(Role.builder().id(2).name(ROLE_NAME).build());
         when(dtoConverter.convertToDto(newUser, SuccessRegistration.class))
                 .thenReturn(SuccessRegistration.builder().email(NEW_EMAIL).build());
@@ -159,18 +163,18 @@ import static org.mockito.Mockito.*;
             userService.validateUser(userLogin);
         }).isInstanceOf(WrongAuthenticationException.class);
     }
-/*
-    @Test
+
+   @Test
     public void updateUserTest() {
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
         when(userRepository.save(any())).thenReturn(user);
-        when(dtoConverter.convertToEntity(userProfile, user)).thenReturn(User.builder()
-                .email(userProfile.getEmail()).firstName(userProfile.getFirstName()).build());
+        when(dtoConverter.convertToEntity(userUpdateProfile, user)).thenReturn(User.builder()
+                .email(userUpdateProfile.getEmail()).firstName(userUpdateProfile.getFirstName()).build());
         when(dtoConverter.convertToDto(user, SuccessUpdatedUser.class)).thenReturn(SuccessUpdatedUser
-                .builder().email(userProfile.getEmail()).build());
+                .builder().email(userUpdateProfile.getEmail()).build());
 
-        SuccessUpdatedUser updatedUser = userService.updateUser(EXISTING_ID, userProfile);
-        assertEquals(updatedUser.getEmail(), userProfile.getEmail());
+        SuccessUpdatedUser updatedUser = userService.updateUser(EXISTING_ID, userUpdateProfile);
+        assertEquals(updatedUser.getEmail(), userUpdateProfile.getEmail());
     }
 
     @Test
@@ -178,9 +182,9 @@ import static org.mockito.Mockito.*;
         when(userRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
-            userService.updateUser(NOT_EXISTING_ID, userProfile);
+            userService.updateUser(NOT_EXISTING_ID, userUpdateProfile);
         }).isInstanceOf(NotExistException.class);
-    }*/
+    }
 
     @Test
     public void deleteUserByIdTest() {

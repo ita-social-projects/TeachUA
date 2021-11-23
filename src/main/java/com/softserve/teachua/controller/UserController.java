@@ -1,12 +1,10 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.user.SuccessUpdatedUser;
 import com.softserve.teachua.dto.user.UserPasswordUpdate;
 import com.softserve.teachua.dto.user.UserResponse;
 import com.softserve.teachua.dto.user.UserUpdateProfile;
-import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.UserService;
@@ -14,6 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +26,8 @@ import java.util.List;
 @Tag(name="user", description="the User API")
 @SecurityRequirement(name = "api")
 public class UserController implements Api {
-
     private final UserService userService;
-
     private final JwtProvider jwtProvider;
-
 
     @Autowired
     public UserController(UserService userService, JwtProvider jwtProvider) {
@@ -47,7 +43,6 @@ public class UserController implements Api {
      */
     @GetMapping("/user/{id}")
     public UserResponse getUserById(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
-
         userService.validateUserId(id, httpServletRequest);
         return userService.getUserProfileById(id);
     }
@@ -83,12 +78,12 @@ public class UserController implements Api {
      * @param httpServletRequest - autowired by spring.
      * @return {@code SuccessUpdatedUser}.
      */
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/user/{id}")
     public SuccessUpdatedUser updateUser(
             @PathVariable Long id,
             @Valid
             @RequestBody UserUpdateProfile userProfile, HttpServletRequest httpServletRequest) {
-
         userService.validateUserId(id, httpServletRequest);
 
         return userService.updateUser(id, userProfile);
@@ -98,11 +93,14 @@ public class UserController implements Api {
      * Use this endpoint to delete user by id.
      * The controller returns {@code UserResponse}.
      */
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/user/{id}")
     public UserResponse deleteUser(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             auth.getAuthorities().stream().forEach(a -> a.getAuthority());
+        } else {
+            log.debug("auth is null");
         }
         return userService.deleteUserById(id);
     }
@@ -114,6 +112,7 @@ public class UserController implements Api {
      * @param passwordUpdate - password
      * @param id - id
      */
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/user/{id}")
     public void changePassword(@PathVariable("id") Long id,
                                @Valid @RequestBody UserPasswordUpdate passwordUpdate,
@@ -121,5 +120,4 @@ public class UserController implements Api {
         userService.validateUserId(id, httpServletRequest);
         userService.updatePassword(id, passwordUpdate);
     }
-
 }

@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class MainController {
 
-    @RequestMapping(value="/", method = RequestMethod.GET)
+    /**
+     * Method return frontend page when application is built as one.
+     * @return index page of frontend
+     */
+    @GetMapping("/")
     public String index() {
         return "index.html";
     }
-
 }

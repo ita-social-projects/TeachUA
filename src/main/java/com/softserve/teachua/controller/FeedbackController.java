@@ -8,8 +8,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -63,11 +65,12 @@ public class FeedbackController implements Api {
      * @param feedbackProfile - object of DTO class.
      * @return {@code SuccessCreatedFeedback}
      */
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/feedback")
     public SuccessCreatedFeedback addFeedback(
             @Valid
-            @RequestBody FeedbackProfile feedbackProfile) {
-        return feedbackService.addFeedback(feedbackProfile);
+            @RequestBody FeedbackProfile feedbackProfile, HttpServletRequest httpServletRequest) {
+        return feedbackService.addFeedback(feedbackProfile,httpServletRequest);
     }
 
     /**
@@ -77,12 +80,14 @@ public class FeedbackController implements Api {
      * @param feedbackProfile - put feedback information here.
      * @return {@code FeedbackProfile}.
      */
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/feedback/{id}")
-    public FeedbackProfile updateFeedback(
+    public FeedbackResponse updateFeedback(
             @PathVariable Long id,
             @Valid
-            @RequestBody FeedbackProfile feedbackProfile) {
-        return feedbackService.updateFeedbackProfileById(id, feedbackProfile);
+            @RequestBody FeedbackProfile feedbackProfile,
+            HttpServletRequest httpServletRequest) {
+        return feedbackService.updateFeedbackProfileById(id, feedbackProfile, httpServletRequest);
     }
 
     /**
@@ -91,6 +96,7 @@ public class FeedbackController implements Api {
      * @param id - put feedback id here.
      * @return {@code FeedbackResponse}
      */
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/feedback/{id}")
     public FeedbackResponse deleteFeedbackById(@PathVariable Long id) {
         return feedbackService.deleteFeedbackById(id);

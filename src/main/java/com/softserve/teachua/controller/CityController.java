@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.dto.city.CityResponse;
@@ -7,8 +8,11 @@ import com.softserve.teachua.dto.city.SuccessCreatedCity;
 import com.softserve.teachua.service.CityService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.List;
 
@@ -40,6 +44,7 @@ public class CityController implements Api {
      * @param cityProfile - place body to {@link CityProfile}.
      * @return new {@code SuccessCreatedCity}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/city")
     public SuccessCreatedCity addCity(
             @Valid
@@ -54,11 +59,12 @@ public class CityController implements Api {
      * @param cityProfile - put city information here.
      * @return new {@code CityProfile}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/city/{id}")
     public CityProfile updateCity(
             @PathVariable Long id,
             @Valid
-            @RequestBody CityProfile cityProfile){
+            @RequestBody CityProfile cityProfile) {
         return cityService.updateCity(id, cityProfile);
     }
 
@@ -72,12 +78,14 @@ public class CityController implements Api {
         return cityService.getListOfCities();
     }
 
+
     /**
      * Use this endpoint to delete city by id.
      * The controller returns list of dto {@code List<CityResponse>} of city.
      * @param id - put city id here.
      * @return new {@code List<CityResponse>}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/city/{id}")
     public CityResponse deleteCity(@PathVariable long id) {
         return cityService.deleteCityById(id);

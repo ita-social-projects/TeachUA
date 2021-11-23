@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Use @code throw new NotVerifiedUserException("Authentication exception")
  */
 @Slf4j
-@ResponseStatus(HttpStatus.FORBIDDEN)
 public class NotVerifiedUserException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;

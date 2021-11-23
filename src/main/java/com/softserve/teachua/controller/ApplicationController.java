@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Hidden
 public class ApplicationController implements Api {
-
     @Value("${server.servlet.context-path}")
     private String rootUri;
 
+    /**
+     * Returns URI that which is specified as environmental variable in system.
+     *
+     * @return rootUri
+     */
     @GetMapping("/uri")
     public String getUri() {
         return rootUri;
     }
-
 }

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,6 @@ import javax.validation.Valid;
 @Tag(name="registration", description="the Registration API")
 @SecurityRequirement(name = "api")
 public class RegistrationController implements Api {
-
     private final UserService userService;
 
     @Autowired
@@ -35,9 +35,10 @@ public class RegistrationController implements Api {
      * @param code - code of user verification
      * @return new {@code SuccessRegistration}.
      */
+    @PreAuthorize("!isAuthenticated()")
     @GetMapping("/verify")
     public SuccessVerification verifyUser(@Param("code") String code) {
-        //log.info("Controller \"verify\",  code = " + code);
+        log.debug("Controller \"verify\",  code = " + code);
         return userService.verify(code);
     }
 
@@ -47,12 +48,14 @@ public class RegistrationController implements Api {
      * @param userProfile - dto with all params.
      * @return new {@code SuccessRegistration}.
      */
+    @PreAuthorize("!isAuthenticated()")
     @PostMapping("/signup")
     public SuccessRegistration signUp(
             @Valid
             @RequestBody
                     UserProfile userProfile) {
-        //log.info("Controller \"signup\", userProfile = " + userProfile.toString());
+      
+        log.debug("Controller \"signup\", userProfile = " + userProfile.toString());
         return userService.registerUser(userProfile);
     }
 }

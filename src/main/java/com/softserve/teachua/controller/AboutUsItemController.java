@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
@@ -15,8 +16,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,7 +30,6 @@ import java.util.List;
 @Tag(name="about us", description="the About Us API")
 @SecurityRequirement(name = "api")
 public class AboutUsItemController implements Api {
-
     private final AboutUsItemService aboutUsItemService;
 
     @Autowired
@@ -41,7 +43,7 @@ public class AboutUsItemController implements Api {
      * @return {@code List<AboutUsItemResponse>}.
      */
     @GetMapping("/about")
-    public List<AboutUsItemResponse> getAboutUsItems(){
+    public List<AboutUsItemResponse> getAboutUsItems() {
         return aboutUsItemService.getListOfAboutUsItemResponses();
     }
 
@@ -54,7 +56,7 @@ public class AboutUsItemController implements Api {
     @GetMapping("/about/{id}")
     public AboutUsItemResponse getAboutUsItems(
             @PathVariable Long id
-    ){
+    ) {
         return aboutUsItemService.getAboutUsItemResponseById(id);
     }
 
@@ -64,11 +66,12 @@ public class AboutUsItemController implements Api {
      * @param aboutUsItemProfile - put required parameters here.
      * @return {@code AboutUsItemResponse}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/about")
     public AboutUsItemResponse addAboutUsItem(
             @Valid
             @RequestBody AboutUsItemProfile aboutUsItemProfile
-            ){
+    ) {
         return aboutUsItemService.addAboutUsItem(aboutUsItemProfile);
     }
 
@@ -79,12 +82,14 @@ public class AboutUsItemController implements Api {
      * @param aboutUsItemProfile - put required parameters here.
      * @return {@code AboutUsItemResponse}.
      */
-    @PutMapping(value = "/about/{id}", produces = {"application/json" })
+    @AllowedRoles(RoleData.ADMIN)
+    @PutMapping("/about/{id}")
+
     public AboutUsItemResponse updateAboutUsItem(
             @PathVariable Long id,
             @Valid
             @RequestBody AboutUsItemProfile aboutUsItemProfile
-    ){
+    ) {
         return aboutUsItemService.updateAboutUsItem(id, aboutUsItemProfile);
     }
 
@@ -94,10 +99,11 @@ public class AboutUsItemController implements Api {
      * @param id - put About us item id here.
      * @return {@code AboutUsItemResponse}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/about/{id}")
     public AboutUsItemResponse deleteAboutUsItem(
             @PathVariable Long id
-    ){
+    ) {
         return aboutUsItemService.deleteAboutUsItemById(id);
     }
 
@@ -108,13 +114,13 @@ public class AboutUsItemController implements Api {
      * @param number - put number here.
      * @return {@code "success"}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PatchMapping("/about/{id}")
     public String changeOrder(
             @PathVariable Long id,
             @RequestBody NumberDto number
-    ){
+    ) {
         aboutUsItemService.changeOrder(id, number.getNumber());
         return "success";
     }
-
 }

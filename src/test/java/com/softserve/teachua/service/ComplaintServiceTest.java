@@ -5,8 +5,12 @@ import com.softserve.teachua.dto.complaint.ComplaintResponse;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Complaint;
+import com.softserve.teachua.model.User;
+import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
+import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.impl.ComplaintServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +18,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import javax.servlet.http.HttpServletRequestWrapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +32,9 @@ import static org.mockito.Mockito.*;
 public class ComplaintServiceTest {
 
     private  static  final  Long CORRECT_COMPLAINT_ID = 1l;
-    private  static  final  Long WRONG_COMPLAINT_ID = 10l;
-    private  static  final  Long CLUB_ID = 1l;
+    private  static  final  Long WRONG_COMPLAINT_ID = 2l;
+    private  static  final  Long CLUB_ID = 100l;
+    private  static  final  Long USER_ID =  1000l;
 
     @Mock
     private ComplaintRepository complaintRepository;
@@ -35,6 +42,14 @@ public class ComplaintServiceTest {
     private DtoConverter dtoConverter;
     @Mock
     private ArchiveService archiveService;
+    @Mock
+    private HttpServletRequestWrapper httpServletRequest;
+    @Mock
+    private ClubRepository clubRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private UserService userService;
     @InjectMocks
     private ComplaintServiceImpl complaintService;
     private Complaint correctComplaint;
@@ -42,13 +57,18 @@ public class ComplaintServiceTest {
     private SuccessCreatedComplaint successCreatedComplaint;
     private ComplaintProfile correctComplaintProfile;
     private List<Complaint> complaintList ;
+    private Club club;
+    private User user;
     private List<ComplaintResponse> complaintResponseList;
 
     @BeforeEach
     public  void  setMocks(){
 
+        user =  User.builder().id(USER_ID).build();
+        club = Club.builder().id(CLUB_ID).build();
         correctComplaint = Complaint.builder()
                 .id(CORRECT_COMPLAINT_ID)
+                .club(club)
                 .build();
         correctComplaintResponse = ComplaintResponse.builder()
                 .id(CORRECT_COMPLAINT_ID)
@@ -105,12 +125,15 @@ public class ComplaintServiceTest {
     @Test
      public void addComplaintMustReturnSuccessCreatedComplaint(){
 
+        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
         when(dtoConverter.convertToEntity(any(ComplaintProfile.class),any(Complaint.class)))
                 .thenReturn(new Complaint());
+        when(clubRepository.existsById(CLUB_ID)).thenReturn(true);
+        when(userRepository.existsById(USER_ID)).thenReturn(true);
         when(complaintRepository.save(correctComplaint)).thenReturn(correctComplaint);
         when(dtoConverter.convertToDto(correctComplaint,SuccessCreatedComplaint.class))
             .thenReturn(successCreatedComplaint);
-        SuccessCreatedComplaint expected = complaintService.addComplaint(correctComplaintProfile);
+        SuccessCreatedComplaint expected = complaintService.addComplaint(correctComplaintProfile,httpServletRequest);
         assertThat(expected).isEqualTo(successCreatedComplaint);
 
 

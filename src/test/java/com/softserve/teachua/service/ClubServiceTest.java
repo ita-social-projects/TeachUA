@@ -1,22 +1,14 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
-import com.softserve.teachua.converter.ContactsStringConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
-import com.softserve.teachua.dto.contact_data.ContactDataResponse;
-import com.softserve.teachua.dto.search.SearchClubProfile;
-import com.softserve.teachua.dto.search.SearchPossibleResponse;
-import com.softserve.teachua.dto.search.SimilarClubProfile;
-import com.softserve.teachua.dto.user.UserResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.model.Category;
-import com.softserve.teachua.model.City;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.ClubRepository;
@@ -30,8 +22,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,6 +60,13 @@ class ClubServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private LocationService locationService;
+
+
     @InjectMocks
     private ClubServiceImpl clubService;
 
@@ -72,6 +74,7 @@ class ClubServiceTest {
     private ClubProfile clubProfile;
     private ClubResponse clubResponse;
     private User user;
+    private HttpServletRequest httpServletRequest;
 
     private final long EXISTING_ID = 1L;
     private final long NOT_EXISTING_ID = 500L;
@@ -99,7 +102,7 @@ class ClubServiceTest {
                 .build();
         club = Club.builder()
                 .id(EXISTING_ID)
-                .name(EXISTING_NAME)
+                .name(NEW_NAME)
                 .user(user)
                 .build();
         clubProfile = ClubProfile.builder()
@@ -110,7 +113,7 @@ class ClubServiceTest {
                 .build();
         clubResponse = ClubResponse.builder()
                 .id(EXISTING_ID)
-                .name(EXISTING_NAME)
+                .name(NEW_NAME)
                 .build();
     }
 
@@ -175,8 +178,10 @@ class ClubServiceTest {
                 .thenReturn(Club.builder().name(NEW_NAME).build());
         when(dtoConverter.convertToDto(club, SuccessUpdatedClub.class))
                 .thenReturn(SuccessUpdatedClub.builder().name(NEW_NAME).build());
+        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
 
-        SuccessUpdatedClub actual = clubService.updateClub(EXISTING_ID, ClubResponse.builder().name(NEW_NAME).build());
+
+        SuccessUpdatedClub actual = clubService.updateClub(EXISTING_ID, ClubResponse.builder().name(NEW_NAME).build(), httpServletRequest);
         assertEquals(clubProfile.getName(), actual.getName());
     }
 
@@ -185,7 +190,7 @@ class ClubServiceTest {
         when(clubRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
-            clubService.updateClub(NOT_EXISTING_ID, ClubResponse.builder().name(NEW_NAME).build());
+            clubService.updateClub(NOT_EXISTING_ID, ClubResponse.builder().name(NEW_NAME).build(), httpServletRequest);
         }).isInstanceOf(NotExistException.class);
     }
 
@@ -216,8 +221,9 @@ class ClubServiceTest {
         when(dtoConverter.convertToDto(club, ClubResponse.class)).thenReturn(clubResponse);
         when(clubToClubResponseConverter.convertToClubResponse(club)).thenReturn(clubResponse);
         when(dtoConverter.convertToEntity(clubResponse, club)).thenReturn(club);
+        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
 
-        ClubResponse actual = clubService.deleteClubById(EXISTING_ID);
+        ClubResponse actual = clubService.deleteClubById(EXISTING_ID, httpServletRequest);
         assertEquals(club.getName(), actual.getName());
     }
 
@@ -226,7 +232,7 @@ class ClubServiceTest {
         when(clubRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
-            clubService.deleteClubById(NOT_EXISTING_ID);
+            clubService.deleteClubById(NOT_EXISTING_ID, httpServletRequest);
         }).isInstanceOf(NotExistException.class);
     }
 
@@ -239,24 +245,24 @@ class ClubServiceTest {
         when(clubRepository.save(any())).thenReturn(newClub);
         when(dtoConverter.convertToDto(newClub, SuccessCreatedClub.class))
                 .thenReturn(SuccessCreatedClub.builder().name(NEW_NAME).build());
+        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
 
-        SuccessCreatedClub actual = clubService.addClub(clubProfile);
+        SuccessCreatedClub actual = clubService.addClub(clubProfile, httpServletRequest);
         assertEquals(clubProfile.getName(), actual.getName());
     }
 
     @Test
     void addClubIfExistShouldThrowAlreadyExistException() {
         when(clubRepository.existsByName(NEW_NAME)).thenReturn(true);
-
         assertThatThrownBy(() -> {
-            clubService.addClub(clubProfile);
+            clubService.addClub(clubProfile, httpServletRequest);
         }).isInstanceOf(AlreadyExistException.class);
     }
 
     @Test
     void addClubWithEmptyDataShouldThrowIncorrectInputException() {
         assertThatThrownBy(() -> {
-            clubService.addClub(ClubProfile.builder().build());
+            clubService.addClub(ClubProfile.builder().build(), httpServletRequest);
         }).isInstanceOf(IncorrectInputException.class);
     }
 

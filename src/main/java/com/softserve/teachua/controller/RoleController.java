@@ -1,11 +1,13 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.role.RoleProfile;
 import com.softserve.teachua.dto.role.RoleResponse;
 import com.softserve.teachua.service.RoleService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +18,6 @@ import java.util.List;
 @Tag(name="role", description="the Role API")
 @SecurityRequirement(name = "api")
 public class RoleController implements Api {
-
     private final RoleService roleService;
 
     @Autowired
@@ -30,6 +31,7 @@ public class RoleController implements Api {
      * @param id - put role id.
      * @return {@code RoleResponse}
      */
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/role/{id}")
     public RoleResponse getRole(@PathVariable Integer id) {
         return roleService.getRoleProfileById(id);
@@ -41,6 +43,7 @@ public class RoleController implements Api {
      * @param roleProfile - put json role here.
      * @return new {@code RoleProfile}
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/role")
     public RoleProfile addRole(@Valid @RequestBody RoleProfile roleProfile) {
         return roleService.addNewRole(roleProfile);
@@ -53,6 +56,7 @@ public class RoleController implements Api {
      * @param roleProfile - put json role
      * @return new {@code RoleProfile}
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/role/{id}")
     public RoleProfile addRole(
             @PathVariable Integer id,
@@ -67,17 +71,18 @@ public class RoleController implements Api {
      * @param id - put role id here.
      * @return {@code RoleResponse}
      */
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/role/{id}")
     public RoleResponse deleteRole(@PathVariable Integer id) {
         return roleService.deleteRoleById(id);
     }
-
 
     /**
      * Use this endpoint to return array of existing roles.
      * The controller returns {@code List<RoleResponse>}.
      * @return {@code List<RoleResponse>}
      */
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/roles")
     public List<RoleResponse> getRoles() {
         return roleService.getListOfRoles();

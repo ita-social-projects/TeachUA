@@ -45,8 +45,8 @@ public class Category implements Convertible, Archivable {
     @Column
     private String tagTextColor;
 
-    @JsonBackReference
     @ManyToMany(mappedBy = "categories")
+    @JsonBackReference(value = "clubsInCategory")
     @ToString.Exclude
     private Set<Club> clubs = new HashSet<>();
 }

@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.club.validation;
+package com.softserve.teachua.utils.validations;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -7,11 +7,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Use this annotation to check firstname and lastname fields on valid length,
+ * containing valid letters. Allowed ukrainian and english letters.
+ */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = PhoneValidation.class)
-public @interface Phone {
-    String message() default "Invalid phone number. It should be 10 digits length and contain no letters";
+@Constraint(validatedBy = NameValidator.class)
+public @interface Name {
+    String message() default "Field can contain only ukrainian and english letters";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

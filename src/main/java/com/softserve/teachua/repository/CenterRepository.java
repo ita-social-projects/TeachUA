@@ -5,6 +5,7 @@ import com.softserve.teachua.model.Club;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -39,4 +40,12 @@ public interface CenterRepository extends JpaRepository<Center, Long> {
                                           Pageable pageable);
 
     Center findCenterByCenterExternalId (Long id);
+
+    @Modifying
+    @Query(value = "UPDATE centers SET rating=:rating, club_count = :club_count WHERE id = :center_id", nativeQuery = true)
+    void updateRating(
+            @Param("center_id") Long center_id,
+            @Param("rating") double rating,
+            @Param("club_count") Long club_count
+    );
 }

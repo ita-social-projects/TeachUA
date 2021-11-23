@@ -42,24 +42,11 @@ public class CityServiceImpl implements CityService {
         this.cityRepository = cityRepository;
     }
 
-    /**
-     * The method returns dto {@code CityResponse} of city by id.
-     *
-     * @param id - put city id.
-     * @return new {@code CityResponse}.
-     */
     @Override
     public CityResponse getCityProfileById(Long id) {
         return dtoConverter.convertToDto(getCityById(id), CityResponse.class);
     }
 
-    /**
-     * The method returns entity {@code City} of city by id.
-     *
-     * @param id - put city id.
-     * @return new {@code City}.
-     * @throws NotExistException if city not exists.
-     */
     @Override
     public City getCityById(Long id) {
         Optional<City> optionalCity = getOptionalCityById(id);
@@ -67,17 +54,10 @@ public class CityServiceImpl implements CityService {
             throw new NotExistException(String.format(CITY_NOT_FOUND_BY_ID, id));
         }
         City city = optionalCity.get();
-        log.info("**/getting city by id = " + city);
+        log.debug("**/getting city by id = " + city);
         return city;
     }
 
-    /**
-     * The method returns entity {@code City} of city by name.
-     *
-     * @param name - put center name.
-     * @return new {@code City}.
-     * @throws NotExistException if city not exists.
-     */
     @Override
     public City getCityByName(String name) {
         Optional<City> optionalCity = getOptionalCityByName(name);
@@ -86,32 +66,20 @@ public class CityServiceImpl implements CityService {
         }
 
         City city = optionalCity.get();
-        log.info("**/getting city by id = " + city);
+        log.debug("**/getting city by id = " + city);
         return city;
     }
 
-    /**
-     * The method returns dto {@code SuccessCreatedCity} if city successfully added.
-     *
-     * @param cityProfile - place place body of dto {@code CityProfile}.
-     * @return new {@code SuccessCreatedCity}.
-     * @throws AlreadyExistException if city already exists.
-     */
     @Override
     public SuccessCreatedCity addCity(CityProfile cityProfile) {
         if (isCityExistByName(cityProfile.getName())) {
             throw new AlreadyExistException(String.format(CITY_ALREADY_EXIST, cityProfile.getName()));
         }
         City city = cityRepository.save(dtoConverter.convertToEntity(cityProfile, new City()));
-        log.info("**/adding new city = " + city);
+        log.debug("**/adding new city = " + city);
         return dtoConverter.convertToDto(city, SuccessCreatedCity.class);
     }
 
-    /**
-     * The method returns list of dto {@code List<CityResponse>} of all cities.
-     *
-     * @return new {@code List<CityResponse>}.
-     */
     @Override
     public List<CityResponse> getListOfCities() {
         List<CityResponse> cityResponses = cityRepository.findAllByOrderByIdAsc()
@@ -119,33 +87,20 @@ public class CityServiceImpl implements CityService {
                 .map(city -> (CityResponse) dtoConverter.convertToDto(city, CityResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of cities = " + cityResponses);
+        log.debug("**/getting list of cities = " + cityResponses);
         return cityResponses;
     }
 
-    /**
-     * The method returns dto {@code CityProfile} of updated city.
-     *
-     * @param cityProfile - place body of dto {@code CityProfile}.
-     * @return new {@code CityProfile}.
-     */
     @Override
     public CityProfile updateCity(Long id, CityProfile cityProfile) {
         City city = getCityById(id);
         City newCity = dtoConverter.convertToEntity(cityProfile, city)
                 .withId(id);
 
-        log.info("**/updating city by id = " + newCity);
+        log.debug("**/updating city by id = " + newCity);
         return dtoConverter.convertToDto(cityRepository.save(newCity), CityProfile.class);
     }
 
-    /**
-     * The method deletes city {@link  City}
-     *
-     * @param id - id of city to delete
-     * @return CityResponse {@link  CityResponse}.
-     * @throws NotExistException {@link NotExistException} if the city doesn't exist.
-     */
     @Override
     public CityResponse deleteCityById(Long id) {
         City city = getCityById(id);
@@ -159,7 +114,7 @@ public class CityServiceImpl implements CityService {
             throw new DatabaseRepositoryException(CITY_DELETING_ERROR);
         }
 
-        log.info("city {} was successfully deleted", city);
+        log.debug("city {} was successfully deleted", city);
         return dtoConverter.convertToDto(city, CityResponse.class);
     }
 

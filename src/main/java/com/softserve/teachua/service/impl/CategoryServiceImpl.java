@@ -22,11 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 
 @Service
 @Slf4j
@@ -36,36 +35,23 @@ public class CategoryServiceImpl implements CategoryService {
     private static final String CATEGORY_NOT_FOUND_BY_ID = "Category not found by id: %s";
     private static final String CATEGORY_NOT_FOUND_BY_NAME = "Category not found by name: %s";
     private static final String CATEGORY_DELETING_ERROR = "Can't delete category cause of relationship";
-
     private final CategoryRepository categoryRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
 
     @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository, DtoConverter dtoConverter, ArchiveService archiveService) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository,
+                               DtoConverter dtoConverter, ArchiveService archiveService) {
         this.categoryRepository = categoryRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
     }
 
-    /**
-     * The method returns dto {@code CategoryResponse} of category by id.
-     *
-     * @param id - put category id.
-     * @return new {@code CategoryResponse}.
-     */
     @Override
     public CategoryResponse getCategoryProfileById(Long id) {
         return dtoConverter.convertToDto(getCategoryById(id), CategoryResponse.class);
     }
 
-    /**
-     * The method returns entity {@code Category} of category by id.
-     *
-     * @param id - put category id.
-     * @return new {@code Category}.
-     * @throws NotExistException if category does not exist.
-     */
     @Override
     public Category getCategoryById(Long id) {
         Optional<Category> optionalCategory = getOptionalCategoryById(id);
@@ -75,17 +61,10 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = optionalCategory.get();
 
-        log.info("Getting category by id = {}", category);
+        log.debug("Getting category by id = {}", category);
         return category;
     }
 
-    /**
-     * The method returns entity {@code Category} of category by name.
-     *
-     * @param name - put category name.
-     * @return new {@code Category}.
-     * @throws NotExistException if category does not exist.
-     */
     @Override
     public Category getCategoryByName(String name) {
         Optional<Category> optionalCategory = getOptionalCategoryByName(name);
@@ -95,59 +74,31 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = optionalCategory.get();
 
-        log.info("Getting category by name = {}", category);
+        log.debug("Getting category by name = {}", category);
         return category;
     }
 
-    /**
-     * The method returns dto {@code SuccessCreatedCategory} if category successfully added.
-     *
-     * @param categoryProfile - place body of dto {@code CategoryProfile}.
-     * @return new {@code SuccessCreatedCategory}.
-     * @throws AlreadyExistException if category already exists.
-     */
     @Override
     public SuccessCreatedCategory addCategory(CategoryProfile categoryProfile) {
         if (isCategoryExistByName(categoryProfile.getName())) {
             throw new AlreadyExistException(String.format(CATEGORY_ALREADY_EXIST, categoryProfile.getName()));
         }
-
-        if(categoryProfile.getSortby() == null){
-            Category lastCategory = categoryRepository.findLastCategory();
-            Integer currentLastSortNumber = lastCategory.getSortby();
-
-            categoryProfile.setSortby(currentLastSortNumber);
-
-            lastCategory.setSortby(currentLastSortNumber+=10);
-            categoryRepository.save(lastCategory);
-        }
-
         Category category = categoryRepository.save(dtoConverter.convertToEntity(categoryProfile, new Category()));
-        log.info("Adding new category = {}", category);
+        log.debug("Adding new category = {}", category);
         return dtoConverter.convertToDto(category, SuccessCreatedCategory.class);
     }
 
-    /**
-     * The method returns list of dto {@code List<CategoryResponse>} of all categories.
-     *
-     * @return new {@code List<CategoryResponse>}.
-     */
     @Override
     public List<CategoryResponse> getAllCategories() {
-        List<CategoryResponse> categoryResponses = categoryRepository.findAll()
+        List<Category> categoryList = categoryRepository.findInSortedOrder();
+
+        List<CategoryResponse> categoryResponses = categoryList
                 .stream()
                 .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
-                .sorted(Comparator.comparing(CategoryResponse::getSortby))
                 .collect(Collectors.toList());
-        log.info("Getting list of categories = {}", categoryResponses);
+        log.debug("Getting list of categories = {}", categoryResponses);
         return categoryResponses;
     }
-
-    /**
-     * The method returns page of dto {@code List<CategoryResponse>} of all categories.
-     *
-     * @return new {@code List<CategoryResponse>}.
-     */
 
     @Override
     public Page<CategoryResponse> getListOfCategories(Pageable pageable) {
@@ -159,13 +110,6 @@ public class CategoryServiceImpl implements CategoryService {
                 categoryResponses.getPageable(), categoryResponses.getTotalElements());
     }
 
-    /**
-     * The method returns dto {@code CategoryResponse} of deleted category by id.
-     *
-     * @param id - put category id.
-     * @return new {@code CategoryResponse}.
-     * @throws DatabaseRepositoryException if category contains foreign keys.
-     */
     @Override
     public CategoryResponse deleteCategoryById(Long id) {
         Category category = getCategoryById(id);
@@ -179,36 +123,30 @@ public class CategoryServiceImpl implements CategoryService {
             throw new DatabaseRepositoryException(CATEGORY_DELETING_ERROR);
         }
 
-        log.info("Category {} was successfully deleted", category);
+        log.debug("Category {} was successfully deleted", category);
         return dtoConverter.convertToDto(category, CategoryResponse.class);
     }
 
-    /**
-     * The method returns list of dto {@code List<SearchPossibleResponse>} of 3 random categories by name.
-     *
-     * @return new {@code List<SearchPossibleResponse>}.
-     */
     @Override
     public List<SearchPossibleResponse> getPossibleCategoryByName(String text) {
-        return categoryRepository.findRandomTop3ByName(text)
+        List<Category> categories = categoryRepository.findRandomTop3ByName(text);
+        if (categories == null) {
+            return Collections.emptyList();
+        }
+        return categories
                 .stream()
-                .map(category -> (SearchPossibleResponse) dtoConverter.convertToDto(category, SearchPossibleResponse.class))
+                .map(category ->
+                        (SearchPossibleResponse) dtoConverter.convertToDto(category, SearchPossibleResponse.class))
                 .collect(Collectors.toList());
     }
 
-    /**
-     * The method returns dto {@code CategoryProfile} of updated category.
-     *
-     * @param categoryProfile - place body of dto {@code CategoryProfile}.
-     * @return new {@code CategoryProfile}.
-     */
     @Override
     public CategoryProfile updateCategory(Long id, CategoryProfile categoryProfile) {
         Category category = getCategoryById(id);
         Category newCategory = dtoConverter.convertToEntity(categoryProfile, category)
                 .withId(id);
 
-        log.info("Updating category by id = {}", newCategory);
+        log.debug("Updating category by id = {}", newCategory);
         return dtoConverter.convertToDto(categoryRepository.save(newCategory), CategoryProfile.class);
     }
 

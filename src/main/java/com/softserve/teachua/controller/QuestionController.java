@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.question.QuestionProfile;
 import com.softserve.teachua.dto.question.QuestionResponse;
@@ -7,6 +8,7 @@ import com.softserve.teachua.model.Question;
 import com.softserve.teachua.service.QuestionService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +42,7 @@ public class QuestionController implements Api {
      * @param questionProfile - object of DTO class
      * @return new {@code QuestionResponse}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/question")
     public QuestionResponse addNews(@RequestBody QuestionProfile questionProfile) {
         return questionService.addQuestion(questionProfile);
@@ -52,6 +55,7 @@ public class QuestionController implements Api {
      * @param questionProfile - put question information here.
      * @return {@code QuestionProfile}
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/question/{id}")
     public QuestionProfile updateNewsById(@PathVariable Long id, @RequestBody QuestionProfile questionProfile) {
         return questionService.updateQuestionById(id, questionProfile);
@@ -63,6 +67,7 @@ public class QuestionController implements Api {
      * @param id - put question id here.
      * @return {@code QuestionProfile}
      */
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/question/{id}")
     public QuestionProfile deleteNews(@PathVariable Long id) {
         return questionService.deleteQuestionById(id);

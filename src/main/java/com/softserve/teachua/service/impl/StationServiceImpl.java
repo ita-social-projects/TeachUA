@@ -49,44 +49,24 @@ public class StationServiceImpl implements StationService {
         this.archiveService = archiveService;
     }
 
-    /**
-     * The method returns dto {@code StationResponse} of Station by id.
-     *
-     * @param id - put station id.
-     * @return new {@code StationResponse}.
-     */
     @Override
     public StationResponse getStationProfileById(Long id) {
         return dtoConverter.convertToDto(getStationById(id), StationResponse.class);
     }
 
-    /**
-     * The method returns entity {@code Station} of station by id.
-     *
-     * @param id - put station id.
-     * @return new {@code Station}.
-     * @throws NotExistException if Station not exists.
-     */
     @Override
     public Station getStationById(Long id) {
         Optional<Station> optionalStation = id == null ? Optional.empty() : getOptionalStationById(id);
         if (!optionalStation.isPresent()) {
             return null;
-//            throw new NotExistException(String.format(STATION_NOT_FOUND_BY_ID, id));
+            // throw new NotExistException(String.format(STATION_NOT_FOUND_BY_ID, id));
         }
 
         Station station = optionalStation.get();
-        log.info("**/getting station by id = " + station);
+        log.debug("**/getting station by id = " + station);
         return station;
     }
 
-    /**
-     * The method returns entity {@code Station} of station by name.
-     *
-     * @param name - put station name.
-     * @return new {@code Station}.
-     * @throws NotExistException if station not exists.
-     */
     @Override
     public Station getStationByName(String name) {
         Optional<Station> optionalStation = getOptionalStationByName(name);
@@ -95,7 +75,7 @@ public class StationServiceImpl implements StationService {
         }
 
         Station station = optionalStation.get();
-        log.info("**/getting city by id = " + station);
+        log.debug("**/getting city by id = " + station);
         return station;
     }
 
@@ -104,13 +84,6 @@ public class StationServiceImpl implements StationService {
         return stationRepository.findByName(name);
     }
 
-    /**
-     * The method returns dto {@code SuccessCreatedStation} if station successfully added.
-     *
-     * @param stationProfile - place place body of dto {@code StationProfile}.
-     * @return new {@code SuccessCreatedStation}.
-     * @throws AlreadyExistException if station already exists.
-     */
     @Override
     public SuccessCreatedStation addStation(StationProfile stationProfile) {
         if (isStationExistByName(stationProfile.getName())) {
@@ -118,15 +91,10 @@ public class StationServiceImpl implements StationService {
         }
         Station station = stationRepository.save(dtoConverter.convertToEntity(stationProfile, new Station())
                 .withCity(cityService.getCityByName(stationProfile.getCityName())));
-        log.info("**/adding new station = " + station);
+        log.debug("**/adding new station = " + station);
         return dtoConverter.convertToDto(station, SuccessCreatedStation.class);
     }
 
-    /**
-     * The method returns list of dto {@code List<StationResponse>} of all stations.
-     *
-     * @return new {@code List<StationResponse>}.
-     */
     @Override
     public List<StationResponse> getListOfStations() {
         List<StationResponse> stationResponses = stationRepository.findAll()
@@ -134,16 +102,10 @@ public class StationServiceImpl implements StationService {
                 .map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of stations = " + stationResponses);
+        log.debug("**/getting list of stations = " + stationResponses);
         return stationResponses;
     }
 
-    /**
-     * The method returns entity {@code Station} of station by id.
-     *
-     * @param name - put city name.
-     * @return new {@code List<StationResponse>}.
-     */
     @Override
     public List<StationResponse> getListOfStationsByCityName(String name) {
         List<StationResponse> stationResponses = stationRepository.findAllByCityName(name)
@@ -151,16 +113,10 @@ public class StationServiceImpl implements StationService {
                 .map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of stations = " + stationResponses);
+        log.debug("**/getting list of stations = " + stationResponses);
         return stationResponses;
     }
 
-    /**
-     * The method returns dto {@code StationProfile} of updated station.
-     *
-     * @param stationProfile - place body of dto {@code StationProfile}.
-     * @return new {@code StationProfile}.
-     */
     @Override
     public StationProfile updateStation(Long id, StationProfile stationProfile) {
         Station station = getStationById(id);
@@ -168,17 +124,10 @@ public class StationServiceImpl implements StationService {
                 .withId(id)
                 .withCity(cityService.getCityByName(stationProfile.getCityName()));
 
-        log.info("**/updating station by id = " + newStation);
+        log.debug("**/updating station by id = " + newStation);
         return dtoConverter.convertToDto(stationRepository.save(newStation), StationProfile.class);
     }
 
-    /**
-     * The method deletes station {@link  Station}
-     *
-     * @param id - id of district to delete
-     * @return StationResponse {@link  StationResponse}.
-     * @throws NotExistException {@link NotExistException} if the station doesn't exist.
-     */
     @Override
     public StationResponse deleteStationById(Long id) {
         Station station = getStationById(id);
@@ -192,7 +141,7 @@ public class StationServiceImpl implements StationService {
             throw new DatabaseRepositoryException(STATION_DELETING_ERROR);
         }
 
-        log.info("station {} was successfully deleted", station);
+        log.debug("station {} was successfully deleted", station);
         return dtoConverter.convertToDto(station, StationResponse.class);
     }
 

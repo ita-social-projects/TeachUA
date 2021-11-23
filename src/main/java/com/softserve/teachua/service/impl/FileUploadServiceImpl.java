@@ -23,11 +23,11 @@ import java.util.List;
 @Service
 @Slf4j
 public class FileUploadServiceImpl implements FileUploadService {
-    private final String FILE_UPLOAD_EXCEPTION = "Could not save image file: %s";
-    private final String DIRECTORY_CREATE_EXCEPTION = "Could not create directory with name: %s";
-    private final String IMAGE_SIZE_EXCEPTION = "Max image size should be %d bytes, your image size is %d bytes";
-    private final String IMAGE_RESOLUTION_EXCEPTION = "Image %s should be more than %d, your image %s is %d";
-    private final String UPLOAD_LOCATION = "/upload";
+    private static final String FILE_UPLOAD_EXCEPTION = "Could not save image file: %s";
+    private static final String DIRECTORY_CREATE_EXCEPTION = "Could not create directory with name: %s";
+    private static final String IMAGE_SIZE_EXCEPTION = "Max image size should be %d bytes, your image size is %d bytes";
+    private static final String IMAGE_RESOLUTION_EXCEPTION = "Image %s should be more than %d, your image %s is %d";
+    private static final String UPLOAD_LOCATION = "/upload";
     private static final String UPLOAD_PLUG = "/upload/test/test.png";
     private static final Long IMAGE_SIZE_MB = 5L;
     private static final Long IMAGE_SIZE_B = IMAGE_SIZE_MB * 1024 * 1024;
@@ -38,19 +38,20 @@ public class FileUploadServiceImpl implements FileUploadService {
     public String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile) {
         Path uploadPath = Paths.get(uploadDir);
 
-        if(multipartFile.getSize() > IMAGE_SIZE_B){
-            throw new IncorrectInputException(String.format(IMAGE_SIZE_EXCEPTION, IMAGE_SIZE_B, multipartFile.getSize()));
+        if (multipartFile.getSize() > IMAGE_SIZE_B) {
+            throw new IncorrectInputException(
+                    String.format(IMAGE_SIZE_EXCEPTION, IMAGE_SIZE_B, multipartFile.getSize()));
         }
 
         try {
             BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
             int width = bufferedImage.getWidth();
             int height = bufferedImage.getHeight();
-            if(width < MIN_IMAGE_WIDTH){
+            if (width < MIN_IMAGE_WIDTH) {
                 throw new IncorrectInputException(
                         String.format(IMAGE_RESOLUTION_EXCEPTION, "width", MIN_IMAGE_WIDTH, "width", width));
             }
-            if(height < MIN_IMAGE_HEIGHT){
+            if (height < MIN_IMAGE_HEIGHT) {
                 throw new IncorrectInputException(
                         String.format(IMAGE_RESOLUTION_EXCEPTION, "height", MIN_IMAGE_HEIGHT, "height", height));
             }
@@ -145,5 +146,4 @@ public class FileUploadServiceImpl implements FileUploadService {
         } while (found < ordinal);
         return index;
     }
-
 }

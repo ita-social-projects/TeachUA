@@ -1,19 +1,17 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
-import com.softserve.teachua.exception.WrongAuthenticationException;
-import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.User;
-import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,7 +30,6 @@ import java.util.List;
 public class ClubController implements Api {
     private static final int CLUBS_PER_PAGE = 8;
     private static final int CLUBS_PER_USER_PAGE = 3;
-
     private final ClubService clubService;
     private final JwtProvider jwtProvider;
 
@@ -52,7 +49,6 @@ public class ClubController implements Api {
     public ClubResponse getClubById(@PathVariable Long id) {
         return clubService.getClubProfileById(id);
     }
-
 
     /**
      * Use this endpoint to get club by name
@@ -77,15 +73,17 @@ public class ClubController implements Api {
 
     /**
      * Use this endpoint to create club.
-     * The controller returns {@code SuccessCreatedClub}.
+     * The controller returns dto {@code SuccessCreatedClub} of created club.
      * @param clubProfile - Place dto with all parameters for adding new club.
      * @return new {@code SuccessCreatedClub}.
      */
+    @AllowedRoles({RoleData.ADMIN, RoleData.USER})
     @PostMapping("/club")
     public SuccessCreatedClub addClub(
             @Valid
-            @RequestBody ClubProfile clubProfile) {
-        return clubService.addClub(clubProfile);
+            @RequestBody ClubProfile clubProfile,
+            HttpServletRequest httpServletRequest) {
+        return clubService.addClub(clubProfile, httpServletRequest);
     }
 
     /**
@@ -100,7 +98,8 @@ public class ClubController implements Api {
 
     /**
      * Use this endpoint to get clubs by id of user-owner with pagination.
-     * The controller returns {@code Page<ClubResponse>}.
+     * The controller returns information {@code Page<ClubResponse>} about clubs by id of user-owner.
+     *
      * @param id - put user id.
      * @return {@code Page<ClubResponse>}.
      */
@@ -120,7 +119,7 @@ public class ClubController implements Api {
      * @return {@code List<ClubResponse>}.
      */
     @GetMapping("/clubs/user/{id}")
-    public List<ClubResponse> getListClubsByUserId(@PathVariable Long id){
+    public List<ClubResponse> getListClubsByUserId(@PathVariable Long id) {
         return clubService.getListClubsByUserId(id);
     }
 
@@ -171,19 +170,14 @@ public class ClubController implements Api {
      * @param clubProfile - Place dto with all parameters for updating existing club.
      * @return new {@code ClubProfile}.
      */
+    @AllowedRoles({RoleData.ADMIN, RoleData.USER})
     @PutMapping("/club/{id}")
     public SuccessUpdatedClub updateClub(
             @PathVariable Long id,
             @Valid
             @RequestBody ClubResponse clubProfile,
-            HttpServletRequest httpServletRequest) throws WrongAuthenticationException{
-        User userFromClub = clubService.getClubById(id).getUser();
-        Long userIdFromRequest = jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest));
-
-        if(userFromClub == null || !userIdFromRequest.equals(userFromClub.getId())){
-            throw new WrongAuthenticationException("A user cannot update club that does not belong to the user");
-        }
-        return clubService.updateClub(id, clubProfile);
+            HttpServletRequest httpServletRequest) {
+        return clubService.updateClub(id, clubProfile, httpServletRequest);
     }
 
     /**
@@ -194,21 +188,15 @@ public class ClubController implements Api {
      * @param clubOwnerProfile - Place dto with all parameters for updating existing club.
      * @return new {@code ClubProfile}.
      */
+    @AllowedRoles({RoleData.ADMIN, RoleData.USER})
     @PatchMapping("/club/{id}")
     public ClubResponse changeClubOwner(
             @PathVariable Long id,
             @Valid
             @RequestBody ClubOwnerProfile clubOwnerProfile,
-            HttpServletRequest httpServletRequest) throws WrongAuthenticationException{
-        User userFromClub = clubService.getClubById(id).getUser();
-        Long userIdFromRequest = jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest));
-
-        if(userFromClub == null || !userIdFromRequest.equals(userFromClub.getId())){
-            throw new WrongAuthenticationException("A user cannot change owner of a club that does not belong to the user");
-        }
-        return clubService.changeClubOwner(id, clubOwnerProfile);
+            HttpServletRequest httpServletRequest) {
+        return clubService.changeClubOwner(id, clubOwnerProfile, httpServletRequest);
     }
-
 
     /**
      * Use this endpoint to delete club by id.
@@ -217,16 +205,23 @@ public class ClubController implements Api {
      * @param id - put club id.
      * @return new {@code ClubResponse}.
      */
+    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @DeleteMapping("/club/{id}")
-    public ClubResponse deleteClub(@PathVariable Long id,
-                                   HttpServletRequest httpServletRequest) throws WrongAuthenticationException {
-        User userFromClub = clubService.getClubById(id).getUser();
-        Long userIdFromRequest = jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest));
+    public ClubResponse deleteClub(
+            @PathVariable Long id,
+            HttpServletRequest httpServletRequest) {
+        return clubService.deleteClubById(id, httpServletRequest);
+    }
 
-        if(userFromClub == null || !userIdFromRequest.equals(userFromClub.getId())){
-            throw new WrongAuthenticationException("A user cannot delete a club that does not belong to the user");
-        }
+    @AllowedRoles(RoleData.ADMIN)
+    @PatchMapping("/clubs/rating")
+    public List<ClubResponse> updateClubsRating() {
+        return clubService.updateRatingForAllClubs();
+    }
 
-        return clubService.deleteClubById(id);
+    @AllowedRoles(RoleData.ADMIN)
+    @GetMapping("/club/updateContacts")
+    public void updateContacts() {
+        clubService.updateContacts();
     }
 }

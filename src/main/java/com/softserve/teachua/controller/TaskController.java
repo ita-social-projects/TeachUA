@@ -1,10 +1,12 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.task.*;
 import com.softserve.teachua.service.TaskService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,6 @@ import java.util.List;
 @Tag(name="task", description="the Task API")
 @SecurityRequirement(name = "api")
 public class TaskController implements Api {
-
     private final TaskService taskService;
 
     @Autowired
@@ -32,6 +33,7 @@ public class TaskController implements Api {
      * @param id - put challenge id here.
      * @return {@code List<TaskPreview>}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/challenge/{id}/tasks")
     public List<TaskPreview> getTasksByChallenge(@PathVariable Long id) {
         return taskService.getTasksByChallengeId(id);
@@ -42,11 +44,11 @@ public class TaskController implements Api {
      * The controller returns {@code List <TaskPreview>}.
      * @return new {@code List<TaskPreview>}
      */
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/tasks")
     public List<TaskPreview> getTasks() {
         return taskService.getListOfTasks();
     }
-
 
     /**
      * Use this endpoint to get full information about task.
@@ -54,6 +56,7 @@ public class TaskController implements Api {
      * @param id - put task id here.
      * @return {@code TaskProfile}
      */
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/challenge/task/{id}")
     public TaskProfile getTask(@PathVariable("id") Long id) {
         return taskService.getTask(id);
@@ -67,6 +70,7 @@ public class TaskController implements Api {
      * @param createTask - put required parameters here.
      * @return {@code SuccessCreatedTask}
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/challenge/{id}/task")
     public SuccessCreatedTask createTask(@PathVariable Long id, @Valid @RequestBody CreateTask createTask) {
         return taskService.createTask(id, createTask);
@@ -80,6 +84,7 @@ public class TaskController implements Api {
      * @param updateTask - put new and old parameters here.
      * @return {@code SuccessUpdatedTask} - shows result of updating task.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/challenge/task/{id}")
     public SuccessUpdatedTask updateTask(@PathVariable Long id, @Valid @RequestBody UpdateTask updateTask) {
         return taskService.updateTask(id, updateTask);
@@ -92,6 +97,7 @@ public class TaskController implements Api {
      * @param id - put task id here.
      * @return {@code TaskProfile} - shows which task was removed.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/challenge/task/{id}")
     public TaskProfile deleteTask(@PathVariable Long id) {
         return taskService.deleteTask(id);

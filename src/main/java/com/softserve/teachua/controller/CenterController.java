@@ -1,16 +1,15 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
-import com.softserve.teachua.dto.club.ClubProfile;
-import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
-import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.service.CenterService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -27,8 +27,6 @@ import java.util.List;
 @SecurityRequirement(name = "api")
 public class CenterController implements Api {
     private static final int CENTERS_PER_USER_PAGE = 9;
-
-
     private final CenterService centerService;
 
     @Autowired
@@ -47,10 +45,9 @@ public class CenterController implements Api {
         return centerService.getCenterByProfileId(id);
     }
 
-
     /**
      * Use this endpoint to get information about centers by id of user-owner with pagination.
-     * The controller returns {@code List<CenterResponse>}.
+     * The controller returns {@code List<CenterResponse>} about centers by id of user-owner.
      * @param id - put user id.
      * @return new {@code Page<CenterResponse>}.
      */
@@ -63,17 +60,18 @@ public class CenterController implements Api {
         return centerService.getCentersByUserId(id, pageable);
     }
 
-
     /**
      * Use this endpoint to create a center.
      * The controller returns {@code SuccessCreatedCenter}.
      * @return new {@code SuccessCreatedCenter}.
      */
+    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @PostMapping("/center")
     public SuccessCreatedCenter addCenter(
             @Valid
-            @RequestBody CenterProfile centerProfile) {
-        return centerService.addCenter(centerProfile);
+            @RequestBody CenterProfile centerProfile,
+            HttpServletRequest httpServletRequest) {
+        return centerService.addCenterRequest(centerProfile, httpServletRequest);
     }
 
     /**
@@ -83,6 +81,7 @@ public class CenterController implements Api {
      * @param centerProfile - put center information here.
      * @return new {@code CenterProfile}.
      */
+    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @PutMapping("/center/{id}")
     public CenterProfile updateCenter(
             @PathVariable Long id,
@@ -113,7 +112,7 @@ public class CenterController implements Api {
             @PageableDefault(
                     value = 6,
                     sort = "id") Pageable pageable) {
-        log.info("===== centerController started ======");
+        log.debug("===== centerController started ======");
         return centerService.getAdvancedSearchCenters(advancedSearchCenterProfile, pageable);
     }
 
@@ -123,10 +122,21 @@ public class CenterController implements Api {
      * @param id - put category id.
      * @return new {@code CenterResponse}.
      */
+    //TODO
+    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @DeleteMapping("/center/{id}")
     public CenterResponse deleteCenter(@PathVariable Long id) {
         return centerService.deleteCenterById(id);
     }
-
-
+  
+    /**
+     * Call this endpoint to update all centers rating.
+     *
+     * @return list of updated centers
+     */
+    @AllowedRoles({RoleData.ADMIN})
+    @PatchMapping("/centers/rating")
+    public List<CenterResponse> updateCentersRating() {
+        return centerService.updateRatingForAllCenters();
+    }
 }

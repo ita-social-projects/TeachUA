@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +32,7 @@ public class UploadController implements Api {
      * @param image - image title.
      * @return new {@code uploadPhoto}.
      */
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/upload-image") @CrossOrigin
     public String uploadPhoto(@RequestParam("image") MultipartFile image,
                               @RequestParam("folder") String folder) {
@@ -46,6 +48,7 @@ public class UploadController implements Api {
      * @param filePath - file path.
      * @return new {@code deleteFile}.
      */
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/delete-file")
     public String deleteFile(@RequestParam("filePath") String filePath) {
         fileUploadServiceImpl.deleteFile(filePath);

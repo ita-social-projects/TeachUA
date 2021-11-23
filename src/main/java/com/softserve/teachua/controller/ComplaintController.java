@@ -9,8 +9,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -66,10 +68,11 @@ public class ComplaintController implements Api {
      * @param complaintProfile - put complaint information here.
      * @return new {@link SuccessCreatedComplaint}
      */
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/complaint")
     public SuccessCreatedComplaint addComplaint(
-            @Valid @RequestBody ComplaintProfile complaintProfile) {
-        return complaintService.addComplaint(complaintProfile);
+            @Valid @RequestBody ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest) {
+        return complaintService.addComplaint(complaintProfile,httpServletRequest);
     }
 
     /**
@@ -79,6 +82,7 @@ public class ComplaintController implements Api {
      * @param complaintProfile Complaint profile with new data
      * @return {@link ComplaintProfile}
      */
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/complaint/{id}")
     public ComplaintProfile updateComplaint(@PathVariable Long id,@Valid @RequestBody ComplaintProfile complaintProfile) {
         return complaintService.updateComplaintProfileById(id, complaintProfile);
@@ -90,6 +94,7 @@ public class ComplaintController implements Api {
      * @param id - put complaint id here.
      * @return {@link ComplaintResponse}
      */
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/complaint/{id}")
     public ComplaintResponse deleteComplaintById(@PathVariable Long id) {
         return complaintService.deleteComplaintById(id);

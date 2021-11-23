@@ -22,7 +22,7 @@ public class GalleryPhoto implements Archivable, Convertible {
     @Column
     private String url;
 
-    @JsonBackReference
+    @JsonBackReference(value = "club")
     @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "club_id", referencedColumnName = "id", nullable = false)

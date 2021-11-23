@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -25,6 +24,7 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
     private static final String ABOUT_US_ITEM_ALREADY_EXIST = "AboutUsItem with number: %s already exist";
     private static final String ABOUT_US_ITEM_NOT_FOUND_BY_ID = "AboutUsItem was not found by id: %s";
     private static final String ABOUT_US_ITEM_NULL_FIELD_ERROR = "AboutUsItem cannot exist without \"%s\"";
+    private static final String WRONG_LINK = "Youtube link should contain 'watch?v='";
     private static final String VIDEO_PARAM = "watch?v=";
     private static final String EMBED_VIDEO_URL = "https://www.youtube.com/embed/";
     private static final Long STEP = 20L;
@@ -64,7 +64,7 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
     public List<AboutUsItemResponse> getListOfAboutUsItemResponses() {
         List<AboutUsItemResponse> aboutUsItemResponses = aboutUsItemRepository.findAllByOrderByNumberAsc()
                 .stream()
-                .map(item -> (AboutUsItemResponse)dtoConverter.convertToDto(item, AboutUsItemResponse.class))
+                .map(item -> (AboutUsItemResponse) dtoConverter.convertToDto(item, AboutUsItemResponse.class))
                 .collect(Collectors.toList());
         return aboutUsItemResponses;
     }
@@ -73,7 +73,7 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
     public AboutUsItemResponse addAboutUsItem(AboutUsItemProfile aboutUsItemProfile) {
         List<AboutUsItem> list = getListOfAboutUsItems();
         long number = 0;
-        if(!list.isEmpty()){
+        if (!list.isEmpty()) {
             number = list.get(list.size() - 1).getNumber() + STEP;
         }
         aboutUsItemProfile.setNumber(number);
@@ -85,11 +85,11 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
     @Override
     public AboutUsItemResponse updateAboutUsItem(Long id, AboutUsItemProfile aboutUsItemProfile) {
         AboutUsItem aboutUsItem = getAboutUsItemById(id);
-        if(aboutUsItemProfile.getNumber() == null){
+        if (aboutUsItemProfile.getNumber() == null) {
             aboutUsItemProfile.setNumber(aboutUsItem.getNumber());
         }
         validateVideoUrl(aboutUsItemProfile);
-        log.info(aboutUsItemProfile.toString());
+        log.debug(aboutUsItemProfile.toString());
         BeanUtils.copyProperties(aboutUsItemProfile, aboutUsItem);
         return dtoConverter.convertToDto(aboutUsItemRepository.save(aboutUsItem), AboutUsItemResponse.class);
     }
@@ -103,37 +103,39 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
     }
 
     @Override
-    public void validateVideoUrl(AboutUsItemProfile aboutUsItemProfile) {
-        String video_url = aboutUsItemProfile.getVideo();
-        if(video_url != null) {
-            int position = video_url.indexOf(VIDEO_PARAM);
-            if(position != -1) {
-                video_url = video_url.substring(position + VIDEO_PARAM.length());
-                int end = video_url.indexOf('&');
-                if(end != -1){
-                    video_url = video_url.substring(0, end);
-                }
-                video_url = EMBED_VIDEO_URL + video_url;
-                aboutUsItemProfile.setVideo(video_url);
-                log.info(video_url);
+    public String validateVideoUrl(AboutUsItemProfile aboutUsItemProfile) {
+        String videoUrl = aboutUsItemProfile.getVideo();
+        if (videoUrl != null) {
+            int position = videoUrl.indexOf(VIDEO_PARAM);
+            if (position == -1) {
+                throw new IllegalArgumentException(WRONG_LINK);
             }
+            videoUrl = videoUrl.substring(position + VIDEO_PARAM.length());
+            int end = videoUrl.indexOf('&');
+            if (end != -1) {
+                videoUrl = videoUrl.substring(0, end);
+            }
+            videoUrl = EMBED_VIDEO_URL + videoUrl;
+            aboutUsItemProfile.setVideo(videoUrl);
+            log.debug(videoUrl);
         }
+        return videoUrl;
     }
 
     @Override
     public void changeOrder(Long id, Long position) {
         List<AboutUsItem> items = getListOfAboutUsItems();
         AboutUsItem item = getAboutUsItemById(id);
-        if(items.size() > 1) {
+        if (items.size() > 1) {
             if (position == items.size() + 1) {
                 item.setNumber(items.get((int) (position - 2)).getNumber() + STEP);
             } else if (position == 1) {
                 Long num = STEP;
-                for (AboutUsItem fItem : items) {
-                    AboutUsItemProfile profile = dtoConverter.convertToDto(fItem, AboutUsItemProfile.class);
+                for (AboutUsItem element : items) {
+                    AboutUsItemProfile profile = dtoConverter.convertToDto(element, AboutUsItemProfile.class);
                     profile.setNumber(num);
                     num += STEP;
-                    updateAboutUsItem(fItem.getId(), profile);
+                    updateAboutUsItem(element.getId(), profile);
                 }
                 item.setNumber(1L);
             } else {
@@ -144,11 +146,11 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
                     item.setNumber(median);
                 } else {
                     Long num = 1L;
-                    for (AboutUsItem fItem : items) {
-                        AboutUsItemProfile profile = dtoConverter.convertToDto(fItem, AboutUsItemProfile.class);
+                    for (AboutUsItem element : items) {
+                        AboutUsItemProfile profile = dtoConverter.convertToDto(element, AboutUsItemProfile.class);
                         profile.setNumber(num);
                         num += STEP;
-                        updateAboutUsItem(fItem.getId(), profile);
+                        updateAboutUsItem(element.getId(), profile);
                     }
                     up = items.get((int) (position - 1)).getNumber();
                     down = items.get(position.intValue()).getNumber();

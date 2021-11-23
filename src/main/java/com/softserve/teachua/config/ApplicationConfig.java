@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @Configuration
 @ComponentScan(basePackages = { "com.softserve.teachua.controller"})
 public class ApplicationConfig {
+
 	private static final String UPLOAD_LOCATION = "/upload/";
 	private static final String STATIC_LOCATION = "/static/";
 	private static final String API_LOCATION = "/api/";
@@ -66,3 +67,4 @@ public class ApplicationConfig {
 	}
 
 }
+

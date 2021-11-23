@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.contactType.ContactTypeProfile;
 import com.softserve.teachua.dto.contactType.ContactTypeResponse;
@@ -8,6 +9,7 @@ import com.softserve.teachua.model.ContactType;
 import com.softserve.teachua.service.ContactTypeService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +20,6 @@ import java.util.List;
 @Tag(name="contact", description="the Contact API")
 @SecurityRequirement(name = "api")
 public class ContactTypeController implements Api {
-
     private final ContactTypeService contactTypeService;
 
     @Autowired
@@ -43,6 +44,7 @@ public class ContactTypeController implements Api {
      * @param contactTypeProfile - put contact type info here.
      * @return new {@code SuccessCreatedContactType}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/contact-type")
     public SuccessCreatedContactType addContactType(@Valid @RequestBody ContactTypeProfile contactTypeProfile) {
         return contactTypeService.addContactType(contactTypeProfile);
@@ -55,8 +57,11 @@ public class ContactTypeController implements Api {
      * @param contactTypeProfile - put contact type info here.
      * @return {@code ContactTypeProfile}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/contact-type/{id}")
-    public ContactTypeProfile updateContactType(@PathVariable Long id, @Valid @RequestBody ContactTypeProfile contactTypeProfile) {
+    public ContactTypeProfile updateContactType(
+            @PathVariable Long id,
+            @Valid @RequestBody ContactTypeProfile contactTypeProfile) {
         return contactTypeService.updateContactType(id, contactTypeProfile);
     }
 
@@ -66,6 +71,7 @@ public class ContactTypeController implements Api {
      * @param id - put id here.
      * @return {@code ContactTypeResponse}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/contact-type/{id}")
     public ContactTypeResponse deleteContactType(@PathVariable Long id) {
         return contactTypeService.deleteContactTypeById(id);

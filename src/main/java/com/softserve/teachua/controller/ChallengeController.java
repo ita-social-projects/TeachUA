@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.challenge.*;
 import com.softserve.teachua.service.ChallengeService;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +23,6 @@ import java.util.List;
 @Tag(name="challenge", description="the Challenge API")
 @SecurityRequirement(name = "api")
 public class ChallengeController implements Api {
-
     private final ChallengeService challengeService;
 
     @Autowired
@@ -43,6 +44,7 @@ public class ChallengeController implements Api {
 
     /**
      * Use this endpoint to get full information about challenge by its id with tasks that have already begun.
+     * Only the admin can get the challenge if it is not active.
      * The controller returns {@code ChallengeProfile}.
      * @param id - put challenge id here.
      * @return {@code ChallengeProfile}.
@@ -60,6 +62,7 @@ public class ChallengeController implements Api {
      * @param httpServletRequest - autowired by spring to get user from request.
      * @return {@code SuccessCreatedChallenge}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/challenge")
     public SuccessCreatedChallenge createChallenge(
             @Valid @RequestBody CreateChallenge createChallenge,
@@ -76,6 +79,7 @@ public class ChallengeController implements Api {
      * @param updateChallenge - put new and old parameters here.
      * @return {@code SuccessUpdatedChallenge} - shows result of updating challenge.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/challenge/{id}")
     public SuccessUpdatedChallenge updateChallenge(
             @PathVariable Long id,
@@ -91,6 +95,7 @@ public class ChallengeController implements Api {
      * @param id - put challenge id here.
      * @return {@code ChallengeDeleteResponse} - shows which challenge and tasks was removed.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/challenge/{id}")
     public ChallengeDeleteResponse deleteChallenge(@PathVariable Long id) {
         return challengeService.deleteChallenge(id);
@@ -101,15 +106,15 @@ public class ChallengeController implements Api {
      * The controller returns {@code SuccessUpdateChallengePreview}.
      * This feature available only for admins.
      *
-     * @param id - put challenge id here.
+     * @param id                     - put challenge id here.
      * @param updateChallengePreview - put new and old parameters here.
      * @return {@code SuccessUpdateChallengePreview} - shows result of updating challenge.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PatchMapping("/challenge/{id}")
     public SuccessUpdateChallengePreview updateChallengePreview(
             @PathVariable Long id,
             @Valid @RequestBody SuccessUpdateChallengePreview updateChallengePreview) {
         return challengeService.updateChallengePreview(id, updateChallengePreview);
     }
-
 }

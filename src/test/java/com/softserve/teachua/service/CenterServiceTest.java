@@ -1,6 +1,7 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.converter.CenterToCenterResponseConverter;
+import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
@@ -25,20 +26,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CenterServiceTest {
-
     private static final Long CORRECT_CENTER_ID = 1L;
     private static final Long WRONG_CENTER_ID = 1000L;
     private static final List<Long> CLUBS_ID = new LinkedList<>();
     private static final Set<Club> CLUBS = new HashSet<>();
+    private static final Long CORRECT_LOCATION_ID = 1l;
+    private static final Long CLUB_ID = 1l;
     @Mock
     private CenterRepository centerRepository;
     @Mock
@@ -57,6 +61,10 @@ public class CenterServiceTest {
     private ArchiveService archiveService;
     @Mock
     private CenterToCenterResponseConverter centerToCenterResponseConverter;
+    @Mock
+    private UserService userService;
+    @Mock
+    private CoordinatesConverter coordinatesConverter;
     @InjectMocks
     private CenterServiceImpl centerService;
     private Center correctCenter;
@@ -64,13 +72,14 @@ public class CenterServiceTest {
     private CenterProfile centerProfile;
     private Center createCenter;
     private SuccessCreatedCenter successCreatedCenter;
+    private HttpServletRequest httpServletRequest;
+    private Club club;
 
     @BeforeAll
     public static void setUp() {
         CLUBS_ID.add(1L);
-        CLUBS_ID.add(2L);
+
         CLUBS.add(Club.builder().id(1L).build());
-        CLUBS.add(Club.builder().id(2L).build());
     }
 
     @BeforeEach
@@ -110,6 +119,8 @@ public class CenterServiceTest {
                 .id(1L)
                 .name(centerProfile.getName())
                 .build();
+        club = Club.builder()
+                .id(CLUB_ID).build();
     }
 
     @Test
@@ -136,25 +147,25 @@ public class CenterServiceTest {
     }
 
     private void setAddCenterMocks() {
-        when(userRepository.getOne(1L)).thenReturn(new User());
         when(centerRepository.save(any(Center.class)))
                 .thenReturn(createCenter);
         when(dtoConverter.convertToEntity(any(CenterProfile.class), any(Center.class)))
                 .thenReturn(new Center());
-        when(clubService.getClubById(any())).thenReturn(new Club());
         when(dtoConverter.convertToDto(createCenter, SuccessCreatedCenter.class)).thenReturn(successCreatedCenter);
+        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(new User());
+        when(clubRepository.findById(1l)).thenReturn(Optional.of(club));
     }
 
     @Test
     public void addCenterShouldReturnSuccessCreatedCenterWithUserAndWithoutLocations() {
         setAddCenterMocks();
-        assertThat(centerService.addCenter(centerProfile)).isEqualTo(successCreatedCenter);
+        assertThat(centerService.addCenterRequest(centerProfile, httpServletRequest)).isEqualTo(successCreatedCenter);
     }
 
     @Test
     public void addCenterShouldReturnSuccessCreatedCenterWithUserAndLocations() {
-        LocationProfile locationProfile = LocationProfile.builder().id(1L).name("Location").build();
-        Location location = Location.builder().id(1L).name(locationProfile.getName()).center(createCenter).build();
+        LocationProfile locationProfile = LocationProfile.builder().build();
+        Location location = Location.builder().id(1L).center(createCenter).build();
         Set<Location> locations = new HashSet<>();
         locations.add(location);
         centerProfile.setLocations(Collections.singletonList(locationProfile));
@@ -164,13 +175,15 @@ public class CenterServiceTest {
         when(dtoConverter.convertToEntity(locationProfile, new Location())).thenReturn(location);
         when(locationRepository.save(location)).thenReturn(location);
         when(cityService.getCityByName(null)).thenReturn(null);
-        assertThat(centerService.addCenter(centerProfile)).isEqualTo(successCreatedCenter);
+        assertThat(centerService.addCenterRequest(centerProfile, httpServletRequest)).isEqualTo(successCreatedCenter);
     }
 
     @Test
     public void addCenterShouldThrowAlreadyExistExceptionWhenCenterExist() {
         when(centerRepository.existsByName(centerProfile.getName())).thenReturn(true);
-        AlreadyExistException exception = assertThrows(AlreadyExistException.class, () -> centerService.addCenter(centerProfile));
+        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(User.builder().build());
+        AlreadyExistException exception = assertThrows(AlreadyExistException.class, ()
+                -> centerService.addCenterRequest(centerProfile, httpServletRequest));
         assertThat(exception.getMessage()).contains(centerProfile.getName());
     }
 
@@ -190,6 +203,4 @@ public class CenterServiceTest {
         AlreadyExistException exception = assertThrows(AlreadyExistException.class, () -> centerService.updateCenter(1L, centerProfile));
         assertThat(exception.getMessage()).contains(centerProfile.getName());
     }
-
-
 }

@@ -62,7 +62,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         " to log in.");
             }
             user = updateExistingUser(user, oAuth2UserInfo);
-            log.info("Successfull log in user - " + user);
+            log.debug("Successfull log in user - " + user);
         } else {
             user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
         }

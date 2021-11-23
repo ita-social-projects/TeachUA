@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
@@ -7,6 +8,7 @@ import com.softserve.teachua.dto.category.SuccessCreatedCategory;
 import com.softserve.teachua.service.CategoryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,7 +24,6 @@ import java.util.List;
 @Tag(name="category", description="the Category API")
 @SecurityRequirement(name = "api")
 public class CategoryController implements Api {
-
     private CategoryService categoryService;
 
     @Autowired
@@ -55,10 +56,11 @@ public class CategoryController implements Api {
      * Use this endpoint to get result of the categories search with pagination.
      * The controller returns {@code Page<CategoryResponse>}.
      * @return {@code Page<CategoryResponse>} - all Categories with pagination.
+     * @param pageable - put pageable parameters as request parameters.
      */
     @GetMapping("/categories/search")
     public Page<CategoryResponse> getListOfCategories(
-            @PageableDefault(value = 4,sort = "id") Pageable pageable) {
+            @PageableDefault(value = 4, sort = "id") Pageable pageable) {
         return categoryService.getListOfCategories(pageable);
     }
 
@@ -68,6 +70,7 @@ public class CategoryController implements Api {
      * @param categoryProfile - Place dto with all parameters for adding new category.
      * @return new {@code SuccessCreatedCategory}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/category")
     public SuccessCreatedCategory addCategory(
             @Valid
@@ -82,6 +85,7 @@ public class CategoryController implements Api {
      * @param categoryProfile - put dto with all parameters here.
      * @return {@code CategoryProfile}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/category/{id}")
     public CategoryProfile updateCategory(
             @PathVariable Long id,
@@ -96,6 +100,7 @@ public class CategoryController implements Api {
      * @param id - put category id.
      * @return {@code CategoryResponse}.
      */
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/category/{id}")
     public CategoryResponse deleteCategory(@PathVariable("id") Long id) {
         return categoryService.deleteCategoryById(id);

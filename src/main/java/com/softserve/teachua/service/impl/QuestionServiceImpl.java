@@ -34,18 +34,13 @@ public class QuestionServiceImpl implements QuestionService {
     private final ArchiveService archiveService;
 
     @Autowired
-    QuestionServiceImpl(QuestionRepository questionRepository, DtoConverter dtoConverter, ArchiveService archiveService) {
+    QuestionServiceImpl(QuestionRepository questionRepository, DtoConverter dtoConverter,
+                        ArchiveService archiveService) {
         this.questionRepository = questionRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
     }
 
-    /**
-     * Method find {@link Question}
-     *
-     * @param id - place question id
-     * @return Question
-     */
     @Override
     public Question getQuestionById(Long id) {
         Optional<Question> optionalQuestion = getOptionalQuestionById(id);
@@ -54,17 +49,10 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         Question question = optionalQuestion.get();
-        log.info("get question by id - " + question);
+        log.debug("get question by id - " + question);
         return question;
     }
 
-    /**
-     * The method returns dto {@code QuestionResponse} if question successfully added.
-     *
-     * @param questionProfile - place dto with all params.
-     * @return new {@code QuestionResponse}.
-     * @throws AlreadyExistException if question already exists.
-     */
     @Override
     public QuestionResponse addQuestion(QuestionProfile questionProfile) {
         if (isQuestionExistByTitle(questionProfile.getTitle())) {
@@ -72,34 +60,20 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         Question question = questionRepository.save(dtoConverter.convertToEntity(questionProfile, new Question()));
-        log.info("**/adding new question = " + question);
+        log.debug("**/adding new question = " + question);
         return dtoConverter.convertToDto(question, QuestionResponse.class);
     }
 
-    /**
-     * The method returns dto {@code QuestionProfile} of updated question.
-     *
-     * @param id              - put question id
-     * @param questionProfile - place body of dto {@code QuestionProfile}.
-     * @return new {@code QuestionProfile}.
-     */
     @Override
     public QuestionProfile updateQuestionById(Long id, QuestionProfile questionProfile) {
         Question question = getQuestionById(id);
         Question newQuestion = dtoConverter.convertToEntity(questionProfile, question)
                 .withId(id);
-        log.info("**/updating question by id = " + newQuestion);
+        log.debug("**/updating question by id = " + newQuestion);
 
         return dtoConverter.convertToDto(questionRepository.save(newQuestion), QuestionProfile.class);
     }
 
-    /**
-     * The method returns dto {@code QuestionProfile} of deleted question by id.
-     *
-     * @param id - put question id
-     * @return new {@code QuestionProfile}.
-     * @throws DatabaseRepositoryException if question contain foreign keys.
-     */
     @Override
     public QuestionProfile deleteQuestionById(Long id) {
         Question deletedQuestion = getQuestionById(id);
@@ -113,15 +87,10 @@ public class QuestionServiceImpl implements QuestionService {
             throw new DatabaseRepositoryException(QUESTION_DELETING_ERROR);
         }
 
-        log.info("question {} was successfully deleted", deletedQuestion);
+        log.debug("question {} was successfully deleted", deletedQuestion);
         return dtoConverter.convertToDto(deletedQuestion, QuestionProfile.class);
     }
 
-    /**
-     * The method returns list of dto {@code List<QuestionResponse>} of all questions.
-     *
-     * @return new {@code List<QuestionResponse>}.
-     */
     @Override
     public List<QuestionResponse> getAllQuestions() {
         List<QuestionResponse> questionResponses = questionRepository.findAll()
@@ -129,7 +98,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .map(question -> (QuestionResponse) dtoConverter.convertToDto(question, QuestionResponse.class))
                 .collect(Collectors.toList());
 
-        log.info("**/getting list of questions = " + questionResponses);
+        log.debug("**/getting list of questions = " + questionResponses);
 
         return questionResponses;
     }
