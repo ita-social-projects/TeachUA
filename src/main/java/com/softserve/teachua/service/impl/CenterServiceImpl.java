@@ -32,7 +32,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +47,6 @@ public class CenterServiceImpl implements CenterService {
     private static final String CENTER_NOT_FOUND_BY_NAME = "Center not found by name: %s";
     private static final String CENTER_DELETING_ERROR = "Can't delete center cause of relationship";
     private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
-
     private final LocationService locationService;
     private final CenterRepository centerRepository;
     private final ArchiveService archiveService;
@@ -58,8 +60,7 @@ public class CenterServiceImpl implements CenterService {
     private final UserService userService;
     private final CenterToCenterResponseConverter centerToCenterResponseConverter;
     private final CoordinatesConverter coordinatesConverter;
-
-
+  
     @Autowired
     public CenterServiceImpl(LocationService locationService, CenterRepository centerRepository,
                              ArchiveService archiveService,
@@ -108,7 +109,6 @@ public class CenterServiceImpl implements CenterService {
             log.debug("CenterServiceImpl=> centerProfile.userId == null");
         }
 
-
         Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
                 .withUser(user));
 
@@ -133,6 +133,7 @@ public class CenterServiceImpl implements CenterService {
         }
 
         List<Long> clubsId = centerProfile.getClubsId();
+      
         if (clubsId != null && !clubsId.isEmpty()) {
             for (Long id : clubsId) {
                 Club club = clubRepository.findById(id)
@@ -208,7 +209,6 @@ public class CenterServiceImpl implements CenterService {
     @Override
     public CenterResponse deleteCenterById(Long id) {
         Center center = getCenterById(id);
-
 
         archiveService.saveModel(center);
 
