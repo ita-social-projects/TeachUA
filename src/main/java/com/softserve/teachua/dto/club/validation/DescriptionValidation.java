@@ -1,18 +1,14 @@
 package com.softserve.teachua.dto.club.validation;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.exception.IncorrectInputException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.List;
 
 @Slf4j
 public class DescriptionValidation implements ConstraintValidator<ClubDescription, String> {
@@ -42,17 +38,17 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
         try {
             Description descriptionClub = objectMapper.readValue(s, Description.class);
 
-            String text = "";
+            StringBuilder text = new StringBuilder("");
 
             for(Block block : descriptionClub.blocks){
-                text += block.text;
+                text.append(block.text);
             }
 
-            if(!text.matches("^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+$")){
+            if(!text.toString().matches("^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+$")){
                 throw new IncorrectInputException("Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи");
             }
 
-            if (!text.matches("^[^эЭъЪыЫёЁ]+$")) {
+            if (!text.toString().matches("^[^эЭъЪыЫёЁ]+$")) {
                 throw new IncorrectInputException("Опис гуртка не може містити російські літери");
             }
 
