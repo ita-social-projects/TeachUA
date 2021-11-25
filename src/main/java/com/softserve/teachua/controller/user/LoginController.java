@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * This controller is for managing the login process.
+ * */
+
 @RestController
-@Tag(name="login", description="the Login API")
+@Tag(name = "login", description = "the Login API")
 @SecurityRequirement(name = "api")
 public class LoginController implements Api {
     private final UserService userService;

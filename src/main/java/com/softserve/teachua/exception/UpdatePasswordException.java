@@ -7,8 +7,7 @@ package com.softserve.teachua.exception;
  *
  * @author Klymus Roman
  */
-public class UpdatePasswordException extends IllegalArgumentException{
-
+public class UpdatePasswordException extends IllegalArgumentException {
     public UpdatePasswordException(String s) {
         super(s);
     }

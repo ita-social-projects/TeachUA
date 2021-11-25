@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * This controller is for managing the password.
+ * */
+
 @RestController
-@Tag(name="password", description="the Password API")
+@Tag(name = "password", description = "the Password API")
 @SecurityRequirement(name = "api")
 public class PasswordController implements Api {
     private final UserService userService;
@@ -27,6 +31,7 @@ public class PasswordController implements Api {
     /**
      * Use this endpoint to create new password for signed-in users.
      * The controller returns {@code UserVerifyPassword}.
+     *
      * @param userLogin - dto with all params.
      * @return new {@code UserVerifyPassword}.
      */

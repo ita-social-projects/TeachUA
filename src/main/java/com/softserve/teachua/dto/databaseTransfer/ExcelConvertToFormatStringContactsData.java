@@ -1,23 +1,20 @@
 package com.softserve.teachua.dto.databaseTransfer;
 
-
 import org.springframework.stereotype.Component;
 
 @Component
 public class ExcelConvertToFormatStringContactsData {
-
-    public String collectAllContactsData(String siteUrlField, String phoneField){
-
+    public String collectAllContactsData(String siteUrlField, String phoneField) {
         return parseSiteUrlCell(siteUrlField)
-                .concat(parsePhoneCell( phoneField ));
+                .concat(parsePhoneCell(phoneField));
     }
 
-    private String parsePhoneCell(String phoneRow){
+    private String parsePhoneCell(String phoneRow) {
         String formattedData = phoneRow.replaceAll(" ", "");
-        String [] phones = formattedData.split("[,;]");
+        String[] phones = formattedData.split("[,;]");
 
         StringBuilder builder = new StringBuilder("");
-        for(String phone : phones){
+        for (String phone : phones) {
             builder.append("1::");
             builder.append(phone);
             builder.append(", ");
@@ -25,20 +22,19 @@ public class ExcelConvertToFormatStringContactsData {
         return builder.toString();
     }
 
-    private String parseSiteUrlCell(String siteUrl){
-
+    private String parseSiteUrlCell(String siteUrl) {
         StringBuilder builder = new StringBuilder("");
 
         String formattedData = siteUrl.replaceAll(" ", "");
 
-        String [] siteUrls = formattedData.split("[,;]");
+        String[] siteUrls = formattedData.split("[,;]");
 
         for (String url : siteUrls) {
-            if(url.contains("facebook")){
+            if (url.contains("facebook")) {
                 builder.append("2::");
                 builder.append(url);
                 builder.append(", ");
-            }else{
+            } else {
                 builder.append("6::");
                 builder.append(url);
                 builder.append(", ");

@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "tasks")
 public class Task implements Convertible, Archivable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

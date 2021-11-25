@@ -9,7 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class AdvancedSearchClubProfile {
-  
     private Integer age;
 
     @Nullable
@@ -25,5 +24,4 @@ public class AdvancedSearchClubProfile {
     private List<String> categoriesName;
 
     private Boolean isOnline;
-
 }

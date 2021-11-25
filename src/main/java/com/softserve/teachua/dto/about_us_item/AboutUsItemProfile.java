@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @Builder
 public class AboutUsItemProfile implements Convertible {
-
     private String text;
 
     private String picture;
@@ -24,5 +23,4 @@ public class AboutUsItemProfile implements Convertible {
     private Long type;
 
     private Long number;
-
 }

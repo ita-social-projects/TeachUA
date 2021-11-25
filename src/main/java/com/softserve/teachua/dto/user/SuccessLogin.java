@@ -9,9 +9,7 @@ import lombok.*;
 @With
 @Data
 public class SuccessLogin implements Convertible {
-
     private Long id;
     private String email;
     private String accessToken;
-
 }

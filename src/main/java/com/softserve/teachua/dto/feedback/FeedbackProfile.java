@@ -17,12 +17,12 @@ public class FeedbackProfile implements Convertible {
     private Long id;
 
     @NotNull(message = "cannot be null")
-    @Min( value = 0,message = "Rate cannot be  less than 0")
-    @Max(value = 5,message = "Rate cannot be more than 5 ")
+    @Min(value = 0, message = "Rate cannot be  less than 0")
+    @Max(value = 5, message = "Rate cannot be more than 5 ")
     private Float rate;
 
     @CheckRussian
-    @Size(min = 10,max = 1500,message = " should be between 10 and 1500 symbols")
+    @Size(min = 10, max = 1500, message = " should be between 10 and 1500 symbols")
     private String text;
 
     @NotNull(message = "cannot be null")

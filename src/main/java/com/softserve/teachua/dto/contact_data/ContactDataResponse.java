@@ -12,9 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ContactDataResponse implements Convertible {
-
     private ContactType contactType;
 
-    private String contact_data;
-
+    private String contactData;
 }

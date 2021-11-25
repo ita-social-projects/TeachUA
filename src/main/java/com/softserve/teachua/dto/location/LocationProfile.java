@@ -19,7 +19,7 @@ public class LocationProfile {
     private Long id;
 
     @NotBlank
-    @Size(min=5, max=100, message = "Length should be between 5 and 100 chars")
+    @Size(min = 5, max = 100, message = "Length should be between 5 and 100 chars")
     @CheckRussian
     private String name;
 
@@ -51,6 +51,6 @@ public class LocationProfile {
 
     @NotNull(message = "number cannot be null")
     @NotBlank(message = "number cannot be blank")
-    @Pattern(regexp = "[\\d]{9}",message = "Incorrect phone Number")
-    private  String phone;
+    @Pattern(regexp = "[\\d]{9}", message = "Incorrect phone Number")
+    private String phone;
 }

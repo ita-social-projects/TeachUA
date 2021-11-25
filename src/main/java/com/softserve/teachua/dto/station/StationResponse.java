@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class StationResponse implements Convertible {
-
     private Long id;
 
     private String name;

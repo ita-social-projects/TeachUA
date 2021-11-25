@@ -18,17 +18,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @RequestMapping("/api")
 @CrossOrigin
-@OpenAPIDefinition(info = @Info(title = "Teach UA API", description = "API for major TeachUA endpoints. For DataTransfer and Logs endpoints, please contact dev team.", version = "v0.1"),
+@OpenAPIDefinition(info = @Info(title = "Teach UA API",
+        description = "API for major TeachUA endpoints. For DataTransfer and Logs endpoints, please contact dev team.",
+        version = "v0.1"),
         servers = {
-            @Server(
-                    description = "localhost",
-                    url = "http://localhost:8080/dev"
-            ),
-            @Server(
-                    description = "dev server",
-                    url = "https://speak-ukrainian.org.ua/dev/"
-            )
-    }
+                @Server(
+                        description = "localhost",
+                        url = "http://localhost:8080/dev"
+                ),
+                @Server(
+                        description = "dev server",
+                        url = "https://speak-ukrainian.org.ua/dev/"
+                )
+        }
 )
 @SecurityScheme(
         name = "api",

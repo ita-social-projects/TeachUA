@@ -11,7 +11,6 @@ import java.io.IOException;
 
 @Slf4j
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
-
     @Override
     public void commence(HttpServletRequest httpServletRequest,
                          HttpServletResponse httpServletResponse,
@@ -20,5 +19,4 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                 e.getLocalizedMessage());
     }
-
 }

@@ -17,7 +17,6 @@ import java.time.LocalDate;
 @Builder
 @Table(name = "news")
 public class News implements Convertible, Archivable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,5 +41,4 @@ public class News implements Convertible, Archivable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ToString.Exclude
     private User user;
-
 }

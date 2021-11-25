@@ -13,7 +13,6 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 @Data
 public class ContactTypeProfile implements Convertible {
-
     private Long id;
 
     @NotEmpty

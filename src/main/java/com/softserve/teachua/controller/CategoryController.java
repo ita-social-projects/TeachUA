@@ -19,9 +19,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * This controller is for managing the categories.
+ * */
+
 @RestController
 @Slf4j
-@Tag(name="category", description="the Category API")
+@Tag(name = "category", description = "the Category API")
 @SecurityRequirement(name = "api")
 public class CategoryController implements Api {
     private CategoryService categoryService;
@@ -34,6 +38,7 @@ public class CategoryController implements Api {
     /**
      * Use this endpoint to get information on a specific category.
      * The controller returns {@code CategoryResponse}.
+     *
      * @param id - put category id.
      * @return {@code CategoryResponse}.
      */
@@ -45,6 +50,7 @@ public class CategoryController implements Api {
     /**
      * Use this endpoint to get information on all categories.
      * The controller returns {@code List<CategoryResponse>}.
+     *
      * @return {@code CategoryResponse}.
      */
     @GetMapping("/categories")
@@ -55,8 +61,9 @@ public class CategoryController implements Api {
     /**
      * Use this endpoint to get result of the categories search with pagination.
      * The controller returns {@code Page<CategoryResponse>}.
-     * @return {@code Page<CategoryResponse>} - all Categories with pagination.
+     *
      * @param pageable - put pageable parameters as request parameters.
+     * @return {@code Page<CategoryResponse>} - all Categories with pagination.
      */
     @GetMapping("/categories/search")
     public Page<CategoryResponse> getListOfCategories(
@@ -67,6 +74,7 @@ public class CategoryController implements Api {
     /**
      * Use this endpoint to create a category.
      * The controller returns {@code SuccessCreatedCategory}.
+     *
      * @param categoryProfile - Place dto with all parameters for adding new category.
      * @return new {@code SuccessCreatedCategory}.
      */
@@ -81,7 +89,8 @@ public class CategoryController implements Api {
     /**
      * Use this endpoint to update the category by id.
      * The controller returns {@code  CategoryProfile}.
-     * @param id - put Category id here.
+     *
+     * @param id              - put Category id here.
      * @param categoryProfile - put dto with all parameters here.
      * @return {@code CategoryProfile}.
      */
@@ -97,6 +106,7 @@ public class CategoryController implements Api {
     /**
      * Use this endpoint to archive a category by id.
      * The controller returns {@code CategoryResponse}.
+     *
      * @param id - put category id.
      * @return {@code CategoryResponse}.
      */

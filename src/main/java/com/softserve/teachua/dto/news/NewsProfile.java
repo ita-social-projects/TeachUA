@@ -17,7 +17,6 @@ import java.time.LocalDate;
 @Builder
 @Data
 public class NewsProfile implements Convertible {
-
     @NotBlank(message = "title cannot be empty")
     @CheckRussian
     @Size(min = 10, max = 1500, message = "title should be between 10 and 1500 chars")
@@ -35,5 +34,4 @@ public class NewsProfile implements Convertible {
     @NotNull
     @Pattern(regexp = "^true$|^false$", message = "allowed input: true or false")
     private Boolean isActive;
-
 }

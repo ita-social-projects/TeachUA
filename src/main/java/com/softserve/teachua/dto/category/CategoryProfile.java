@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 @With
 @Builder
 public class CategoryProfile implements Convertible {
-
     private Long id;
 
     @NotNull

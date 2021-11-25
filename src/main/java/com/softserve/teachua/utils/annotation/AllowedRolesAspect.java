@@ -26,8 +26,8 @@ public class AllowedRolesAspect {
                 .getAnnotation(AllowedRoles.class).value()).collect(Collectors.toSet());
         log.debug("Allowed roles: {}", roles);
         HttpServletRequest httpServletRequest = getRequest();
-        for(RoleData role : roles){
-            if(httpServletRequest.isUserInRole(role.getDBRoleName())){
+        for (RoleData role : roles) {
+            if (httpServletRequest.isUserInRole(role.getDBRoleName())) {
                 return jp.proceed();
             }
         }

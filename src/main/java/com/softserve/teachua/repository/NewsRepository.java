@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
- * Provides an interface to manage {@link News} model
+ * Provides an interface to manage {@link News} model.
  */
 @Repository
 public interface NewsRepository extends JpaRepository<News, Long> {
