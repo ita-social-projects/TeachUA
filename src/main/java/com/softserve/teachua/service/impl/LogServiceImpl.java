@@ -14,13 +14,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class LogServiceImpl implements LogService {
-
     @Value(value = "${logging.file.path}")
-    private String PATH;
+    private String path;
 
     @Override
     public List<String> getAllLogs() {
-        return FileUtils.listFiles(new File(PATH), null, false)
+        return FileUtils.listFiles(new File(path), null, false)
                 .stream()
                 .map(File::getName)
                 .collect(Collectors.toList());
@@ -31,7 +30,7 @@ public class LogServiceImpl implements LogService {
         List<String> result = new ArrayList<>();
 
         try {
-            result = FileUtils.readLines(new File(PATH + "/" + name), StandardCharsets.UTF_8);
+            result = FileUtils.readLines(new File(path + "/" + name), StandardCharsets.UTF_8);
             for (String s : result) {
                 s += "\\n";
             }
@@ -45,7 +44,7 @@ public class LogServiceImpl implements LogService {
     @Override
     public Boolean deleteAllLogs() {
         try {
-            FileUtils.cleanDirectory(new File(PATH));
+            FileUtils.cleanDirectory(new File(path));
             return true;
         } catch (IOException e) {
             e.printStackTrace();

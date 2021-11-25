@@ -34,18 +34,13 @@ public class QuestionServiceImpl implements QuestionService {
     private final ArchiveService archiveService;
 
     @Autowired
-    QuestionServiceImpl(QuestionRepository questionRepository, DtoConverter dtoConverter, ArchiveService archiveService) {
+    QuestionServiceImpl(QuestionRepository questionRepository, DtoConverter dtoConverter,
+                        ArchiveService archiveService) {
         this.questionRepository = questionRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
     }
 
-    /**
-     * Method find {@link Question}
-     *
-     * @param id - place question id
-     * @return Question
-     */
     @Override
     public Question getQuestionById(Long id) {
         Optional<Question> optionalQuestion = getOptionalQuestionById(id);
@@ -58,13 +53,6 @@ public class QuestionServiceImpl implements QuestionService {
         return question;
     }
 
-    /**
-     * The method returns dto {@code QuestionResponse} if question successfully added.
-     *
-     * @param questionProfile - place dto with all params.
-     * @return new {@code QuestionResponse}.
-     * @throws AlreadyExistException if question already exists.
-     */
     @Override
     public QuestionResponse addQuestion(QuestionProfile questionProfile) {
         if (isQuestionExistByTitle(questionProfile.getTitle())) {
@@ -76,13 +64,6 @@ public class QuestionServiceImpl implements QuestionService {
         return dtoConverter.convertToDto(question, QuestionResponse.class);
     }
 
-    /**
-     * The method returns dto {@code QuestionProfile} of updated question.
-     *
-     * @param id              - put question id
-     * @param questionProfile - place body of dto {@code QuestionProfile}.
-     * @return new {@code QuestionProfile}.
-     */
     @Override
     public QuestionProfile updateQuestionById(Long id, QuestionProfile questionProfile) {
         Question question = getQuestionById(id);
@@ -93,13 +74,6 @@ public class QuestionServiceImpl implements QuestionService {
         return dtoConverter.convertToDto(questionRepository.save(newQuestion), QuestionProfile.class);
     }
 
-    /**
-     * The method returns dto {@code QuestionProfile} of deleted question by id.
-     *
-     * @param id - put question id
-     * @return new {@code QuestionProfile}.
-     * @throws DatabaseRepositoryException if question contain foreign keys.
-     */
     @Override
     public QuestionProfile deleteQuestionById(Long id) {
         Question deletedQuestion = getQuestionById(id);
@@ -117,11 +91,6 @@ public class QuestionServiceImpl implements QuestionService {
         return dtoConverter.convertToDto(deletedQuestion, QuestionProfile.class);
     }
 
-    /**
-     * The method returns list of dto {@code List<QuestionResponse>} of all questions.
-     *
-     * @return new {@code List<QuestionResponse>}.
-     */
     @Override
     public List<QuestionResponse> getAllQuestions() {
         List<QuestionResponse> questionResponses = questionRepository.findAll()

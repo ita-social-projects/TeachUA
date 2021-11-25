@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 public class ChallengeServiceImpl implements ChallengeService {
-
     private final ChallengeRepository challengeRepository;
     private final DtoConverter dtoConverter;
     private final UserService userService;
@@ -136,7 +135,8 @@ public class ChallengeServiceImpl implements ChallengeService {
 
 
     @Override
-    public SuccessUpdateChallengePreview updateChallengePreview(Long id, SuccessUpdateChallengePreview updateChallengePreview) {
+    public SuccessUpdateChallengePreview updateChallengePreview(Long id,
+                                                                SuccessUpdateChallengePreview updateChallengePreview) {
         Challenge challenge = getChallengeById(id);
         BeanUtils.copyProperties(updateChallengePreview, challenge);
         return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdateChallengePreview.class);

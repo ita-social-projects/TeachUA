@@ -35,6 +35,7 @@ import java.util.Optional;
 @Transactional
 @Slf4j
 public class FileUploadServiceImpl implements FileUploadService {
+
     private static final String UPLOAD_PLUG = "/upload/test/test.png";
     private static final Long IMAGE_SIZE_MB = 5L;
     private static final Long IMAGE_SIZE_B = IMAGE_SIZE_MB * 1024 * 1024;
@@ -152,6 +153,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     private void saveFile(String uploadDir, String fileName, File file, String byte64) {
         Path uploadPath = Paths.get(uploadDir);
+
 
         InputStream inputStream = null;
         try {
@@ -318,4 +320,5 @@ public class FileUploadServiceImpl implements FileUploadService {
             }
         }
     }
+
 }

@@ -8,7 +8,12 @@ import com.softserve.teachua.dto.file.FileUploadProfile;
 import com.softserve.teachua.service.FileUploadService;
 import com.softserve.teachua.service.impl.FileUploadServiceImpl;
 
+
 import com.softserve.teachua.utils.annotation.AllowedRoles;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +26,8 @@ import java.util.Optional;
 
 
 @RestController
+@Tag(name="upload", description="the Image Upload API")
+@SecurityRequirement(name = "api")
 public class UploadController implements Api {
 
     private final FileUploadService fileUploadService;
@@ -43,12 +50,14 @@ public class UploadController implements Api {
     }
 
     /**
+
      * Use this endpoint to confirm and save file
      * This feature available manager and admin
      *
      * @param  uploadProfile - put path and some values of file for save file
      * @return String new file path
      */
+
 
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("file")
@@ -80,5 +89,6 @@ public class UploadController implements Api {
     @DeleteMapping("file")
     public Boolean deleteFile(@RequestBody FilePathRequest fileDeleteRequest) {
         return fileUploadService.deleteFile(fileDeleteRequest.getFilePath());}
+
 
 }

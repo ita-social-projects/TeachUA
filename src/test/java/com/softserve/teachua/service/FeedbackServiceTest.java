@@ -64,9 +64,6 @@ public class FeedbackServiceTest {
     @Mock
     private ClubService clubService;
 
-    @Mock
-    private Role role;
-
     @InjectMocks
     private FeedbackServiceImpl feedbackService;
 
@@ -78,6 +75,7 @@ public class FeedbackServiceTest {
     private FeedbackResponse feedbackResponse;
     private User user;
     private Club club;
+    private Role role;
 
     private final long EXISTING_ID = 1L;
     private final long NOT_EXISTING_ID = 2L;
