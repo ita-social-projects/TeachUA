@@ -24,6 +24,7 @@ public class ApplicationConfig {
 	private static final String API_LOCATION = "/api/";
 	private static final String SLASH = "/";
 	private static final String SWAGGER_UI = "/swagger";
+	private static final String SWAGGER_RESOURCE = "api-docs";
 
 	@Value("${server.servlet.context-path}")
 	private String rootUri; // ="";
@@ -43,6 +44,7 @@ public class ApplicationConfig {
 					&& !req.getRequestURI().startsWith(removeSecondSlash(rootUri + API_LOCATION))
 					&& !req.getRequestURI().equals(removeSecondSlash(rootUri + SLASH))
 					&& !req.getRequestURI().startsWith(removeSecondSlash(rootUri + SWAGGER_UI))
+					&& !req.getRequestURI().contains(SWAGGER_RESOURCE)
 			) {
 				RequestDispatcher requestDispatcher = request.getRequestDispatcher(SLASH);
 				requestDispatcher.forward(request, response);
