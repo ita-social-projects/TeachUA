@@ -2,8 +2,7 @@ package com.softserve.teachua.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -15,6 +14,7 @@ import javax.servlet.Filter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
+@Slf4j
 @Configuration
 @ComponentScan(basePackages = { "com.softserve.teachua.controller"})
 public class ApplicationConfig {
@@ -42,7 +42,7 @@ public class ApplicationConfig {
 					&& !req.getRequestURI().startsWith(removeSecondSlash(rootUri + STATIC_LOCATION))
 					&& !req.getRequestURI().startsWith(removeSecondSlash(rootUri + API_LOCATION))
 					&& !req.getRequestURI().equals(removeSecondSlash(rootUri + SLASH))
-					&& req.getRequestURI().equals(removeSecondSlash(rootUri + SWAGGER_UI))
+					&& !req.getRequestURI().startsWith(removeSecondSlash(rootUri + SWAGGER_UI))
 			) {
 				RequestDispatcher requestDispatcher = request.getRequestDispatcher(SLASH);
 				requestDispatcher.forward(request, response);
