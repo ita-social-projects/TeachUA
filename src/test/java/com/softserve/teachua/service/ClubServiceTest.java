@@ -181,7 +181,7 @@ class ClubServiceTest {
         when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
 
 
-        SuccessUpdatedClub actual = clubService.updateClub(EXISTING_ID, ClubResponse.builder().name(NEW_NAME).build(), httpServletRequest);
+        SuccessUpdatedClub actual = clubService.updateClub(EXISTING_ID, ClubResponse.builder().name(NEW_NAME).build());
         assertEquals(clubProfile.getName(), actual.getName());
     }
 
@@ -190,7 +190,7 @@ class ClubServiceTest {
         when(clubRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
-            clubService.updateClub(NOT_EXISTING_ID, ClubResponse.builder().name(NEW_NAME).build(), httpServletRequest);
+            clubService.updateClub(NOT_EXISTING_ID, ClubResponse.builder().name(NEW_NAME).build());
         }).isInstanceOf(NotExistException.class);
     }
 
@@ -223,7 +223,7 @@ class ClubServiceTest {
         when(dtoConverter.convertToEntity(clubResponse, club)).thenReturn(club);
         when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
 
-        ClubResponse actual = clubService.deleteClubById(EXISTING_ID, httpServletRequest);
+        ClubResponse actual = clubService.deleteClubById(EXISTING_ID);
         assertEquals(club.getName(), actual.getName());
     }
 
@@ -232,7 +232,7 @@ class ClubServiceTest {
         when(clubRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
-            clubService.deleteClubById(NOT_EXISTING_ID, httpServletRequest);
+            clubService.deleteClubById(NOT_EXISTING_ID);
         }).isInstanceOf(NotExistException.class);
     }
 
@@ -247,7 +247,7 @@ class ClubServiceTest {
                 .thenReturn(SuccessCreatedClub.builder().name(NEW_NAME).build());
         when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
 
-        SuccessCreatedClub actual = clubService.addClub(clubProfile, httpServletRequest);
+        SuccessCreatedClub actual = clubService.addClub(clubProfile);
         assertEquals(clubProfile.getName(), actual.getName());
     }
 
@@ -255,14 +255,14 @@ class ClubServiceTest {
     void addClubIfExistShouldThrowAlreadyExistException() {
         when(clubRepository.existsByName(NEW_NAME)).thenReturn(true);
         assertThatThrownBy(() -> {
-            clubService.addClub(clubProfile, httpServletRequest);
+            clubService.addClub(clubProfile);
         }).isInstanceOf(AlreadyExistException.class);
     }
 
     @Test
     void addClubWithEmptyDataShouldThrowIncorrectInputException() {
         assertThatThrownBy(() -> {
-            clubService.addClub(ClubProfile.builder().build(), httpServletRequest);
+            clubService.addClub(ClubProfile.builder().build());
         }).isInstanceOf(IncorrectInputException.class);
     }
 

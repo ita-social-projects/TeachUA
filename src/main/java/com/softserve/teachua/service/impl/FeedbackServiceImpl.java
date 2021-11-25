@@ -23,7 +23,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
@@ -91,8 +90,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile, HttpServletRequest httpServletRequest) {
-        feedbackProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
+    public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile) {
+        feedbackProfile.setUserId(userService.getCurrentUser().getId());
 
         if (!clubRepository.existsById(feedbackProfile.getClubId())) {
             throw new NotExistException("Club with id " + feedbackProfile.getClubId() + " does`nt exists");
@@ -147,10 +146,10 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public FeedbackResponse updateFeedbackProfileById(
             Long id,
-            FeedbackProfile feedbackProfile,
-            HttpServletRequest httpServletRequest
+            FeedbackProfile feedbackProfile
     ) {
-        validateFeedbackOwner(id, httpServletRequest);
+        User user = userService.getCurrentUser();
+        validateFeedbackOwner(id, user);
         Feedback feedback = getFeedbackById(id);
         Feedback updFeedback = dtoConverter.convertToEntity(feedbackProfile, feedback)
                 .withId(id)
@@ -168,9 +167,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public void validateFeedbackOwner(Long id, HttpServletRequest httpServletRequest) {
+    public void validateFeedbackOwner(Long id, User userFromRequest) {
         User userFromFeedback = getFeedbackById(id).getUser();
-        User userFromRequest = userService.getUserFromRequest(httpServletRequest);
 
         if (userFromRequest != null && userFromRequest.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
             return;

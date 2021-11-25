@@ -152,14 +152,13 @@ public class CenterServiceTest {
         when(dtoConverter.convertToEntity(any(CenterProfile.class), any(Center.class)))
                 .thenReturn(new Center());
         when(dtoConverter.convertToDto(createCenter, SuccessCreatedCenter.class)).thenReturn(successCreatedCenter);
-        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(new User());
         when(clubRepository.findById(1l)).thenReturn(Optional.of(club));
     }
 
     @Test
     public void addCenterShouldReturnSuccessCreatedCenterWithUserAndWithoutLocations() {
         setAddCenterMocks();
-        assertThat(centerService.addCenterRequest(centerProfile, httpServletRequest)).isEqualTo(successCreatedCenter);
+        assertThat(centerService.addCenterRequest(centerProfile)).isEqualTo(successCreatedCenter);
     }
 
     @Test
@@ -175,7 +174,7 @@ public class CenterServiceTest {
         when(dtoConverter.convertToEntity(locationProfile, new Location())).thenReturn(location);
         when(locationRepository.save(location)).thenReturn(location);
         when(cityService.getCityByName(null)).thenReturn(null);
-        assertThat(centerService.addCenterRequest(centerProfile, httpServletRequest)).isEqualTo(successCreatedCenter);
+        assertThat(centerService.addCenterRequest(centerProfile)).isEqualTo(successCreatedCenter);
     }
 
     @Test
@@ -183,7 +182,7 @@ public class CenterServiceTest {
         when(centerRepository.existsByName(centerProfile.getName())).thenReturn(true);
         when(userService.getUserFromRequest(httpServletRequest)).thenReturn(User.builder().build());
         AlreadyExistException exception = assertThrows(AlreadyExistException.class, ()
-                -> centerService.addCenterRequest(centerProfile, httpServletRequest));
+                -> centerService.addCenterRequest(centerProfile));
         assertThat(exception.getMessage()).contains(centerProfile.getName());
     }
 

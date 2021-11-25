@@ -7,9 +7,9 @@ import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.service.CenterService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -69,9 +68,8 @@ public class CenterController implements Api {
     @PostMapping("/center")
     public SuccessCreatedCenter addCenter(
             @Valid
-            @RequestBody CenterProfile centerProfile,
-            HttpServletRequest httpServletRequest) {
-        return centerService.addCenterRequest(centerProfile, httpServletRequest);
+            @RequestBody CenterProfile centerProfile) {
+        return centerService.addCenterRequest(centerProfile);
     }
 
     /**

@@ -185,7 +185,7 @@ public class FeedbackServiceTest {
         when(dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class))
                 .thenReturn(SuccessCreatedFeedback.builder().text(NEW_TEXT).build());
 
-        SuccessCreatedFeedback actual = feedbackService.addFeedback(feedbackProfile,httpServletRequest);
+        SuccessCreatedFeedback actual = feedbackService.addFeedback(feedbackProfile);
         assertEquals(feedbackProfile.getText(), actual.getText());
     }
 
@@ -202,7 +202,7 @@ public class FeedbackServiceTest {
 
         when(clubService.updateRatingEditFeedback(feedbackResponse, updFeedbackResponse)).thenReturn(null);
 
-        assertThat(feedbackService.updateFeedbackProfileById(EXISTING_ID, feedbackProfile, httpServletRequest))
+        assertThat(feedbackService.updateFeedbackProfileById(EXISTING_ID, feedbackProfile))
                 .isEqualTo(updFeedbackResponse);
     }
 
@@ -212,7 +212,7 @@ public class FeedbackServiceTest {
 
         feedbackProfile.setClubId(club.getId());
         assertThatThrownBy(() -> {
-            feedbackService.updateFeedbackProfileById(NOT_EXISTING_ID, feedbackProfile, httpServletRequest);
+            feedbackService.updateFeedbackProfileById(NOT_EXISTING_ID, feedbackProfile);
         }).isInstanceOf(NotExistException.class);
     }
 
