@@ -98,10 +98,6 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public SuccessCreatedNews updateNewsProfileById(Long id, NewsProfile newsProfile) {
         News news = getNewsById(id);
-        // News newNews = dtoConverter.convertToEntity(newsProfile, news)
-        // .withId(id)
-        // .withDate(date);
-        // log.info("**/updating news by id = " + newNews);
         BeanUtils.copyProperties(newsProfile, news);
         return dtoConverter.convertToDto(newsRepository.save(news), SuccessCreatedNews.class);
     }
