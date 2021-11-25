@@ -17,8 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * This controller is for managing the stations.
+ * */
+
 @RestController
-@Tag(name="station", description="the Station API")
+@Tag(name = "station", description = "the Station API")
 @SecurityRequirement(name = "api")
 public class StationController implements Api {
     private final StationService stationService;
@@ -31,6 +35,7 @@ public class StationController implements Api {
     /**
      * Use this endpoint to get station by id.
      * The controller returns {@code StationResponse}.
+     *
      * @param id - put station id.
      * @return {@code StationResponse}.
      */
@@ -42,6 +47,7 @@ public class StationController implements Api {
     /**
      * Use this endpoint to create station.
      * The controller returns {@code SuccessCreatedStation}.
+     *
      * @param stationProfile - place body to {@code StationProfile}.
      * @return new {@code SuccessCreatedStation}.
      */
@@ -56,6 +62,7 @@ public class StationController implements Api {
     /**
      * Use this endpoint to update station by id.
      * The controller returns {@code StationProfile}.
+     *
      * @param id             - put station id.
      * @param stationProfile - place body to {@link CityProfile}.
      * @return {@code StationProfile}.
@@ -72,6 +79,7 @@ public class StationController implements Api {
     /**
      * Use this endpoint to get all stations.
      * The controller returns list of {@code List<StationResponse>}.
+     *
      * @return {@code List<StationResponse>}.
      */
     @GetMapping("/stations")
@@ -82,6 +90,7 @@ public class StationController implements Api {
     /**
      * Use this endpoint to get stations by name.
      * The controller returns list of {@code List<StationResponse>}.
+     *
      * @param name - put city name.
      * @return {@code List<StationResponse>}.
      */
@@ -93,6 +102,7 @@ public class StationController implements Api {
     /**
      * Use this endpoint to delete station by id.
      * The controller returns {@code StationResponse}.
+     *
      * @param id - put station id.
      * @return {@code StationResponse}.
      */

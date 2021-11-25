@@ -16,7 +16,6 @@ import java.time.LocalDate;
 @Builder
 @Data
 public class SuccessCreatedNews implements Convertible {
-
     private Long id;
 
     private String title;
@@ -30,5 +29,4 @@ public class SuccessCreatedNews implements Convertible {
     private LocalDate date;
 
     private Long userId;
-
 }

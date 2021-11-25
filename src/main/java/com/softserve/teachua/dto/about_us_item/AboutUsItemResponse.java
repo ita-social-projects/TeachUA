@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class AboutUsItemResponse implements Convertible {
-
     private Long id;
 
     private String text;
@@ -21,5 +20,4 @@ public class AboutUsItemResponse implements Convertible {
     private String video;
 
     private Long type;
-
 }

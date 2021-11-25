@@ -16,7 +16,6 @@ import javax.validation.constraints.NotNull;
 @Builder
 @Data
 public class StationProfile implements Convertible {
-
     @NotEmpty
     private String name;
 

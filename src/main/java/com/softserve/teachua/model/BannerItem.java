@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "banner_items")
 public class BannerItem implements Convertible, Archivable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -30,7 +30,6 @@ import static com.softserve.teachua.security.oauth2.HttpCookieOAuth2Authorizatio
 @Slf4j
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-
     private JwtProvider tokenProvider;
 
     @Autowired
@@ -42,23 +41,24 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Value("#{'${authorizedRedirectUris}'.split(',')}")
     private List<String> authorizedRedirectUris;
 
-
     private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Autowired
     OAuth2AuthenticationSuccessHandler(JwtProvider tokenProvider,
-                                       HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
+                                       HttpCookieOAuth2AuthorizationRequestRepository
+                                               httpCookieOAuth2AuthorizationRequestRepository) {
         this.tokenProvider = tokenProvider;
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
     }
 
     /**
-     * The method handle OAuth2 authentication process
+     * The method handle OAuth2 authentication process.
      *
      * @return OAuth2AuthorizationRequest
      */
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                        Authentication authentication) throws IOException, ServletException {
         String targetUrl = determineTargetUrl(request, response, authentication);
 
         if (response.isCommitted()) {
@@ -70,17 +70,19 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     /**
-     * The retrieve cookie from request, add redirect uri,
+     * The retrieve cookie from request, add redirect uri.
      *
      * @return uri
      */
-    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
+                                        Authentication authentication) {
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
         Optional<Object> userRole = CookieUtils.getCookie(request, USER_ROLE_PARAMETER)
                 .map(Cookie::getValue);
         if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
-            throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
+            throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed "
+                    + "with the authentication");
         }
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
@@ -102,7 +104,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     /**
-     * The method clear cookie from HttpServletRequest
+     * The method clear cookie from HttpServletRequest.
      *
      * @return OAuth2AuthorizationRequest
      */
@@ -112,7 +114,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     /**
-     * The method check if redirect uri from request equals from
+     * The method check if redirect uri from request equals from.
      *
      * @return OAuth2AuthorizationRequest
      */

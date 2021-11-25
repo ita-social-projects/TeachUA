@@ -18,7 +18,6 @@ import java.util.List;
 @Entity
 @Table(name = "roles")
 public class Role implements Convertible, Archivable {
-
     @NonNull
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,5 +31,4 @@ public class Role implements Convertible, Archivable {
     @OneToMany(mappedBy = "role")
     @ToString.Exclude
     private List<User> users;
-
 }

@@ -18,9 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * This controller is for managing the reset password process.
+ * */
+
 @Slf4j
 @RestController
-@Tag(name="reset password", description="the Password Reset API")
+@Tag(name = "reset password", description = "the Password Reset API")
 @SecurityRequirement(name = "api")
 public class ResetPasswordController implements Api {
     private final UserService userService;

@@ -3,7 +3,6 @@ package com.softserve.teachua.security.oauth2.user;
 import java.util.Map;
 
 public abstract class OAuth2UserInfo {
-
     protected Map<String, Object> attributes;
 
     public OAuth2UserInfo(Map<String, Object> attributes) {
@@ -23,5 +22,4 @@ public abstract class OAuth2UserInfo {
     public abstract String getEmail();
 
     public abstract String getImageUrl();
-
 }

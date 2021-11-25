@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "galleries")
 public class GalleryPhoto implements Archivable, Convertible {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

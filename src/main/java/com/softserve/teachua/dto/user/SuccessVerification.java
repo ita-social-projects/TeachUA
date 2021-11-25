@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class SuccessVerification implements Convertible {
-
     private Long id;
 
     private boolean status;

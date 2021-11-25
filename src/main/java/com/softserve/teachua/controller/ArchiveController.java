@@ -21,9 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * This controller is for managing the archive.
+ * */
+
 @RestController
 @Slf4j
-@Tag(name="archive", description="the Archive API")
+@Tag(name = "archive", description = "the Archive API")
 @SecurityRequirement(name = "api")
 public class ArchiveController implements Api {
     private final ArchiveService archiveService;
@@ -48,6 +52,7 @@ public class ArchiveController implements Api {
     /**
      * Use this endpoint to get the Archive information based on ClassName.
      * The controller returns information {@code List <Archive>} about archives by className.
+     *
      * @param className - put className here.
      * @return new {@code List <Archive>}.
      */

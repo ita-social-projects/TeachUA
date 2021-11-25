@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class SuccessCreatedCategory implements Convertible {
-
     private Long id;
 
     private Integer sortby;

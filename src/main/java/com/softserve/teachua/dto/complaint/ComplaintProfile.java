@@ -16,7 +16,6 @@ import javax.validation.constraints.NotNull;
 @Builder
 @Data
 public class ComplaintProfile implements Convertible {
-
     private Long id;
 
     @NotBlank

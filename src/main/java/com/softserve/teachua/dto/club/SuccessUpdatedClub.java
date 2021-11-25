@@ -16,7 +16,6 @@ import java.util.Set;
 @Builder
 @Data
 public class SuccessUpdatedClub implements Convertible {
-
     private Long id;
     private String name;
     private City city;

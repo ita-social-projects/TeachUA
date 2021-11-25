@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class SuccessRegistration implements Convertible {
-
     private Long id;
     private String email;
     private String roleName;
