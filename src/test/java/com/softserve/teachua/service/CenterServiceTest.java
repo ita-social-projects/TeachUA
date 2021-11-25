@@ -26,10 +26,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
@@ -43,6 +43,9 @@ public class CenterServiceTest {
     private static final Set<Club> CLUBS = new HashSet<>();
     private static final Long CORRECT_LOCATION_ID = 1l;
     private static final Long CLUB_ID = 1l;
+    private static final Long USER_ID = 72L;
+    private static final String USER_EMAIL = "user@gmail.com";
+
     @Mock
     private CenterRepository centerRepository;
     @Mock
@@ -72,8 +75,8 @@ public class CenterServiceTest {
     private CenterProfile centerProfile;
     private Center createCenter;
     private SuccessCreatedCenter successCreatedCenter;
-    private HttpServletRequest httpServletRequest;
     private Club club;
+    private User user;
 
     @BeforeAll
     public static void setUp() {
@@ -121,6 +124,11 @@ public class CenterServiceTest {
                 .build();
         club = Club.builder()
                 .id(CLUB_ID).build();
+
+        user = User.builder()
+                .id(USER_ID)
+                .email(USER_EMAIL)
+                .build();
     }
 
     @Test
@@ -153,6 +161,7 @@ public class CenterServiceTest {
                 .thenReturn(new Center());
         when(dtoConverter.convertToDto(createCenter, SuccessCreatedCenter.class)).thenReturn(successCreatedCenter);
         when(clubRepository.findById(1l)).thenReturn(Optional.of(club));
+        when(userService.getCurrentUser()).thenReturn(user);
     }
 
     @Test
@@ -180,10 +189,9 @@ public class CenterServiceTest {
     @Test
     public void addCenterShouldThrowAlreadyExistExceptionWhenCenterExist() {
         when(centerRepository.existsByName(centerProfile.getName())).thenReturn(true);
-        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(User.builder().build());
-        AlreadyExistException exception = assertThrows(AlreadyExistException.class, ()
-                -> centerService.addCenterRequest(centerProfile));
-        assertThat(exception.getMessage()).contains(centerProfile.getName());
+
+        assertThatThrownBy(() -> centerService.addCenter(centerProfile))
+                .isInstanceOf(AlreadyExistException.class);
     }
 
     @Test

@@ -75,7 +75,7 @@ public class ClubController implements Api {
      * @param clubProfile - Place dto with all parameters for adding new club.
      * @return new {@code SuccessCreatedClub}.
      */
-    @AllowedRoles({RoleData.ADMIN, RoleData.USER})
+    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @PostMapping("/club")
     public SuccessCreatedClub addClub(
             @Valid
@@ -180,7 +180,6 @@ public class ClubController implements Api {
      * Use this endpoint to update some values of club by id.
      * The controller returns {@code ClubResponse}.
      * @param id - put club id here.
-     * @param httpServletRequest - autowired by spring.
      * @param clubOwnerProfile - Place dto with all parameters for updating existing club.
      * @return new {@code ClubProfile}.
      */
@@ -196,7 +195,6 @@ public class ClubController implements Api {
     /**
      * Use this endpoint to delete club by id.
      * The controller returns {@code ClubResponse}.
-     * @param httpServletRequest - autowired by spring.
      * @param id - put club id.
      * @return new {@code ClubResponse}.
      */

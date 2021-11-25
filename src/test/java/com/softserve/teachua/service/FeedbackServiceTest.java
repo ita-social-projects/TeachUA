@@ -24,7 +24,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import javax.servlet.http.HttpServletRequestWrapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,9 +56,6 @@ public class FeedbackServiceTest {
 
     @Mock
     private UserRepository userRepository;
-
-    @Mock
-    private HttpServletRequestWrapper httpServletRequest;
 
     @Mock
     private ClubService clubService;
@@ -172,9 +168,7 @@ public class FeedbackServiceTest {
 
     @Test
     public void addNewFeedbackShouldReturnSuccessCreatedFeedback() {
-
-        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
-
+        when(userService.getCurrentUser()).thenReturn(user);
         when(clubRepository.existsById(EXISTING_CLUB_ID)).thenReturn(true);
         when(userRepository.existsById(EXISTING_USER_ID)).thenReturn(true);
         when(dtoConverter.convertToEntity(feedbackProfile, new Feedback())).thenReturn(feedback);
@@ -191,7 +185,7 @@ public class FeedbackServiceTest {
 
     @Test
     public void updateFeedbackProfileByExistingIdShouldReturnFeedbackProfile(){
-        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         when(dtoConverter.convertToEntity(feedbackProfile, feedback)).thenReturn(updFeedback);
         when(dtoConverter.convertToDto(feedback, FeedbackResponse.class))

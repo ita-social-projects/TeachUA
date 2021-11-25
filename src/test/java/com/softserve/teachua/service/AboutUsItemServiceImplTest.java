@@ -1,4 +1,4 @@
-package com.softserve.teachua.service.impl;
+package com.softserve.teachua.service;
 
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
@@ -6,7 +6,7 @@ import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.AboutUsItem;
 import com.softserve.teachua.repository.AboutUsItemRepository;
-import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.impl.AboutUsItemServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +19,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AboutUsItemServiceImplTest {
