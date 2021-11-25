@@ -9,6 +9,7 @@ import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.security.service.EncoderService;
 import com.softserve.teachua.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +17,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.authentication.AuthenticationManager;
 
+
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
@@ -46,6 +53,15 @@ class UserServiceTest {
     @Mock
     private UserUpdateProfile userUpdateProfile;
 
+    @Mock
+    private AuthenticationManager authenticationManager;
+
+    @Mock
+    private JwtProvider jwtProvider;
+
+    @Spy
+    private JavaMailSender javaMailSender = new JavaMailSenderImpl();
+
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -61,6 +77,8 @@ class UserServiceTest {
     private final String NOT_EXISTING_EMAIL = "notexisting@mail.com";
     private final String NEW_EMAIL = "newuser@mail.com";
     private final String PASSWORD = "12345";
+    private final String ROLE_NAME = RoleData.USER.getDBRoleName();
+    private final String PHONE = "0970000000";
 
 
     @BeforeEach
@@ -69,6 +87,7 @@ class UserServiceTest {
         userProfile = UserProfile.builder()
                 .email(NEW_EMAIL)
                 .password(PASSWORD)
+                .roleName(ROLE_NAME)
                 .firstName("username").build();
     }
 
@@ -88,7 +107,7 @@ class UserServiceTest {
     }
 
     @Test
-    void getUserByIdEmailTest() {
+    void getUserByEmailTest() {
         when(userRepository.findByEmail(EXISTING_EMAIL)).thenReturn(Optional.of(user));
 
         User actual = userService.getUserByEmail(EXISTING_EMAIL);
@@ -104,17 +123,17 @@ class UserServiceTest {
 
     @Test
     void registerNewUserTest() {
-        User newUser = User.builder().email(NEW_EMAIL).build();
+        User newUser = User.builder().email(NEW_EMAIL).phone(PHONE).build();
 
         when(userRepository.existsByEmail(NEW_EMAIL)).thenReturn(false);
         when(dtoConverter.convertToEntity(userProfile, new User())).thenReturn(newUser);
         when(encodeService.encodePassword(PASSWORD)).thenReturn("encoded password");
         when(userRepository.save(any())).thenReturn(newUser);
-        String ROLE_NAME = RoleData.USER.getDBRoleName();
+
         when(roleService.findByName(ROLE_NAME)).thenReturn(Role.builder().id(2).name(ROLE_NAME).build());
         when(dtoConverter.convertToDto(newUser, SuccessRegistration.class))
                 .thenReturn(SuccessRegistration.builder().email(NEW_EMAIL).build());
-
+        doNothing().when(javaMailSender).send(any(MimeMessage.class));
         SuccessRegistration actual = userService.registerUser(userProfile);
         assertEquals(actual.getEmail(), userProfile.getEmail());
     }
@@ -132,7 +151,7 @@ class UserServiceTest {
     @Test
     void validateUserWithValidPasswordTest() {
         UserLogin userLogin = new UserLogin(NEW_EMAIL, PASSWORD);
-        User newUser = User.builder().email(NEW_EMAIL).password(PASSWORD).status(IS_STATUS).build();
+        User newUser = User.builder().email(NEW_EMAIL).password(PASSWORD).build();
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
         when(dtoConverter.convertToDto(newUser, UserEntity.class))
                 .thenReturn(UserEntity.builder().email(NEW_EMAIL).password(PASSWORD).build());
@@ -141,7 +160,7 @@ class UserServiceTest {
         when(encodeService.isValidPassword(userLogin, userEntity)).thenReturn(true);
         when(dtoConverter.convertFromDtoToDto(userEntity, new SuccessLogin()))
                 .thenReturn(SuccessLogin.builder().email(NEW_EMAIL).build());
-//        when(encodeService.createToken(userEntity.getEmail())).thenReturn("token");
+        when(encodeService.isValidStatus(userEntity)).thenReturn(true);
 
         SuccessLogin actual = userService.validateUser(userLogin);
         assertEquals(actual.getEmail(), userLogin.getEmail());
@@ -154,11 +173,11 @@ class UserServiceTest {
         User newUser = User.builder().email(NEW_EMAIL).password(invalidPassword).build();
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
         when(dtoConverter.convertToDto(newUser, UserEntity.class))
-                .thenReturn(UserEntity.builder().email(NEW_EMAIL).password(invalidPassword).build());
+                .thenReturn(UserEntity.builder().email(NEW_EMAIL).password(invalidPassword).status(true).build());
 
         UserEntity userEntity = userService.getUserEntity(NEW_EMAIL);
         when(encodeService.isValidPassword(userLogin, userEntity)).thenReturn(false);
-
+        when(encodeService.isValidStatus(userEntity)).thenReturn(true);
         assertThatThrownBy(() -> {
             userService.validateUser(userLogin);
         }).isInstanceOf(WrongAuthenticationException.class);
@@ -166,6 +185,7 @@ class UserServiceTest {
 
     @Test
     public void updateUserTest() {
+        userUpdateProfile = UserUpdateProfile.builder().email(EXISTING_EMAIL).firstName("FIRST_NAME").roleName("ROLE_USER").build();
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
         when(userRepository.save(any())).thenReturn(user);
         when(dtoConverter.convertToEntity(userUpdateProfile, user)).thenReturn(User.builder()
