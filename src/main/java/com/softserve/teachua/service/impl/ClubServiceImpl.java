@@ -43,10 +43,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Service
+@Service   //сlubServiceImpl
 @Transactional(propagation = Propagation.SUPPORTS)
 @Slf4j
-public class ClubServiceImpl implements ClubService {
+public class ClubServiceImpl implements ClubService, ArchiveMark {
     private static final String CLUB_ALREADY_EXIST = "Club already exist with name: %s";
     private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
@@ -72,6 +72,7 @@ public class ClubServiceImpl implements ClubService {
     private final GalleryRepository galleryRepository;
     private final CenterService centerService;
     private final FeedbackRepository feedbackRepository;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository,
@@ -90,7 +91,7 @@ public class ClubServiceImpl implements ClubService {
                            CoordinatesConverter coordinatesConverter,
                            GalleryRepository galleryRepository,
                            CenterService centerService,
-                           FeedbackRepository feedbackRepository) {
+                           FeedbackRepository feedbackRepository, ObjectMapper objectMapper) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -108,6 +109,7 @@ public class ClubServiceImpl implements ClubService {
         this.galleryRepository = galleryRepository;
         this.centerService = centerService;
         this.feedbackRepository = feedbackRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -704,5 +706,17 @@ public class ClubServiceImpl implements ClubService {
         }
 
         return dtoConverter.convertToDto(updClub, SuccessUpdatedClub.class);
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) {
+        log.info("RESTORE CLUB");
+        log.info("DATA: " + archiveObject);
+        try {
+            Club club = objectMapper.readValue(archiveObject, Club.class);
+            log.info("CLUB PARSE: " + club);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }

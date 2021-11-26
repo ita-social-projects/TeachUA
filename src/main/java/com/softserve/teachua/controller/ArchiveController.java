@@ -4,21 +4,18 @@ import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.service.ArchiveService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.links.Link;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -61,4 +58,14 @@ public class ArchiveController implements Api {
     public List<Archive> getArchivesByClassName(@PathVariable String className) {
         return archiveService.findArchivesByClassName(className);
     }
+
+
+    @AllowedRoles(RoleData.ADMIN)
+    @PatchMapping("/archives/{id}")
+    public Archive restoreFromArchive(@PathVariable("id") Long id,
+                                   HttpServletResponse response) throws IOException {
+        return archiveService.restoreArchiveObject(id);
+    }
+
+
 }

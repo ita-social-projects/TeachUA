@@ -32,4 +32,9 @@ public interface ArchiveService {
      * @return {@code <T extends Archivable>}.
      */
     <T extends Archivable> T saveModel(T model);
+
+    Archive restoreArchiveObject(Long id);
+
+    Archive getArchiveObjectById(Long id);
+
 }

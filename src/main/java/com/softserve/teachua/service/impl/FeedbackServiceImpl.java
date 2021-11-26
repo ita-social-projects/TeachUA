@@ -1,5 +1,7 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.feedback.FeedbackProfile;
@@ -8,15 +10,13 @@ import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
+import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.repository.UserRepository;
-import com.softserve.teachua.service.ArchiveService;
-import com.softserve.teachua.service.ClubService;
-import com.softserve.teachua.service.FeedbackService;
-import com.softserve.teachua.service.UserService;
+import com.softserve.teachua.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -26,13 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @Slf4j
-public class FeedbackServiceImpl implements FeedbackService {
+public class FeedbackServiceImpl implements FeedbackService, ArchiveMark {
     private static final String FEEDBACK_NOT_FOUND_BY_ID = "Feedback not found by id: %s";
     private static final String FEEDBACK_DELETING_ERROR = "Can't delete feedback cause of relationship";
     private static final String ACCESS_TO_FEEDBACK_DENIED = "User can edit/delete only own feedbacks";
@@ -44,6 +45,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final ClubService clubService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public FeedbackServiceImpl(FeedbackRepository feedbackRepository,
@@ -52,7 +54,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                                ArchiveService archiveService,
                                UserRepository userRepository,
                                UserService userService,
-                               ClubService clubService) {
+                               ClubService clubService, ObjectMapper objectMapper) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
@@ -60,6 +62,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         this.userRepository = userRepository;
         this.userService = userService;
         this.clubService = clubService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -178,6 +181,28 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         if (!(userFromFeedback != null && userFromRequest != null && userFromRequest.equals(userFromFeedback))) {
             throw new NotVerifiedUserException(ACCESS_TO_FEEDBACK_DENIED);
+        }
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) {
+        log.info("RESTORE FEEDBACK");
+        log.info("DATA: " + archiveObject);
+        try {
+            Map<String, Object> map = objectMapper.readValue(archiveObject, Map.class);
+            log.info("map: " + map);
+            Feedback feedback = new Feedback();
+//            feedback.setDate((LocalDateTime) map.get("date"));
+            feedback.setText((String) map.get("text"));
+            feedback.setRate((Float)((Double)map.get("rate")).floatValue());
+            feedback.setUser(userService.getUserById(Integer.toUnsignedLong((Integer) map.get("userId"))));
+            Club club = clubService.getClubById(Integer.toUnsignedLong((Integer) map.get("clubId")));
+            log.info("Club: " + club);
+            feedback.setClub(club);
+            log.info("feedback: " + feedback);
+            feedbackRepository.save(feedback);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
     }
 }

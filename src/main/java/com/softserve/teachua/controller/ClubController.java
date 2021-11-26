@@ -8,10 +8,9 @@ import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.ClubService;
-import com.softserve.teachua.service.UserService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -249,4 +248,10 @@ public class ClubController implements Api {
     public void updateContacts() {
         clubService.updateContacts();
     }
+
+    @PostMapping("/club/restore")
+    public void restore(){
+        log.info("RESTORE CLUB");
+    }
+
 }
