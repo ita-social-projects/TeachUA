@@ -51,6 +51,8 @@ public class LocationProfile {
 
     @NotNull(message = "number cannot be null")
     @NotBlank(message = "number cannot be blank")
-    @Pattern(regexp = "[\\d]{9}", message = "Incorrect phone Number")
-    private String phone;
+
+    @Pattern(regexp = "0[\\d]{9}",message = "Incorrect phone Number")
+    private  String phone;
+
 }
