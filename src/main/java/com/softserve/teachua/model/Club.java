@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.*;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
-import com.softserve.teachua.model.GalleryPhoto;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,6 +49,7 @@ public class Club implements Convertible, Archivable {
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
     @ToString.Exclude
+    @JsonManagedReference
     private List<GalleryPhoto> urlGallery;
 
     @Column
@@ -69,6 +68,7 @@ public class Club implements Convertible, Archivable {
 
     @OneToMany(mappedBy = "club")
     @ToString.Exclude
+    @JsonManagedReference
     private Set<Location> locations;
 
     @ManyToMany
@@ -76,6 +76,8 @@ public class Club implements Convertible, Archivable {
             joinColumns = {@JoinColumn(name = "club_id")},
             inverseJoinColumns = {@JoinColumn(name = "category_id")})
     @ToString.Exclude
+    @JsonIgnore
+    @JsonManagedReference
     private Set<Category> categories = new HashSet<>();
 
     @ManyToOne
@@ -86,6 +88,7 @@ public class Club implements Convertible, Archivable {
     @ManyToOne
     @JoinColumn(name = "center_id", referencedColumnName = "id")
     @ToString.Exclude
+    @JsonBackReference
     private Center center;
 
     @Column

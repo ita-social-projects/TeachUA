@@ -2,6 +2,7 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.exception.JsonWriteException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Archive;
@@ -27,12 +28,14 @@ public class ArchiveServiceImpl implements ArchiveService {
     private final ObjectMapper objectMapper;
 
     private final ApplicationContext context;
+    private final DtoConverter dtoConverter;
 
     @Autowired
-    public ArchiveServiceImpl(ArchiveRepository archiveRepository, ObjectMapper objectMapper, ApplicationContext context) {
+    public ArchiveServiceImpl(ArchiveRepository archiveRepository, ObjectMapper objectMapper, ApplicationContext context, DtoConverter dtoConverter) {
         this.archiveRepository = archiveRepository;
         this.objectMapper = objectMapper;
         this.context = context;
+        this.dtoConverter = dtoConverter;
     }
 
     @Override

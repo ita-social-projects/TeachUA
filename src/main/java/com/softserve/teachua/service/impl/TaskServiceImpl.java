@@ -1,15 +1,14 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.task.*;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.repository.TaskRepository;
-import com.softserve.teachua.service.ArchiveService;
-import com.softserve.teachua.service.ChallengeService;
-import com.softserve.teachua.service.TaskService;
-import com.softserve.teachua.service.UserService;
+import com.softserve.teachua.service.*;
 import com.softserve.teachua.utils.HtmlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -25,12 +24,13 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Transactional
-public class TaskServiceImpl implements TaskService {
+public class TaskServiceImpl implements TaskService, ArchiveMark {
     private final TaskRepository taskRepository;
     private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
     private final ChallengeService challengeService;
     private final UserService userService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public TaskServiceImpl(
@@ -38,12 +38,13 @@ public class TaskServiceImpl implements TaskService {
             ArchiveService archiveService,
             DtoConverter dtoConverter,
             ChallengeService challengeService,
-            UserService userService) {
+            UserService userService, ObjectMapper objectMapper) {
         this.taskRepository = taskRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
         this.challengeService = challengeService;
         this.userService = userService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -51,8 +52,8 @@ public class TaskServiceImpl implements TaskService {
         Task task = getTaskById(id);
         TaskProfile taskProfile = dtoConverter.convertToDto(task, TaskProfile.class);
         taskProfile.setChallengeId(task.getChallenge().getId());
-        task.setChallenge(null);
-        archiveService.saveModel(task);
+//        task.setChallenge(null);
+        archiveService.saveModel(taskProfile);
         taskRepository.deleteById(id);
         taskRepository.flush();
         return taskProfile;
@@ -116,5 +117,18 @@ public class TaskServiceImpl implements TaskService {
         SuccessUpdatedTask updatedTask = dtoConverter.convertToDto(taskRepository.save(task), SuccessUpdatedTask.class);
         // updatedTask.setChallengeId(updatedTask.getChallengeId());
         return updatedTask;
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) {
+        try {
+            TaskProfile taskProfile = objectMapper.readValue(archiveObject, TaskProfile.class);
+            Task task = new Task();
+            dtoConverter.convertToEntity(taskProfile, task);
+            task.setChallenge(challengeService.getChallengeById(taskProfile.getChallengeId()));
+            taskRepository.save(task);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }

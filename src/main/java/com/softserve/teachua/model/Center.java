@@ -1,6 +1,7 @@
 package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
@@ -8,7 +9,6 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -46,10 +46,12 @@ public class Center implements Convertible, Archivable {
 
     @OneToMany(mappedBy = "center")
     @ToString.Exclude
+    @JsonManagedReference
     private Set<Location> locations;
 
     @OneToMany(mappedBy = "center")
     @ToString.Exclude
+    @JsonManagedReference
     private Set<Club> clubs;
 
     @ManyToOne

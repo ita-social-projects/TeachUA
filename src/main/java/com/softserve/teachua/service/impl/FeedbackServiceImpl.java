@@ -10,7 +10,6 @@ import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
-import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.ClubRepository;
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -188,19 +186,29 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark {
     public void restoreModel(String archiveObject) {
         log.info("RESTORE FEEDBACK");
         log.info("DATA: " + archiveObject);
+//        try {
+//            Map<String, Object> map = objectMapper.readValue(archiveObject, Map.class);
+//            log.info("map: " + map);
+//            Feedback feedback = new Feedback();
+////            feedback.setDate((LocalDateTime) map.get("date"));
+//            feedback.setText((String) map.get("text"));
+//            feedback.setRate((Float)((Double)map.get("rate")).floatValue());
+//            feedback.setUser(userService.getUserById(Integer.toUnsignedLong((Integer) map.get("userId"))));
+//            Club club = clubService.getClubById(Integer.toUnsignedLong((Integer) map.get("clubId")));
+//            log.info("Club: " + club);
+//            feedback.setClub(club);
+//            log.info("feedback: " + feedback);
+//            feedbackRepository.save(feedback);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+
         try {
-            Map<String, Object> map = objectMapper.readValue(archiveObject, Map.class);
-            log.info("map: " + map);
-            Feedback feedback = new Feedback();
-//            feedback.setDate((LocalDateTime) map.get("date"));
-            feedback.setText((String) map.get("text"));
-            feedback.setRate((Float)((Double)map.get("rate")).floatValue());
-            feedback.setUser(userService.getUserById(Integer.toUnsignedLong((Integer) map.get("userId"))));
-            Club club = clubService.getClubById(Integer.toUnsignedLong((Integer) map.get("clubId")));
-            log.info("Club: " + club);
-            feedback.setClub(club);
+
+//            JsonNode jsonNode = objectMapper.readTree(archiveObject);
+//            JsonParser jsonParser = objectMapper.treeAsTokens(jsonNode);
+            Feedback feedback = objectMapper.readValue(archiveObject, Feedback.class);
             log.info("feedback: " + feedback);
-            feedbackRepository.save(feedback);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

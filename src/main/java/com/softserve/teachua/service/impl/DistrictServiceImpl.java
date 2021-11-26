@@ -1,5 +1,7 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.district.DistrictProfile;
 import com.softserve.teachua.dto.district.DistrictResponse;
@@ -9,6 +11,7 @@ import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.District;
 import com.softserve.teachua.repository.DistrictRepository;
+import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CityService;
 import com.softserve.teachua.service.DistrictService;
@@ -26,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class DistrictServiceImpl implements DistrictService {
+public class DistrictServiceImpl implements DistrictService, ArchiveMark {
     private static final String DISTRICT_ALREADY_EXIST = "District already exist with name: %s";
     private static final String DISTRICT_NOT_FOUND_BY_ID = "District not found by id: %s";
     private static final String DISTRICT_NOT_FOUND_BY_NAME = "District not found by name: %s";
@@ -36,14 +39,16 @@ public class DistrictServiceImpl implements DistrictService {
     private final ArchiveService archiveService;
     private final CityService cityService;
     private final DistrictRepository districtRepository;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public DistrictServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService,
-                               CityService cityService, DistrictRepository districtRepository) {
+                               CityService cityService, DistrictRepository districtRepository, ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
         this.cityService = cityService;
         this.districtRepository = districtRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -150,5 +155,14 @@ public class DistrictServiceImpl implements DistrictService {
 
     private Optional<District> getOptionalDistrictById(Long id) {
         return districtRepository.findById(id);
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) {
+        try {
+            objectMapper.readValue(archiveObject, District.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }
