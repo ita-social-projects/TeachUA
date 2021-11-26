@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,7 +17,6 @@ import java.sql.Timestamp;
 @Builder
 @Table(name = "news")
 public class News implements Convertible, Archivable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,8 +25,8 @@ public class News implements Convertible, Archivable {
     private String title;
 
     @CreationTimestamp
-    @Column
-    private Timestamp date;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDate date;
 
     @Column
     private String urlTitleLogo;
@@ -34,4 +34,11 @@ public class News implements Convertible, Archivable {
     @Column
     private String description;
 
+    @Column
+    private Boolean isActive;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private User user;
 }

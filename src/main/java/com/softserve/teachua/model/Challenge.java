@@ -11,21 +11,17 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Builder
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "сhallenges")
 public class Challenge implements Convertible, Archivable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    @EqualsAndHashCode.Include
     private String name;
 
     @Column(nullable = false)
-    @EqualsAndHashCode.Include
     private String title;
 
     @Column(nullable = false, length = 10000)
@@ -43,6 +39,7 @@ public class Challenge implements Convertible, Archivable {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @Column(nullable = false)
@@ -50,6 +47,6 @@ public class Challenge implements Convertible, Archivable {
 
     @OneToMany(mappedBy = "challenge")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Task> tasks;
-
 }

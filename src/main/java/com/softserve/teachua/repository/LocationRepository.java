@@ -12,6 +12,8 @@ import java.util.Set;
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
     List<Location> findLocationsByCenter(Center center);
+
     Set<Location> deleteAllByClub(Club club);
+
     Set<Location> deleteAllByCenter(Center center);
 }

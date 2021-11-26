@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class CategoryResponse implements Convertible {
-
     private Long id;
 
     private Integer sortby;

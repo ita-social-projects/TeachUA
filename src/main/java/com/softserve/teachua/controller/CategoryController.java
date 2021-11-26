@@ -1,23 +1,32 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.category.SuccessCreatedCategory;
 import com.softserve.teachua.service.CategoryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * This controller is for managing the categories.
+ * */
+
 @RestController
 @Slf4j
+@Tag(name = "category", description = "the Category API")
+@SecurityRequirement(name = "api")
 public class CategoryController implements Api {
     private CategoryService categoryService;
 
@@ -27,10 +36,11 @@ public class CategoryController implements Api {
     }
 
     /**
-     * The controller returns dto {@code CategoryResponse} about category.
+     * Use this endpoint to get information on a specific category.
+     * The controller returns {@code CategoryResponse}.
      *
      * @param id - put category id.
-     * @return new {@code CategoryResponse}.
+     * @return {@code CategoryResponse}.
      */
     @GetMapping("/category/{id}")
     public CategoryResponse getCategory(@PathVariable Long id) {
@@ -38,9 +48,10 @@ public class CategoryController implements Api {
     }
 
     /**
-     * Endpoint returns list of all categories.
+     * Use this endpoint to get information on all categories.
+     * The controller returns {@code List<CategoryResponse>}.
      *
-     * @return new {@code List<CategoryResponse>}
+     * @return {@code CategoryResponse}.
      */
     @GetMapping("/categories")
     public List<CategoryResponse> getAllCategories() {
@@ -48,10 +59,11 @@ public class CategoryController implements Api {
     }
 
     /**
-     * Endpoint returns pageable of categories.
+     * Use this endpoint to get result of the categories search with pagination.
+     * The controller returns {@code Page<CategoryResponse>}.
      *
      * @param pageable - put pageable parameters as request parameters.
-     * @return pageable of CategoryResponse
+     * @return {@code Page<CategoryResponse>} - all Categories with pagination.
      */
     @GetMapping("/categories/search")
     public Page<CategoryResponse> getListOfCategories(
@@ -60,12 +72,13 @@ public class CategoryController implements Api {
     }
 
     /**
-     * The controller returns dto {@code SuccessCreatedCategory} of created category.
+     * Use this endpoint to create a category.
+     * The controller returns {@code SuccessCreatedCategory}.
      *
      * @param categoryProfile - Place dto with all parameters for adding new category.
      * @return new {@code SuccessCreatedCategory}.
      */
-    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/category")
     public SuccessCreatedCategory addCategory(
             @Valid
@@ -74,11 +87,14 @@ public class CategoryController implements Api {
     }
 
     /**
-     * The controller returns dto {@code  CategoryProfile} about category.
+     * Use this endpoint to update the category by id.
+     * The controller returns {@code  CategoryProfile}.
      *
-     * @return new {@code CategoryProfile}.
+     * @param id              - put Category id here.
+     * @param categoryProfile - put dto with all parameters here.
+     * @return {@code CategoryProfile}.
      */
-    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/category/{id}")
     public CategoryProfile updateCategory(
             @PathVariable Long id,
@@ -88,12 +104,13 @@ public class CategoryController implements Api {
     }
 
     /**
-     * The controller returns dto {@code CategoryResponse} of deleted category.
+     * Use this endpoint to archive a category by id.
+     * The controller returns {@code CategoryResponse}.
      *
      * @param id - put category id.
-     * @return new {@code CategoryResponse}.
+     * @return {@code CategoryResponse}.
      */
-    @PreAuthorize("hasRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/category/{id}")
     public CategoryResponse deleteCategory(@PathVariable("id") Long id) {
         return categoryService.deleteCategoryById(id);

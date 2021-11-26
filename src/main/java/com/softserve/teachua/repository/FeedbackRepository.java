@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Provides an interface to manage {@link Feedback} model
+ * Provides an interface to manage {@link Feedback} model.
  */
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
@@ -21,11 +21,12 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     void deleteById(Long id);
 
     /**
-     * Method to get average rating by club id
+     * Method to get average rating by club id.
      *
      * @param clubId
      * @return Double if club have any feedback
      */
-    @Query("SELECT case  when (AVG(feedback.rate)) is null then 0.0 else AVG(feedback.rate)  end FROM Feedback AS feedback WHERE feedback.club.id = :clubId")
+    @Query("SELECT case  when (AVG(feedback.rate)) is null then 0.0 else AVG(feedback.rate)  end "
+            + "FROM Feedback AS feedback WHERE feedback.club.id = :clubId")
     Double findAvgRating(@Param("clubId") Long clubId);
 }

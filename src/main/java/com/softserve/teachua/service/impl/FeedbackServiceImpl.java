@@ -41,38 +41,32 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
-    private  final UserRepository userRepository;
+    private final UserRepository userRepository;
     private final UserService userService;
     private final ClubService clubService;
 
-  @Autowired
-    public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter, ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository, UserService userService, ClubService clubService) {
+    @Autowired
+    public FeedbackServiceImpl(FeedbackRepository feedbackRepository,
+                               DtoConverter dtoConverter,
+                               ClubRepository clubRepository,
+                               ArchiveService archiveService,
+                               UserRepository userRepository,
+                               UserService userService,
+                               ClubService clubService) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
         this.userRepository = userRepository;
         this.userService = userService;
-      this.clubService = clubService;
-  }
+        this.clubService = clubService;
+    }
 
-    /**
-     * Method find {@link Feedback}, and convert it to object of DTO class
-     *
-     * @param id - place id here.
-     * @return new {@code FeedbackResponse}
-     **/
     @Override
     public FeedbackResponse getFeedbackProfileById(Long id) {
         return dtoConverter.convertToDto(getFeedbackById(id), FeedbackResponse.class);
     }
 
-    /**
-     * Method find {@link Feedback}
-     *
-     * @param id - place id
-     * @return Feedback
-     **/
     @Override
     public Feedback getFeedbackById(Long id) {
         Optional<Feedback> optionalFeedback = getOptionalFeedbackById(id);
@@ -96,36 +90,24 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedbackResponses;
     }
 
-    /**
-     * Method add and save new {@link Feedback}
-     *
-     * @param feedbackProfile - put dto 'FeedbackProfile'
-     * @return SuccessCreatedFeedback
-     **/
     @Override
     public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile, HttpServletRequest httpServletRequest) {
-
         feedbackProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
 
-        if(!clubRepository.existsById(feedbackProfile.getClubId())){
-            throw new NotExistException("Club with id "+feedbackProfile.getClubId()+" does`nt exists");
+        if (!clubRepository.existsById(feedbackProfile.getClubId())) {
+            throw new NotExistException("Club with id " + feedbackProfile.getClubId() + " does`nt exists");
         }
-        if(!userRepository.existsById(feedbackProfile.getUserId())){
-            throw new NotExistException("User with id "+feedbackProfile.getUserId()+" does`nt exists");
+        if (!userRepository.existsById(feedbackProfile.getUserId())) {
+            throw new NotExistException("User with id " + feedbackProfile.getUserId() + " does`nt exists");
         }
         Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, new Feedback()));
-//        Long clubId = feedback.getClub().getId();
+        // Long clubId = feedback.getClub().getId();
         clubService.updateRatingNewFeedback(dtoConverter.convertToDto(feedback, FeedbackResponse.class));
-//        clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
+        // clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
         log.debug("add new feedback - " + feedback);
         return dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
     }
 
-    /**
-     * Method find all {@link Feedback}
-     *
-     * @return new {@code List<FeedbackResponse>}
-     **/
     @Override
     public List<FeedbackResponse> getListOfFeedback() {
         List<FeedbackResponse> feedbackResponses = feedbackRepository.findAll()
@@ -137,16 +119,9 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedbackResponses;
     }
 
-    /**
-     * Method delete {@link Feedback} and update Club rating
-     *
-     * @param id - place id
-     * @return new {@code FeedbackResponse}
-     **/
     @Override
     public FeedbackResponse deleteFeedbackById(Long id) {
         Feedback feedback = getFeedbackById(id);
-
 
         archiveService.saveModel(feedback);
 
@@ -169,19 +144,12 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedbackRepository.findById(id);
     }
 
-    /**
-     * Method find {@link Feedback} by id, and update data and Club rating
-     *
-     * @param id              - place id
-     * @param feedbackProfile - put dto 'FeedbackProfile'
-     * @return FeedbackResponse
-     **/
     @Override
     public FeedbackResponse updateFeedbackProfileById(
             Long id,
             FeedbackProfile feedbackProfile,
             HttpServletRequest httpServletRequest
-    ){
+    ) {
         validateFeedbackOwner(id, httpServletRequest);
         Feedback feedback = getFeedbackById(id);
         Feedback updFeedback = dtoConverter.convertToEntity(feedbackProfile, feedback)
@@ -200,17 +168,16 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public void validateFeedbackOwner(Long id, HttpServletRequest httpServletRequest){
+    public void validateFeedbackOwner(Long id, HttpServletRequest httpServletRequest) {
         User userFromFeedback = getFeedbackById(id).getUser();
         User userFromRequest = userService.getUserFromRequest(httpServletRequest);
 
-        if(userFromRequest != null && userFromRequest.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())){
+        if (userFromRequest != null && userFromRequest.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
             return;
         }
 
-        if(!(userFromFeedback != null && userFromRequest != null && userFromRequest.equals(userFromFeedback))) {
+        if (!(userFromFeedback != null && userFromRequest != null && userFromRequest.equals(userFromFeedback))) {
             throw new NotVerifiedUserException(ACCESS_TO_FEEDBACK_DENIED);
         }
     }
-
 }

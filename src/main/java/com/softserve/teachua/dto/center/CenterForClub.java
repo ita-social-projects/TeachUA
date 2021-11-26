@@ -18,7 +18,6 @@ import java.util.Set;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CenterForClub {
-
     private Long id;
 
     private String name;
@@ -42,6 +41,4 @@ public class CenterForClub {
     private Set<LocationResponse> locations;
 
     private Set<ContactDataResponse> contacts;
-
-
 }

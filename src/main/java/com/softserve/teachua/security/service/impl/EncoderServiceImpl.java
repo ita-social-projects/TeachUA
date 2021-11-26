@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EncoderServiceImpl implements EncoderService {
-
     private JwtProvider jwtProvider;
 
     private PasswordEncoder passwordEncoder;
@@ -34,5 +33,4 @@ public class EncoderServiceImpl implements EncoderService {
     public String encodePassword(String rawPassword) {
         return passwordEncoder.encode(rawPassword);
     }
-
 }

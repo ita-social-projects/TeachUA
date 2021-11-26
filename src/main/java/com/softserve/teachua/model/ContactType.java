@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "contact_type")
 public class ContactType implements Convertible, Archivable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,5 +23,4 @@ public class ContactType implements Convertible, Archivable {
 
     @Column
     private String urlLogo;
-
 }

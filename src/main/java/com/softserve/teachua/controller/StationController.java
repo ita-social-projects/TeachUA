@@ -1,11 +1,15 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.dto.station.StationResponse;
 import com.softserve.teachua.dto.station.SuccessCreatedStation;
 import com.softserve.teachua.service.StationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +17,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * This controller is for managing the stations.
+ * */
+
 @RestController
+@Tag(name = "station", description = "the Station API")
+@SecurityRequirement(name = "api")
 public class StationController implements Api {
     private final StationService stationService;
 
@@ -23,10 +33,11 @@ public class StationController implements Api {
     }
 
     /**
-     * The controller returns dto {@code StationResponse} of station.
+     * Use this endpoint to get station by id.
+     * The controller returns {@code StationResponse}.
      *
      * @param id - put station id.
-     * @return new {@code StationResponse}.
+     * @return {@code StationResponse}.
      */
     @GetMapping("/station/{id}")
     public StationResponse getStation(@PathVariable long id) {
@@ -34,12 +45,13 @@ public class StationController implements Api {
     }
 
     /**
-     * The controller returns dto {@code SuccessCreatedStation} of created station.
+     * Use this endpoint to create station.
+     * The controller returns {@code SuccessCreatedStation}.
      *
-     * @param stationProfile - place body to {@link StationProfile}.
+     * @param stationProfile - place body to {@code StationProfile}.
      * @return new {@code SuccessCreatedStation}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/station")
     public SuccessCreatedStation addStation(
             @Valid
@@ -48,13 +60,14 @@ public class StationController implements Api {
     }
 
     /**
-     * The controller returns dto {@code StationProfile} about updated Station.
+     * Use this endpoint to update station by id.
+     * The controller returns {@code StationProfile}.
      *
      * @param id             - put station id.
      * @param stationProfile - place body to {@link CityProfile}.
-     * @return new {@code StationProfile}.
+     * @return {@code StationProfile}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/station/{id}")
     public StationProfile updateStation(
             @PathVariable Long id,
@@ -64,9 +77,10 @@ public class StationController implements Api {
     }
 
     /**
-     * The controller returns list of dto {@code List<StationResponse>} of stations.
+     * Use this endpoint to get all stations.
+     * The controller returns list of {@code List<StationResponse>}.
      *
-     * @return new {@code List<StationResponse>}.
+     * @return {@code List<StationResponse>}.
      */
     @GetMapping("/stations")
     public List<StationResponse> getStations() {
@@ -74,10 +88,11 @@ public class StationController implements Api {
     }
 
     /**
-     * The controller returns list of dto {@code List<StationResponse>} of station.
+     * Use this endpoint to get stations by name.
+     * The controller returns list of {@code List<StationResponse>}.
      *
      * @param name - put city name.
-     * @return new {@code List<StationResponse>}.
+     * @return {@code List<StationResponse>}.
      */
     @GetMapping("/stations/{name}")
     public List<StationResponse> getStationsByCityName(@PathVariable String name) {
@@ -85,12 +100,13 @@ public class StationController implements Api {
     }
 
     /**
-     * The controller returns dto {@code StationResponse} of deleted station.
+     * Use this endpoint to delete station by id.
+     * The controller returns {@code StationResponse}.
      *
      * @param id - put station id.
-     * @return new {@code StationResponse}.
+     * @return {@code StationResponse}.
      */
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/station/{id}")
     public StationResponse deleteStation(@PathVariable Long id) {
         return stationService.deleteStationById(id);

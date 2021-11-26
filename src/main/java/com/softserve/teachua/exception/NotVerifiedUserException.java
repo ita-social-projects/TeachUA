@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 /**
- * This class is custom exception to check problems with user verification after registration
+ * This class is custom exception to check problems with user verification after registration.
  * <p>
  * The constructor accepts message for Exception
  * <p>
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @Slf4j
 public class NotVerifiedUserException extends RuntimeException {
-
     private static final long serialVersionUID = 1L;
     private static final String NOT_VERIFIED_USER_EXCEPTION = "Not verified user exception";
 

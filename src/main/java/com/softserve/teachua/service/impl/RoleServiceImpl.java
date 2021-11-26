@@ -41,17 +41,12 @@ public class RoleServiceImpl implements RoleService {
         this.dtoConverter = dtoConverter;
     }
 
-    /**
-     * The method returns list of existing {@link  Role}.
-     *
-     * @return list of {@link  Role}.
-     */
     @Override
     public List<RoleResponse> getListOfRoles() {
         log.debug("**/getting all roles");
         return roleRepository.findAll()
                 .stream()
-                .map(role -> (RoleResponse)dtoConverter.convertToDto(role, RoleResponse.class))
+                .map(role -> (RoleResponse) dtoConverter.convertToDto(role, RoleResponse.class))
                 .collect(Collectors.toList());
     }
 
@@ -60,13 +55,6 @@ public class RoleServiceImpl implements RoleService {
         return dtoConverter.convertToDto(getRoleById(id), RoleResponse.class);
     }
 
-    /**
-     * The method returns {@link  Role} by role id.
-     *
-     * @param id - put role id.
-     * @return Role {@link  Role}.
-     * @throws NotExistException {@link NotExistException} if the role doesn't exist.
-     */
     @Override
     public Role getRoleById(Integer id) {
         Optional<Role> optionalRole = getOptionalRoleById(id);
@@ -78,14 +66,6 @@ public class RoleServiceImpl implements RoleService {
         return optionalRole.get();
     }
 
-    /**
-     * The method updates existing role by role id.
-     *
-     * @param id          - put role id.
-     * @param roleProfile - put RoleProfile to updating role
-     * @return RoleProfile {@link  RoleProfile}.
-     * @throws NotExistException {@link NotExistException} if the role doesn't exist.
-     */
     @Override
     public RoleProfile updateRole(Integer id, RoleProfile roleProfile) {
         Role role = getRoleById(id);
@@ -96,13 +76,6 @@ public class RoleServiceImpl implements RoleService {
         return dtoConverter.convertToDto(roleRepository.save(newRole), RoleProfile.class);
     }
 
-    /**
-     * The method returns {@link  Role} by role name.
-     *
-     * @param name - put role name.
-     * @return RoleResponse {@link  RoleResponse}.
-     * @throws NotExistException {@link NotExistException} if the role doesn't exist.
-     */
     @Override
     public Role findByName(String name) {
         Optional<Role> optionalRole = roleRepository.findByName(name);
@@ -114,13 +87,6 @@ public class RoleServiceImpl implements RoleService {
         return optionalRole.get();
     }
 
-    /**
-     * The method adds new role {@link  Role}
-     *
-     * @param roleProfile - put RoleProfile to adding new role
-     * @return RoleProfile {@link  RoleProfile}.
-     * @throws AlreadyExistException {@link AlreadyExistException} if the same role already exists.
-     */
     @Override
     public RoleProfile addNewRole(RoleProfile roleProfile) {
         if (isRoleExistByName(roleProfile.getRoleName())) {
@@ -132,14 +98,6 @@ public class RoleServiceImpl implements RoleService {
         return dtoConverter.convertToDto(role, RoleProfile.class);
     }
 
-    /**
-     * The method deletes role {@link  Role}
-     *
-     * @param id - id of role to delete
-     * @return RoleRespone {@link  RoleResponse}.
-     * @throws NotExistException           {@link NotExistException} if the role doesn't exist.
-     * @throws DatabaseRepositoryException {@link DatabaseRepositoryException} if role has re.
-     */
     @Override
     public RoleResponse deleteRoleById(Integer id) {
         Role role = getRoleById(id);

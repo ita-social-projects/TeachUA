@@ -46,10 +46,11 @@ public class ExcelRowParser {
         if (headerRow != null) {
             XSSFCell cell = headerRow.getCell(column);
             if (cell != null) {
-                if (cell.getCellType() == CellType.STRING)
+                if (cell.getCellType() == CellType.STRING) {
                     return cell.getStringCellValue();
-                else
+                } else {
                     return cell.getRawValue();
+                }
             }
         }
         return UNNAMED_COLUMN_TITLE;
@@ -84,7 +85,6 @@ public class ExcelRowParser {
                         .build()
                 );
             }
-
         }
         return "";
     }
@@ -92,7 +92,7 @@ public class ExcelRowParser {
     public boolean isColumnEmpty(int column) {
         XSSFCell cell = row.getCell(column);
         log.debug("========================================");
-        log.debug("== columnNumber : "+column);
+        log.debug("== columnNumber : " + column);
 
         if (cell != null) {
             log.debug("===isColumnEmpty method==== cell: ");
@@ -102,10 +102,11 @@ public class ExcelRowParser {
             } else {
                 log.debug("++++ cell type is not a string");
 
-                if(cell.getRawValue() == null)
+                if (cell.getRawValue() == null) {
                     return true;
-                else
+                } else {
                     return cell.getRawValue().isEmpty();
+                }
             }
         }
         return true;
@@ -123,7 +124,6 @@ public class ExcelRowParser {
             log.debug("===coordinates ====");
             log.debug(Arrays.toString(coordinateStrings));
             if (coordinateStrings.length != 2 || coordinateStrings[0].isEmpty() || coordinateStrings[1].isEmpty()) {
-
                 errorsFlag = true;
                 mistakes.add(ExcelParsingMistake.builder()
                         .cellValue(coordinates)
@@ -134,7 +134,6 @@ public class ExcelRowParser {
                         .critical(true)
                         .build()
                 );
-
             } else {
                 try {
                     double longitude = Double.parseDouble(coordinateStrings[0]);
@@ -150,7 +149,6 @@ public class ExcelRowParser {
                             .sheetName(sheet.getSheetName())
                             .critical(true)
                             .build()
-
                     );
                 }
             }
@@ -158,24 +156,25 @@ public class ExcelRowParser {
         return new Double[]{null, null};
     }
 
-    public List<String> parseCategories(int column, boolean maybeEmpty){
+    public List<String> parseCategories(int column, boolean maybeEmpty) {
         List<String> result = new ArrayList<>();
 
         String categories = getString(column, maybeEmpty, ExcelErrorType.CRITICAL);
         String[] categoriesArray = categories.split(",");
-        for(String category: categoriesArray){
+        for (String category : categoriesArray) {
             String categoryString = category.trim();
-            if(!categoryString.isEmpty())
+            if (!categoryString.isEmpty()) {
                 result.add(category.trim());
+            }
         }
-        if(result.isEmpty())
+        if (result.isEmpty()) {
             result.add(DEFAULT_CATEGORY_NAME);
+        }
         return result;
     }
 
-    public List<String> parseCategories(int column){
+    public List<String> parseCategories(int column) {
         return parseCategories(column, false);
-
     }
 
     public Integer[] parseAges(int column) {
@@ -184,50 +183,47 @@ public class ExcelRowParser {
 
 
     public Integer[] parseAges(int column, boolean maybeEmpty) {
-
         String ages = getString(column, maybeEmpty, ExcelErrorType.CRITICAL);
 
         if (!ages.isEmpty()) {
             // regEx that replace all word characters and space to nothing
-            try{
+            try {
                 String formattedAges = ages.replaceAll("[a-zA-Z.,:' ]", "");
-                log.debug("  ages : "+ ages);
-                log.debug("=== ageString after replace : " +formattedAges);
-                String [] fromToAges = formattedAges.split("-");
-                if(fromToAges.length<2){
+                log.debug("  ages : " + ages);
+                log.debug("=== ageString after replace : " + formattedAges);
+                String[] fromToAges = formattedAges.split("-");
+                if (fromToAges.length < 2) {
                     return new Integer[]{null, null};
                 }
-                return new Integer[]
-                        {Integer.parseInt(fromToAges[0]),Integer.parseInt(fromToAges[1])};
-
-            }catch (NumberFormatException e){
+                return new Integer[]{Integer.parseInt(fromToAges[0]), Integer.parseInt(fromToAges[1])};
+            } catch (NumberFormatException e) {
                 log.error(e.getMessage());
             }
         }
 
-//        code below is temporarily useless because of improvement of excel file
+        //        code below is temporarily useless because of improvement of excel file
 
-//        if (!ages.isEmpty()) {
-//            Pattern p = Pattern.compile("\\d+");
-//            Matcher m = p.matcher(ages);
-//
-//            int minAge = 1000;
-//            int maxAge = 0;
-//
-//            while (m.find()) {
-//                String ageString = m.group();
-//
-//                int age = Integer.parseInt(ageString);
-//
-//                if (age <= minAge)
-//                    minAge = age;
-//
-//                if (age >= maxAge)
-//                    maxAge = age;
-//            }
-//
-//            return new Integer[]{minAge, maxAge};
-//        }
+        //        if (!ages.isEmpty()) {
+        //            Pattern p = Pattern.compile("\\d+");
+        //            Matcher m = p.matcher(ages);
+        //
+        //            int minAge = 1000;
+        //            int maxAge = 0;
+        //
+        //            while (m.find()) {
+        //                String ageString = m.group();
+        //
+        //                int age = Integer.parseInt(ageString);
+        //
+        //                if (age <= minAge)
+        //                    minAge = age;
+        //
+        //                if (age >= maxAge)
+        //                    maxAge = age;
+        //            }
+        //
+        //            return new Integer[]{minAge, maxAge};
+        //        }
         return new Integer[]{null, null};
     }
 

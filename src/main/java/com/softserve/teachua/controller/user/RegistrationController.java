@@ -5,6 +5,8 @@ import com.softserve.teachua.dto.user.SuccessRegistration;
 import com.softserve.teachua.dto.user.SuccessVerification;
 import com.softserve.teachua.dto.user.UserProfile;
 import com.softserve.teachua.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -16,8 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * This controller is for managing the registration process.
+ * */
+
 @RestController
 @Slf4j
+@Tag(name = "registration", description = "the Registration API")
+@SecurityRequirement(name = "api")
 public class RegistrationController implements Api {
     private final UserService userService;
 

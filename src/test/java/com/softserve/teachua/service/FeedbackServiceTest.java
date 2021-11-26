@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.feedback.FeedbackProfile;
@@ -8,6 +9,7 @@ import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Feedback;
+import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
@@ -18,23 +20,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-
 import javax.servlet.http.HttpServletRequestWrapper;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.nullable;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -71,10 +69,13 @@ public class FeedbackServiceTest {
 
 
     private Feedback feedback;
+    private Feedback updFeedback;
     private FeedbackProfile feedbackProfile;
+    private FeedbackResponse updFeedbackResponse;
     private FeedbackResponse feedbackResponse;
     private User user;
     private Club club;
+    private Role role;
 
     private final long EXISTING_ID = 1L;
     private final long NOT_EXISTING_ID = 2L;
@@ -87,18 +88,22 @@ public class FeedbackServiceTest {
     private final String NEW_TEXT = "New feedback";
     private final Long USER_ID = 12L;
     private final String USER_EMAIL = "test@gmail.com";
+    private final Integer ROLE_ID = 3;
 
      @BeforeEach
     public void setMocks() {
         club = Club.builder().id(EXISTING_CLUB_ID).build();
-        feedback = Feedback.builder().id(EXISTING_ID).text(EXISTING_TEXT).club(club).build();
-        feedbackProfile = FeedbackProfile.builder().id(EXISTING_ID).text(NEW_TEXT).clubId(club.getId()).build();
-        feedbackResponse = FeedbackResponse.builder().text(EXISTING_TEXT).build();
-        user = User.builder().id(EXISTING_USER_ID).build();
+        role = Role.builder().id(ROLE_ID).name(RoleData.ADMIN.getDBRoleName()).build();
+        user = User.builder().id(EXISTING_USER_ID).email(USER_EMAIL).role(role).build();
+        feedback = Feedback.builder().id(EXISTING_ID).text(EXISTING_TEXT).club(club).user(user).build();
+        feedbackProfile = FeedbackProfile.builder().id(EXISTING_ID).text(NEW_TEXT).userId(USER_ID).clubId(club.getId()).build();
+        feedbackResponse = FeedbackResponse.builder().text(EXISTING_TEXT).user(user).id(EXISTING_ID).build();
+        updFeedback = Feedback.builder().id(EXISTING_ID).text(NEW_TEXT).club(club).user(user).build();
+        updFeedbackResponse = FeedbackResponse.builder().text(NEW_TEXT).user(user).club(club).id(EXISTING_ID).build();
     }
 
     @Test
-    public void getFeedbackByCorrectIdShouldReturnCorrectFeedBack() {
+    public void getFeedbackByCorrectIdShouldReturnCorrectFeedback() {
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         Feedback actual = feedbackService.getFeedbackById(EXISTING_ID);
         assertEquals(actual, feedback);
@@ -186,22 +191,19 @@ public class FeedbackServiceTest {
 
     @Test
     public void updateFeedbackProfileByExistingIdShouldReturnFeedbackProfile(){
-        Feedback updFeedback = Feedback.builder().id(EXISTING_ID).club(club).user(user).text(NEW_TEXT).build();
         when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
-        feedbackProfile.setClubId(club.getId());
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         when(dtoConverter.convertToEntity(feedbackProfile, feedback)).thenReturn(updFeedback);
+        when(dtoConverter.convertToDto(feedback, FeedbackResponse.class))
+                .thenReturn(feedbackResponse);
         when(feedbackRepository.save(updFeedback)).thenReturn(updFeedback);
-
-//        when(feedbackRepository.findAvgRating(EXISTING_CLUB_ID)).thenReturn(CLUB_RATING);
-//        doNothing().when(clubRepository).updateRating(EXISTING_CLUB_ID, CLUB_RATING);
         when(dtoConverter.convertToDto(updFeedback, FeedbackResponse.class))
-                .thenReturn(FeedbackResponse.builder().id(EXISTING_ID).text(NEW_TEXT).club(club).user(user).build());
+                .thenReturn(updFeedbackResponse);
 
-        FeedbackResponse actual = feedbackService.updateFeedbackProfileById(EXISTING_ID, feedbackProfile, httpServletRequest);
+        when(clubService.updateRatingEditFeedback(feedbackResponse, updFeedbackResponse)).thenReturn(null);
 
-        assertEquals(updFeedback.getText(), actual.getText());
-        assertEquals(updFeedback.getId(), actual.getId());
+        assertThat(feedbackService.updateFeedbackProfileById(EXISTING_ID, feedbackProfile, httpServletRequest))
+                .isEqualTo(updFeedbackResponse);
     }
 
     @Test

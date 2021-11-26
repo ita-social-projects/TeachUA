@@ -19,7 +19,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CenterExcel implements Convertible {
-
     private Long centerExternalId;
 
     @NotBlank
@@ -39,11 +38,10 @@ public class CenterExcel implements Convertible {
     // site field can include social media too
     private String site;
 
-//    private String city;
-//    private String address;
-//    private Double longitude;
-//    private Double latitude;
-//    private String district;
-//    private String station;
-
+    //    private String city;
+    //    private String address;
+    //    private Double longitude;
+    //    private Double latitude;
+    //    private String district;
+    //    private String station;
 }

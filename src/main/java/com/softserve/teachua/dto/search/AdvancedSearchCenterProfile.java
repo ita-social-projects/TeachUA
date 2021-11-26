@@ -9,7 +9,6 @@ import org.springframework.lang.Nullable;
 @NoArgsConstructor
 @Data
 public class AdvancedSearchCenterProfile {
-
     @Nullable
     private String districtName;
 
@@ -18,5 +17,4 @@ public class AdvancedSearchCenterProfile {
 
     @Nullable
     private String stationName;
-
 }

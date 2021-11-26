@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class SuccessUpdatedUser implements Convertible {
-
     private Long id;
     private String firstName;
     private String lastName;
@@ -20,5 +19,4 @@ public class SuccessUpdatedUser implements Convertible {
     private String roleName;
     private String urlLogo;
     private String status;
-
 }

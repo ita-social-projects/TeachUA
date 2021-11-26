@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import javax.validation.ValidationException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +37,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest {
-
     private final static Long CORRECT_ID = 1L;
     private final static Long WRONG_ID = 1000L;
     private final static String CORRECT_NAME = "Correct name";
@@ -50,21 +50,20 @@ public class CategoryServiceTest {
     private ArchiveService archiveService;
     @InjectMocks
     private CategoryServiceImpl categoryService;
-    private Category correctCategory;
-    private CategoryProfile categoryProfile;
+    private Category correctCategory = Category.builder()
+            .id(CORRECT_ID)
+            .name(CORRECT_NAME)
+            .build();
+    ;
+    private CategoryProfile categoryProfile = CategoryProfile.builder()
+            .id(CORRECT_ID)
+            .name(CORRECT_NAME)
+            .build();
     private List<Category> list;
     private List<CategoryResponse> responseList;
 
     @BeforeEach
     public void setMocks() {
-        correctCategory = Category.builder()
-                .id(CORRECT_ID)
-                .name(CORRECT_NAME)
-                .build();
-        categoryProfile = CategoryProfile.builder()
-                .id(CORRECT_ID)
-                .name(CORRECT_NAME)
-                .build();
         list = new LinkedList<>();
         for (long i = 1L; i <= 3; i++) {
             list.add(Category.builder()
@@ -138,7 +137,7 @@ public class CategoryServiceTest {
 
     @Test
     public void getAllCategoriesWhenThereAreNoCategoriesShouldReturnEmptyList() {
-        when(categoryRepository.findInSortedOrder()).thenReturn(null);
+        when(categoryRepository.findInSortedOrder()).thenReturn(Collections.emptyList());
         assertThat(categoryService.getAllCategories()).hasSize(0);
     }
 
@@ -152,7 +151,7 @@ public class CategoryServiceTest {
 
     @Test
     public void getListOfCategoriesWhenThereAreNoCategoriesShouldReturnEmptyPage() {
-        when(categoryRepository.findAll(pageRequest)).thenReturn(null);
+        when(categoryRepository.findAll(pageRequest)).thenReturn(Page.empty(pageRequest));
         assertThat(categoryService.getListOfCategories(pageRequest)).hasSize(0);
     }
 
@@ -190,7 +189,7 @@ public class CategoryServiceTest {
 
     @Test
     public void getPossibleCategoryByNameShouldReturnEmptyListIfThereAreNoCategories() {
-        when(categoryRepository.findRandomTop3ByName(CORRECT_NAME)).thenReturn(null);
+        when(categoryRepository.findRandomTop3ByName(CORRECT_NAME)).thenReturn(Collections.emptyList());
         assertThat(categoryService.getPossibleCategoryByName(CORRECT_NAME)).hasSize(0);
     }
 
@@ -213,5 +212,4 @@ public class CategoryServiceTest {
             when(dtoConverter.convertToDto(list.get(i), CategoryResponse.class)).thenReturn(responseList.get(i));
         }
     }
-
 }
