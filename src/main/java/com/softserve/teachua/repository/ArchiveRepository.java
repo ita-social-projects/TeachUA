@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Provides an interface to manage {@link Archive} archive
+ * Provides an interface to manage {@link Archive} archive.
  */
 @Repository
 public interface ArchiveRepository extends JpaRepository<Archive, Long> {

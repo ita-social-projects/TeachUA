@@ -9,13 +9,12 @@ import javax.validation.ConstraintValidatorContext;
 
 @Slf4j
 public class NameValidator implements ConstraintValidator<Name, String> {
-
-    private final String NULL_EXCEPTION = "\"%s\" can`t be null";
-    private final String EMPTY_EXCEPTION = "\"%s\" can`t be empty";
-    private final String LENGTH_EXCEPTION = "\"%s\" can contain from 1 to 25 letters";
-    private final String RUSSIAN_EXCEPTION = "\"%s\" can`t contain russian letters";
-    private final String NUMBERS_EXCEPTION = "\"%s\" can`t contain numbers";
-    private final String CAN_CONTAIN_TEXT = "\"%s\" can contain only ukrainian and english letters";
+    private static final String NULL_EXCEPTION = "\"%s\" can`t be null";
+    private static final String EMPTY_EXCEPTION = "\"%s\" can`t be empty";
+    private static final String LENGTH_EXCEPTION = "\"%s\" can contain from 1 to 25 letters";
+    private static final String RUSSIAN_EXCEPTION = "\"%s\" can`t contain russian letters";
+    private static final String NUMBERS_EXCEPTION = "\"%s\" can`t contain numbers";
+    private static final String CAN_CONTAIN_TEXT = "\"%s\" can contain only ukrainian and english letters";
 
     @Override
     public boolean isValid(String text, ConstraintValidatorContext constraintValidatorContext) {

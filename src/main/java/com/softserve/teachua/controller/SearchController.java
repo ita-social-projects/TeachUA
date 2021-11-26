@@ -13,9 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * This controller is for managing the searching process.
+ * */
+
 @RestController
 @Validated
-@Tag(name="search", description="the Search API")
+@Tag(name = "search", description = "the Search API")
 @SecurityRequirement(name = "api")
 public class SearchController implements Api {
     private final CategoryService categoryService;
@@ -30,6 +34,7 @@ public class SearchController implements Api {
     /**
      * Use this endpoint to get possible results of search by entered text.
      * The controller returns {@code CombinedPossibleResponse}.
+     *
      * @param text - put search text.
      * @return {@link CombinedPossibleResponse }
      */

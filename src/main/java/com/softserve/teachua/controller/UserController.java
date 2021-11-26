@@ -21,9 +21,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * This controller is for managing the users.
+ * */
+
 @Slf4j
 @RestController
-@Tag(name="user", description="the User API")
+@Tag(name = "user", description = "the User API")
 @SecurityRequirement(name = "api")
 public class UserController implements Api {
     private final UserService userService;
@@ -38,6 +42,7 @@ public class UserController implements Api {
     /**
      * Use this endpoint to get user by id.
      * The controller returns {@code UserResponse}.
+     *
      * @param id - put user id.
      * @return {@code UserResponse}.
      */
@@ -50,7 +55,8 @@ public class UserController implements Api {
     /**
      * Use this endpoint to get user by email.
      * The controller returns {@code User}.
-     * @param email - put user email.
+     *
+     * @param email              - put user email.
      * @param httpServletRequest - autowired by spring.
      * @return {@code User}.
      */
@@ -63,6 +69,7 @@ public class UserController implements Api {
     /**
      * Use this endpoint to get users.
      * The controller returns {@code List <UserResponse>}.
+     *
      * @return new {@code List <UserResponse>}.
      */
     @GetMapping("/users")
@@ -73,8 +80,9 @@ public class UserController implements Api {
     /**
      * Use this endpoint to update user by id.
      * The controller returns {@code SuccessUpdatedUser}.
-     * @param id - put user id.
-     * @param userProfile - Place dto with all parameters for update existed user.
+     *
+     * @param id                 - put user id.
+     * @param userProfile        - Place dto with all parameters for update existed user.
      * @param httpServletRequest - autowired by spring.
      * @return {@code SuccessUpdatedUser}.
      */
@@ -107,10 +115,11 @@ public class UserController implements Api {
 
     /**
      * Use this endpoint to change user password.
-     *The controller returns {@code UserResponse}.
+     * The controller returns {@code UserResponse}.
+     *
      * @param httpServletRequest - autowired by spring.
-     * @param passwordUpdate - password
-     * @param id - id
+     * @param passwordUpdate     - password
+     * @param id                 - id
      */
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/user/{id}")

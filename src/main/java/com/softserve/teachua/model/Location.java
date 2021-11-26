@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "locations")
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Location implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

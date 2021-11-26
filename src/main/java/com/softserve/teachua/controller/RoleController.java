@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * This controller is for managing the roles.
+ * */
+
 @RestController
-@Tag(name="role", description="the Role API")
+@Tag(name = "role", description = "the Role API")
 @SecurityRequirement(name = "api")
 public class RoleController implements Api {
     private final RoleService roleService;
@@ -28,6 +32,7 @@ public class RoleController implements Api {
     /**
      * Use this endpoint to return a role.
      * The controller returns {@code RoleResponse}.
+     *
      * @param id - put role id.
      * @return {@code RoleResponse}
      */
@@ -40,6 +45,7 @@ public class RoleController implements Api {
     /**
      * Use this endpoint to add a new role.
      * The controller returns {@code RoleProfile}.
+     *
      * @param roleProfile - put json role here.
      * @return new {@code RoleProfile}
      */
@@ -52,6 +58,7 @@ public class RoleController implements Api {
     /**
      * Use this endpoint to update existing role.
      * The controller returns {@code RoleProfile}.
+     *
      * @param id          - put role id.
      * @param roleProfile - put json role
      * @return new {@code RoleProfile}
@@ -68,6 +75,7 @@ public class RoleController implements Api {
     /**
      * Use this endpoint to delete role by id.
      * The controller returns {@code RoleResponse}.
+     *
      * @param id - put role id here.
      * @return {@code RoleResponse}
      */
@@ -80,6 +88,7 @@ public class RoleController implements Api {
     /**
      * Use this endpoint to return array of existing roles.
      * The controller returns {@code List<RoleResponse>}.
+     *
      * @return {@code List<RoleResponse>}
      */
     @AllowedRoles(RoleData.ADMIN)

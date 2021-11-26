@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class RoleResponse implements Convertible {
-
     private Integer id;
     private String roleName;
 }

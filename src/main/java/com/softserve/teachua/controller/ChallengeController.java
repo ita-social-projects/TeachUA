@@ -19,8 +19,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * This controller is for managing the challenges.
+ * */
+
 @RestController
-@Tag(name="challenge", description="the Challenge API")
+@Tag(name = "challenge", description = "the Challenge API")
 @SecurityRequirement(name = "api")
 public class ChallengeController implements Api {
     private final ChallengeService challengeService;
@@ -33,10 +37,11 @@ public class ChallengeController implements Api {
     /**
      * Use this endpoint to get all challenges, either active or non-active challenges.
      * The controller returns {@code List<ChallengePreview>}.
+     *
      * @param active - Ignore this param to get all challenges, or put true/false to get active or not challenges.
      * @return {@code List<ChallengePreview>}.
      */
-//    @Operation(summary = "Get all challenges")
+    // @Operation(summary = "Get all challenges")
     @GetMapping("/challenges")
     public List<ChallengePreview> getAllChallenges(@RequestParam(required = false) Boolean active) {
         return challengeService.getAllChallenges(active);
@@ -46,6 +51,7 @@ public class ChallengeController implements Api {
      * Use this endpoint to get full information about challenge by its id with tasks that have already begun.
      * Only the admin can get the challenge if it is not active.
      * The controller returns {@code ChallengeProfile}.
+     *
      * @param id - put challenge id here.
      * @return {@code ChallengeProfile}.
      */
@@ -58,6 +64,7 @@ public class ChallengeController implements Api {
      * Use this endpoint to create new challenge.
      * The controller returns {@code SuccessCreatedChallenge}.
      * This feature available only for admins.
+     *
      * @param createChallenge    - put required parameters here.
      * @param httpServletRequest - autowired by spring to get user from request.
      * @return {@code SuccessCreatedChallenge}.

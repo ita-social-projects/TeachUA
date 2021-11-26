@@ -17,7 +17,6 @@ import java.util.Set;
 @Data
 @Builder
 public class CenterResponse implements Convertible {
-
     private Long id;
 
     private String name;

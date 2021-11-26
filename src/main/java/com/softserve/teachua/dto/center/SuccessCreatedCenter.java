@@ -15,7 +15,6 @@ import java.util.List;
 @Builder
 @Data
 public class SuccessCreatedCenter implements Convertible {
-
     private Long id;
 
     private Long userId;
@@ -35,5 +34,4 @@ public class SuccessCreatedCenter implements Convertible {
     private String contacts;
 
     private List<LocationProfile> locations;
-
 }

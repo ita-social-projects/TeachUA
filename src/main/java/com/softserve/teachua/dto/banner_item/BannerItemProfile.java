@@ -14,7 +14,6 @@ import javax.validation.constraints.*;
 @Builder
 @Data
 public class BannerItemProfile implements Convertible {
-
     private Long id;
 
     @NotBlank

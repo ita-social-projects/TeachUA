@@ -16,13 +16,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * This controller is for managing the complaints.
+ * */
 
 @Slf4j
 @RestController
-@Tag(name="complaint", description="the Complaint API")
+@Tag(name = "complaint", description = "the Complaint API")
 @SecurityRequirement(name = "api")
 public class ComplaintController implements Api {
-
     private final ComplaintService complaintService;
 
     @Autowired
@@ -33,6 +35,7 @@ public class ComplaintController implements Api {
     /**
      * Use this endpoint to get Complaint by id.
      * The controller returns {@code ComplaintResponse}.
+     *
      * @param id - put complaint id here.
      * @return {@link ComplaintResponse}
      */
@@ -44,6 +47,7 @@ public class ComplaintController implements Api {
     /**
      * Use this endpoint to get all Complaints.
      * The controller returns {@code List<ComplaintResponse>}.
+     *
      * @return {@code List<ComplaintResponse>}
      */
     @GetMapping("/complaints")
@@ -54,8 +58,9 @@ public class ComplaintController implements Api {
     /**
      * Use this endpoint to get all Complaints by club id
      * The controller returns {@code List<ComplaintResponse>}.
+     *
      * @param id - put club id here.
-     * @return {@link List<ComplaintResponse>}
+     * @return {@code List<ComplaintResponse>}
      */
     @GetMapping("/complaints/club/{id}")
     public List<ComplaintResponse> getAllComplaints(@PathVariable Long id) {
@@ -65,6 +70,7 @@ public class ComplaintController implements Api {
     /**
      * Use this endpoint to create a new Complaint
      * The controller returns {@code SuccessCreatedComplaint}.
+     *
      * @param complaintProfile - put complaint information here.
      * @return new {@link SuccessCreatedComplaint}
      */
@@ -72,25 +78,28 @@ public class ComplaintController implements Api {
     @PostMapping("/complaint")
     public SuccessCreatedComplaint addComplaint(
             @Valid @RequestBody ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest) {
-        return complaintService.addComplaint(complaintProfile,httpServletRequest);
+        return complaintService.addComplaint(complaintProfile, httpServletRequest);
     }
 
     /**
      * Use this endpoint to update Complaint.
      * The controller returns {@code ComplaintProfile}.
+     *
      * @param id               Complaint id
      * @param complaintProfile Complaint profile with new data
-     * @return {@link ComplaintProfile}
+     * @return {@code ComplaintProfile}.
      */
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/complaint/{id}")
-    public ComplaintProfile updateComplaint(@PathVariable Long id,@Valid @RequestBody ComplaintProfile complaintProfile) {
+    public ComplaintProfile updateComplaint(@PathVariable Long id,
+                                            @Valid @RequestBody ComplaintProfile complaintProfile) {
         return complaintService.updateComplaintProfileById(id, complaintProfile);
     }
 
     /**
      * Use this endpoint to delete Complaint
      * The controller returns {@code ComplaintResponse}.
+     *
      * @param id - put complaint id here.
      * @return {@link ComplaintResponse}
      */
@@ -99,5 +108,4 @@ public class ComplaintController implements Api {
     public ComplaintResponse deleteComplaintById(@PathVariable Long id) {
         return complaintService.deleteComplaintById(id);
     }
-
 }

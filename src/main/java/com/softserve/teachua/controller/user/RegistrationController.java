@@ -18,9 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * This controller is for managing the registration process.
+ * */
+
 @RestController
 @Slf4j
-@Tag(name="registration", description="the Registration API")
+@Tag(name = "registration", description = "the Registration API")
 @SecurityRequirement(name = "api")
 public class RegistrationController implements Api {
     private final UserService userService;
@@ -32,6 +36,7 @@ public class RegistrationController implements Api {
 
     /**
      * The controller returns dto {@code SuccessRegistration} of sign-upped user.
+     *
      * @param code - code of user verification
      * @return new {@code SuccessRegistration}.
      */
@@ -54,7 +59,6 @@ public class RegistrationController implements Api {
             @Valid
             @RequestBody
                     UserProfile userProfile) {
-      
         log.debug("Controller \"signup\", userProfile = " + userProfile.toString());
         return userService.registerUser(userProfile);
     }

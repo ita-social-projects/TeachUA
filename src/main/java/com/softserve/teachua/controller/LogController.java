@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * This controller is for managing the logs.
+ * */
+
 @RestController
 @Hidden
 public class LogController implements Api {
@@ -23,18 +27,37 @@ public class LogController implements Api {
         this.logService = logService;
     }
 
+    /**
+     * Use this endpoint to get all logs.
+     * The controller returns list of {@code List<String>}.
+     *
+     * @return new {@code List<String>}.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/logs")
     public List<String> getLogs() {
         return logService.getAllLogs();
     }
 
+    /**
+     * Use this endpoint to get logs by name
+     * The controller returns  {@code List<String>}.
+     *
+     * @param name - put log name.
+     * @return {@code List<String>}.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/log/{name}")
     public List<String> getLogByName(@PathVariable String name) {
         return logService.getLogByName(name);
     }
 
+    /**
+     * Use this endpoint to delete all logs.
+     * The controller returns {@code Boolean}.
+     *
+     * @return new {@code Boolean}.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/logs")
     public Boolean deleteAllLogs() {

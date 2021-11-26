@@ -16,8 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * This controller is for managing the contact types.
+ * */
+
 @RestController
-@Tag(name="contact", description="the Contact API")
+@Tag(name = "contact", description = "the Contact API")
 @SecurityRequirement(name = "api")
 public class ContactTypeController implements Api {
     private final ContactTypeService contactTypeService;
@@ -30,6 +34,7 @@ public class ContactTypeController implements Api {
     /**
      * Use this endpoint to get contact type by id.
      * The controller returns {@code ContactType}.
+     *
      * @param id - put id here.
      * @return {@code ContactType}.
      */
@@ -41,6 +46,7 @@ public class ContactTypeController implements Api {
     /**
      * Use this endpoint to create contact type.
      * The controller returns {@code SuccessCreatedContactType}.
+     *
      * @param contactTypeProfile - put contact type info here.
      * @return new {@code SuccessCreatedContactType}.
      */
@@ -53,7 +59,8 @@ public class ContactTypeController implements Api {
     /**
      * Use this endpoint to update contact type by id.
      * The controller returns {@code ContactTypeProfile}.
-     * @param id - put contact type id here.
+     *
+     * @param id                 - put contact type id here.
      * @param contactTypeProfile - put contact type info here.
      * @return {@code ContactTypeProfile}.
      */
@@ -68,6 +75,7 @@ public class ContactTypeController implements Api {
     /**
      * Use this endpoint to delete contact type by id.
      * The controller returns {@code ContactTypeResponse}.
+     *
      * @param id - put id here.
      * @return {@code ContactTypeResponse}.
      */
@@ -80,6 +88,7 @@ public class ContactTypeController implements Api {
     /**
      * Use this endpoint to get all contact types.
      * The controller returns {@code List<ContactTypeResponse>}.
+     *
      * @return new {@code List<ContactTypeResponse>}.
      */
     @GetMapping("/contact-types")

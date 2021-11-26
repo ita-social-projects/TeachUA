@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 public class ExcelParsingData {
-
     private final List<ClubExcel> clubs = new ArrayList<>();
     private final List<CenterExcel> centers = new ArrayList<>();
     private final List<CategoryExcel> categories = new ArrayList<>();
@@ -19,7 +18,5 @@ public class ExcelParsingData {
     private final List<LocationExcel> locations = new ArrayList<>();
 
     private final List<ExcelCenterEntity> excelCenters = new ArrayList<>();
-    private final List<ExcelClubEntity> excelClubs= new ArrayList<>();
-
-
+    private final List<ExcelClubEntity> excelClubs = new ArrayList<>();
 }

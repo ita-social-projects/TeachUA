@@ -5,8 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface AboutUsItemRepository  extends JpaRepository<AboutUsItem, Long> {
-
-    public List<AboutUsItem> findAllByOrderByNumberAsc();
-
+public interface AboutUsItemRepository extends JpaRepository<AboutUsItem, Long> {
+    List<AboutUsItem> findAllByOrderByNumberAsc();
 }

@@ -11,7 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @With
 public class ClubExcel implements Convertible {
-
     private String name;
     private List<String> categories;
     private Integer ageFrom;

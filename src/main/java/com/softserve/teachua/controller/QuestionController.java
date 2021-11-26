@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * This controller is for managing the questions.
+ * */
+
 @RestController
-@Tag(name="question", description="the Question API")
+@Tag(name = "question", description = "the Question API")
 @SecurityRequirement(name = "api")
 public class QuestionController implements Api {
     private final QuestionService questionService;
@@ -28,8 +32,9 @@ public class QuestionController implements Api {
     /**
      * Use this endpoint to get Question by id.
      * The controller returns {@code Question}.
+     *
      * @param id - put Question id here.
-     * @return  {@code Question}
+     * @return {@code Question}
      */
     @GetMapping("/question/{id}")
     public Question getNews(@PathVariable Long id) {
@@ -39,6 +44,7 @@ public class QuestionController implements Api {
     /**
      * Use this endpoint to create a new Question
      * The controller returns {@code QuestionResponse}.
+     *
      * @param questionProfile - object of DTO class
      * @return new {@code QuestionResponse}.
      */
@@ -51,7 +57,8 @@ public class QuestionController implements Api {
     /**
      * Use this endpoint to update Question by id.
      * The controller returns {@code QuestionProfile}.
-     * @param id - put question id here.
+     *
+     * @param id              - put question id here.
      * @param questionProfile - put question information here.
      * @return {@code QuestionProfile}
      */
@@ -64,6 +71,7 @@ public class QuestionController implements Api {
     /**
      * Use this endpoint to delete Question by id.
      * The controller returns {@code QuestionProfile}.
+     *
      * @param id - put question id here.
      * @return {@code QuestionProfile}
      */
@@ -76,6 +84,7 @@ public class QuestionController implements Api {
     /**
      * Use this endpoint to get all Questions.
      * The controller returns {@code List<QuestionResponse>}.
+     *
      * @return {@code List<QuestionResponse>}
      */
     @GetMapping("/questions")
