@@ -1,7 +1,6 @@
 package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
@@ -49,6 +48,5 @@ public class Category implements Convertible, Archivable {
     @ManyToMany(mappedBy = "categories")
     @JsonBackReference(value = "clubsInCategory")
     @ToString.Exclude
-    @JsonManagedReference
     private Set<Club> clubs = new HashSet<>();
 }

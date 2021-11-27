@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.utils.deserializers.HtmlModifyDeserialize;
 import com.softserve.teachua.utils.deserializers.TrimDeserialize;
 import com.softserve.teachua.utils.validations.CheckRussian;
@@ -21,7 +20,7 @@ import java.time.LocalDate;
 @Builder
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CreateTask implements Convertible, Archivable {
+public class CreateTask implements Convertible {
     @JsonDeserialize(using = TrimDeserialize.class)
     @NotBlank
     @CheckRussian

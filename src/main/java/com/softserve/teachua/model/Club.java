@@ -49,7 +49,6 @@ public class Club implements Convertible, Archivable {
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
     @ToString.Exclude
-    @JsonManagedReference
     private List<GalleryPhoto> urlGallery;
 
     @Column
@@ -68,7 +67,6 @@ public class Club implements Convertible, Archivable {
 
     @OneToMany(mappedBy = "club")
     @ToString.Exclude
-    @JsonManagedReference
     private Set<Location> locations;
 
     @ManyToMany
@@ -76,8 +74,6 @@ public class Club implements Convertible, Archivable {
             joinColumns = {@JoinColumn(name = "club_id")},
             inverseJoinColumns = {@JoinColumn(name = "category_id")})
     @ToString.Exclude
-    @JsonIgnore
-    @JsonManagedReference
     private Set<Category> categories = new HashSet<>();
 
     @ManyToOne
@@ -88,7 +84,6 @@ public class Club implements Convertible, Archivable {
     @ManyToOne
     @JoinColumn(name = "center_id", referencedColumnName = "id")
     @ToString.Exclude
-    @JsonBackReference
     private Center center;
 
     @Column
