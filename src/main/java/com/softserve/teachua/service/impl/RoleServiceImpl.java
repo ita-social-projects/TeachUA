@@ -102,7 +102,7 @@ public class RoleServiceImpl implements RoleService {
     public RoleResponse deleteRoleById(Integer id) {
         Role role = getRoleById(id);
 
-        archiveService.saveModel(role);
+//        archiveService.saveModel(role);
 
         try {
             roleRepository.deleteById(id);

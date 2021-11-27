@@ -1,14 +1,12 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.district.DistrictResponse;
 import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.dto.station.StationResponse;
 import com.softserve.teachua.dto.station.SuccessCreatedStation;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.model.District;
 import com.softserve.teachua.model.Station;
 import com.softserve.teachua.repository.StationRepository;
 import com.softserve.teachua.service.ArchiveService;
@@ -132,7 +130,7 @@ public class StationServiceImpl implements StationService {
     public StationResponse deleteStationById(Long id) {
         Station station = getStationById(id);
 
-        archiveService.saveModel(station);
+//        archiveService.saveModel(station);
 
         try {
             stationRepository.deleteById(id);

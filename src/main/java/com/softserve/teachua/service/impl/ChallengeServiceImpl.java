@@ -106,7 +106,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         challengeResponse.setTasks(new HashSet<>());
         Set<Task> taskSet = challenge.getTasks();
         challenge.setTasks(null);
-        archiveService.saveModel(challenge);
+//        archiveService.saveModel(challenge);
         taskSet.forEach((task) ->
                 challengeResponse.getTasks().add(
                         dtoConverter.convertFromDtoToDto(

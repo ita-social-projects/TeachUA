@@ -105,7 +105,7 @@ public class CityServiceImpl implements CityService {
     public CityResponse deleteCityById(Long id) {
         City city = getCityById(id);
 
-        archiveService.saveModel(city);
+//        archiveService.saveModel(city);
 
         try {
             cityRepository.deleteById(id);

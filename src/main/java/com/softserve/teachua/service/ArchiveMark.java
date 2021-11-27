@@ -1,5 +1,8 @@
 package com.softserve.teachua.service;
 
-public interface ArchiveMark{
+import com.softserve.teachua.model.marker.Archivable;
+
+public interface ArchiveMark <T extends Archivable>{
+    void archiveModel(T model);
     void restoreModel(String archiveObject);
 }

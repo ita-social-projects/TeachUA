@@ -129,7 +129,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     public ComplaintResponse deleteComplaintById(Long id) {
         Complaint complaint = getComplaintById(id);
 
-        archiveService.saveModel(complaint);
+//        archiveService.saveModel(complaint);
 
         try {
             complaintRepository.deleteById(id);

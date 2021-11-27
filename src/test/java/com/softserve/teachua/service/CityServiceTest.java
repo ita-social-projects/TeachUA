@@ -173,7 +173,7 @@ public class CityServiceTest {
     @Test
     void deleteCityByExistingIdShouldReturnCityResponse() {
         when(cityRepository.findById(EXISTING_ID)).thenReturn(Optional.of(city));
-        when(archiveService.saveModel(city)).thenReturn(city);
+//        when(archiveService.saveModel(city)).thenReturn(city);
         doNothing().when(cityRepository).deleteById(EXISTING_ID);
         doNothing().when(cityRepository).flush();
         when(dtoConverter.convertToDto(city, CityResponse.class))

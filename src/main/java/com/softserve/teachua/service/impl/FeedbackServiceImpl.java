@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class FeedbackServiceImpl implements FeedbackService, ArchiveMark {
+public class FeedbackServiceImpl implements FeedbackService {
     private static final String FEEDBACK_NOT_FOUND_BY_ID = "Feedback not found by id: %s";
     private static final String FEEDBACK_DELETING_ERROR = "Can't delete feedback cause of relationship";
     private static final String ACCESS_TO_FEEDBACK_DENIED = "User can edit/delete only own feedbacks";
@@ -124,7 +124,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark {
     public FeedbackResponse deleteFeedbackById(Long id) {
         Feedback feedback = getFeedbackById(id);
 
-        archiveService.saveModel(feedback);
+//        archiveService.saveModel(feedback);
 
         try {
             feedbackRepository.deleteById(id);
@@ -182,10 +182,10 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark {
         }
     }
 
-    @Override
-    public void restoreModel(String archiveObject) {
-        log.info("RESTORE FEEDBACK");
-        log.info("DATA: " + archiveObject);
+//    @Override
+//    public void restoreModel(String archiveObject) {
+//        log.info("RESTORE FEEDBACK");
+//        log.info("DATA: " + archiveObject);
 //        try {
 //            Map<String, Object> map = objectMapper.readValue(archiveObject, Map.class);
 //            log.info("map: " + map);
@@ -203,14 +203,14 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark {
 //            e.printStackTrace();
 //        }
 
-        try {
+//        try {
 
 //            JsonNode jsonNode = objectMapper.readTree(archiveObject);
 //            JsonParser jsonParser = objectMapper.treeAsTokens(jsonNode);
-            Feedback feedback = objectMapper.readValue(archiveObject, Feedback.class);
-            log.info("feedback: " + feedback);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
+//            Feedback feedback = objectMapper.readValue(archiveObject, Feedback.class);
+//            log.info("feedback: " + feedback);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

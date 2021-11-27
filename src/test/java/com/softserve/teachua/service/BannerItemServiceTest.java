@@ -174,7 +174,7 @@ public class BannerItemServiceTest {
     @Test
     public void deleteBannerItemWithExistingId() {
         when(bannerItemRepository.findById(EXISTING_ID)).thenReturn(Optional.of(bannerItem));
-        when(archiveService.saveModel(bannerItem)).thenReturn(bannerItem);
+//        when(archiveService.saveModel(bannerItem)).thenReturn(bannerItem);
         doNothing().when(bannerItemRepository).deleteById(EXISTING_ID);
         doNothing().when(bannerItemRepository).flush();
         when(dtoConverter.convertToDto(bannerItem, BannerItemResponse.class)).thenReturn(bannerItemResponse);

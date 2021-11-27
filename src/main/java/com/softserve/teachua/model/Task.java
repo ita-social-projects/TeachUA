@@ -1,14 +1,8 @@
 package com.softserve.teachua.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -38,12 +32,8 @@ public class Task implements Convertible, Archivable {
 
     @ManyToOne
     @JoinColumn(name = "challenge_id", referencedColumnName = "id")
-//    @EqualsAndHashCode.Exclude
-//    @ToString.Exclude
-//    @JsonIgnore
-//    @JsonIncludeProperties(value = "id")
-    @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Challenge challenge;
 
     @Column

@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -177,7 +176,7 @@ public class RoleServiceTest {
     @Test
     public void deleteRoleShouldReturnCorrectRoleResponse() {
         when(roleRepository.findById(CORRECT_ID)).thenReturn(Optional.of(correctRole));
-        when(archiveService.saveModel(correctRole)).thenReturn(correctRole);
+//        when(archiveService.saveModel(correctRole)).thenReturn(correctRole);
         doNothing().when(roleRepository).deleteById(CORRECT_ID);
         doNothing().when(roleRepository).flush();
         when(dtoConverter.convertToDto(correctRole, RoleResponse.class))

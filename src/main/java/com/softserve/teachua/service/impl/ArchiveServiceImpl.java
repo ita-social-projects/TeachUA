@@ -3,10 +3,9 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.exception.JsonWriteException;
+import com.softserve.teachua.dto.archive.ArchiveProfile;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Archive;
-import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.repository.ArchiveRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
@@ -52,29 +51,27 @@ public class ArchiveServiceImpl implements ArchiveService {
 
     @Override
     @Transactional
-    public <T extends Archivable> T saveModel(T model) {
-        Archive archive;
+    public Archive saveModel(ArchiveProfile archiveProfile) {
+        Optional <Archive> archive = Optional.empty();
+        String beanName = archiveProfile.getServiceClassName().substring(0, 1).toLowerCase(Locale.ROOT)
+                + archiveProfile.getServiceClassName().substring(1);
         try {
-            archive = Archive.builder()
-                    .className(model.getClass().getSimpleName())
-                    .data(objectMapper.writeValueAsString(model))
-                    .build();
+            archive = Optional.of(Archive.builder()
+                    .className(beanName)
+                    .data(objectMapper.writeValueAsString(archiveProfile.getData()))
+                    .build());
         } catch (JsonProcessingException e) {
-            throw new JsonWriteException(String.format(JSON_WRITE_EXCEPTION, model.getClass().getName()));
+            e.printStackTrace();
         }
-        log.debug("**/Model {} adding to archive", model.getClass().getName());
-        archiveRepository.save(archive);
-        return model;
+        return archiveRepository.save(archive.get());
     }
 
     @Override
     public Archive  restoreArchiveObject(Long id) {
         Archive archiveObject = getArchiveObjectById(id);
-        ArchiveMark archiveMark = (ArchiveMark) context.getBean(
-                archiveObject.getClassName().toLowerCase(Locale.ROOT).charAt(0)
-                        + archiveObject.getClassName().substring(1)
-                        + "ServiceImpl");
+        ArchiveMark archiveMark = (ArchiveMark) context.getBean(archiveObject.getClassName());
         archiveMark.restoreModel(archiveObject.getData());
+        archiveRepository.deleteById(id);
         return archiveObject;
     }
 

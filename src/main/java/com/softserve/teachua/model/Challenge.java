@@ -1,12 +1,8 @@
 package com.softserve.teachua.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -42,17 +38,15 @@ public class Challenge implements Convertible, Archivable {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    @ToString.Exclude
-//    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @Column(nullable = false)
     private Boolean isActive;
 
     @OneToMany(mappedBy = "challenge")
-//    @ToString.Exclude
-//    @EqualsAndHashCode.Exclude
-//    @JsonManagedReference
-    @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Task> tasks;
 }

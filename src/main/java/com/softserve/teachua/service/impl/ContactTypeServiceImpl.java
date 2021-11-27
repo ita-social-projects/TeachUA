@@ -81,7 +81,7 @@ public class ContactTypeServiceImpl implements ContactTypeService {
     public ContactTypeResponse deleteContactTypeById(Long id) {
         ContactType contactType = getContactTypeById(id);
 
-        archiveService.saveModel(contactType);
+//        archiveService.saveModel(contactType);
 
         try {
             contactTypeRepository.deleteById(id);

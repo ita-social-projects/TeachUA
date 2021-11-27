@@ -259,7 +259,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse deleteUserById(Long id) {
         User user = getUserById(id);
 
-        archiveService.saveModel(user);
+//        archiveService.saveModel(user);
 
         try {
             userRepository.deleteById(id);

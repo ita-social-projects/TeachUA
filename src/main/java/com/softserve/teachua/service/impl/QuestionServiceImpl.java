@@ -78,7 +78,7 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionProfile deleteQuestionById(Long id) {
         Question deletedQuestion = getQuestionById(id);
 
-        archiveService.saveModel(deletedQuestion);
+//        archiveService.saveModel(deletedQuestion);
 
         try {
             questionRepository.deleteById(id);

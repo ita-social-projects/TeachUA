@@ -114,7 +114,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse deleteCategoryById(Long id) {
         Category category = getCategoryById(id);
 
-        archiveService.saveModel(category);
+//        archiveService.saveModel(category);
 
         try {
             categoryRepository.deleteById(id);

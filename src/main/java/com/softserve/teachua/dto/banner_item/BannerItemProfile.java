@@ -1,6 +1,7 @@
 package com.softserve.teachua.dto.banner_item;
 
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.utils.validations.CheckRussian;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 @Builder
 @Data
-public class BannerItemProfile implements Convertible {
+public class BannerItemProfile implements Convertible, Archivable {
     private Long id;
 
     @NotBlank

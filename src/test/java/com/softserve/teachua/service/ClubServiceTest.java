@@ -215,7 +215,7 @@ class ClubServiceTest {
     @Test
     void deleteClubByExistingIdShouldReturnCorrectClubResponse() {
         when(clubRepository.findById(EXISTING_ID)).thenReturn(Optional.of(club));
-        when(archiveService.saveModel(club)).thenReturn(club);
+//        when(archiveService.saveModel(club)).thenReturn(club);
         doNothing().when(clubRepository).deleteById(EXISTING_ID);
         doNothing().when(clubRepository).flush();
         when(dtoConverter.convertToDto(club, ClubResponse.class)).thenReturn(clubResponse);

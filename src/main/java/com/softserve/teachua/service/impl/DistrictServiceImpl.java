@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class DistrictServiceImpl implements DistrictService, ArchiveMark {
+public class DistrictServiceImpl implements DistrictService {
     private static final String DISTRICT_ALREADY_EXIST = "District already exist with name: %s";
     private static final String DISTRICT_NOT_FOUND_BY_ID = "District not found by id: %s";
     private static final String DISTRICT_NOT_FOUND_BY_NAME = "District not found by name: %s";
@@ -136,7 +136,7 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark {
     public DistrictResponse deleteDistrictById(Long id) {
         District district = getDistrictById(id);
 
-        archiveService.saveModel(district);
+//        archiveService.saveModel(district);
 
         try {
             districtRepository.deleteById(id);
@@ -157,12 +157,12 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark {
         return districtRepository.findById(id);
     }
 
-    @Override
-    public void restoreModel(String archiveObject) {
-        try {
-            objectMapper.readValue(archiveObject, District.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Override
+//    public void restoreModel(String archiveObject) {
+//        try {
+//            objectMapper.readValue(archiveObject, District.class);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

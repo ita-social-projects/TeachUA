@@ -106,7 +106,7 @@ public class NewsServiceImpl implements NewsService {
     public NewsResponse deleteNewsById(Long id) {
         News deletedNews = getNewsById(id);
 
-        archiveService.saveModel(deletedNews);
+//        archiveService.saveModel(deletedNews);
 
         try {
             newsRepository.deleteById(id);

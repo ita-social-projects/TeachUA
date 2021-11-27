@@ -1,7 +1,7 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.dto.archive.ArchiveProfile;
 import com.softserve.teachua.model.Archive;
-import com.softserve.teachua.model.marker.Archivable;
 
 import java.util.List;
 
@@ -28,10 +28,10 @@ public interface ArchiveService {
     /**
      * The method saves model into archive and returns the type of the model.
      *
-     * @param model - place body of entity {@code <T extends Archivable>}.
-     * @return {@code <T extends Archivable>}.
+     * @param archiveProfile - place body of entity {@code ArchiveProfile}.
+     * @return {@code Archive}.
      */
-    <T extends Archivable> T saveModel(T model);
+    Archive saveModel(ArchiveProfile archiveProfile);
 
     Archive restoreArchiveObject(Long id);
 

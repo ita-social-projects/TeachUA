@@ -210,7 +210,7 @@ public class CenterServiceImpl implements CenterService {
     public CenterResponse deleteCenterById(Long id) {
         Center center = getCenterById(id);
 
-        archiveService.saveModel(center);
+//        archiveService.saveModel(center);
 
         try {
             log.debug("delete Center");

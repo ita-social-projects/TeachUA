@@ -3,6 +3,7 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.archive.ArchiveProfile;
 import com.softserve.teachua.dto.task.*;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Transactional
-public class TaskServiceImpl implements TaskService, ArchiveMark {
+public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
     private final TaskRepository taskRepository;
     private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
@@ -52,8 +53,7 @@ public class TaskServiceImpl implements TaskService, ArchiveMark {
         Task task = getTaskById(id);
         TaskProfile taskProfile = dtoConverter.convertToDto(task, TaskProfile.class);
         taskProfile.setChallengeId(task.getChallenge().getId());
-//        task.setChallenge(null);
-        archiveService.saveModel(taskProfile);
+        archiveModel(task);
         taskRepository.deleteById(id);
         taskRepository.flush();
         return taskProfile;
@@ -120,13 +120,20 @@ public class TaskServiceImpl implements TaskService, ArchiveMark {
     }
 
     @Override
+    public void archiveModel(Task task) {
+        TaskProfile taskProfile = dtoConverter.convertToDto(task, TaskProfile.class);
+        archiveService.saveModel(ArchiveProfile.builder()
+                .serviceClassName(getClass().getSimpleName())
+                .data(taskProfile)
+                .build());
+    }
+
+    @Override
     public void restoreModel(String archiveObject) {
         try {
             TaskProfile taskProfile = objectMapper.readValue(archiveObject, TaskProfile.class);
-            Task task = new Task();
-            dtoConverter.convertToEntity(taskProfile, task);
-            task.setChallenge(challengeService.getChallengeById(taskProfile.getChallengeId()));
-            taskRepository.save(task);
+            CreateTask createTask = dtoConverter.convertFromDtoToDto(taskProfile, CreateTask.builder().build());
+            createTask(taskProfile.getChallengeId(), createTask);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
