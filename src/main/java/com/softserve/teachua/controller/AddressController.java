@@ -8,10 +8,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AddressController implements Api {
+
 
     private final AddressServiceImpl addressService;
 
@@ -24,6 +26,12 @@ public class AddressController implements Api {
     @GetMapping("/getAllBadAddress")
     public List<AddressProfile> getAllAddress(){
         return addressService.getNotRelativeAddress();
+    }
+
+    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @PostMapping("/replaceIncorrectCity")
+    public List<AddressProfile> replaceIncorrectCity(){
+        return addressService.replaceAllIncorrectCity(addressService.getNotRelativeAddress());
     }
 
 }

@@ -1,6 +1,7 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.dto.location.AddressProfile;
+import com.softserve.teachua.model.City;
 import com.softserve.teachua.model.Location;
 import com.softserve.teachua.repository.CityRepository;
 import com.softserve.teachua.repository.LocationRepository;
@@ -36,19 +37,11 @@ public class AddressServiceImpl implements AddressService {
                 .findAll()
                 .stream()
                 .filter(location ->
-//                        !location
-//                        .getAddress()
-//                        .contains(location.getCity().getName())
-//                        &&
-//                        !location.getAddress().matches(".*("+location.getCity().getName()+")[^а-яА-ЯіІїЇєЄ].+")
-//                        &&
-                                ( hasAddressAnyCity(location.getAddress())
-                                        &&
-                                        !location.getAddress().contains(location.getCity().getName()))
-                            || location.getAddress().isEmpty()
+                        (hasAddressOtherCity(location.getAddress()))
+                                &&
+                                !location.getAddress().matches(".*("+location.getCity().getName()+"[^а-яА-ЯіІїЇєЄ]+).*")
 
                 ).collect(Collectors.toList());
-//
 
         System.out.println(locationList.size());
         List<AddressProfile> addressProfileList = new LinkedList<>();
@@ -60,19 +53,35 @@ public class AddressServiceImpl implements AddressService {
                     .withRealCity(cityRepository.getOne(location.getCity().getId()).getName()));
         }
 
-
         return addressProfileList;
     }
 
 
+    public List<AddressProfile> replaceAllIncorrectCity(List<AddressProfile> addressProfileList){
 
+        List<City> cities = cityRepository.findAll();
 
-    public boolean hasAddressAnyCity(String address){
+        addressProfileList.forEach(address -> cities.forEach(city->{
+            if (address.getAddressText().matches(".*("+city.getName()+"[^а-яА-ЯіІїЇєЄ]+).*")
+            ||
+                    address.getAddressText().matches("^"+city.getName()+"$")){
+                Location location = locationRepository.getOne(address.getId()).withCity(city);
+                address.setRealCity(locationRepository.save(location).getCity().getName());
+            }
+        }));
+        return addressProfileList;
+    }
+
+    public boolean hasAddressOtherCity(String address){
 
         AtomicBoolean hasCity = new AtomicBoolean(false);
 
         cityRepository.findAll().forEach(city -> {
-            if (address.contains(city.getName()) && (address.matches(".*("+city.getName()+")[^а-яА-ЯіІїЇєЄ].*"))) {
+
+            if (( address.contains(city.getName())  &&  (address.matches(".*("+city.getName()+"[^а-яА-ЯіІїЇєЄ]+).*")) )
+                    ||  address.matches("^"+city.getName()+"$"))
+            {
+                System.out.println(city.getName()+": "+true);
                 hasCity.set(true);
             }
         });
