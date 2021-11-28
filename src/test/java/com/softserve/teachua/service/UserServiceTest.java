@@ -15,6 +15,7 @@ import com.softserve.teachua.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junitpioneer.jupiter.SetEnvironmentVariable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -122,6 +123,7 @@ class UserServiceTest {
     }
 
     @Test
+    @SetEnvironmentVariable(key = "USER_EMAIL", value = "speak.ukrainian.org.ua@gmail.com")
     void registerNewUserTest() {
         User newUser = User.builder().email(NEW_EMAIL).phone(PHONE).build();
 
@@ -134,6 +136,7 @@ class UserServiceTest {
         when(dtoConverter.convertToDto(newUser, SuccessRegistration.class))
                 .thenReturn(SuccessRegistration.builder().email(NEW_EMAIL).build());
         doNothing().when(javaMailSender).send(any(MimeMessage.class));
+
         SuccessRegistration actual = userService.registerUser(userProfile);
         assertEquals(actual.getEmail(), userProfile.getEmail());
     }
