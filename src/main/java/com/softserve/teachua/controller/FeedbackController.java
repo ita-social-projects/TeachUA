@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -77,8 +76,8 @@ public class FeedbackController implements Api {
     @PostMapping("/feedback")
     public SuccessCreatedFeedback addFeedback(
             @Valid
-            @RequestBody FeedbackProfile feedbackProfile, HttpServletRequest httpServletRequest) {
-        return feedbackService.addFeedback(feedbackProfile, httpServletRequest);
+            @RequestBody FeedbackProfile feedbackProfile) {
+        return feedbackService.addFeedback(feedbackProfile);
     }
 
     /**
@@ -94,9 +93,8 @@ public class FeedbackController implements Api {
     public FeedbackResponse updateFeedback(
             @PathVariable Long id,
             @Valid
-            @RequestBody FeedbackProfile feedbackProfile,
-            HttpServletRequest httpServletRequest) {
-        return feedbackService.updateFeedbackProfileById(id, feedbackProfile, httpServletRequest);
+            @RequestBody FeedbackProfile feedbackProfile) {
+        return feedbackService.updateFeedbackProfileById(id, feedbackProfile);
     }
 
     /**

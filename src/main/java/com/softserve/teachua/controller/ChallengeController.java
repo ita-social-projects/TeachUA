@@ -4,18 +4,12 @@ import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.challenge.*;
 import com.softserve.teachua.service.ChallengeService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -66,15 +60,13 @@ public class ChallengeController implements Api {
      * This feature available only for admins.
      *
      * @param createChallenge    - put required parameters here.
-     * @param httpServletRequest - autowired by spring to get user from request.
      * @return {@code SuccessCreatedChallenge}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/challenge")
     public SuccessCreatedChallenge createChallenge(
-            @Valid @RequestBody CreateChallenge createChallenge,
-            HttpServletRequest httpServletRequest) {
-        return challengeService.createChallenge(createChallenge, httpServletRequest);
+            @Valid @RequestBody CreateChallenge createChallenge) {
+        return challengeService.createChallenge(createChallenge);
     }
 
     /**

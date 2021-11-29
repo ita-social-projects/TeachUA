@@ -11,7 +11,6 @@ import com.softserve.teachua.model.Center;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -67,11 +66,10 @@ public interface CenterService {
      * The method returns dto {@code SuccessCreatedCenter} if center successfully added.
      *
      * @param centerProfile      - place body of dto {@code CenterProfile}.
-     * @param httpServletRequest - place body of {@code HttpServletRequest}.
      * @return new {@code SuccessCreatedCenter}.
      * @throws AlreadyExistException if center already exists.
      */
-    SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile, HttpServletRequest httpServletRequest);
+    SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile);
 
     /**
      * The method returns list of dto {@code List<CenterResponse>} of all centers.

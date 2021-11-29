@@ -6,16 +6,14 @@ import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.service.NewsService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -54,8 +52,8 @@ public class NewsController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/news")
-    public SuccessCreatedNews addNews(@RequestBody NewsProfile newsProfile, HttpServletRequest httpServletRequest) {
-        return newsService.addNews(newsProfile, httpServletRequest);
+    public SuccessCreatedNews addNews(@RequestBody NewsProfile newsProfile) {
+        return newsService.addNews(newsProfile);
     }
 
     /**

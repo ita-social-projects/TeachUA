@@ -8,10 +8,9 @@ import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.ClubService;
-import com.softserve.teachua.service.UserService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -85,13 +83,12 @@ public class ClubController implements Api {
      * @param clubProfile - Place dto with all parameters for adding new club.
      * @return new {@code SuccessCreatedClub}.
      */
-    @AllowedRoles({RoleData.ADMIN, RoleData.USER})
+    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @PostMapping("/club")
     public SuccessCreatedClub addClub(
             @Valid
-            @RequestBody ClubProfile clubProfile,
-            HttpServletRequest httpServletRequest) {
-        return clubService.addClub(clubProfile, httpServletRequest);
+            @RequestBody ClubProfile clubProfile) {
+        return clubService.addClub(clubProfile);
     }
 
     /**
@@ -189,15 +186,13 @@ public class ClubController implements Api {
     public SuccessUpdatedClub updateClub(
             @PathVariable Long id,
             @Valid
-            @RequestBody ClubResponse clubProfile,
-            HttpServletRequest httpServletRequest) {
-        return clubService.updateClub(id, clubProfile, httpServletRequest);
+            @RequestBody ClubResponse clubProfile) {
+        return clubService.updateClub(id, clubProfile);
     }
 
     /**
      * Use this endpoint to update some values of club by id.
      * The controller returns {@code ClubResponse}.
-     *
      * @param id                 - put club id here.
      * @param httpServletRequest - autowired by spring.
      * @param clubOwnerProfile   - Place dto with all parameters for updating existing club.
@@ -208,15 +203,13 @@ public class ClubController implements Api {
     public ClubResponse changeClubOwner(
             @PathVariable Long id,
             @Valid
-            @RequestBody ClubOwnerProfile clubOwnerProfile,
-            HttpServletRequest httpServletRequest) {
-        return clubService.changeClubOwner(id, clubOwnerProfile, httpServletRequest);
+            @RequestBody ClubOwnerProfile clubOwnerProfile) {
+        return clubService.changeClubOwner(id, clubOwnerProfile);
     }
 
     /**
      * Use this endpoint to delete club by id.
      * The controller returns {@code ClubResponse}.
-     *
      * @param httpServletRequest - autowired by spring.
      * @param id                 - put club id.
      * @return new {@code ClubResponse}.
@@ -224,9 +217,8 @@ public class ClubController implements Api {
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @DeleteMapping("/club/{id}")
     public ClubResponse deleteClub(
-            @PathVariable Long id,
-            HttpServletRequest httpServletRequest) {
-        return clubService.deleteClubById(id, httpServletRequest);
+            @PathVariable Long id) {
+        return clubService.deleteClubById(id);
     }
 
     /**
