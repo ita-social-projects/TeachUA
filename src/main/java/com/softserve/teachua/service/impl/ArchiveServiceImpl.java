@@ -54,7 +54,7 @@ public class ArchiveServiceImpl implements ArchiveService {
         Optional <Archive> archive = Optional.empty();
         try {
             archive = Optional.of(Archive.builder()
-                    .className(archiveModel.getServiceClass())
+                    .className(archiveModel.getServiceClass().getName())
                     .data(objectMapper.writeValueAsString(archiveModel))
                     .build());
         } catch (JsonProcessingException e) {
@@ -64,9 +64,9 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
-    public Archive  restoreArchiveObject(Long id) throws ClassNotFoundException {
+    public Archive  restoreArchiveObject(Long id) throws ClassNotFoundException, JsonProcessingException {
         Archive archiveObject = getArchiveObjectById(id);
-        ArchiveMark archiveMark = (ArchiveMark) context.getBean(archiveObject.getClassName());
+        ArchiveMark archiveMark = (ArchiveMark) context.getBean(Class.forName(archiveObject.getClassName()));
         archiveMark.restoreModel(archiveObject.getData());
         archiveRepository.deleteById(id);
         return archiveObject;

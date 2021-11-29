@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.marker.Archivable;
 
@@ -33,7 +34,7 @@ public interface ArchiveService {
      */
     Archive saveModel(Archivable archiveModel);
 
-    Archive restoreArchiveObject(Long id) throws ClassNotFoundException;
+    Archive restoreArchiveObject(Long id) throws ClassNotFoundException, JsonProcessingException;
 
     Archive getArchiveObjectById(Long id);
 

@@ -120,13 +120,9 @@ public class TaskServiceImpl implements TaskService, ArchiveMark {
     }
 
     @Override
-    public void restoreModel(String archiveObject) {
-        try {
-            TaskArch taskArch = objectMapper.readValue(archiveObject, TaskArch.class);
-            CreateTask createTask = dtoConverter.convertFromDtoToDto(taskArch, CreateTask.builder().build());
-            createTask(taskArch.getChallengeId(), createTask);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        TaskArch taskArch = objectMapper.readValue(archiveObject, TaskArch.class);
+        CreateTask createTask = dtoConverter.convertFromDtoToDto(taskArch, CreateTask.builder().build());
+        createTask(taskArch.getChallengeId(), createTask);
     }
 }
