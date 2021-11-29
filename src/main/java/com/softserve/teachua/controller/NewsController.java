@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * This controller is for managing the news.
+ * */
+
 @RestController
-@Tag(name="news", description="the News API")
+@Tag(name = "news", description = "the News API")
 @SecurityRequirement(name = "api")
 public class NewsController implements Api {
-
     private final NewsService newsService;
 
     @Autowired
@@ -31,6 +34,7 @@ public class NewsController implements Api {
     /**
      * Use this endpoint to get News by id.
      * The controller returns {@code NewsResponse}.
+     *
      * @param id - put News id here.
      * @return {@code NewsResponse}
      */
@@ -42,6 +46,7 @@ public class NewsController implements Api {
     /**
      * Use this endpoint to create new News.
      * The controller returns {@code SuccessCreatedNews}.
+     *
      * @param newsProfile - object of DTO class.
      * @return new {@code SuccessCreatedNews}.
      */
@@ -54,7 +59,8 @@ public class NewsController implements Api {
     /**
      * Use this endpoint to update News
      * The controller returns {@code NewsProfile}.
-     * @param id - put news id here.
+     *
+     * @param id          - put news id here.
      * @param newsProfile - put news information here.
      * @return {@code NewsProfile}
      */
@@ -67,6 +73,7 @@ public class NewsController implements Api {
     /**
      * Use this endpoint to delete News.
      * The controller returns {@code NewsResponse}.
+     *
      * @param id - put news id here.
      * @return NewsResponse {@code NewsResponse}
      */
@@ -79,6 +86,7 @@ public class NewsController implements Api {
     /**
      * Use this endpoint to get all News.
      * The controller returns {@code List<NewsResponse>}.
+     *
      * @return {@code List<NewsResponse>}
      */
     @GetMapping("/newslist")
@@ -89,12 +97,11 @@ public class NewsController implements Api {
     /**
      * Use this endpoint to get news search result with pagination.
      * The controller returns {@code Page<NewsResponse>}.
+     *
      * @return {@code Page<NewsResponse>}
      */
     @GetMapping("/newslist/search")
     public Page<NewsResponse> getListOfNews(Pageable pageable) {
         return newsService.getListOfNews(pageable);
     }
-
-
 }

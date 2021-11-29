@@ -17,7 +17,8 @@ import java.io.IOException;
  */
 public class HtmlModifyDeserialize extends JsonDeserializer<String> {
     @Override
-    public String deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
+    public String deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
+            throws IOException, JacksonException {
         String html = jsonParser.getText();
         if (html == null) {
             return null;

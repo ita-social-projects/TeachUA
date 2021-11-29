@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class UserResponse implements Convertible {
-
     private Long id;
     private String firstName;
     private String lastName;

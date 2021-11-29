@@ -20,7 +20,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 public class ClubProfile implements Convertible {
-
     private Long id;
 
     private List<String> categoriesName;

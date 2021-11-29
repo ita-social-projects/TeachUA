@@ -2,8 +2,6 @@ package com.softserve.teachua.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -16,24 +14,24 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 @Configuration
-@ComponentScan(basePackages = { "com.softserve.teachua.controller"})
+@ComponentScan(basePackages = {"com.softserve.teachua.controller"})
 public class ApplicationConfig {
+    private static final String UPLOAD_LOCATION = "/upload/";
+    private static final String STATIC_LOCATION = "/static/";
+    private static final String API_LOCATION = "/api/";
+    private static final String SLASH = "/";
+    private static final String SWAGGER_UI = "/swagger";
+	  private static final String SWAGGER_RESOURCE = "api-docs";
+  
+    @Value("${server.servlet.context-path}")
+    private String rootUri; // ="";
 
-	private static final String UPLOAD_LOCATION = "/upload/";
-	private static final String STATIC_LOCATION = "/static/";
-	private static final String API_LOCATION = "/api/";
-	private static final String SLASH = "/";
-	private static final String SWAGGER_UI = "/swagger";
+    private String removeSecondSlash(String uri) {
+        return uri.replace("//", "/").replace(":/", "://");
+    }
+  
 
-	@Value("${server.servlet.context-path}")
-	private String rootUri; // ="";
-	
-	
-	private String removeSecondSlash(String uri) {
-		return uri.replace("//", "/").replace(":/", "://");
-	}
-
-	@Bean
+  @Bean
 	public FilterRegistrationBean customFilterBean() {
 		FilterRegistrationBean<Filter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
 		filterFilterRegistrationBean.setFilter((request, response, chain) -> {
@@ -42,29 +40,29 @@ public class ApplicationConfig {
 					&& !req.getRequestURI().startsWith(removeSecondSlash(rootUri + STATIC_LOCATION))
 					&& !req.getRequestURI().startsWith(removeSecondSlash(rootUri + API_LOCATION))
 					&& !req.getRequestURI().equals(removeSecondSlash(rootUri + SLASH))
-					&& req.getRequestURI().equals(removeSecondSlash(rootUri + SWAGGER_UI))
+					&& !req.getRequestURI().startsWith(removeSecondSlash(rootUri + SWAGGER_UI))
+					&& !req.getRequestURI().contains(SWAGGER_RESOURCE)
 			) {
 				RequestDispatcher requestDispatcher = request.getRequestDispatcher(SLASH);
 				requestDispatcher.forward(request, response);
 				return;
 			}
 
-			chain.doFilter(request, response);
-		});
-		return filterFilterRegistrationBean;
-	}
+            chain.doFilter(request, response);
+        });
+        return filterFilterRegistrationBean;
+    }
 
-	@Bean
-	public ModelMapper modelMapper() {
-		return new ModelMapper();
-	}
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 
-	@Bean
-	public ObjectMapper objectMapper() {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.registerModule(new JavaTimeModule());
-		return mapper;
-	}
-
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        return mapper;
+    }
 }
 

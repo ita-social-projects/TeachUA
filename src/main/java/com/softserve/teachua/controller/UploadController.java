@@ -11,11 +11,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * This controller is for managing the upload process.
+ * */
+
 @RestController
-@Tag(name="upload", description="the Image Upload API")
+@Tag(name = "upload", description = "the Image Upload API")
 @SecurityRequirement(name = "api")
 public class UploadController implements Api {
-
     @Value("${application.upload.path}")
     private String uploadDirectory;
     private final FileUploadServiceImpl fileUploadServiceImpl;
@@ -28,15 +31,16 @@ public class UploadController implements Api {
     /**
      * Use this endpoint to create an image.
      * The controller returns image and folder names.
+     *
      * @param folder - folder name.
-     * @param image - image title.
+     * @param image  - image title.
      * @return new {@code uploadPhoto}.
      */
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/upload-image") @CrossOrigin
+    @PostMapping("/upload-image")
+    @CrossOrigin
     public String uploadPhoto(@RequestParam("image") MultipartFile image,
                               @RequestParam("folder") String folder) {
-
         String fileName = StringUtils.cleanPath(image.getOriginalFilename());
         String uploadDir = String.format("%s/%s", uploadDirectory, folder);
 
@@ -45,6 +49,7 @@ public class UploadController implements Api {
 
     /**
      * Use this endpoint to delete an image.
+     *
      * @param filePath - file path.
      * @return new {@code deleteFile}.
      */
@@ -52,6 +57,6 @@ public class UploadController implements Api {
     @DeleteMapping("/delete-file")
     public String deleteFile(@RequestParam("filePath") String filePath) {
         fileUploadServiceImpl.deleteFile(filePath);
-        return filePath+" successfully deleted.";
+        return filePath + " successfully deleted.";
     }
 }

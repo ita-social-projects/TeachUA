@@ -16,7 +16,6 @@ import javax.validation.constraints.Pattern;
 @Builder
 @Data
 public class UserUpdateProfile implements Convertible {
-
     private Long id;
 
     @NotBlank

@@ -1,6 +1,5 @@
 package com.softserve.teachua.model;
 
-
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
@@ -17,7 +16,6 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "about_us_items")
 public class AboutUsItem implements Convertible, Archivable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

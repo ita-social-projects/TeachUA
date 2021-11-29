@@ -59,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-  
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -74,7 +74,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/", "/main").permitAll()
-                .antMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/swagger", "/swagger-resources/**", "/swagger-resources").permitAll()
+                .antMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**",
+                        "/swagger", "/swagger-resources/**", "/swagger-resources").permitAll()
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/manifest.json").permitAll()
                 .antMatchers("/favicon**").permitAll()
@@ -113,7 +114,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .oauth2Login()
                 .authorizationEndpoint()
                 .baseUri("/oauth2/authorize")
-               // .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+                // .authorizationRequestRepository(cookieAuthorizationRequestRepository())
                 .and()
                 .redirectionEndpoint()
                 .baseUri("/oauth2/callback/*")

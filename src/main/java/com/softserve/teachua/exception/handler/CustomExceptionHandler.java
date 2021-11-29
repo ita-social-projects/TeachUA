@@ -81,7 +81,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(MatchingPasswordException.class)
-    public final ResponseEntity<Object> handleMatchingPasswordException(IllegalArgumentException exception){
+    public final ResponseEntity<Object> handleMatchingPasswordException(IllegalArgumentException exception) {
         return buildExceptionBody(exception, NOT_FOUND);
     }
 
@@ -91,7 +91,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
+                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  WebRequest request) {
         StringBuilder sb = new StringBuilder();
         exception.getBindingResult().getFieldErrors().forEach((error) -> {
             sb.append(error.getField()).append(" ").append(error.getDefaultMessage()).append(" and ");
@@ -102,17 +104,23 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception,
+                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  WebRequest request) {
         return buildExceptionBody(new BadRequestException(exception.getMessage()), status);
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException exception, HttpHeaders headers,
+            HttpStatus status, WebRequest request) {
         return buildExceptionBody(new MethodNotSupportedException(exception.getMessage()), status);
     }
 
     @Override
-    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+            MissingServletRequestParameterException exception, HttpHeaders headers, HttpStatus status,
+            WebRequest request) {
         return buildExceptionBody(new BadRequestException(exception.getMessage()), status);
     }
 

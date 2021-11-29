@@ -9,10 +9,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Data
 public class UserVerifyPassword {
-
     @NotNull
     private Long id;
 
     private String password;
-
 }
