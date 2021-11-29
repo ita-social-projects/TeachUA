@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @Builder
 @Entity
 @Table(name = "about_us_items")
-public class AboutUsItem implements Convertible, Archivable {
+public class AboutUsItem implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

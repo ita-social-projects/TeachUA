@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Builder
 @Entity
 @Table(name = "tasks")
-public class Task implements Convertible, Archivable {
+public class Task implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

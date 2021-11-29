@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Entity
 @Builder
 @Table(name = "news")
-public class News implements Convertible, Archivable {
+public class News implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

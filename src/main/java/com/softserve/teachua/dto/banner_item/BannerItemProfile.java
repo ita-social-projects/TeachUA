@@ -14,7 +14,7 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 @Builder
 @Data
-public class BannerItemProfile implements Convertible, Archivable {
+public class BannerItemProfile implements Convertible {
     private Long id;
 
     @NotBlank

@@ -15,7 +15,7 @@ import javax.validation.constraints.Pattern;
 @Data
 @Entity
 @Table(name = "users")
-public class User implements Convertible, Archivable {
+public class User implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

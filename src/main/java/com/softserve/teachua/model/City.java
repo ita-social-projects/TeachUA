@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "cities")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class City implements Convertible, Archivable {
+public class City implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

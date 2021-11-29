@@ -17,7 +17,7 @@ import java.util.Set;
 @With
 @Entity
 @Table(name = "categories")
-public class Category implements Convertible, Archivable {
+public class Category implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include

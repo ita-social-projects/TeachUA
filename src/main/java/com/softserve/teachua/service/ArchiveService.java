@@ -1,7 +1,7 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.archive.ArchiveProfile;
 import com.softserve.teachua.model.Archive;
+import com.softserve.teachua.model.marker.Archivable;
 
 import java.util.List;
 
@@ -28,12 +28,12 @@ public interface ArchiveService {
     /**
      * The method saves model into archive and returns the type of the model.
      *
-     * @param archiveProfile - place body of entity {@code ArchiveProfile}.
+     * @param archiveModel - place body of entity {@code Archivable}.
      * @return {@code Archive}.
      */
-    Archive saveModel(ArchiveProfile archiveProfile);
+    Archive saveModel(Archivable archiveModel);
 
-    Archive restoreArchiveObject(Long id);
+    Archive restoreArchiveObject(Long id) throws ClassNotFoundException;
 
     Archive getArchiveObjectById(Long id);
 

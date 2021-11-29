@@ -3,13 +3,14 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.archive.ArchiveProfile;
 import com.softserve.teachua.dto.banner_item.BannerItemProfile;
 import com.softserve.teachua.dto.banner_item.BannerItemResponse;
 import com.softserve.teachua.dto.banner_item.SuccessCreatedBannerItem;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.BannerItem;
+import com.softserve.teachua.model.archivable.BannerItemArh;
+import com.softserve.teachua.model.archivable.TaskArch;
 import com.softserve.teachua.repository.BannerItemRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<BannerItem> {
+public class BannerItemServiceImpl implements BannerItemService, ArchiveMark {
     private static final String BANNER_ITEM_NOT_FOUND_BY_ID = "Banner Item not found by id: %s";
     private static final String BANNER_ITEM_DELETING_ERROR = "Banner Item can`t be deleted by id: %s";
 
@@ -92,7 +93,7 @@ public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<Ban
     public BannerItemResponse deleteBannerItemById(Long id) {
         BannerItem bannerItem = getBannerItemById(id);
 
-        archiveModel(bannerItem);
+        archiveService.saveModel(dtoConverter.convertToDto(bannerItem, BannerItemArh.class));
 
         try {
             bannerItemRepository.deleteById(id);
@@ -106,19 +107,10 @@ public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<Ban
     }
 
     @Override
-    public void archiveModel(BannerItem bannerItem) {
-        BannerItemProfile bannerItemProfile = dtoConverter.convertToDto(bannerItem, BannerItemProfile.class);
-        archiveService.saveModel(ArchiveProfile.builder()
-                .serviceClassName(getClass().getSimpleName())
-                .data(bannerItemProfile)
-                .build());
-    }
-
-    @Override
     public void restoreModel(String archiveObject) {
         try {
-            BannerItemProfile bannerItemProfile = objectMapper.readValue(archiveObject, BannerItemProfile.class);
-            addBannerItem(bannerItemProfile);
+            BannerItemArh bannerItemArh = objectMapper.readValue(archiveObject, BannerItemArh.class);
+            addBannerItem(dtoConverter.convertFromDtoToDto(bannerItemArh, BannerItemProfile.builder().build()));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

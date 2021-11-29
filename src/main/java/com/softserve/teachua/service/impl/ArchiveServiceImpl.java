@@ -3,9 +3,9 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.archive.ArchiveProfile;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Archive;
+import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.repository.ArchiveRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -51,14 +50,12 @@ public class ArchiveServiceImpl implements ArchiveService {
 
     @Override
     @Transactional
-    public Archive saveModel(ArchiveProfile archiveProfile) {
+    public Archive saveModel(Archivable archiveModel) {
         Optional <Archive> archive = Optional.empty();
-        String beanName = archiveProfile.getServiceClassName().substring(0, 1).toLowerCase(Locale.ROOT)
-                + archiveProfile.getServiceClassName().substring(1);
         try {
             archive = Optional.of(Archive.builder()
-                    .className(beanName)
-                    .data(objectMapper.writeValueAsString(archiveProfile.getData()))
+                    .className(archiveModel.getServiceClass())
+                    .data(objectMapper.writeValueAsString(archiveModel))
                     .build());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -67,7 +64,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
-    public Archive  restoreArchiveObject(Long id) {
+    public Archive  restoreArchiveObject(Long id) throws ClassNotFoundException {
         Archive archiveObject = getArchiveObjectById(id);
         ArchiveMark archiveMark = (ArchiveMark) context.getBean(archiveObject.getClassName());
         archiveMark.restoreModel(archiveObject.getData());

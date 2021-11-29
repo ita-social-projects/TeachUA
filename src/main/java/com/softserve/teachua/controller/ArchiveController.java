@@ -62,8 +62,7 @@ public class ArchiveController implements Api {
 
     @AllowedRoles(RoleData.ADMIN)
     @PatchMapping("/archives/{id}")
-    public Archive restoreFromArchive(@PathVariable("id") Long id,
-                                   HttpServletResponse response) throws IOException {
+    public Archive restoreFromArchive(@PathVariable("id") Long id) throws IOException, ClassNotFoundException {
         return archiveService.restoreArchiveObject(id);
     }
 

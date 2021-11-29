@@ -20,7 +20,7 @@ import java.util.Set;
 @Entity
 @Table(name = "clubs")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Club implements Convertible, Archivable {
+public class Club implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

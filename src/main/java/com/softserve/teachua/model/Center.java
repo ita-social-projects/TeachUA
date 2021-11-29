@@ -19,7 +19,7 @@ import java.util.Set;
 @Entity
 @Table(name = "centers")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Center implements Convertible, Archivable {
+public class Center implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

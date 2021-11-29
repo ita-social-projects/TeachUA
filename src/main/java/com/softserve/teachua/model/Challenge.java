@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "сhallenges")
-public class Challenge implements Convertible, Archivable {
+public class Challenge implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

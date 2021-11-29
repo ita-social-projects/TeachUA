@@ -3,11 +3,11 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.archive.ArchiveProfile;
 import com.softserve.teachua.dto.task.*;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
+import com.softserve.teachua.model.archivable.TaskArch;
 import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.service.*;
 import com.softserve.teachua.utils.HtmlUtils;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Transactional
-public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
+public class TaskServiceImpl implements TaskService, ArchiveMark {
     private final TaskRepository taskRepository;
     private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
@@ -53,7 +53,7 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
         Task task = getTaskById(id);
         TaskProfile taskProfile = dtoConverter.convertToDto(task, TaskProfile.class);
         taskProfile.setChallengeId(task.getChallenge().getId());
-        archiveModel(task);
+        archiveService.saveModel(dtoConverter.convertToDto(task, TaskArch.class));
         taskRepository.deleteById(id);
         taskRepository.flush();
         return taskProfile;
@@ -120,20 +120,11 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
     }
 
     @Override
-    public void archiveModel(Task task) {
-        TaskProfile taskProfile = dtoConverter.convertToDto(task, TaskProfile.class);
-        archiveService.saveModel(ArchiveProfile.builder()
-                .serviceClassName(getClass().getSimpleName())
-                .data(taskProfile)
-                .build());
-    }
-
-    @Override
     public void restoreModel(String archiveObject) {
         try {
-            TaskProfile taskProfile = objectMapper.readValue(archiveObject, TaskProfile.class);
-            CreateTask createTask = dtoConverter.convertFromDtoToDto(taskProfile, CreateTask.builder().build());
-            createTask(taskProfile.getChallengeId(), createTask);
+            TaskArch taskArch = objectMapper.readValue(archiveObject, TaskArch.class);
+            CreateTask createTask = dtoConverter.convertFromDtoToDto(taskArch, CreateTask.builder().build());
+            createTask(taskArch.getChallengeId(), createTask);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

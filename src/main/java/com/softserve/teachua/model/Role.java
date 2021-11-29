@@ -17,7 +17,7 @@ import java.util.List;
 @With
 @Entity
 @Table(name = "roles")
-public class Role implements Convertible, Archivable {
+public class Role implements Convertible {
     @NonNull
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

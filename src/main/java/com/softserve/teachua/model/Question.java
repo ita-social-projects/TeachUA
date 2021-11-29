@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Entity
 @Builder
 @Table(name = "question")
-public class Question implements Convertible, Archivable {
+public class Question implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

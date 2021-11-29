@@ -13,7 +13,7 @@ import javax.persistence.*;
 @With
 @Entity
 @Table(name = "galleries")
-public class GalleryPhoto implements Archivable, Convertible {
+public class GalleryPhoto implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
