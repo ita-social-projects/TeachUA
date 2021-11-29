@@ -81,7 +81,6 @@ public class AddressServiceImpl implements AddressService {
             if (( address.contains(city.getName())  &&  (address.matches(".*("+city.getName()+"[^а-яА-ЯіІїЇєЄ]+).*")) )
                     ||  address.matches("^"+city.getName()+"$"))
             {
-                System.out.println(city.getName()+": "+true);
                 hasCity.set(true);
             }
         });
