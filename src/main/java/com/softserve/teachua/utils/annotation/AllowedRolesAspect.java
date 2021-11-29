@@ -1,6 +1,7 @@
 package com.softserve.teachua.utils.annotation;
 
 import com.softserve.teachua.constants.RoleData;
+import com.softserve.teachua.exception.WrongAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -20,6 +21,8 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class AllowedRolesAspect {
+    private static final String PERMIT_EXCEPTION = "You have no necessary permissions (role)";
+
     @Around("@annotation(com.softserve.teachua.utils.annotation.AllowedRoles)")
     public Object doSomething(ProceedingJoinPoint jp) throws Throwable {
         Set<RoleData> roles = Arrays.stream(((MethodSignature) jp.getSignature()).getMethod()
@@ -32,7 +35,7 @@ public class AllowedRolesAspect {
             }
         }
 
-        throw new AccessDeniedException("");
+        throw new WrongAuthenticationException(PERMIT_EXCEPTION);
     }
 
     private HttpServletRequest getRequest() {
