@@ -43,7 +43,6 @@ public class AddressServiceImpl implements AddressService {
 
                 ).collect(Collectors.toList());
 
-        System.out.println(locationList.size());
         List<AddressProfile> addressProfileList = new LinkedList<>();
 
         for (Location location: locationList) {
