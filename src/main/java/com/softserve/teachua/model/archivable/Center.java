@@ -3,6 +3,7 @@ package com.softserve.teachua.model.archivable;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.model.User;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 

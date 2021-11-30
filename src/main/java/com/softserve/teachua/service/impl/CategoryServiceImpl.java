@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
@@ -9,7 +10,9 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Category;
+import com.softserve.teachua.model.archivable.CategoryArch;
 import com.softserve.teachua.repository.CategoryRepository;
+import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Transactional
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl implements CategoryService, ArchiveMark {
     private static final String CATEGORY_ALREADY_EXIST = "Category already exists with name: %s";
     private static final String CATEGORY_NOT_FOUND_BY_ID = "Category not found by id: %s";
     private static final String CATEGORY_NOT_FOUND_BY_NAME = "Category not found by name: %s";
@@ -114,7 +117,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse deleteCategoryById(Long id) {
         Category category = getCategoryById(id);
 
-//        archiveService.saveModel(category);
+        archiveService.saveModel(dtoConverter.convertToDto(category, CategoryArch.class));
 
         try {
             categoryRepository.deleteById(id);
@@ -160,5 +163,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     private Optional<Category> getOptionalCategoryByName(String name) {
         return categoryRepository.findByName(name);
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+
     }
 }

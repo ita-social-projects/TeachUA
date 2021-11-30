@@ -156,6 +156,9 @@ public class StationServiceImpl implements StationService, ArchiveMark {
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         StationArch stationArch = objectMapper.readValue(archiveObject, StationArch.class);
-
+        Station station = Station.builder()
+                .name(stationArch.getName())
+                .build();
+        stationRepository.save(station);
     }
 }

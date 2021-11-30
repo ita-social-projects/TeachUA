@@ -1,6 +1,7 @@
 package com.softserve.teachua.model.archivable;
 
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.model.User;
 import lombok.*;
 
 import javax.persistence.*;
