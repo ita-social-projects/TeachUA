@@ -22,13 +22,13 @@ public class AddressController implements Api {
         this.addressService = addressService;
     }
 
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/getAllBadAddress")
     public List<AddressProfile> getAllAddress(){
         return addressService.getNotRelativeAddress();
     }
 
-    @PreAuthorize("hasAnyRole(T(com.softserve.teachua.constants.RoleData).ADMIN.getDBRoleName())")
+    @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/replaceIncorrectCity")
     public List<AddressProfile> replaceIncorrectCity(){
         return addressService.replaceAllIncorrectCity(addressService.getNotRelativeAddress());
