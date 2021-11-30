@@ -11,10 +11,10 @@ import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -69,7 +69,7 @@ public interface ClubService {
      * @return new {@code SuccessUpdatedCLub}.
      * @throws NotExistException if club not exists by id.
      */
-    SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile, HttpServletRequest httpServletRequest);
+    SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile);
 
     /**
      * The method returns dto {@code ClubResponse} of club by name.
@@ -86,7 +86,7 @@ public interface ClubService {
      * @return new {@code ClubResponse}.
      * @throws DatabaseRepositoryException if club contain foreign keys.
      */
-    ClubResponse deleteClubById(Long id, HttpServletRequest httpServletRequest);
+    ClubResponse deleteClubById(Long id);
 
     /**
      * The method returns dto {@code SuccessCreatedClub} if club successfully added.
@@ -96,7 +96,7 @@ public interface ClubService {
      * @throws AlreadyExistException if club already exists.
      * @throws IncorrectInputException if mandatory fields are empty.
      */
-    SuccessCreatedClub addClub(ClubProfile clubProfile, HttpServletRequest httpServletRequest);
+    SuccessCreatedClub addClub(ClubProfile clubProfile);
 
     /**
      * The method returns list of dto {@code List<ClubResponse>} of all clubs.
@@ -173,12 +173,12 @@ public interface ClubService {
      * @param clubOwnerProfile - place body of dto {@code ClubOwnerProfile}.
      * @return new {@code ClubResponse}.
      */
-    ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile, HttpServletRequest httpServletRequest);
+    ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile);
 
     /**
      * The method checks if user is valid to own club.
      */
-    void validateClubOwner(Long id, HttpServletRequest httpServletRequest);
+    void validateClubOwner(Long id, User user);
 
     /**
      * The method updates rating of club and

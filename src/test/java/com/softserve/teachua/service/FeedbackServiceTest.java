@@ -24,7 +24,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import javax.servlet.http.HttpServletRequestWrapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,9 +56,6 @@ public class FeedbackServiceTest {
 
     @Mock
     private UserRepository userRepository;
-
-    @Mock
-    private HttpServletRequestWrapper httpServletRequest;
 
     @Mock
     private ClubService clubService;
@@ -172,9 +168,7 @@ public class FeedbackServiceTest {
 
     @Test
     public void addNewFeedbackShouldReturnSuccessCreatedFeedback() {
-
-        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
-
+        when(userService.getCurrentUser()).thenReturn(user);
         when(clubRepository.existsById(EXISTING_CLUB_ID)).thenReturn(true);
         when(userRepository.existsById(EXISTING_USER_ID)).thenReturn(true);
         when(dtoConverter.convertToEntity(feedbackProfile, new Feedback())).thenReturn(feedback);
@@ -185,13 +179,13 @@ public class FeedbackServiceTest {
         when(dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class))
                 .thenReturn(SuccessCreatedFeedback.builder().text(NEW_TEXT).build());
 
-        SuccessCreatedFeedback actual = feedbackService.addFeedback(feedbackProfile,httpServletRequest);
+        SuccessCreatedFeedback actual = feedbackService.addFeedback(feedbackProfile);
         assertEquals(feedbackProfile.getText(), actual.getText());
     }
 
     @Test
     public void updateFeedbackProfileByExistingIdShouldReturnFeedbackProfile(){
-        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
+        when(userService.getCurrentUser()).thenReturn(user);
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         when(dtoConverter.convertToEntity(feedbackProfile, feedback)).thenReturn(updFeedback);
         when(dtoConverter.convertToDto(feedback, FeedbackResponse.class))
@@ -202,7 +196,7 @@ public class FeedbackServiceTest {
 
         when(clubService.updateRatingEditFeedback(feedbackResponse, updFeedbackResponse)).thenReturn(null);
 
-        assertThat(feedbackService.updateFeedbackProfileById(EXISTING_ID, feedbackProfile, httpServletRequest))
+        assertThat(feedbackService.updateFeedbackProfileById(EXISTING_ID, feedbackProfile))
                 .isEqualTo(updFeedbackResponse);
     }
 
@@ -212,7 +206,7 @@ public class FeedbackServiceTest {
 
         feedbackProfile.setClubId(club.getId());
         assertThatThrownBy(() -> {
-            feedbackService.updateFeedbackProfileById(NOT_EXISTING_ID, feedbackProfile, httpServletRequest);
+            feedbackService.updateFeedbackProfileById(NOT_EXISTING_ID, feedbackProfile);
         }).isInstanceOf(NotExistException.class);
     }
 

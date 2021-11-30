@@ -1,75 +1,33 @@
 package com.softserve.teachua.repository;
 
-import com.softserve.teachua.model.City;
-import org.junit.jupiter.api.BeforeEach;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.TestPropertySource;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Slf4j
 @DataJpaTest
-@TestPropertySource(locations = "classpath:application.properties")
 public class CityRepositoryIT {
-    private static final String EXISTING_NAME_1 = "City 1";
-    private static final String EXISTING_NAME_2 = "City 2";
-    private static final String EXISTING_NAME_3 = "City 3";
-    private static final String EXISTING_NAME_4 = "City 4";
+    private static final String EXISTING_NAME = "Одеса";
+    private static final String NOT_EXISTING_NAME = "Івано-Франківськ";
 
-    private static final String NOT_EXISTING_NAME = "Not Existing City";
-
-    private static final Long EXISTING_ID = 1L;
+    private static final Long EXISTING_ID = 4L;
     private static final Long NOT_EXISTING_ID = 100L;
 
-    private static final Double COORDINATES = 0.0;
+    private static final Integer RETURN_LIST_SIZE = 9;
 
-    private final City city1 = City.builder()
-            .name(EXISTING_NAME_1)
-            .latitude(COORDINATES)
-            .longitude(COORDINATES)
-            .build();
-    private final City city2 = City.builder()
-            .name(EXISTING_NAME_2)
-            .latitude(COORDINATES)
-            .longitude(COORDINATES)
-            .build();
-    private final City city3 = City.builder()
-            .name(EXISTING_NAME_3)
-            .latitude(COORDINATES)
-            .longitude(COORDINATES)
-            .build();
-    private final City city4 = City.builder()
-            .name(EXISTING_NAME_4)
-            .latitude(COORDINATES)
-            .longitude(COORDINATES)
-            .build();
-
-    private final List<City> cities = Arrays.asList(city1, city2, city3, city4);
-
-    @Autowired
-    private TestEntityManager entityManager;
     @Autowired
     private CityRepository cityRepository;
 
-    @BeforeEach
-    public void setUp() {
-        entityManager.persist(city1);
-        entityManager.persist(city2);
-        entityManager.persist(city3);
-        entityManager.persist(city4);
-    }
-
     @Test
     public void findByExistingIdShouldReturnCorrectCityEntity() {
-        assertThat(cityRepository.findById(EXISTING_ID)).isEqualTo(Optional.of(city1));
+        assertThat(cityRepository.findById(EXISTING_ID).get().getName()).isEqualTo(EXISTING_NAME);
     }
 
     @Test
@@ -79,12 +37,15 @@ public class CityRepositoryIT {
 
     @Test
     public void findAllByOrderByIdAscShouldReturnSortedListByIdAsc() {
-        assertThat(cityRepository.findAllByOrderByIdAsc()).isEqualTo(cities);
+        assertThat(cityRepository.findAllByOrderByIdAsc()).hasSize(RETURN_LIST_SIZE);
+        assertThat(cityRepository.findAllByOrderByIdAsc().get(0).getId()).isEqualTo(1L);
+        assertThat(cityRepository.findAllByOrderByIdAsc().get(1).getId()).isEqualTo(2L);
+        assertThat(cityRepository.findAllByOrderByIdAsc().get(2).getId()).isEqualTo(3L);
     }
 
     @Test
     public void findByExistingNameShouldReturnCorrectCityEntity() {
-        assertThat(cityRepository.findByName(EXISTING_NAME_3)).isEqualTo(Optional.of(city3));
+        assertThat(cityRepository.findByName(EXISTING_NAME).get().getName()).isEqualTo(EXISTING_NAME);
     }
 
     @Test
@@ -93,12 +54,12 @@ public class CityRepositoryIT {
     }
 
     @Test
-    public void existingByExistingNameShouldReturnTrue(){
-        assertTrue(cityRepository.existsByName(EXISTING_NAME_2));
+    public void existingByExistingNameShouldReturnTrue() {
+        assertTrue(cityRepository.existsByName(EXISTING_NAME));
     }
 
     @Test
-    public void existingByNotExistingNameShouldReturnFalse(){
+    public void existingByNotExistingNameShouldReturnFalse() {
         assertFalse(cityRepository.existsByName(NOT_EXISTING_NAME));
     }
 }

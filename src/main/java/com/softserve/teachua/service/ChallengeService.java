@@ -4,7 +4,6 @@ import com.softserve.teachua.dto.challenge.*;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -43,7 +42,7 @@ public interface ChallengeService {
      * @param createChallenge - place body of dto {@code CreateChallenge}.
      * @return new {@code SuccessCreatedChallenge}.
      */
-    SuccessCreatedChallenge createChallenge(CreateChallenge createChallenge, HttpServletRequest httpServletRequest);
+    SuccessCreatedChallenge createChallenge(CreateChallenge createChallenge);
 
     /**
      * The method updates challenge and returns dto {@code SuccessUpdatedChallenge} of updated challenge.
