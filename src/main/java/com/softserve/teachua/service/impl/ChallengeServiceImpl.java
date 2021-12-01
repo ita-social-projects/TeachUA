@@ -21,7 +21,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -81,11 +80,10 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public SuccessCreatedChallenge createChallenge(
-            CreateChallenge createChallenge,
-            HttpServletRequest httpServletRequest) {
+            CreateChallenge createChallenge) {
         HtmlUtils.validateDescription(createChallenge.getDescription());
         Challenge challenge = dtoConverter.convertToEntity(createChallenge, new Challenge());
-        challenge.setUser(userService.getUserFromRequest(httpServletRequest));
+        challenge.setUser(userService.getCurrentUser());
         challenge.setIsActive(true);
         return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessCreatedChallenge.class);
     }

@@ -14,7 +14,6 @@ import javax.validation.constraints.*;
 @Builder
 @Data
 public class UserProfile implements Convertible {
-
     private Long id;
 
     @NotBlank
@@ -48,5 +47,4 @@ public class UserProfile implements Convertible {
     private String urlLogo;
 
     private String status;
-
 }

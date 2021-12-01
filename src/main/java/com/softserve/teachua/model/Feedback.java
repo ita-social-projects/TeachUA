@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "feedbacks")
 public class Feedback implements Convertible, Archivable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

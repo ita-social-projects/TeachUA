@@ -19,7 +19,6 @@ import java.util.List;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CenterProfile implements Convertible {
-
     private Long id;
 
     @Valid
@@ -40,6 +39,8 @@ public class CenterProfile implements Convertible {
 
     private String urlWeb;
 
+    private String urlBackgroundPicture;
+
     private String urlLogo;
 
     @NotEmpty(message = "Clubs are not selected")
@@ -52,5 +53,4 @@ public class CenterProfile implements Convertible {
     private String contacts;
 
     private Long centerExternalId;
-
 }

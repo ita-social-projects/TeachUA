@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "districts")
 public class District implements Convertible, Archivable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

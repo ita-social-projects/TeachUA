@@ -17,18 +17,17 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JwtProvider {
-    private final int TOKEN_LIFE_DAYS = 1;
+    private static final int TOKEN_LIFE_DAYS = 1;
 
     @Value("$(jwt.secret)")
     private String jwtSecret;
 
     /**
-     * The method generate jwt token
+     * The method generate jwt token.
      *
      * @return jwt
      */
     public String generateToken(Authentication authentication) {
-
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         Date date = Date.from(LocalDate.now()
@@ -44,7 +43,7 @@ public class JwtProvider {
     }
 
     /**
-     * The method retrieve user id from jwt token
+     * The method retrieve user id from jwt token.
      *
      * @return id
      */
@@ -61,7 +60,7 @@ public class JwtProvider {
     }
 
     /**
-     * The method validate token
+     * The method validate token.
      *
      * @return boolean
      */
@@ -78,7 +77,7 @@ public class JwtProvider {
     }
 
     /**
-     * The method retrieve user email from jwt token
+     * The method retrieve user email from jwt token.
      *
      * @return email
      */
@@ -101,7 +100,7 @@ public class JwtProvider {
     }
 
     /**
-     * The method retrieve jwt token from HttpServletRequest
+     * The method retrieve jwt token from HttpServletRequest.
      *
      * @return id
      */
@@ -112,6 +111,4 @@ public class JwtProvider {
         }
         return null;
     }
-
-
 }

@@ -14,7 +14,6 @@ import java.util.Set;
 @Entity
 @Table(name = "сhallenges")
 public class Challenge implements Convertible, Archivable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -50,5 +49,4 @@ public class Challenge implements Convertible, Archivable {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Task> tasks;
-
 }

@@ -9,6 +9,7 @@ import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.service.DataLoaderService;
 import com.softserve.teachua.service.ExcelParserService;
 import com.softserve.teachua.service.SqlDataExportService;
+import io.swagger.v3.oas.annotations.Hidden;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -24,7 +25,12 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 
+/**
+ * This controller is for managing the database transfering.
+ * */
+
 @RestController
+@Hidden
 public class DatabaseTransferController implements Api {
     private static final String FILE_LOAD_EXCEPTION = "Could not load excel file";
     private final ExcelParserService excelParserService;
@@ -39,6 +45,12 @@ public class DatabaseTransferController implements Api {
         this.dataLoaderService = dataLoaderService;
     }
 
+    /**
+     * The method uploads excel file and returns {@code ExcelParsingResponse}.
+     *
+     * @param multipartFile - excel file.
+     * @return new {@code ExcelParsingResponse}.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/upload-excel")
     public ExcelParsingResponse uploadExcel(@RequestParam("excel-file") MultipartFile multipartFile) {
@@ -49,6 +61,12 @@ public class DatabaseTransferController implements Api {
         }
     }
 
+    /**
+     * The method loads data to database and returns {@code ExcelLoadSuccess}.
+     *
+     * @param dataToLoad - object of {@code ExcelParsingData}.
+     * @return new {@code ExcelLoadSuccess}.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/load-excel-to-db")
     public ExcelLoadSuccess loadExecelToDatabase(@RequestBody ExcelParsingData dataToLoad) {
@@ -56,6 +74,11 @@ public class DatabaseTransferController implements Api {
         return null;
     }
 
+    /**
+     * The method returns {@code ResponseEntity<Resource>}.
+     *
+     * @return new {@code ResponseEntity<Resource>}.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/download-database-sql")
     public ResponseEntity<Resource> download(String param) throws SQLException {

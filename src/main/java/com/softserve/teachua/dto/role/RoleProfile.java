@@ -11,7 +11,5 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class RoleProfile implements Convertible {
-
     private String roleName;
-
 }

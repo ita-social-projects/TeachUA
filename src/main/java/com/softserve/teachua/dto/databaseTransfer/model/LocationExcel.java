@@ -8,7 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class LocationExcel {
-
     private Long id;
     private String name;
     private String city;

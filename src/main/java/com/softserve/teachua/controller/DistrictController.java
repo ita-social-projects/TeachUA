@@ -6,22 +6,33 @@ import com.softserve.teachua.dto.district.DistrictProfile;
 import com.softserve.teachua.dto.district.DistrictResponse;
 import com.softserve.teachua.dto.district.SuccessCreatedDistrict;
 import com.softserve.teachua.service.DistrictService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * This controller is for managing the districts.
+ * */
+
 @RestController
+@Tag(name = "district", description = "the District API")
+@SecurityRequirement(name = "api")
 public class DistrictController implements Api {
     private final DistrictService districtService;
 
+    @Autowired
     public DistrictController(DistrictService districtService) {
         this.districtService = districtService;
     }
 
     /**
-     * The controller returns dto {@code DistrictResponse} about district.
+     * Use this endpoint to get district by id.
+     * The controller returns {@code DistrictResponse}.
      *
      * @param id - put district id.
      * @return new {@code DistrictResponse}.
@@ -32,7 +43,8 @@ public class DistrictController implements Api {
     }
 
     /**
-     * The controller returns dto {@code SuccessCreatedDistrict} of created district.
+     * Use this endpoint to create district.
+     * The controller returns {@code SuccessCreatedDistrict}.
      *
      * @param districtProfile - place body to {@link DistrictProfile}.
      * @return new {@code SuccessCreatedDistrict}.
@@ -46,8 +58,11 @@ public class DistrictController implements Api {
     }
 
     /**
-     * The controller returns dto {@code DistrictProfile} about district.
+     * Use this endpoint to update district by id.
+     * The controller returns {@code DistrictProfile}.
      *
+     * @param id              - put district id here.
+     * @param districtProfile - put district profile information here.
      * @return new {@code DistrictProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -60,8 +75,10 @@ public class DistrictController implements Api {
     }
 
     /**
-     * The controller returns list of dto {@code List<DistrictResponse>} of district.
+     * Use this endpoint to get districts by name.
+     * The controller returns list {@code List<DistrictResponse>}.
      *
+     * @param name - put district name here.
      * @return new {@code List<DistrictResponse>}.
      */
     @GetMapping("/districts/{name}")
@@ -70,7 +87,8 @@ public class DistrictController implements Api {
     }
 
     /**
-     * The controller returns list of dto {@code List<DistrictResponse>} of district.
+     * Use this endpoint to get all districts.
+     * The controller returns list of {@code List<DistrictResponse>}.
      *
      * @return new {@code List<DistrictResponse>}.
      */
@@ -79,6 +97,13 @@ public class DistrictController implements Api {
         return districtService.getListOfDistricts();
     }
 
+    /**
+     * Use this endpoint to delete district by id.
+     * The controller returns {@code DistrictResponse}.
+     *
+     * @param id - put district id here.
+     * @return new {@code List<DistrictResponse>}.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/district/{id}")
     public DistrictResponse deleteDistrict(@PathVariable Long id) {

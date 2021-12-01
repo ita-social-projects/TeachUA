@@ -1,10 +1,11 @@
 package com.softserve.teachua.dto.club;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.softserve.teachua.utils.validations.CheckRussian;
+import com.softserve.teachua.dto.club.validation.ClubDescription;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.utils.validations.CheckRussian;
 import lombok.*;
 
 import javax.validation.Valid;
@@ -19,7 +20,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 public class ClubProfile implements Convertible {
-
     private Long id;
 
     private List<String> categoriesName;
@@ -28,6 +28,7 @@ public class ClubProfile implements Convertible {
     private List<LocationProfile> locations;
 
     @CheckRussian
+    @ClubDescription
     @Size(min = 40,max = 1500,message = "Description should be between 40 and 1500 chars")
     public String description;
 

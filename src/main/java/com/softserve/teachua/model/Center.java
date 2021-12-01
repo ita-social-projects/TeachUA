@@ -19,9 +19,8 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "centers")
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Center implements Convertible, Archivable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,7 +35,7 @@ public class Center implements Convertible, Archivable {
     @Column(name = "url_background_picture")
     private String urlBackgroundPicture;
 
-    @Column(columnDefinition="TEXT", length = 1500)
+    @Column(columnDefinition = "TEXT", length = 1500)
     private String description;
 
     @Column

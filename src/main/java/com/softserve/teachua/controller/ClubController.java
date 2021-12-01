@@ -9,6 +9,8 @@ import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,12 +18,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * This controller is for managing the clubs.
+ * */
+
 @Slf4j
 @RestController
+@Tag(name = "club", description = "the Club API")
+@SecurityRequirement(name = "api")
 public class ClubController implements Api {
     private static final int CLUBS_PER_PAGE = 8;
     private static final int CLUBS_PER_USER_PAGE = 3;
@@ -35,10 +42,11 @@ public class ClubController implements Api {
     }
 
     /**
-     * The controller returns information {@code ClubResponse} about club.
+     * Use this endpoint to get club by id.
+     * The controller returns  {@code ClubResponse}.
      *
      * @param id - put club id.
-     * @return new {@code ClubResponse}.
+     * @return {@code ClubResponse}.
      */
     @GetMapping("/club/{id}")
     public ClubResponse getClubById(@PathVariable Long id) {
@@ -46,10 +54,11 @@ public class ClubController implements Api {
     }
 
     /**
-     * The controller returns information {@code ClubResponse} about club.
+     * Use this endpoint to get club by name
+     * The controller returns  {@code ClubResponse}.
      *
      * @param name - put club name.
-     * @return new {@code ClubResponse}.
+     * @return {@code ClubResponse}.
      */
     @GetMapping("/club/name/{name}")
     public ClubResponse getClubByName(@PathVariable String name) {
@@ -57,9 +66,10 @@ public class ClubController implements Api {
     }
 
     /**
-     * The controller returns information {@code List <ClubResponse>} about clubs.
+     * Use this endpoint to get all clubs.
+     * The controller returns {@code List <ClubResponse>}.
      *
-     * @return new {@code List <ClubResponse>}.
+     * @return {@code List <ClubResponse>}.
      */
     @GetMapping("/clubs")
     public List<ClubResponse> getClubs() {
@@ -67,30 +77,37 @@ public class ClubController implements Api {
     }
 
     /**
+     * Use this endpoint to create club.
      * The controller returns dto {@code SuccessCreatedClub} of created club.
      *
      * @param clubProfile - Place dto with all parameters for adding new club.
      * @return new {@code SuccessCreatedClub}.
      */
-    @AllowedRoles({RoleData.ADMIN, RoleData.USER})
+    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @PostMapping("/club")
     public SuccessCreatedClub addClub(
             @Valid
-            @RequestBody ClubProfile clubProfile,
-            HttpServletRequest httpServletRequest) {
-        return clubService.addClub(clubProfile, httpServletRequest);
+            @RequestBody ClubProfile clubProfile) {
+        return clubService.addClub(clubProfile);
     }
 
+    /**
+     * Use this endpoint to get all similar clubs.
+     * The controller returns {@code List <ClubResponse>}.
+     *
+     * @return {@code List <ClubResponse>}.
+     */
     @GetMapping("/clubs/search/similar")
     public List<ClubResponse> getSimilarClubs(SimilarClubProfile similarClubProfile) {
         return clubService.getSimilarClubsByCategoryName(similarClubProfile);
     }
 
     /**
+     * Use this endpoint to get clubs by id of user-owner with pagination.
      * The controller returns information {@code Page<ClubResponse>} about clubs by id of user-owner.
      *
      * @param id - put user id.
-     * @return new {@code Page<ClubResponse>}.
+     * @return {@code Page<ClubResponse>}.
      */
     @GetMapping("/clubs/{id}")
     public Page<ClubResponse> getClubsByUserId(
@@ -101,11 +118,24 @@ public class ClubController implements Api {
         return clubService.getClubsByUserId(id, pageable);
     }
 
+    /**
+     * Use this endpoint to get a club by id of user-owner.
+     * The controller returns {@code List<ClubResponse>}.
+     *
+     * @param id - put user id.
+     * @return {@code List<ClubResponse>}.
+     */
     @GetMapping("/clubs/user/{id}")
     public List<ClubResponse> getListClubsByUserId(@PathVariable Long id) {
         return clubService.getListClubsByUserId(id);
     }
 
+    /**
+     * Use this endpoint to get clubs by search value with pagination.
+     * The controller returns {@code Page<ClubResponse>}.
+     *
+     * @return {@code Page<ClubResponse>}.
+     */
     @GetMapping("/clubs/search")
     public Page<ClubResponse> getClubsListOfClubs(
             SearchClubProfile searchClubProfile,
@@ -116,10 +146,11 @@ public class ClubController implements Api {
     }
 
     /**
-     * The controller returns dto {@code {@link ClubProfile}} of the club.
+     * Use this endpoint to get the advanced search results with pagination.
+     * The controller returns {@code Page<ClubResponse>}.
      *
      * @param advancedSearchClubProfile - Place dto with all parameters to get possible club.
-     * @return new {@code ClubProfile}.
+     * @return {@code ClubProfile}.
      */
     @GetMapping("/clubs/search/advanced")
     public Page<ClubResponse> getAdvancedSearchClubs(
@@ -130,15 +161,24 @@ public class ClubController implements Api {
         return clubService.getAdvancedSearchClubs(advancedSearchClubProfile, pageable);
     }
 
+    /**
+     * Use this endpoint to get the simple search result with pagination.
+     * The controller returns {@code List<ClubResponse>}.
+     *
+     * @param searchClubProfile - Place dto with all parameters to get possible club.
+     * @return {@code ClubProfile}.
+     */
     @GetMapping("/clubs/search/simple")
     public List<ClubResponse> getClubsByCategoryAndCity(SearchClubProfile searchClubProfile) {
         return clubService.getClubByCategoryAndCity(searchClubProfile);
     }
 
     /**
-     * The controller returns dto {@code {@link ClubProfile}} of updated club.
+     * Use this endpoint to update club by id.
+     * The controller returns {@code SuccessUpdatedClub}.
      *
-     * @param clubProfile - Place dto with all parameters for updating existed club.
+     * @param id          - put club id here.
+     * @param clubProfile - Place dto with all parameters for updating existing club.
      * @return new {@code ClubProfile}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.USER})
@@ -146,41 +186,54 @@ public class ClubController implements Api {
     public SuccessUpdatedClub updateClub(
             @PathVariable Long id,
             @Valid
-            @RequestBody ClubResponse clubProfile,
-            HttpServletRequest httpServletRequest) {
-        return clubService.updateClub(id, clubProfile, httpServletRequest);
+            @RequestBody ClubResponse clubProfile) {
+        return clubService.updateClub(id, clubProfile);
     }
-  
+
+    /**
+     * Use this endpoint to update some values of club by id.
+     * The controller returns {@code ClubResponse}.
+     * @param id                 - put club id here.
+     * @param clubOwnerProfile   - Place dto with all parameters for updating existing club.
+     * @return new {@code ClubProfile}.
+     */
     @AllowedRoles({RoleData.ADMIN, RoleData.USER})
     @PatchMapping("/club/{id}")
     public ClubResponse changeClubOwner(
             @PathVariable Long id,
             @Valid
-            @RequestBody ClubOwnerProfile clubOwnerProfile,
-            HttpServletRequest httpServletRequest) {
-        return clubService.changeClubOwner(id, clubOwnerProfile, httpServletRequest);
+            @RequestBody ClubOwnerProfile clubOwnerProfile) {
+        return clubService.changeClubOwner(id, clubOwnerProfile);
     }
 
     /**
-     * The controller returns dto {@code ClubResponse} of deleted club by id.
-     *
-     * @param id - put club id.
+     * Use this endpoint to delete club by id.
+     * The controller returns {@code ClubResponse}.
+     * @param id                 - put club id.
      * @return new {@code ClubResponse}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @DeleteMapping("/club/{id}")
     public ClubResponse deleteClub(
-            @PathVariable Long id,
-            HttpServletRequest httpServletRequest) {
-        return clubService.deleteClubById(id, httpServletRequest);
+            @PathVariable Long id) {
+        return clubService.deleteClubById(id);
     }
 
+    /**
+     * Use this endpoint to update rating of all clubs.
+     * The controller returns {@code List<ClubResponse>}.
+     *
+     * @return new {@code List<ClubResponse>}.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @PatchMapping("/clubs/rating")
     public List<ClubResponse> updateClubsRating() {
         return clubService.updateRatingForAllClubs();
     }
 
+    /**
+     * The controller updates contacts of club.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/club/updateContacts")
     public void updateContacts() {

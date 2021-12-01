@@ -1,22 +1,17 @@
 package com.softserve.teachua.dto.club.validation;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.exception.IncorrectInputException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.List;
 
 @Slf4j
 public class DescriptionValidation implements ConstraintValidator<ClubDescription, String> {
-
     @Getter
     @NoArgsConstructor
     static class Block {
@@ -24,15 +19,15 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
         String text;
         String type;
         Long depth;
-        Object inlineStyleRanges[];
-        Object entityRanges[];
+        Object[] inlineStyleRanges;
+        Object[] entityRanges;
         Object data;
     }
 
     @Getter
     @NoArgsConstructor
     static class Description {
-        Block blocks[];
+        Block[] blocks;
         Object entityMap;
     }
 
@@ -42,25 +37,27 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
         try {
             Description descriptionClub = objectMapper.readValue(s, Description.class);
 
-            String text = "";
+            StringBuilder text = new StringBuilder("");
 
-            for(Block block : descriptionClub.blocks){
-                text += block.text;
+            for (Block block : descriptionClub.blocks) {
+                text.append(block.text);
             }
 
-            if(!text.matches("^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+$")){
-                throw new IncorrectInputException("Це поле може містити тільки українські та англійські літери, цифри та спеціальні символи");
+            if (!text.toString().matches("^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()"
+                    + "\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+$")) {
+                throw new IncorrectInputException("Це поле може містити тільки українські та англійські літери, "
+                        + "цифри та спеціальні символи");
             }
 
-            if (!text.matches("^[^эЭъЪыЫёЁ]+$")) {
+            if (!text.toString().matches("^[^эЭъЪыЫёЁ]+$")) {
                 throw new IncorrectInputException("Опис гуртка не може містити російські літери");
             }
 
-            if(text.length() < 40){
+            if (text.length() < 40) {
                 throw new IncorrectInputException("Довжина опису не може бути меншою за 40 символів");
             }
 
-            if(text.length() > 1500){
+            if (text.length() > 1500) {
                 throw new IncorrectInputException("Довжина опису не може бути більшою за 1500 символів");
             }
 
@@ -70,7 +67,5 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
         }
         return false;
     }
-
-
 }
 

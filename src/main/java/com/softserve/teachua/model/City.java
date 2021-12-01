@@ -15,9 +15,8 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "cities")
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class City implements Convertible, Archivable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,6 +29,4 @@ public class City implements Convertible, Archivable {
 
     @Column
     private Double longitude;
-
-
 }

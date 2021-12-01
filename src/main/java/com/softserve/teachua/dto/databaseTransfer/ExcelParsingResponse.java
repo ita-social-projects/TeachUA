@@ -10,7 +10,6 @@ import java.util.Map;
 
 @Data
 public class ExcelParsingResponse {
-
     private final List<ExcelParsingMistake> parsingMistakes = new ArrayList<>();
 
     // total records count including records with mistakes

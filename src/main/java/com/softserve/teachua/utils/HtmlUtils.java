@@ -1,9 +1,7 @@
 package com.softserve.teachua.utils;
 
-
 import com.softserve.teachua.exception.IncorrectInputException;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.safety.Safelist;
 
 /**
@@ -13,11 +11,10 @@ import org.jsoup.safety.Safelist;
  * @author Roman Klymus
  */
 public class HtmlUtils {
-
-    private static final String FORBIDDEN_DESC_TAGS = "You have used forbidden tags or attributes. " +
-            "Only allow the following: a, b, blockquote, br, caption, cite, code, col, colgroup, " +
-            "dd, div, dl, dt, em, h1, h2, h3, h4, h5, h6, i, img, li, ol, p, pre, q, small, span, " +
-            "strike, strong, sub, sup, table, tbody, td, tfoot, th, thead, tr, u, ul.";
+    private static final String FORBIDDEN_DESC_TAGS = "You have used forbidden tags or attributes. "
+            + "Only allow the following: a, b, blockquote, br, caption, cite, code, col, colgroup, "
+            + "dd, div, dl, dt, em, h1, h2, h3, h4, h5, h6, i, img, li, ol, p, pre, q, small, span, "
+            + "strike, strong, sub, sup, table, tbody, td, tfoot, th, thead, tr, u, ul.";
     public static final Safelist DESC_SAFELIST = Safelist.relaxed()
             .addTags("s", "iframe")
             .addAttributes("span", "class", "style")

@@ -16,7 +16,6 @@ import javax.validation.constraints.Pattern;
 @With
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LocationResponse {
-
     private Long id;
     @NotBlank
     @CheckRussian
@@ -48,8 +47,6 @@ public class LocationResponse {
     private Double longitude;
     private Double latitude;
 
-    @Pattern(regexp = "0[\\d]{8}",message = "Incorrect phone number")
+    @Pattern(regexp = "0[\\d]{9}",message = "Incorrect phone number")
     private String phone;
-
-
 }

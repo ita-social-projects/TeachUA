@@ -8,8 +8,6 @@ import com.softserve.teachua.model.News;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -39,7 +37,7 @@ public interface NewsService {
      * @param newsProfile - place body of dto {@code NewsProfile}.
      * @return new {@code SuccessCreatedNews}.
      **/
-    SuccessCreatedNews addNews(NewsProfile newsProfile, HttpServletRequest httpServletRequest);
+    SuccessCreatedNews addNews(NewsProfile newsProfile);
 
     /**
      * Method returns list of all news {@code List<NewsResponse>}.

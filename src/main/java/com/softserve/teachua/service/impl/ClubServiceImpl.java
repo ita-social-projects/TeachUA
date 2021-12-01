@@ -34,7 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import java.util.HashSet;
 import java.util.List;
@@ -148,8 +147,9 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile, HttpServletRequest httpServletRequest) {
-        validateClubOwner(id, httpServletRequest);
+    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile) {
+        User user = userService.getCurrentUser();
+        validateClubOwner(id, user);
         Club club = getClubById(id);
         Set<LocationResponse> locations = null;
 
@@ -186,7 +186,7 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public SuccessCreatedClub addClub(ClubProfile clubProfile, HttpServletRequest httpServletRequest) {
+    public SuccessCreatedClub addClub(ClubProfile clubProfile) {
         List<LocationProfile> locations = clubProfile.getLocations();
 
         if (locations != null && !locations.isEmpty()) {
@@ -208,7 +208,7 @@ public class ClubServiceImpl implements ClubService {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }
 
-        User user = userService.getUserFromRequest(httpServletRequest);
+        User user = userService.getCurrentUser();
         clubProfile.setUserId(user.getId());
 
         //todo delete or replace this block
@@ -416,10 +416,10 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public ClubResponse changeClubOwner(
             Long id,
-            ClubOwnerProfile clubOwnerProfile,
-            HttpServletRequest httpServletRequest
+            ClubOwnerProfile clubOwnerProfile
     ) {
-        validateClubOwner(id, httpServletRequest);
+        User user = userService.getCurrentUser();
+        validateClubOwner(id, user);
         Club club = getClubById(id);
         club.setUser(clubOwnerProfile.getUser());
 
@@ -596,8 +596,9 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public ClubResponse deleteClubById(Long id, HttpServletRequest httpServletRequest) {
-        validateClubOwner(id, httpServletRequest);
+    public ClubResponse deleteClubById(Long id) {
+        User user = userService.getCurrentUser();
+        validateClubOwner(id, user);
 
         Club club = getClubById(id);
 
@@ -610,7 +611,7 @@ public class ClubServiceImpl implements ClubService {
                     .forEach(location -> locationService.addLocation(dtoConverter
                             .convertToDto(location.withClub(null), LocationProfile.class)));
             fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground(), club.getUrlGallery());
-            updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class), httpServletRequest);
+            updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class));
 
             clubRepository.deleteById(id);
             clubRepository.flush();
@@ -635,9 +636,8 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public void validateClubOwner(Long id, HttpServletRequest httpServletRequest) {
+    public void validateClubOwner(Long id, User userFromRequest) {
         User userFromClub = getClubById(id).getUser();
-        User userFromRequest = userService.getUserFromRequest(httpServletRequest);
 
         if (!(userFromClub != null && userFromRequest != null && userFromRequest.equals(userFromClub))) {
             throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);

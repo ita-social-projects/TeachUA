@@ -169,4 +169,12 @@ public interface UserService {
      * @param passwordUpdate - place dto {@code UserPasswordUpdate} with all params.
      */
     void updatePassword(Long id, UserPasswordUpdate passwordUpdate);
+
+
+    /**
+     * The method get current user from HttpServletRequest
+     *
+     * @return new {@code User}
+     */
+    User getCurrentUser();
 }

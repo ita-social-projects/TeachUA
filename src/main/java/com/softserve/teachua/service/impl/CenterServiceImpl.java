@@ -30,7 +30,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import java.util.HashSet;
 import java.util.List;
@@ -148,9 +147,8 @@ public class CenterServiceImpl implements CenterService {
     }
 
     @Override
-    public SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile, HttpServletRequest httpServletRequest) {
-        centerProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
-        centerProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
+    public SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile) {
+        centerProfile.setUserId(userService.getCurrentUser().getId());
 
         return addCenter(centerProfile);
     }

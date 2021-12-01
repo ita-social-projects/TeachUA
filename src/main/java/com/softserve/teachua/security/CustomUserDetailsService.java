@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
-
     @Autowired
     UserRepository userRepository;
 
@@ -29,9 +28,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Transactional
     public UserDetails loadUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("User", "id")
-        );
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id"));
         return UserPrincipal.create(user);
     }
 }

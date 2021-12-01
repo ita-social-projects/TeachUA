@@ -16,7 +16,6 @@ import java.time.LocalDate;
 @Builder
 @Data
 public class NewsResponse implements Convertible {
-
     private Long id;
 
     private String title;
