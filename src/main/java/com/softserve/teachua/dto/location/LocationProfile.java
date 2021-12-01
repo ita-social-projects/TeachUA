@@ -33,10 +33,10 @@ public class LocationProfile {
     @NotBlank
     @CheckRussian
     private String cityName;
-    @NotBlank
+
     @CheckRussian
     private String districtName;
-    @NotBlank
+
     @CheckRussian
     private String stationName;
 
