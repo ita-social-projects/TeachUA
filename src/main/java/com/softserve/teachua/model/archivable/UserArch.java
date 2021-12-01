@@ -1,12 +1,10 @@
 package com.softserve.teachua.model.archivable;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.service.impl.UserServiceImpl;
 import lombok.*;
 
-import javax.persistence.*;
 
 @NoArgsConstructor
 @AllArgsConstructor

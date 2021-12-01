@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class StationServiceImpl implements StationService, ArchiveMark {
+public class StationServiceImpl implements StationService, ArchiveMark<Station> {
     private static final String STATION_ALREADY_EXIST = "Station already exist with name: %s";
     private static final String STATION_NOT_FOUND_BY_ID = "Station not found by id: %s";
     private static final String STATION_NOT_FOUND_BY_NAME = "Station not found by name: %s";
@@ -132,14 +132,14 @@ public class StationServiceImpl implements StationService, ArchiveMark {
     public StationResponse deleteStationById(Long id) {
         Station station = getStationById(id);
 
-//        archiveService.saveModel(station);
-
         try {
             stationRepository.deleteById(id);
             stationRepository.flush();
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(STATION_DELETING_ERROR);
         }
+
+        archiveModel(station);
 
         log.debug("station {} was successfully deleted", station);
         return dtoConverter.convertToDto(station, StationResponse.class);
@@ -154,11 +154,18 @@ public class StationServiceImpl implements StationService, ArchiveMark {
     }
 
     @Override
+    public void archiveModel(Station station) {
+        archiveService.saveModel(dtoConverter.convertToDto(station, StationArch.class));
+    }
+
+    @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         StationArch stationArch = objectMapper.readValue(archiveObject, StationArch.class);
-        Station station = Station.builder()
-                .name(stationArch.getName())
-                .build();
+        Station station = Station.builder().build();
+        Long stationId = station.getId();
+        station = dtoConverter.convertToEntity(stationArch, station)
+                .withId(stationId)
+                .withCity(cityService.getCityById(stationArch.getCityId()));
         stationRepository.save(station);
     }
 }

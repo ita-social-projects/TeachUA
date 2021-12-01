@@ -22,7 +22,6 @@ public class CategoryArch implements Convertible, Archivable {
     private String backgroundColor;
     private String tagBackgroundColor;
     private String tagTextColor;
-    private Set<Long> clubs;
 
     @Override
     public Class getServiceClass() {

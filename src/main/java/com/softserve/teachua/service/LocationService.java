@@ -37,4 +37,6 @@ public interface LocationService {
      * @return
      */
     Set<Location> updateLocationByClub(Set<LocationResponse> locations, Club club);
+
+    Location getLocationById(Long id);
 }

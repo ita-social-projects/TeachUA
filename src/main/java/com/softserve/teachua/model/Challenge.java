@@ -11,6 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Builder
+@With
 @Entity
 @Table(name = "сhallenges")
 public class Challenge implements Convertible {

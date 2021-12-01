@@ -39,7 +39,7 @@ public class User implements Convertible {
     private String urlLogo;
 
     @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "role_id")
     @ToString.Exclude
     private Role role;

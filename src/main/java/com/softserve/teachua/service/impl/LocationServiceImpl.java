@@ -4,6 +4,7 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.exception.IncorrectInputException;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.*;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.service.LocationService;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 public class LocationServiceImpl implements LocationService {
+    private final static String NOT_EXIST_EXCEPTION = "Location with %d id not exists";
     private final LocationRepository locationRepository;
     private final DtoConverter dtoConverter;
 
@@ -75,5 +78,11 @@ public class LocationServiceImpl implements LocationService {
                 .collect(Collectors.toSet());
 
         return locationSet;
+    }
+
+    @Override
+    public Location getLocationById(Long id){
+        Optional<Location> location = locationRepository.findById(id);
+        return location.orElseThrow(() -> new NotExistException(String.format(NOT_EXIST_EXCEPTION, id)));
     }
 }

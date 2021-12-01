@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class BannerItemServiceImpl implements BannerItemService, ArchiveMark {
+public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<BannerItem> {
     private static final String BANNER_ITEM_NOT_FOUND_BY_ID = "Banner Item not found by id: %s";
     private static final String BANNER_ITEM_DELETING_ERROR = "Banner Item can`t be deleted by id: %s";
 
@@ -93,8 +93,6 @@ public class BannerItemServiceImpl implements BannerItemService, ArchiveMark {
     public BannerItemResponse deleteBannerItemById(Long id) {
         BannerItem bannerItem = getBannerItemById(id);
 
-        archiveService.saveModel(dtoConverter.convertToDto(bannerItem, BannerItemArh.class));
-
         try {
             bannerItemRepository.deleteById(id);
             bannerItemRepository.flush();
@@ -102,17 +100,21 @@ public class BannerItemServiceImpl implements BannerItemService, ArchiveMark {
             throw new DatabaseRepositoryException(String.format(BANNER_ITEM_DELETING_ERROR, id));
         }
 
+        archiveModel(bannerItem);
+
         log.info("banner item {} was successfully deleted", bannerItem);
         return dtoConverter.convertToDto(bannerItem, BannerItemResponse.class);
     }
 
     @Override
-    public void restoreModel(String archiveObject) {
-        try {
-            BannerItemArh bannerItemArh = objectMapper.readValue(archiveObject, BannerItemArh.class);
-            addBannerItem(dtoConverter.convertFromDtoToDto(bannerItemArh, BannerItemProfile.builder().build()));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    public void archiveModel(BannerItem bannerItem) {
+        archiveService.saveModel(dtoConverter.convertToDto(bannerItem, BannerItemArh.class));
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        BannerItemArh bannerItemArh = objectMapper.readValue(archiveObject, BannerItemArh.class);
+        BannerItem bannerItem = dtoConverter.convertToEntity(bannerItemArh, BannerItem.builder().build());
+        bannerItemRepository.save(bannerItem);
     }
 }

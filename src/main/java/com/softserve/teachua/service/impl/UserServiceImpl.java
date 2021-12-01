@@ -8,6 +8,7 @@ import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.task.CreateTask;
 import com.softserve.teachua.dto.user.*;
 import com.softserve.teachua.exception.*;
+import com.softserve.teachua.model.AuthProvider;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.TaskArch;
 import com.softserve.teachua.model.archivable.UserArch;
@@ -49,7 +50,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService, ArchiveMark {
+public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
     private static final String EMAIL_UPDATING_ERROR = "Email can`t be updated";
     private static final String ROLE_UPDATING_ERROR = "Role can`t be changed to Admin";
@@ -269,14 +270,14 @@ public class UserServiceImpl implements UserService, ArchiveMark {
     public UserResponse deleteUserById(Long id) {
         User user = getUserById(id);
 
-        archiveService.saveModel(dtoConverter.convertToDto(user, UserArch.class));
-
         try {
             userRepository.deleteById(id);
             userRepository.flush();
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(USER_DELETING_ERROR);
         }
+
+        archiveModel(user);
 
         log.debug("user {} was successfully deleted", user);
         return dtoConverter.convertToDto(user, UserResponse.class);
@@ -505,11 +506,18 @@ public class UserServiceImpl implements UserService, ArchiveMark {
     }
 
     @Override
-    public void restoreModel(String archiveObject) {
-        try {
-            UserArch userArch = objectMapper.readValue(archiveObject, UserArch.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    public void archiveModel(User user) {
+        archiveService.saveModel(dtoConverter.convertToDto(user, UserArch.class));
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        UserArch userArch = objectMapper.readValue(archiveObject, UserArch.class);
+        User user = dtoConverter.convertToEntity(userArch, User.builder().build())
+                .withRole(roleService.findByName(userArch.getRoleName()))
+                .withProvider(Optional.ofNullable(userArch.getProvider()).isPresent()
+                        ? AuthProvider.valueOf(userArch.getProvider())
+                        : null);
+        userRepository.save(user);
     }
 }

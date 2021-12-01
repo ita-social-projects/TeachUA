@@ -613,7 +613,6 @@ public class ClubServiceImpl implements ClubService {
                     .forEach(location -> locationService.addLocation(dtoConverter
                             .convertToDto(location.withClub(null), LocationProfile.class)));
             fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground(), club.getUrlGallery());
-            updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class));
 
             clubRepository.deleteById(id);
             clubRepository.flush();
@@ -621,7 +620,7 @@ public class ClubServiceImpl implements ClubService {
             throw new DatabaseRepositoryException(CLUB_DELETING_ERROR);
         }
 
-        log.debug("club {} was successfully deleted", club);
+        log.info("club {} was successfully deleted", club);
         return toClubResponseConverter.convertToClubResponse(club);
     }
 

@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 @Entity
+@With
 @Table(name = "tasks")
 public class Task implements Convertible {
     @Id

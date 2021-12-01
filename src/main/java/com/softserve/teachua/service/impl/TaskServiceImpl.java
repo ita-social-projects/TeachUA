@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Transactional
-public class TaskServiceImpl implements TaskService, ArchiveMark {
+public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
     private final TaskRepository taskRepository;
     private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
@@ -53,9 +53,9 @@ public class TaskServiceImpl implements TaskService, ArchiveMark {
         Task task = getTaskById(id);
         TaskProfile taskProfile = dtoConverter.convertToDto(task, TaskProfile.class);
         taskProfile.setChallengeId(task.getChallenge().getId());
-        archiveService.saveModel(dtoConverter.convertToDto(task, TaskArch.class));
         taskRepository.deleteById(id);
         taskRepository.flush();
+        archiveModel(task);
         return taskProfile;
     }
 
@@ -120,9 +120,18 @@ public class TaskServiceImpl implements TaskService, ArchiveMark {
     }
 
     @Override
+    public void archiveModel(Task task) {
+        archiveService.saveModel(dtoConverter.convertToDto(task, TaskArch.class));
+    }
+
+    @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         TaskArch taskArch = objectMapper.readValue(archiveObject, TaskArch.class);
-        CreateTask createTask = dtoConverter.convertFromDtoToDto(taskArch, CreateTask.builder().build());
-        createTask(taskArch.getChallengeId(), createTask);
+        Task task = Task.builder().build();
+        Long taskId = task.getId();
+        task = dtoConverter.convertToEntity(taskArch, task)
+                .withId(taskId)
+                .withChallenge(challengeService.getChallengeById(taskArch.getChallengeId()));
+        taskRepository.save(task);
     }
 }
