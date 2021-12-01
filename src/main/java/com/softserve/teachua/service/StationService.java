@@ -90,12 +90,4 @@ public interface StationService {
      * @throws NotExistException {@link NotExistException} if the station doesn't exist.
      */
     StationResponse deleteStationById(Long id);
-
-//    //TODO !!!
-//    /**
-//     *
-//     * @param
-//     * @return
-//     */
-//    List<StationResponse> getStationByDistrictNameAndCityName(StationProfile stationProfile);
 }

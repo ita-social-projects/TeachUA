@@ -112,11 +112,4 @@ public class StationController implements Api {
     public StationResponse deleteStation(@PathVariable Long id) {
         return stationService.deleteStationById(id);
     }
-
-
-//    @AllowedRoles({RoleData.ADMIN,RoleData.MANAGER,RoleData.USER})
-//    @PostMapping("/districtStations")
-//    public List<StationResponse> getAllStationByDistrictName(@RequestBody StationProfile stationProfile){
-//        return  stationService.getStationByDistrictNameAndCityName(stationProfile);
-//    }
 }

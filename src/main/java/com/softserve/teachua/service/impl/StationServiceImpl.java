@@ -147,23 +147,6 @@ public class StationServiceImpl implements StationService {
         return dtoConverter.convertToDto(station, StationResponse.class);
     }
 
-//    @Override
-//    public List<StationResponse> getStationByDistrictNameAndCityName(StationProfile stationProfile) {
-//
-//        if (districtService.getDistrictByName(stationProfile.getDistrictName())==null){
-//            throw  new NotExistException("District with name"+stationProfile.getDistrictName()+"is not exists");
-//        }else if (cityService.getCityByName(stationProfile.getCityName())==null){
-//            throw  new NotExistException("City with name"+stationProfile.getCityName()+"is not exists");
-//        }
-//
-//        List<StationResponse> responseList = stationRepository.findAllByDistrictNameAndCityName(stationProfile.getDistrictName(),stationProfile.getCityName())
-//                .stream()
-//                .map(station ->(StationResponse) dtoConverter.convertToDto(station,StationResponse.class))
-//                .collect(Collectors.toList());
-//        log.debug("get StationResponse List by DistrictName"+responseList);
-//        return responseList;
-//    }
-
     private boolean isStationExistByName(String name) {
         return stationRepository.existsByName(name);
     }
