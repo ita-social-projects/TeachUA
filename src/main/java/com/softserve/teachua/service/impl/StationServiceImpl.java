@@ -90,7 +90,8 @@ public class StationServiceImpl implements StationService {
             throw new AlreadyExistException(String.format(STATION_ALREADY_EXIST, stationProfile.getName()));
         }
         Station station = stationRepository.save(dtoConverter.convertToEntity(stationProfile, new Station())
-                .withCity(cityService.getCityByName(stationProfile.getCityName())));
+                .withCity(cityService.getCityByName(stationProfile.getCityName()))
+                .withDistrict(districtService.getDistrictByName(stationProfile.getDistrictName())));
         log.debug("**/adding new station = " + station);
         return dtoConverter.convertToDto(station, SuccessCreatedStation.class);
     }
@@ -122,7 +123,8 @@ public class StationServiceImpl implements StationService {
         Station station = getStationById(id);
         Station newStation = dtoConverter.convertToEntity(stationProfile, station)
                 .withId(id)
-                .withCity(cityService.getCityByName(stationProfile.getCityName()));
+                .withCity(cityService.getCityByName(stationProfile.getCityName()))
+                .withDistrict(districtService.getDistrictByName(stationProfile.getDistrictName()));
 
         log.debug("**/updating station by id = " + newStation);
         return dtoConverter.convertToDto(stationRepository.save(newStation), StationProfile.class);
@@ -144,6 +146,23 @@ public class StationServiceImpl implements StationService {
         log.debug("station {} was successfully deleted", station);
         return dtoConverter.convertToDto(station, StationResponse.class);
     }
+
+//    @Override
+//    public List<StationResponse> getStationByDistrictNameAndCityName(StationProfile stationProfile) {
+//
+//        if (districtService.getDistrictByName(stationProfile.getDistrictName())==null){
+//            throw  new NotExistException("District with name"+stationProfile.getDistrictName()+"is not exists");
+//        }else if (cityService.getCityByName(stationProfile.getCityName())==null){
+//            throw  new NotExistException("City with name"+stationProfile.getCityName()+"is not exists");
+//        }
+//
+//        List<StationResponse> responseList = stationRepository.findAllByDistrictNameAndCityName(stationProfile.getDistrictName(),stationProfile.getCityName())
+//                .stream()
+//                .map(station ->(StationResponse) dtoConverter.convertToDto(station,StationResponse.class))
+//                .collect(Collectors.toList());
+//        log.debug("get StationResponse List by DistrictName"+responseList);
+//        return responseList;
+//    }
 
     private boolean isStationExistByName(String name) {
         return stationRepository.existsByName(name);

@@ -99,6 +99,7 @@ public class StationController implements Api {
         return stationService.getListOfStationsByCityName(name);
     }
 
+
     /**
      * Use this endpoint to delete station by id.
      * The controller returns {@code StationResponse}.
@@ -111,4 +112,11 @@ public class StationController implements Api {
     public StationResponse deleteStation(@PathVariable Long id) {
         return stationService.deleteStationById(id);
     }
+
+
+//    @AllowedRoles({RoleData.ADMIN,RoleData.MANAGER,RoleData.USER})
+//    @PostMapping("/districtStations")
+//    public List<StationResponse> getAllStationByDistrictName(@RequestBody StationProfile stationProfile){
+//        return  stationService.getStationByDistrictNameAndCityName(stationProfile);
+//    }
 }
