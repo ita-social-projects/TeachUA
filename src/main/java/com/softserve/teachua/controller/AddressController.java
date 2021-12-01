@@ -1,10 +1,13 @@
 package com.softserve.teachua.controller;
 
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.location.AddressProfile;
 import com.softserve.teachua.service.impl.AddressServiceImpl;
 import java.util.List;
+
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
