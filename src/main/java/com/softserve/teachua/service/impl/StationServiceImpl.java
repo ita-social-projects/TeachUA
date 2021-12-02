@@ -80,6 +80,20 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
+    public List<StationResponse> getAllByDistrictNameAndCityName(StationProfile stationProfile) {
+
+        List<StationResponse> stationList= stationRepository.findAllByDistrictNameAndCityName(
+                    stationProfile.getDistrictName(),stationProfile.getCityName())
+                .stream()
+                .map(station -> (StationResponse)dtoConverter.convertToDto(station,StationResponse.class))
+                .collect(Collectors.toList());
+
+        log.debug("**/get all stations by District = "+stationList);
+
+        return stationList;
+    }
+
+    @Override
     public Optional<Station> getOptionalStationByName(String name) {
         return stationRepository.findByName(name);
     }
