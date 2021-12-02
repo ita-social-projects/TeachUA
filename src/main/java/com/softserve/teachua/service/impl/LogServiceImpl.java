@@ -41,14 +41,32 @@ public class LogServiceImpl implements LogService {
         return result;
     }
 
+    //Зробити перевірку на те що приходить
     @Override
-    public Boolean deleteAllLogs() {
-        try {
-            FileUtils.cleanDirectory(new File(path));
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public Boolean deleteAllLogs(String date,boolean singleDate) {
+//        try {
+        System.out.println(date);
+//        List<String> logList = FileUtils.listFiles(new File(path), null, false)
+//                .stream()
+//                .map(File::getName)
+//                .collect(Collectors.toList());
+        List<String> logList1 = FileUtils.listFiles(new File(path), null, false)
+                .stream()
+                .map(File::getName)
+                .filter(file -> file.contains(date))
+                .collect(Collectors.toList());
+
+        System.err.println(FileUtils.getFile("teachualogs-2021-10-11.1000.log").exists());
+//        System.out.println("It`s for delete: "+logList1);
+
+//        FileUtils.listFiles(new File(path),null,false);
+//            FileUtils.cleanDirectory(new File(path));
+//            
+//            return true;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+        return true;
     }
 }

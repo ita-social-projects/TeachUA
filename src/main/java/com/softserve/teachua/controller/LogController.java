@@ -6,10 +6,7 @@ import com.softserve.teachua.service.LogService;
 import io.swagger.v3.oas.annotations.Hidden;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -58,9 +55,12 @@ public class LogController implements Api {
      *
      * @return new {@code Boolean}.
      */
+    //Зробити  параметр, при активації якого ми видаляємо логи до того часу, якщо не активовуємо, то видаляємо лише за цей час
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/logs")
-    public Boolean deleteAllLogs() {
-        return logService.deleteAllLogs();
+    @DeleteMapping("/logs/{date}")
+    public Boolean deleteLogsBeforeDate(
+            @RequestParam(required = false,defaultValue = "true")Boolean singleDate,
+            @PathVariable String date) {
+        return logService.deleteAllLogs(date,singleDate);
     }
 }
