@@ -10,6 +10,7 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.District;
+import com.softserve.teachua.model.archivable.DistrictArch;
 import com.softserve.teachua.repository.DistrictRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class DistrictServiceImpl implements DistrictService {
+public class DistrictServiceImpl implements DistrictService, ArchiveMark<District> {
     private static final String DISTRICT_ALREADY_EXIST = "District already exist with name: %s";
     private static final String DISTRICT_NOT_FOUND_BY_ID = "District not found by id: %s";
     private static final String DISTRICT_NOT_FOUND_BY_NAME = "District not found by name: %s";
@@ -136,14 +137,14 @@ public class DistrictServiceImpl implements DistrictService {
     public DistrictResponse deleteDistrictById(Long id) {
         District district = getDistrictById(id);
 
-//        archiveService.saveModel(district);
-
         try {
             districtRepository.deleteById(id);
             districtRepository.flush();
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(DISTRICT_DELETING_ERROR);
         }
+
+        archiveModel(district);
 
         log.debug("district {} was successfully deleted", district);
         return dtoConverter.convertToDto(district, DistrictResponse.class);
@@ -157,12 +158,19 @@ public class DistrictServiceImpl implements DistrictService {
         return districtRepository.findById(id);
     }
 
-//    @Override
-//    public void restoreModel(String archiveObject) {
-//        try {
-//            objectMapper.readValue(archiveObject, District.class);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    @Override
+    public void archiveModel(District district) {
+        DistrictArch districtArch = dtoConverter.convertToDto(district, DistrictArch.class);
+        districtArch.setCityId(district.getCity().getId());
+        archiveService.saveModel(districtArch);
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        DistrictArch districtArch = objectMapper.readValue(archiveObject, DistrictArch.class);
+        District district = dtoConverter.convertToEntity(districtArch, District.builder().build())
+                .withId(null)
+                .withCity(cityService.getCityById(districtArch.getCityId()));
+        districtRepository.save(district);
+    }
 }

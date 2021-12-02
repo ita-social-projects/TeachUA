@@ -12,6 +12,7 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
 import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.archivable.FeedbackArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.repository.UserRepository;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class FeedbackServiceImpl implements FeedbackService {
+public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedback> {
     private static final String FEEDBACK_NOT_FOUND_BY_ID = "Feedback not found by id: %s";
     private static final String FEEDBACK_DELETING_ERROR = "Can't delete feedback cause of relationship";
     private static final String ACCESS_TO_FEEDBACK_DENIED = "User can edit/delete only own feedbacks";
@@ -123,8 +124,6 @@ public class FeedbackServiceImpl implements FeedbackService {
     public FeedbackResponse deleteFeedbackById(Long id) {
         Feedback feedback = getFeedbackById(id);
 
-//        archiveService.saveModel(feedback);
-
         try {
             feedbackRepository.deleteById(id);
             feedbackRepository.flush();
@@ -132,9 +131,13 @@ public class FeedbackServiceImpl implements FeedbackService {
             throw new DatabaseRepositoryException(FEEDBACK_DELETING_ERROR);
         }
 
+        archiveModel(feedback);
+
         FeedbackResponse feedbackResponse = dtoConverter.convertToDto(feedback, FeedbackResponse.class);
 
-        clubService.updateRatingDeleteFeedback(feedbackResponse);
+        if(Optional.ofNullable(feedbackResponse.getClub()).isPresent()) {
+            clubService.updateRatingDeleteFeedback(feedbackResponse);
+        }
 
         log.debug("feedback {} was successfully deleted", feedback);
         return feedbackResponse;
@@ -180,35 +183,27 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
     }
 
-//    @Override
-//    public void restoreModel(String archiveObject) {
-//        log.info("RESTORE FEEDBACK");
-//        log.info("DATA: " + archiveObject);
-//        try {
-//            Map<String, Object> map = objectMapper.readValue(archiveObject, Map.class);
-//            log.info("map: " + map);
-//            Feedback feedback = new Feedback();
-////            feedback.setDate((LocalDateTime) map.get("date"));
-//            feedback.setText((String) map.get("text"));
-//            feedback.setRate((Float)((Double)map.get("rate")).floatValue());
-//            feedback.setUser(userService.getUserById(Integer.toUnsignedLong((Integer) map.get("userId"))));
-//            Club club = clubService.getClubById(Integer.toUnsignedLong((Integer) map.get("clubId")));
-//            log.info("Club: " + club);
-//            feedback.setClub(club);
-//            log.info("feedback: " + feedback);
-//            feedbackRepository.save(feedback);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
+    @Override
+    public void archiveModel(Feedback feedback) {
+        FeedbackArch feedbackArch = dtoConverter.convertToDto(feedback, FeedbackArch.class);
+        if(Optional.ofNullable(feedback.getUser()).isPresent()){
+            feedbackArch.setUserId(feedback.getUser().getId());
+        }
+        if(Optional.ofNullable(feedback.getClub()).isPresent()){
+            feedbackArch.setClubId(feedback.getClub().getId());
+        }
+        archiveService.saveModel(feedbackArch);
+    }
 
-//        try {
-
-//            JsonNode jsonNode = objectMapper.readTree(archiveObject);
-//            JsonParser jsonParser = objectMapper.treeAsTokens(jsonNode);
-//            Feedback feedback = objectMapper.readValue(archiveObject, Feedback.class);
-//            log.info("feedback: " + feedback);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        FeedbackArch feedbackArch = objectMapper.readValue(archiveObject, FeedbackArch.class);
+        Feedback feedback = Feedback.builder().build();
+        Long feedbackId = feedback.getId();
+        feedback = dtoConverter.convertToEntity(feedbackArch, feedback)
+                .withId(feedbackId)
+                .withUser(userService.getUserById(feedbackArch.getUserId()))
+                .withClub(clubService.getClubById(feedbackArch.getClubId()));
+        feedbackRepository.save(feedback);
+    }
 }

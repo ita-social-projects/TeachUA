@@ -1,16 +1,19 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Complaint;
+import com.softserve.teachua.model.archivable.ComplaintArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ComplaintService;
 import com.softserve.teachua.service.UserService;
@@ -30,7 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class ComplaintServiceImpl implements ComplaintService {
+public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Complaint> {
     private static final String COMPLAINT_NOT_FOUND_BY_ID = "Complaint not found by id: %s";
     private static final String COMPLAINT_DELETING_ERROR = "Can't delete complaint cause of relationship";
 
@@ -40,6 +43,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ArchiveService archiveService;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public ComplaintServiceImpl(ComplaintRepository complaintRepository,
@@ -47,13 +51,14 @@ public class ComplaintServiceImpl implements ComplaintService {
                                 ClubRepository clubRepository,
                                 ArchiveService archiveService,
                                 UserRepository userRepository,
-                                UserService userService) {
+                                UserService userService, ObjectMapper objectMapper) {
         this.complaintRepository = complaintRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -129,8 +134,6 @@ public class ComplaintServiceImpl implements ComplaintService {
     public ComplaintResponse deleteComplaintById(Long id) {
         Complaint complaint = getComplaintById(id);
 
-//        archiveService.saveModel(complaint);
-
         try {
             complaintRepository.deleteById(id);
             complaintRepository.flush();
@@ -138,7 +141,29 @@ public class ComplaintServiceImpl implements ComplaintService {
             throw new DatabaseRepositoryException(COMPLAINT_DELETING_ERROR);
         }
 
+        archiveModel(complaint);
+
         log.debug("complaint {} was successfully deleted", complaint);
         return dtoConverter.convertToDto(complaint, ComplaintResponse.class);
+    }
+
+    @Override
+    public void archiveModel(Complaint complaint) {
+        ComplaintArch complaintArch = dtoConverter.convertToDto(complaint, ComplaintArch.class);
+        complaintArch.setClubId(Optional.ofNullable(complaint.getClub()).isPresent() ? complaint.getClub().getId() : null);
+        complaintArch.setUserId(Optional.ofNullable(complaint.getUser()).isPresent() ? complaint.getUser().getId() : null);
+        archiveService.saveModel(complaintArch);
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        ComplaintArch complaintArch = objectMapper.readValue(archiveObject, ComplaintArch.class);
+        Complaint complaint = Complaint.builder().build();
+        Long complaintId = complaint.getId();
+        complaint = dtoConverter.convertToEntity(complaintArch, complaint)
+                .withId(complaintId);
+        complaint.setClub(Optional.ofNullable(clubRepository.findById(complaintArch.getClubId())).get().orElse(null));
+        complaint.setUser(Optional.ofNullable(userRepository.findById(complaintArch.getUserId())).get().orElse(null));
+        complaintRepository.save(complaint);
     }
 }

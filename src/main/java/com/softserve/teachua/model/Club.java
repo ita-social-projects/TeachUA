@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ import java.util.Set;
 public class Club implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column
@@ -69,14 +71,14 @@ public class Club implements Convertible {
     @ToString.Exclude
     private Set<Location> locations;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "club_category",
             joinColumns = {@JoinColumn(name = "club_id")},
             inverseJoinColumns = {@JoinColumn(name = "category_id")})
     @ToString.Exclude
     private Set<Category> categories = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ToString.Exclude
     private User user;

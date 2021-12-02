@@ -11,19 +11,16 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @Data
 @With
 @Entity
 @Table(name = "roles")
 public class Role implements Convertible {
-    @NonNull
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NonNull
     @Column(nullable = false)
     private String name;
 

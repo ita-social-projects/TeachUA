@@ -1,5 +1,7 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.question.QuestionProfile;
 import com.softserve.teachua.dto.question.QuestionResponse;
@@ -7,7 +9,9 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Question;
+import com.softserve.teachua.model.archivable.QuestionArch;
 import com.softserve.teachua.repository.QuestionRepository;
+import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +28,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 @Service
-public class QuestionServiceImpl implements QuestionService {
+public class QuestionServiceImpl implements QuestionService, ArchiveMark<Question> {
     private static final String QUESTION_NOT_FOUND_BY_ID = "Question not found by id: %s";
     private static final String QUESTION_ALREADY_EXIST = "Question already exist with name: %s";
     private static final String QUESTION_DELETING_ERROR = "Can't delete question cause of relationship";
@@ -32,13 +36,15 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     QuestionServiceImpl(QuestionRepository questionRepository, DtoConverter dtoConverter,
-                        ArchiveService archiveService) {
+                        ArchiveService archiveService, ObjectMapper objectMapper) {
         this.questionRepository = questionRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -78,14 +84,14 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionProfile deleteQuestionById(Long id) {
         Question deletedQuestion = getQuestionById(id);
 
-//        archiveService.saveModel(deletedQuestion);
-
         try {
             questionRepository.deleteById(id);
             questionRepository.flush();
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(QUESTION_DELETING_ERROR);
         }
+
+        archiveModel(deletedQuestion);
 
         log.debug("question {} was successfully deleted", deletedQuestion);
         return dtoConverter.convertToDto(deletedQuestion, QuestionProfile.class);
@@ -109,5 +115,17 @@ public class QuestionServiceImpl implements QuestionService {
 
     private boolean isQuestionExistByTitle(String title) {
         return questionRepository.existsByTitle(title);
+    }
+
+    @Override
+    public void archiveModel(Question question) {
+        QuestionArch questionArch = dtoConverter.convertToDto(question, QuestionArch.class);
+        archiveService.saveModel(questionArch);
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        QuestionArch questionArch = objectMapper.readValue(archiveObject, QuestionArch.class);
+        questionRepository.save(dtoConverter.convertToEntity(questionArch, Question.builder().build()));
     }
 }

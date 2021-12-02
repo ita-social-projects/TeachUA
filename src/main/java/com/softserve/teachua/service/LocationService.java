@@ -39,4 +39,6 @@ public interface LocationService {
     Set<Location> updateLocationByClub(Set<LocationResponse> locations, Club club);
 
     Location getLocationById(Long id);
+
+    LocationResponse deleteLocationById(Long id);
 }
