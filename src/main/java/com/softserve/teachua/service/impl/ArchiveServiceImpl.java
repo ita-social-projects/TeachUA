@@ -52,15 +52,16 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     @Transactional
     public Archive saveModel(Archivable archiveModel) {
-        Optional <Archive> archive = Optional.empty();
+        Optional <Archive> archive;
         log.debug("archiveModel: " + archiveModel);
         try {
             archive = Optional.of(Archive.builder()
                     .className(archiveModel.getServiceClass().getName())
                     .data(objectMapper.writeValueAsString(archiveModel))
                     .build());
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (JsonProcessingException exception) {
+            log.error(RestoreArchiveException.CANT_WRITE_JSON, exception);
+            throw new RestoreArchiveException(RestoreArchiveException.CANT_WRITE_JSON);
         }
         return archiveRepository.save(archive.get());
     }
