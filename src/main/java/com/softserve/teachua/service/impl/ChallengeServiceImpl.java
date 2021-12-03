@@ -99,16 +99,9 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         Challenge challenge = getChallengeById(id);
         ChallengeDeleteResponse challengeResponse =
                 dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class);
-//        challengeResponse.setTasks(new HashSet<>());
-//        Set<Task> taskSet = challenge.getTasks();
-//        challenge.setTasks(null);
         challenge.getTasks().forEach((task) -> {
             task.setChallenge(null);
             taskRepository.save(task);
-//                challengeResponse.getTasks().add(
-//                        dtoConverter.convertFromDtoToDto(
-//                                taskService.deleteTask(task.getId()),
-//                                new TaskNameProfile()))
         });
         challengeRepository.deleteById(id);
         challengeRepository.flush();
@@ -145,9 +138,6 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     public void archiveModel(Challenge challenge) {
         ChallengeArch challengeArch = dtoConverter.convertToDto(challenge, ChallengeArch.class);
         challengeArch.setTasksIds(challenge.getTasks().stream().map(task -> task.getId()).collect(Collectors.toSet()));
-        if(Optional.of(challenge.getUser()).isPresent()) {
-            challengeArch.setUserId(challenge.getUser().getId());
-        }
         archiveService.saveModel(challengeArch);
     }
 
@@ -155,15 +145,10 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         ChallengeArch challengeArch = objectMapper.readValue(archiveObject, ChallengeArch.class);
         Challenge challenge = Challenge.builder().build();
-        Long challengeId = challenge.getId();
         challenge = dtoConverter.convertToEntity(challengeArch, challenge)
-                .withId(challengeId)
-                .withTasks(challengeArch.getTasksIds().stream()
-                        .map(taskId -> taskService.getTaskById(taskId)).collect(Collectors.toSet()));
+                .withId(null)
+                .withUser(userService.getUserById(challengeArch.getUserId()));
         Challenge finalChallenge = challengeRepository.save(challenge);
-        challenge.getTasks().stream().forEach(task -> {
-            task.setChallenge(finalChallenge);
-            taskRepository.save(task);
-        });
+        challengeArch.getTasksIds().stream().map(taskService::getTaskById).forEach(task -> task.setChallenge(finalChallenge));
     }
 }

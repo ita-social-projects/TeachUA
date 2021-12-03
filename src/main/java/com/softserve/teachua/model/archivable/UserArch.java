@@ -12,13 +12,14 @@ import lombok.*;
 @With
 @Data
 public class UserArch implements Convertible, Archivable {
+    private Long id;
     private String email;
     private String password;
     private String firstName;
     private String lastName;
     private String phone;
     private String urlLogo;
-    private String roleName;
+    private Integer roleId;
     private String provider;
     private String providerId;
     private boolean status;

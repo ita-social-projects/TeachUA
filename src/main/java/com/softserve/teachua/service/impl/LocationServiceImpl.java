@@ -121,40 +121,24 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
 
     @Override
     public void archiveModel(Location location) {
-        LocationArch locationArch = dtoConverter.convertToDto(location, LocationArch.class);
-        if (Optional.ofNullable(location.getCity()).isPresent()) {
-            locationArch.setCityId(location.getCity().getId());
-        }
-        if(Optional.ofNullable(location.getClub()).isPresent()){
-            locationArch.setClubId(location.getClub().getId());
-        }
-        if(Optional.ofNullable(location.getCenter()).isPresent()){
-            locationArch.setCenterId(location.getCenter().getId());
-        }
-        if(Optional.ofNullable(location.getDistrict()).isPresent()){
-            locationArch.setDistrictId(location.getDistrict().getId());
-        }
-        if(Optional.ofNullable(location.getStation()).isPresent()){
-            locationArch.setStationId(location.getStation().getId());
-        }
-        archiveService.saveModel(locationArch);
+        archiveService.saveModel(dtoConverter.convertToDto(location, LocationArch.class));
     }
 
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         LocationArch locationArch = objectMapper.readValue(archiveObject, LocationArch.class);
-        Location location = Location.builder().build();
-        Long locationId = location.getId();
-        location = dtoConverter.convertToEntity(locationArch, location)
-                .withId(locationId);
+        Location location = dtoConverter.convertToEntity(locationArch, Location.builder().build())
+                .withId(null);
         if (Optional.ofNullable(locationArch.getCityId()).isPresent()) {
             location.setCity(cityService.getCityById(locationArch.getCityId()));
         }
         if(Optional.ofNullable(locationArch.getClubId()).isPresent()){
-            location.setClub(clubRepository.findById(locationArch.getClubId()).orElse(null));
+            location.setClub(clubRepository.findById(locationArch.getClubId()).orElseThrow(
+                    () -> new NotExistException(String.format("Club with id-%d not exists", locationArch.getClubId()))));
         }
         if(Optional.ofNullable(locationArch.getCenterId()).isPresent()){
-            location.setCenter(centerRepository.findById(locationArch.getCenterId()).orElse(null));
+            location.setCenter(centerRepository.findById(locationArch.getCenterId()).orElseThrow(
+                    () -> new NotExistException(String.format("Center with id-%d not exists", locationArch.getCenterId()))));
         }
         if(Optional.ofNullable(locationArch.getDistrictId()).isPresent()){
             location.setDistrict(districtService.getDistrictById(locationArch.getDistrictId()));

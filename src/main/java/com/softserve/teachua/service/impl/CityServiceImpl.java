@@ -138,8 +138,7 @@ public class CityServiceImpl implements CityService, ArchiveMark<City> {
 
     @Override
     public void archiveModel(City city) {
-        CityArch cityArch = dtoConverter.convertToDto(city, CityArch.class);
-        archiveService.saveModel(cityArch);
+        archiveService.saveModel(dtoConverter.convertToDto(city, CityArch.class));
     }
 
     @Override

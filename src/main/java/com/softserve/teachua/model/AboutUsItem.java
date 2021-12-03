@@ -1,11 +1,9 @@
 package com.softserve.teachua.model;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor

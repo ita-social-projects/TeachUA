@@ -126,15 +126,13 @@ public class ContactTypeServiceImpl implements ContactTypeService, ArchiveMark<C
 
     @Override
     public void archiveModel(ContactType contactType) {
-        ContactTypeArch contactTypeArch = dtoConverter.convertToDto(contactType, ContactTypeArch.class);
-        archiveService.saveModel(contactTypeArch);
+        archiveService.saveModel(dtoConverter.convertToDto(contactType, ContactTypeArch.class));
     }
 
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         ContactTypeArch contactTypeArch = objectMapper.readValue(archiveObject, ContactTypeArch.class);
-        ContactType contactType  = ContactType.builder().build();
-        contactType = dtoConverter.convertToEntity(contactTypeArch, contactType);
+        ContactType contactType = dtoConverter.convertToEntity(contactTypeArch, ContactType.builder().build());
         contactTypeRepository.save(contactType);
     }
 }

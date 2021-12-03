@@ -9,8 +9,7 @@ import com.softserve.teachua.dto.banner_item.SuccessCreatedBannerItem;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.BannerItem;
-import com.softserve.teachua.model.archivable.BannerItemArh;
-import com.softserve.teachua.model.archivable.TaskArch;
+import com.softserve.teachua.model.archivable.BannerItemArch;
 import com.softserve.teachua.repository.BannerItemRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
@@ -108,12 +107,12 @@ public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<Ban
 
     @Override
     public void archiveModel(BannerItem bannerItem) {
-        archiveService.saveModel(dtoConverter.convertToDto(bannerItem, BannerItemArh.class));
+        archiveService.saveModel(dtoConverter.convertToDto(bannerItem, BannerItemArch.class));
     }
 
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
-        BannerItemArh bannerItemArh = objectMapper.readValue(archiveObject, BannerItemArh.class);
+        BannerItemArch bannerItemArh = objectMapper.readValue(archiveObject, BannerItemArch.class);
         BannerItem bannerItem = dtoConverter.convertToEntity(bannerItemArh, BannerItem.builder().build());
         bannerItemRepository.save(bannerItem);
     }

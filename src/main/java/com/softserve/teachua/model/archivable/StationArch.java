@@ -5,8 +5,6 @@ import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.service.impl.StationServiceImpl;
 import lombok.*;
 
-import javax.persistence.*;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

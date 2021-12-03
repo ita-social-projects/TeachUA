@@ -2,11 +2,9 @@ package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 
 @NoArgsConstructor
 @AllArgsConstructor

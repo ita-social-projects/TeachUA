@@ -2,9 +2,7 @@ package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.List;

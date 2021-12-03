@@ -58,7 +58,15 @@ public class ArchiveController implements Api {
         return archiveService.findArchivesByClassName(className);
     }
 
-
+    /**
+     * Use this endpoint to restore the model from archive by id
+     * The controller returns information {@code Archive}.
+     *
+     * @param id - id of archived model to restore
+     * @return new {@code Archive}
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     @AllowedRoles(RoleData.ADMIN)
     @PatchMapping("/archives/{id}")
     public Archive restoreFromArchive(@PathVariable("id") Long id) throws IOException, ClassNotFoundException {

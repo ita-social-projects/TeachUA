@@ -13,10 +13,7 @@ import com.softserve.teachua.model.archivable.ComplaintArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
 import com.softserve.teachua.repository.UserRepository;
-import com.softserve.teachua.service.ArchiveMark;
-import com.softserve.teachua.service.ArchiveService;
-import com.softserve.teachua.service.ComplaintService;
-import com.softserve.teachua.service.UserService;
+import com.softserve.teachua.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -44,6 +41,7 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     private final UserRepository userRepository;
     private final UserService userService;
     private final ObjectMapper objectMapper;
+    private final ClubService clubService;
 
     @Autowired
     public ComplaintServiceImpl(ComplaintRepository complaintRepository,
@@ -51,7 +49,7 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
                                 ClubRepository clubRepository,
                                 ArchiveService archiveService,
                                 UserRepository userRepository,
-                                UserService userService, ObjectMapper objectMapper) {
+                                UserService userService, ObjectMapper objectMapper, ClubService clubService) {
         this.complaintRepository = complaintRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
@@ -59,6 +57,7 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
         this.userRepository = userRepository;
         this.userService = userService;
         this.objectMapper = objectMapper;
+        this.clubService = clubService;
     }
 
     @Override
@@ -149,21 +148,17 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
 
     @Override
     public void archiveModel(Complaint complaint) {
-        ComplaintArch complaintArch = dtoConverter.convertToDto(complaint, ComplaintArch.class);
-        complaintArch.setClubId(Optional.ofNullable(complaint.getClub()).isPresent() ? complaint.getClub().getId() : null);
-        complaintArch.setUserId(Optional.ofNullable(complaint.getUser()).isPresent() ? complaint.getUser().getId() : null);
-        archiveService.saveModel(complaintArch);
+        archiveService.saveModel(dtoConverter.convertToDto(complaint, ComplaintArch.class));
     }
 
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         ComplaintArch complaintArch = objectMapper.readValue(archiveObject, ComplaintArch.class);
         Complaint complaint = Complaint.builder().build();
-        Long complaintId = complaint.getId();
         complaint = dtoConverter.convertToEntity(complaintArch, complaint)
-                .withId(complaintId);
-        complaint.setClub(Optional.ofNullable(clubRepository.findById(complaintArch.getClubId())).get().orElse(null));
-        complaint.setUser(Optional.ofNullable(userRepository.findById(complaintArch.getUserId())).get().orElse(null));
+                .withId(null)
+                .withClub(clubService.getClubById(complaintArch.getClubId()))
+                .withUser(userService.getUserById(complaintArch.getUserId()));
         complaintRepository.save(complaint);
     }
 }

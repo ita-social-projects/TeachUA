@@ -160,9 +160,7 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
 
     @Override
     public void archiveModel(District district) {
-        DistrictArch districtArch = dtoConverter.convertToDto(district, DistrictArch.class);
-        districtArch.setCityId(district.getCity().getId());
-        archiveService.saveModel(districtArch);
+        archiveService.saveModel(dtoConverter.convertToDto(district, DistrictArch.class));
     }
 
     @Override

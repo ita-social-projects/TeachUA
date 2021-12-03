@@ -1,7 +1,9 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.location.LocationResponse;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;
@@ -38,7 +40,22 @@ public interface LocationService {
      */
     Set<Location> updateLocationByClub(Set<LocationResponse> locations, Club club);
 
+    /**
+     * The method returns entity {@code Location} of location by id.
+     *
+     * @param id - put location id.
+     * @return new {@code Location}.
+     * @throws NotExistException if location not exists.
+     */
     Location getLocationById(Long id);
 
+    /**
+     * The method deletes entity {@code Location} and
+     * returns dto {@code LocationResponse} of deleted location by id.
+     *
+     * @param id - id of location to delete
+     * @return LocationResponse {@link  LocationResponse}.
+     * @throws NotExistException {@link NotExistException} if the location doesn't exist.
+     */
     LocationResponse deleteLocationById(Long id);
 }

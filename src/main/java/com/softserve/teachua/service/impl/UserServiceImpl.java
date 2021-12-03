@@ -514,7 +514,8 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         UserArch userArch = objectMapper.readValue(archiveObject, UserArch.class);
         User user = dtoConverter.convertToEntity(userArch, User.builder().build())
-                .withRole(roleService.findByName(userArch.getRoleName()))
+                .withId(null)
+                .withRole(roleService.getRoleById(userArch.getRoleId()))
                 .withProvider(Optional.ofNullable(userArch.getProvider()).isPresent()
                         ? AuthProvider.valueOf(userArch.getProvider())
                         : null);

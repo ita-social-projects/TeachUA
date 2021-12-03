@@ -127,10 +127,8 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         TaskArch taskArch = objectMapper.readValue(archiveObject, TaskArch.class);
-        Task task = Task.builder().build();
-        Long taskId = task.getId();
-        task = dtoConverter.convertToEntity(taskArch, task)
-                .withId(taskId)
+        Task task = dtoConverter.convertToEntity(taskArch, Task.builder().build())
+                .withId(null)
                 .withChallenge(challengeService.getChallengeById(taskArch.getChallengeId()));
         taskRepository.save(task);
     }

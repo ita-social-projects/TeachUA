@@ -1,11 +1,9 @@
 package com.softserve.teachua.model.archivable;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.City;
 import com.softserve.teachua.model.marker.Archivable;
+import com.softserve.teachua.service.impl.DistrictServiceImpl;
 import lombok.*;
-
-import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,6 +16,6 @@ public class DistrictArch implements Convertible, Archivable {
 
     @Override
     public Class getServiceClass() {
-        return DistrictArch.class;
+        return DistrictServiceImpl.class;
     }
 }

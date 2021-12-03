@@ -129,9 +129,7 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
 
     @Override
     public void archiveModel(News news) {
-        NewsArch newsArch = dtoConverter.convertToDto(news, NewsArch.class);
-        newsArch.setUserId(Optional.ofNullable(news.getUser()).isPresent() ? news.getUser().getId() : null);
-        archiveService.saveModel(newsArch);
+        archiveService.saveModel(dtoConverter.convertToDto(news, NewsArch.class));
     }
 
     @Override
@@ -139,11 +137,8 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
         NewsArch newsArch = objectMapper.readValue(archiveObject, NewsArch.class);
         News news = dtoConverter.convertToEntity(newsArch, News.builder().build())
                 .withId(null)
-                .withDate(newsArch.getDate())
                 .withUser(Optional.ofNullable(newsArch.getUserId()).isPresent()
                         ? userService.getUserById(newsArch.getUserId()) : null);
-        log.info("DATE: " + newsArch.getDate());
-        news.setDate(newsArch.getDate());
         newsRepository.save(news);
     }
 }

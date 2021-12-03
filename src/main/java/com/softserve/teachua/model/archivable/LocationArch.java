@@ -1,14 +1,8 @@
 package com.softserve.teachua.model.archivable;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.softserve.teachua.model.*;
 import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.service.impl.LocationServiceImpl;
 import lombok.*;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @AllArgsConstructor
 @NoArgsConstructor

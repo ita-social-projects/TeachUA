@@ -43,7 +43,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Service   //сlubServiceImpl
+@Service
 @Transactional(propagation = Propagation.SUPPORTS)
 @Slf4j
 public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
@@ -613,18 +613,27 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         Club club = getClubById(id);
 
         try {
-            archiveModel(club);
-            feedbackRepository.findAll()
+            club.getFeedbacks()
                     .stream().forEach(feedback -> {
-                        feedback.setClub(null);
-                        feedbackRepository.save(feedback);
-                    });
+                feedback.setClub(null);
+                feedbackRepository.save(feedback);
+            });
 
             club.getLocations()
                     .stream().forEach(location -> {
                         location.setClub(null);
                         locationRepository.save(location);
                     });
+
+            club.getUrlGallery()
+                    .stream().forEach(urlGallery -> {
+                        Optional<GalleryPhoto> galleryPhoto = galleryRepository.findById(urlGallery.getId());
+                        if (galleryPhoto.isPresent()){
+                            galleryPhoto.get().setClub(null);
+                            galleryRepository.save(galleryPhoto.get());
+                        }
+                    });
+
 
 //            fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground(), club.getUrlGallery());
 
@@ -633,6 +642,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(CLUB_DELETING_ERROR);
         }
+
+        archiveModel(club);
 
         log.info("club {} was successfully deleted", club);
         return toClubResponseConverter.convertToClubResponse(club);
@@ -727,17 +738,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         clubArch.setUrlGalleriesIds(club.getUrlGallery().stream().map(GalleryPhoto::getId).collect(Collectors.toList()));
         clubArch.setLocationsIds(club.getLocations().stream().map(Location::getId).collect(Collectors.toSet()));
         clubArch.setCategoriesIds(club.getCategories().stream().map(Category::getId).collect(Collectors.toSet()));
-        log.info("CLUB_ID: " + club.getId());
-//        log.info("BEFORE::: " + feedbackRepository.findAll().stream()
-//                .filter(feedback -> feedback.getClub() != null && feedback.getClub().getId().equals(club.getId())).collect(Collectors.toList()));
-        clubArch.setFeedbacksIds(feedbackRepository
-                .getAllByClubId(club.getId()).stream().map(Feedback::getId).collect(Collectors.toSet()));
-        if(Optional.ofNullable(club.getUser()).isPresent()) {
-            clubArch.setUserId(club.getUser().getId());
-        }
-        if(Optional.ofNullable(club.getCenter()).isPresent()){
-            clubArch.setCenterId(club.getCenter().getId());
-        }
+        clubArch.setFeedbacksIds(club.getFeedbacks().stream().map(Feedback::getId).collect(Collectors.toSet()));
         archiveService.saveModel(clubArch);
     }
 
@@ -745,37 +746,28 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         ClubArch clubArch = objectMapper.readValue(archiveObject, ClubArch.class);
         Club club = Club.builder().build();
-        Long clubId = club.getId();
-        log.info("CATEGORIES: " + clubArch.getCategoriesIds());
         club = dtoConverter.convertToEntity(clubArch, club)
-                .withId(clubId)
+                .withId(null)
                 .withCategories(clubArch.getCategoriesIds()
                         .stream().map(categoryService::getCategoryById).collect(Collectors.toSet()))
                 .withLocations(clubArch.getLocationsIds()
                         .stream().map(locationService::getLocationById).collect(Collectors.toSet()))
                 .withUrlGallery(clubArch.getUrlGalleriesIds()
                         .stream().map(galleryRepository::findById).filter(Optional::isPresent)
-                        .map(Optional::get).collect(Collectors.toList()));
+                        .map(Optional::get).collect(Collectors.toList()))
+                .withFeedbacks(clubArch.getFeedbacksIds()
+                        .stream().map(feedbackService::getFeedbackById).collect(Collectors.toSet()));
         if(Optional.ofNullable(clubArch.getCenterId()).isPresent()){
             club.setCenter(centerService.getCenterById(clubArch.getCenterId()));
-        }else{
-            club.setCenter(null);
         }
         if(Optional.ofNullable(clubArch.getUserId()).isPresent()){
             club.setUser(userService.getUserById(clubArch.getUserId()));
-        }else{
-            club.setUser(null);
         }
 
         Club finalClub = clubRepository.save(club);
         club.getLocations().forEach(location -> location.setClub(finalClub));
         club.getUrlGallery().forEach(galleryPhoto -> galleryPhoto.setClub(finalClub));
-        clubArch.getFeedbacksIds()
-                .stream().map(feedbackService::getFeedbackById)
-                .forEach(feedback -> {
-                    feedback.setClub(finalClub);
-                    feedbackRepository.save(feedback);
-                });
+        club.getFeedbacks().forEach(feedback -> feedback.setClub(finalClub));
 
     }
 }

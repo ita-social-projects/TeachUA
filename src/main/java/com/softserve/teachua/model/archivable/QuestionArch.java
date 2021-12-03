@@ -4,9 +4,6 @@ import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.service.impl.QuestionServiceImpl;
 import lombok.*;
-import org.hibernate.annotations.Type;
-
-import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor

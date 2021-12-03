@@ -10,7 +10,7 @@ import lombok.*;
 @Data
 @With
 @Builder
-public class BannerItemArh implements Archivable, Convertible {
+public class BannerItemArch implements Archivable, Convertible {
     private String title;
     private String subtitle;
     private String link;

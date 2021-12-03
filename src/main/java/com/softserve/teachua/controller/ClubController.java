@@ -241,10 +241,4 @@ public class ClubController implements Api {
     public void updateContacts() {
         clubService.updateContacts();
     }
-
-    @PostMapping("/club/restore")
-    public void restore(){
-        log.info("RESTORE CLUB");
-    }
-
 }

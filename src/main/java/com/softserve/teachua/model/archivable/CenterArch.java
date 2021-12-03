@@ -1,18 +1,10 @@
 package com.softserve.teachua.model.archivable;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.Location;
-import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.marker.Archivable;
-import com.softserve.teachua.service.CenterService;
 import com.softserve.teachua.service.impl.CenterServiceImpl;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.*;
 import java.util.Set;
 
 @NoArgsConstructor

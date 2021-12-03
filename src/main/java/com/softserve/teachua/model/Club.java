@@ -2,7 +2,6 @@ package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.*;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
@@ -49,7 +48,7 @@ public class Club implements Convertible {
     @Column
     private String urlBackground;
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "club")
     @ToString.Exclude
     private List<GalleryPhoto> urlGallery;
 
@@ -70,6 +69,10 @@ public class Club implements Convertible {
     @OneToMany(mappedBy = "club")
     @ToString.Exclude
     private Set<Location> locations;
+
+    @OneToMany(mappedBy = "club")
+    @ToString.Exclude
+    private Set<Feedback> feedbacks;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "club_category",

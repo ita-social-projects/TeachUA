@@ -162,9 +162,8 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         StationArch stationArch = objectMapper.readValue(archiveObject, StationArch.class);
         Station station = Station.builder().build();
-        Long stationId = station.getId();
         station = dtoConverter.convertToEntity(stationArch, station)
-                .withId(stationId)
+                .withId(null)
                 .withCity(cityService.getCityById(stationArch.getCityId()));
         stationRepository.save(station);
     }

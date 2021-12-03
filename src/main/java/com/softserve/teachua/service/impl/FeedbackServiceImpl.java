@@ -185,25 +185,21 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
 
     @Override
     public void archiveModel(Feedback feedback) {
-        FeedbackArch feedbackArch = dtoConverter.convertToDto(feedback, FeedbackArch.class);
-        if(Optional.ofNullable(feedback.getUser()).isPresent()){
-            feedbackArch.setUserId(feedback.getUser().getId());
-        }
-        if(Optional.ofNullable(feedback.getClub()).isPresent()){
-            feedbackArch.setClubId(feedback.getClub().getId());
-        }
-        archiveService.saveModel(feedbackArch);
+        archiveService.saveModel(dtoConverter.convertToDto(feedback, FeedbackArch.class));
     }
 
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         FeedbackArch feedbackArch = objectMapper.readValue(archiveObject, FeedbackArch.class);
         Feedback feedback = Feedback.builder().build();
-        Long feedbackId = feedback.getId();
         feedback = dtoConverter.convertToEntity(feedbackArch, feedback)
-                .withId(feedbackId)
-                .withUser(userService.getUserById(feedbackArch.getUserId()))
-                .withClub(clubService.getClubById(feedbackArch.getClubId()));
+                .withId(null);
+        if(Optional.ofNullable(feedbackArch.getClubId()).isPresent()) {
+            feedback.setClub(clubService.getClubById(feedbackArch.getClubId()));
+        }
+        if(Optional.ofNullable(feedbackArch.getUserId()).isPresent()){
+            feedback.setUser(userService.getUserById(feedbackArch.getUserId()));
+        }
         feedbackRepository.save(feedback);
     }
 }

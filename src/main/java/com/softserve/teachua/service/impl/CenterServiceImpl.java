@@ -352,9 +352,6 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     @Override
     public void archiveModel(Center center) {
         CenterArch centerArch = dtoConverter.convertToDto(center, CenterArch.class);
-        if(Optional.of(center.getUser()).isPresent()) {
-            centerArch.setUserId(center.getUser().getId());
-        }
         centerArch.setClubsIds(center.getClubs().stream().map(club -> club.getId()).collect(Collectors.toSet()));
         centerArch.setLocationsIds(center.getLocations().stream()
                 .map(location -> location.getId()).collect(Collectors.toSet()));
@@ -365,28 +362,14 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         CenterArch centerArch = objectMapper.readValue(archiveObject, CenterArch.class);
         Center center = Center.builder().build();
-        Long centerId = center.getId();
         center = dtoConverter.convertToEntity(centerArch, center)
-                .withId(centerId)
-                .withUser(userService.getUserById(centerArch.getUserId()))
-                .withLocations(centerArch.getLocationsIds().stream()
-                        .map(locationId ->
-                            locationService.getLocationById(locationId)).collect(Collectors.toSet()))
-                .withClubs(centerArch.getClubsIds().stream()
-                        .map(clubId -> clubRepository.findById(clubId).orElseThrow(() -> new NotExistException()))
-                        .collect(Collectors.toSet()));
+                .withId(null)
+                .withUser(userService.getUserById(centerArch.getUserId()));
 
         Center finalCenter = centerRepository.save(center);
-        log.info("add center: " + center);
+        centerArch.getLocationsIds().stream().map(locationService::getLocationById)
+                .forEach(location -> location.setCenter(finalCenter));
 
-        center.getLocations().stream().forEach(location -> {
-            location.setCenter(finalCenter);
-            locationRepository.save(location);
-        });
-
-        center.getClubs().stream().forEach(club -> {
-            club.setCenter(finalCenter);
-            clubRepository.save(club);
-        });
+        centerArch.getClubsIds().stream().map(clubService::getClubById).forEach(club -> club.setCenter(finalCenter));
     }
 }
