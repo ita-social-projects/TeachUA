@@ -6,9 +6,11 @@ import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.District;
 import com.softserve.teachua.model.News;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.archivable.NewsArch;
 import com.softserve.teachua.repository.NewsRepository;
 import com.softserve.teachua.service.impl.NewsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +59,7 @@ public class NewsServiceTest {
     private NewsResponse newsResponse;
     private SuccessCreatedNews successCreatedNews;
     private NewsProfile newsProfile;
-    private HttpServletRequest httpServletRequest;
+    private NewsArch newsArch;
 
     public NewsRepository getNewsRepository() {
         return newsRepository;
@@ -109,6 +111,13 @@ public class NewsServiceTest {
                 .urlTitleLogo(URL)
                 .isActive(ISACTIVE)
                 .build();
+
+        newsArch = NewsArch.builder()
+                .title(CORRECT_NEWS_TITLE)
+                .description(DESCRIPTION)
+                .urlTitleLogo(URL)
+                .isActive(ISACTIVE)
+                .build();
     }
 
     @Test
@@ -130,7 +139,8 @@ public class NewsServiceTest {
     @Test
     void deleteNewsByExistingIdShouldReturnCorrectNewsResponse() {
         when(newsRepository.findById(CORRECT_NEWS_ID)).thenReturn(Optional.of(news));
-        when(archiveService.saveModel(news)).thenReturn(news);
+        when(dtoConverter.convertToDto(news, NewsArch.class)).thenReturn(newsArch);
+        when(archiveService.saveModel(newsArch)).thenReturn(Archive.builder().build());
         doNothing().when(newsRepository).deleteById(CORRECT_NEWS_ID);
         when(dtoConverter.convertToDto(news, NewsResponse.class)).thenReturn(newsResponse);
         NewsResponse actual = newsService.deleteNewsById(CORRECT_NEWS_ID);
