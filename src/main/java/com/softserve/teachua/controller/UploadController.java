@@ -2,6 +2,7 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.impl.FileUploadServiceImpl;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class UploadController implements Api {
      * @param filePath - file path.
      * @return new {@code deleteFile}.
      */
-
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/delete-file")
     public String deleteFile(@RequestParam("filePath") String filePath) {
         fileUploadServiceImpl.deleteFile(filePath);
