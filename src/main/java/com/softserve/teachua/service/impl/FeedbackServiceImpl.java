@@ -191,15 +191,11 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         FeedbackArch feedbackArch = objectMapper.readValue(archiveObject, FeedbackArch.class);
-        Feedback feedback = Feedback.builder().build();
-        feedback = dtoConverter.convertToEntity(feedbackArch, feedback)
-                .withId(null);
-        if(Optional.ofNullable(feedbackArch.getClubId()).isPresent()) {
-            feedback.setClub(clubService.getClubById(feedbackArch.getClubId()));
-        }
-        if(Optional.ofNullable(feedbackArch.getUserId()).isPresent()){
-            feedback.setUser(userService.getUserById(feedbackArch.getUserId()));
-        }
+        Feedback feedback = dtoConverter.convertToEntity(feedbackArch, Feedback.builder().build())
+                .withId(null)
+                .withClub(clubService.getClubById(feedbackArch.getClubId()))
+                .withUser(userService.getUserById(feedbackArch.getUserId()));
+
         feedbackRepository.save(feedback);
     }
 }
