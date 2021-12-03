@@ -489,7 +489,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
                         center.setContacts(json.toString());
                     }
-                    log.debug(center.getContacts());
+                    log.info(center.getContacts());
                 })
                 .collect(Collectors.toList());
         updatedCenters.forEach((center -> centerRepository.save(center)));
@@ -567,7 +567,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                         club.setContacts(json.toString());
                     }
 
-                    log.debug(club.getContacts());
+                    log.info(club.getContacts());
                 })
                 .collect(Collectors.toList());
         updatedClubs.forEach((club -> clubRepository.save(club)));
