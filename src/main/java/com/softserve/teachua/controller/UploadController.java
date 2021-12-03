@@ -2,7 +2,6 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.impl.FileUploadServiceImpl;
-import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
