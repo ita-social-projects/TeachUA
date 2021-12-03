@@ -168,7 +168,7 @@ public class NewsServiceTest {
         when(dtoConverter.convertToEntity(newsProfile, new News())).thenReturn(news);
         when(newsRepository.save(news)).thenReturn(news);
         when(dtoConverter.convertToDto(news, SuccessCreatedNews.class)).thenReturn(successCreatedNews);
-        assertThat(newsService.addNews(newsProfile, httpServletRequest))
+        assertThat(newsService.addNews(newsProfile))
                 .isEqualTo(successCreatedNews);
     }
 

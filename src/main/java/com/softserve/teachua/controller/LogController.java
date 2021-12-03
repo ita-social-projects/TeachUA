@@ -6,10 +6,7 @@ import com.softserve.teachua.service.LogService;
 import io.swagger.v3.oas.annotations.Hidden;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,8 +32,9 @@ public class LogController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/logs")
-    public List<String> getLogs() {
-        return logService.getAllLogs();
+    public List<String> getLogs(@RequestParam (value = "filter", required = false, defaultValue = "") String filter) {
+
+        return logService.getAllLogs(filter);
     }
 
     /**
