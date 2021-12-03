@@ -756,13 +756,9 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                         .stream().map(galleryRepository::findById).filter(Optional::isPresent)
                         .map(Optional::get).collect(Collectors.toList()))
                 .withFeedbacks(clubArch.getFeedbacksIds()
-                        .stream().map(feedbackService::getFeedbackById).collect(Collectors.toSet()));
-        if(Optional.ofNullable(clubArch.getCenterId()).isPresent()){
-            club.setCenter(centerService.getCenterById(clubArch.getCenterId()));
-        }
-        if(Optional.ofNullable(clubArch.getUserId()).isPresent()){
-            club.setUser(userService.getUserById(clubArch.getUserId()));
-        }
+                        .stream().map(feedbackService::getFeedbackById).collect(Collectors.toSet()))
+                .withCenter(centerService.getCenterById(clubArch.getCenterId()))
+                .withUser(userService.getUserById(clubArch.getUserId()));
 
         Club finalClub = clubRepository.save(club);
         club.getLocations().forEach(location -> location.setClub(finalClub));
