@@ -66,7 +66,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
-    public Archive  restoreArchiveObject(Long id) {
+    public Archive restoreArchiveObject(Long id) {
         Archive archiveObject = getArchiveObjectById(id);
         try {
             ArchiveMark archiveMark = (ArchiveMark) context.getBean(Class.forName(archiveObject.getClassName()));

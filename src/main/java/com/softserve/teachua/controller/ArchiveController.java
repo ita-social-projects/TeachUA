@@ -1,6 +1,5 @@
 package com.softserve.teachua.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.model.Archive;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -65,8 +63,6 @@ public class ArchiveController implements Api {
      *
      * @param id - id of archived model to restore
      * @return new {@code Archive}
-     * @throws IOException
-     * @throws ClassNotFoundException
      */
     @AllowedRoles(RoleData.ADMIN)
     @PatchMapping("/archives/{id}")
