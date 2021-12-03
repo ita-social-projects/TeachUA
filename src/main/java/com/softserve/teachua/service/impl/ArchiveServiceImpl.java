@@ -53,7 +53,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Transactional
     public Archive saveModel(Archivable archiveModel) {
         Optional <Archive> archive = Optional.empty();
-        log.info("archiveModel: " + archiveModel);
+        log.debug("archiveModel: " + archiveModel);
         try {
             archive = Optional.of(Archive.builder()
                     .className(archiveModel.getServiceClass().getName())
