@@ -645,7 +645,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
         archiveModel(club);
 
-        log.info("club {} was successfully deleted", club);
+        log.debug("club {} was successfully deleted", club);
         return toClubResponseConverter.convertToClubResponse(club);
     }
 
