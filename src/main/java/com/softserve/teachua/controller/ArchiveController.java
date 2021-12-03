@@ -1,5 +1,6 @@
 package com.softserve.teachua.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.model.Archive;
@@ -69,7 +70,7 @@ public class ArchiveController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @PatchMapping("/archives/{id}")
-    public Archive restoreFromArchive(@PathVariable("id") Long id) throws IOException, ClassNotFoundException {
+    public Archive restoreFromArchive(@PathVariable("id") Long id) {
         return archiveService.restoreArchiveObject(id);
     }
 

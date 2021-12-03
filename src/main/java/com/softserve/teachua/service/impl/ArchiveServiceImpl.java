@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.repository.ArchiveRepository;
@@ -65,10 +66,18 @@ public class ArchiveServiceImpl implements ArchiveService {
     }
 
     @Override
-    public Archive  restoreArchiveObject(Long id) throws ClassNotFoundException, JsonProcessingException {
+    public Archive  restoreArchiveObject(Long id) {
         Archive archiveObject = getArchiveObjectById(id);
-        ArchiveMark archiveMark = (ArchiveMark) context.getBean(Class.forName(archiveObject.getClassName()));
-        archiveMark.restoreModel(archiveObject.getData());
+        try {
+            ArchiveMark archiveMark = (ArchiveMark) context.getBean(Class.forName(archiveObject.getClassName()));
+            archiveMark.restoreModel(archiveObject.getData());
+        }catch (ClassNotFoundException exception) {
+            log.error(RestoreArchiveException.CANT_FIND_CLASS, exception);
+            throw new RestoreArchiveException(RestoreArchiveException.CANT_FIND_CLASS);
+        }catch (JsonProcessingException exception) {
+            log.error(RestoreArchiveException.CANT_READ_JSON, exception);
+            throw new RestoreArchiveException(RestoreArchiveException.CANT_READ_JSON);
+        }
         archiveRepository.deleteById(id);
         return archiveObject;
     }

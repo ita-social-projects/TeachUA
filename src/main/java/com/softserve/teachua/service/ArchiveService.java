@@ -42,7 +42,7 @@ public interface ArchiveService {
      * @return {@code Archive}.
      * @throws
      */
-    Archive restoreArchiveObject(Long id) throws ClassNotFoundException, JsonProcessingException;
+    Archive restoreArchiveObject(Long id);
 
     /**
      * The method returns entity {@code Archive} of archive by id.
