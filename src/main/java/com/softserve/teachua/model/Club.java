@@ -3,7 +3,6 @@ package com.softserve.teachua.model;
 import com.fasterxml.jackson.annotation.*;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -23,7 +22,6 @@ import java.util.Set;
 public class Club implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
 
     @Column
