@@ -43,9 +43,7 @@ public class LogServiceImpl implements LogService {
 
     //Зробити перевірку на те що приходить
     @Override
-    public Boolean deleteAllLogs(String date,boolean singleDate) {
-//        try {
-        System.out.println(date);
+    public Boolean deleteLogsByDate(String date,boolean singleDate) {
 //        List<String> logList = FileUtils.listFiles(new File(path), null, false)
 //                .stream()
 //                .map(File::getName)
@@ -56,17 +54,13 @@ public class LogServiceImpl implements LogService {
                 .filter(file -> file.contains(date))
                 .collect(Collectors.toList());
 
-        System.err.println(FileUtils.getFile("teachualogs-2021-10-11.1000.log").exists());
+        System.err.println("------------------------------------------------------------------");
+        FileUtils.listFiles(new File(path), null, false).forEach(file -> {
+            System.out.println(file.getName());
+        });
+        System.err.println(FileUtils.getFile(new File(path+"teachualogs-2021-12-02.0.log")).exists());
+        System.out.println(FileUtils.getFile(path,"teachualogs-2021-12-02.0.log").exists());
 //        System.out.println("It`s for delete: "+logList1);
-
-//        FileUtils.listFiles(new File(path),null,false);
-//            FileUtils.cleanDirectory(new File(path));
-//            
-//            return true;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return false;
-//        }
         return true;
     }
 }

@@ -23,5 +23,5 @@ public interface LogService {
     /**
      * The method deletes all logs and returns true if successfully deleted.
      */
-    Boolean deleteAllLogs(String date,boolean singleDate);
+    Boolean deleteLogsByDate(String date,boolean singleDate);
 }

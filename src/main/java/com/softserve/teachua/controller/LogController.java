@@ -61,6 +61,6 @@ public class LogController implements Api {
     public Boolean deleteLogsBeforeDate(
             @RequestParam(required = false,defaultValue = "true")Boolean singleDate,
             @PathVariable String date) {
-        return logService.deleteAllLogs(date,singleDate);
+        return logService.deleteLogsByDate(date,singleDate);
     }
 }
