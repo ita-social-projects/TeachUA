@@ -146,8 +146,10 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         ChallengeArch challengeArch = objectMapper.readValue(archiveObject, ChallengeArch.class);
         Challenge challenge = Challenge.builder().build();
         challenge = dtoConverter.convertToEntity(challengeArch, challenge)
-                .withId(null)
-                .withUser(userService.getUserById(challengeArch.getUserId()));
+                .withId(null);
+        if(Optional.ofNullable(challengeArch.getUserId()).isPresent()){
+            challenge.setUser(userService.getUserById(challengeArch.getUserId()));
+        }
         Challenge finalChallenge = challengeRepository.save(challenge);
         challengeArch.getTasksIds().stream().map(taskService::getTaskById).forEach(task -> task.setChallenge(finalChallenge));
     }
