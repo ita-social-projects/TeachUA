@@ -1,6 +1,10 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.log.LogResponse;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.service.LogService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,13 +13,18 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class LogServiceImpl implements LogService {
     @Value(value = "${logging.file.path}")
     private String path;
+    private  static final String DELETING_EXCEPTION = "File %s didnt delete";
+    private DtoConverter dtoConverter;
 
     @Override
     public List<String> getAllLogs() {
@@ -41,26 +50,61 @@ public class LogServiceImpl implements LogService {
         return result;
     }
 
-    //Зробити перевірку на те що приходить
     @Override
-    public Boolean deleteLogsByDate(String date,boolean singleDate) {
-//        List<String> logList = FileUtils.listFiles(new File(path), null, false)
-//                .stream()
-//                .map(File::getName)
-//                .collect(Collectors.toList());
-        List<String> logList1 = FileUtils.listFiles(new File(path), null, false)
-                .stream()
-                .map(File::getName)
-                .filter(file -> file.contains(date))
-                .collect(Collectors.toList());
+    public LogResponse deleteLogsByFilter(String filter) {
+        AtomicBoolean correctFilter= new AtomicBoolean(false);
+        List <String> deletedLogs = new LinkedList<>();
+        List <String> notDeletedLogs = new LinkedList<>();
 
-        System.err.println("------------------------------------------------------------------");
-        FileUtils.listFiles(new File(path), null, false).forEach(file -> {
-            System.out.println(file.getName());
-        });
-        System.err.println(FileUtils.getFile(new File(path+"teachualogs-2021-12-02.0.log")).exists());
-        System.out.println(FileUtils.getFile(path,"teachualogs-2021-12-02.0.log").exists());
-//        System.out.println("It`s for delete: "+logList1);
-        return true;
+        if (filter.equals("deleteAll")){
+            FileUtils.listFiles(new File(path),null,false).stream().forEach(
+                    file -> {
+                        if (!file.getName().contains("catalina")){
+                            correctFilter.set(true);
+                            try {
+                                FileUtils.forceDelete(new File(file.getAbsolutePath().replace(".\\","").replace(" \\","")));
+                                deletedLogs.add("deleted: "+file.getName());
+                            } catch (IOException e ) {
+                                 notDeletedLogs.add("NOT deleted: "+file.getName());
+                            }
+                        }
+                    }
+            );
+        }else {
+            FileUtils.listFiles(new File(path),null,false).stream().forEach(
+                    file -> {
+                        if(!file.getName().contains("catalina") && file.getName().contains(filter)){
+                            correctFilter.set(true);
+                            try {
+                                FileUtils.forceDelete(new File(file.getAbsolutePath().replace(".\\","").replace(" \\","")));
+                                deletedLogs.add(" deleted: "+file.getName());
+                            } catch (IOException e) {
+                                notDeletedLogs.add("NOT deleted: "+file.getName());
+                            }
+                        }
+                    }
+            );
+        }
+        if (!correctFilter.get()){
+            throw  new NotExistException("Not found file by this filter");
+        }
+        LogResponse logResponse = new LogResponse().withDeletedLogs(deletedLogs).withNotDeletedLogs(notDeletedLogs);
+        log.debug("**/log delete");
+        return logResponse;
+    }
+
+    @Override
+    public List<String> getAbsolutePathForLogs() {
+
+        List<String> pathList = new LinkedList<>();
+        FileUtils.listFiles(new File(path),null,false)
+                .stream()
+                .forEach(file -> {
+                    if (!file.getName().contains("catalina")) {
+                        pathList.add(file.getAbsolutePath());
+                    }
+                });
+
+        return pathList;
     }
 }

@@ -2,6 +2,7 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.log.LogResponse;
 import com.softserve.teachua.service.LogService;
 import io.swagger.v3.oas.annotations.Hidden;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
@@ -50,17 +51,23 @@ public class LogController implements Api {
     }
 
     /**
-     * Use this endpoint to delete all logs.
-     * The controller returns {@code Boolean}.
+     * Use this endpoint to delete logs by filter
+     * Default filter - Delete all logs without "catalina" files
+     * Filter with string parameter - delete all logs where file contain string parameter in name except "catalina"
      *
-     * @return new {@code Boolean}.
+     * @param filter
+     * @return LogResponse
      */
-    //Зробити  параметр, при активації якого ми видаляємо логи до того часу, якщо не активовуємо, то видаляємо лише за цей час
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/logs/{date}")
-    public Boolean deleteLogsBeforeDate(
-            @RequestParam(required = false,defaultValue = "true")Boolean singleDate,
-            @PathVariable String date) {
-        return logService.deleteLogsByDate(date,singleDate);
+    @DeleteMapping("/logs")
+    public LogResponse deleteLogsByFilter(@RequestParam(required = false,defaultValue = "deleteAll")String filter) {
+        System.out.println(filter);
+        return logService.deleteLogsByFilter(filter);
+    }
+
+    @AllowedRoles(RoleData.ADMIN)
+    @GetMapping("/log/getAbsolutePathToLogs")
+    public List<String> getPathToLogs(){
+        return  logService.getAbsolutePathForLogs();
     }
 }
