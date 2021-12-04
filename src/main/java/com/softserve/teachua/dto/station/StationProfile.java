@@ -16,9 +16,12 @@ import javax.validation.constraints.NotNull;
 @Builder
 @Data
 public class StationProfile implements Convertible {
-    @NotEmpty
+    @NotEmpty(message = "Не може бути пустим")
     private String name;
 
-    @NotEmpty
+    @NotEmpty(message = "Не може бути пустим")
     private String cityName;
+
+    @NotEmpty(message = "Не може бути пустим")
+    private String districtName;
 }

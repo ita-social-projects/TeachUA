@@ -18,4 +18,6 @@ public class SuccessCreatedStation implements Convertible {
     private String name;
 
     private String cityName;
+
+    private String districtName;
 }
