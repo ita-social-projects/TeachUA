@@ -1,5 +1,7 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.dto.log.LogResponse;
+
 import java.util.List;
 
 /**
@@ -21,7 +23,16 @@ public interface LogService {
     List<String> getLogByName(String name);
 
     /**
-     * The method deletes all logs and returns true if successfully deleted.
+     * The method delete logs by filter
+     * In case default filter delete all logs without "catalina"
+     * In case custom filter delete all logs by custom parameter without "catalina"
+     *
+     * @param filter - user write in url
+     * @return {@code LogResponse}
      */
-    Boolean deleteAllLogs();
+
+    LogResponse deleteLogsByFilter(String filter);
+
+    List<String> getAbsolutePathForLogs();
 }
+
