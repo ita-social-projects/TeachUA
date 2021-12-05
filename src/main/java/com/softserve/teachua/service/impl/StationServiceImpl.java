@@ -80,6 +80,20 @@ public class StationServiceImpl implements StationService {
     }
 
     @Override
+    public List<StationResponse> getAllByDistrictNameAndCityName(StationProfile stationProfile) {
+
+        List<StationResponse> stationList= stationRepository.findAllByDistrictNameAndCityName(
+                    stationProfile.getDistrictName(),stationProfile.getCityName())
+                .stream()
+                .map(station -> (StationResponse)dtoConverter.convertToDto(station,StationResponse.class))
+                .collect(Collectors.toList());
+
+        log.debug("**/get all stations by District = "+stationList);
+
+        return stationList;
+    }
+
+    @Override
     public Optional<Station> getOptionalStationByName(String name) {
         return stationRepository.findByName(name);
     }
@@ -90,7 +104,8 @@ public class StationServiceImpl implements StationService {
             throw new AlreadyExistException(String.format(STATION_ALREADY_EXIST, stationProfile.getName()));
         }
         Station station = stationRepository.save(dtoConverter.convertToEntity(stationProfile, new Station())
-                .withCity(cityService.getCityByName(stationProfile.getCityName())));
+                .withCity(cityService.getCityByName(stationProfile.getCityName()))
+                .withDistrict(districtService.getDistrictByName(stationProfile.getDistrictName())));
         log.debug("**/adding new station = " + station);
         return dtoConverter.convertToDto(station, SuccessCreatedStation.class);
     }
@@ -122,7 +137,8 @@ public class StationServiceImpl implements StationService {
         Station station = getStationById(id);
         Station newStation = dtoConverter.convertToEntity(stationProfile, station)
                 .withId(id)
-                .withCity(cityService.getCityByName(stationProfile.getCityName()));
+                .withCity(cityService.getCityByName(stationProfile.getCityName()))
+                .withDistrict(districtService.getDistrictByName(stationProfile.getDistrictName()));
 
         log.debug("**/updating station by id = " + newStation);
         return dtoConverter.convertToDto(stationRepository.save(newStation), StationProfile.class);

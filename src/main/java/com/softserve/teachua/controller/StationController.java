@@ -98,6 +98,12 @@ public class StationController implements Api {
     public List<StationResponse> getStationsByCityName(@PathVariable String name) {
         return stationService.getListOfStationsByCityName(name);
     }
+    @PostMapping("/district/stations")
+    public List<StationResponse> getStationsByDistrictNameAndCityName(@RequestBody StationProfile stationProfile){
+
+        return  stationService.getAllByDistrictNameAndCityName(stationProfile);
+    }
+
 
     /**
      * Use this endpoint to delete station by id.

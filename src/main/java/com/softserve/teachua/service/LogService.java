@@ -12,7 +12,7 @@ public interface LogService {
     /**
      * The method returns list of logs {@code List<String>}.
      */
-    List<String> getAllLogs();
+    List<String> getAllLogs( String filter);
 
     /**
      * The method returns list of logs {@code List<String>} by name.
@@ -30,7 +30,9 @@ public interface LogService {
      * @param filter - user write in url
      * @return {@code LogResponse}
      */
+
     LogResponse deleteLogsByFilter(String filter);
 
     List<String> getAbsolutePathForLogs();
 }
+

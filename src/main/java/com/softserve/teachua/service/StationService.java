@@ -41,6 +41,9 @@ public interface StationService {
      */
     Station getStationByName(String name);
 
+
+    List<StationResponse> getAllByDistrictNameAndCityName(StationProfile stationProfile);
+
     /**
      * The method returns optional {@code Optional<Station>} of station by name.
      *

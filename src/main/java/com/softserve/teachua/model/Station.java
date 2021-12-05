@@ -25,4 +25,9 @@ public class Station implements Convertible, Archivable {
     @JoinColumn(name = "city_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
     private City city;
+
+    @ManyToOne
+    @JoinColumn(name = "district_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private District district;
 }

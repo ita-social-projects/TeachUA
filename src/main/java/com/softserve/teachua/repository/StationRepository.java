@@ -15,5 +15,7 @@ public interface StationRepository extends JpaRepository<Station, Long> {
 
     List<Station> findAllByCityName(String name);
 
+    List<Station> findAllByDistrictNameAndCityName(String district, String city);
+
     boolean existsByName(String name);
 }
