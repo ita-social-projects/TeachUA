@@ -1,7 +1,6 @@
 package com.softserve.teachua.model;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +12,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "banner_items")
-public class BannerItem implements Convertible, Archivable {
+public class BannerItem implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

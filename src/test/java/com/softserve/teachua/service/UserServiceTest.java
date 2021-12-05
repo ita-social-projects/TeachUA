@@ -230,7 +230,7 @@ import static org.mockito.Mockito.*;
     @Test
     public void deleteUserByIdTest() {
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
-        when(archiveService.saveModel(user)).thenReturn(user);
+//        when(archiveService.saveModel(user)).thenReturn(user);
         doNothing().when(userRepository).deleteById(EXISTING_ID);
         doNothing().when(userRepository).flush();
         when(dtoConverter.convertToDto(user, UserResponse.class)).thenReturn(UserResponse.builder()

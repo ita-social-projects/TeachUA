@@ -1,5 +1,7 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.CenterToCenterResponseConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
@@ -16,6 +18,7 @@ import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.archivable.CenterArch;
 import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
@@ -40,12 +43,11 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Transactional
-public class CenterServiceImpl implements CenterService {
+public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     private static final String CENTER_ALREADY_EXIST = "Center already exist with name: %s";
     private static final String CENTER_NOT_FOUND_BY_ID = "Center not found by id: %s";
     private static final String CENTER_NOT_FOUND_BY_NAME = "Center not found by name: %s";
     private static final String CENTER_DELETING_ERROR = "Can't delete center cause of relationship";
-    private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
     private final LocationService locationService;
     private final CenterRepository centerRepository;
     private final ArchiveService archiveService;
@@ -59,6 +61,8 @@ public class CenterServiceImpl implements CenterService {
     private final UserService userService;
     private final CenterToCenterResponseConverter centerToCenterResponseConverter;
     private final CoordinatesConverter coordinatesConverter;
+    private final ObjectMapper objectMapper;
+    private ClubService clubService;
   
     @Autowired
     public CenterServiceImpl(LocationService locationService, CenterRepository centerRepository,
@@ -72,7 +76,7 @@ public class CenterServiceImpl implements CenterService {
                              UserRepository userRepository,
                              UserService userService,
                              CenterToCenterResponseConverter centerToCenterResponseConverter,
-                             CoordinatesConverter coordinatesConverter) {
+                             CoordinatesConverter coordinatesConverter, ObjectMapper objectMapper) {
         this.locationService = locationService;
         this.centerRepository = centerRepository;
         this.archiveService = archiveService;
@@ -86,6 +90,12 @@ public class CenterServiceImpl implements CenterService {
         this.userService = userService;
         this.centerToCenterResponseConverter = centerToCenterResponseConverter;
         this.coordinatesConverter = coordinatesConverter;
+        this.objectMapper = objectMapper;
+    }
+
+    @Autowired
+    public void setClubService(ClubService clubService){
+        this.clubService = clubService;
     }
 
     @Override
@@ -135,8 +145,7 @@ public class CenterServiceImpl implements CenterService {
       
         if (clubsId != null && !clubsId.isEmpty()) {
             for (Long id : clubsId) {
-                Club club = clubRepository.findById(id)
-                        .orElseThrow(() -> new NotExistException(String.format(CLUB_NOT_FOUND_BY_ID, id)));
+                Club club = clubService.getClubById(id);
                 club.setCenter(center);
                 clubRepository.save(club);
             }
@@ -208,8 +217,6 @@ public class CenterServiceImpl implements CenterService {
     public CenterResponse deleteCenterById(Long id) {
         Center center = getCenterById(id);
 
-        archiveService.saveModel(center);
-
         try {
             log.debug("delete Center");
             clubRepository.findClubsByCenter(center).forEach(club -> club.setCenter(null));
@@ -220,8 +227,10 @@ public class CenterServiceImpl implements CenterService {
             throw new DatabaseRepositoryException(CENTER_DELETING_ERROR);
         }
 
-        log.debug("center {} was successfully deleted", center);
-        return dtoConverter.convertToDto(center, CenterResponse.class);
+        archiveModel(center);
+
+        log.info("center {} was successfully deleted", center);
+        return null;
     }
 
     @Override
@@ -338,5 +347,29 @@ public class CenterServiceImpl implements CenterService {
             centerRepository.save(updCenter);
             return centerResponse;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public void archiveModel(Center center) {
+        CenterArch centerArch = dtoConverter.convertToDto(center, CenterArch.class);
+        centerArch.setClubsIds(center.getClubs().stream().map(club -> club.getId()).collect(Collectors.toSet()));
+        centerArch.setLocationsIds(center.getLocations().stream()
+                .map(location -> location.getId()).collect(Collectors.toSet()));
+        archiveService.saveModel(centerArch);
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        CenterArch centerArch = objectMapper.readValue(archiveObject, CenterArch.class);
+        Center center = Center.builder().build();
+        center = dtoConverter.convertToEntity(centerArch, center)
+                .withId(null)
+                .withUser(userService.getUserById(centerArch.getUserId()));
+
+        Center finalCenter = centerRepository.save(center);
+        centerArch.getLocationsIds().stream().map(locationService::getLocationById)
+                .forEach(location -> location.setCenter(finalCenter));
+
+        centerArch.getClubsIds().stream().map(clubService::getClubById).forEach(club -> club.setCenter(finalCenter));
     }
 }

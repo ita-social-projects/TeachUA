@@ -1,7 +1,6 @@
 package com.softserve.teachua.model;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
@@ -14,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @Builder
 @Table(name = "question")
-public class Question implements Convertible, Archivable {
+public class Question implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

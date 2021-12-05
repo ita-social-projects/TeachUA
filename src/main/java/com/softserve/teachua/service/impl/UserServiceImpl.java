@@ -1,14 +1,21 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.security.UserEntity;
+import com.softserve.teachua.dto.task.CreateTask;
 import com.softserve.teachua.dto.user.*;
 import com.softserve.teachua.exception.*;
+import com.softserve.teachua.model.AuthProvider;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.archivable.TaskArch;
+import com.softserve.teachua.model.archivable.UserArch;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.security.service.EncoderService;
+import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.RoleService;
 import com.softserve.teachua.service.UserService;
@@ -43,7 +50,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
     private static final String EMAIL_UPDATING_ERROR = "Email can`t be updated";
     private static final String ROLE_UPDATING_ERROR = "Role can`t be changed to Admin";
@@ -66,6 +73,7 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
+    private final ObjectMapper objectMapper;
     @Value("${baseURL}")
     private String baseUrl;
 
@@ -78,7 +86,7 @@ public class UserServiceImpl implements UserService {
                            JwtProvider jwtProvider,
                            AuthenticationManager authenticationManager,
                            JavaMailSender javaMailSender,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder, ObjectMapper objectMapper) {
         this.userRepository = userRepository;
         this.encodeService = encodeService;
         this.roleService = roleService;
@@ -88,6 +96,7 @@ public class UserServiceImpl implements UserService {
         this.authenticationManager = authenticationManager;
         this.javaMailSender = javaMailSender;
         this.passwordEncoder = passwordEncoder;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -261,14 +270,14 @@ public class UserServiceImpl implements UserService {
     public UserResponse deleteUserById(Long id) {
         User user = getUserById(id);
 
-        archiveService.saveModel(user);
-
         try {
             userRepository.deleteById(id);
             userRepository.flush();
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(USER_DELETING_ERROR);
         }
+
+        archiveModel(user);
 
         log.debug("user {} was successfully deleted", user);
         return dtoConverter.convertToDto(user, UserResponse.class);
@@ -494,5 +503,22 @@ public class UserServiceImpl implements UserService {
         HttpServletRequest httpServletRequest = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes())
                 .getRequest();
         return getUserFromRequest(httpServletRequest);
+    }
+
+    @Override
+    public void archiveModel(User user) {
+        archiveService.saveModel(dtoConverter.convertToDto(user, UserArch.class));
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        UserArch userArch = objectMapper.readValue(archiveObject, UserArch.class);
+        User user = dtoConverter.convertToEntity(userArch, User.builder().build())
+                .withId(null)
+                .withRole(roleService.getRoleById(userArch.getRoleId()))
+                .withProvider(Optional.ofNullable(userArch.getProvider()).isPresent()
+                        ? AuthProvider.valueOf(userArch.getProvider())
+                        : null);
+        userRepository.save(user);
     }
 }

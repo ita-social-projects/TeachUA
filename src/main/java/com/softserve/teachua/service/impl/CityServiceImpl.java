@@ -1,5 +1,7 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.dto.city.CityResponse;
@@ -8,7 +10,9 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.City;
+import com.softserve.teachua.model.archivable.CityArch;
 import com.softserve.teachua.repository.CityRepository;
+import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CityService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class CityServiceImpl implements CityService {
+public class CityServiceImpl implements CityService, ArchiveMark<City> {
     private static final String CITY_ALREADY_EXIST = "City already exist with name: %s";
     private static final String CITY_NOT_FOUND_BY_ID = "City not found by id: %s";
     private static final String CITY_NOT_FOUND_BY_NAME = "City not found by name: %s";
@@ -34,12 +38,14 @@ public class CityServiceImpl implements CityService {
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
     private final CityRepository cityRepository;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public CityServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService, CityRepository cityRepository) {
+    public CityServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService, CityRepository cityRepository, ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
         this.cityRepository = cityRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -105,14 +111,14 @@ public class CityServiceImpl implements CityService {
     public CityResponse deleteCityById(Long id) {
         City city = getCityById(id);
 
-        archiveService.saveModel(city);
-
         try {
             cityRepository.deleteById(id);
             cityRepository.flush();
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(CITY_DELETING_ERROR);
         }
+
+        archiveModel(city);
 
         log.debug("city {} was successfully deleted", city);
         return dtoConverter.convertToDto(city, CityResponse.class);
@@ -128,5 +134,17 @@ public class CityServiceImpl implements CityService {
 
     private Optional<City> getOptionalCityByName(String name) {
         return cityRepository.findByName(name);
+    }
+
+    @Override
+    public void archiveModel(City city) {
+        archiveService.saveModel(dtoConverter.convertToDto(city, CityArch.class));
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        CityArch cityArch = objectMapper.readValue(archiveObject, CityArch.class);
+        City city = dtoConverter.convertToEntity(cityArch, City.builder().build());
+        cityRepository.save(city);
     }
 }

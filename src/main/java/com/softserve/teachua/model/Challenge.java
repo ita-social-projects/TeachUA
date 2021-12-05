@@ -11,9 +11,10 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Builder
+@With
 @Entity
 @Table(name = "сhallenges")
-public class Challenge implements Convertible, Archivable {
+public class Challenge implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

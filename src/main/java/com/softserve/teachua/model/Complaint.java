@@ -1,12 +1,9 @@
 package com.softserve.teachua.model;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -17,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 @Entity
 @Table(name = "complaints")
-public class Complaint implements Convertible, Archivable {
+public class Complaint implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

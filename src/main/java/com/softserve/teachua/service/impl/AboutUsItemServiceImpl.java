@@ -1,12 +1,16 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.AboutUsItem;
+import com.softserve.teachua.model.archivable.AboutUsItemArch;
 import com.softserve.teachua.repository.AboutUsItemRepository;
 import com.softserve.teachua.service.AboutUsItemService;
+import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -20,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class AboutUsItemServiceImpl implements AboutUsItemService {
+public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<AboutUsItem> {
     private static final String ABOUT_US_ITEM_ALREADY_EXIST = "AboutUsItem with number: %s already exist";
     private static final String ABOUT_US_ITEM_NOT_FOUND_BY_ID = "AboutUsItem was not found by id: %s";
     private static final String ABOUT_US_ITEM_NULL_FIELD_ERROR = "AboutUsItem cannot exist without \"%s\"";
@@ -32,16 +36,18 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
     private final AboutUsItemRepository aboutUsItemRepository;
     private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public AboutUsItemServiceImpl(
             AboutUsItemRepository aboutUsItemRepository,
             ArchiveService archiveService,
-            DtoConverter dtoConverter
-    ) {
+            DtoConverter dtoConverter,
+            ObjectMapper objectMapper) {
         this.aboutUsItemRepository = aboutUsItemRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -99,6 +105,7 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
         AboutUsItem aboutUsItem = getAboutUsItemById(id);
         aboutUsItemRepository.deleteById(id);
         aboutUsItemRepository.flush();
+        archiveModel(aboutUsItem);
         return dtoConverter.convertToDto(aboutUsItem, AboutUsItemResponse.class);
     }
 
@@ -160,5 +167,17 @@ public class AboutUsItemServiceImpl implements AboutUsItemService {
             }
             updateAboutUsItem(id, dtoConverter.convertToDto(item, AboutUsItemProfile.class));
         }
+    }
+
+    @Override
+    public void archiveModel(AboutUsItem aboutUsItem) {
+        archiveService.saveModel(dtoConverter.convertToDto(aboutUsItem, AboutUsItemArch.class));
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        AboutUsItemArch aboutUsItemArch = objectMapper.readValue(archiveObject, AboutUsItemArch.class);
+        AboutUsItem aboutUsItem = dtoConverter.convertToEntity(aboutUsItemArch, AboutUsItem.builder().build());
+        aboutUsItemRepository.save(aboutUsItem);
     }
 }

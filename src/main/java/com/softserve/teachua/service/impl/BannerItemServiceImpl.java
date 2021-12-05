@@ -1,11 +1,17 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.banner_item.*;
+import com.softserve.teachua.dto.banner_item.BannerItemProfile;
+import com.softserve.teachua.dto.banner_item.BannerItemResponse;
+import com.softserve.teachua.dto.banner_item.SuccessCreatedBannerItem;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.BannerItem;
+import com.softserve.teachua.model.archivable.BannerItemArch;
 import com.softserve.teachua.repository.BannerItemRepository;
+import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.BannerItemService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,22 +27,24 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Slf4j
-public class BannerItemServiceImpl implements BannerItemService {
+public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<BannerItem> {
     private static final String BANNER_ITEM_NOT_FOUND_BY_ID = "Banner Item not found by id: %s";
     private static final String BANNER_ITEM_DELETING_ERROR = "Banner Item can`t be deleted by id: %s";
 
     private final BannerItemRepository bannerItemRepository;
     private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public BannerItemServiceImpl(
             BannerItemRepository bannerItemRepository,
             ArchiveService archiveService,
-            DtoConverter dtoConverter) {
+            DtoConverter dtoConverter, ObjectMapper objectMapper) {
         this.bannerItemRepository = bannerItemRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -84,8 +92,6 @@ public class BannerItemServiceImpl implements BannerItemService {
     public BannerItemResponse deleteBannerItemById(Long id) {
         BannerItem bannerItem = getBannerItemById(id);
 
-        archiveService.saveModel(bannerItem);
-
         try {
             bannerItemRepository.deleteById(id);
             bannerItemRepository.flush();
@@ -93,7 +99,21 @@ public class BannerItemServiceImpl implements BannerItemService {
             throw new DatabaseRepositoryException(String.format(BANNER_ITEM_DELETING_ERROR, id));
         }
 
+        archiveModel(bannerItem);
+
         log.info("banner item {} was successfully deleted", bannerItem);
         return dtoConverter.convertToDto(bannerItem, BannerItemResponse.class);
+    }
+
+    @Override
+    public void archiveModel(BannerItem bannerItem) {
+        archiveService.saveModel(dtoConverter.convertToDto(bannerItem, BannerItemArch.class));
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        BannerItemArch bannerItemArh = objectMapper.readValue(archiveObject, BannerItemArch.class);
+        BannerItem bannerItem = dtoConverter.convertToEntity(bannerItemArh, BannerItem.builder().build());
+        bannerItemRepository.save(bannerItem);
     }
 }

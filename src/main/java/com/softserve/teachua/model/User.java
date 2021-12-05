@@ -2,11 +2,9 @@ package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +13,7 @@ import javax.validation.constraints.Pattern;
 @Data
 @Entity
 @Table(name = "users")
-public class User implements Convertible, Archivable {
+public class User implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,7 +37,7 @@ public class User implements Convertible, Archivable {
     private String urlLogo;
 
     @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "role_id")
     @ToString.Exclude
     private Role role;

@@ -2,13 +2,10 @@ package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.*;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
-import com.softserve.teachua.model.GalleryPhoto;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +19,7 @@ import java.util.Set;
 @Entity
 @Table(name = "clubs")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Club implements Convertible, Archivable {
+public class Club implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,7 +46,7 @@ public class Club implements Convertible, Archivable {
     @Column
     private String urlBackground;
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "club")
     @ToString.Exclude
     private List<GalleryPhoto> urlGallery;
 
@@ -71,14 +68,18 @@ public class Club implements Convertible, Archivable {
     @ToString.Exclude
     private Set<Location> locations;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "club")
+    @ToString.Exclude
+    private Set<Feedback> feedbacks;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "club_category",
             joinColumns = {@JoinColumn(name = "club_id")},
             inverseJoinColumns = {@JoinColumn(name = "category_id")})
     @ToString.Exclude
     private Set<Category> categories = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ToString.Exclude
     private User user;

@@ -2,7 +2,6 @@ package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +12,7 @@ import javax.persistence.*;
 @With
 @Entity
 @Table(name = "galleries")
-public class GalleryPhoto implements Archivable, Convertible {
+public class GalleryPhoto implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

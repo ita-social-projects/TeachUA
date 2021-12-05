@@ -1,7 +1,6 @@
 package com.softserve.teachua.model;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,8 +11,9 @@ import java.time.LocalDate;
 @Data
 @Builder
 @Entity
+@With
 @Table(name = "tasks")
-public class Task implements Convertible, Archivable {
+public class Task implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

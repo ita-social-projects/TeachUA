@@ -7,21 +7,18 @@ import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.service.impl.TaskServiceImpl;
-import com.softserve.teachua.utils.HtmlUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.BeanUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -175,7 +172,7 @@ public class TaskServiceTest {
     public void deleteTaskShouldReturnTaskProfile(){
         when(taskRepository.findById(CORRECT_TASK_ID)).thenReturn(Optional.of(task));
         when(dtoConverter.convertToDto(task, TaskProfile.class)).thenReturn(taskProfile);
-        when(archiveService.saveModel(task)).thenReturn(task);
+//        when(archiveService.saveModel(task)).thenReturn(task);
         doNothing().when(taskRepository).deleteById(anyLong());
         doNothing().when(taskRepository).flush();
         assertThat(taskService.deleteTask(CORRECT_TASK_ID))

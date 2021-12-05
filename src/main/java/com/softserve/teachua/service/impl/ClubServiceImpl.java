@@ -20,6 +20,7 @@ import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.exception.*;
 import com.softserve.teachua.model.*;
+import com.softserve.teachua.model.archivable.ClubArch;
 import com.softserve.teachua.repository.*;
 import com.softserve.teachua.service.*;
 import com.softserve.teachua.utils.CategoryUtil;
@@ -45,7 +46,7 @@ import java.util.stream.Stream;
 @Service
 @Transactional(propagation = Propagation.SUPPORTS)
 @Slf4j
-public class ClubServiceImpl implements ClubService {
+public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private static final String CLUB_ALREADY_EXIST = "Club already exist with name: %s";
     private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
@@ -71,6 +72,8 @@ public class ClubServiceImpl implements ClubService {
     private final GalleryRepository galleryRepository;
     private final CenterService centerService;
     private final FeedbackRepository feedbackRepository;
+    private final ObjectMapper objectMapper;
+    private FeedbackService feedbackService;
 
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository,
@@ -89,7 +92,8 @@ public class ClubServiceImpl implements ClubService {
                            CoordinatesConverter coordinatesConverter,
                            GalleryRepository galleryRepository,
                            CenterService centerService,
-                           FeedbackRepository feedbackRepository) {
+                           FeedbackRepository feedbackRepository,
+                           ObjectMapper objectMapper) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -107,6 +111,12 @@ public class ClubServiceImpl implements ClubService {
         this.galleryRepository = galleryRepository;
         this.centerService = centerService;
         this.feedbackRepository = feedbackRepository;
+        this.objectMapper = objectMapper;
+    }
+
+    @Autowired
+    public void setFeedbackService(FeedbackService feedbackService) {
+        this.feedbackService = feedbackService;
     }
 
     @Override
@@ -602,22 +612,38 @@ public class ClubServiceImpl implements ClubService {
 
         Club club = getClubById(id);
 
-        archiveService.saveModel(club);
-
         try {
-            locationRepository.findAll()
-                    .stream()
-                    .filter(location -> location.getClub() != null && location.getClub().getId().equals(id))
-                    .forEach(location -> locationService.addLocation(dtoConverter
-                            .convertToDto(location.withClub(null), LocationProfile.class)));
-            fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground(), club.getUrlGallery());
-            updateClub(id, dtoConverter.convertToDto(club.withLocations(null), ClubResponse.class));
+            club.getFeedbacks()
+                    .stream().forEach(feedback -> {
+                feedback.setClub(null);
+                feedbackRepository.save(feedback);
+            });
+
+            club.getLocations()
+                    .stream().forEach(location -> {
+                        location.setClub(null);
+                        locationRepository.save(location);
+                    });
+
+            club.getUrlGallery()
+                    .stream().forEach(urlGallery -> {
+                        Optional<GalleryPhoto> galleryPhoto = galleryRepository.findById(urlGallery.getId());
+                        if (galleryPhoto.isPresent()){
+                            galleryPhoto.get().setClub(null);
+                            galleryRepository.save(galleryPhoto.get());
+                        }
+                    });
+
+
+//            fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground(), club.getUrlGallery());
 
             clubRepository.deleteById(id);
             clubRepository.flush();
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(CLUB_DELETING_ERROR);
         }
+
+        archiveModel(club);
 
         log.debug("club {} was successfully deleted", club);
         return toClubResponseConverter.convertToClubResponse(club);
@@ -704,5 +730,43 @@ public class ClubServiceImpl implements ClubService {
         }
 
         return dtoConverter.convertToDto(updClub, SuccessUpdatedClub.class);
+    }
+
+    @Override
+    public void archiveModel(Club club) {
+        ClubArch clubArch = dtoConverter.convertToDto(club, ClubArch.class);
+        clubArch.setUrlGalleriesIds(club.getUrlGallery().stream().map(GalleryPhoto::getId).collect(Collectors.toList()));
+        clubArch.setLocationsIds(club.getLocations().stream().map(Location::getId).collect(Collectors.toSet()));
+        clubArch.setCategoriesIds(club.getCategories().stream().map(Category::getId).collect(Collectors.toSet()));
+        clubArch.setFeedbacksIds(club.getFeedbacks().stream().map(Feedback::getId).collect(Collectors.toSet()));
+        archiveService.saveModel(clubArch);
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        ClubArch clubArch = objectMapper.readValue(archiveObject, ClubArch.class);
+        Club club = Club.builder().build();
+        club = dtoConverter.convertToEntity(clubArch, club)
+                .withId(null)
+                .withCategories(clubArch.getCategoriesIds()
+                        .stream().map(categoryService::getCategoryById).collect(Collectors.toSet()))
+                .withLocations(clubArch.getLocationsIds()
+                        .stream().map(locationService::getLocationById).collect(Collectors.toSet()))
+                .withUrlGallery(clubArch.getUrlGalleriesIds()
+                        .stream().map(galleryRepository::findById).filter(Optional::isPresent)
+                        .map(Optional::get).collect(Collectors.toList()))
+                .withFeedbacks(clubArch.getFeedbacksIds()
+                        .stream().map(feedbackService::getFeedbackById).collect(Collectors.toSet()));
+        if(Optional.ofNullable(clubArch.getCenterId()).isPresent()){
+            club.setCenter(centerService.getCenterById(clubArch.getCenterId()));
+        }
+        if(Optional.ofNullable(clubArch.getUserId()).isPresent()){
+            club.setUser(userService.getUserById(clubArch.getUserId()));
+        }
+        Club finalClub = clubRepository.save(club);
+        club.getLocations().forEach(location -> location.setClub(finalClub));
+        club.getUrlGallery().forEach(galleryPhoto -> galleryPhoto.setClub(finalClub));
+        club.getFeedbacks().forEach(feedback -> feedback.setClub(finalClub));
+
     }
 }

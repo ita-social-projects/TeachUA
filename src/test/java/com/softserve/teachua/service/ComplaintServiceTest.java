@@ -142,7 +142,7 @@ public class ComplaintServiceTest {
     @Test
     public   void deleteComplaintByExistingIdMustReturnComplaintResponse(){
             when(complaintRepository.findById(CORRECT_COMPLAINT_ID)).thenReturn(Optional.of(correctComplaint));
-            when(archiveService.saveModel(correctComplaint)).thenReturn(correctComplaint);
+//            when(archiveService.saveModel(correctComplaint)).thenReturn(correctComplaint);
             when(dtoConverter.convertToDto(correctComplaint, ComplaintResponse.class)).thenReturn(correctComplaintResponse);
             assertThat(complaintService.deleteComplaintById(CORRECT_COMPLAINT_ID)).isEqualTo(correctComplaintResponse);
     }
@@ -150,7 +150,7 @@ public class ComplaintServiceTest {
     @Test
    public void deleteComplaintByIdUnSuccessDeletingMustReturnDatabaseRepositoryException(){
         when(complaintRepository.findById(CORRECT_COMPLAINT_ID)).thenReturn(Optional.of(correctComplaint));
-        when(archiveService.saveModel(correctComplaint)).thenReturn(correctComplaint);
+//        when(archiveService.saveModel(correctComplaint)).thenReturn(correctComplaint);
         doThrow(DatabaseRepositoryException.class).when(complaintRepository).deleteById(CORRECT_COMPLAINT_ID);
         DatabaseRepositoryException expectedException =assertThrows(DatabaseRepositoryException.class,()-> complaintService.deleteComplaintById(CORRECT_COMPLAINT_ID));
         assertEquals(expectedException.getClass(),DatabaseRepositoryException.class);

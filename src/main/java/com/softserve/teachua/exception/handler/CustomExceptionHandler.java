@@ -90,6 +90,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildExceptionBody(exception, FORBIDDEN);
     }
 
+    @ExceptionHandler(RestoreArchiveException.class)
+    public final ResponseEntity<Object> handleRestoreArchiveException(RestoreArchiveException exception) {
+        return buildExceptionBody(exception, BAD_REQUEST);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
                                                                   HttpHeaders headers, HttpStatus status,

@@ -3,12 +3,10 @@ package com.softserve.teachua.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -20,7 +18,7 @@ import java.util.Set;
 @Entity
 @Table(name = "centers")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Center implements Convertible, Archivable {
+public class Center implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,11 +42,11 @@ public class Center implements Convertible, Archivable {
     @Column
     private String urlLogo;
 
-    @OneToMany(mappedBy = "center")
+    @OneToMany(mappedBy = "center", fetch = FetchType.EAGER)
     @ToString.Exclude
     private Set<Location> locations;
 
-    @OneToMany(mappedBy = "center")
+    @OneToMany(mappedBy = "center", fetch = FetchType.EAGER)
     @ToString.Exclude
     private Set<Club> clubs;
 

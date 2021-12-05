@@ -1,5 +1,7 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
@@ -9,7 +11,9 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Category;
+import com.softserve.teachua.model.archivable.CategoryArch;
 import com.softserve.teachua.repository.CategoryRepository;
+import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +34,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Transactional
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl implements CategoryService, ArchiveMark<Category> {
     private static final String CATEGORY_ALREADY_EXIST = "Category already exists with name: %s";
     private static final String CATEGORY_NOT_FOUND_BY_ID = "Category not found by id: %s";
     private static final String CATEGORY_NOT_FOUND_BY_NAME = "Category not found by name: %s";
@@ -38,13 +42,15 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public CategoryServiceImpl(CategoryRepository categoryRepository,
-                               DtoConverter dtoConverter, ArchiveService archiveService) {
+                               DtoConverter dtoConverter, ArchiveService archiveService, ObjectMapper objectMapper) {
         this.categoryRepository = categoryRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -114,14 +120,14 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse deleteCategoryById(Long id) {
         Category category = getCategoryById(id);
 
-        archiveService.saveModel(category);
-
         try {
             categoryRepository.deleteById(id);
             categoryRepository.flush();
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(CATEGORY_DELETING_ERROR);
         }
+
+        archiveModel(category);
 
         log.debug("Category {} was successfully deleted", category);
         return dtoConverter.convertToDto(category, CategoryResponse.class);
@@ -160,5 +166,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     private Optional<Category> getOptionalCategoryByName(String name) {
         return categoryRepository.findByName(name);
+    }
+
+    @Override
+    public void archiveModel(Category category) {
+        archiveService.saveModel(dtoConverter.convertToDto(category, CategoryArch.class));
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        CategoryArch categoryArch = objectMapper.readValue(archiveObject, CategoryArch.class);
+        Category category = dtoConverter.convertToEntity(categoryArch, Category.builder().build());
+        categoryRepository.save(category);
     }
 }
