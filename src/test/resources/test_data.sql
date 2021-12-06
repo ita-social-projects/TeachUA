@@ -3,15 +3,15 @@ values ('ROLE_ADMIN'),
        ('ROLE_USER'),
        ('ROLE_MANAGER');
 
-insert into users(email, password, url_logo, first_name, last_name, phone, role_id,provider,status)
+insert into users(email, password, url_logo, first_name, last_name, phone, role_id, provider, status)
 values ('admin@gmail.com', '$2y$12$iod5PRHZaYrIO6L3onnnk.Mhx9Hc1lb2ehBi0hRvPDD83u6OM/b66',
-        '/static/images/user/avatar/user1.png', 'Admin', 'Admin', '+38000000000', 1,'local',true),
+        '/static/images/user/avatar/user1.png', 'Admin', 'Admin', '+38000000000', 1, 'local', true),
        ('user@gmail.com', '$2y$12$aDvzOnearRd4eulVJID3pOufutAIXVU5i1GKhgpXuvyVmktuSAmqe',
-        '/static/images/user/avatar/user2.png', 'user', 'user', '+38000000000', 2,'local',true),
+        '/static/images/user/avatar/user2.png', 'user', 'user', '+38000000000', 2, 'local', true),
        ('user2@gmail.com', '$2y$12$aDvzOnearRd4eulVJID3pOufutAIXVU5i1GKhgpXuvyVmktuSAmqe',
-        '/static/images/user/avatar/user3.png', 'user2', 'user2', '+38000000000', 2, 'local',true),
+        '/static/images/user/avatar/user3.png', 'user2', 'user2', '+38000000000', 2, 'local', true),
        ('not_active_user@gmail.com', '$2y$12$aDvzOnearRd4eulVJID3pOufutAIXVU5i1GKhgpXuvyVmktuSAmqe',
-        '/static/images/user/avatar/user2.png', 'user3', 'user3', '+38000000000', 2,'local',false);
+        '/static/images/user/avatar/user2.png', 'user3', 'user3', '+38000000000', 2, 'local', false);
 
 insert into cities(name, latitude, longitude)
 values ('Київ', 50.4501, 30.5234),
@@ -52,18 +52,20 @@ values ('1', 'Спортивні секції', 'Футбол, бокс, хок�
         '/static/images/categories/theatre.svg', '#FF4D4F',
         '#FF4D4F',
         '#fff'),
-       ('35', 'Особистісний розвиток', 'Розвиток лідерських якостей, підприємництво для підлітків, фінансова грамотність',
+       ('35', 'Особистісний розвиток',
+        'Розвиток лідерських якостей, підприємництво для підлітків, фінансова грамотність',
         '/static/images/categories/self-improvement.svg', '#FADB14',
         '#FFF9D4',
         '#D46B08'),
        ('40', 'Журналістика, дитяче телебачення, монтаж відео, влогів',
         'Курси журналістики, дитяче телебачення і радіомовлення, монтаж відео, школа блогінгу',
         '/static/images/categories/tv.svg',
-        '#13C2C2',``
+        '#13C2C2',
         '#13C2C2', '#fff'),
        ('45', 'Інше', 'Тут є цікаві гуртки, які не потрапили в інші категорії', '/static/images/categories/other.svg',
         '#FFA940', '#FFA940', '#fff'),
-       ('50', 'Центр розвитку', 'підприємництво для підлітків, фінансова грамотність', '/static/images/categories/center.svg', '#F759AB', '#F759AB', '#fff');
+       ('50', 'Центр розвитку', 'підприємництво для підлітків, фінансова грамотність',
+        '/static/images/categories/center.svg', '#F759AB', '#F759AB', '#fff');
 
 insert into centers (name, contacts, description,
                      url_logo, url_web, user_id)
@@ -457,13 +459,13 @@ values (6, 9, 'Школа мистецтв імені Миколи Дмитро�
         1, true, false);
 
 insert into locations(name, address, latitude, longitude, city_id, district_id, station_id, club_id, center_id)
-values ('Location 1', 'вул. Жилянська, 110', 50.442822046041485, 30.4662303713667, 1, 1, null, 1, 1),
-       ('Location 2', 'вул. Васильківська, 5', 50.422646340624176, 30.529244602441413, 1, null, null, 1, 2),
-       ('Location 3', 'вул. Набережна, 20', 50.40807914241183, 30.398710628488644, 1, null, null, 2, 3),
-       ('Location 4', 'вул. Street, 11', 50.43033730654731, 30.396049877145888, 1, null, null, 2, 3),
-       ('Location 5', 'вул. street, 11', 50.45033730654731, 30.396049877145888, 1, null, null, 3, 3),
-       ('Location 6', 'вул. street, 11', 50.41033730654731, 30.396049877145888, 1, null, null, 3,3),
-       ('Location 7', 'вул. street, 11', 50.4303, 30.39, 1, null, null, 1,3);
+values ('Location 1', 'вул. Жилянська, 110', 50.442822046041485, 30.4662303713667, 1, 1, 1, 1, 1),
+       ('Location 2', 'вул. Васильківська, 5', 50.422646340624176, 30.529244602441413, 1, 1, 1, 1, 2),
+       ('Location 3', 'вул. Набережна, 20', 50.40807914241183, 30.398710628488644, 1, 1, 1, 2, 3),
+       ('Location 4', 'вул. Street, 11', 50.43033730654731, 30.396049877145888, 1, 2, 1, 2, 3),
+       ('Location 5', 'вул. street, 11', 50.45033730654731, 30.396049877145888, 1, 3, 1, 3, 3),
+       ('Location 6', 'вул. street, 11', 50.41033730654731, 30.396049877145888, 1, 2, 2, 3, 3),
+       ('Location 7', 'вул. street, 11', 50.4303, 30.39, 2, 1, 2, 1, 3);
 
 
 insert into contact_type(name, url_logo)

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -14,7 +16,7 @@ public class ClubSearchTestEntity {
     private String cityName;
     private String districtName;
     private String stationName;
-    private String categoriesName;
+    private List<String> categoriesNames;
     private boolean isOnline;
     private Integer pageNumber;
 }
