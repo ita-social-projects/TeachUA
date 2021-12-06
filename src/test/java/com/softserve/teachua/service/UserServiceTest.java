@@ -5,8 +5,11 @@ import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.*;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.WrongAuthenticationException;
+import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.archivable.RoleArch;
+import com.softserve.teachua.model.archivable.UserArch;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.security.service.EncoderService;
@@ -62,6 +65,7 @@ import static org.mockito.Mockito.*;
     private User updUser;
     private UserProfile userProfile;
     private Role role;
+    private UserArch userArch;
 
     private final long EXISTING_ID = 3L;
     private final long NOT_EXISTING_ID = 500L;
@@ -96,6 +100,10 @@ import static org.mockito.Mockito.*;
                 .firstName("username").build();
         updUser = User.builder()
                 .id(EXISTING_ID)
+                .email(EXISTING_EMAIL)
+                .password(PASSWORD)
+                .firstName("username").build();
+        userArch = UserArch.builder()
                 .email(EXISTING_EMAIL)
                 .password(PASSWORD)
                 .firstName("username").build();
@@ -235,7 +243,8 @@ import static org.mockito.Mockito.*;
         doNothing().when(userRepository).flush();
         when(dtoConverter.convertToDto(user, UserResponse.class)).thenReturn(UserResponse.builder()
                 .id(user.getId()).email(user.getEmail()).firstName(user.getFirstName()).build());
-
+        when(dtoConverter.convertToDto(user, UserArch.class)).thenReturn(userArch);
+        when(archiveService.saveModel(userArch)).thenReturn(Archive.builder().build());
         UserResponse userResponse = userService.deleteUserById(EXISTING_ID);
         assertEquals(userResponse.getEmail(), user.getEmail());
     }

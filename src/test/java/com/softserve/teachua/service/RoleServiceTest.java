@@ -6,7 +6,10 @@ import com.softserve.teachua.dto.role.RoleProfile;
 import com.softserve.teachua.dto.role.RoleResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Role;
+import com.softserve.teachua.model.archivable.ComplaintArch;
+import com.softserve.teachua.model.archivable.RoleArch;
 import com.softserve.teachua.repository.RoleRepository;
 import com.softserve.teachua.service.impl.RoleServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +47,7 @@ public class RoleServiceTest {
     private Role correctRole;
     private RoleProfile newRoleProfile;
     private RoleResponse correctRoleResponse;
+    private RoleArch roleArch;
 
     private final int CORRECT_ID = 1;
     private final int WRONG_ID = 50;
@@ -60,6 +64,7 @@ public class RoleServiceTest {
         correctRole = Role.builder().id(CORRECT_ID).name(CORRECT_NAME).build();
         newRoleProfile = RoleProfile.builder().roleName(NEW_NAME).build();
         correctRoleResponse = RoleResponse.builder().roleName(CORRECT_NAME).build();
+        roleArch = RoleArch.builder().name(CORRECT_NAME).build();
     }
 
     @Test
@@ -181,7 +186,8 @@ public class RoleServiceTest {
         doNothing().when(roleRepository).flush();
         when(dtoConverter.convertToDto(correctRole, RoleResponse.class))
                 .thenReturn(correctRoleResponse);
-
+        when(dtoConverter.convertToDto(correctRole, RoleArch.class)).thenReturn(roleArch);
+        when(archiveService.saveModel(roleArch)).thenReturn(Archive.builder().build());
         RoleResponse actual = roleService.deleteRoleById(CORRECT_ID);
         assertEquals(actual, correctRoleResponse);
     }

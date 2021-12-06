@@ -8,8 +8,11 @@ import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.archivable.CityArch;
+import com.softserve.teachua.model.archivable.ClubArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.repository.UserRepository;
@@ -72,6 +75,7 @@ class ClubServiceTest {
     private ClubProfile clubProfile;
     private ClubResponse clubResponse;
     private User user;
+    private ClubArch clubArch;
 
     private final long EXISTING_ID = 1L;
     private final long NOT_EXISTING_ID = 500L;
@@ -109,6 +113,10 @@ class ClubServiceTest {
                 .categoriesName(CATEGORIES)
                 .build();
         clubResponse = ClubResponse.builder()
+                .id(EXISTING_ID)
+                .name(NEW_NAME)
+                .build();
+        clubArch = ClubArch.builder()
                 .id(EXISTING_ID)
                 .name(NEW_NAME)
                 .build();
@@ -219,7 +227,8 @@ class ClubServiceTest {
         when(clubToClubResponseConverter.convertToClubResponse(club)).thenReturn(clubResponse);
         when(dtoConverter.convertToEntity(clubResponse, club)).thenReturn(club);
         when(userService.getCurrentUser()).thenReturn(user);
-
+        when(dtoConverter.convertToDto(club, ClubArch.class)).thenReturn(clubArch);
+        when(archiveService.saveModel(clubArch)).thenReturn(Archive.builder().build());
         ClubResponse actual = clubService.deleteClubById(EXISTING_ID);
         assertEquals(club.getName(), actual.getName());
     }
