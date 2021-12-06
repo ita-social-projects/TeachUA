@@ -1,6 +1,5 @@
 package com.softserve.teachua.repository;
 
-import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @DataJpaTest
@@ -30,14 +31,12 @@ public class UserRepositoryIT {
 
     @Test
     public void existsByAdminEmailShouldReturnTrue(){
-        assertThat(userRepository.existsByEmail(ADMIN_EMAIL))
-                .isEqualTo(true);
+        assertTrue(userRepository.existsByEmail(ADMIN_EMAIL));
     }
 
     @Test
     public void existsByWrongEmailShouldReturnFalse(){
-        assertThat(userRepository.existsByEmail(WRONG_EMAIL))
-                .isEqualTo(false);
+        assertFalse(userRepository.existsByEmail(WRONG_EMAIL));
     }
 
     @Test
@@ -68,14 +67,12 @@ public class UserRepositoryIT {
 
     @Test
     public void existsByExistingIdShouldReturnTrue(){
-        assertThat(userRepository.existsById(EXISTING_ID))
-                .isEqualTo(true);
+        assertTrue(userRepository.existsById(EXISTING_ID));
     }
 
     @Test
     public void existsByWrongIdShouldReturnFalse(){
-        assertThat(userRepository.existsById(WRONG_ID))
-                .isEqualTo(false);
+        assertFalse(userRepository.existsById(WRONG_ID));
     }
 
     @Test
