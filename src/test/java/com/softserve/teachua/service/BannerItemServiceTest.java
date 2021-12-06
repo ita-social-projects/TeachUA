@@ -5,7 +5,9 @@ import com.softserve.teachua.dto.banner_item.BannerItemProfile;
 import com.softserve.teachua.dto.banner_item.BannerItemResponse;
 import com.softserve.teachua.dto.banner_item.SuccessCreatedBannerItem;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.BannerItem;
+import com.softserve.teachua.model.archivable.BannerItemArch;
 import com.softserve.teachua.repository.BannerItemRepository;
 import com.softserve.teachua.service.impl.BannerItemServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +46,7 @@ public class BannerItemServiceTest {
     private BannerItemProfile bannerItemProfile;
     private BannerItemResponse bannerItemResponse;
     private SuccessCreatedBannerItem successCreatedBannerItem;
+    private BannerItemArch bannerItemArch;
 
     private final Long EXISTING_ID = 1L;
     private final Long NOT_EXISTING_ID = 500L;
@@ -79,6 +82,11 @@ public class BannerItemServiceTest {
         successCreatedBannerItem = SuccessCreatedBannerItem.builder()
                 .title(NEW_VALID_TITLE)
                 .picture(NEW_VALID_PICTURE_PATH)
+                .sequenceNumber(VALID_SEQUENCE_NUMBER)
+                .build();
+        bannerItemArch = BannerItemArch.builder()
+                .title(VALID_TITLE)
+                .picture(VALID_PICTURE_PATH)
                 .sequenceNumber(VALID_SEQUENCE_NUMBER)
                 .build();
     }
@@ -174,11 +182,11 @@ public class BannerItemServiceTest {
     @Test
     public void deleteBannerItemWithExistingId() {
         when(bannerItemRepository.findById(EXISTING_ID)).thenReturn(Optional.of(bannerItem));
-//        when(archiveService.saveModel(bannerItem)).thenReturn(bannerItem);
         doNothing().when(bannerItemRepository).deleteById(EXISTING_ID);
         doNothing().when(bannerItemRepository).flush();
         when(dtoConverter.convertToDto(bannerItem, BannerItemResponse.class)).thenReturn(bannerItemResponse);
-
+        when(dtoConverter.convertToDto(bannerItem, BannerItemArch.class)).thenReturn(bannerItemArch);
+        when(archiveService.saveModel(bannerItemArch)).thenReturn(Archive.builder().build());
         BannerItemResponse actual = bannerItemService.deleteBannerItemById(EXISTING_ID);
         assertEquals(bannerItemResponse, actual);
     }
