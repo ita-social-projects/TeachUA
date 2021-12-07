@@ -124,7 +124,9 @@ public class CenterServiceTest {
                 .name(centerProfile.getName())
                 .build();
         club = Club.builder()
-                .id(CLUB_ID).build();
+                .id(CLUB_ID)
+                .center(correctCenter)
+                .build();
 
         user = User.builder()
                 .id(USER_ID)
@@ -135,6 +137,7 @@ public class CenterServiceTest {
                 .name("Create center")
                 .userId(1L)
                 .build();
+        centerService.setClubService(clubService);
     }
 
     @Test
@@ -166,7 +169,7 @@ public class CenterServiceTest {
         when(dtoConverter.convertToEntity(any(CenterProfile.class), any(Center.class)))
                 .thenReturn(new Center());
         when(dtoConverter.convertToDto(createCenter, SuccessCreatedCenter.class)).thenReturn(successCreatedCenter);
-        when(clubRepository.findById(1l)).thenReturn(Optional.of(club));
+        when(clubService.getClubById(club.getId())).thenReturn(club);
         when(userService.getCurrentUser()).thenReturn(user);
     }
 

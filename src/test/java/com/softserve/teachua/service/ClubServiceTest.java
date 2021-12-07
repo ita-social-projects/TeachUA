@@ -9,6 +9,7 @@ import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Archive;
+import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.CityArch;
@@ -17,17 +18,16 @@ import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.impl.ClubServiceImpl;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.internal.util.collections.Sets;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -87,6 +87,8 @@ class ClubServiceTest {
     private final String CONTACTS = "123456789";
     private final String DESCRIPTION = "Description Text";
     private final List<String> CATEGORIES = Arrays.asList("Category1", "Category2");
+    private final Set<Category> CATEGORIES_SET =
+            Sets.newSet(Category.builder().name("Category1").build(), Category.builder().name("Category2").build());
 
     private final Long USER_EXISTING_ID = 1L;
     private final Long USER_NOT_EXISTING_ID = 100L;
@@ -105,6 +107,10 @@ class ClubServiceTest {
                 .id(EXISTING_ID)
                 .name(NEW_NAME)
                 .user(user)
+                .categories(CATEGORIES_SET)
+                .feedbacks(Sets.newSet())
+                .locations(Sets.newSet())
+                .urlGallery(Lists.list())
                 .build();
         clubProfile = ClubProfile.builder()
                 .name(NEW_NAME)
@@ -220,12 +226,9 @@ class ClubServiceTest {
     @Test
     void deleteClubByExistingIdShouldReturnCorrectClubResponse() {
         when(clubRepository.findById(EXISTING_ID)).thenReturn(Optional.of(club));
-//        when(archiveService.saveModel(club)).thenReturn(club);
         doNothing().when(clubRepository).deleteById(EXISTING_ID);
         doNothing().when(clubRepository).flush();
-        when(dtoConverter.convertToDto(club, ClubResponse.class)).thenReturn(clubResponse);
         when(clubToClubResponseConverter.convertToClubResponse(club)).thenReturn(clubResponse);
-        when(dtoConverter.convertToEntity(clubResponse, club)).thenReturn(club);
         when(userService.getCurrentUser()).thenReturn(user);
         when(dtoConverter.convertToDto(club, ClubArch.class)).thenReturn(clubArch);
         when(archiveService.saveModel(clubArch)).thenReturn(Archive.builder().build());
