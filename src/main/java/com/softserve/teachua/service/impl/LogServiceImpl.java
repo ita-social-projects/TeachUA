@@ -9,13 +9,13 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,7 +53,9 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public LogResponse deleteLogsByFilter(String filter) {
+
         AtomicBoolean correctFilter= new AtomicBoolean(false);
+
         List <String> deletedLogs = new LinkedList<>();
         List <String> notDeletedLogs = new LinkedList<>();
 
@@ -89,9 +91,9 @@ public class LogServiceImpl implements LogService {
         if (!correctFilter.get()){
             throw  new NotExistException("Not found file by this filter");
         }
-        LogResponse logResponse = new LogResponse().withDeletedLogs(deletedLogs).withNotDeletedLogs(notDeletedLogs);
+
         log.debug("**/log delete");
-        return logResponse;
+        return  new LogResponse().withDeletedLogs(deletedLogs).withNotDeletedLogs(notDeletedLogs);
     }
 
     @Override
@@ -107,5 +109,28 @@ public class LogServiceImpl implements LogService {
                 });
 
         return pathList;
+    }
+
+    @Override
+    public LogResponse deleteEmptyLogs(Boolean filter) {
+
+        List<String> deletedLogs = new LinkedList<>();
+        List<String> notDeletedLogs = new LinkedList<>();
+
+        FileUtils.listFiles(new File(path),null,false).forEach(file ->
+        {
+            String fileName = file.getAbsolutePath().replace(".\\","").replace(" \\","");
+
+            try {
+                if (FileUtils.getFile(fileName).getAbsoluteFile().length()<1){
+                    FileUtils.forceDelete(new File(fileName));
+                    deletedLogs.add(file.getName());
+                }
+            } catch (IOException e) {
+                notDeletedLogs.add("NOT deleted file:"+file.getName());
+            }
+        });
+
+        return  new LogResponse().withDeletedLogs(deletedLogs).withNotDeletedLogs(notDeletedLogs);
     }
 }

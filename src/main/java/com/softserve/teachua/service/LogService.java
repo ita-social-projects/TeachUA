@@ -30,9 +30,20 @@ public interface LogService {
      * @param filter - user write in url
      * @return {@code LogResponse}
      */
-
     LogResponse deleteLogsByFilter(String filter);
 
+    /**
+     * Use this method to get absolute path to log in dev or production
+     * @return new {@code List<String>}
+     */
     List<String> getAbsolutePathForLogs();
+
+    /**
+     * Use this method for delete empty logs
+     *
+     * @param filter
+     * @return {@code LogResponse}
+     */
+    LogResponse  deleteEmptyLogs(Boolean filter);
 }
 

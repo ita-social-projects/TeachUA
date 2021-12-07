@@ -37,10 +37,9 @@ public class AddressServiceImpl implements AddressService {
                 .findAll()
                 .stream()
                 .filter(location ->
-                        (hasAddressOtherCity(location.getAddress()))
+                        (hasCity(location.getAddress()))
                                 &&
                                 !location.getAddress().matches(".*("+location.getCity().getName()+"[^а-яА-ЯіІїЇєЄ]+).*")
-
                 ).collect(Collectors.toList());
 
         List<AddressProfile> addressProfileList = new LinkedList<>();
@@ -55,7 +54,7 @@ public class AddressServiceImpl implements AddressService {
         return addressProfileList;
     }
 
-
+    @Override
     public List<AddressProfile> replaceAllIncorrectCity(List<AddressProfile> addressProfileList){
 
         List<City> cities = cityRepository.findAll();
@@ -71,7 +70,7 @@ public class AddressServiceImpl implements AddressService {
         return addressProfileList;
     }
 
-    public boolean hasAddressOtherCity(String address){
+    public boolean hasCity(String address){
 
         AtomicBoolean hasCity = new AtomicBoolean(false);
 

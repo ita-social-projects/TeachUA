@@ -51,21 +51,39 @@ public class LogController implements Api {
         return logService.getLogByName(name);
     }
 
+
     /**
      * Use this endpoint to delete logs by filter
      * Default filter - Delete all logs without "catalina" files
      * Filter with string parameter - delete all logs where file contain string parameter in name except "catalina"
      *
      * @param filter
-     * @return LogResponse
+     * @return {@code LogResponse}
      */
     @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/logs")
     public LogResponse deleteLogsByFilter(@RequestParam(required = false,defaultValue = "deleteAll")String filter) {
-        System.out.println(filter);
         return logService.deleteLogsByFilter(filter);
     }
 
+    /**
+     * Use this endpoint for delete empty logs
+     * The Controller returns list with deleted and not deleted logs
+     *
+     * @param deleteEmpty
+     * @return
+     */
+    @AllowedRoles(RoleData.ADMIN)
+    @DeleteMapping("/logs/deleteLogs")
+    public LogResponse deleteEmptyLogs(@RequestParam(required = false,defaultValue = "false")Boolean deleteEmpty){
+        return logService.deleteEmptyLogs(deleteEmpty);
+    }
+
+    /**
+     * Use this endpoint to get Absolute path to logs from production or develop version
+     *
+     * @return {@code LogResponse}
+     */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/log/getAbsolutePathToLogs")
     public List<String> getPathToLogs(){

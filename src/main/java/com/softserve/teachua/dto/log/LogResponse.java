@@ -14,5 +14,4 @@ import lombok.With;
 public class LogResponse {
     private List<String> deletedLogs;
     private List<String> notDeletedLogs;
-
 }

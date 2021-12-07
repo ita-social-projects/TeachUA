@@ -4,4 +4,5 @@ import com.softserve.teachua.dto.location.AddressProfile;
 
 public interface AddressService {
     List<AddressProfile> getNotRelativeAddress();
+    List<AddressProfile> replaceAllIncorrectCity(List<AddressProfile> addressProfileList);
 }
