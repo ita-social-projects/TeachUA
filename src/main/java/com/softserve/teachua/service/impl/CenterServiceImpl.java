@@ -145,7 +145,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
       
         if (clubsId != null && !clubsId.isEmpty()) {
             for (Long id : clubsId) {
-                log.info("ID - " + id);
+                log.debug("ID - " + id);
                 Club club = clubService.getClubById(id);
                 club.setCenter(center);
                 clubRepository.save(club);
@@ -230,7 +230,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
         archiveModel(center);
 
-        log.info("center {} was successfully deleted", center);
+        log.debug("center {} was successfully deleted", center);
         return dtoConverter.convertToDto(center, CenterResponse.class);
     }
 
