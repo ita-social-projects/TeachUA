@@ -70,7 +70,7 @@ public class LogController implements Api {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/log/getAbsolutePathToLogs")
+    @GetMapping("/logs/getAbsolutePathToLogs")
     public List<String> getPathToLogs(){
         return  logService.getAbsolutePathForLogs();
     }
@@ -79,5 +79,12 @@ public class LogController implements Api {
     @PostMapping("/log")
     public String createSubDirectory(@RequestParam(required = false,defaultValue = "date") String directoryName) throws IOException {
        return logService.createSubDirectoryByName(directoryName);
+    }
+
+    @AllowedRoles(RoleData.ADMIN)
+    @PutMapping("/logs")
+    public LogResponse moveLogsToSubDirectory(@RequestParam(required = false,defaultValue ="false")String subDirectory){
+       return logService.moveLogsToSubDirectoryByDirectoryName(subDirectory);
+
     }
 }

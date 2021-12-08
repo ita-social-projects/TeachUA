@@ -7,6 +7,7 @@ import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.service.LogService;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -138,6 +139,35 @@ public class LogServiceImpl implements LogService {
             }
 
         return "Created sub directory in logs with name: "+file.getName();
+    }
+
+    @Override
+    public LogResponse moveLogsToSubDirectoryByDirectoryName(String directoryName) {
+
+        File fileMoveTo = new File(new File(path).getAbsolutePath().replace(".\\", "").concat(directoryName).replace(" ", ""));
+
+        List<String> movedFileList = new LinkedList<>();
+        List<String> notMovedFileList = new LinkedList<>();
+
+        if (fileMoveTo.exists() && fileMoveTo.isDirectory()){
+            FileUtils.listFiles(new File(path),null,false).forEach(file -> {
+
+                File fileMoveFrom = new File(new File(file.getAbsolutePath()).getAbsolutePath().replace(".\\","").replace(" ",""));
+                if (!fileMoveFrom.isDirectory()) {
+                    try {
+                        FileUtils.moveFileToDirectory(fileMoveFrom, fileMoveTo, true);
+                        movedFileList.add("Moved file from:"+fileMoveFrom.getAbsolutePath());
+                        movedFileList.add("To directory "+fileMoveTo.getAbsolutePath());
+                    } catch (IOException e) {
+                        notMovedFileList.add("Not moved file: " +fileMoveFrom.getName());
+                    }
+                }
+            });
+        }else {
+            throw  new IncorrectInputException("Directory by name: "+directoryName+" doesnt exist");
+        }
+
+        return new LogResponse().withDeletedLogs(movedFileList).withNotDeletedLogs(notMovedFileList);
     }
 
 
