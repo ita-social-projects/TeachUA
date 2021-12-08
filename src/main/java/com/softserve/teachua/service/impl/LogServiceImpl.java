@@ -2,6 +2,8 @@ package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.log.LogResponse;
+import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.service.LogService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,13 +64,14 @@ public class LogServiceImpl implements LogService {
         if (filter.equals("deleteAll")){
             FileUtils.listFiles(new File(path),null,false).stream().forEach(
                     file -> {
-                        if (!file.getName().contains("catalina")){
+                        File pathFile = new File(file.getAbsolutePath().replace(".\\","").replace(" \\",""));
+                        if (!pathFile.getName().contains("catalina") && !pathFile.isDirectory() ){
                             correctFilter.set(true);
                             try {
-                                FileUtils.forceDelete(new File(file.getAbsolutePath().replace(".\\","").replace(" \\","")));
-                                deletedLogs.add("deleted: "+file.getName());
+                                FileUtils.forceDelete(pathFile);
+                                deletedLogs.add("deleted: "+pathFile.getName());
                             } catch (IOException e ) {
-                                 notDeletedLogs.add("NOT deleted: "+file.getName());
+                                 notDeletedLogs.add("NOT deleted: "+pathFile.getName());
                             }
                         }
                     }
@@ -75,20 +79,21 @@ public class LogServiceImpl implements LogService {
         }else {
             FileUtils.listFiles(new File(path),null,false).stream().forEach(
                     file -> {
-                        if(!file.getName().contains("catalina") && file.getName().contains(filter)){
+                        File pathFile = new File(file.getAbsolutePath().replace(".\\","").replace(" \\",""));
+                        if(!pathFile.getName().contains("catalina") && pathFile.getName().contains(filter)&& !pathFile.isDirectory()){
                             correctFilter.set(true);
                             try {
-                                FileUtils.forceDelete(new File(file.getAbsolutePath().replace(".\\","").replace(" \\","")));
-                                deletedLogs.add(" deleted: "+file.getName());
+                                FileUtils.forceDelete(pathFile);
+                                deletedLogs.add(" deleted: "+pathFile.getName());
                             } catch (IOException e) {
-                                notDeletedLogs.add("NOT deleted: "+file.getName());
+                                notDeletedLogs.add("NOT deleted: "+pathFile.getName());
                             }
                         }
                     }
             );
         }
         if (!correctFilter.get()){
-            throw  new NotExistException("Not found file by this filter");
+            throw  new NotExistException("Not found file by this filter or directory is empty");
         }
         LogResponse logResponse = new LogResponse().withDeletedLogs(deletedLogs).withNotDeletedLogs(notDeletedLogs);
         log.debug("**/log delete");
@@ -109,4 +114,31 @@ public class LogServiceImpl implements LogService {
 
         return pathList;
     }
+
+    @Override
+    public String createSubDirectoryByName(String name) throws IOException {
+
+        File file=null;
+        if (!name.matches("[a-zA-Z-_\\d]+")){
+            throw new IncorrectInputException("File name should contain only english letters,digit and char like -_");
+        }
+
+        if (name.matches("date")) {
+             file = new File(new File(path).getAbsolutePath().replace(".\\", "").concat(LocalDate.now().toString()).replace(" ", ""));
+            if (file.exists()){
+                throw new AlreadyExistException("Directory with this name already exist");
+            }
+            FileUtils.forceMkdir(file);
+        }else {
+             file = new File(new File(path).getAbsolutePath().replace(".\\", "").concat(name).replace(" ", ""));
+            if (file.exists()){
+                throw new AlreadyExistException("Directory with this name already exist");
+            }
+                FileUtils.forceMkdir(file);
+            }
+
+        return "Created sub directory in logs with name: "+file.getName();
+    }
+
+
 }

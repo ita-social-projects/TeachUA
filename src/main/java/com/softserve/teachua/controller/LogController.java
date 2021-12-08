@@ -9,6 +9,9 @@ import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -63,7 +66,6 @@ public class LogController implements Api {
     @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/logs")
     public LogResponse deleteLogsByFilter(@RequestParam(required = false,defaultValue = "deleteAll")String filter) {
-        System.out.println(filter);
         return logService.deleteLogsByFilter(filter);
     }
 
@@ -71,5 +73,11 @@ public class LogController implements Api {
     @GetMapping("/log/getAbsolutePathToLogs")
     public List<String> getPathToLogs(){
         return  logService.getAbsolutePathForLogs();
+    }
+
+    @AllowedRoles(RoleData.ADMIN)
+    @PostMapping("/log")
+    public String createSubDirectory(@RequestParam(required = false,defaultValue = "date") String directoryName) throws IOException {
+       return logService.createSubDirectoryByName(directoryName);
     }
 }
