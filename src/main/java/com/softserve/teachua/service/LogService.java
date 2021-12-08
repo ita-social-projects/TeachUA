@@ -33,8 +33,21 @@ public interface LogService {
      */
     LogResponse deleteLogsByFilter(String filter);
 
+    /**
+     * Use this method to search Absolute path to logs on prod
+     *
+     * @return
+     */
     List<String> getAbsolutePathForLogs();
 
     String createSubDirectoryByName(String name) throws IOException;
+
+    /**
+     * Use this method for movingFile from logs to sub directory by name
+     * @param directoryName
+     * @return LogResponse
+     */
+    LogResponse moveLogsToSubDirectoryByDirectoryName(String directoryName);
+
 }
 
