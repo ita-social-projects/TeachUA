@@ -2,6 +2,7 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.log.LogResponse;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -30,9 +31,10 @@ public interface LogService {
      * @param filter - user write in url
      * @return {@code LogResponse}
      */
-
     LogResponse deleteLogsByFilter(String filter);
 
     List<String> getAbsolutePathForLogs();
+
+    String createSubDirectoryByName(String name) throws IOException;
 }
 
