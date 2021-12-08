@@ -95,9 +95,8 @@ public class LogServiceImpl implements LogService {
         if (!correctFilter.get()){
             throw  new NotExistException("Not found file by this filter or directory is empty");
         }
-        LogResponse logResponse = new LogResponse().withDeletedLogs(deletedLogs).withNotDeletedLogs(notDeletedLogs);
         log.debug("**/log delete");
-        return logResponse;
+        return new LogResponse().withDeletedLogs(deletedLogs).withNotDeletedLogs(notDeletedLogs);
     }
 
     @Override
@@ -169,5 +168,27 @@ public class LogServiceImpl implements LogService {
         return new LogResponse().withDeletedLogs(movedFileList).withNotDeletedLogs(notMovedFileList);
     }
 
+    @Override
+    public LogResponse deleteEmptyLogs(Boolean filter) {
+
+        List<String> deletedLogs = new LinkedList<>();
+        List<String> notDeletedLogs = new LinkedList<>();
+
+        FileUtils.listFiles(new File(path),null,false).forEach(file ->
+        {
+            String fileName = file.getAbsolutePath().replace(".\\","").replace(" \\","");
+            File checkedFile = FileUtils.getFile(fileName).getAbsoluteFile();
+            try {
+                if (checkedFile.length()<1 && !checkedFile.isDirectory()){
+                    FileUtils.forceDelete(new File(fileName));
+                    deletedLogs.add(file.getName());
+                }
+            } catch (IOException e) {
+                notDeletedLogs.add("NOT deleted file:"+file.getName());
+            }
+        });
+
+        return  new LogResponse().withDeletedLogs(deletedLogs).withNotDeletedLogs(notDeletedLogs);
+    }
 
 }
