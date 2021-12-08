@@ -10,7 +10,7 @@ public interface LogService {
     /**
      * The method returns list of logs {@code List<String>}.
      */
-    List<String> getAllLogs( String filter);
+    List<String> getAllLogs( String filter, String content);
 
     /**
      * The method returns list of logs {@code List<String>} by name.
