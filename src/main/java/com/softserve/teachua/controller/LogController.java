@@ -69,6 +69,11 @@ public class LogController implements Api {
         return logService.deleteLogsByFilter(filter);
     }
 
+    /**
+     * Use this endpoint to get Absolute path to logs from production or develop version
+     *
+     * @return {@code LogResponse}
+     */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/logs/getAbsolutePathToLogs")
     public List<String> getPathToLogs(){
@@ -81,10 +86,26 @@ public class LogController implements Api {
        return logService.createSubDirectoryByName(directoryName);
     }
 
+    //TODO JavaDOC
+
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/logs")
     public LogResponse moveLogsToSubDirectory(@RequestParam(required = false,defaultValue ="false")String subDirectory){
        return logService.moveLogsToSubDirectoryByDirectoryName(subDirectory);
 
     }
+    /**
+     * Use this endpoint for delete empty logs
+     * The Controller returns list with deleted and not deleted logs
+     *
+     * @param deleteEmpty
+     * @return LogResponse
+     */
+    @AllowedRoles(RoleData.ADMIN)
+    @DeleteMapping("/logs/deleteEmptyLogs")
+    public LogResponse deleteEmptyLogs(@RequestParam(required = false,defaultValue = "false")Boolean deleteEmpty){
+        return logService.deleteEmptyLogs(deleteEmpty);
+    }
+
+
 }

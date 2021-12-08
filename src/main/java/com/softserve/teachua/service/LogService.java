@@ -34,9 +34,8 @@ public interface LogService {
     LogResponse deleteLogsByFilter(String filter);
 
     /**
-     * Use this method to search Absolute path to logs on prod
-     *
-     * @return
+     * Use this method to get absolute path to log in dev or production
+     * @return new {@code List<String>}
      */
     List<String> getAbsolutePathForLogs();
 
@@ -48,6 +47,14 @@ public interface LogService {
      * @return LogResponse
      */
     LogResponse moveLogsToSubDirectoryByDirectoryName(String directoryName);
+
+    /**
+     * Use this method for delete empty logs
+     *
+     * @param filter
+     * @return {@code LogResponse}
+     */
+    LogResponse  deleteEmptyLogs(Boolean filter);
 
 }
 
