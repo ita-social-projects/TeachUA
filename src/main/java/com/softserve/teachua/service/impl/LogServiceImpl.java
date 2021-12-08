@@ -27,11 +27,12 @@ public class LogServiceImpl implements LogService {
     private DtoConverter dtoConverter;
 
     @Override
-    public List<String> getAllLogs(String filter) {
+    public List<String> getAllLogs(String filter, String content) {
         return FileUtils.listFiles(new File(path), null, false)
                 .stream()
                 .map(File::getName)
                 .filter(name -> name.contains(filter))
+                .filter(name -> getLogByName(name).stream().anyMatch(row -> row.contains(content)))
                 .collect(Collectors.toList());
     }
 

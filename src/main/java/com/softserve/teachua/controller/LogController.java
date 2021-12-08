@@ -33,9 +33,10 @@ public class LogController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/logs")
-    public List<String> getLogs(@RequestParam (value = "filter", required = false, defaultValue = "") String filter) {
+    public List<String> getLogs(@RequestParam (value = "filter", required = false, defaultValue = "") String filter,
+                                @RequestParam (value = "content", required = false, defaultValue = "") String content) {
 
-        return logService.getAllLogs(filter);
+        return logService.getAllLogs(filter, content);
     }
 
     /**
