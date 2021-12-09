@@ -9,10 +9,8 @@ import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.model.Center;
-import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.Location;
-import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.*;
+import com.softserve.teachua.model.archivable.CenterArch;
 import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
@@ -24,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.internal.util.collections.Sets;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
@@ -77,11 +76,11 @@ public class CenterServiceTest {
     private SuccessCreatedCenter successCreatedCenter;
     private Club club;
     private User user;
+    private CenterArch centerArch;
 
     @BeforeAll
     public static void setUp() {
         CLUBS_ID.add(1L);
-
         CLUBS.add(Club.builder().id(1L).build());
     }
 
@@ -95,6 +94,8 @@ public class CenterServiceTest {
                 .description("Description")
                 .urlWeb("URL to picture")
                 .urlWeb("URL to picture")
+                .locations(Sets.newSet())
+                .clubs(CLUBS)
                 .build();
         correctCenterResponse = CenterResponse.builder()
                 .id(CORRECT_CENTER_ID)
@@ -123,12 +124,20 @@ public class CenterServiceTest {
                 .name(centerProfile.getName())
                 .build();
         club = Club.builder()
-                .id(CLUB_ID).build();
+                .id(CLUB_ID)
+                .center(correctCenter)
+                .build();
 
         user = User.builder()
                 .id(USER_ID)
                 .email(USER_EMAIL)
                 .build();
+
+        centerArch = CenterArch.builder()
+                .name("Create center")
+                .userId(1L)
+                .build();
+        centerService.setClubService(clubService);
     }
 
     @Test
@@ -160,7 +169,7 @@ public class CenterServiceTest {
         when(dtoConverter.convertToEntity(any(CenterProfile.class), any(Center.class)))
                 .thenReturn(new Center());
         when(dtoConverter.convertToDto(createCenter, SuccessCreatedCenter.class)).thenReturn(successCreatedCenter);
-        when(clubRepository.findById(1l)).thenReturn(Optional.of(club));
+        when(clubService.getClubById(club.getId())).thenReturn(club);
         when(userService.getCurrentUser()).thenReturn(user);
     }
 
@@ -183,6 +192,7 @@ public class CenterServiceTest {
         when(dtoConverter.convertToEntity(locationProfile, new Location())).thenReturn(location);
         when(locationRepository.save(location)).thenReturn(location);
         when(cityService.getCityByName(null)).thenReturn(null);
+        when(clubService.getClubById(1L)).thenReturn(club);
         assertThat(centerService.addCenterRequest(centerProfile)).isEqualTo(successCreatedCenter);
     }
 
@@ -200,6 +210,8 @@ public class CenterServiceTest {
         when(locationRepository.findLocationsByCenter(correctCenter)).thenReturn(Collections.emptyList());
         when(centerRepository.findById(CORRECT_CENTER_ID)).thenReturn(Optional.of(correctCenter));
         when(dtoConverter.convertToDto(correctCenter, CenterResponse.class)).thenReturn(correctCenterResponse);
+        when(dtoConverter.convertToDto(correctCenter, CenterArch.class)).thenReturn(centerArch);
+        when(archiveService.saveModel(centerArch)).thenReturn(Archive.builder().build());
         assertThat(centerService.deleteCenterById(CORRECT_CENTER_ID)).isEqualTo(correctCenterResponse);
     }
 

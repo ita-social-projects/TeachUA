@@ -6,7 +6,10 @@ import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.city.SuccessCreatedCity;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.City;
+import com.softserve.teachua.model.archivable.CenterArch;
+import com.softserve.teachua.model.archivable.CityArch;
 import com.softserve.teachua.repository.CityRepository;
 import com.softserve.teachua.service.impl.CityServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +43,7 @@ public class CityServiceTest {
     private City city;
     private CityProfile cityProfile;
     private CityResponse cityResponse;
+    private CityArch cityArch;
 
     private final long EXISTING_ID = 1L;
     private final long NOT_EXISTING_ID = 500L;
@@ -58,6 +62,9 @@ public class CityServiceTest {
                 .name(NEW_NAME)
                 .build();
         cityResponse = CityResponse.builder()
+                .name(EXISTING_NAME)
+                .build();
+        cityArch = CityArch.builder()
                 .name(EXISTING_NAME)
                 .build();
     }
@@ -178,7 +185,8 @@ public class CityServiceTest {
         doNothing().when(cityRepository).flush();
         when(dtoConverter.convertToDto(city, CityResponse.class))
                 .thenReturn(CityResponse.builder().id(city.getId()).name(city.getName()).build());
-
+        when(dtoConverter.convertToDto(city, CityArch.class)).thenReturn(cityArch);
+        when(archiveService.saveModel(cityArch)).thenReturn(Archive.builder().build());
         CityResponse actual = cityService.deleteCityById(EXISTING_ID);
         assertEquals(city.getName(), actual.getName());
     }

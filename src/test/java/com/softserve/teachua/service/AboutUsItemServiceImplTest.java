@@ -5,6 +5,8 @@ import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.AboutUsItem;
+import com.softserve.teachua.model.Archive;
+import com.softserve.teachua.model.archivable.AboutUsItemArch;
 import com.softserve.teachua.repository.AboutUsItemRepository;
 import com.softserve.teachua.service.impl.AboutUsItemServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +41,7 @@ class AboutUsItemServiceImplTest {
 
     private AboutUsItem aboutUsItem;
     private AboutUsItemResponse aboutUsItemResponse;
+    private AboutUsItemArch aboutUsItemArch;
     private AboutUsItemProfile aboutUsItemProfile;
 
     private static final Long CORRECT_ITEM_ID = 1L;
@@ -80,6 +83,12 @@ class AboutUsItemServiceImplTest {
                 .build();
 
         aboutUsItemProfile = AboutUsItemProfile.builder()
+                .text(ITEM_TEXT)
+                .type(ITEM_TYPE)
+                .number(FIRST_POSITION)
+                .build();
+
+        aboutUsItemArch = AboutUsItemArch.builder()
                 .text(ITEM_TEXT)
                 .type(ITEM_TYPE)
                 .number(FIRST_POSITION)
@@ -155,6 +164,8 @@ class AboutUsItemServiceImplTest {
         when(aboutUsItemRepository.findById(CORRECT_ITEM_ID)).thenReturn(Optional.of(aboutUsItem));
         doNothing().when(aboutUsItemRepository).deleteById(CORRECT_ITEM_ID);
         doNothing().when(aboutUsItemRepository).flush();
+        when(dtoConverter.convertToDto(aboutUsItem, AboutUsItemArch.class)).thenReturn(aboutUsItemArch);
+        when(archiveService.saveModel(aboutUsItemArch)).thenReturn(Archive.builder().build());
         when(dtoConverter.convertToDto(aboutUsItem, AboutUsItemResponse.class)).thenReturn(aboutUsItemResponse);
         assertThat(aboutUsItemService.deleteAboutUsItemById(CORRECT_ITEM_ID))
                 .isEqualTo(aboutUsItemResponse);

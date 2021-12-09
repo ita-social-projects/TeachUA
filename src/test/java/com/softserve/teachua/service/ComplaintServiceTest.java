@@ -5,9 +5,12 @@ import com.softserve.teachua.dto.complaint.ComplaintResponse;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Complaint;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.archivable.ClubArch;
+import com.softserve.teachua.model.archivable.ComplaintArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
 import com.softserve.teachua.repository.UserRepository;
@@ -59,6 +62,7 @@ public class ComplaintServiceTest {
     private List<Complaint> complaintList ;
     private Club club;
     private User user;
+    private ComplaintArch complaintArch;
     private List<ComplaintResponse> complaintResponseList;
 
     @BeforeEach
@@ -77,6 +81,10 @@ public class ComplaintServiceTest {
                 .id(CORRECT_COMPLAINT_ID)
                 .build();
         correctComplaintProfile = ComplaintProfile.builder()
+                .id(CORRECT_COMPLAINT_ID)
+                .clubId(CLUB_ID)
+                .build();
+        complaintArch = ComplaintArch.builder()
                 .id(CORRECT_COMPLAINT_ID)
                 .clubId(CLUB_ID)
                 .build();
@@ -142,15 +150,15 @@ public class ComplaintServiceTest {
     @Test
     public   void deleteComplaintByExistingIdMustReturnComplaintResponse(){
             when(complaintRepository.findById(CORRECT_COMPLAINT_ID)).thenReturn(Optional.of(correctComplaint));
-//            when(archiveService.saveModel(correctComplaint)).thenReturn(correctComplaint);
             when(dtoConverter.convertToDto(correctComplaint, ComplaintResponse.class)).thenReturn(correctComplaintResponse);
+            when(dtoConverter.convertToDto(correctComplaint, ComplaintArch.class)).thenReturn(complaintArch);
+            when(archiveService.saveModel(complaintArch)).thenReturn(Archive.builder().build());
             assertThat(complaintService.deleteComplaintById(CORRECT_COMPLAINT_ID)).isEqualTo(correctComplaintResponse);
     }
 
     @Test
    public void deleteComplaintByIdUnSuccessDeletingMustReturnDatabaseRepositoryException(){
         when(complaintRepository.findById(CORRECT_COMPLAINT_ID)).thenReturn(Optional.of(correctComplaint));
-//        when(archiveService.saveModel(correctComplaint)).thenReturn(correctComplaint);
         doThrow(DatabaseRepositoryException.class).when(complaintRepository).deleteById(CORRECT_COMPLAINT_ID);
         DatabaseRepositoryException expectedException =assertThrows(DatabaseRepositoryException.class,()-> complaintService.deleteComplaintById(CORRECT_COMPLAINT_ID));
         assertEquals(expectedException.getClass(),DatabaseRepositoryException.class);

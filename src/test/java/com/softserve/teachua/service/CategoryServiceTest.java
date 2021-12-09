@@ -8,7 +8,9 @@ import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Category;
+import com.softserve.teachua.model.archivable.CategoryArch;
 import com.softserve.teachua.repository.CategoryRepository;
 import com.softserve.teachua.service.impl.CategoryServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,6 +63,7 @@ public class CategoryServiceTest {
             .build();
     private List<Category> list;
     private List<CategoryResponse> responseList;
+    private CategoryArch categoryArch;
 
     @BeforeEach
     public void setMocks() {
@@ -80,6 +83,9 @@ public class CategoryServiceTest {
                     .sortby(category.getSortby())
                     .build());
         }
+        categoryArch = CategoryArch.builder()
+                .name(CORRECT_NAME)
+                .build();
     }
 
     @Test
@@ -162,6 +168,8 @@ public class CategoryServiceTest {
                 .name(correctCategory.getName())
                 .build();
         setMockReturnOptionalWhenFindByCorrectId();
+        when(dtoConverter.convertToDto(correctCategory, CategoryArch.class)).thenReturn(categoryArch);
+        when(archiveService.saveModel(categoryArch)).thenReturn(Archive.builder().build());
         when(dtoConverter.convertToDto(correctCategory, CategoryResponse.class)).thenReturn(response);
         assertThat(categoryService.deleteCategoryById(CORRECT_ID)).isEqualTo(response);
     }
