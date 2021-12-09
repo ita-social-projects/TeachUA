@@ -13,6 +13,10 @@ values ('admin@gmail.com', '$2y$12$iod5PRHZaYrIO6L3onnnk.Mhx9Hc1lb2ehBi0hRvPDD83
        ('not_active_user@gmail.com', '$2y$12$aDvzOnearRd4eulVJID3pOufutAIXVU5i1GKhgpXuvyVmktuSAmqe',
         '/static/images/user/avatar/user2.png', 'user3', 'user3', '+38000000000', 2,'local',false);
 
+insert into users(id, email, password, url_logo, first_name, last_name, phone, role_id,provider,status)
+values (199, 'deleted@gmail.com', '$2y$12$iod5PRHZaYrIO6L3onnnk.Mhx9Hc1lb2ehBi0hRvPDD83u6OM/b66',
+        '/static/images/user/avatar/user1.png', 'Admin', 'Admin', '+38000000000', 1,'local',true);
+
 insert into cities(name, latitude, longitude)
 values ('Київ', 50.4501, 30.5234),
        ('Харків', 49.9935, 36.2304),
