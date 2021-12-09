@@ -1,10 +1,12 @@
 package com.softserve.teachua.repository;
 
+import com.softserve.teachua.model.City;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,8 +21,6 @@ public class CityRepositoryIT {
 
     private static final Long EXISTING_ID = 4L;
     private static final Long NOT_EXISTING_ID = 100L;
-
-    private static final Integer RETURN_LIST_SIZE = 9;
 
     @Autowired
     private CityRepository cityRepository;
@@ -37,10 +37,13 @@ public class CityRepositoryIT {
 
     @Test
     public void findAllByOrderByIdAscShouldReturnSortedListByIdAsc() {
-        assertThat(cityRepository.findAllByOrderByIdAsc()).hasSize(RETURN_LIST_SIZE);
-        assertThat(cityRepository.findAllByOrderByIdAsc().get(0).getId()).isEqualTo(1L);
-        assertThat(cityRepository.findAllByOrderByIdAsc().get(1).getId()).isEqualTo(2L);
-        assertThat(cityRepository.findAllByOrderByIdAsc().get(2).getId()).isEqualTo(3L);
+        List<City> cities = cityRepository.findAllByOrderByIdAsc();
+
+        assertThat(cities.size()).isGreaterThan(0);
+
+        for (int i = 1; i < cities.size(); i++) {
+            assertThat(cities.get(i).getId()).isGreaterThan(cities.get(i - 1).getId());
+        }
     }
 
     @Test
