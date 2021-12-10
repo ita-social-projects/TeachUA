@@ -25,7 +25,7 @@ public class TaskTransferServiceImpl implements TaskTransferService {
 
     @Override
     public List<SuccessCreatedTask> createTasksFromFile(String filePath) {
-        List<TaskProfile> tasks = fileReader.readFromFile(filePath);
+        List<TaskProfile> tasks = fileReader.readFromFile(filePath, TaskProfile.class);
         return tasks.stream()
                 .map(task -> dtoConverter.convertFromDtoToDto(task, SuccessCreatedTask.builder().build()))
                 .collect(Collectors.toList());

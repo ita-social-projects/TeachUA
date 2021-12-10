@@ -1,7 +1,1 @@
-{
-"id": 0,
-"name": "string",
-"headerText": "string",
-"picture": "string",
-"startDate": "2021-12-10"
-}
+{"id": 0, "name": "string", "headerText": "string", "description": "StringStringStringString", "picture": "string", "startDate": "2021-12-10", "challengeId": 1}
