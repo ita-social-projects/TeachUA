@@ -1,2 +1,2 @@
-{"id": 0, "name": "Murloc", "headerText": "Murloc", "description": "MurlocMurlocMurloc", "picture": "image_for_prod/murloc.jpg", "startDate": "2021-12-10", "challengeId": 1}
-{"id": 1, "name": "Nasa", "headerText": "Nasa", "description": "NasaNasaNasa", "picture": "image_for_prod/NASE_Earth.jpg", "startDate": "2021-12-10", "challengeId": 1}
+{"id": 0, "name": "Murloc", "headerText": "Murloc", "description": "MurlocMurlocMurloc", "picture": "image_for_prod/murloc.jpg", "startDate": "2021-12-10", "challengeId": 15}
+{"id": 1, "name": "Nasa", "headerText": "Nasa", "description": "NasaNasaNasa", "picture": "image_for_prod/NASE_Earth.jpg", "startDate": "2021-12-10", "challengeId": 15}
