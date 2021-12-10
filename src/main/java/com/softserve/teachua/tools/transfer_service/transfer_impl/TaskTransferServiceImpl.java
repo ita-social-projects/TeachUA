@@ -3,8 +3,11 @@ package com.softserve.teachua.tools.transfer_service.transfer_impl;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.task.SuccessCreatedTask;
 import com.softserve.teachua.dto.task.TaskProfile;
-import com.softserve.teachua.tools.FileReader;
+import com.softserve.teachua.model.Task;
+import com.softserve.teachua.repository.TaskRepository;
+import com.softserve.teachua.tools.FileUtils;
 import com.softserve.teachua.tools.transfer_service.TaskTransferService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,22 +15,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class TaskTransferServiceImpl implements TaskTransferService {
 
-    private final FileReader fileReader;
+    private final FileUtils fileUtils;
     private final DtoConverter dtoConverter;
+    private final TaskRepository taskRepository;
 
     @Autowired
-    public TaskTransferServiceImpl(FileReader fileReader, DtoConverter dtoConverter) {
-        this.fileReader = fileReader;
+    public TaskTransferServiceImpl(FileUtils fileReader, DtoConverter dtoConverter, TaskRepository taskRepository) {
+        this.fileUtils = fileReader;
         this.dtoConverter = dtoConverter;
+        this.taskRepository = taskRepository;
     }
 
     @Override
     public List<SuccessCreatedTask> createTasksFromFile(String filePath) {
-        List<TaskProfile> tasks = fileReader.readFromFile(filePath, TaskProfile.class);
-        return tasks.stream()
-                .map(task -> dtoConverter.convertFromDtoToDto(task, SuccessCreatedTask.builder().build()))
+        List<TaskProfile> tasks = fileUtils.readFromFile(filePath, TaskProfile.class);
+        List<Task> taskModels = tasks.stream().map(taskProfile -> {
+            taskProfile.setPicture(fileUtils.moveImage(taskProfile.getPicture(), "tasks"));
+            log.info("add task: " + taskProfile);
+            return dtoConverter.convertToEntity(taskProfile, Task.builder().build()).withId(null);
+        }).collect(Collectors.toList());
+        taskModels.stream().forEach(taskRepository::save);
+        return taskModels.stream()
+                .map(task -> (SuccessCreatedTask)dtoConverter.convertToDto(task, SuccessCreatedTask.class))
                 .collect(Collectors.toList());
     }
 }
