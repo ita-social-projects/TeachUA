@@ -30,6 +30,7 @@ public class FileUtils {
     @Value("${application.upload.path}")
     private String uploadDirectory;
     private final ObjectMapper objectMapper;
+    private static final String UPLOAD_LOCATION = "\\upload";
 
     @Autowired
     public FileUtils(ObjectMapper objectMapper) {
@@ -71,8 +72,8 @@ public class FileUtils {
         String uploadDir = String.format("%s/%s", uploadDirectory, folder);
         try {
             Files.createDirectories(Paths.get(uploadDir));
-            Path destination = Files.move(path, Paths.get(String.format("%s\\%s", uploadDir, name)));
-            return destination.toString();
+            String destination = Files.move(path, Paths.get(String.format("%s\\%s", uploadDir, name))).toString();
+            return destination.substring(destination.indexOf(UPLOAD_LOCATION)).replace('\\', '/');
         } catch (IOException e) {
             log.error(e.getMessage());
             throw new IllegalArgumentException(e);
