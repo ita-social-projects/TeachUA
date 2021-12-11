@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 public class TaskTransferController implements Api {
-
     private final TaskTransferService taskTransferService;
 
     @Autowired
@@ -42,5 +41,4 @@ public class TaskTransferController implements Api {
     public List<SuccessCreatedTask> addTasksFromRepository() {
         return taskTransferService.createTasksFromRepository();
     }
-
 }

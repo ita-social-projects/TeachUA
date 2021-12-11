@@ -22,18 +22,15 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     private final FileUtils fileUtils;
     private final DtoConverter dtoConverter;
     private final TaskRepository taskRepository;
-    private final TaskInfoRepository taskInfoRepository;
 
     @Autowired
     public TaskTransferServiceImpl(
             FileUtils fileReader,
             DtoConverter dtoConverter,
-            TaskRepository taskRepository,
-            TaskInfoRepository taskInfoRepository) {
+            TaskRepository taskRepository) {
         this.fileUtils = fileReader;
         this.dtoConverter = dtoConverter;
         this.taskRepository = taskRepository;
-        this.taskInfoRepository = taskInfoRepository;
     }
 
     @Override
@@ -43,7 +40,7 @@ public class TaskTransferServiceImpl implements TaskTransferService {
 
     @Override
     public List<SuccessCreatedTask> createTasksFromRepository() {
-        return createTasks(taskInfoRepository.getTasksList());
+        return createTasks(TaskInfoRepository.getTasksList());
     }
 
     private List<SuccessCreatedTask> createTasks(List<TaskProfile> tasks) {
