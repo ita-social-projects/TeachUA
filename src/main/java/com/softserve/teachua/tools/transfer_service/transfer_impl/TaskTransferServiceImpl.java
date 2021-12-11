@@ -6,6 +6,7 @@ import com.softserve.teachua.dto.task.TaskProfile;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.tools.FileUtils;
+import com.softserve.teachua.tools.info_repository.TaskInfoRepository;
 import com.softserve.teachua.tools.transfer_service.TaskTransferService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,25 +22,39 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     private final FileUtils fileUtils;
     private final DtoConverter dtoConverter;
     private final TaskRepository taskRepository;
+    private final TaskInfoRepository taskInfoRepository;
 
     @Autowired
-    public TaskTransferServiceImpl(FileUtils fileReader, DtoConverter dtoConverter, TaskRepository taskRepository) {
+    public TaskTransferServiceImpl(
+            FileUtils fileReader,
+            DtoConverter dtoConverter,
+            TaskRepository taskRepository,
+            TaskInfoRepository taskInfoRepository) {
         this.fileUtils = fileReader;
         this.dtoConverter = dtoConverter;
         this.taskRepository = taskRepository;
+        this.taskInfoRepository = taskInfoRepository;
     }
 
     @Override
     public List<SuccessCreatedTask> createTasksFromFile(String filePath) {
-        List<TaskProfile> tasks = fileUtils.readFromFile(filePath, TaskProfile.class);
-        List<Task> taskModels = tasks.stream().map(taskProfile -> {
-            taskProfile.setPicture(fileUtils.moveImage(taskProfile.getPicture(), "tasks"));
-            log.info("add task: " + taskProfile);
-            return dtoConverter.convertToEntity(taskProfile, Task.builder().build()).withId(null);
-        }).collect(Collectors.toList());
-        taskModels.stream().forEach(taskRepository::save);
-        return taskModels.stream()
-                .map(task -> (SuccessCreatedTask)dtoConverter.convertToDto(task, SuccessCreatedTask.class))
+        return createTasks(fileUtils.readFromFile(filePath, TaskProfile.class));
+    }
+
+    @Override
+    public List<SuccessCreatedTask> createTasksFromRepository() {
+        return createTasks(taskInfoRepository.getTasksList());
+    }
+
+    private List<SuccessCreatedTask> createTasks(List<TaskProfile> tasks) {
+        return tasks
+                .stream()
+                .map(taskProfile -> {
+                    taskProfile.setPicture(fileUtils.moveImage(taskProfile.getPicture(), "tasks"));
+                    log.debug("add task: " + taskProfile);
+                    return dtoConverter.convertToEntity(taskProfile, Task.builder().build()).withId(null);
+                }).map(taskRepository::save)
+                .map(task -> (SuccessCreatedTask) dtoConverter.convertToDto(task, SuccessCreatedTask.class))
                 .collect(Collectors.toList());
     }
 }

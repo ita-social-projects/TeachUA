@@ -20,9 +20,27 @@ public class TaskTransferController implements Api {
         this.taskTransferService = taskTransferService;
     }
 
+    /**
+     * Use this endpoint to create task from file.
+     * The controller returns list of dto {@code List<SuccessCreatedTask>} of created tasks.
+     *
+     * @param filePath - path to file with jsons of tasks.
+     * @return new {@code List<SuccessCreatedTask>}.
+     */
     @PostMapping("transfer/task")
-    public List<SuccessCreatedTask> addTasksFromFile(@RequestParam("filePath") String filePath){
+    public List<SuccessCreatedTask> addTasksFromFile(@RequestParam("filePath") String filePath) {
         return taskTransferService.createTasksFromFile(filePath);
+    }
+
+    /**
+     * Use this endpoint to create task from infoRepository class.
+     * The controller returns list of dto {@code List<SuccessCreatedTask>} of created tasks.
+     *
+     * @return new {@code List<SuccessCreatedTask>}.
+     */
+    @PostMapping("transfer/task/repository")
+    public List<SuccessCreatedTask> addTasksFromRepository() {
+        return taskTransferService.createTasksFromRepository();
     }
 
 }
