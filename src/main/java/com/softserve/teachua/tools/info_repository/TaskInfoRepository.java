@@ -1,14 +1,12 @@
 package com.softserve.teachua.tools.info_repository;
 
 import com.softserve.teachua.dto.task.TaskProfile;
-import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Component
 public class TaskInfoRepository {
-    public List<TaskProfile> getTasksList() {
+    public static List<TaskProfile> getTasksList() {
         return Arrays.asList(
                 TaskProfile.builder()
                         .name("MyRepoTask")
