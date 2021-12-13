@@ -3,6 +3,7 @@ package com.softserve.teachua.tools.transfer_controller;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.challenge.SuccessCreatedChallenge;
 import com.softserve.teachua.tools.transfer_service.ChallengeTransferService;
+import com.softserve.teachua.utils.annotation.DevPermit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +27,7 @@ public class ChallengeTransferController implements Api {
      * @param filePath - path to file with jsons of tasks.
      * @return new {@code List<SuccessCreatedChallenge>}.
      */
+    @DevPermit
     @PostMapping("transfer/challenge")
     public List<SuccessCreatedChallenge> addChallengesFromFile(@RequestParam("filePath") String filePath) {
         return challengeTransferService.createChallengesFromFile(filePath);
@@ -37,6 +39,7 @@ public class ChallengeTransferController implements Api {
      *
      * @return new {@code List<SuccessCreatedChallenge>}.
      */
+    @DevPermit
     @PostMapping("transfer/challenge/repository")
     public List<SuccessCreatedChallenge> addChallengesFromRepository() {
         return challengeTransferService.createChallengesFromRepository();
