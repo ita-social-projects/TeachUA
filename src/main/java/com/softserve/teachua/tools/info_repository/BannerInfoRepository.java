@@ -1,37 +1,35 @@
-package com.softserve.teachua.tools.transfer_repository;
+package com.softserve.teachua.tools.info_repository;
 
 import com.softserve.teachua.dto.banner_item.BannerItemProfile;
-import org.springframework.stereotype.Repository;
 
 import java.util.Arrays;
 import java.util.List;
 
-@Repository
-public interface MoveBannerRepository {
-    default public List<BannerItemProfile> getBanners() {
+public class BannerInfoRepository {
+    public static List<BannerItemProfile> getBannersInfoRepository() {
         return Arrays.asList(
                 BannerItemProfile.builder().
-                        id(1l)
+                        id(1L)
                         .sequenceNumber(1)
                         .title("Навчай Українською")
                         .subtitle("Ініціатива")
                         .picture("/upload/target/banner_Images/aboutUs.jpg").build(),
                 BannerItemProfile.builder()
-                        .id(2l)
+                        .id(2L)
                         .link("/clubs")
                         .sequenceNumber(1)
                         .title("Про гуртки українською")
                         .subtitle("На нашому сайті ви можете обрати для вашої дитини гурток, де навчають українською мовою.")
                         .picture("/upload/target/banner_Images/aboutClubs.jpg").build(),
                 BannerItemProfile.builder()
-                        .id(3l)
+                        .id(3L)
                         .link("/challengeUA")
                         .sequenceNumber(2)
                         .title("Челендж \"Навчай українською\"для викладачів позашкільних закладів освіти")
                         .subtitle("21 день української мови для тренерів спортивних секцій та викладачів гуртків. Початок 5 листопада 2021 року.")
                         .picture("/upload/target/banner_Images/maraton.jpg").build(),
                 BannerItemProfile.builder()
-                        .id(4l)
+                        .id(4L)
                         .link("/about")
                         .sequenceNumber(3)
                         .title("Про нас")
