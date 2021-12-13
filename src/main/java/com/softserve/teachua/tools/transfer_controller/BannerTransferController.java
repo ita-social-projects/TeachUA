@@ -21,6 +21,10 @@ public class BannerTransferController implements Api {
         this.bannerItemTransferService = bannerItemTransferService;
     }
 
+    /**
+     * Use this controller for add hardCoded Banner to DB on prod\dev
+     * @return new {@code List<SuccessCreatedBannerItem}
+     */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/transferBannersToDB")
     public List<SuccessCreatedBannerItem> moveBannerToDB(){
