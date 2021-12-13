@@ -3,6 +3,7 @@ package com.softserve.teachua.tools.transfer_controller;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.task.SuccessCreatedTask;
 import com.softserve.teachua.tools.transfer_service.TaskTransferService;
+import com.softserve.teachua.utils.annotation.DevPermit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +27,7 @@ public class TaskTransferController implements Api {
      * @param filePath - path to file with jsons of tasks.
      * @return new {@code List<SuccessCreatedTask>}.
      */
+    @DevPermit
     @PostMapping("transfer/task")
     public List<SuccessCreatedTask> addTasksFromFile(@RequestParam("filePath") String filePath) {
         return taskTransferService.createTasksFromFile(filePath);
@@ -37,6 +39,7 @@ public class TaskTransferController implements Api {
      *
      * @return new {@code List<SuccessCreatedTask>}.
      */
+    @DevPermit
     @PostMapping("transfer/task/repository")
     public List<SuccessCreatedTask> addTasksFromRepository() {
         return taskTransferService.createTasksFromRepository();
