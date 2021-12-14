@@ -23,11 +23,11 @@ public class DevPermitAspect {
     }
 
     @Around("@annotation(DevPermit)")
-    public Object checkJwToken(ProceedingJoinPoint joinPoint){
+    public Object checkJwToken(ProceedingJoinPoint joinPoint) throws Throwable {
         String currentJwt = jwtProvider.getJwtFromRequest(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest());
         if(currentJwt.equals(JWT)){
-            return  joinPoint;
+            return  joinPoint.proceed();
         }
         throw new WrongAuthenticationException(PERMIT_EXCEPTION);
     }
