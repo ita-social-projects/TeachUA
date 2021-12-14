@@ -87,7 +87,6 @@ public class LogServiceImpl implements LogService {
                                 FileUtils.forceDelete(pathFile);
                                 deletedLogs.add(" deleted: " + pathFile.getName());
                             } catch (IOException e) {
-                                e.printStackTrace();
                                 notDeletedLogs.add("NOT deleted: " + pathFile.getName());
                             }
                         }
