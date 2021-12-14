@@ -1,6 +1,7 @@
 package com.softserve.teachua.tools;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
@@ -28,7 +29,7 @@ public class FileUtils {
     private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private static final String UPLOAD_LOCATION = "\\upload";
     private static final String FILE_FIND_EXCEPTION =
-            "Can't find file by path - %s. Path should be, for example, as follows - " +
+            "Can't find file by path - '%s'. Path should be, for example, as follows - " +
                     "'images/image.png' ('images' package should be located in resource package)";
     private static final String MOVE_FILE_EXCEPTION = "Can't move file form '%s' to '%s'";
     private static final String ALREADY_EXIST_EXCEPTION = "File with path - %s has already exists";
@@ -52,19 +53,21 @@ public class FileUtils {
      */
     public <T> List<T> readFromFile(String filePath, Class<T> tClass) {
         Path path = getPathOfFile(filePath);
-        BufferedReader reader;
-        try {
-            reader = Files.newBufferedReader(path);
-            return reader.lines().map(line -> {
-                try {
-                    return objectMapper.readValue(line, tClass);
-                } catch (JsonProcessingException e) {
-                    throw new IncorrectInputException(String.format(MAPPER_EXCEPTION, line, tClass, e.getMessage()));
-                }
-            }).collect(Collectors.toList());
-        } catch (IOException e) {
+        try(BufferedReader reader = Files.newBufferedReader(path)) {
+            String fileLines = String.join("",reader.lines().collect(Collectors.toList()));
+            return objectMapper.readValue(fileLines,
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, tClass));
+
+        } catch (JsonMappingException e) {
+            throw new IncorrectInputException(String.format(MAPPER_EXCEPTION, e.getLocalizedMessage(), tClass, e.getMessage()));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (NotExistException e) {
             throw new NotExistException(String.format(FILE_FIND_EXCEPTION, filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -106,8 +109,10 @@ public class FileUtils {
             String newPath = Files.move(path, destination).toString();
             return newPath.substring(newPath.indexOf(UPLOAD_LOCATION)).replace('\\', '/');
         } catch (FileAlreadyExistsException e) {
+            log.error(e.getMessage());
             throw new IncorrectInputException(String.format(ALREADY_EXIST_EXCEPTION, destination));
         } catch (IOException e) {
+            log.error(e.getMessage());
             throw new IncorrectInputException(String.format(MOVE_FILE_EXCEPTION, path, destination));
         }
     }
