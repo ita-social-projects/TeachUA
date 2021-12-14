@@ -17,26 +17,18 @@ import java.util.stream.Collectors;
 public class BannerItemTransferServiceImpl implements BannerItemTransferService {
 
     private final BannerItemServiceImpl bannerItemService;
+    private final com.softserve.teachua.tools.FileUtils fileUtils;
 
     @Autowired
-    public BannerItemTransferServiceImpl(BannerItemServiceImpl bannerItemService) {
+    public BannerItemTransferServiceImpl(BannerItemServiceImpl bannerItemService, com.softserve.teachua.tools.FileUtils fileUtils) {
         this.bannerItemService = bannerItemService;
+        this.fileUtils = fileUtils;
     }
 
     @Override
     public List<SuccessCreatedBannerItem> moveBannerToDB() {
-        String pathToResources = "/src/main/resources/banner_image_for_db/";
-        String pathToImages = "/target/upload/banner_Images";
 
-        FileUtils.listFiles(new File(pathToResources), null, false)
-                .forEach(file -> {
-                    try {
-                        FileUtils.moveToDirectory(new File(pathToResources + "/" + file.getName())
-                                , new File(pathToImages), true);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-        return BannerInfoRepository.getBannersInfoRepository().stream().map(bannerItemService::addBannerItem).collect(Collectors.toList());
+        BannerInfoRepository.getBannersInfo().forEach(banner -> fileUtils.moveImage(banner.getPicture(),"banner"));
+        return BannerInfoRepository.getBannersInfo().stream().map(bannerItemService::addBannerItem).collect(Collectors.toList());
     }
 }
