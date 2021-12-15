@@ -19,4 +19,6 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
     Set<Location> deleteAllByCenter(Center center);
 
     Optional<Location> findById(Long id);
+
+    List<Location> findAll();
 }

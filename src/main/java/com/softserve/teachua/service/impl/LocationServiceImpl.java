@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,6 +59,7 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
         this.centerRepository = centerRepository;
         this.clubRepository = clubRepository;
     }
+
     @Override
     public Location addLocation(LocationProfile locationProfile) {
         log.debug(locationProfile.toString());
@@ -68,6 +70,15 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
             log.error(e.getMessage());
         }
         return location;
+    }
+
+    @Override
+    public Location updateLocation(Long id, LocationProfile locationProfile) {
+        Location location = getLocationById(id);
+        Location newLocation = dtoConverter.convertToEntity(locationProfile, location).withId(id);
+
+        log.info("**/updating location by id = " + newLocation);
+        return locationRepository.save(newLocation);
     }
 
     @Override
@@ -106,9 +117,14 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
     }
 
     @Override
-    public Location getLocationById(Long id){
+    public Location getLocationById(Long id) {
         Optional<Location> location = locationRepository.findById(id);
         return location.orElseThrow(() -> new NotExistException(String.format(NOT_EXIST_EXCEPTION, id)));
+    }
+
+    @Override
+    public List<Location> getListOfAllLocations() {
+        return locationRepository.findAll();
     }
 
     @Override
@@ -132,18 +148,18 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
         if (Optional.ofNullable(locationArch.getCityId()).isPresent()) {
             location.setCity(cityService.getCityById(locationArch.getCityId()));
         }
-        if(Optional.ofNullable(locationArch.getClubId()).isPresent()){
+        if (Optional.ofNullable(locationArch.getClubId()).isPresent()) {
             location.setClub(clubRepository.findById(locationArch.getClubId()).orElseThrow(
                     () -> new NotExistException(String.format("Club with id-%d not exists", locationArch.getClubId()))));
         }
-        if(Optional.ofNullable(locationArch.getCenterId()).isPresent()){
+        if (Optional.ofNullable(locationArch.getCenterId()).isPresent()) {
             location.setCenter(centerRepository.findById(locationArch.getCenterId()).orElseThrow(
                     () -> new NotExistException(String.format("Center with id-%d not exists", locationArch.getCenterId()))));
         }
-        if(Optional.ofNullable(locationArch.getDistrictId()).isPresent()){
+        if (Optional.ofNullable(locationArch.getDistrictId()).isPresent()) {
             location.setDistrict(districtService.getDistrictById(locationArch.getDistrictId()));
         }
-        if(Optional.ofNullable(locationArch.getStationId()).isPresent()){
+        if (Optional.ofNullable(locationArch.getStationId()).isPresent()) {
             location.setStation(stationService.getStationById(locationArch.getStationId()));
         }
         locationRepository.save(location);

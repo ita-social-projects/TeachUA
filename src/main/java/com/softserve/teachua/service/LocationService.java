@@ -1,12 +1,13 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;
+
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Set;
 
 public interface LocationService {
     /**
-     *The method returns {@code Location} entity.
+     * The method returns {@code Location} entity.
      *
      * @param locationProfile - place body of dto {@code LocationProfile}.
      * @return new {@code Location}.
@@ -23,19 +24,28 @@ public interface LocationService {
     Location addLocation(LocationProfile locationProfile);
 
     /**
-     *  The method returns updated {@code Set<Location>} for Center.
+     * The method returns entity {@code Location} of updated location.
+     *
+     * @param id - put Location id.
+     * @param locationProfile - place body of dto {@code LocationProfile}.
+     * @return new {@code Location}.
+     */
+    Location updateLocation(Long id,LocationProfile locationProfile);
+
+    /**
+     * The method returns updated {@code Set<Location>} for Center.
      *
      * @param locations - put locations.
-     * @param center - put center.
+     * @param center    - put center.
      * @return new {@code Set<Location>}
      */
     Set<Location> updateCenterLocation(Set<LocationProfile> locations, Center center);
 
     /**
-     *  The method returns updated {@code Set<Location>} for Club.
+     * The method returns updated {@code Set<Location>} for Club.
      *
      * @param locations - put locations.
-     * @param club - put club.
+     * @param club      - put club.
      * @return
      */
     Set<Location> updateLocationByClub(Set<LocationResponse> locations, Club club);
@@ -48,6 +58,13 @@ public interface LocationService {
      * @throws NotExistException if location not exists.
      */
     Location getLocationById(Long id);
+
+    /**
+     * The method returns list of entities {@code List<Location>}.
+     *
+     * @return new {@code List<Location>}.
+     */
+    List<Location> getListOfAllLocations();
 
     /**
      * The method deletes entity {@code Location} and
