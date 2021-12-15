@@ -1,8 +1,8 @@
-package com.softserve.teachua.tools.transfer_controller;
+package com.softserve.teachua.tools.controller;
 
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.task.SuccessCreatedTask;
-import com.softserve.teachua.tools.transfer_service.TaskTransferService;
+import com.softserve.teachua.tools.service.TaskTransferService;
 import com.softserve.teachua.utils.annotation.DevPermit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

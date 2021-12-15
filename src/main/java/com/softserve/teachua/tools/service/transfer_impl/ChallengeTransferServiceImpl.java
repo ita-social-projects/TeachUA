@@ -1,13 +1,13 @@
-package com.softserve.teachua.tools.transfer_service.transfer_impl;
+package com.softserve.teachua.tools.service.transfer_impl;
 
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.challenge.SuccessCreatedChallenge;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.repository.ChallengeRepository;
 import com.softserve.teachua.tools.FileUtils;
-import com.softserve.teachua.tools.info_repository.ChallengeInfoRepository;
-import com.softserve.teachua.tools.transfer_model.ChallengeTransfer;
-import com.softserve.teachua.tools.transfer_service.ChallengeTransferService;
+import com.softserve.teachua.tools.repository.ChallengeInfoRepository;
+import com.softserve.teachua.tools.transmodel.ChallengeTransfer;
+import com.softserve.teachua.tools.service.ChallengeTransferService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

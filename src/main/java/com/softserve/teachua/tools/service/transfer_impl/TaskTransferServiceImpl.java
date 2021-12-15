@@ -1,4 +1,4 @@
-package com.softserve.teachua.tools.transfer_service.transfer_impl;
+package com.softserve.teachua.tools.service.transfer_impl;
 
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.task.SuccessCreatedTask;
@@ -6,8 +6,8 @@ import com.softserve.teachua.dto.task.TaskProfile;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.tools.FileUtils;
-import com.softserve.teachua.tools.info_repository.TaskInfoRepository;
-import com.softserve.teachua.tools.transfer_service.TaskTransferService;
+import com.softserve.teachua.tools.repository.TaskInfoRepository;
+import com.softserve.teachua.tools.service.TaskTransferService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.softserve.teachua.tools.info_repository;
+package com.softserve.teachua.tools.repository;
 
 import com.softserve.teachua.dto.task.TaskProfile;
 
