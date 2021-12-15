@@ -40,7 +40,6 @@ public class FileUtils {
     private String uploadDirectory;
     private final ObjectMapper objectMapper;
 
-
     @Autowired
     public FileUtils(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -59,7 +58,6 @@ public class FileUtils {
             String fileLines = String.join("", reader.lines().collect(Collectors.toList()));
             return objectMapper.readValue(fileLines,
                     objectMapper.getTypeFactory().constructCollectionType(List.class, tClass));
-
         } catch (JsonMappingException e) {
             throw new IncorrectInputException(String.format(MAPPER_EXCEPTION, e.getLocalizedMessage(), tClass, e.getMessage()));
         } catch (JsonProcessingException e) {
@@ -119,6 +117,12 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Use this endpoint to delete from resource package.
+     * Returns status message.
+     *
+     * @return new {@code String}.
+     */
     public String deleteFile() {
         try {
             Files.delete(getPathOfFile(FILE_PATH));
@@ -128,6 +132,11 @@ public class FileUtils {
         return String.format(SUCCESS_DELETED, FILE_PATH);
     }
 
+    /**
+     * Use this endpoint to check if file exists in resource package.
+     *
+     * @return new {@code Boolean}.
+     */
     public Boolean isKeyFileExists() {
         try {
             getPathOfFile(FILE_PATH);
