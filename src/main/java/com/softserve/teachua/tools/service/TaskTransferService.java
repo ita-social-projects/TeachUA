@@ -1,4 +1,4 @@
-package com.softserve.teachua.tools.transfer_service;
+package com.softserve.teachua.tools.service;
 
 import com.softserve.teachua.dto.task.SuccessCreatedTask;
 

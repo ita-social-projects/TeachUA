@@ -34,10 +34,11 @@ public class FileUtils {
     private static final String MOVE_FILE_EXCEPTION = "Can't move file form '%s' to '%s'";
     private static final String ALREADY_EXIST_EXCEPTION = "File with path - %s has already exists";
     private static final String MAPPER_EXCEPTION = "Can't convert string - '%s' to %s, by cause: %s";
+    private final String SUCCESS_DELETED = "%s file was successfully deleted";
+    private final String FILE_PATH = "data_for_db/key-file.ssh";
     @Value("${application.upload.path}")
     private String uploadDirectory;
     private final ObjectMapper objectMapper;
-
 
     @Autowired
     public FileUtils(ObjectMapper objectMapper) {
@@ -53,11 +54,10 @@ public class FileUtils {
      */
     public <T> List<T> readFromFile(String filePath, Class<T> tClass) {
         Path path = getPathOfFile(filePath);
-        try(BufferedReader reader = Files.newBufferedReader(path)) {
-            String fileLines = String.join("",reader.lines().collect(Collectors.toList()));
+        try (BufferedReader reader = Files.newBufferedReader(path)) {
+            String fileLines = String.join("", reader.lines().collect(Collectors.toList()));
             return objectMapper.readValue(fileLines,
                     objectMapper.getTypeFactory().constructCollectionType(List.class, tClass));
-
         } catch (JsonMappingException e) {
             throw new IncorrectInputException(String.format(MAPPER_EXCEPTION, e.getLocalizedMessage(), tClass, e.getMessage()));
         } catch (JsonProcessingException e) {
@@ -115,5 +115,34 @@ public class FileUtils {
             log.error(e.getMessage());
             throw new IncorrectInputException(String.format(MOVE_FILE_EXCEPTION, path, destination));
         }
+    }
+
+    /**
+     * Use this endpoint to delete from resource package.
+     * Returns status message.
+     *
+     * @return new {@code String}.
+     */
+    public String deleteFile() {
+        try {
+            Files.delete(getPathOfFile(FILE_PATH));
+        } catch (IOException e) {
+            throw new NotExistException(String.format(FILE_FIND_EXCEPTION, FILE_PATH));
+        }
+        return String.format(SUCCESS_DELETED, FILE_PATH);
+    }
+
+    /**
+     * Use this endpoint to check if file exists in resource package.
+     *
+     * @return new {@code Boolean}.
+     */
+    public Boolean isKeyFileExists() {
+        try {
+            getPathOfFile(FILE_PATH);
+        } catch (NotExistException | IncorrectInputException e) {
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
     }
 }

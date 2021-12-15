@@ -1,4 +1,4 @@
-package com.softserve.teachua.tools.transfer_model;
+package com.softserve.teachua.tools.transmodel;
 
 import lombok.*;
 

@@ -1,6 +1,6 @@
-package com.softserve.teachua.tools.info_repository;
+package com.softserve.teachua.tools.repository;
 
-import com.softserve.teachua.tools.transfer_model.ChallengeTransfer;
+import com.softserve.teachua.tools.transmodel.ChallengeTransfer;
 
 import java.util.Arrays;
 import java.util.List;

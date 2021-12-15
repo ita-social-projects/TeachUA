@@ -1,9 +1,9 @@
-package com.softserve.teachua.tools.transfer_service.transfer_impl;
+package com.softserve.teachua.tools.service.transfer_impl;
 
 import com.softserve.teachua.dto.banner_item.SuccessCreatedBannerItem;
 import com.softserve.teachua.service.impl.BannerItemServiceImpl;
-import com.softserve.teachua.tools.info_repository.BannerInfoRepository;
-import com.softserve.teachua.tools.transfer_service.BannerItemTransferService;
+import com.softserve.teachua.tools.repository.BannerInfoRepository;
+import com.softserve.teachua.tools.service.BannerItemTransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
