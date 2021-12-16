@@ -32,7 +32,7 @@ public class CreateChallenge {
     @Size(min = 5, max = 50, message = "must contain a minimum of 5 and a maximum of 50 letters")
     private String title;
     @NotBlank
-    @Size(max = 3000, message = "must contain a maximum of 3000 letters")
+    @Size(max = 25000, message = "must contain a maximum of 25000 letters")
     @JsonDeserialize(using = HtmlModifyDeserialize.class)
     @CheckRussian
     private String description;
