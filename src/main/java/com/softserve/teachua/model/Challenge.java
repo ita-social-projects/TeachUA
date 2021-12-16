@@ -1,7 +1,6 @@
 package com.softserve.teachua.model;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +24,7 @@ public class Challenge implements Convertible {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, length = 10000)
+    @Column(nullable = false, length = 30000)
     private String description;
 
     @Column(nullable = false)
