@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class LogServiceImpl implements LogService {
     @Value(value = "${logging.file.path}")
     private String path;
-    private static final String DELETING_EXCEPTION = "File %s didnt delete";
+    private static final String CREATE_MESSAGE = "Created sub directory in logs with name: %s";
     private DtoConverter dtoConverter;
 
     @Override
@@ -136,8 +136,7 @@ public class LogServiceImpl implements LogService {
             }
             FileUtils.forceMkdir(file);
         }
-
-        return "Created sub directory in logs with name:" + file.getName();
+        return String.format(CREATE_MESSAGE,file.getName());
     }
 
     @Override
