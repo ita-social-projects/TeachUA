@@ -5,6 +5,8 @@ import com.softserve.teachua.dto.challenge.SuccessCreatedChallenge;
 import com.softserve.teachua.tools.service.ChallengeTransferService;
 import com.softserve.teachua.utils.annotation.DevPermit;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,5 +45,11 @@ public class ChallengeTransferController implements Api {
     @PostMapping("transfer/challenge/repository")
     public List<SuccessCreatedChallenge> addChallengesFromRepository() {
         return challengeTransferService.createChallengesFromRepository();
+    }
+
+    @DevPermit
+    @PatchMapping("challenges/alter/description")
+    public ResponseEntity<String> alterDescription(){
+        return ResponseEntity.ok(challengeTransferService.alterDescriptionColumn());
     }
 }

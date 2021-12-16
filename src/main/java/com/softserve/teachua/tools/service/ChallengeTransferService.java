@@ -19,4 +19,6 @@ public interface ChallengeTransferService {
      * @return new {@code List<SuccessCreatedChallenge>}.
      */
     List<SuccessCreatedChallenge> createChallengesFromRepository();
+
+    String alterDescriptionColumn();
 }
