@@ -3,6 +3,7 @@ package com.softserve.teachua.tools.controller;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.tools.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +22,7 @@ public class CloseDevAccess implements Api {
      * @return new {@code List<SuccessCreatedTask>}.
      */
     @DeleteMapping("/transfer/close")
-    public String closeAccess(){
-        return fileUtils.deleteFile();
+    public ResponseEntity<String> closeAccess(){
+        return ResponseEntity.ok(fileUtils.deleteFile());
     }
 }
