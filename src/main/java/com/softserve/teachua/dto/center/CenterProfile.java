@@ -33,7 +33,7 @@ public class CenterProfile implements Convertible {
 
     @Valid
     @NotBlank
-    @Size(min = 40, max = 1500, message = "Length should be between 5 and 100 chars")
+    @Size(min = 40, max = 1500, message = "Length should be between 40 and 1500 chars")
     @CheckRussian
     private String description;
 

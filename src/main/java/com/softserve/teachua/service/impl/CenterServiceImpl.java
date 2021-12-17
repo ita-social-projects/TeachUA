@@ -63,7 +63,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     private final CoordinatesConverter coordinatesConverter;
     private final ObjectMapper objectMapper;
     private ClubService clubService;
-  
+
     @Autowired
     public CenterServiceImpl(LocationService locationService, CenterRepository centerRepository,
                              ArchiveService archiveService,
@@ -94,8 +94,33 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     }
 
     @Autowired
-    public void setClubService(ClubService clubService){
+    public void setClubService(ClubService clubService) {
         this.clubService = clubService;
+    }
+
+
+    private void convertCoordinates(LocationProfile locationProfile) {
+        coordinatesConverter.locationProfileConverterToDb(locationProfile);
+    }
+
+    private Set<LocationProfile> setLocationToCenter(List<LocationProfile> locations, long id) {
+
+        if (!locations.isEmpty()) {
+            for (LocationProfile profile : locations) {
+                convertCoordinates(profile);
+                if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
+                    profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
+                }
+                if (profile.getDistrictName() != null && !profile.getDistrictName().isEmpty()) {
+                    profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
+                }
+                if (profile.getStationName() != null && !profile.getStationName().isEmpty()) {
+                    profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
+                }
+                profile.setCenterId(id);
+            }
+        }
+        return new HashSet<>(locations);
     }
 
     @Override
@@ -105,6 +130,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
     @Override
     public SuccessCreatedCenter addCenter(CenterProfile centerProfile) {
+        System.out.println(centerProfile);
         log.debug("centerName = " + centerProfile.getName());
         if (isCenterExistByName(centerProfile.getName())) {
             throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
@@ -124,7 +150,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         List<LocationProfile> locations = centerProfile.getLocations();
         if (locations != null && !locations.isEmpty()) {
             for (LocationProfile profile : locations) {
-                coordinatesConverter.locationProfileConverterToDb(profile);
+                convertCoordinates(profile);
             }
             center.setLocations(locations
                     .stream()
@@ -142,7 +168,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         }
 
         List<Long> clubsId = centerProfile.getClubsId();
-      
+
         if (clubsId != null && !clubsId.isEmpty()) {
             for (Long id : clubsId) {
                 log.debug("ID - " + id);
@@ -188,24 +214,8 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         if (isCenterExistByName(centerProfile.getName())) {
             throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
         }
-        Set<LocationProfile> locations = new HashSet<>(centerProfile.getLocations());
 
-        if (!locations.isEmpty()) {
-            for (LocationProfile profile : locations) {
-                coordinatesConverter.locationProfileConverterToDb(profile);
-                if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
-                    profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
-                }
-                if (profile.getDistrictName() != null && !profile.getDistrictName().isEmpty()) {
-                    profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
-                }
-                if (profile.getStationName() != null && !profile.getStationName().isEmpty()) {
-                    profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
-                }
-                profile.setCenterId(id);
-            }
-        }
-
+        Set<LocationProfile> locations = setLocationToCenter(centerProfile.getLocations(), id);
         Center newCenter = dtoConverter.convertToEntity(centerProfile, center)
                 .withId(id)
                 .withLocations(locationService.updateCenterLocation(locations, center));
