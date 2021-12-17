@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FileUtils {
     private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-    private static final String TARGET_LOCATION = "target";
+    private static final String UPLOAD_LOCATION = "/upload";
     private static final String FILE_FIND_EXCEPTION =
             "Can't find file by path - '%s'. Path should be, for example, as follows - " +
                     "'images/image.png' ('images' package should be located in resource package)";
@@ -36,9 +36,9 @@ public class FileUtils {
     private static final String MAPPER_EXCEPTION = "Can't convert string - '%s' to %s, by cause: %s";
     private final String SUCCESS_DELETED = "%s file was successfully deleted";
     private final String FILE_PATH = "data_for_db/key-file.ssh";
+    private final ObjectMapper objectMapper;
     @Value("${application.upload.path}")
     private String uploadDirectory;
-    private final ObjectMapper objectMapper;
 
     @Autowired
     public FileUtils(ObjectMapper objectMapper) {
@@ -107,7 +107,8 @@ public class FileUtils {
         try {
             Files.createDirectories(Paths.get(uploadDir));
             String newPath = Files.move(path, destination).toString().replace('\\', '/');
-            return newPath.substring(newPath.indexOf(uploadDirectory) + TARGET_LOCATION.length());
+            return newPath.substring(
+                    newPath.indexOf(uploadDirectory) + uploadDirectory.length() - UPLOAD_LOCATION.length());
         } catch (FileAlreadyExistsException e) {
             log.error(e.getMessage());
             throw new IncorrectInputException(String.format(ALREADY_EXIST_EXCEPTION, destination));
