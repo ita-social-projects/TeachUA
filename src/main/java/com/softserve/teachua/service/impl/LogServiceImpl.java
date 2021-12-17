@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class LogServiceImpl implements LogService {
     @Value(value = "${logs.path}")
     private String path;
-    private  static final String DELETING_EXCEPTION = "File %s didnt delete";
+    private static final String CREATE_MESSAGE = "Created sub directory in logs with name: %s";
     private DtoConverter dtoConverter;
 
     @Override
@@ -57,43 +57,44 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public LogResponse deleteLogsByFilter(String filter) {
-        AtomicBoolean correctFilter= new AtomicBoolean(false);
-        List <String> deletedLogs = new LinkedList<>();
-        List <String> notDeletedLogs = new LinkedList<>();
+        AtomicBoolean correctFilter = new AtomicBoolean(false);
+        List<String> deletedLogs = new LinkedList<>();
+        List<String> notDeletedLogs = new LinkedList<>();
 
-        if (filter.equals("deleteAll")){
-            FileUtils.listFiles(new File(path),null,false).stream().forEach(
+        if (filter.equals("deleteAll")) {
+            FileUtils.listFiles(new File(path), null, false).forEach(
                     file -> {
-                        File pathFile = new File(file.getAbsolutePath().replace(".\\","").replace(" \\",""));
-                        if (!pathFile.getName().contains("catalina") && !pathFile.isDirectory() ){
+                        File pathFile = new File((path + file.getName()).replace(" ", ""));
+                        if (!pathFile.getName().contains("catalina") && !pathFile.isDirectory()) {
                             correctFilter.set(true);
                             try {
                                 FileUtils.forceDelete(pathFile);
-                                deletedLogs.add("deleted: "+pathFile.getName());
-                            } catch (IOException e ) {
-                                 notDeletedLogs.add("NOT deleted: "+pathFile.getName());
+                                deletedLogs.add("deleted: " + pathFile.getName());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                notDeletedLogs.add("NOT deleted: " + pathFile.getName());
                             }
                         }
                     }
             );
-        }else {
-            FileUtils.listFiles(new File(path),null,false).stream().forEach(
+        } else {
+            FileUtils.listFiles(new File(path), null, false).forEach(
                     file -> {
-                        File pathFile = new File(file.getAbsolutePath().replace(".\\","").replace(" \\",""));
-                        if(!pathFile.getName().contains("catalina") && pathFile.getName().contains(filter)&& !pathFile.isDirectory()){
+                        File pathFile = new File((path + file.getName()).replace(" ", ""));
+                        if (!file.getName().contains("catalina") && file.getName().contains(filter) && !pathFile.isDirectory()) {
                             correctFilter.set(true);
                             try {
                                 FileUtils.forceDelete(pathFile);
-                                deletedLogs.add(" deleted: "+pathFile.getName());
+                                deletedLogs.add(" deleted: " + pathFile.getName());
                             } catch (IOException e) {
-                                notDeletedLogs.add("NOT deleted: "+pathFile.getName());
+                                notDeletedLogs.add("NOT deleted: " + pathFile.getName());
                             }
                         }
                     }
             );
         }
-        if (!correctFilter.get()){
-            throw  new NotExistException("Not found file by this filter or directory is empty");
+        if (!correctFilter.get()) {
+            throw new NotExistException("Not found file by this filter or directory is empty");
         }
         log.debug("**/log delete");
         return new LogResponse().withDeletedLogs(deletedLogs).withNotDeletedLogs(notDeletedLogs);
@@ -103,7 +104,7 @@ public class LogServiceImpl implements LogService {
     public List<String> getAbsolutePathForLogs() {
 
         List<String> pathList = new LinkedList<>();
-        FileUtils.listFiles(new File(path),null,false)
+        FileUtils.listFiles(new File(path), null, false)
                 .stream()
                 .forEach(file -> {
                     if (!file.getName().contains("catalina")) {
@@ -117,52 +118,53 @@ public class LogServiceImpl implements LogService {
     @Override
     public String createSubDirectoryByName(String name) throws IOException {
 
-        File file=null;
-        if (!name.matches("[a-zA-Z-_\\d]+")){
+        File file = null;
+        if (!name.matches("[a-zA-Z-_\\d]+")) {
             throw new IncorrectInputException("File name should contain only english letters,digit and char like -_");
         }
 
         if (name.matches("date")) {
-             file = new File(new File(path).getAbsolutePath().replace(".\\", "").concat(LocalDate.now().toString()).replace(" ", ""));
-            if (file.exists()){
+            file = new File((path + LocalDate.now()).replace(" ", ""));
+            if (file.exists()) {
                 throw new AlreadyExistException("Directory with this name already exist");
             }
             FileUtils.forceMkdir(file);
-        }else {
-             file = new File(new File(path).getAbsolutePath().replace(".\\", "").concat(name).replace(" ", ""));
-            if (file.exists()){
+        } else {
+            file = new File((path + name).replace(" ", ""));
+            if (file.exists()) {
                 throw new AlreadyExistException("Directory with this name already exist");
             }
-                FileUtils.forceMkdir(file);
-            }
-
-        return "Created sub directory in logs with name: "+file.getName();
+            FileUtils.forceMkdir(file);
+        }
+        return String.format(CREATE_MESSAGE,file.getName());
     }
 
     @Override
     public LogResponse moveLogsToSubDirectoryByDirectoryName(String directoryName) {
 
-        File fileMoveTo = new File(new File(path).getAbsolutePath().replace(".\\", "").concat(directoryName).replace(" ", ""));
-
         List<String> movedFileList = new LinkedList<>();
         List<String> notMovedFileList = new LinkedList<>();
 
-        if (fileMoveTo.exists() && fileMoveTo.isDirectory()){
-            FileUtils.listFiles(new File(path),null,false).forEach(file -> {
+        File fileMoveTo = new File((path + directoryName).replace(" ", ""));
 
-                File fileMoveFrom = new File(new File(file.getAbsolutePath()).getAbsolutePath().replace(".\\","").replace(" ",""));
+        if (fileMoveTo.exists() && fileMoveTo.isDirectory()) {
+            FileUtils.listFiles(new File(path), null, false).forEach(file -> {
+
+                File fileMoveFrom = new File((path + file.getName()).replace(" ", ""));
+
+                System.out.println(fileMoveFrom);
                 if (!fileMoveFrom.isDirectory()) {
                     try {
-                        FileUtils.moveFileToDirectory(fileMoveFrom, fileMoveTo, true);
-                        movedFileList.add("Moved file from:"+fileMoveFrom.getAbsolutePath());
-                        movedFileList.add("To directory "+fileMoveTo.getAbsolutePath());
+                        FileUtils.moveFileToDirectory(fileMoveFrom, fileMoveTo, false);
+                        movedFileList.add("Moved file from:" + fileMoveFrom.getAbsolutePath());
+                        movedFileList.add("To directory " + fileMoveTo.getAbsolutePath());
                     } catch (IOException e) {
-                        notMovedFileList.add("Not moved file: " +fileMoveFrom.getName());
+                        notMovedFileList.add("Not moved file: " + fileMoveFrom.getName());
                     }
                 }
             });
-        }else {
-            throw  new IncorrectInputException("Directory by name: "+directoryName+" doesnt exist");
+        } else {
+            throw new IncorrectInputException("Directory by name: " + directoryName + " doesnt exist");
         }
 
         return new LogResponse().withDeletedLogs(movedFileList).withNotDeletedLogs(notMovedFileList);
@@ -174,21 +176,23 @@ public class LogServiceImpl implements LogService {
         List<String> deletedLogs = new LinkedList<>();
         List<String> notDeletedLogs = new LinkedList<>();
 
-        FileUtils.listFiles(new File(path),null,false).forEach(file ->
-        {
-            String fileName = file.getAbsolutePath().replace(".\\","").replace(" \\","");
-            File checkedFile = FileUtils.getFile(fileName).getAbsoluteFile();
-            try {
-                if (checkedFile.length()<1 && !checkedFile.isDirectory()){
-                    FileUtils.forceDelete(new File(fileName));
-                    deletedLogs.add(file.getName());
+        if (filter) {
+            FileUtils.listFiles(new File(path), null, false).forEach(file ->
+            {
+                String fileName = (path + file.getName()).replace(" ", "");
+                File checkedFile = FileUtils.getFile(fileName);
+                try {
+                    if (checkedFile.length() < 1 && !checkedFile.isDirectory()) {
+                        FileUtils.forceDelete(checkedFile);
+                        deletedLogs.add(file.getName());
+                    }
+                } catch (IOException e) {
+                    notDeletedLogs.add("NOT deleted file:" + file.getName());
                 }
-            } catch (IOException e) {
-                notDeletedLogs.add("NOT deleted file:"+file.getName());
-            }
-        });
+            });
+        }
 
-        return  new LogResponse().withDeletedLogs(deletedLogs).withNotDeletedLogs(notDeletedLogs);
+        return new LogResponse().withDeletedLogs(deletedLogs).withNotDeletedLogs(notDeletedLogs);
     }
 
 }
