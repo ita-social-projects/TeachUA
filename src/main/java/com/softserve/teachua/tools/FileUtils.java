@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FileUtils {
     private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-    private static final String UPLOAD_LOCATION = "\\upload";
+    private static final String TARGET_LOCATION = "target";
     private static final String FILE_FIND_EXCEPTION =
             "Can't find file by path - '%s'. Path should be, for example, as follows - " +
                     "'images/image.png' ('images' package should be located in resource package)";
@@ -106,8 +106,8 @@ public class FileUtils {
         Path destination = Paths.get(String.format("%s/%s", uploadDir, name));
         try {
             Files.createDirectories(Paths.get(uploadDir));
-            String newPath = Files.move(path, destination).toString();
-            return newPath.substring(newPath.indexOf(UPLOAD_LOCATION)).replace('\\', '/');
+            String newPath = Files.move(path, destination).toString().replace('\\', '/');
+            return newPath.substring(newPath.indexOf(uploadDirectory) + TARGET_LOCATION.length());
         } catch (FileAlreadyExistsException e) {
             log.error(e.getMessage());
             throw new IncorrectInputException(String.format(ALREADY_EXIST_EXCEPTION, destination));
