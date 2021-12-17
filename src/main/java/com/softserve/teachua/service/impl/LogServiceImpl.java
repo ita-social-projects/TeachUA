@@ -7,7 +7,6 @@ import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.service.LogService;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class LogServiceImpl implements LogService {
-    @Value(value = "${logging.file.path}")
+    @Value(value = "${logs.path}")
     private String path;
     private  static final String DELETING_EXCEPTION = "File %s didnt delete";
     private DtoConverter dtoConverter;
