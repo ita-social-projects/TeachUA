@@ -4,19 +4,17 @@ import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.log.LogResponse;
 import com.softserve.teachua.service.LogService;
-import io.swagger.v3.oas.annotations.Hidden;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  * This controller is for managing the logs.
- * */
+ */
 
 @RestController
 @Hidden
@@ -36,8 +34,8 @@ public class LogController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/logs")
-    public List<String> getLogs(@RequestParam (value = "filter", required = false, defaultValue = "") String filter,
-                                @RequestParam (value = "content", required = false, defaultValue = "") String content) {
+    public List<String> getLogs(@RequestParam(value = "filter", required = false, defaultValue = "") String filter,
+                                @RequestParam(value = "content", required = false, defaultValue = "") String content) {
 
         return logService.getAllLogs(filter, content);
     }
@@ -65,7 +63,7 @@ public class LogController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/logs")
-    public LogResponse deleteLogsByFilter(@RequestParam(required = false,defaultValue = "deleteAll")String filter) {
+    public LogResponse deleteLogsByFilter(@RequestParam(required = false, defaultValue = "deleteAll") String filter) {
         return logService.deleteLogsByFilter(filter);
     }
 
@@ -76,24 +74,39 @@ public class LogController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/logs/getAbsolutePathToLogs")
-    public List<String> getPathToLogs(){
-        return  logService.getAbsolutePathForLogs();
+    public List<String> getPathToLogs() {
+        return logService.getAbsolutePathForLogs();
     }
 
+    /**
+     * Use this endpoint to create subDirectory for logs
+     * Default parameter is "date - creating subdirectory by local date
+     * Custom parameter create subdirectory by custom directory Name
+     *
+     * @param directoryName
+     * @return String with created subDirectory
+     * @throws IOException
+     */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/log")
-    public String createSubDirectory(@RequestParam(required = false,defaultValue = "date") String directoryName) throws IOException {
-       return logService.createSubDirectoryByName(directoryName);
+    public String createSubDirectory(@RequestParam(required = false, defaultValue = "date") String directoryName) throws IOException {
+        return logService.createSubDirectoryByName(directoryName);
     }
 
-    //TODO JavaDOC
 
+    /**
+     * Use this endpoint for move logs from \target\log to  exist subdirectory
+     *
+     * @param subDirectory
+     * @return LogResponse
+     */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/logs")
-    public LogResponse moveLogsToSubDirectory(@RequestParam(required = false,defaultValue ="false")String subDirectory){
-       return logService.moveLogsToSubDirectoryByDirectoryName(subDirectory);
+    public LogResponse moveLogsToSubDirectory(@RequestParam(required = false, defaultValue = "false") String subDirectory) {
+        return logService.moveLogsToSubDirectoryByDirectoryName(subDirectory);
 
     }
+
     /**
      * Use this endpoint for delete empty logs
      * The Controller returns list with deleted and not deleted logs
@@ -103,7 +116,7 @@ public class LogController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/logs/deleteEmptyLogs")
-    public LogResponse deleteEmptyLogs(@RequestParam(required = false,defaultValue = "false")Boolean deleteEmpty){
+    public LogResponse deleteEmptyLogs(@RequestParam(required = false, defaultValue = "false") Boolean deleteEmpty) {
         return logService.deleteEmptyLogs(deleteEmpty);
     }
 
