@@ -17,13 +17,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class AboutUsTransferServiceImpl implements AboutUsTransferService {
-
     private final AboutUsItemService aboutUsItemService;
-
     private final DtoConverter dtoConverter;
-
     private final FileUtils fileUtils;
-
     private final AboutUsItemRepository aboutUsItemRepository;
 
     @Autowired
@@ -41,27 +37,12 @@ public class AboutUsTransferServiceImpl implements AboutUsTransferService {
                 .stream()
                 .map(aboutUs -> {
                     log.info(aboutUs.toString());
-                   if(aboutUs.getType().equals(3L)||aboutUs.getType().equals(4L)){ aboutUs.setPicture(fileUtils.moveImage(aboutUs.getPicture(),"aboutUs"));}
+                    if (aboutUs.getType().equals(3L) || aboutUs.getType().equals(4L)) {
+                        aboutUs.setPicture(fileUtils.moveImage(aboutUs.getPicture(), "aboutUs"));
+                    }
                     return aboutUs;
                 })
                 .map(aboutUsItemService::addAboutUsItem).collect(Collectors.toList());
     }
-
-//    @Override
-//    public List<AboutUsItemResponse> moveAboutUsToDB() {
-//        return createAboutUs(AboutUsInfoRepository.getAboutUsInfo());
-//    }
-//
-//    private List<AboutUsItemResponse> createAboutUs(List<AboutUsItemProfile> aboutUs) {
-//        return aboutUs
-//                .stream()
-//                .map(aboutUsItemProfile -> {
-//                    aboutUsItemProfile.setPicture(fileUtils.moveImage(aboutUsItemProfile.getPicture(), "aboutUs"));
-//                    log.debug("add aboutUs: " + aboutUsItemProfile);
-//                    return dtoConverter.convertToEntity(aboutUsItemProfile, AboutUsItem.builder().build()).withId(null);
-//                }).map(aboutUsItemRepository::save)
-//                .map(aboutUsItem -> (AboutUsItemResponse) dtoConverter.convertToDto(aboutUsItem, AboutUsItemResponse.class))
-//                .collect(Collectors.toList());
-//    }
 }
 

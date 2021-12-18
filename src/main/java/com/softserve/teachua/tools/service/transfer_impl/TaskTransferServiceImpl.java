@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class TaskTransferServiceImpl implements TaskTransferService {
-
     private final FileUtils fileUtils;
     private final DtoConverter dtoConverter;
     private final TaskRepository taskRepository;

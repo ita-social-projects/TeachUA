@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class BannerItemTransferServiceImpl implements BannerItemTransferService {
-
     private final BannerItemServiceImpl bannerItemService;
     private final com.softserve.teachua.tools.FileUtils fileUtils;
 
@@ -29,7 +28,7 @@ public class BannerItemTransferServiceImpl implements BannerItemTransferService 
                 .getBannersInfo()
                 .stream()
                 .map(banner -> {
-                    banner.setPicture(fileUtils.moveImage(banner.getPicture(),"banner"));
+                    banner.setPicture(fileUtils.moveImage(banner.getPicture(), "banner"));
                     return banner;
                 })
                 .map(bannerItemService::addBannerItem).collect(Collectors.toList());

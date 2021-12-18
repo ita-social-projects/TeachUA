@@ -7,8 +7,8 @@ import com.softserve.teachua.repository.ChallengeRepository;
 import com.softserve.teachua.tools.FileUtils;
 import com.softserve.teachua.tools.dao.ChallengeDao;
 import com.softserve.teachua.tools.repository.ChallengeInfoRepository;
-import com.softserve.teachua.tools.transmodel.ChallengeTransfer;
 import com.softserve.teachua.tools.service.ChallengeTransferService;
+import com.softserve.teachua.tools.transmodel.ChallengeTransfer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,12 +55,14 @@ public class ChallengeTransferServiceImpl implements ChallengeTransferService {
                 .collect(Collectors.toList());
     }
 
-    public String alterDescriptionColumn(){
+    @Override
+    public String alterDescriptionColumn() {
         challengeDao.alterChallengeDescription();
         return ALTER_DESCRIPTION;
     }
 
-    public String renameChallengeTable(){
+    @Override
+    public String renameChallengeTable() {
         challengeDao.renameChallengeTable();
         return RENAME_DESCRIPTION;
     }
