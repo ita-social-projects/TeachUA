@@ -18,6 +18,11 @@ public class ChallengeDaoImpl implements ChallengeDao {
 
     @Override
     public void alterChallengeDescription() {
-        jdbcTemplate.execute("ALTER TABLE сhallenges ALTER COLUMN description TYPE varchar(30000)");
+        jdbcTemplate.execute("ALTER TABLE challenges ALTER COLUMN description TYPE varchar(30000)");
+    }
+
+    @Override
+    public void renameChallengeTable() {
+        jdbcTemplate.execute("ALTER TABLE сhallenges RENAME TO challenges");
     }
 }

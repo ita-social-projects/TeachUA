@@ -48,6 +48,12 @@ public class ChallengeTransferController implements Api {
     }
 
     @DevPermit
+    @PatchMapping("challenges/alter/rename")
+    public ResponseEntity<String> renameChallenges(){
+        return ResponseEntity.ok(challengeTransferService.renameChallengeTable());
+    }
+
+    @DevPermit
     @PatchMapping("challenges/alter/description")
     public ResponseEntity<String> alterDescription(){
         return ResponseEntity.ok(challengeTransferService.alterDescriptionColumn());

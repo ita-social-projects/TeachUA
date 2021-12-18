@@ -21,4 +21,6 @@ public interface ChallengeTransferService {
     List<SuccessCreatedChallenge> createChallengesFromRepository();
 
     String alterDescriptionColumn();
+
+    String renameChallengeTable();
 }

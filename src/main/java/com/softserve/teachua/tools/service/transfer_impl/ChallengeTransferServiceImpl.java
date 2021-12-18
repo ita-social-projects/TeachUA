@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 public class ChallengeTransferServiceImpl implements ChallengeTransferService {
     private final String ALTER_DESCRIPTION = "Challenges description was altered successfully," +
             " now description is varchar(30 000)";
+    private final String RENAME_DESCRIPTION = "Table сhallenges was renamed to challenges " +
+            "(before renaming 'c' - was ukraine letter)";
     private final FileUtils fileUtils;
     private final DtoConverter dtoConverter;
     private final ChallengeRepository challengeRepository;
@@ -56,5 +58,10 @@ public class ChallengeTransferServiceImpl implements ChallengeTransferService {
     public String alterDescriptionColumn(){
         challengeDao.alterChallengeDescription();
         return ALTER_DESCRIPTION;
+    }
+
+    public String renameChallengeTable(){
+        challengeDao.renameChallengeTable();
+        return RENAME_DESCRIPTION;
     }
 }
