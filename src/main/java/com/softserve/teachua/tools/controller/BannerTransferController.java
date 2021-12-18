@@ -13,8 +13,7 @@ import java.util.List;
 
 @RestController
 public class BannerTransferController implements Api {
-
-   private final BannerItemTransferService bannerItemTransferService;
+    private final BannerItemTransferService bannerItemTransferService;
 
     @Autowired
     public BannerTransferController(BannerItemTransferServiceImpl bannerItemTransferService) {
@@ -23,12 +22,12 @@ public class BannerTransferController implements Api {
 
     /**
      * Use this controller for add hardCoded Banner to DB on prod\dev
+     *
      * @return new {@code List<SuccessCreatedBannerItem}
      */
     @DevPermit
     @PostMapping("/transferBannersToDB")
-    public List<SuccessCreatedBannerItem> moveBannerToDB(){
-            return bannerItemTransferService.moveBannerToDB();
+    public List<SuccessCreatedBannerItem> moveBannerToDB() {
+        return bannerItemTransferService.moveBannerToDB();
     }
-
 }

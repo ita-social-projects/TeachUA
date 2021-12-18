@@ -22,7 +22,7 @@ public class CloseDevAccess implements Api {
      * @return new {@code List<SuccessCreatedTask>}.
      */
     @DeleteMapping("/transfer/close")
-    public ResponseEntity<String> closeAccess(){
+    public ResponseEntity<String> closeAccess() {
         return ResponseEntity.ok(fileUtils.deleteFile());
     }
 }
