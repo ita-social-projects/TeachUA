@@ -24,7 +24,7 @@ public class BannerItemTransferServiceImpl implements BannerItemTransferService 
 
     @Override
     public List<SuccessCreatedBannerItem> moveBannerToDB() {
-        ;
+
         return BannerInfoRepository
                 .getBannersInfo()
                 .stream()

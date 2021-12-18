@@ -583,8 +583,10 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     private boolean isValidJSON(final String json) {
+        if(json==null){return false;}
+        else{
         JsonNode jsonNode = toJSON(json);
-        return jsonNode != null;
+        return jsonNode != null;}
     }
 
     private String convert(String value) {
