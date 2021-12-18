@@ -108,7 +108,7 @@ workspace.xml
 # Ignore Picture
 *.bmp
 # *.png
-*.jpg
+#*.jpg
 *.jpeg
 
 # Ignore doc/notes.txt, but not doc/info/arch.txt
