@@ -12,7 +12,7 @@ import java.util.Set;
 @Builder
 @With
 @Entity
-@Table(name = "challenges")
+@Table(name = "сhallenges")
 public class Challenge implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
