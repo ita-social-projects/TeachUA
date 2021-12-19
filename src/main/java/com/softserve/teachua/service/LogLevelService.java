@@ -4,5 +4,5 @@ import com.softserve.teachua.utils.LogLevel;
 
 public interface LogLevelService {
 
-    void changeLogLevel(LogLevel logLevel, String packageName);
+    void changeLogLevel(LogLevel logLevel, String packagePath);
 }
