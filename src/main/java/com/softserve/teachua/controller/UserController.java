@@ -5,7 +5,6 @@ import com.softserve.teachua.dto.user.SuccessUpdatedUser;
 import com.softserve.teachua.dto.user.UserPasswordUpdate;
 import com.softserve.teachua.dto.user.UserResponse;
 import com.softserve.teachua.dto.user.UserUpdateProfile;
-import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -50,20 +49,6 @@ public class UserController implements Api {
     public UserResponse getUserById(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
         userService.validateUserId(id, httpServletRequest);
         return userService.getUserProfileById(id);
-    }
-
-    /**
-     * Use this endpoint to get user by email.
-     * The controller returns {@code User}.
-     *
-     * @param email              - put user email.
-     * @param httpServletRequest - autowired by spring.
-     * @return {@code User}.
-     */
-    @GetMapping("/user")
-    public User getUserByEmail(@RequestParam("email") String email, HttpServletRequest httpServletRequest) {
-        userService.validateUserId(userService.getUserByEmail(email).getId(), httpServletRequest);
-        return userService.getUserByEmail(email);
     }
 
     /**
