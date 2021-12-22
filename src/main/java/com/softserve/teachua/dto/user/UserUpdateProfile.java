@@ -28,8 +28,7 @@ public class UserUpdateProfile implements Convertible {
     private String lastName;
 
     @NotBlank
-    @Pattern(regexp = "[0-9]{10}", message = "Phone number must contain 10 numbers and can`t contain other symbols")
-    //@Phone
+    @Pattern(regexp = "0[0-9]{9}", message = "Phone number must contain 10 numbers and can`t contain other symbols")
 
     private String phone;
 
@@ -38,5 +37,5 @@ public class UserUpdateProfile implements Convertible {
     private String status;
 
     @NotBlank
-    private String roleName;
+    private String role;
 }

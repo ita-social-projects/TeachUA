@@ -109,7 +109,7 @@ import static org.mockito.Mockito.*;
                 .firstName("username").build();
         userUpdateProfile = UserUpdateProfile.builder()
                 .email(EXISTING_EMAIL)
-                .roleName(ROLE_NAME)
+                .role(ROLE_NAME)
                 .build();
     }
 
