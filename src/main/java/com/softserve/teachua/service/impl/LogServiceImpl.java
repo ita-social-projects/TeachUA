@@ -31,6 +31,7 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public List<String> getAllLogs(String filter, String content) {
+        log.info(filter+ " " +content);
         return FileUtils.listFiles(new File(path), null, false)
                 .stream()
                 .map(File::getName)

@@ -501,6 +501,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 .stream()
                 .filter(club -> club.getContacts()!=null)
                 .filter((club) -> !this.isValidJSON(club.getContacts()))
+                .filter(club -> club.getContacts()!=null)
                 .peek((club) -> {
                     JsonNodeFactory factory = JsonNodeFactory.instance;
                     if (club.getContacts().startsWith("{")) {
@@ -586,8 +587,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
     private boolean isValidJSON(final String json) {
         JsonNode jsonNode = toJSON(json);
-        return jsonNode != null;
-    }
+        return jsonNode != null;}
 
     private String convert(String value) {
         String updatedValue = value.replaceAll("\\D", "");
