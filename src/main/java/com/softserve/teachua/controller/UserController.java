@@ -78,7 +78,6 @@ public class UserController implements Api {
             @Valid
             @RequestBody UserUpdateProfile userProfile, HttpServletRequest httpServletRequest) {
         userService.validateUserId(id, httpServletRequest);
-
         return userService.updateUser(id, userProfile);
     }
 

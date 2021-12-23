@@ -33,6 +33,7 @@ public class RoleServiceImpl implements RoleService, ArchiveMark<Role> {
     private static final String ROLE_NOT_FOUND_BY_ID = "Role not found by id: %s";
     private static final String ROLE_NOT_FOUND_BY_NAME = "Role not found by name: %s";
     private static final String ROLE_DELETING_ERROR = "Can't delete role cause of relationship";
+    private static final String ROLE_PREFIX = "ROLE_";
 
     private final RoleRepository roleRepository;
     private final ArchiveService archiveService;
@@ -87,7 +88,7 @@ public class RoleServiceImpl implements RoleService, ArchiveMark<Role> {
 
     @Override
     public Role findByName(String name) {
-        Optional<Role> optionalRole = roleRepository.findByName(name);
+        Optional<Role> optionalRole = roleRepository.findByName(ROLE_PREFIX+name);
         if (!optionalRole.isPresent()) {
             throw new NotExistException(String.format(ROLE_NOT_FOUND_BY_NAME, name));
         }

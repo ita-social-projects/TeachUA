@@ -5,12 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.security.UserEntity;
-import com.softserve.teachua.dto.task.CreateTask;
 import com.softserve.teachua.dto.user.*;
 import com.softserve.teachua.exception.*;
 import com.softserve.teachua.model.AuthProvider;
 import com.softserve.teachua.model.User;
-import com.softserve.teachua.model.archivable.TaskArch;
 import com.softserve.teachua.model.archivable.UserArch;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.JwtProvider;
@@ -243,7 +241,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
             throw new IncorrectInputException(EMAIL_UPDATING_ERROR);
         }
 
-        if (userProfile.getRoleName().equals(RoleData.ADMIN.getDBRoleName())
+        if (userProfile.getRole().equals(RoleData.ADMIN.getDBRoleName())
                 && !user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
             throw new IncorrectInputException(ROLE_UPDATING_ERROR);
         }
@@ -251,15 +249,8 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         User newUser = dtoConverter.convertToEntity(userProfile, user)
                 .withPassword(user.getPassword())
                 .withId(id)
-                .withRole(roleService.findByName(userProfile.getRoleName()));
-
-
-        log.info("updating role by id {}", newUser);
-        String phoneFormat = "38" + userProfile.getPhone();
-        // String formated = String.format("%s (%s) %s %s %s",phoneFormat.substring(0,3),phoneFormat.substring(3,6),
-        // phoneFormat.substring(6,9),phoneFormat.substring(9,11),phoneFormat.substring(11,13));
-
-        newUser.setPhone(phoneFormat);
+                .withRole(roleService.findByName(userProfile.getRole()))
+                .withPhone(userProfile.getPhone());
 
         log.debug("updating role by id {}", newUser);
 
@@ -360,8 +351,8 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     @Override
     public User getUserFromRequest(HttpServletRequest httpServletRequest) {
         return userRepository.findById(
-                        jwtProvider.getUserIdFromToken(
-                                jwtProvider.getJwtFromRequest(httpServletRequest)))
+                jwtProvider.getUserIdFromToken(
+                        jwtProvider.getJwtFromRequest(httpServletRequest)))
                 .orElseThrow(() -> new WrongAuthenticationException());
     }
 
@@ -499,8 +490,8 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     }
 
     @Override
-    public User getCurrentUser(){
-        HttpServletRequest httpServletRequest = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes())
+    public User getCurrentUser() {
+        HttpServletRequest httpServletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest();
         return getUserFromRequest(httpServletRequest);
     }
