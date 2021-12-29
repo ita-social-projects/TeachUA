@@ -241,7 +241,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
             throw new IncorrectInputException(EMAIL_UPDATING_ERROR);
         }
 
-        if (userProfile.getRole().equals(RoleData.ADMIN.getDBRoleName())
+        if (userProfile.getRoleName().equals(RoleData.ADMIN.getDBRoleName())
                 && !user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
             throw new IncorrectInputException(ROLE_UPDATING_ERROR);
         }
@@ -249,7 +249,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         User newUser = dtoConverter.convertToEntity(userProfile, user)
                 .withPassword(user.getPassword())
                 .withId(id)
-                .withRole(roleService.findByName(userProfile.getRole()))
+                .withRole(roleService.findByName(userProfile.getRoleName()))
                 .withPhone(userProfile.getPhone());
 
         log.debug("updating role by id {}", newUser);

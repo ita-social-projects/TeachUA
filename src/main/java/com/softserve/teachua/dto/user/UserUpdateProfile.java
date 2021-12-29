@@ -37,5 +37,5 @@ public class UserUpdateProfile implements Convertible {
     private String status;
 
     @NotBlank
-    private String role;
+    private String roleName;
 }
