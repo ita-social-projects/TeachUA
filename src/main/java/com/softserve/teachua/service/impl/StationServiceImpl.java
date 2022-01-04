@@ -105,7 +105,8 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
         }
         Station station = stationRepository.save(dtoConverter.convertToEntity(stationProfile, new Station())
                 .withCity(cityService.getCityByName(stationProfile.getCityName()))
-                .withDistrict(districtService.getDistrictByName(stationProfile.getDistrictName())));
+                .withDistrict(Optional.ofNullable(stationProfile.getDistrictName()).isPresent() ?
+                        districtService.getDistrictByName(stationProfile.getDistrictName()) : null));
         log.debug("**/adding new station = " + station);
         return dtoConverter.convertToDto(station, SuccessCreatedStation.class);
     }
