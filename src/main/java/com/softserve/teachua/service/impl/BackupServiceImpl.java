@@ -1,7 +1,10 @@
 package com.softserve.teachua.service.impl;
 
 
+import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.exception.StreamCloseException;
 import com.softserve.teachua.model.*;
 import com.softserve.teachua.repository.*;
 import com.softserve.teachua.service.BackupService;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.StreamCorruptedException;
+import java.nio.file.ClosedDirectoryStreamException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -29,6 +34,10 @@ public class BackupServiceImpl implements BackupService {
     private final static String ALL_FILES = "all";
     private final static String IMAGES_DIRECTORY = "images";
     private final static String NOT_FOUND_FILE_EXCEPTION = "File %s not found";
+    private final static String PUT_FILE_EXCEPTION = "Can`t put file %s to zip archive";
+    private final static String WRITE_FILE_EXCEPTION = "Can`t write file %s to zip archive";
+    private final static String CLOSE_FILE_UPLOAD_EXCEPTION = "Cant close file %s";
+    private final static String CLOSE_STREAM_EXCEPTION = "Cant close stream";
 
     private final AboutUsItemRepository aboutUsItemRepository;
     private final BannerItemRepository bannerItemRepository;
@@ -98,29 +107,57 @@ public class BackupServiceImpl implements BackupService {
     }
 
     @Override
-    public void downloadBackup(HttpServletResponse backup) throws IOException {
-        ZipOutputStream zipStream = new ZipOutputStream(backup.getOutputStream());
+    public void downloadBackup(HttpServletResponse backup) {
+        ZipOutputStream zipStream = null;
+        try {
+            zipStream = new ZipOutputStream(backup.getOutputStream());
+        } catch (IOException e) {
+            throw new FileUploadException("Zip stream exception");
+        }
 
-        for (String file: getAllBackupFiles("all")) {
-            int i=0;
-            while (i <3){
+        for (String file : getAllBackupFiles("all")) {
+            int i = 0;
+            while (i < 3) {
                 i++;
                 if (!(new File(file).exists())) {
                     throw new NotExistException(String.format(NOT_FOUND_FILE_EXCEPTION, file));
                 }
-                byte[] buffer = Files.readAllBytes(Paths.get(file));
+                byte[] buffer = new byte[0];
+                try {
+                    buffer = Files.readAllBytes(Paths.get(file));
+                } catch (IOException e) {
+                    throw new FileUploadException("Can`t read file in buffer");
+                }
 
                 ZipEntry zipEntry = new ZipEntry(file);
                 zipEntry.setSize(buffer.length);
 
-                zipStream.putNextEntry(zipEntry);
-                zipStream.write(buffer);
-                zipStream.closeEntry();
+
+                try {
+                    zipStream.putNextEntry(zipEntry);
+                } catch (IOException e) {
+                    throw new FileUploadException(String.format(PUT_FILE_EXCEPTION, file));
+                }
+                try {
+                    zipStream.write(buffer);
+                } catch (IOException e) {
+                    throw new FileUploadException(String.format(WRITE_FILE_EXCEPTION, file));
+                }
+                try {
+                    zipStream.closeEntry();
+                } catch (IOException e) {
+                    throw new FileUploadException(String.format(CLOSE_FILE_UPLOAD_EXCEPTION, file));
+                }
             }
         }
-        zipStream.flush();
-        zipStream.close();
+
+        try {
+            zipStream.flush();
+            zipStream.close();
+        } catch (IOException e) {
+                throw new StreamCloseException(CLOSE_STREAM_EXCEPTION);
+        }
         backup.setStatus(HttpServletResponse.SC_OK);
-        backup.addHeader(HttpHeaders.CONTENT_DISPOSITION,"\"attachment; filename= backup");
+        backup.addHeader(HttpHeaders.CONTENT_DISPOSITION, "\"attachment; filename= backup");
     }
 }

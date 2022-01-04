@@ -23,5 +23,5 @@ public interface BackupService {
      * @param backup
      * @throws IOException
      */
-    void downloadBackup(HttpServletResponse backup) throws IOException;
+    void downloadBackup(HttpServletResponse backup) ;
 }

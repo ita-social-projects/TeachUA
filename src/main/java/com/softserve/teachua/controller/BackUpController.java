@@ -42,7 +42,7 @@ public class BackUpController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping(value = "/downloadBackup", produces = "application/zip")
-    public void downloadBackup(HttpServletResponse backup) throws IOException {
+    public void downloadBackup(HttpServletResponse backup)  {
         backupService.downloadBackup(backup);
     }
 }
