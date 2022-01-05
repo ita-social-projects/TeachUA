@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="documentTemplate" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20"
+              rightMargin="20" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty"
+              uuid="bf199c87-280e-423e-b235-b7fd14ee35f0">
+    <property name="ireport.zoom" value="1.5000000000000118"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <subDataset name="Table Dataset 1" uuid="e23907bc-bf27-4929-b605-2c4c5f59acb2"/>
+    <parameter name="logo" isForPrompting="false"/>
+    <field name="club" class="com.softserve.teachua.model.Club"/>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="2" splitType="Stretch"/>
+    </title>
+    <pageHeader>
+        <band height="2" splitType="Stretch"/>
+    </pageHeader>
+    <columnHeader>
+        <band height="2" splitType="Stretch"/>
+    </columnHeader>
+    <detail>
+        <band height="752" splitType="Stretch">
+            <printWhenExpression><![CDATA[$F{club} != null]]></printWhenExpression>
+            <frame>
+                <reportElement x="0" y="0" width="575" height="648" uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1"/>
+                <textField>
+                    <reportElement x="32" y="12" width="247" height="42" uuid="52ed4a12-4eb0-4c5a-976b-c082f28ba2ea"/>
+                    <textElement markup="styled" textAlignment="Center" verticalAlignment="Middle">
+                        <font fontName="Tahoma" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$F{club}.getName()]]></textFieldExpression>
+                </textField>
+            </frame>
+            <frame>
+                <reportElement x="0" y="0" width="64" mode="Opaque" height="64" backcolor="#FF0C08"
+                               uuid="a2211251-48c4-48d4-bba3-2b30cf8307c7"/>
+                <image>
+                    <reportElement x="0" y="0" width="64" height="64" uuid="0407b952-8088-4146-9dfc-b61f71e78201"/>
+                    <imageExpression><![CDATA[$P{logo}]]></imageExpression>
+                </image>
+            </frame>
+        </band>
+    </detail>
+    <columnFooter>
+        <band height="3" splitType="Stretch"/>
+    </columnFooter>
+    <pageFooter>
+        <band splitType="Stretch"/>
+    </pageFooter>
+    <summary>
+        <band height="3" splitType="Stretch"/>
+    </summary>
+</jasperReport>
