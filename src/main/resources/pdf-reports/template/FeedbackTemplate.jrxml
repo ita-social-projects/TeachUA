@@ -3,14 +3,26 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="documentTemplate" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20"
+              name="documentTemplate" pageWidth="612" pageHeight="1000" columnWidth="572" leftMargin="20"
               rightMargin="20" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty"
               uuid="bf199c87-280e-423e-b235-b7fd14ee35f0">
     <property name="ireport.zoom" value="1.5000000000000118"/>
     <property name="ireport.x" value="0"/>
     <property name="ireport.y" value="0"/>
+    <style name="Default" isDefault="true" pdfFontName="/pdf-reports/font/arial.ttf" pdfEncoding="Cp1251"/>
     <subDataset name="Table Dataset 1" uuid="e23907bc-bf27-4929-b605-2c4c5f59acb2"/>
     <parameter name="logo" isForPrompting="false"/>
+    <parameter name="categories" class="java.util.HashSet" isForPrompting="false"/>
+    <parameter name="category-color" isForPrompting="false"/>
+    <parameter name="location" isForPrompting="false"/>
+    <parameter name="locationImage" isForPrompting="false"/>
+    <parameter name="years" isForPrompting="false"/>
+    <parameter name="contacts" isForPrompting="false"/>
+    <parameter name="description" isForPrompting="false"/>
+    <parameter name="img-balls" isForPrompting="false"/>
+    <parameter name="img-exercise" isForPrompting="false"/>
+    <parameter name="img-kids-jump" isForPrompting="false"/>
+    <parameter name="img-pencils" isForPrompting="false"/>
     <field name="club" class="com.softserve.teachua.model.Club"/>
     <background>
         <band splitType="Stretch"/>
@@ -25,26 +37,139 @@
         <band height="2" splitType="Stretch"/>
     </columnHeader>
     <detail>
-        <band height="752" splitType="Stretch">
+        <band height="700" splitType="Stretch">
             <printWhenExpression><![CDATA[$F{club} != null]]></printWhenExpression>
+            <textField>
+                <reportElement forecolor="#002766" x="80" y="10" width="450" height="550"
+                               uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1"/>
+                <textElement textAlignment="Left">
+                    <font size="16" fontName="Serif"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{club}.getName()]]></textFieldExpression>
+            </textField>
+
+            <ellipse>
+                <reportElement x="0" y="0" width="64" height="64" mode="Opaque" forecolor="#FFFFFF  ">
+                    <propertyExpression name="net.sf.jasperreports.style.backcolor">$P{category-color}
+                    </propertyExpression>
+                </reportElement>
+            </ellipse>
+
             <frame>
-                <reportElement x="0" y="0" width="575" height="648" uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1"/>
-                <textField>
-                    <reportElement x="32" y="12" width="247" height="42" uuid="52ed4a12-4eb0-4c5a-976b-c082f28ba2ea"/>
-                    <textElement markup="styled" textAlignment="Center" verticalAlignment="Middle">
-                        <font fontName="Tahoma" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-                    </textElement>
-                    <textFieldExpression><![CDATA[$F{club}.getName()]]></textFieldExpression>
-                </textField>
-            </frame>
-            <frame>
-                <reportElement x="0" y="0" width="64" mode="Opaque" height="64" backcolor="#FF0C08"
-                               uuid="a2211251-48c4-48d4-bba3-2b30cf8307c7"/>
+                <reportElement x="11" y="11" width="64" height="64" uuid="a2211251-48c4-48d4-bba3-2b30cf8307c7"/>
                 <image>
-                    <reportElement x="0" y="0" width="64" height="64" uuid="0407b952-8088-4146-9dfc-b61f71e78201"/>
+                    <reportElement x="0" y="0" width="42" height="42" uuid="0407b952-8088-4146-9dfc-b61f71e78201"/>
                     <imageExpression><![CDATA[$P{logo}]]></imageExpression>
                 </image>
             </frame>
+
+            <textField>
+                <reportElement x="0" y="70" forecolor="#2d4c68" width="575" height="100"
+                               uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1">
+                    <propertyExpression name="net.sf.jasperreports.style.backcolor">$P{category-color}
+                    </propertyExpression>
+                </reportElement>
+                <textElement textAlignment="Left">
+                    <font fontName="Serif"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{categories}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="32" y="120" width="575" height="100" forecolor="#2d4c68"
+                               uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1"/>
+                <textElement textAlignment="Left">
+                    <font fontName="Serif"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{location}]]></textFieldExpression>
+            </textField>
+            <image>
+                <reportElement x="0" y="111" width="32" height="32"/>
+                <imageExpression>
+                    <![CDATA[$P{locationImage}]]>
+                </imageExpression>
+            </image>
+            <frame>
+                <reportElement x="0" y="160" width="400" height="50"/>
+                <staticText>
+                    <reportElement x="0" y="0" forecolor="#002766" width="100" height="100"/>
+                    <textElement markup="styled">
+                        <font size="12" isBold="true" fontName="Serif"/>
+                    </textElement>
+                    <text>Вік аудиторії:</text>
+                </staticText>
+                <textField>
+                    <reportElement x="80" y="0" forecolor="#2d4c68" width="200" height="50"/>
+                    <textElement textAlignment="Left">
+                        <font size="12" isBold="true" fontName="Serif"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{years}]]></textFieldExpression>
+                </textField>
+            </frame>
+            <frame>
+                <reportElement x="0" y="200" width="600" height="50"/>
+                <staticText>
+                    <reportElement x="0" y="0" forecolor="#002766" width="100" height="20"/>
+                    <textElement markup="styled">
+                        <font size="12" isBold="true" fontName="Serif"/>
+                    </textElement>
+                    <text>Контакти гуртка</text>
+                </staticText>
+                <textField>
+                    <reportElement x="100" y="0" forecolor="#2d4c68" width="500" height="50"/>
+                    <textElement textAlignment="Left">
+                        <font size="12" isBold="true" fontName="Serif"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{contacts}]]></textFieldExpression>
+                </textField>
+            </frame>
+            <staticText>
+                <reportElement x="0" y="240" forecolor="#002766" width="100" height="20"/>
+                <textElement markup="styled">
+                    <font size="14" isBold="true" fontName="Serif"/>
+                </textElement>
+                <text>Про гурток</text>
+            </staticText>
+
+            <frame>
+                <reportElement x="0" y="170" width="500" height="150"/>
+                <image>
+                    <reportElement x="0" y="111" width="100" height="100"/>
+                    <imageExpression>
+                        <![CDATA[$P{img-balls}]]>
+                    </imageExpression>
+                </image>
+                <image>
+                    <reportElement x="130" y="111" width="100" height="100"/>
+                    <imageExpression>
+                        <![CDATA[$P{img-exercise}]]>
+                    </imageExpression>
+                </image>
+                <image>
+                    <reportElement x="260" y="111" width="100" height="100"/>
+                    <imageExpression>
+                        <![CDATA[$P{img-kids-jump}]]>
+                    </imageExpression>
+                </image>
+                <image>
+                    <reportElement x="390" y="111" width="100" height="100"/>
+                    <imageExpression>
+                        <![CDATA[$P{img-pencils}]]>
+                    </imageExpression>
+                </image>
+            </frame>
+
+            <frame>
+                <reportElement x="0" y="400" width="500" height="300"/>
+                <textField>
+                    <reportElement x="0" y="0" forecolor="#2d4c68" width="400" height="200"/>
+                    <textElement textAlignment="Left">
+                        <font size="12" isBold="true" fontName="Serif"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{description}]]></textFieldExpression>
+                </textField>
+            </frame>
+
         </band>
     </detail>
     <columnFooter>

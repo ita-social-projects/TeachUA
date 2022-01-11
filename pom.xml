@@ -224,7 +224,6 @@
 			<artifactId>jasperreports</artifactId>
 			<version>6.18.1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
