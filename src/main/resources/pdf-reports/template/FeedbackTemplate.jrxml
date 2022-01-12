@@ -23,7 +23,7 @@
     <parameter name="img-exercise" isForPrompting="false"/>
     <parameter name="img-kids-jump" isForPrompting="false"/>
     <parameter name="img-pencils" isForPrompting="false"/>
-    <field name="club" class="com.softserve.teachua.model.Club"/>
+    <parameter name="club" class="com.softserve.teachua.model.Club" isForPrompting="false"/>
     <background>
         <band splitType="Stretch"/>
     </background>
@@ -38,14 +38,14 @@
     </columnHeader>
     <detail>
         <band height="700" splitType="Stretch">
-            <printWhenExpression><![CDATA[$F{club} != null]]></printWhenExpression>
+            <printWhenExpression><![CDATA[$P{club} != null]]></printWhenExpression>
             <textField>
                 <reportElement forecolor="#002766" x="80" y="10" width="450" height="550"
                                uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1"/>
-                <textElement textAlignment="Left">
+                <textElement markup="styled" textAlignment="Left">
                     <font size="16" fontName="Serif"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$F{club}.getName()]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{club}.getName()]]></textFieldExpression>
             </textField>
 
             <ellipse>
@@ -64,7 +64,7 @@
             </frame>
 
             <textField>
-                <reportElement x="0" y="70" forecolor="#2d4c68" width="575" height="100"
+                <reportElement x="0" y="80" forecolor="#2d4c68" width="575" height="100"
                                uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1">
                     <propertyExpression name="net.sf.jasperreports.style.backcolor">$P{category-color}
                     </propertyExpression>
