@@ -12,6 +12,7 @@ import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.model.Center;
+import com.softserve.teachua.model.City;
 import com.softserve.teachua.model.ExcelCenterEntity;
 import com.softserve.teachua.model.ExcelClubEntity;
 import com.softserve.teachua.repository.ClubRepository;
@@ -298,9 +299,11 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     private void loadStations(ExcelParsingData excelParsingData) {
         for (StationExcel station : excelParsingData.getStations()) {
             try {
+                City city = cityService.getCityByName(station.getCity());
                 stationService.addStation(StationProfile
                         .builder()
-                        .cityName(cityService.getCityByName(station.getCity()).getName())
+                        .cityName(city.getName())
+                        .districtName(districtService.getListOfDistrictsByCityName(city.getName()).get(0).getName())
                         .name(station.getName())
                         .build());
             } catch (AlreadyExistException e) {
