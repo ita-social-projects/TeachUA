@@ -50,7 +50,14 @@ public class TaskTransferServiceImpl implements TaskTransferService {
                     log.debug("add task: " + taskProfile);
                     return dtoConverter.convertToEntity(taskProfile, Task.builder().build()).withId(null);
                 }).map(taskRepository::save)
-                .map(task -> (SuccessCreatedTask) dtoConverter.convertToDto(task, SuccessCreatedTask.class))
+                .map(task -> {
+                    log.info("Task: " + task);
+//                    ClubProfile.builder().build();
+//                    SuccessCreatedDistrict.builder().build();
+                    return SuccessCreatedTask
+                            .builder().build();
+//                    return (SuccessCreatedTask) dtoConverter.convertToDto(task, SuccessCreatedTask.class);
+                })
                 .collect(Collectors.toList());
     }
 }
