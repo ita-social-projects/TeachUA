@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -78,7 +79,7 @@ public class AddressServiceImpl implements AddressService {
         cityRepository.findAll().forEach(city -> {
 
             if ((address != null && address.contains(city.getName()) && (address.matches(".*(" + city.getName() + "[^а-яА-ЯіІїЇєЄ]+).*")))
-                    || address.matches("^" + city.getName() + "$")) {
+                    || Objects.requireNonNull(address).matches("^" + city.getName() + "$")) {
                 hasCity.set(true);
             }
         });
