@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.task;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
 
@@ -8,9 +9,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@With
 @Data
-//@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SuccessCreatedTask implements Convertible {
     private Long id;
     private String name;

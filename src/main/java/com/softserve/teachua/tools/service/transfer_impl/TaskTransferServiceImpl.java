@@ -46,17 +46,15 @@ public class TaskTransferServiceImpl implements TaskTransferService {
         return tasks
                 .stream()
                 .map(taskProfile -> {
-                    taskProfile.setPicture(fileUtils.moveImage(taskProfile.getPicture(), "tasks"));
-                    log.debug("add task: " + taskProfile);
+                    if(!taskProfile.getPicture().isEmpty()) {
+                        taskProfile.setPicture(fileUtils.moveImage(taskProfile.getPicture(), "tasks"));
+                    }
+                    log.info("add task: " + taskProfile);
                     return dtoConverter.convertToEntity(taskProfile, Task.builder().build()).withId(null);
                 }).map(taskRepository::save)
                 .map(task -> {
                     log.info("Task: " + task);
-//                    ClubProfile.builder().build();
-//                    SuccessCreatedDistrict.builder().build();
-                    return SuccessCreatedTask
-                            .builder().build();
-//                    return (SuccessCreatedTask) dtoConverter.convertToDto(task, SuccessCreatedTask.class);
+                    return (SuccessCreatedTask) dtoConverter.convertToDto(task, SuccessCreatedTask.class);
                 })
                 .collect(Collectors.toList());
     }
