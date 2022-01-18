@@ -19,6 +19,7 @@ import java.io.IOException;
 @Component
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
+    private final String ABSENT_TOKEN = "Token is empty [%s]";
     private final JwtProvider jwtProvider;
 
     private CustomUserDetailsService customUserDetailsService;
@@ -53,7 +54,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.debug("User " + userDetails.getUsername() + "successfully authenticate with token" + jwt);
             } else {
-                log.error("User is not authenticate");
+                log.debug(String.format(ABSENT_TOKEN, httpServletRequest.getRequestURI()));
             }
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);

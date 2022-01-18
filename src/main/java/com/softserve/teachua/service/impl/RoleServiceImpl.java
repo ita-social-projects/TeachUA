@@ -33,7 +33,6 @@ public class RoleServiceImpl implements RoleService, ArchiveMark<Role> {
     private static final String ROLE_NOT_FOUND_BY_ID = "Role not found by id: %s";
     private static final String ROLE_NOT_FOUND_BY_NAME = "Role not found by name: %s";
     private static final String ROLE_DELETING_ERROR = "Can't delete role cause of relationship";
-
     private final RoleRepository roleRepository;
     private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
