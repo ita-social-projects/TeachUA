@@ -1,12 +1,11 @@
-package com.softserve.teachua.service.impl;
+package com.softserve.teachua.service.documentreport.impl;
 
 import com.softserve.teachua.dto.club.ClubResponse;
-import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;
 import com.softserve.teachua.service.ClubService;
-import com.softserve.teachua.service.PdfGenerationService;
+import com.softserve.teachua.service.documentreport.PdfGenerationService;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -35,19 +34,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class PdfGenerationServiceImpl implements PdfGenerationService<ClubResponse> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PdfGenerationServiceImpl.class.getName());
-    private static final String TEMPLATE_PATH = "/pdf-reports/template/FeedbackTemplate.jrxml";
+public class ClubPdfGenerationServiceImpl implements PdfGenerationService<ClubResponse> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClubPdfGenerationServiceImpl.class.getName());
+    private static final String TEMPLATE_PATH = "/pdf-reports/template/ClubPdfReportTemplate.jrxml";
     private static final String IMAGE_PATH = "/pdf-reports/image/";
+    private static final String IMAGE_CATEGORY_PATH = "/pdf-reports/image/category/";
     private static final String IMAGE_PATH_BALLS = "club/balls.jpg";
     private static final String IMAGE_PATH_EXERCISE = "club/exercise.jpg";
     private static final String IMAGE_PATH_KIDS_JUMP = "club/kids_jump.png";
     private static final String IMAGE_PATH_PENCILS = "club/pencils.jpg";
 
-    protected ClubService clubService;
+    private final ClubService clubService;
 
     @Autowired
-    public PdfGenerationServiceImpl(final ClubService clubService) {
+    public ClubPdfGenerationServiceImpl(final ClubService clubService) {
         this.clubService = clubService;
     }
 
@@ -74,7 +74,7 @@ public class PdfGenerationServiceImpl implements PdfGenerationService<ClubRespon
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("club", getClub(clubResponse.getName()));
         parameters.put("CONTEXT_IMAGE", getRealFilePath(IMAGE_PATH));
-        parameters.put("logo", getRealFilePath(IMAGE_PATH + getCategoryImageName(clubResponse)));
+        parameters.put("logo", getRealFilePath(IMAGE_CATEGORY_PATH + getCategoryImageName(clubResponse)));
         parameters.put("categories", getCategories(clubResponse));
         parameters.put("category-color", getCategoryColor(clubResponse));
         parameters.put("location", getLocationAddress(clubResponse));

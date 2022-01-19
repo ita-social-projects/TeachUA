@@ -46,7 +46,7 @@ public class CenterController implements Api {
      */
     @GetMapping("/center/{id}")
     public CenterResponse getCenter(@PathVariable Long id) {
-        return centerService.getCenterByProfileId(id);
+        return centerService.getCenterProfileById(id);
     }
 
     /**
