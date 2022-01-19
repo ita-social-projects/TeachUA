@@ -71,7 +71,7 @@ public class JwtProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            log.error("invalid token");
+//            log.error("invalid token"); //Produces many logsgit
         }
         return false;
     }
