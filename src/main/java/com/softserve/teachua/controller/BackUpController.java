@@ -6,9 +6,11 @@ import com.softserve.teachua.service.BackupService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -41,9 +43,15 @@ public class BackUpController implements Api {
      * @throws IOException
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping(value = "/downloadBackup", produces = "application/zip")
-    public void downloadBackup(HttpServletResponse backup)  {
-        backupService.downloadBackup(backup);
+    @GetMapping(value = "/unloadBackup", produces = "application/zip")
+    public void unloadBackup(HttpServletResponse backup)  {
+        backupService.unloadBackup(backup);
+    }
+
+    @AllowedRoles(RoleData.ADMIN)
+    @PostMapping(value = "/downloadBackup",consumes ="application/zip" )
+    public void downloadBackUp(HttpServletRequest request) throws IOException {
+        backupService.uploadBackup(request);
     }
 }
 

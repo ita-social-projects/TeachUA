@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -20,8 +21,14 @@ public interface BackupService {
     /**
      *  Use this method for download backup files
      *
-     * @param backup
+     * @param response
      * @throws IOException
      */
-    void downloadBackup(HttpServletResponse backup) ;
+    void unloadBackup(HttpServletResponse response) ;
+
+
+    void uploadBackup(HttpServletRequest request) throws IOException;
+
+
+
 }
