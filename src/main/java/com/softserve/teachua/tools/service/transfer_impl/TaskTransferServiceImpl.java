@@ -13,7 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +32,8 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     private String uaTeachChallengeImage = "data_for_db/task_images/challengeUA.jpg";
     private String languageChallengeImage = "data_for_db/task_images/marathon_log.png";
     private static final String targetPackage = "tasks";
+    private static final String targetPackageForData = "tasks/taskData";
+    private final Map imageMap;
 
 
     @Autowired
@@ -40,6 +45,16 @@ public class TaskTransferServiceImpl implements TaskTransferService {
         this.dtoConverter = dtoConverter;
         this.taskRepository = taskRepository;
         this.challengeService = challengeService;
+        imageMap = new HashMap<String, List<String>>();
+        imageMap.put("Крок 16. Рахуйте українською ",
+                Arrays.asList(
+                        "data_for_db/taskData/day16_1.png",
+                        "data_for_db/taskData/day16_2.png",
+                        "data_for_db/taskData/day16_3.png",
+                        "data_for_db/taskData/day16_4.png"
+                ));
+        imageMap.put("Крок 17. Мандруйте Україною ", Arrays.asList("data_for_db/taskData/day17_1.png"));
+        imageMap.put("Крок 24. Пізнавайте українське мистецтво", Arrays.asList("data_for_db/taskData/day24_1.jpg"));
     }
 
     @Override
@@ -70,8 +85,22 @@ public class TaskTransferServiceImpl implements TaskTransferService {
                         taskProfile.setChallengeId(challengeService.getChallengeByName(uaTeachChallenge).getId());
                         taskProfile.setPicture(uaTeachChallengeImage);
                     }else{
-                        taskProfile.setChallengeId(challengeService.getChallengeByName(languageChallengeImage).getId());
+                        taskProfile.setChallengeId(challengeService.getChallengeByName(languageChallenge).getId());
                         taskProfile.setPicture(languageChallengeImage);
+                    }
+
+                    if(imageMap.containsKey(taskProfile.getName())){
+                        ((List<String>)imageMap.get(taskProfile.getName()))
+                                .stream()
+                                .forEach(url ->
+                                    taskProfile.setDescription(
+                                            taskProfile
+                                            .getDescription()
+                                            .replace(url,
+                                                    System.getenv("BASE_URL")
+                                                            + fileUtils.moveImage(url, targetPackageForData))
+                                    )
+                                );
                     }
 
                     log.info("add task: " + taskProfile);
