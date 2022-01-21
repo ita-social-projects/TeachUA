@@ -112,4 +112,15 @@ public class TaskTransferServiceImpl implements TaskTransferService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void dropRedundantTable(){
+
+    }
+
+    @Override
+    public void editConstrain(){
+
+    }
+
 }
