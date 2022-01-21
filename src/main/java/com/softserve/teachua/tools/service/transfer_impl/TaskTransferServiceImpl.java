@@ -7,6 +7,7 @@ import com.softserve.teachua.model.Task;
 import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.service.ChallengeService;
 import com.softserve.teachua.tools.FileUtils;
+import com.softserve.teachua.tools.dao.TaskDao;
 import com.softserve.teachua.tools.repository.TaskInfoRepository;
 import com.softserve.teachua.tools.service.TaskTransferService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     private final DtoConverter dtoConverter;
     private final TaskRepository taskRepository;
     private final ChallengeService challengeService;
+    private final TaskDao taskDao;
 
     private final String uaTeachChallenge = "Навчай українською челендж"; // id=1
     private final String languageChallenge = "Мовомаратон"; // id=2
@@ -40,11 +42,12 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     public TaskTransferServiceImpl(
             FileUtils fileReader,
             DtoConverter dtoConverter,
-            TaskRepository taskRepository, ChallengeService challengeService) {
+            TaskRepository taskRepository, ChallengeService challengeService, TaskDao taskDao) {
         this.fileUtils = fileReader;
         this.dtoConverter = dtoConverter;
         this.taskRepository = taskRepository;
         this.challengeService = challengeService;
+        this.taskDao = taskDao;
         imageMap = new HashMap<String, List<String>>();
         imageMap.put("Крок 16. Рахуйте українською ",
                 Arrays.asList(
@@ -115,12 +118,12 @@ public class TaskTransferServiceImpl implements TaskTransferService {
 
     @Override
     public void dropRedundantTable(){
-
+        taskDao.dropRedundantChallenges();
     }
 
     @Override
     public void editConstrain(){
-
+        taskDao.alterTaskConstrain();
     }
 
 }
