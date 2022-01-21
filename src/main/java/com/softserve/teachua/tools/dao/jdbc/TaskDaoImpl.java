@@ -3,7 +3,9 @@ package com.softserve.teachua.tools.dao.jdbc;
 import com.softserve.teachua.tools.dao.TaskDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TaskDaoImpl implements TaskDao {
     private final JdbcTemplate jdbcTemplate;
 
