@@ -21,5 +21,6 @@ public interface TaskTransferService {
     List<SuccessCreatedTask> createTasksFromRepository();
 
     void dropRedundantTable();
-    void editConstrain();
+    void addConstrain();
+    void dropConstrain();
 }

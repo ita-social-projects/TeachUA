@@ -21,7 +21,11 @@ public class TaskDaoImpl implements TaskDao {
 
     @Override
     public void alterTaskConstrain() {
-        jdbcTemplate.execute("ALTER TABLE tasks DROP CONSTRAINT fkq61bhoppvdsk4csfl8450fpek");
         jdbcTemplate.execute("ALTER TABLE tasks ADD CONSTRAINT task_challenge (challenge_id) references challenges(id)");
+    }
+
+    @Override
+    public void dropTaskConstrain() {
+        jdbcTemplate.execute("ALTER TABLE tasks DROP CONSTRAINT fkq61bhoppvdsk4csfl8450fpek");
     }
 }
