@@ -5,10 +5,9 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.BackupService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,19 +38,27 @@ public class BackUpController implements Api {
     /**
      * Use this endpoint to download .zip file with backup resources
      *
-     * @param backup
+     * @param response
      * @throws IOException
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping(value = "/unloadBackup", produces = "application/zip")
-    public void unloadBackup(HttpServletResponse backup)  {
-        backupService.unloadBackup(backup);
+    @GetMapping(value = "/backup/download", produces = "application/.zip")
+    public void unloadBackup(HttpServletResponse response)  throws IOException{
+        backupService.unloadBackup(response);
     }
 
+    /**
+     *
+     * Use this endpoint to upload backup archive(.zip(downloaded from /backup/download)) to project
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping(value = "/downloadBackup",consumes ="application/zip" )
-    public void downloadBackUp(HttpServletRequest request) throws IOException {
-        backupService.uploadBackup(request);
+    @PostMapping(value = "/backup/upload")
+    public List<String> uploadBackUp(@RequestParam("file") MultipartFile file) throws IOException {
+       return backupService.uploadBackup(file);
     }
 }
 

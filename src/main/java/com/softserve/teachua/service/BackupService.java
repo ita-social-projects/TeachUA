@@ -1,5 +1,7 @@
 package com.softserve.teachua.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,10 +26,10 @@ public interface BackupService {
      * @param response
      * @throws IOException
      */
-    void unloadBackup(HttpServletResponse response) ;
+    void unloadBackup(HttpServletResponse response) throws IOException;
 
 
-    void uploadBackup(HttpServletRequest request) throws IOException;
+    List<String> uploadBackup(MultipartFile file) throws IOException;
 
 
 
