@@ -46,9 +46,22 @@ public class TaskTransferController implements Api {
     }
 
     @DevPermit
-    @DeleteMapping("transfer/task/alter")
+    @DeleteMapping("transfer/task/addconst")
     public ResponseEntity<String> alterDb(){
-        taskTransferService.editConstrain();
+        taskTransferService.addConstrain();
+        return ResponseEntity.ok(ALTER_WELL);
+    }
+
+    @DevPermit
+    @DeleteMapping("transfer/task/dropconst")
+    public ResponseEntity<String> dropConstrain(){
+        taskTransferService.dropConstrain();
+        return ResponseEntity.ok(ALTER_WELL);
+    }
+
+    @DevPermit
+    @DeleteMapping("transfer/task/droptable")
+    public ResponseEntity<String> dropTable(){
         taskTransferService.dropRedundantTable();
         return ResponseEntity.ok(ALTER_WELL);
     }

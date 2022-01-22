@@ -122,7 +122,12 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     }
 
     @Override
-    public void editConstrain(){
+    public void addConstrain(){
+        taskDao.alterTaskConstrain();
+    }
+
+    @Override
+    public void dropConstrain(){
         taskDao.alterTaskConstrain();
     }
 
