@@ -26,7 +26,7 @@ public interface BackupService {
      * @param response
      * @throws IOException
      */
-    void unloadBackup(HttpServletResponse response) throws IOException;
+    void downloadBackup(HttpServletResponse response) throws IOException;
 
 
     List<String> uploadBackup(MultipartFile file) throws IOException;

@@ -114,7 +114,7 @@ public class BackupServiceImpl implements BackupService {
     }
 
     @Override
-    public void unloadBackup(HttpServletResponse response) throws IOException {
+    public void downloadBackup(HttpServletResponse response) throws IOException {
         ZipOutputStream zipStream = null;
         try {
             zipStream = new ZipOutputStream(response.getOutputStream());

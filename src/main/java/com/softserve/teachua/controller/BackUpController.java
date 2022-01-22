@@ -43,8 +43,8 @@ public class BackUpController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping(value = "/backup/download", produces = "application/.zip")
-    public void unloadBackup(HttpServletResponse response)  throws IOException{
-        backupService.unloadBackup(response);
+    public void downloadBackup(HttpServletResponse response)  throws IOException{
+        backupService.downloadBackup(response);
     }
 
     /**
