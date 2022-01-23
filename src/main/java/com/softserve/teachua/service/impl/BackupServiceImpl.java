@@ -96,6 +96,7 @@ public class BackupServiceImpl implements BackupService {
                     .filter(file -> file != null && file.contains(fileName))
                     .collect(Collectors.toList());
         }
+
         return filePathForBackup.stream()
                 .flatMap(Collection::stream)
                 .distinct()
