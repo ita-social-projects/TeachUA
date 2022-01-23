@@ -78,7 +78,7 @@ public class AddressServiceImpl implements AddressService {
 
         cityRepository.findAll().forEach(city -> {
 
-            if ((address != null && address.contains(city.getName()) && (address.matches(".*(" + city.getName() + "[^а-яА-ЯіІїЇєЄ]+).*")))
+            if ((city != null && !city.getName().isEmpty()) && (address != null && address.contains(city.getName()) && (address.matches(".*(" + city.getName() + "[^а-яА-ЯіІїЇєЄ]+).*")))
                     || Objects.requireNonNull(address).matches("^" + city.getName() + "$")) {
                 hasCity.set(true);
             }
