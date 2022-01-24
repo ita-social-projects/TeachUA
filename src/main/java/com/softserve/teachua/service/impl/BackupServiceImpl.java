@@ -33,7 +33,7 @@ import java.util.zip.ZipOutputStream;
 public class BackupServiceImpl implements BackupService {
 
     private final static String ALL_FILES = "all";
-    private final static String IMAGES_DIRECTORY = "images";
+    private final static String IMAGES_DIRECTORY = "\\\\images";
     private final static String NOT_FOUND_FILE_EXCEPTION = "File %s not found";
     private final static String PUT_FILE_EXCEPTION = "Cant put file %s to zip archive";
     private final static String WRITE_FILE_EXCEPTION = "Cant write file %s to zip archive";
@@ -132,10 +132,13 @@ public class BackupServiceImpl implements BackupService {
                 buffer = Files.readAllBytes(Paths.get(file));
             } catch (IOException e) {
                 throw new FileUploadException(FILE_READ_EXCEPTION);
+
             }
 
             ZipEntry zipEntry = new ZipEntry(file);
             zipEntry.setSize(buffer.length);
+
+
 
             try {
                 zipStream.putNextEntry(zipEntry);
@@ -151,6 +154,7 @@ public class BackupServiceImpl implements BackupService {
                 zipStream.closeEntry();
             } catch (IOException e) {
                 throw new FileUploadException(String.format(CLOSE_FILE_UPLOAD_EXCEPTION, file));
+
             }
         }
         try {
@@ -203,6 +207,7 @@ public class BackupServiceImpl implements BackupService {
                     fos.write(buffer, 0, len);
                 }
                 fos.close();
+
             }
             zipEntry = zipInputStream.getNextEntry();
 
