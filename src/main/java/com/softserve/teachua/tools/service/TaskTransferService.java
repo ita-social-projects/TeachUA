@@ -19,4 +19,8 @@ public interface TaskTransferService {
      * @return new {@code List<SuccessCreatedTask>}.
      */
     List<SuccessCreatedTask> createTasksFromRepository();
+
+    void dropRedundantTable();
+    void addConstrain();
+    void dropConstrain();
 }

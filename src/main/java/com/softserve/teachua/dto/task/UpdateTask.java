@@ -23,16 +23,16 @@ public class UpdateTask implements Convertible {
     @JsonDeserialize(using = TrimDeserialize.class)
     @NotBlank
     @CheckRussian
-    @Size(min = 5, max = 30, message = "must contain a minimum of 5 and a maximum of 30 letters")
+    @Size(min = 5, max = 255, message = "must contain a minimum of 5 and a maximum of 255 letters")
     private String name;
     @JsonDeserialize(using = HtmlModifyDeserialize.class)
     @NotBlank
     @CheckRussian
-    @Size(min = 40, max = 3000, message = "must contain a minimum of 40 and a maximum of 3000 letters")
+    @Size(min = 40, max = 10000, message = "must contain a minimum of 40 and a maximum of 10000 letters")
     private String headerText;
     @JsonDeserialize(using = HtmlModifyDeserialize.class)
     @CheckRussian
-    @Size(max = 3000, message = "must contain a maximum of 3000 letters")
+    @Size(max = 10000, message = "must contain a maximum of 10000 letters")
     private String description;
     @NotBlank
     @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.png")

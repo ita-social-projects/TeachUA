@@ -71,4 +71,12 @@ public interface ChallengeService {
      * @return new {@code SuccessUpdateChallengePreview}.
      */
     SuccessUpdateChallengePreview updateChallengePreview(Long id, SuccessUpdateChallengePreview updateChallengePreview);
+
+    /**
+     * The method returns entity {@code Challenge}
+     *
+     * @param name                     - put Challenge name.
+     * @return {@code Challenge}.
+     */
+    Challenge getChallengeByName(String name);
 }
