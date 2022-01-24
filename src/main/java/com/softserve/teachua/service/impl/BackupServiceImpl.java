@@ -29,7 +29,7 @@ import java.util.zip.ZipOutputStream;
 public class BackupServiceImpl implements BackupService {
 
     private final static String ALL_FILES = "all";
-    private final static String IMAGES_DIRECTORY = "images";
+    private final static String IMAGES_DIRECTORY = "\\\\images";
     private final static String NOT_FOUND_FILE_EXCEPTION = "File %s not found";
     private final static String PUT_FILE_EXCEPTION = "Can`t put file %s to zip archive";
     private final static String WRITE_FILE_EXCEPTION = "Can`t write file %s to zip archive";
