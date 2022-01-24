@@ -38,7 +38,6 @@ public class TaskController implements Api {
      * @param id - put challenge id here.
      * @return {@code List<TaskPreview>}.
      */
-    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/challenge/{id}/tasks")
     public List<TaskPreview> getTasksByChallenge(@PathVariable Long id) {
         return taskService.getTasksByChallengeId(id);
@@ -50,7 +49,6 @@ public class TaskController implements Api {
      *
      * @return new {@code List<TaskPreview>}
      */
-    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/tasks")
     public List<TaskPreview> getTasks() {
         return taskService.getListOfTasks();
@@ -63,7 +61,6 @@ public class TaskController implements Api {
      * @param id - put task id here.
      * @return {@code TaskProfile}
      */
-    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER, RoleData.USER})
     @GetMapping("/challenge/task/{id}")
     public TaskProfile getTask(@PathVariable("id") Long id) {
         return taskService.getTask(id);

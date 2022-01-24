@@ -86,6 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/challenge",
                         "/challenge/*",
                         "/challenge/**",
+                        "/challenges/task/**",
                         "/challenge/task/**",
                         "/marathon",
                         "/marathon/*",
