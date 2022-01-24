@@ -30,7 +30,7 @@ public class BackUpController implements Api {
      * @return
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/getBackUpFiles")
+    @GetMapping("/backup/files")
     public List<String> getAllFileForBackUp(@RequestParam(value = "fileName", required = false, defaultValue = "all") String fileName) {
         return backupService.getAllBackupFiles(fileName);
     }

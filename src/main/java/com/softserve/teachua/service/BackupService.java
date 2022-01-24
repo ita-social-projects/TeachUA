@@ -28,6 +28,12 @@ public interface BackupService {
      */
     void downloadBackup(HttpServletResponse response) throws IOException;
 
+    /**
+     * Use this method for upload backup files to project(use file downloaded from @downloadBackup)
+     * @param file
+     * @return
+     * @throws IOException
+     */
 
     List<String> uploadBackup(MultipartFile file) throws IOException;
 

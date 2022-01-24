@@ -2,6 +2,7 @@ package com.softserve.teachua.service.impl;
 
 
 import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.teachua.exception.MethodNotSupportedException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.StreamCloseException;
 import com.softserve.teachua.model.*;
@@ -45,6 +46,7 @@ public class BackupServiceImpl implements BackupService {
     private final static String BACKUP_DIRECTORY = "src\\main\\resources\\Backup\\\\";
     private final static String SUCCESSFUL_ADDED_FILE = "File: %s Successfully added";
     private final static String CANT_TRANSFER_FILE = " Cant transfer file to directory %s";
+    private final static String CANT_DELETE_DIRECTORY = "Cant delete directory %s";
 
     private final AboutUsItemRepository aboutUsItemRepository;
     private final BannerItemRepository bannerItemRepository;
@@ -172,7 +174,11 @@ public class BackupServiceImpl implements BackupService {
             new File(BACKUP_DIRECTORY).mkdir();
         }
 
-        file.transferTo(Paths.get(BACKUP_DIRECTORY + file.getOriginalFilename()));
+        try {
+            file.transferTo(Paths.get(BACKUP_DIRECTORY + file.getOriginalFilename()));
+        } catch (FileUploadException e) {
+            throw new FileUploadException(String.format(CANT_TRANSFER_FILE, BACKUP_DIRECTORY));
+        }
 
         ZipInputStream zipInputStream = null;
         ZipEntry zipEntry = null;
@@ -180,40 +186,42 @@ public class BackupServiceImpl implements BackupService {
         zipInputStream = new ZipInputStream(new FileInputStream(BACKUP_DIRECTORY + file.getOriginalFilename()));
         try {
             zipEntry = zipInputStream.getNextEntry();
+
+
+            while (zipEntry != null) {
+                String zipDirectory = zipEntry.getName().split("TeachUA\\\\")[1];
+                File newFile = new File(zipDirectory);
+                if (zipEntry.isDirectory()) {
+                    if (!newFile.isDirectory() && !newFile.mkdir()) {
+                        throw new IOException(String.format(CANT_CREATE_DIRECTORY, newFile));
+                    }
+                } else {
+                    File parent = newFile.getParentFile();
+                    if (!parent.isDirectory() && !parent.mkdirs()) {
+                        throw new IOException(String.format(CANT_CREATE_DIRECTORY, parent));
+                    }
+
+                    FileOutputStream fos = new FileOutputStream(newFile);
+                    int len;
+                    while ((len = zipInputStream.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.close();
+                }
+                zipEntry = zipInputStream.getNextEntry();
+
+                movedFileList.add(String.format(SUCCESSFUL_ADDED_FILE, zipDirectory));
+
+            }
+
         } catch (IOException e) {
             throw new FileUploadException(FILE_READ_EXCEPTION);
-        }
-
-        while (zipEntry != null) {
-            String zipDirectory = zipEntry.getName().split("TeachUA\\\\")[1];
-            File newFile = new File(zipDirectory);
-            if (zipEntry.isDirectory()) {
-                if (!newFile.isDirectory() && !newFile.mkdir()) {
-                    throw new IOException(String.format(CANT_CREATE_DIRECTORY, newFile));
-                }
-            } else {
-                File parent = newFile.getParentFile();
-                if (!parent.isDirectory() && !parent.mkdirs()) {
-                    throw new IOException(String.format(CANT_CREATE_DIRECTORY, parent));
-                }
-
-                FileOutputStream fos = new FileOutputStream(newFile);
-                int len;
-                while ((len = zipInputStream.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
-                }
-                fos.close();
-            }
-            zipEntry = zipInputStream.getNextEntry();
-
-            movedFileList.add(String.format(SUCCESSFUL_ADDED_FILE, zipDirectory));
-
-        }
-        try {
+        } finally {
             zipInputStream.closeEntry();
             zipInputStream.close();
-        } catch (IOException e) {
-            throw new StreamCloseException(CLOSE_STREAM_EXCEPTION);
+        }
+        if (!(new File(BACKUP_DIRECTORY).delete())) {
+            throw new MethodNotSupportedException(String.format(CANT_DELETE_DIRECTORY,BACKUP_DIRECTORY));
         }
         return movedFileList;
     }
