@@ -201,12 +201,12 @@ public class BackupServiceImpl implements BackupService {
                         throw new IOException(String.format(CANT_CREATE_DIRECTORY, parent));
                     }
 
-                    FileOutputStream fos = new FileOutputStream(newFile);
-                    int len;
-                    while ((len = zipInputStream.read(buffer)) > 0) {
-                        fos.write(buffer, 0, len);
+                   int len;
+                    try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                        while ((len = zipInputStream.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
                     }
-                    fos.close();
                 }
                 zipEntry = zipInputStream.getNextEntry();
 
