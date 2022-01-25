@@ -94,6 +94,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> handleRestoreArchiveException(RestoreArchiveException exception) {
         return buildExceptionBody(exception, BAD_REQUEST);
     }
+    @ExceptionHandler(StreamCloseException.class)
+    public final ResponseEntity<Object> handleStreamCloseException(StreamCloseException exception){
+        return buildExceptionBody(exception, BAD_REQUEST);
+    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,

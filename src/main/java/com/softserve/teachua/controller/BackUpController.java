@@ -5,10 +5,11 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.BackupService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +30,7 @@ public class BackUpController implements Api {
      * @return
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/getBackUpFiles")
+    @GetMapping("/backup/files")
     public List<String> getAllFileForBackUp(@RequestParam(value = "fileName", required = false, defaultValue = "all") String fileName) {
         return backupService.getAllBackupFiles(fileName);
     }
@@ -37,13 +38,27 @@ public class BackUpController implements Api {
     /**
      * Use this endpoint to download .zip file with backup resources
      *
-     * @param backup
+     * @param response
      * @throws IOException
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping(value = "/downloadBackup", produces = "application/zip")
-    public void downloadBackup(HttpServletResponse backup)  {
-        backupService.downloadBackup(backup);
+    @GetMapping(value = "/backup/download", produces = "application/.zip")
+    public void downloadBackup(HttpServletResponse response)  throws IOException{
+        backupService.downloadBackup(response);
+    }
+
+    /**
+     *
+     * Use this endpoint to upload backup archive(.zip(downloaded from /backup/download)) to project
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    @AllowedRoles(RoleData.ADMIN)
+    @PostMapping(value = "/backup/upload")
+    public List<String> uploadBackUp(@RequestParam("file") MultipartFile file) throws IOException {
+       return backupService.uploadBackup(file);
     }
 }
 
