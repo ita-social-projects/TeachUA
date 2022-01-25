@@ -34,7 +34,7 @@ import java.util.zip.ZipOutputStream;
 public class BackupServiceImpl implements BackupService {
 
     private final static String ALL_FILES = "all";
-    private final static String IMAGES_DIRECTORY = "images";
+    private final static String IMAGES_DIRECTORY = "\\\\images";
     private final static String NOT_FOUND_FILE_EXCEPTION = "File %s not found";
     private final static String PUT_FILE_EXCEPTION = "Cant put file %s to zip archive";
     private final static String WRITE_FILE_EXCEPTION = "Cant write file %s to zip archive";
@@ -124,6 +124,7 @@ public class BackupServiceImpl implements BackupService {
             throw new FileUploadException(ZIP_STREAM_EXCEPTION);
         }
 
+
         for (String file : getAllBackupFiles(ALL_FILES)) {
 
             if (!(new File(file).exists())) {
@@ -134,6 +135,7 @@ public class BackupServiceImpl implements BackupService {
                 buffer = Files.readAllBytes(Paths.get(file));
             } catch (IOException e) {
                 throw new FileUploadException(FILE_READ_EXCEPTION);
+
             }
 
             ZipEntry zipEntry = new ZipEntry(file);
@@ -160,6 +162,7 @@ public class BackupServiceImpl implements BackupService {
             zipStream.close();
         } catch (IOException e) {
             throw new StreamCloseException(CLOSE_STREAM_EXCEPTION);
+
         }
         response.setStatus(HttpServletResponse.SC_OK);
         response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename= \"TeachUaBackup.zip\"");
@@ -222,6 +225,7 @@ public class BackupServiceImpl implements BackupService {
         }
         if (!(new File(BACKUP_DIRECTORY).delete())) {
             throw new MethodNotSupportedException(String.format(CANT_DELETE_DIRECTORY,BACKUP_DIRECTORY));
+
         }
         return movedFileList;
     }
