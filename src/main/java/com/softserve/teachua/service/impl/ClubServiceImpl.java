@@ -501,7 +501,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 .stream()
                 .filter(club -> club.getContacts()!=null)
                 .filter((club) -> !this.isValidJSON(club.getContacts()))
-                .filter(club -> club.getContacts()!=null)
                 .peek((club) -> {
                     JsonNodeFactory factory = JsonNodeFactory.instance;
                     if (club.getContacts().startsWith("{")) {
