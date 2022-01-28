@@ -5,14 +5,14 @@ import com.softserve.teachua.dto.task.SuccessCreatedTask;
 import com.softserve.teachua.tools.service.TaskTransferService;
 import com.softserve.teachua.utils.annotation.DevPermit;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 public class TaskTransferController implements Api {
+    private final String ALTER_WELL = "Alter, well done";
     private final TaskTransferService taskTransferService;
 
     @Autowired
@@ -44,4 +44,26 @@ public class TaskTransferController implements Api {
     public List<SuccessCreatedTask> addTasksFromRepository() {
         return taskTransferService.createTasksFromRepository();
     }
+
+    @DevPermit
+    @DeleteMapping("transfer/task/addconst")
+    public ResponseEntity<String> alterDb(){
+        taskTransferService.addConstrain();
+        return ResponseEntity.ok(ALTER_WELL);
+    }
+
+    @DevPermit
+    @DeleteMapping("transfer/task/dropconst")
+    public ResponseEntity<String> dropConstrain(){
+        taskTransferService.dropConstrain();
+        return ResponseEntity.ok(ALTER_WELL);
+    }
+
+    @DevPermit
+    @DeleteMapping("transfer/task/droptable")
+    public ResponseEntity<String> dropTable(){
+        taskTransferService.dropRedundantTable();
+        return ResponseEntity.ok(ALTER_WELL);
+    }
+
 }

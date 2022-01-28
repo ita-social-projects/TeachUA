@@ -153,4 +153,13 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         Challenge finalChallenge = challengeRepository.save(challenge);
         challengeArch.getTasksIds().stream().map(taskService::getTaskById).forEach(task -> task.setChallenge(finalChallenge));
     }
+
+    @Override
+    public Challenge getChallengeByName(String name){
+        return challengeRepository
+                .findByName(name)
+                .stream()
+                .findAny()
+                .orElseThrow(() -> new NotExistException(String.format("Challenge not found by name: %s", name)));
+    }
 }

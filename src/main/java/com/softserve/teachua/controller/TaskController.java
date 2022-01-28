@@ -63,7 +63,6 @@ public class TaskController implements Api {
      * @param id - put task id here.
      * @return {@code TaskProfile}
      */
-    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/challenge/task/{id}")
     public TaskProfile getTask(@PathVariable("id") Long id) {
         return taskService.getTask(id);

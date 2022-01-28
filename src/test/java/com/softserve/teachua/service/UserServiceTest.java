@@ -8,7 +8,6 @@ import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
-import com.softserve.teachua.model.archivable.RoleArch;
 import com.softserve.teachua.model.archivable.UserArch;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.JwtProvider;
@@ -109,7 +108,7 @@ import static org.mockito.Mockito.*;
                 .firstName("username").build();
         userUpdateProfile = UserUpdateProfile.builder()
                 .email(EXISTING_EMAIL)
-                .role(ROLE_NAME)
+                .roleName(ROLE_NAME)
                 .build();
     }
 
