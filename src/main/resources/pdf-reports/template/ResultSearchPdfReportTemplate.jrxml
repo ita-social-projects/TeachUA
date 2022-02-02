@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="documentTemplate" pageWidth="612" pageHeight="1000" columnWidth="572" leftMargin="20"
+              rightMargin="20" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty"
+              uuid="bf199c87-280e-423e-b235-b7fd14ee35f0">
+    <property name="ireport.zoom" value="1.5000000000000118"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <style name="Default" isDefault="true" pdfFontName="/pdf-reports/font/arial.ttf" pdfEncoding="Cp1251"/>
+    <subDataset name="Table Dataset 1" uuid="e23907bc-bf27-4929-b605-2c4c5f59acb2"/>
+
+    <parameter name="CLUBS" class="java.util.List"/>
+    <parameter name="CLUB_SUB_REPORT_TEMPLATE_PATH" class="java.lang.String"/>
+
+    <detail>
+        <band height="900">
+            <subreport>
+                <reportElement x="0" y="0" width="700" height="900"/>
+                <dataSourceExpression>
+                    <![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{CLUBS})]]></dataSourceExpression>
+                <subreportExpression>
+                    <![CDATA[JasperCompileManager.compileReport($P{CLUB_SUB_REPORT_TEMPLATE_PATH})]]></subreportExpression>
+            </subreport>
+        </band>
+    </detail>
+
+</jasperReport>

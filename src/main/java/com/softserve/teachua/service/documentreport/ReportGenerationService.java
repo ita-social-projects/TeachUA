@@ -1,5 +1,5 @@
 package com.softserve.teachua.service.documentreport;
 
-public interface PdfGenerationService<T> {
+public interface ReportGenerationService<T> {
     byte[] getPdfOutput(T t);
 }

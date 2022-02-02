@@ -12,18 +12,13 @@
     <style name="Default" isDefault="true" pdfFontName="/pdf-reports/font/arial.ttf" pdfEncoding="Cp1251"/>
     <subDataset name="Table Dataset 1" uuid="e23907bc-bf27-4929-b605-2c4c5f59acb2"/>
 
-    <parameter name="CLUB" class="com.softserve.teachua.model.Club" isForPrompting="false"/>
-    <parameter name="LOCATION_SUB_REPORT_PATH" class="java.lang.String" isForPrompting="false"/>
-    <parameter name="CATEGORIES_SUB_REPORT_PATH" class="java.lang.String" isForPrompting="false"/>
-    <parameter name="CONTACTS_SUB_REPORT_PATH" class="java.lang.String" isForPrompting="false"/>
-
+    <field name="name"/>
     <field name="categories" class="java.util.HashSet"/>
     <field name="locations" class="java.util.Set"/>
     <field name="contacts" class="java.util.Set"/>
     <field name="description"/>
     <field name="ageFrom" class="java.lang.Integer"/>
     <field name="ageTo" class="java.lang.Integer"/>
-
 
     <background>
         <band splitType="Stretch"/>
@@ -39,7 +34,6 @@
     </columnHeader>
     <detail>
         <band height="900" splitType="Stretch">
-            <printWhenExpression><![CDATA[$P{CLUB} != null]]></printWhenExpression>
             <!--CLUB TITLE-->
             <textField>
                 <reportElement forecolor="#002766" x="80" y="10" width="450" height="550"
@@ -47,7 +41,7 @@
                 <textElement markup="styled" textAlignment="Left">
                     <font size="16" fontName="Serif"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$P{CLUB}.getName()]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
             </textField>
             <!--CATEGORIES-->
             <frame>
@@ -66,20 +60,19 @@
                     <dataSourceExpression>
                         <![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{categories})]]></dataSourceExpression>
                     <subreportExpression>
-                        <![CDATA[JasperCompileManager.compileReport($P{CATEGORIES_SUB_REPORT_PATH})]]></subreportExpression>
+                        <![CDATA[JasperCompileManager.compileReport(com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/template/CategoriesSubReportTemplate.jrxml"))]]></subreportExpression>
                 </subreport>
             </frame>
             <!--LOCATIONS-->
             <frame>
-                <reportElement x="20" y="210" width="600" height="10"/>
-
+                <reportElement x="20" y="210" width="700" height="100"/>
                 <subreport>
-                    <reportElement x="5" y="5" width="575" height="10" forecolor="#2d4c68"
+                    <reportElement x="5" y="5" width="600" height="100" forecolor="#2d4c68"
                                    uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1"/>
                     <dataSourceExpression>
                         <![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{locations})]]></dataSourceExpression>
                     <subreportExpression>
-                        <![CDATA[JasperCompileManager.compileReport($P{LOCATION_SUB_REPORT_PATH})]]></subreportExpression>
+                        <![CDATA[JasperCompileManager.compileReport(com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/template/LocationsSubReportTemplate.jrxml"))]]></subreportExpression>
                 </subreport>
                 <image>
                     <reportElement x="1" y="0" width="24" height="24"/>
@@ -112,7 +105,7 @@
             </frame>
             <!--CONTACTS-->
             <frame>
-                <reportElement x="300" y="80" width="600" height="50"/>
+                <reportElement x="300" y="80" width="700" height="50"/>
                 <staticText>
                     <reportElement x="30" y="0" forecolor="#002766" width="100" height="20"/>
                     <textElement markup="styled">
@@ -121,12 +114,12 @@
                     <text>Контакти гуртка</text>
                 </staticText>
                 <subreport>
-                    <reportElement x="0" y="20" width="575" height="100" forecolor="#2d4c68"
+                    <reportElement x="0" y="20" width="600" height="50" forecolor="#2d4c68"
                                    uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1"/>
                     <dataSourceExpression>
                         <![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{contacts})]]></dataSourceExpression>
                     <subreportExpression>
-                        <![CDATA[JasperCompileManager.compileReport($P{CONTACTS_SUB_REPORT_PATH})]]></subreportExpression>
+                        <![CDATA[JasperCompileManager.compileReport(com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/template/ContactsSubReportTemplate.jrxml"))]]></subreportExpression>
                 </subreport>
             </frame>
             <!--DESCRIPTION-->
@@ -173,7 +166,6 @@
                         <![CDATA[com.softserve.teachua.utils.ReportDecorator.formDescription($F{description})]]></textFieldExpression>
                 </textField>
             </frame>
-
         </band>
     </detail>
     <columnFooter>
