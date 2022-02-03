@@ -161,6 +161,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithCorrectAge();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 testClub.getAge(),
                 null,
                 null,
@@ -183,6 +184,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithLessAge();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 testClub.getAge(),
                 null, null,
                 null, null,
@@ -196,6 +198,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithGreaterAge();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 testClub.getAge(),
                 null, null,
                 null, null,
@@ -209,6 +212,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getOnlineClub();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, null, null,
                 null, null,
                 testClub.isOnline(), null).getContent();
@@ -225,6 +229,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getNotOnlineClub();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, null, null,
                 null, null,
                 testClub.isOnline(), null).getContent();
@@ -241,6 +246,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithOneCategoryName();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, null, null,
                 null, testClub.getCategoriesNames(),
                 null, null).getContent();
@@ -259,6 +265,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithManyCategoryName();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, null, null,
                 null, testClub.getCategoriesNames(),
                 null, null).getContent();
@@ -277,6 +284,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithZeroCategoryName();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, null, null,
                 null, testClub.getCategoriesNames(),
                 null, null).getContent();
@@ -289,6 +297,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithExistingCityName1();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, testClub.getCityName(), null,
                 null, null,
                 null, null).getContent();
@@ -308,6 +317,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithExistingCityName2();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, testClub.getCityName(), null,
                 null, null,
                 null, null).getContent();
@@ -327,6 +337,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithNotExistingCityName();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, testClub.getCityName(), null,
                 null, null,
                 null, null).getContent();
@@ -339,6 +350,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithCorrectDistrict();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, null, testClub.getDistrictName(),
                 null, null,
                 null, null).getContent();
@@ -357,6 +369,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithIncorrectDistrict();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, null, testClub.getDistrictName(),
                 null, null,
                 null, null).getContent();
@@ -369,6 +382,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithCorrectStationName();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, null, null,
                 testClub.getStationName(), null,
                 null, null).getContent();
@@ -387,6 +401,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithIncorrectStationName();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, null, null,
                 testClub.getStationName(), null,
                 null, null).getContent();
@@ -399,6 +414,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubAsListWithAllCorrectData();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 testClub.getAge(),
                 testClub.getCityName(),
                 testClub.getDistrictName(),
@@ -432,6 +448,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubAsPage();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
+                null,
                 null, null, null, null, null, null,
                 PageRequest.of(testClub.getPageNumber(), 6)).getContent();
 

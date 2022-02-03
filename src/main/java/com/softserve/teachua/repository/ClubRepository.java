@@ -47,8 +47,12 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             + "(:age IS NULL or club.ageFrom <= :age AND club.ageTo >= :age) AND "
             + "((:categories) IS NULL OR category.name IN (:categories)) AND "
             + "(:district IS NULL OR district.name = :district) AND "
+            + "(:name IS NULL OR "
+            + "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) OR "
+            + "LOWER(club.description) LIKE LOWER(CONCAT('%', :name , '%'))) AND "
             + "(:station IS NULL OR station.name = :station)")
     Page<Club> findAllBylAdvancedSearch(
+            @Param("name") String name,
             @Param("age") Integer age,
             @Param("city") String cityName,
             @Param("district") String districtName,
