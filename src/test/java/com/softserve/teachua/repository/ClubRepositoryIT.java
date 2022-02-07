@@ -414,7 +414,7 @@ public class ClubRepositoryIT {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubAsListWithAllCorrectData();
 
         List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
+                testClub.getName(),
                 testClub.getAge(),
                 testClub.getCityName(),
                 testClub.getDistrictName(),
