@@ -1,6 +1,7 @@
 package com.softserve.teachua.utils;
 
-import com.softserve.teachua.dto.club.ClubResponse;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +13,16 @@ import java.nio.file.Paths;
 public class ReportDecorator {
 
     public static String formDescription(String description) {
-        StringBuilder text = new StringBuilder();
-        text.append(description);
-        text.delete(0, 379);
-        return text.substring(0, text.indexOf("type") - 3);
+        final JSONObject result = new JSONObject(description);
+        final JSONArray resultArray = result.getJSONArray("blocks");
+        for (int i = 0; i < resultArray.length(); i++) {
+            JSONObject obj = resultArray.getJSONObject(i);
+            String text = obj.getString("text");
+            if (!text.isEmpty() && text.length() > 5) {
+                return text;
+            }
+        }
+        return "Опис відсутній";
     }
 
     public static String formYears(Integer ageFrom, Integer ageTo) {
@@ -27,7 +34,7 @@ public class ReportDecorator {
         return resourcePath.toFile().getAbsolutePath();
     }
 
-    public static String getRealFilePathCategoryLogo(String path) throws IOException {
+    public static String getRealFilePathFrontend(String path) throws IOException {
         Path resourcePath = Paths.get((new ClassPathResource("/frontend" + path)).getURI());
         return resourcePath.toFile().getAbsolutePath();
     }

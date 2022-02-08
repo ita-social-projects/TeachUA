@@ -26,7 +26,7 @@
             </ellipse>
             <image>
                 <reportElement x="-10" y="-90" width="42" height="42"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathCategoryLogo($F{urlLogo})]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend($F{urlLogo})]]></imageExpression>
             </image>
         </band>
     </columnHeader>
@@ -55,7 +55,7 @@
 
                 <image>
                     <reportElement x="4" y="3" width="12" height="12"/>
-                    <imageExpression><![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathCategoryLogo($F{urlLogo})]]></imageExpression>
+                    <imageExpression><![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend($F{urlLogo})]]></imageExpression>
                 </image>
 
             </frame>
