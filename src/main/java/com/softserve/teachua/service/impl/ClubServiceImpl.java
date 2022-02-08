@@ -344,6 +344,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         log.debug("getAdvancedSearchClubs, advClubProf :" + advancedSearchClubProfile.toString());
 
         Page<Club> clubResponses = clubRepository.findAllBylAdvancedSearch(
+                advancedSearchClubProfile.getName(),
                 advancedSearchClubProfile.getAge(),
                 advancedSearchClubProfile.getCityName(),
                 advancedSearchClubProfile.getDistrictName(),
