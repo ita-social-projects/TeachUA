@@ -240,12 +240,13 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         if (!userProfile.getEmail().equals(user.getEmail())) {
             throw new IncorrectInputException(EMAIL_UPDATING_ERROR);
         }
+        /*   Admin must be able to appoint someone else as the admin
 
         if (userProfile.getRole().equals(RoleData.ADMIN.getDBRoleName())
                 && !user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
             throw new IncorrectInputException(ROLE_UPDATING_ERROR);
         }
-
+        */
         User newUser = dtoConverter.convertToEntity(userProfile, user)
                 .withPassword(user.getPassword())
                 .withId(id)
