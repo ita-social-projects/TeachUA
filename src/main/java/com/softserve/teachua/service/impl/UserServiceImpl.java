@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
     private static final String EMAIL_UPDATING_ERROR = "Email can`t be updated";
     private static final String ROLE_UPDATING_ERROR = "Role can`t be changed to Admin";
+    private static final String ROLE_ADMIN_UPDATING_ERROR = "There must be at least one admin";
     private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
     private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
     private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
@@ -236,6 +237,14 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     @Override
     public SuccessUpdatedUser updateUser(Long id, UserUpdateProfile userProfile) {
         User user = getUserById(id);
+
+        if (user.getRole().getName().equals("ROLE_ADMIN")) {
+            int adminsCount = userRepository.findAllByRoleName("ROLE_ADMIN").size();
+
+            if (adminsCount <= 1) {
+                throw new IncorrectInputException(ROLE_ADMIN_UPDATING_ERROR);
+            }
+        }
 
         if (!userProfile.getEmail().equals(user.getEmail())) {
             throw new IncorrectInputException(EMAIL_UPDATING_ERROR);
