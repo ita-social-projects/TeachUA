@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 @Data
 public class ClubSearchTestEntity {
+    private String name;
     private Integer age;
     private String cityName;
     private String districtName;

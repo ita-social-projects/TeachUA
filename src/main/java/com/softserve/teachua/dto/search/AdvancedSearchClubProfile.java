@@ -9,6 +9,9 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class AdvancedSearchClubProfile {
+    @Nullable
+    private String name;
+
     private Integer age;
 
     @Nullable
