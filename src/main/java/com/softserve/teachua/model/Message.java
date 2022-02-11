@@ -31,6 +31,11 @@ public class Message implements Convertible {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "club_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private Club club;
+
     @CreationTimestamp
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
