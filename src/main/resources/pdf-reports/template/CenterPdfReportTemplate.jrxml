@@ -47,7 +47,7 @@
                 <image>
                     <reportElement x="0" y="0" width="82" height="82" uuid="0407b952-8088-4146-9dfc-b61f71e78201"/>
                     <imageExpression>
-                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/image/center/illustration-logo.png")]]></imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/center/illustration-logo.png")]]></imageExpression>
                 </image>
             </frame>
             <frame>
@@ -82,25 +82,25 @@
                 <image>
                     <reportElement x="0" y="111" width="100" height="100" uuid="314f2eb1-8f27-4669-98cc-9b53e77797ea"/>
                     <imageExpression>
-                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/image/club/balls.jpg")]]></imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/clubs_carousel_tmp/balls.jpg")]]></imageExpression>
                 </image>
                 <image>
                     <reportElement x="130" y="111" width="100" height="100"
                                    uuid="c45b4c25-b074-4e64-a344-db71380996e2"/>
                     <imageExpression>
-                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/image/club/exercise.jpg")]]></imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/clubs_carousel_tmp/exercise.jpg")]]></imageExpression>
                 </image>
                 <image>
                     <reportElement x="260" y="111" width="100" height="100"
                                    uuid="6af87799-8696-4230-b64f-eec3931249b3"/>
                     <imageExpression>
-                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/image/club/kids_jump.png")]]></imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/clubs_carousel_tmp/kids_jump.png")]]></imageExpression>
                 </image>
                 <image>
                     <reportElement x="390" y="111" width="100" height="100"
                                    uuid="8079ba3a-23db-438f-b540-7db3bda606cd"/>
                     <imageExpression>
-                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/image/club/pencils.jpg")]]></imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/clubs_carousel_tmp/pencils.jpg")]]></imageExpression>
                 </image>
             </frame>
             <frame>

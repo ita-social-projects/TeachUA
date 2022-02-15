@@ -84,7 +84,7 @@
                 <image>
                     <reportElement x="1" y="0" width="24" height="24"/>
                     <imageExpression>
-                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/image/cluster.png")]]>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/map/cluster.png")]]>
                     </imageExpression>
                 </image>
                 <ellipse>
@@ -143,22 +143,22 @@
                 <image>
                     <reportElement x="0" y="111" width="100" height="100"/>
                     <imageExpression>
-                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/image/club/balls.jpg")]]></imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/clubs_carousel_tmp/balls.jpg")]]></imageExpression>
                 </image>
                 <image>
                     <reportElement x="130" y="111" width="100" height="100"/>
                     <imageExpression>
-                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/image/club/exercise.jpg")]]></imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/clubs_carousel_tmp/exercise.jpg")]]></imageExpression>
                 </image>
                 <image>
                     <reportElement x="260" y="111" width="100" height="100"/>
                     <imageExpression>
-                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/image/club/kids_jump.png")]]></imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/clubs_carousel_tmp/kids_jump.png")]]></imageExpression>
                 </image>
                 <image>
                     <reportElement x="390" y="111" width="100" height="100"/>
                     <imageExpression>
-                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePath("/pdf-reports/image/club/pencils.jpg")]]></imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/clubs_carousel_tmp/pencils.jpg")]]></imageExpression>
                 </image>
             </frame>
 

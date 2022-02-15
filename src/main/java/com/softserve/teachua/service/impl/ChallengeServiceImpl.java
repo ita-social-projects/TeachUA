@@ -119,7 +119,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
                 dtoConverter.convertToDto(challenge, ChallengeProfile.class);
         Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
         List<TaskPreview> tasks = taskRepository
-                .findTasksByChallengeAndStartDateBeforeOrderByStartDate(challenge, LocalDate.now().plusDays(1))
+                .findTasksByChallenge(challenge)
                 .stream().map(function).collect(Collectors.toList());
         challengeProfile.setTasks(tasks);
         return challengeProfile;

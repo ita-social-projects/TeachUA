@@ -1,8 +1,8 @@
-package com.softserve.teachua.service.documentreport.impl;
+package com.softserve.teachua.documentreport.impl;
 
+import com.softserve.teachua.documentreport.ReportGenerationService;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.service.CenterService;
-import com.softserve.teachua.service.documentreport.ReportGenerationService;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
