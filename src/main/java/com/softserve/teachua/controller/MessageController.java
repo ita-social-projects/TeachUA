@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +26,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class MessageController implements Api {
     private final MessageService messageService;
-    private final PasswordEncoder passwordEncoder;
 
     /**
      * Use this endpoint to create a new Message.
@@ -63,7 +61,7 @@ public class MessageController implements Api {
      * Use this endpoint to update Message by id.
      * The controller returns {@code MessageResponseDto}.
      *
-     * @param id put {@code Message} id here.
+     * @param id             put {@code Message} id here.
      * @param messageProfile put {@code MessageProfile} dto here.
      * @return {@code MessageResponseDto}.
      */
@@ -83,7 +81,8 @@ public class MessageController implements Api {
      * @return {@code MessageResponseDto}.
      */
     @PreAuthorize("isAuthenticated() and " +
-            "authentication.principal.id == @messageServiceImpl.getMessageById(#id).sender.id")
+            "authentication.principal.id == @messageServiceImpl.getMessageById(#id).sender.id or " +
+            "hasRole('ROLE_ADMIN')")
     @DeleteMapping("/message/{id}")
     public MessageResponseDto deleteMessageById(@PathVariable Long id) {
         return messageService.deleteMessageById(id);

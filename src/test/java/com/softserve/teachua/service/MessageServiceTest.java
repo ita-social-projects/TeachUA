@@ -71,7 +71,6 @@ class MessageServiceTest {
     private final String ARCHIVE_CLASS_NAME = "com.softserve.teachua.service.impl.MessageServiceImpl";
     private final String ARCHIVE_DATA = "MessageArch instance converted into String";
 
-
     @BeforeEach
     void setUp() {
         Club club = Club.builder()

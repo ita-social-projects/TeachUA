@@ -107,7 +107,6 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
         return messageResponseDto;
     }
 
-
     @Override
     public void archiveModel(Message message) {
         archiveService.saveModel(dtoConverter.convertToDto(message, MessageArch.class));
