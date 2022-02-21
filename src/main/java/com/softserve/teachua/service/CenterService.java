@@ -24,7 +24,7 @@ public interface CenterService {
      * @param id - put center id.
      * @return new {@code CenterResponse}.
      */
-    CenterResponse getCenterByProfileId(Long id);
+    CenterResponse getCenterProfileById(Long id);
 
     /**
      * The method returns entity {@code Center} of center by id.

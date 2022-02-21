@@ -159,7 +159,7 @@ public class CenterServiceTest {
         when(centerRepository.findById(CORRECT_CENTER_ID)).thenReturn(Optional.of(correctCenter));
         when(centerToCenterResponseConverter.convertToCenterResponse(correctCenter))
                 .thenReturn(correctCenterResponse);
-        CenterResponse actual = centerService.getCenterByProfileId(CORRECT_CENTER_ID);
+        CenterResponse actual = centerService.getCenterProfileById(CORRECT_CENTER_ID);
         assertThat(actual).isEqualTo(correctCenterResponse);
     }
 

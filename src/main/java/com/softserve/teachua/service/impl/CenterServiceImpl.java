@@ -124,7 +124,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     }
 
     @Override
-    public CenterResponse getCenterByProfileId(Long id) {
+    public CenterResponse getCenterProfileById(Long id) {
         return centerToCenterResponseConverter.convertToCenterResponse(getCenterById(id));
     }
 
@@ -332,7 +332,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
         centerRepository.updateRating(center.getId(), newRating, newClubCount);
 
-        return getCenterByProfileId(center.getId());
+        return getCenterProfileById(center.getId());
     }
 
     @Override
@@ -345,7 +345,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
         clubRepository.updateRating(center.getId(), newRating, newClubCount);
 
-        return getCenterByProfileId(center.getId());
+        return getCenterProfileById(center.getId());
     }
 
     @Override
