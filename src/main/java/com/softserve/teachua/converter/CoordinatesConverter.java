@@ -28,8 +28,12 @@ public class CoordinatesConverter {
 
     public void locationResponseConverterToDb(LocationResponse location) {
         String coordinates = location.getCoordinates();
-        String[] latAndLng = coordinates.replaceAll(" ", "").split(",");
-        location.setLatitude(Double.valueOf(latAndLng[0]));
-        location.setLongitude(Double.valueOf(latAndLng[1]));
+        if(coordinates==null){
+            return;
+        }else {
+            String[] latAndLng = coordinates.replaceAll(" ", "").split(",");
+            location.setLatitude(Double.valueOf(latAndLng[0]));
+            location.setLongitude(Double.valueOf(latAndLng[1]));
+        }
     }
 }

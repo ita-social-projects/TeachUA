@@ -30,8 +30,8 @@ public class LocationProfile {
     private Long districtId;
     private Long stationId;
 
-    @NotBlank
-    @CheckRussian
+//    @NotBlank
+//    @CheckRussian
     private String cityName;
 
     @CheckRussian
@@ -40,8 +40,8 @@ public class LocationProfile {
     @CheckRussian
     private String stationName;
 
-    @NotNull(message = " cannot be null")
-    @NotBlank(message = " cannot be blank")
+//    @NotNull(message = " cannot be null")
+//    @NotBlank(message = " cannot be blank")
     private String coordinates;
     private Double longitude;
     private Double latitude;

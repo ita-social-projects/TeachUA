@@ -6,9 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.softserve.teachua.converter.ClubToClubResponseConverter;
-import com.softserve.teachua.converter.CoordinatesConverter;
-import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.converter.*;
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
@@ -74,6 +72,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private final FeedbackRepository feedbackRepository;
     private final ObjectMapper objectMapper;
     private FeedbackService feedbackService;
+    private final ContactsStringConverter contactsStringConverter;
+    private final LocationResponsConvertToLocation locationResponsConvertToLocation;
 
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository,
@@ -93,7 +93,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                            GalleryRepository galleryRepository,
                            CenterService centerService,
                            FeedbackRepository feedbackRepository,
-                           ObjectMapper objectMapper) {
+                           ObjectMapper objectMapper,
+                           ContactsStringConverter contactsStringConverter, LocationResponsConvertToLocation locationResponsConvertToLocation) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -112,6 +113,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         this.centerService = centerService;
         this.feedbackRepository = feedbackRepository;
         this.objectMapper = objectMapper;
+        this.contactsStringConverter = contactsStringConverter;
+        this.locationResponsConvertToLocation = locationResponsConvertToLocation;
     }
 
     @Autowired
@@ -157,14 +160,14 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     @Override
-    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile) {
+    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubResponse) {
         User user = userService.getCurrentUser();
         validateClubOwner(id, user);
         Club club = getClubById(id);
         Set<LocationResponse> locations = null;
 
-        if (clubProfile.getLocations() != null) {
-            locations = new HashSet<>(clubProfile.getLocations());
+        if (clubResponse.getLocations() != null) {
+            locations = new HashSet<>(clubResponse.getLocations());
             if (!locations.isEmpty()) {
                 for (LocationResponse profile : locations) {
                     coordinatesConverter.locationResponseConverterToDb(profile);
@@ -181,10 +184,28 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 }
             }
         }
-
-        Club newClub = dtoConverter.convertToEntity(clubProfile, club)
+        Club newClub = dtoConverter.convertToEntity(clubResponse, club)
                 .withId(id)
+                .withContacts(contactsStringConverter.convertContactDataResponseToString(clubResponse.getContacts()))
                 .withLocations(locationService.updateLocationByClub(locations, club));
+//
+//        Club newClub = Club.builder()
+//                .id(clubResponse.getId())
+//                .name(clubResponse.getName())
+//                .description(clubResponse.getDescription())
+//                .urlWeb(clubResponse.getUrlWeb())
+//                .urlLogo(clubResponse.getUrlLogo())
+//                .urlBackground(clubResponse.getUrlBackground())
+//                .workTime(clubResponse.getWorkTime())
+//                .rating(clubResponse.getRating())
+//                .feedbackCount(clubResponse.getFeedbackCount())
+//                .isOnline(clubResponse.getIsOnline())
+//                .isApproved(clubResponse.getIsApproved())
+//                .ageFrom(clubResponse.getAgeFrom())
+//                .ageTo(clubResponse.getAgeTo())
+////                .categories(dtoConverter.convertToEntity(clubResponse.getCategories(),))
+//                .build();
+
 
         log.debug("updating club by id {}", newClub);
         return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);

@@ -52,4 +52,24 @@ public class ContactsStringConverter {
         }
         return result;
     }
+    public String convertContactDataResponseToString( Set<ContactDataResponse> contactDataResponses){
+        StringBuilder result= new StringBuilder();
+            try {
+                for (ContactDataResponse contactResponse: contactDataResponses) {
+
+                    result.append(contactResponse.getContactType().getId());
+                    result.append("::");
+                    result.append(contactResponse.getContactData());
+                    result.append(", ");
+                }
+                result.deleteCharAt(result.lastIndexOf(","));
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
+        return result.toString();
+    }
+
 }

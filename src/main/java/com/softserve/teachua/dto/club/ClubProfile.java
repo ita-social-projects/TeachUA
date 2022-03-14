@@ -24,7 +24,7 @@ public class ClubProfile implements Convertible {
 
     private List<String> categoriesName;
 
-    @Valid
+//    @Valid
     private List<LocationProfile> locations;
 
     @CheckRussian

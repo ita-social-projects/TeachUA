@@ -3,6 +3,7 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.converter.LocationResponsConvertToLocation;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.exception.IncorrectInputException;
@@ -38,6 +39,7 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
     private final StationService stationService;
     private final CenterRepository centerRepository;
     private final ClubRepository clubRepository;
+    private final LocationResponsConvertToLocation locationResponsConvertToLocation;
 
     @Autowired
     public LocationServiceImpl(LocationRepository locationRepository,
@@ -48,7 +50,7 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
                                DistrictService districtService,
                                StationService stationService,
                                CenterRepository centerRepository,
-                               ClubRepository clubRepository) {
+                               ClubRepository clubRepository, LocationResponsConvertToLocation locationResponsConvertToLocation) {
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
@@ -58,6 +60,7 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
         this.stationService = stationService;
         this.centerRepository = centerRepository;
         this.clubRepository = clubRepository;
+        this.locationResponsConvertToLocation = locationResponsConvertToLocation;
     }
 
     @Override
@@ -75,7 +78,11 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
     @Override
     public Location updateLocation(Long id, LocationProfile locationProfile) {
         Location location = getLocationById(id);
-        Location newLocation = dtoConverter.convertToEntity(locationProfile, location).withId(id);
+        Location newLocation = dtoConverter.convertToEntity(locationProfile, location)
+                .withId(id)
+                .withClub(location.getClub())
+                .withCity(location.getCity())
+                .withDistrict(location.getDistrict());
 
         log.info("**/updating location by id = " + newLocation);
         return locationRepository.save(newLocation);
@@ -111,6 +118,7 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
                 .stream()
                 .map(locationResponse -> locationRepository
                         .save(dtoConverter.convertToEntity(locationResponse, new Location().withClub(club))))
+//                        .save(locationResponsConvertToLocation.locationResponseConvertToEntityLocation(locationResponse, new Location().withClub(club))))
                 .collect(Collectors.toSet());
 
         return locationSet;
