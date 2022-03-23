@@ -1,12 +1,8 @@
 package com.softserve.teachua.converter;
 
-import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.Location;
-import com.softserve.teachua.repository.CityRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +37,7 @@ public class DtoConverter {
      * @return object of {@code <D>} type
      */
     public <T, D extends Convertible> D convertToEntity(T dto, D entity) {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper.map(dto, (Type) entity.getClass());
     }
 

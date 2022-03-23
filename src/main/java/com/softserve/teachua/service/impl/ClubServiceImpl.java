@@ -184,28 +184,29 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 }
             }
         }
+
+        Long centerId = clubResponse.getCenter().getId();
+
         Club newClub = dtoConverter.convertToEntity(clubResponse, club)
                 .withId(id)
+                .withCategories(clubResponse.getCategories()
+                        .stream()
+                        .map(categoryResponse -> categoryResponse.getName())
+                        .map(categoryService::getCategoryByName)
+                        .collect(Collectors.toSet()))
                 .withContacts(contactsStringConverter.convertContactDataResponseToString(clubResponse.getContacts()))
-                .withLocations(locationService.updateLocationByClub(locations, club));
-//
-//        Club newClub = Club.builder()
-//                .id(clubResponse.getId())
-//                .name(clubResponse.getName())
-//                .description(clubResponse.getDescription())
-//                .urlWeb(clubResponse.getUrlWeb())
-//                .urlLogo(clubResponse.getUrlLogo())
-//                .urlBackground(clubResponse.getUrlBackground())
-//                .workTime(clubResponse.getWorkTime())
-//                .rating(clubResponse.getRating())
-//                .feedbackCount(clubResponse.getFeedbackCount())
-//                .isOnline(clubResponse.getIsOnline())
-//                .isApproved(clubResponse.getIsApproved())
-//                .ageFrom(clubResponse.getAgeFrom())
-//                .ageTo(clubResponse.getAgeTo())
-////                .categories(dtoConverter.convertToEntity(clubResponse.getCategories(),))
-//                .build();
+                .withLocations(locationService.updateLocationByClub(locations, club))
+                .withCenter(centerService.getCenterById(centerId));
 
+        List<GalleryPhoto> galleryPhotos = clubResponse.getUrlGallery();
+        if (galleryPhotos != null && !galleryPhotos.isEmpty()) {
+            galleryRepository.deleteAllByClubId(clubResponse.getId());
+            newClub.setUrlGallery(galleryPhotos.stream()
+                            .map(photo -> galleryRepository.save(new GalleryPhoto()
+                                    .withUrl(photo.getUrl())
+                                    .withClub(newClub)))
+                            .collect(Collectors.toList()));
+        }
 
         log.debug("updating club by id {}", newClub);
         return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);
@@ -242,17 +243,17 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         User user = userService.getCurrentUser();
         clubProfile.setUserId(user.getId());
 
-        //todo delete or replace this block
-        log.debug("== add method");
+        Center center = centerService.getCenterById(clubProfile.getCenterId());
 
         log.debug("==clubService=?  clubProfile.centerID" + clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
-                        .withCategories(clubProfile.getCategoriesName()
-                                .stream()
-                                .map(categoryService::getCategoryByName)
-                                .collect(Collectors.toSet()))
-                        .withRating(0d))
-                .withUser(user);
+                .withCategories(clubProfile.getCategoriesName()
+                            .stream()
+                            .map(categoryService::getCategoryByName)
+                            .collect(Collectors.toSet()))
+                .withRating(0d)
+                .withUser(user)
+                .withCenter(center));
 
         if (locations != null && !locations.isEmpty()) {
             club.setLocations(
