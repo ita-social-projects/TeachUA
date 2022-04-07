@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
     private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
     private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
+    private static final String USERS_NOT_FOUND_BY_ROLE_NAME = "User not found by role name - %s";
     private static final String WRONG_PASSWORD = "Wrong password";
     private static final String NOT_VERIFIED = "User is not verified: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
@@ -118,6 +119,20 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         User user = optionalUser.get();
         log.debug("getting user by id {}", user);
         return user;
+    }
+
+    @Override
+    public List<UserResponse> getUserResponsesByRole(String roleName) {
+        List<User> users = userRepository.findByRoleName(roleName)
+                .orElseThrow(() -> {
+                    log.error("users not found by role name - {}", roleName);
+                    return new NotExistException(String.format(USERS_NOT_FOUND_BY_ROLE_NAME, roleName));
+                });
+        List<UserResponse> userResponses = users.stream()
+                .map(user -> (UserResponse) dtoConverter.convertToDto(user, UserResponse.class))
+                .collect(Collectors.toList());
+        log.debug("getting users by role name - {}", roleName);
+        return userResponses;
     }
 
     @Override

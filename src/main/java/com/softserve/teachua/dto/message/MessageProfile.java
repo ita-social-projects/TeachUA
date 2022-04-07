@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.With;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -26,7 +25,7 @@ public class MessageProfile implements Convertible {
     private Long clubId;
 
     @CheckRussian
-    @Size(min = 10, max = 1500, message = " should be between 10 and 1500 symbols")
+    @Size(min = 1, max = 1000, message = " should be between 1 and 1000 symbols")
     private String text;
 
     @NotNull(message = "senderId can't be null")
