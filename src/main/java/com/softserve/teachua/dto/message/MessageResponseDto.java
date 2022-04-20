@@ -1,6 +1,8 @@
 package com.softserve.teachua.dto.message;
 
+import com.softserve.teachua.dto.club.MessagesClub;
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.dto.user.UserPreview;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,11 +25,11 @@ public class MessageResponseDto implements Convertible {
 
     private LocalDateTime date;
 
-    private Long clubId;
+    private MessagesClub club;
 
-    private Long senderId;
+    private UserPreview sender;
 
-    private Long recipientId;
+    private UserPreview recipient;
 
     private Boolean isActive;
 }

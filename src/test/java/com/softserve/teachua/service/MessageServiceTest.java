@@ -1,8 +1,12 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.club.MessagesClub;
 import com.softserve.teachua.dto.message.MessageProfile;
 import com.softserve.teachua.dto.message.MessageResponseDto;
+import com.softserve.teachua.dto.message.MessageUpdateIsActive;
+import com.softserve.teachua.dto.message.MessageUpdateText;
+import com.softserve.teachua.dto.user.UserPreview;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Archive;
@@ -54,6 +58,8 @@ class MessageServiceTest {
 
     private Message message;
     private MessageProfile messageProfile;
+    private MessageUpdateText updateTextDto;
+    private MessageUpdateIsActive updateIsActiveDto;
     private MessageResponseDto messageResponseDto;
     private MessageArch messageArch;
     private Archive archiveMessage;
@@ -64,6 +70,7 @@ class MessageServiceTest {
     private final Long RECIPIENT_ID = 2L;
     private final String TEXT = "Test text";
     private final String UPDATED_TEXT = "Updated test text";
+    private final String CLUB_NAME = "Some club name";
     private final Boolean ACTIVE = true;
     private final LocalDateTime TIME_NOW = LocalDateTime.now();
     private final Message MESSAGE_ENTITY = new Message();
@@ -75,12 +82,23 @@ class MessageServiceTest {
     void setUp() {
         Club club = Club.builder()
                 .id(EXISTING_ID)
+                .name(CLUB_NAME)
                 .build();
         User sender = User.builder()
                 .id(SENDER_ID)
                 .build();
         User recipient = User.builder()
                 .id(RECIPIENT_ID)
+                .build();
+        UserPreview senderPrev = UserPreview.builder()
+                .id(SENDER_ID)
+                .build();
+        UserPreview recipientPrev = UserPreview.builder()
+                .id(RECIPIENT_ID)
+                .build();
+        MessagesClub messagesClub = MessagesClub.builder()
+                .id(EXISTING_ID)
+                .name(CLUB_NAME)
                 .build();
         message = Message.builder()
                 .id(EXISTING_ID)
@@ -101,12 +119,18 @@ class MessageServiceTest {
                 .build();
         messageResponseDto = MessageResponseDto.builder()
                 .id(EXISTING_ID)
-                .clubId(EXISTING_ID)
+                .club(messagesClub)
                 .date(TIME_NOW)
-                .senderId(SENDER_ID)
-                .recipientId(RECIPIENT_ID)
+                .sender(senderPrev)
+                .recipient(recipientPrev)
                 .text(TEXT)
                 .isActive(ACTIVE)
+                .build();
+        updateTextDto = MessageUpdateText.builder()
+                .text(UPDATED_TEXT)
+                .build();
+        updateIsActiveDto = MessageUpdateIsActive.builder()
+                .isActive(false)
                 .build();
         messageArch = MessageArch.builder()
                 .id(EXISTING_ID)
@@ -185,7 +209,7 @@ class MessageServiceTest {
     }
 
     @Test
-    void updateMessageById() {
+    void updateMessageTextById() {
         Message messageUpdatedText = message.withText(UPDATED_TEXT);
         messageResponseDto.setText(UPDATED_TEXT);
 
@@ -195,7 +219,21 @@ class MessageServiceTest {
                 .thenReturn(messageResponseDto);
 
         assertEquals(messageResponseDto,
-                messageService.updateMessageById(EXISTING_ID, messageProfile.withText(UPDATED_TEXT)));
+                messageService.updateMessageTextById(EXISTING_ID, updateTextDto));
+    }
+
+    @Test
+    void updateMessageIsActiveById() {
+        Message messageUpdatedIsActive = message.withIsActive(false);
+        messageResponseDto.setIsActive(false);
+
+        when(messageRepository.findById(EXISTING_ID)).thenReturn(Optional.of(message));
+        when(messageRepository.save(messageUpdatedIsActive)).thenReturn(messageUpdatedIsActive);
+        when(dtoConverter.convertToDto(messageUpdatedIsActive, MESSAGE_RESPONSE_DTO_CLASS))
+                .thenReturn(messageResponseDto);
+
+        assertEquals(messageResponseDto,
+                messageService.updateMessageIsActiveById(EXISTING_ID, updateIsActiveDto));
     }
 
     @Test

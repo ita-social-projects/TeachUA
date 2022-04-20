@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.message.MessageProfile;
 import com.softserve.teachua.dto.message.MessageResponseDto;
+import com.softserve.teachua.dto.message.MessageUpdateIsActive;
+import com.softserve.teachua.dto.message.MessageUpdateText;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Message;
@@ -24,7 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ValidationException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -76,16 +80,54 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    public List<Message> getMessagesByUserId(Long id, boolean isSender) {
+        List<Message> messages;
+        if (isSender) {
+            messages = messageRepository.findAllBySenderId(id).orElseThrow(() -> {
+                log.warn("Messages with sender id - {} doesn't exist", id);
+                return new NotExistException(String.format("Messages with sender id - %s doesn't exist", id));
+            });
+            log.debug("get messages by sender id - {}", id);
+        } else {
+            messages = messageRepository.findAllByRecipientId(id).orElseThrow(() -> {
+                log.warn("Messages with recipient id - {} doesn't exist", id);
+                return new NotExistException(String.format("Messages with recipient id - %s doesn't exist", id));
+            });
+            log.debug("get messages by recipient id - {}", id);
+        }
+        return messages;
+    }
+
+    @Override
     public MessageResponseDto getMessageResponseById(Long id) {
         return dtoConverter.convertToDto(getMessageById(id), MessageResponseDto.class);
     }
 
     @Override
-    public MessageResponseDto updateMessageById(Long id, MessageProfile messageProfile) {
-        Message updatedMessage = getMessageById(id).withText(messageProfile.getText());
+    public List<MessageResponseDto> getMessageResponsesByUserId(Long id, boolean isSender) {
+        return getMessagesByUserId(id, isSender)
+                .stream()
+                .map(message -> (MessageResponseDto) dtoConverter.convertToDto(message, MessageResponseDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public MessageResponseDto updateMessageTextById(Long id, MessageUpdateText messageUpdateText) {
+        Message updatedMessage = getMessageById(id)
+                .withText(messageUpdateText.getText());
         MessageResponseDto messageResponseDto =
                 dtoConverter.convertToDto(messageRepository.save(updatedMessage), MessageResponseDto.class);
-        log.debug("update message by id - {}", id);
+        log.debug("update message text by id - {}", id);
+        return messageResponseDto;
+    }
+
+    @Override
+    public MessageResponseDto updateMessageIsActiveById(Long id, MessageUpdateIsActive messageUpdateIsActive) {
+        Message updatedMessage = getMessageById(id)
+                .withIsActive(messageUpdateIsActive.getIsActive());
+        MessageResponseDto messageResponseDto =
+                dtoConverter.convertToDto(messageRepository.save(updatedMessage), MessageResponseDto.class);
+        log.debug("update message isActive by id - {}", id);
         return messageResponseDto;
     }
 
@@ -117,13 +159,13 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
         MessageArch messageArch = objectMapper.readValue(archiveObject, MessageArch.class);
         Message message = dtoConverter.convertToEntity(messageArch, new Message()).withId(null);
 
-        if(Optional.ofNullable(messageArch.getClubId()).isPresent()) {
+        if (Optional.ofNullable(messageArch.getClubId()).isPresent()) {
             message.setClub(clubService.getClubById(messageArch.getClubId()));
         }
-        if(Optional.ofNullable(messageArch.getSenderId()).isPresent()){
+        if (Optional.ofNullable(messageArch.getSenderId()).isPresent()) {
             message.setSender(userService.getUserById(messageArch.getSenderId()));
         }
-        if(Optional.ofNullable(messageArch.getRecipientId()).isPresent()){
+        if (Optional.ofNullable(messageArch.getRecipientId()).isPresent()) {
             message.setRecipient(userService.getUserById(messageArch.getRecipientId()));
         }
         messageRepository.save(message);
