@@ -53,6 +53,15 @@ public interface UserService {
     UserResponse deleteUserById(Long id);
 
     /**
+     * The method returns list of dto {@code UserResponse} from users by role name.
+     *
+     * @param roleName - put roleName.
+     * @return new {@code List<UserResponse>}.
+     * @throws NotExistException if users not exists.
+     */
+    List<UserResponse> getUserResponsesByRole(String roleName);
+
+    /**
      * The method returns entity {@code User} of user by id.
      *
      * @param email - put user email.

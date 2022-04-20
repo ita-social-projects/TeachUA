@@ -1,0 +1,32 @@
+package com.softserve.teachua.model.archivable;
+
+import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.model.marker.Archivable;
+import com.softserve.teachua.service.impl.MessageServiceImpl;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
+public class MessageArch implements Convertible, Archivable {
+    private Long id;
+    private Long clubId;
+    private LocalDateTime date;
+    private Long senderId;
+    private Long recipientId;
+    private String text;
+    private Boolean isActive;
+
+    @Override
+    public Class getServiceClass() {
+        return MessageServiceImpl.class;
+    }
+}

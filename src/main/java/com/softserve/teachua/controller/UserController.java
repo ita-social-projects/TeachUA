@@ -52,6 +52,18 @@ public class UserController implements Api {
     }
 
     /**
+     * Use this endpoint to get users by roleName.
+     * The controller returns {@code List<UserResponse>}.
+     *
+     * @param roleName - put role name.
+     * @return {@code List<UserResponse>}.
+     */
+    @GetMapping("/users/{role}")
+    public List<UserResponse> getUsersByRole(@PathVariable("role") String roleName) {
+        return userService.getUserResponsesByRole(roleName);
+    }
+
+    /**
      * Use this endpoint to get users.
      * The controller returns {@code List <UserResponse>}.
      *
