@@ -12,6 +12,7 @@ import com.softserve.teachua.model.archivable.ChallengeArch;
 import com.softserve.teachua.repository.ChallengeRepository;
 import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.service.*;
+import com.softserve.teachua.utils.ChallengeUtil;
 import com.softserve.teachua.utils.HtmlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -80,6 +81,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     public SuccessCreatedChallenge createChallenge(
             CreateChallenge createChallenge) {
         HtmlUtils.validateDescription(createChallenge.getDescription());
+        validateSortNumber(createChallenge.getSortNumber());
         Challenge challenge = dtoConverter.convertToEntity(createChallenge, new Challenge());
         challenge.setUser(userService.getCurrentUser());
         challenge.setIsActive(true);
@@ -161,5 +163,13 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
                 .stream()
                 .findAny()
                 .orElseThrow(() -> new NotExistException(String.format("Challenge not found by name: %s", name)));
+    }
+
+    private void validateSortNumber(Long sortNumber){
+        List<Long> unavailableSortNumbers = challengeRepository.findAll()
+                .stream()
+                .map(Challenge::getSortNumber)
+                .collect(Collectors.toList());
+        ChallengeUtil.validateSortNumber(sortNumber, unavailableSortNumbers);
     }
 }
