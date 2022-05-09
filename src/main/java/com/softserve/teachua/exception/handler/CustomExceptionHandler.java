@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.validation.ConstraintViolationException;
 import java.time.format.DateTimeParseException;
 
@@ -103,9 +106,17 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
+        Map<String, String> mapMessage = new HashMap<>();
+        mapMessage.put("startDate Invalid future date", "Дата не може бути у минулому");
+
         StringBuilder sb = new StringBuilder();
         exception.getBindingResult().getFieldErrors().forEach((error) -> {
-            sb.append(error.getField()).append(" ").append(error.getDefaultMessage()).append(" and ");
+            if ( (error.getField() + " " + error.getDefaultMessage())
+                  .contains("startDate Invalid future date") ) {
+                sb.append(mapMessage.get("startDate Invalid future date")).append(" and ");
+            } else {
+                sb.append(error.getField()).append(" ").append(error.getDefaultMessage()).append(" and ");
+            }
         });
         sb.setLength(sb.length() - 5);
         return buildExceptionBody(new BadRequestException(sb.toString()), status);

@@ -39,7 +39,7 @@ public class CreateTask implements Convertible {
     @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.png")
     private String picture;
     @NotNull
-    @Future
+    @Future(message="Invalid future date.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 }
