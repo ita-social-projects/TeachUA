@@ -73,6 +73,13 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
                 .stream().map(function).collect(Collectors.toList());
     }
 
+    @Override
+    public List<TaskPreview> getCurrentTasksByChallengeId(Long id) {
+        Challenge challenge = challengeService.getChallengeById(id);
+        Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
+        return taskRepository.findCurrentTasksByChallenge(challenge)
+                .stream().map(function).collect(Collectors.toList());
+    }
 
     @Override
     public TaskProfile getTask(Long taskId) {
