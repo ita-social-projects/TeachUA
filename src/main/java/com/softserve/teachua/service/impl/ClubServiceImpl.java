@@ -160,6 +160,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     @Override
+    @Transactional
     public SuccessUpdatedClub updateClub(Long id, ClubResponse clubResponse) {
         User user = userService.getCurrentUser();
         validateClubOwner(id, user);
@@ -200,7 +201,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
         List<GalleryPhoto> galleryPhotos = clubResponse.getUrlGallery();
         if (galleryPhotos != null && !galleryPhotos.isEmpty()) {
-            galleryRepository.deleteAllByClubId(clubResponse.getId());
+            galleryRepository.deleteAllByClub_Id(clubResponse.getId());
             newClub.setUrlGallery(galleryPhotos.stream()
                             .map(photo -> galleryRepository.save(new GalleryPhoto()
                                     .withUrl(photo.getUrl())
