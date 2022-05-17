@@ -12,5 +12,5 @@ public interface GalleryRepository extends JpaRepository<GalleryPhoto, Long> {
 
     List<GalleryPhoto> findAllByClubId(@Param("club_id") Long id);
 
-    Long deleteAllByClub_Id(@Param("club_id") Long id);
+    Long deleteAllByClubId(@Param("club_id") Long id);
 }

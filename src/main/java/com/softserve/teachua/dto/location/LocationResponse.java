@@ -34,7 +34,7 @@ public class LocationResponse {
     @CheckRussian
     private String stationName;
 
-    private CityResponse city;
+    private CityResponse locationCity;
 
     private Long cityId;
     private Long districtId;

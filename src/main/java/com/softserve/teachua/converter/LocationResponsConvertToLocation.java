@@ -29,21 +29,21 @@ public class LocationResponsConvertToLocation {
         this.dtoConverter = dtoConverter;
     }
 
-    public Location locationResponseConvertToEntityLocation (LocationResponse locationResponse, Location location){
-        Location locationUpdate = new Location();
-        City city =dtoConverter.convertToEntity(locationResponse.getCity(),new City());
-        Club club = clubRepository.getOne(locationResponse.getClubId());
-        locationUpdate.setCity(city);
-        locationUpdate.setId(locationResponse.getId());
-        locationUpdate.setAddress(locationResponse.getAddress());
-        locationUpdate.setLatitude(locationResponse.getLatitude());
-        locationUpdate.setLongitude(locationResponse.getLongitude());
-        locationUpdate.setPhone(locationResponse.getPhone());
-        locationUpdate.setDistrict(districtRepository.getOne(locationResponse.getDistrictId()));
-        locationUpdate.setStation(stationRepository.getOne(locationResponse.getStationId()));
-        locationUpdate.setClub(club);
-        locationUpdate.setCenter(club.getCenter());
-
-        return locationUpdate;
-    }
+//    public Location locationResponseConvertToEntityLocation (LocationResponse locationResponse, Location location){
+//        Location locationUpdate = new Location();
+//        City city =dtoConverter.convertToEntity(locationResponse.getCity(),new City());
+//        Club club = clubRepository.getOne(locationResponse.getClubId());
+//        locationUpdate.setCity(city);
+//        locationUpdate.setId(locationResponse.getId());
+//        locationUpdate.setAddress(locationResponse.getAddress());
+//        locationUpdate.setLatitude(locationResponse.getLatitude());
+//        locationUpdate.setLongitude(locationResponse.getLongitude());
+//        locationUpdate.setPhone(locationResponse.getPhone());
+//        locationUpdate.setDistrict(districtRepository.getOne(locationResponse.getDistrictId()));
+//        locationUpdate.setStation(stationRepository.getOne(locationResponse.getStationId()));
+//        locationUpdate.setClub(club);
+//        locationUpdate.setCenter(club.getCenter());
+//
+//        return locationUpdate;
+//    }
 }

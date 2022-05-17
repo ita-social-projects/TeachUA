@@ -188,7 +188,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
         Long centerId = clubResponse.getCenter().getId();
 
-        Club newClub = dtoConverter.convertToEntity(clubResponse, club)
+        Club updatedClub = dtoConverter.convertToEntity(clubResponse, club)
                 .withId(id)
                 .withCategories(clubResponse.getCategories()
                         .stream()
@@ -201,16 +201,16 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
         List<GalleryPhoto> galleryPhotos = clubResponse.getUrlGallery();
         if (galleryPhotos != null && !galleryPhotos.isEmpty()) {
-            galleryRepository.deleteAllByClub_Id(clubResponse.getId());
-            newClub.setUrlGallery(galleryPhotos.stream()
+            galleryRepository.deleteAllByClubId(clubResponse.getId());
+            updatedClub.setUrlGallery(galleryPhotos.stream()
                             .map(photo -> galleryRepository.save(new GalleryPhoto()
                                     .withUrl(photo.getUrl())
-                                    .withClub(newClub)))
+                                    .withClub(updatedClub)))
                             .collect(Collectors.toList()));
         }
 
-        log.debug("updating club by id {}", newClub);
-        return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);
+        log.debug("updating club by id {}", updatedClub);
+        return dtoConverter.convertToDto(clubRepository.save(updatedClub), SuccessUpdatedClub.class);
     }
 
     @Override

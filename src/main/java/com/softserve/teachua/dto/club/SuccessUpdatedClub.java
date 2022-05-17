@@ -38,5 +38,4 @@ public class SuccessUpdatedClub implements Convertible {
     private Boolean isOnline;
     private Long feedbackCount;
     private Set<ContactDataResponse> contacts;
-
 }
