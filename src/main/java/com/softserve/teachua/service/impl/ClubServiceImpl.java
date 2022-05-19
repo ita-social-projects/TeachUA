@@ -73,7 +73,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private final ObjectMapper objectMapper;
     private FeedbackService feedbackService;
     private final ContactsStringConverter contactsStringConverter;
-    private final LocationResponsConvertToLocation locationResponsConvertToLocation;
 
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository,
@@ -94,7 +93,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                            CenterService centerService,
                            FeedbackRepository feedbackRepository,
                            ObjectMapper objectMapper,
-                           ContactsStringConverter contactsStringConverter, LocationResponsConvertToLocation locationResponsConvertToLocation) {
+                           ContactsStringConverter contactsStringConverter) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -114,7 +113,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         this.feedbackRepository = feedbackRepository;
         this.objectMapper = objectMapper;
         this.contactsStringConverter = contactsStringConverter;
-        this.locationResponsConvertToLocation = locationResponsConvertToLocation;
     }
 
     @Autowired
