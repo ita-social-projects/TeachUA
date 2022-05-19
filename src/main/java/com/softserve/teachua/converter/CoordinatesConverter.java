@@ -20,16 +20,20 @@ public class CoordinatesConverter {
     }
 
     public void locationProfileConverterToDb(LocationProfile location) {
-        String coordinates = location.getCoordinates();
-        String[] latAndLng = coordinates.replaceAll(" ", "").split(",");
-        location.setLatitude(Double.valueOf(latAndLng[0]));
-        location.setLongitude(Double.valueOf(latAndLng[1]));
+        if(location != null && location.getCoordinates() != null){
+            String coordinates = location.getCoordinates();
+            String[] latAndLng = coordinates.replaceAll(" ", "").split(",");
+            location.setLatitude(Double.valueOf(latAndLng[0]));
+            location.setLongitude(Double.valueOf(latAndLng[1]));
+        }
     }
 
     public void locationResponseConverterToDb(LocationResponse location) {
-        String coordinates = location.getCoordinates();
-        String[] latAndLng = coordinates.replaceAll(" ", "").split(",");
-        location.setLatitude(Double.valueOf(latAndLng[0]));
-        location.setLongitude(Double.valueOf(latAndLng[1]));
+        if(location != null && location.getCoordinates() != null){
+            String coordinates = location.getCoordinates();
+            String[] latAndLng = coordinates.replaceAll(" ", "").split(",");
+            location.setLatitude(Double.valueOf(latAndLng[0]));
+            location.setLongitude(Double.valueOf(latAndLng[1]));
+        }
     }
 }

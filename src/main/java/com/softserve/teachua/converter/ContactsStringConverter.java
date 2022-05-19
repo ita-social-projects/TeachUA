@@ -50,6 +50,24 @@ public class ContactsStringConverter {
             log.error(e.getMessage());
             return result;
         }
+
         return result;
+    }
+
+    public String convertContactDataResponseToString(Set<ContactDataResponse> contactDataResponses){
+        StringBuilder result= new StringBuilder();
+            try {
+                for (ContactDataResponse contactResponse: contactDataResponses) {
+                    result.append(contactResponse.getContactType().getId());
+                    result.append("::");
+                    result.append(contactResponse.getContactData());
+                    result.append(", ");
+                }
+                result.deleteCharAt(result.lastIndexOf(","));
+            }catch (Exception e){
+                log.error(e.getMessage());
+            }
+
+        return result.toString();
     }
 }

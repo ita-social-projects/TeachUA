@@ -9,13 +9,12 @@ import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.*;
 import com.softserve.teachua.model.archivable.LocationArch;
-import com.softserve.teachua.repository.CenterRepository;
-import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.service.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,36 +27,37 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 public class LocationServiceImpl implements LocationService, ArchiveMark<Location> {
-    private final static String NOT_EXIST_EXCEPTION = "Location with %d id not exists";
+    private static final String NOT_EXIST_EXCEPTION = "Location with %d id not exists";
+
     private final LocationRepository locationRepository;
     private final DtoConverter dtoConverter;
-    private final ArchiveService archiveService;
     private final ObjectMapper objectMapper;
+    private final ArchiveService archiveService;
+    private final CenterService centerService;
+    private final ClubService clubService;
     private final CityService cityService;
     private final DistrictService districtService;
     private final StationService stationService;
-    private final CenterRepository centerRepository;
-    private final ClubRepository clubRepository;
 
     @Autowired
     public LocationServiceImpl(LocationRepository locationRepository,
                                DtoConverter dtoConverter,
-                               ArchiveService archiveService,
                                ObjectMapper objectMapper,
+                               ArchiveService archiveService,
+                               @Lazy CenterService centerService,
+                               @Lazy ClubService clubService,
                                CityService cityService,
                                DistrictService districtService,
-                               StationService stationService,
-                               CenterRepository centerRepository,
-                               ClubRepository clubRepository) {
+                               StationService stationService) {
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
-        this.archiveService = archiveService;
         this.objectMapper = objectMapper;
+        this.archiveService = archiveService;
+        this.centerService = centerService;
+        this.clubService = clubService;
         this.cityService = cityService;
         this.districtService = districtService;
         this.stationService = stationService;
-        this.centerRepository = centerRepository;
-        this.clubRepository = clubRepository;
     }
 
     @Override
@@ -75,7 +75,12 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
     @Override
     public Location updateLocation(Long id, LocationProfile locationProfile) {
         Location location = getLocationById(id);
-        Location newLocation = dtoConverter.convertToEntity(locationProfile, location).withId(id);
+        Location newLocation = dtoConverter.convertToEntity(locationProfile, location)
+                .withId(id)
+                .withClub(location.getClub())
+                .withCity(location.getCity())
+                .withDistrict(location.getDistrict())
+                .withStation(location.getStation());
 
         log.info("**/updating location by id = " + newLocation);
         return locationRepository.save(newLocation);
@@ -89,14 +94,14 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
 
         locationRepository.deleteAllByCenter(center);
 
-        Set<Location> locationSet = locations
-                .stream()
+        return locations.stream()
                 .map(locationProfile -> locationRepository
-                        .save(dtoConverter.convertToEntity(locationProfile, new Location()
-                                .withCenter(center))))
+                        .save(dtoConverter.convertToEntity(locationProfile, new Location())
+                                .withCenter(center)
+                                .withCity(cityService.getCityById(locationProfile.getCityId()))
+                                .withDistrict(districtService.getDistrictById(locationProfile.getDistrictId()))
+                                .withStation(stationService.getStationById(locationProfile.getStationId()))))
                 .collect(Collectors.toSet());
-
-        return locationSet;
     }
 
     @Override
@@ -107,13 +112,15 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
 
         locationRepository.deleteAllByClub(club);
 
-        Set<Location> locationSet = locations
-                .stream()
-                .map(locationResponse -> locationRepository
-                        .save(dtoConverter.convertToEntity(locationResponse, new Location().withClub(club))))
-                .collect(Collectors.toSet());
 
-        return locationSet;
+        return locations.stream()
+                .map(locationResponse -> locationRepository
+                        .save(dtoConverter.convertToEntity(locationResponse, new Location())
+                                .withClub(club)
+                                .withCity(cityService.getCityById(locationResponse.getCityId()))
+                                .withDistrict(districtService.getDistrictById(locationResponse.getDistrictId()))
+                                .withStation(stationService.getStationById(locationResponse.getStationId()))))
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -149,12 +156,10 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
             location.setCity(cityService.getCityById(locationArch.getCityId()));
         }
         if (Optional.ofNullable(locationArch.getClubId()).isPresent()) {
-            location.setClub(clubRepository.findById(locationArch.getClubId()).orElseThrow(
-                    () -> new NotExistException(String.format("Club with id-%d not exists", locationArch.getClubId()))));
+            location.setClub(clubService.getClubById(locationArch.getClubId()));
         }
         if (Optional.ofNullable(locationArch.getCenterId()).isPresent()) {
-            location.setCenter(centerRepository.findById(locationArch.getCenterId()).orElseThrow(
-                    () -> new NotExistException(String.format("Center with id-%d not exists", locationArch.getCenterId()))));
+            location.setCenter(centerService.getCenterById(locationArch.getCenterId()));
         }
         if (Optional.ofNullable(locationArch.getDistrictId()).isPresent()) {
             location.setDistrict(districtService.getDistrictById(locationArch.getDistrictId()));

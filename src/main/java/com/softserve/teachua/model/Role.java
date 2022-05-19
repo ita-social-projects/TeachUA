@@ -22,7 +22,7 @@ public class Role implements Convertible {
     @Column(nullable = false)
     private String name;
 
-    @JsonManagedReference
+    @JsonManagedReference(value = "userRole")
     @OneToMany(mappedBy = "role")
     @ToString.Exclude
     private List<User> users;

@@ -6,9 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.softserve.teachua.converter.ClubToClubResponseConverter;
-import com.softserve.teachua.converter.CoordinatesConverter;
-import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.converter.*;
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
@@ -74,6 +72,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private final FeedbackRepository feedbackRepository;
     private final ObjectMapper objectMapper;
     private FeedbackService feedbackService;
+    private final ContactsStringConverter contactsStringConverter;
 
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository,
@@ -93,7 +92,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                            GalleryRepository galleryRepository,
                            CenterService centerService,
                            FeedbackRepository feedbackRepository,
-                           ObjectMapper objectMapper) {
+                           ObjectMapper objectMapper,
+                           ContactsStringConverter contactsStringConverter) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -112,6 +112,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         this.centerService = centerService;
         this.feedbackRepository = feedbackRepository;
         this.objectMapper = objectMapper;
+        this.contactsStringConverter = contactsStringConverter;
     }
 
     @Autowired
@@ -157,14 +158,15 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     @Override
-    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubProfile) {
+    @Transactional
+    public SuccessUpdatedClub updateClub(Long id, ClubResponse clubResponse) {
         User user = userService.getCurrentUser();
         validateClubOwner(id, user);
         Club club = getClubById(id);
         Set<LocationResponse> locations = null;
 
-        if (clubProfile.getLocations() != null) {
-            locations = new HashSet<>(clubProfile.getLocations());
+        if (clubResponse.getLocations() != null) {
+            locations = new HashSet<>(clubResponse.getLocations());
             if (!locations.isEmpty()) {
                 for (LocationResponse profile : locations) {
                     coordinatesConverter.locationResponseConverterToDb(profile);
@@ -182,12 +184,31 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             }
         }
 
-        Club newClub = dtoConverter.convertToEntity(clubProfile, club)
-                .withId(id)
-                .withLocations(locationService.updateLocationByClub(locations, club));
+        Long centerId = clubResponse.getCenter().getId();
 
-        log.debug("updating club by id {}", newClub);
-        return dtoConverter.convertToDto(clubRepository.save(newClub), SuccessUpdatedClub.class);
+        Club updatedClub = dtoConverter.convertToEntity(clubResponse, club)
+                .withId(id)
+                .withCategories(clubResponse.getCategories()
+                        .stream()
+                        .map(categoryResponse -> categoryResponse.getName())
+                        .map(categoryService::getCategoryByName)
+                        .collect(Collectors.toSet()))
+                .withContacts(contactsStringConverter.convertContactDataResponseToString(clubResponse.getContacts()))
+                .withLocations(locationService.updateLocationByClub(locations, club))
+                .withCenter(centerService.getCenterById(centerId));
+
+        List<GalleryPhoto> galleryPhotos = clubResponse.getUrlGallery();
+        if (galleryPhotos != null && !galleryPhotos.isEmpty()) {
+            galleryRepository.deleteAllByClubId(clubResponse.getId());
+            updatedClub.setUrlGallery(galleryPhotos.stream()
+                            .map(photo -> galleryRepository.save(new GalleryPhoto()
+                                    .withUrl(photo.getUrl())
+                                    .withClub(updatedClub)))
+                            .collect(Collectors.toList()));
+        }
+
+        log.debug("updating club by id {}", updatedClub);
+        return dtoConverter.convertToDto(clubRepository.save(updatedClub), SuccessUpdatedClub.class);
     }
 
     @Override
@@ -221,17 +242,20 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         User user = userService.getCurrentUser();
         clubProfile.setUserId(user.getId());
 
-        //todo delete or replace this block
-        log.debug("== add method");
+        Center center = null;
+        if (clubProfile.getCenterId() != null){
+            center = centerService.getCenterById(clubProfile.getCenterId());
+        }
 
         log.debug("==clubService=?  clubProfile.centerID" + clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())
-                        .withCategories(clubProfile.getCategoriesName()
-                                .stream()
-                                .map(categoryService::getCategoryByName)
-                                .collect(Collectors.toSet()))
-                        .withRating(0d))
-                .withUser(user);
+                .withCategories(clubProfile.getCategoriesName()
+                            .stream()
+                            .map(categoryService::getCategoryByName)
+                            .collect(Collectors.toSet()))
+                .withRating(0d)
+                .withUser(user)
+                .withCenter(center));
 
         if (locations != null && !locations.isEmpty()) {
             club.setLocations(

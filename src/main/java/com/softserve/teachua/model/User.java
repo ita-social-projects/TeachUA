@@ -36,7 +36,7 @@ public class User implements Convertible {
     @Column
     private String urlLogo;
 
-    @JsonBackReference
+    @JsonBackReference(value = "userRole")
     @ManyToOne
     @JoinColumn(name = "role_id")
     @ToString.Exclude

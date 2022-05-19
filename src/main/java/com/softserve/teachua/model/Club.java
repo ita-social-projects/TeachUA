@@ -46,7 +46,7 @@ public class Club implements Convertible {
     @Column
     private String urlBackground;
 
-    @OneToMany(mappedBy = "club")
+    @OneToMany(mappedBy = "club", fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<GalleryPhoto> urlGallery;
 
