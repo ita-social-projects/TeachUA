@@ -244,7 +244,10 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         User user = userService.getCurrentUser();
         clubProfile.setUserId(user.getId());
 
-        Center center = centerService.getCenterById(clubProfile.getCenterId());
+        Center center = null;
+        if (clubProfile.getCenterId() != null){
+            center = centerService.getCenterById(clubProfile.getCenterId());
+        }
 
         log.debug("==clubService=?  clubProfile.centerID" + clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter.convertToEntity(clubProfile, new Club())

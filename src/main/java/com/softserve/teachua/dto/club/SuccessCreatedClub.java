@@ -1,6 +1,9 @@
 package com.softserve.teachua.dto.club;
 
+import com.softserve.teachua.dto.center.CenterForClub;
+import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.location.LocationProfile;
+import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.*;
 import lombok.AllArgsConstructor;
@@ -28,9 +31,9 @@ public class SuccessCreatedClub implements Convertible {
     private String workTime;
     private Set<Category> categories;
     private User user;
-    private Center center;
+    private CenterForClub center;
     private Double rating;
-    private Set<Location> locations;
+    private Set<LocationResponse> locations;
     private Boolean isApproved;
     private Boolean isOnline;
 }

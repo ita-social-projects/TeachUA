@@ -96,12 +96,12 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
         locationRepository.deleteAllByCenter(center);
 
         return locations.stream()
-                .map(locationResponse -> locationRepository
-                        .save(dtoConverter.convertToEntity(locationResponse, new Location())
+                .map(locationProfile -> locationRepository
+                        .save(dtoConverter.convertToEntity(locationProfile, new Location())
                                 .withCenter(center)
-                                .withCity(cityService.getCityById(locationResponse.getCityId()))
-                                .withDistrict(districtService.getDistrictById(locationResponse.getDistrictId()))
-                                .withStation(stationService.getStationById(locationResponse.getStationId()))))
+                                .withCity(cityService.getCityById(locationProfile.getCityId()))
+                                .withDistrict(districtService.getDistrictById(locationProfile.getDistrictId()))
+                                .withStation(stationService.getStationById(locationProfile.getStationId()))))
                 .collect(Collectors.toSet());
     }
 
