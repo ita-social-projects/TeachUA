@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.utils.deserializers.HtmlModifyDeserialize;
 import com.softserve.teachua.utils.deserializers.TrimDeserialize;
-import com.softserve.teachua.utils.validations.CheckRussian;
+import com.softserve.teachua.utils.validations.CheckForeignLanguage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,17 +24,17 @@ import javax.validation.constraints.Size;
 public class UpdateChallenge implements Convertible {
     @JsonDeserialize(using = TrimDeserialize.class)
     @NotBlank
-    @CheckRussian
+    @CheckForeignLanguage
     @Size(min = 5, max = 30, message = "Name must contain a minimum of 5 and a maximum of 30 letters")
     private String name;
     @JsonDeserialize(using = TrimDeserialize.class)
     @NotBlank
-    @CheckRussian
+    @CheckForeignLanguage
     @Size(min = 5, max = 50, message = "must contain a minimum of 5 and a maximum of 50 letters")
     private String title;
     @JsonDeserialize(using = HtmlModifyDeserialize.class)
     @NotBlank
-    @CheckRussian
+    @CheckForeignLanguage
     @Size(min = 40, max = 25000, message = "must contain a minimum of 40 and a maximum of 25000 letters")
     private String description;
     @JsonDeserialize(using = TrimDeserialize.class)
