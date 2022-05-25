@@ -18,5 +18,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             + " WHERE task.challenge = :challenge AND task.startDate <= CURRENT_DATE")
     List<Task> findCurrentTasksByChallenge(@Param("challenge") Challenge challenge);
 
+    List<Task> findTaskByChallengeOrderByStartDate(Challenge challenge);
+
     List<Task> findTasksByChallengeAndStartDateBeforeOrderByStartDate(Challenge challenge, LocalDate date);
 }
