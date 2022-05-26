@@ -10,14 +10,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 
 @Component
 @Slf4j
 public class JwtProvider {
-    private static final int TOKEN_LIFE_DAYS = 1;
+    private static final int TOKEN_LIFE_HOURS = 1;
 
     @Value("$(jwt.secret)")
     private String jwtSecret;
@@ -30,14 +29,12 @@ public class JwtProvider {
     public String generateToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        Date date = Date.from(LocalDate.now()
-                .plusDays(TOKEN_LIFE_DAYS)
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant());
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, TOKEN_LIFE_HOURS);
         return Jwts.builder()
                 .setSubject(userPrincipal.getEmail())
                 .setId(Long.toString(userPrincipal.getId()))
-                .setExpiration(date)
+                .setExpiration(calendar.getTime())
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
