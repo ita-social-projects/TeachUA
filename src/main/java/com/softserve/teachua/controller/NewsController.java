@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.List;
 @SecurityRequirement(name = "api")
 public class NewsController implements Api {
     private final NewsService newsService;
+
+    public static final int NEWS_PER_PAGE = 4;
 
     @Autowired
     public NewsController(NewsService newsService) {
@@ -101,7 +104,9 @@ public class NewsController implements Api {
      * @return {@code Page<NewsResponse>}
      */
     @GetMapping("/newslist/search")
-    public Page<NewsResponse> getListOfNews(Pageable pageable) {
+    public Page<NewsResponse> getListOfNews(@PageableDefault(
+            value = NEWS_PER_PAGE,
+            sort = "id") Pageable pageable) {
         return newsService.getListOfNews(pageable);
     }
 }
