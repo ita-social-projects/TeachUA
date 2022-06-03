@@ -64,7 +64,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     @Query(value = "SELECT DISTINCT club from Club AS club "
             + "LEFT JOIN club.locations AS locations "
             + "LEFT JOIN locations.city AS city "
-            + "JOIN club.categories AS category WHERE "
+            + "LEFT JOIN club.categories AS category WHERE " // Join
             + "(:name IS NULL OR "
             + "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) OR "
             + "LOWER(club.description) LIKE LOWER(CONCAT('%', :name , '%'))) AND "
