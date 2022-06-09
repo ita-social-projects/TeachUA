@@ -184,7 +184,10 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             }
         }
 
-        Long centerId = clubResponse.getCenter().getId();
+        Center center = null;
+        if (clubResponse.getCenter() != null && clubResponse.getCenter().getId() != null){
+            center = centerService.getCenterById(clubResponse.getCenter().getId());
+        }
 
         Club updatedClub = dtoConverter.convertToEntity(clubResponse, club)
                 .withId(id)
@@ -195,7 +198,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                         .collect(Collectors.toSet()))
                 .withContacts(contactsStringConverter.convertContactDataResponseToString(clubResponse.getContacts()))
                 .withLocations(locationService.updateLocationByClub(locations, club))
-                .withCenter(centerService.getCenterById(centerId));
+                .withCenter(center);
 
         List<GalleryPhoto> galleryPhotos = clubResponse.getUrlGallery();
         if (galleryPhotos != null && !galleryPhotos.isEmpty()) {
