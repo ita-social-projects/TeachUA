@@ -212,5 +212,5 @@ public interface ClubService {
      */
     List<ClubResponse> updateRatingForAllClubs();
 
-    List<ClubResponse> getTopThreeClubs(TopClubProfile topClubProfile);
+    List<ClubResponse> getTopClubsByCity(TopClubProfile topClubProfile);
 }

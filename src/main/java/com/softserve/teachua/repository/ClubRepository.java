@@ -146,9 +146,6 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             + " WHERE club.center.id = :centerId and club.feedbackCount > 0")
     Double findAvgRating(@Param("centerId") Long centerId);
 
-    @Query("SELECT c FROM Club AS c "
-            + "JOIN c.locations AS locations WHERE "
-            + "locations.city.name = :city "
-            + "ORDER BY c.rating desc ")
-    List<Club> findByRatingDesc( @Param("city") String cityName);
+    @Query(value = "SELECT * from clubs as c left join locations as l on l.club_id = c.id left join cities on cities.id = l.city_id where cities.name = :city order by c.rating desc limit :amount", nativeQuery = true)
+    List<Club> findTopClubsByCity( @Param("city") String cityName, @Param("amount") int amount);
 }

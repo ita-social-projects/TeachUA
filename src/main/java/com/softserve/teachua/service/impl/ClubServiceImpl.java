@@ -741,11 +741,10 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
 
     @Override
-    public List<ClubResponse> getTopThreeClubs(TopClubProfile topClubProfile) {
-        List<ClubResponse> clubResponses = clubRepository.findByRatingDesc(topClubProfile.getCityName())
+    public List<ClubResponse> getTopClubsByCity(TopClubProfile topClubProfile) {
+        List<ClubResponse> clubResponses = clubRepository.findTopClubsByCity(topClubProfile.getCityName(), topClubProfile.getAmount())
                 .stream()
                 .map(club -> toClubResponseConverter.convertToClubResponse(club))
-                .limit(3)
                 .collect(Collectors.toList());
         return clubResponses;
     }

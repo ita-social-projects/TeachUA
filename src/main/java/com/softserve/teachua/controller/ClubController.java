@@ -242,7 +242,7 @@ public class ClubController implements Api {
     }
 
     @GetMapping("/clubs/top/search")
-    public List<ClubResponse> getTopThreeClubs(TopClubProfile topClubProfile) {
-        return clubService.getTopThreeClubs(topClubProfile);
+    public List<ClubResponse> getTopClubsByCity(TopClubProfile topClubProfile) {
+        return clubService.getTopClubsByCity(topClubProfile);
     }
 }
