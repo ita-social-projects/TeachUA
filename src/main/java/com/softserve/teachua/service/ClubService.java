@@ -2,10 +2,7 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
-import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
-import com.softserve.teachua.dto.search.SearchClubProfile;
-import com.softserve.teachua.dto.search.SearchPossibleResponse;
-import com.softserve.teachua.dto.search.SimilarClubProfile;
+import com.softserve.teachua.dto.search.*;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.IncorrectInputException;
@@ -214,4 +211,6 @@ public interface ClubService {
      * @return new {@code List<CenterResponse>}.
      */
     List<ClubResponse> updateRatingForAllClubs();
+
+    List<ClubResponse> getTopThreeClubs(TopClubProfile topClubProfile);
 }

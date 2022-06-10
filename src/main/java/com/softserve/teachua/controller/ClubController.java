@@ -6,6 +6,7 @@ import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
+import com.softserve.teachua.dto.search.TopClubProfile;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
@@ -238,5 +239,10 @@ public class ClubController implements Api {
     @GetMapping("/club/updateContacts")
     public void updateContacts() {
         clubService.updateContacts();
+    }
+
+    @GetMapping("/clubs/top/search")
+    public List<ClubResponse> getTopThreeClubs(TopClubProfile topClubProfile) {
+        return clubService.getTopThreeClubs(topClubProfile);
     }
 }

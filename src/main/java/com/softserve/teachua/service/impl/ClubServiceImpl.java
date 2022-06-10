@@ -12,10 +12,7 @@ import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.location.LocationResponse;
-import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
-import com.softserve.teachua.dto.search.SearchClubProfile;
-import com.softserve.teachua.dto.search.SearchPossibleResponse;
-import com.softserve.teachua.dto.search.SimilarClubProfile;
+import com.softserve.teachua.dto.search.*;
 import com.softserve.teachua.exception.*;
 import com.softserve.teachua.model.*;
 import com.softserve.teachua.model.archivable.ClubArch;
@@ -740,6 +737,17 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             clubRepository.save(updClub);
             return clubResponse;
         }).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<ClubResponse> getTopThreeClubs(TopClubProfile topClubProfile) {
+        List<ClubResponse> clubResponses = clubRepository.findByRatingDesc(topClubProfile.getCityName())
+                .stream()
+                .map(club -> toClubResponseConverter.convertToClubResponse(club))
+                .limit(3)
+                .collect(Collectors.toList());
+        return clubResponses;
     }
 
     private SuccessUpdatedClub updateClubRating(Club club, Double raring, Long feedbackCount) {
