@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -55,7 +56,7 @@ public class NewsController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/news")
-    public SuccessCreatedNews addNews(@RequestBody NewsProfile newsProfile) {
+    public SuccessCreatedNews addNews(@Valid @RequestBody NewsProfile newsProfile) {
         return newsService.addNews(newsProfile);
     }
 

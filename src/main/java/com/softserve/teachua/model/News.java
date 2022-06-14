@@ -2,7 +2,6 @@ package com.softserve.teachua.model;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -22,8 +21,7 @@ public class News implements Convertible {
     @Column(nullable = false)
     private String title;
 
-    @CreationTimestamp
-    @Column(columnDefinition = "TIMESTAMP")
+    @Column
     private LocalDate date;
 
     @Column

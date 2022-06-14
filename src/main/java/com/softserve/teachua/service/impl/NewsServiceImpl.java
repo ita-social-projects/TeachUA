@@ -75,8 +75,8 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
 
     @Override
     public SuccessCreatedNews addNews(NewsProfile newsProfile) {
-        News news = newsRepository.save(dtoConverter.convertToEntity(newsProfile, new News()));
-        news.setUser(userService.getCurrentUser());
+        News news = newsRepository.save(dtoConverter.convertToEntity(newsProfile, new News())
+                .withUser(userService.getCurrentUser()));
         return dtoConverter.convertToDto(news, SuccessCreatedNews.class);
     }
 
