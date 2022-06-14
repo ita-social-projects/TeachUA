@@ -145,4 +145,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     @Query("SELECT case  when (AVG(club.rating)) is null then 0.0 else AVG(club.rating)  end FROM Club AS club"
             + " WHERE club.center.id = :centerId and club.feedbackCount > 0")
     Double findAvgRating(@Param("centerId") Long centerId);
+
+    @Query(value = "SELECT * from clubs as c left join locations as l on l.club_id = c.id left join cities on cities.id = l.city_id where cities.name = :city order by c.rating desc limit :amount", nativeQuery = true)
+    List<Club> findTopClubsByCity( @Param("city") String cityName, @Param("amount") int amount);
 }
