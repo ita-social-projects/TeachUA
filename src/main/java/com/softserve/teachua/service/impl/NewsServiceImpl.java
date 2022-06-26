@@ -90,6 +90,14 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
         return newsResponses;
     }
 
+    public List<NewsResponse> getAllCurrentNews(){
+        List<NewsResponse> newsResponses = newsRepository.getAllCurrentNews()
+                .stream()
+                .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
+                .collect(Collectors.toList());
+        return newsResponses;
+    }
+
     @Override
     public Page<NewsResponse> getListOfNews(Pageable pageable) {
         Page<News> newsResponses = newsRepository.findAll(pageable);

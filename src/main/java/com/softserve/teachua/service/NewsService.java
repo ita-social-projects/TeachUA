@@ -69,4 +69,6 @@ public interface NewsService {
      * @return new {@code NewsResponse}.
      **/
     NewsResponse deleteNewsById(Long id);
+
+    List<NewsResponse> getAllCurrentNews();
 }

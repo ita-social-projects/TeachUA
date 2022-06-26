@@ -110,4 +110,15 @@ public class NewsController implements Api {
             sort = "id") Pageable pageable) {
         return newsService.getListOfNews(pageable);
     }
+
+    /**
+     * Use this endpoint to get all active News with date less equal that current.
+     * The controller returns {@code List<NewsResponse>}.
+     *
+     * @return {@code List<NewsResponse>}
+     */
+    @GetMapping("/newslist/current")
+    public List<NewsResponse> getLisCurrentNews(){
+        return newsService.getAllCurrentNews();
+    }
 }
