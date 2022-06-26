@@ -4,6 +4,7 @@ import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
+import com.softserve.teachua.dto.news.SimmilarNewsProfile;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.service.NewsService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
@@ -120,5 +121,10 @@ public class NewsController implements Api {
     @GetMapping("/newslist/current")
     public List<NewsResponse> getLisCurrentNews(){
         return newsService.getAllCurrentNews();
+    }
+
+    @GetMapping("/newslist/search/similar")
+    public List<NewsResponse> getSimilarNewsByTitle(SimmilarNewsProfile newsProfile){
+        return  newsService.getSimilarNewsByTitle(newsProfile);
     }
 }

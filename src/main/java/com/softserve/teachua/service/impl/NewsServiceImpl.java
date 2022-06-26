@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
+import com.softserve.teachua.dto.news.SimmilarNewsProfile;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
@@ -92,6 +93,15 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
 
     public List<NewsResponse> getAllCurrentNews(){
         List<NewsResponse> newsResponses = newsRepository.getAllCurrentNews()
+                .stream()
+                .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
+                .collect(Collectors.toList());
+        return newsResponses;
+    }
+
+    @Override
+    public List<NewsResponse> getSimilarNewsByTitle(SimmilarNewsProfile newsProfile) {
+        List<NewsResponse> newsResponses = newsRepository.getNewsByTitle(newsProfile.getTitle())
                 .stream()
                 .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
                 .collect(Collectors.toList());
