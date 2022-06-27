@@ -4,6 +4,7 @@ import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
+import com.softserve.teachua.dto.news.SimmilarNewsProfile;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.service.NewsService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
@@ -109,5 +110,21 @@ public class NewsController implements Api {
             value = NEWS_PER_PAGE,
             sort = "id") Pageable pageable) {
         return newsService.getListOfNews(pageable);
+    }
+
+    /**
+     * Use this endpoint to get all active News with date less equal that current.
+     * The controller returns {@code List<NewsResponse>}.
+     *
+     * @return {@code List<NewsResponse>}
+     */
+    @GetMapping("/newslist/current")
+    public List<NewsResponse> getLisCurrentNews(){
+        return newsService.getAllCurrentNews();
+    }
+
+    @GetMapping("/newslist/search/similar")
+    public List<NewsResponse> getSimilarNewsByTitle(SimmilarNewsProfile newsProfile){
+        return  newsService.getSimilarNewsByTitle(newsProfile);
     }
 }
