@@ -27,7 +27,7 @@ public class News implements Convertible {
     @Column
     private String urlTitleLogo;
 
-    @Column(length = 10000)
+    @Column//(length = 10000)
     private String description;
 
     @Column
