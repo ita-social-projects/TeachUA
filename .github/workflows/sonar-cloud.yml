@@ -2,7 +2,8 @@ name: sonar
 on:
   push:
     branches:
-      - master
+      - main
+      - rest
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
