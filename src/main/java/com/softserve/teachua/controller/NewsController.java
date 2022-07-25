@@ -71,7 +71,7 @@ public class NewsController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/news/{id}")
-    public SuccessCreatedNews updateNewsById(@PathVariable Long id, @RequestBody NewsProfile newsProfile) {
+    public SuccessCreatedNews updateNewsById(@PathVariable Long id, @Valid @RequestBody NewsProfile newsProfile) {
         return newsService.updateNewsProfileById(id, newsProfile);
     }
 
