@@ -29,7 +29,7 @@ public class CreateChallenge {
     @JsonDeserialize(using = TrimDeserialize.class)
     @NotBlank
     @CheckForeignLanguage
-    @Size(min = 5, max = 50, message = "must contain a minimum of 5 and a maximum of 50 letters")
+    @Size(min = 5, max = 100, message = "must contain a minimum of 5 and a maximum of 100 letters")
     private String title;
     @NotBlank
     @Size(max = 25000, message = "must contain a maximum of 25000 letters")
