@@ -17,6 +17,6 @@ public class CheckForeignLanguageValidator implements ConstraintValidator<CheckF
         if (text == null) {
             return true;
         }
-        return text.matches("^[А-ЩЬЮЯҐЄІЇа-щьюяґєіїa-zA-Z0-9 \\n?><:;\"./{}\\-_+=!@#$%^&*|']*$");
+        return text.matches("^[А-ЩЬЮЯҐЄІЇа-щьюяґєіїa-zA-Z0-9 \\n?><,:;—“”«»\"\\./{}\\(\\)\\-_+=!\\?@#$%&*|'\\^]*$");
     }
 }

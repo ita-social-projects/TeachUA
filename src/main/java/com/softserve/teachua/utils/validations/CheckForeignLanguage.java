@@ -14,7 +14,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = CheckForeignLanguageValidator.class)
 public @interface CheckForeignLanguage {
-    String message() default "Can't contain foreign language symbols except english";
+    //String message() default "Can't contain foreign language symbols except english";
+    String message() default "Помилка. Текст містить недопустимі символи";
 
     Class<?>[] groups() default {};
 
