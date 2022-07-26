@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-    List<Question> findQuestionsByQuestionTest(List<QuestionTest> questionTests);
+    List<Question> findQuestionsByQuestionTests(List<QuestionTest> questionTests);
 
     Optional<Question> findByTitle(String title);
 

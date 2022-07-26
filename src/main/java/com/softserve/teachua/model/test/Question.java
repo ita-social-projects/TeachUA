@@ -18,7 +18,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String title;
 
     @Column(nullable = false, length = 1000)

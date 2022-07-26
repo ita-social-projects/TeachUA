@@ -14,6 +14,6 @@ public class QuestionCategory {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String title;
 }

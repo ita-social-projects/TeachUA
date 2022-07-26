@@ -19,10 +19,10 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String title;
 
-    @Column
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
@@ -31,13 +31,13 @@ public class Test {
     @Column(nullable = false)
     private boolean active;
 
-    @Column
+    @Column(nullable = false)
     private int difficulty;
 
-    @Column
+    @Column(nullable = false)
     private int counter;
 
-    @Column
+    @Column(nullable = false)
     private int duration;
 
     @Column(nullable = false)
