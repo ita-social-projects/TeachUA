@@ -7,8 +7,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@With
-@Builder
 @Entity
 @Table(name = "question_categories")
 public class QuestionCategory {
@@ -16,5 +14,6 @@ public class QuestionCategory {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
 }

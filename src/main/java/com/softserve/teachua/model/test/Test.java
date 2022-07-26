@@ -31,6 +31,9 @@ public class Test {
     private boolean active;
 
     @Column
+    private int difficulty;
+
+    @Column
     private int counter;
 
     @Column

@@ -20,7 +20,7 @@ public class Question {
     @Column
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String description;
 
     @ManyToOne
@@ -32,10 +32,10 @@ public class Question {
     private QuestionType questionType;
 
     @Setter(AccessLevel.PRIVATE)
-    @OneToMany(mappedBy = "question_id")
+    @OneToMany(mappedBy = "question")
     private Set<QuestionTest> questionTest = new HashSet<>();
 
     @Setter(AccessLevel.PRIVATE)
-    @OneToMany(mappedBy = "question_id")
+    @OneToMany(mappedBy = "question")
     private Set<Answer> answers = new HashSet<>();
 }

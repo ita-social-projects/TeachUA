@@ -9,8 +9,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@With
-@Builder
 @Entity
 @Table(name = "subscriptions")
 public class Subscription {
@@ -19,9 +17,11 @@ public class Subscription {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "subscription_id", referencedColumnName = "id")
     private Subscription subscription;
 
     @Column(nullable = false)

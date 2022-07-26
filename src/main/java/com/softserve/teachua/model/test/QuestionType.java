@@ -6,8 +6,6 @@ import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@With
 @Builder
 @Entity
 @Table(name = "question_types")
