@@ -4,9 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "answers")
 public class Answer {
@@ -23,6 +23,7 @@ public class Answer {
     @Column
     private int value;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "question_id", referencedColumnName = "id")
     private Question question;

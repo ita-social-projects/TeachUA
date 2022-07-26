@@ -4,12 +4,13 @@ import com.softserve.teachua.model.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"id", "answers", "questionTests"})
 @Entity
 @Table(name = "questions")
 public class Question {
@@ -33,9 +34,17 @@ public class Question {
 
     @Setter(AccessLevel.PRIVATE)
     @OneToMany(mappedBy = "question")
-    private Set<QuestionTest> questionTest = new HashSet<>();
+    private Set<QuestionTest> questionTests = new HashSet<>();
 
     @Setter(AccessLevel.PRIVATE)
     @OneToMany(mappedBy = "question")
     private Set<Answer> answers = new HashSet<>();
+
+    public Set<QuestionTest> getQuestionTests() {
+        return Collections.unmodifiableSet(questionTests);
+    }
+
+    public void addQuestionTest(QuestionTest questionTest) {
+        questionTests.add(questionTest);
+    }
 }

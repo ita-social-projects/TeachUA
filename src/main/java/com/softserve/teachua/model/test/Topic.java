@@ -4,11 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-@With
-@Builder
+@EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "topics")
 public class Topic {
@@ -16,7 +13,7 @@ public class Topic {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String title;
 }
 

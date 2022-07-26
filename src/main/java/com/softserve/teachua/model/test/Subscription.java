@@ -6,9 +6,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "subscriptions")
 public class Subscription {

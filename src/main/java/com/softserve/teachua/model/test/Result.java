@@ -6,9 +6,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "results")
 public class Result {
@@ -19,12 +19,6 @@ public class Result {
     @Column
     private int grade;
 
-    @Column(name = "test_finish_time")
-    private LocalDateTime testFinishTime;
-
-    @Column(name = "test_start_time")
-    private LocalDateTime testStartTime;
-
     @ManyToOne
     @JoinColumn(name = "test_id", referencedColumnName = "id")
     private Test test;
@@ -32,4 +26,10 @@ public class Result {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    @Column(name = "test_finish_time")
+    private LocalDateTime testFinishTime;
+
+    @Column(name = "test_start_time")
+    private LocalDateTime testStartTime;
 }

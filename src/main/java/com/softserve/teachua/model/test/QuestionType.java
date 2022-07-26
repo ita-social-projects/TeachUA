@@ -4,9 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Data
+@EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "question_types")
 public class QuestionType {

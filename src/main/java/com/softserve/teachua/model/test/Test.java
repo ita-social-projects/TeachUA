@@ -5,12 +5,13 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"id", "questionTests"})
 @Entity
 @Table(name = "tests")
 public class Test {
@@ -49,7 +50,15 @@ public class Test {
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
     private User creator;
 
-    @Setter(AccessLevel.PRIVATE)
+    @ToString.Exclude
     @OneToMany(mappedBy = "test_id")
-    private Set<QuestionTest> questionTest = new HashSet<>();
+    private Set<QuestionTest> questionTests = new HashSet<>();
+
+    public Set<QuestionTest> getQuestionTests() {
+        return Collections.unmodifiableSet(questionTests);
+    }
+
+    public void addQuestionTest(QuestionTest questionTest) {
+        questionTests.add(questionTest);
+    }
 }

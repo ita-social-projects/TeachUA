@@ -8,17 +8,17 @@ import javax.persistence.*;
 @Setter
 @EqualsAndHashCode(exclude = {"id"})
 @Entity
-@Table(name = "questions_tests")
-public class QuestionTest {
+@Table(name = "question_histories")
+public class QuestionHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "test_id", referencedColumnName = "id")
-    private Test test;
+    @JoinColumn(name = "result_id", referencedColumnName = "id")
+    private Result result;
 
     @ManyToOne
-    @JoinColumn(name = "question_id", referencedColumnName = "id")
-    private Question question;
+    @JoinColumn(name = "answer_id", referencedColumnName = "id")
+    private Answer answer;
 }
