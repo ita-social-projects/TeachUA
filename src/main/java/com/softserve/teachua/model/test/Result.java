@@ -16,7 +16,7 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private int grade;
 
     @Column(name = "test_finish_time")

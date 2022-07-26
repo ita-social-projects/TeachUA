@@ -18,16 +18,16 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String title;
 
     @Column
     private String description;
 
-    @Column
+    @Column(nullable = false)
     private boolean archived;
 
-    @Column
+    @Column(nullable = false)
     private boolean active;
 
     @Column
@@ -39,11 +39,15 @@ public class Test {
     @Column
     private int duration;
 
-    @Column
+    @Column(nullable = false)
     private int grade;
 
     @Column(name = "date_of_creation")
     private LocalDate dateOfCreation;
+
+    @ManyToOne
+    @JoinColumn(name = "topic_id", referencedColumnName = "id")
+    private Topic topic;
 
     @ManyToOne
     @JoinColumn(name = "creator_id", referencedColumnName = "id")

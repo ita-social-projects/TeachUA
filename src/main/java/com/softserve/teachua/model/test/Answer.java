@@ -14,13 +14,13 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private boolean correct;
 
-    @Column
+    @Column(nullable = false)
     private String text;
 
-    @Column
+    @Column(nullable = false)
     private int value;
 
     @ManyToOne

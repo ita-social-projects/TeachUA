@@ -17,7 +17,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false, length = 1000)
@@ -30,6 +30,10 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "type_id", referencedColumnName = "id")
     private QuestionType questionType;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    private QuestionCategory questionCategory;
 
     @Setter(AccessLevel.PRIVATE)
     @OneToMany(mappedBy = "question")
