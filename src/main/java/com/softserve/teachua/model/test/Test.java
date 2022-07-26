@@ -5,13 +5,12 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@With
-@Builder
 @Entity
 @Table(name = "tests")
 public class Test {
@@ -47,6 +46,7 @@ public class Test {
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
     private User creator;
 
-    @OneToMany(mappedBy = "test_id") // ask
-    Set<QuestionTest> questionTest;
+    @Setter(AccessLevel.PRIVATE)
+    @OneToMany(mappedBy = "test_id")
+    private Set<QuestionTest> questionTest = new HashSet<>();
 }

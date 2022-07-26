@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@With
-@Builder
 @Entity
 @Table(name = "results")
 public class Result {
@@ -21,8 +19,11 @@ public class Result {
     @Column
     private int grade;
 
-    @Column
+    @Column(name = "test_finish_time")
     private LocalDateTime testFinishTime;
+
+    @Column(name = "test_start_time")
+    private LocalDateTime testStartTime;
 
     @ManyToOne
     @JoinColumn(name = "test_id", referencedColumnName = "id")

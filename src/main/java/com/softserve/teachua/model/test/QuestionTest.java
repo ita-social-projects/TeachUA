@@ -7,20 +7,18 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@With
-@Builder
 @Entity
 @Table(name = "questions_tests")
-public class QuestionTest {   // ask
+public class QuestionTest {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "test_id", referencedColumnName = "id")
-    Test test;
+    private Test test;
 
     @ManyToOne
     @JoinColumn(name = "question_id", referencedColumnName = "id")
-    Question question;
+    private Question question;
 }

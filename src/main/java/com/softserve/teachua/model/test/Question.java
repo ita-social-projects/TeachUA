@@ -4,13 +4,12 @@ import com.softserve.teachua.model.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@With
-@Builder
 @Entity
 @Table(name = "questions")
 public class Question {
@@ -21,7 +20,7 @@ public class Question {
     @Column
     private String title;
 
-    @Column
+    @Column(nullable = false)
     private String description;
 
     @ManyToOne
@@ -32,9 +31,11 @@ public class Question {
     @JoinColumn(name = "type_id", referencedColumnName = "id")
     private QuestionType questionType;
 
-    @OneToMany(mappedBy = "question_id")  // ask
-    Set<QuestionTest> questionTest;
-
+    @Setter(AccessLevel.PRIVATE)
     @OneToMany(mappedBy = "question_id")
-    Set<Answer> answers;
+    private Set<QuestionTest> questionTest = new HashSet<>();
+
+    @Setter(AccessLevel.PRIVATE)
+    @OneToMany(mappedBy = "question_id")
+    private Set<Answer> answers = new HashSet<>();
 }
