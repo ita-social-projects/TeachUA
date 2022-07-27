@@ -1,4 +1,4 @@
 package com.softserve.teachua.service.test;
 
-interface TestService {
+public interface TestService {
 }

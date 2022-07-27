@@ -11,10 +11,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Repository("testQuestionRepository")
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-    List<Question> findQuestionsByQuestionTests(List<QuestionTest> questionTests);
-
     Optional<Question> findByTitle(String title);
 
     List<Question> findQuestionsByCreator(User creator);

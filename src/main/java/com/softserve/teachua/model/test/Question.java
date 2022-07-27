@@ -11,7 +11,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = {"id", "answers", "questionTests"})
-@Entity
+@Entity(name = "testQuestion")
 @Table(name = "questions")
 public class Question {
     @Id
@@ -38,17 +38,5 @@ public class Question {
 
     @Setter(AccessLevel.PRIVATE)
     @OneToMany(mappedBy = "question")
-    private Set<QuestionTest> questionTests = new HashSet<>();
-
-    @Setter(AccessLevel.PRIVATE)
-    @OneToMany(mappedBy = "question")
     private Set<Answer> answers = new HashSet<>();
-
-    public Set<QuestionTest> getQuestionTests() {
-        return Collections.unmodifiableSet(questionTests);
-    }
-
-    public void addQuestionTest(QuestionTest questionTest) {
-        questionTests.add(questionTest);
-    }
 }

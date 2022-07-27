@@ -53,16 +53,4 @@ public class Test {
     @ManyToOne
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
     private User creator;
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "test_id")
-    private Set<QuestionTest> questionTests = new HashSet<>();
-
-    public Set<QuestionTest> getQuestionTests() {
-        return Collections.unmodifiableSet(questionTests);
-    }
-
-    public void addQuestionTest(QuestionTest questionTest) {
-        questionTests.add(questionTest);
-    }
 }

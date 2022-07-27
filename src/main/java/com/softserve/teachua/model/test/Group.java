@@ -5,7 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "groups")
