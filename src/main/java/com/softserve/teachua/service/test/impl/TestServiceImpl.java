@@ -83,6 +83,11 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    public Test findById(Long id) {
+        return testRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public void archiveTestById(Long id) {
         Test testToArchive = testRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(

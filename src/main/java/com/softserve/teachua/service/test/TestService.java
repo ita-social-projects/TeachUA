@@ -11,5 +11,6 @@ public interface TestService {
     List<Test> findActiveTests();
     List<Test> findArchivedTests();
     List<Test> findUnarchivedTests();
+    Test findById(Long id);
     void archiveTestById(Long id);
 }

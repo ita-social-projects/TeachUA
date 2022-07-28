@@ -3,7 +3,6 @@ package com.softserve.teachua.repository.test;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.model.test.QuestionCategory;
-import com.softserve.teachua.model.test.QuestionTest;
 import com.softserve.teachua.model.test.QuestionType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -27,7 +27,23 @@ public class QuestionServiceImpl implements QuestionService {
     private final AnswerService answerService;
 
     @Override
-    public List<QuestionResponse> findQuestionsByTestId(Long id) {
+    public List<Question> findQuestionsByTestId(Long id) {
+        if (Objects.isNull(id))
+            throw new IllegalArgumentException("Test id can't be null");
+
+        return questionRepository.findQuestionsByTestId(id);
+    }
+
+    @Override
+    public List<Question> findQuestionsByTest(Test test) {
+        if (Objects.isNull(test))
+            throw new IllegalArgumentException("Test can't be null");
+
+        return findQuestionsByTestId(test.getId());
+    }
+
+    @Override
+    public List<QuestionResponse> findQuestionResponsesByTestId(Long id) {
         if (Objects.isNull(id))
             throw new IllegalArgumentException("Test id can't be null");
 
@@ -35,11 +51,11 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionResponse> findQuestionsByTest(Test test) {
+    public List<QuestionResponse> findQuestionResponsesByTest(Test test) {
         if (Objects.isNull(test))
             throw new IllegalArgumentException("Test can't be null");
 
-        return findQuestionsByTestId(test.getId());
+        return findQuestionResponsesByTestId(test.getId());
     }
 
     @Override

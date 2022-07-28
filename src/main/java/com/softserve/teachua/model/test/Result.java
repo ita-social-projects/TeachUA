@@ -1,5 +1,6 @@
 package com.softserve.teachua.model.test;
 
+import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.User;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "results")
-public class Result {
+public class Result implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;

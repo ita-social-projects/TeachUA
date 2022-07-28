@@ -7,7 +7,9 @@ import com.softserve.teachua.model.test.Test;
 import java.util.List;
 
 public interface QuestionService {
-    List<QuestionResponse> findQuestionsByTestId(Long test);
-    List<QuestionResponse> findQuestionsByTest(Test test);
+    List<Question> findQuestionsByTestId(Long testId);
+    List<Question> findQuestionsByTest(Test test);
+    List<QuestionResponse> findQuestionResponsesByTestId(Long test);
+    List<QuestionResponse> findQuestionResponsesByTest(Test test);
     Question save(Question question);
 }
