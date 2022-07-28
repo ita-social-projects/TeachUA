@@ -28,4 +28,11 @@ public class TestServiceImpl implements TestService {
     public List<Test> findUnarchivedTests(){
         return testRepository.findUnarchivedTests();
     }
+
+    public void archiveTestById(Long id){
+        Test testToArchive = testRepository.findById(id).orElse(null);  // ask how to handle
+        testToArchive.setArchived(true);
+
+        testRepository.save(testToArchive);
+    }
 }
