@@ -26,6 +26,7 @@ public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
     private final TopicService topicService;
     private final UserService userService;
+    private final QuestionService questionService;
     private final QuestionTestService questionTestService;
     private final QuestionTypeService questionTypeService;
     private final QuestionCategoryService questionCategoryService;
@@ -54,6 +55,7 @@ public class TestServiceImpl implements TestService {
                 question.setQuestionCategory(category);
                 question.setQuestionType(findQuestionType(questionProfile));
                 saveAnswers(questionProfile, question);
+                question = questionService.save(question);
             }
 
             questionTest.setTest(test);

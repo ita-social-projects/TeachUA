@@ -18,7 +18,7 @@ public class QuestionTest {
     @JoinColumn(name = "test_id", referencedColumnName = "id")
     private Test test;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "question_id", referencedColumnName = "id")
     private Question question;
 }

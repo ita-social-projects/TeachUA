@@ -42,6 +42,14 @@ public class QuestionServiceImpl implements QuestionService {
         return findQuestionsByTestId(test.getId());
     }
 
+    @Override
+    public Question save(Question question) {
+        if (Objects.isNull(question))
+            throw new IllegalArgumentException("Question id can't be null");
+
+        return questionRepository.save(question);
+    }
+
     private List<QuestionResponse> mapToDtoList(List<Question> questions) {
         List<QuestionResponse> questionsResponses = questions.stream()
                         .map(question -> modelMapper.map(question, QuestionResponse.class))
