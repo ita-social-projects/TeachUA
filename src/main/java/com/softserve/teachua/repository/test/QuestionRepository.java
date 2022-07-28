@@ -6,6 +6,8 @@ import com.softserve.teachua.model.test.QuestionCategory;
 import com.softserve.teachua.model.test.QuestionTest;
 import com.softserve.teachua.model.test.QuestionType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,4 +22,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> findQuestionsByQuestionType(QuestionType questionType);
 
     List<Question> findQuestionsByQuestionCategory(QuestionCategory questionCategory);
+
+    @Query("SELECT qt.question FROM QuestionTest qt WHERE qt.test.id = :id")
+    List<Question> findQuestionsByTestId(@Param("id") Long testId);
 }

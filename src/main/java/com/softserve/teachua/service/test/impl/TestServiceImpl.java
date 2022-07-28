@@ -4,7 +4,6 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.dto.test.test.CreateTest;
 import com.softserve.teachua.dto.test.test.SuccessCreatedTest;
-import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
 import com.softserve.teachua.repository.test.TestRepository;
 import com.softserve.teachua.service.UserService;
@@ -16,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -63,6 +63,30 @@ public class TestServiceImpl implements TestService {
 
         test.setGrade(grade);
         return dtoConverter.convertFromDtoToDto(testDto, new SuccessCreatedTest());
+    }
+
+    @Override
+    public List<Test> findActiveTests() {
+        return testRepository.findActiveTests();
+    }
+
+    @Override
+    public List<Test> findArchivedTests(){
+        return testRepository.findArchivedTests();
+    }
+
+    @Override
+    public List<Test> findUnarchivedTests(){
+        return testRepository.findUnarchivedTests();
+    }
+
+    @Override
+    public void archiveTestById(Long id) {
+        Test testToArchive = testRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format("There is no test with id '%s'", id)
+                ));
+        testToArchive.setArchived(true);
     }
 
     private QuestionType findQuestionType(QuestionProfile question) {

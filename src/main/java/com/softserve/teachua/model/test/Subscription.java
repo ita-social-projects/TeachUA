@@ -21,8 +21,8 @@ public class Subscription {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "subscription_id", referencedColumnName = "id")
-    private Subscription subscription;
+    @JoinColumn(name = "group_id", referencedColumnName = "id")
+    private Group group;
 
     @Column(nullable = false)
     private LocalDate expirationDate;
