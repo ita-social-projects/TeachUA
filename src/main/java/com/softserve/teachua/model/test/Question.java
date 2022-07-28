@@ -1,7 +1,11 @@
 package com.softserve.teachua.model.test;
 
+import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.User;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Collections;
@@ -10,10 +14,10 @@ import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"id", "answers", "questionTests"})
+@EqualsAndHashCode(of = {"title", "description"})
 @Entity(name = "testQuestion")
 @Table(name = "questions")
-public class Question {
+public class Question implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -37,6 +41,16 @@ public class Question {
     private QuestionCategory questionCategory;
 
     @Setter(AccessLevel.PRIVATE)
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question",
+               cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Answer> answers = new HashSet<>();
+
+    public Set<Answer> getAnswers() {
+        return Collections.unmodifiableSet(answers);
+    }
+
+    public void addAnswer(Answer answer) {
+        answers.add(answer);
+        answer.setQuestion(this);
+    }
 }

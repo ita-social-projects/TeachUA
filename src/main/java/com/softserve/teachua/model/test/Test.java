@@ -1,20 +1,18 @@
 package com.softserve.teachua.model.test;
 
+import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.User;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"id", "questionTests"})
+@EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "tests")
-public class Test {
+public class Test implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -22,7 +20,7 @@ public class Test {
     @Column(unique = true, nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String description;
 
     @Column(nullable = false)

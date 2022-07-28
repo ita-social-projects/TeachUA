@@ -103,7 +103,6 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
         return taskPreviewList;
     }
 
-
     @Override
     public SuccessCreatedTask createTask(Long id, CreateTask createTask) {
         HtmlUtils.validateDescription(createTask.getDescription());
