@@ -1,10 +1,12 @@
 package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -52,4 +54,9 @@ public class User implements Convertible {
 
     @Column
     private String verificationCode;
+
+    @JsonManagedReference(value = "userCertificate")
+    @OneToMany
+    @ToString.Exclude
+    private List<Certificate> certificates;
 }
