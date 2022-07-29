@@ -1,7 +1,12 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.task.*;
+import com.softserve.teachua.dto.task.CreateTask;
+import com.softserve.teachua.dto.task.SuccessCreatedTask;
+import com.softserve.teachua.dto.task.SuccessUpdatedTask;
+import com.softserve.teachua.dto.task.TaskPreview;
+import com.softserve.teachua.dto.task.TaskProfile;
+import com.softserve.teachua.dto.task.UpdateTask;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
@@ -14,10 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
