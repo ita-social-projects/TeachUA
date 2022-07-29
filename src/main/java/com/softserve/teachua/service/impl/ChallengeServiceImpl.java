@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.challenge.*;
+import com.softserve.teachua.dto.task.SuccessUpdatedTask;
 import com.softserve.teachua.dto.task.TaskPreview;
+import com.softserve.teachua.dto.task.UpdateTask;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
@@ -25,6 +27,8 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Slf4j
@@ -173,4 +177,41 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
                 .collect(Collectors.toList());
         ChallengeUtil.validateSortNumber(sortNumber, unavailableSortNumbers);
     }
+
+    @Override
+    public List<SuccessUpdatedTask> cloneChallenge(Long id, UpdateChallengeDate startDate) {
+        Challenge challenge = getChallengeById(id);
+        List<Task> tasks = new ArrayList<>(challenge.getTasks());
+        List<SuccessUpdatedTask> updatedTasks = new ArrayList<>();
+        long firstTaskId = tasks.stream()
+                .map(t -> t.getId())
+                .min(Long::compare)
+                .get();
+        long daysBetween = DAYS.between(taskService.getTaskById(firstTaskId).getStartDate(), startDate.getStartDate());
+        for (Task task : tasks) {
+            LocalDate currentStartDate = task.getStartDate();
+            task.setStartDate(currentStartDate.plusDays(daysBetween));
+            UpdateTask updateTask = dtoConverter.convertFromDtoToDto(task, new UpdateTask());
+//            updateTask.setChallengeId(id);
+            updatedTasks.add(taskService.updateTask(task.getId(), updateTask));
+        }
+        return updatedTasks;
+    }
+
+
+//    @Override
+//    public List<SuccessUpdatedTask> cloneChallenge(Long id, LocalDate startDate) {
+//        Challenge challenge = getChallengeById(id);
+//        List<Task> tasks = new ArrayList<>(challenge.getTasks());
+//        List<SuccessUpdatedTask> updatedTasks = new ArrayList<>();
+//        long daysBetween = DAYS.between(tasks.get(0).getStartDate(), startDate) + 1;
+//        for (Task task : tasks) {
+//            LocalDate currentStartDate = task.getStartDate();
+//            task.setStartDate(currentStartDate.plusDays(daysBetween));
+//            UpdateTask updateTask = dtoConverter.convertFromDtoToDto(task, new UpdateTask());
+////            updateTask.setChallengeId(id);
+//            updatedTasks.add(taskService.updateTask(task.getId(), updateTask));
+//        }
+//        return updatedTasks;
+//    }
 }
