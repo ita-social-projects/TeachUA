@@ -184,7 +184,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         List<Task> tasks = new ArrayList<>(challenge.getTasks());
         List<SuccessUpdatedTask> updatedTasks = new ArrayList<>();
         long firstTaskId = tasks.stream()
-                .map(t -> t.getId())
+                .map(Task::getId)
                 .min(Long::compare)
                 .get();
         long daysBetween = DAYS.between(taskService.getTaskById(firstTaskId).getStartDate(), startDate.getStartDate());
@@ -192,26 +192,8 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
             LocalDate currentStartDate = task.getStartDate();
             task.setStartDate(currentStartDate.plusDays(daysBetween));
             UpdateTask updateTask = dtoConverter.convertFromDtoToDto(task, new UpdateTask());
-//            updateTask.setChallengeId(id);
             updatedTasks.add(taskService.updateTask(task.getId(), updateTask));
         }
         return updatedTasks;
     }
-
-
-//    @Override
-//    public List<SuccessUpdatedTask> cloneChallenge(Long id, LocalDate startDate) {
-//        Challenge challenge = getChallengeById(id);
-//        List<Task> tasks = new ArrayList<>(challenge.getTasks());
-//        List<SuccessUpdatedTask> updatedTasks = new ArrayList<>();
-//        long daysBetween = DAYS.between(tasks.get(0).getStartDate(), startDate) + 1;
-//        for (Task task : tasks) {
-//            LocalDate currentStartDate = task.getStartDate();
-//            task.setStartDate(currentStartDate.plusDays(daysBetween));
-//            UpdateTask updateTask = dtoConverter.convertFromDtoToDto(task, new UpdateTask());
-////            updateTask.setChallengeId(id);
-//            updatedTasks.add(taskService.updateTask(task.getId(), updateTask));
-//        }
-//        return updatedTasks;
-//    }
 }

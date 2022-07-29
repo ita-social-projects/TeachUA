@@ -82,5 +82,12 @@ public interface ChallengeService {
      */
     Challenge getChallengeByName(String name);
 
+    /**
+     * The method returns {@code List<SuccessUpdatedTask>}
+     *
+     * @param id                     - put Challenge id.
+     * @param startDate              - place body of dto {@code UpdateChallengeDate}.
+     * @return {@code List<SuccessUpdatedTask>}.
+     */
     List<SuccessUpdatedTask> cloneChallenge(Long id, UpdateChallengeDate startDate);
 }
