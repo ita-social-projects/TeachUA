@@ -136,14 +136,5 @@ public class ChallengeController implements Api {
         System.out.println(startDate.getStartDate());
         return challengeService.cloneChallenge(id, startDate);
     }
-//    @AllowedRoles(RoleData.ADMIN)
-//    @PutMapping("/challenge/{id}/clone")
-//    public List<SuccessUpdatedTask> cloneChallenge(
-//            @PathVariable Long id,
-//            @RequestBody LocalDate startDate) {
-//        System.out.println(id);
-//        System.out.println(startDate);
-//        return challengeService.cloneChallenge(id, startDate);
-//    }
 
 }
