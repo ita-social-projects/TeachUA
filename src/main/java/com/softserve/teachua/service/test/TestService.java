@@ -1,6 +1,7 @@
 package com.softserve.teachua.service.test;
 
 import com.softserve.teachua.dto.test.test.CreateTest;
+import com.softserve.teachua.dto.test.test.ResultTest;
 import com.softserve.teachua.dto.test.test.SuccessCreatedTest;
 import com.softserve.teachua.model.test.Test;
 
@@ -13,4 +14,5 @@ public interface TestService {
     List<Test> findUnarchivedTests();
     Test findById(Long id);
     void archiveTestById(Long id);
+    ResultTest getResultTest(Long testId, Long resultId);
 }

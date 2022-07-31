@@ -1,6 +1,5 @@
 package com.softserve.teachua.dto.test.question;
 
-import com.softserve.teachua.dto.marker.Convertible;
 import lombok.Data;
 
 import java.util.List;

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -36,6 +37,13 @@ public class ResultServiceImpl implements ResultService {
         return resultRepository.findResultsByUser(user);
     }
 
+    @Override
+    public Result findById(Long id) {
+        return resultRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format("There is no result with id '%s'", id)
+                ));
+    }
 
     @Override
     public SuccessCreatedResult addResult(CreateResult resultDto) {

@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.*;
 
 @Getter
 @Setter
@@ -33,4 +34,18 @@ public class Result implements Convertible {
 
     @Column(name = "test_start_time")
     private LocalDateTime testStartTime;
+
+    @Setter(AccessLevel.PRIVATE)
+    @OneToMany(mappedBy = "result",
+               cascade = CascadeType.PERSIST)
+    private Set<QuestionHistory> questionHistories = new HashSet<>();
+
+    public void addQuestionHistory(QuestionHistory questionHistory) {
+        questionHistories.add(questionHistory);
+        questionHistory.setResult(this);
+    }
+
+    public Set<QuestionHistory> getQuestionHistories() {
+        return Collections.unmodifiableSet(questionHistories);
+    }
 }

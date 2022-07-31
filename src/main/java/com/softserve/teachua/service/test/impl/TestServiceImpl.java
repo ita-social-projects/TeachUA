@@ -2,8 +2,11 @@ package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
+import com.softserve.teachua.dto.test.question.QuestionResult;
 import com.softserve.teachua.dto.test.test.CreateTest;
+import com.softserve.teachua.dto.test.test.ResultTest;
 import com.softserve.teachua.dto.test.test.SuccessCreatedTest;
+import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
 import com.softserve.teachua.repository.test.TestRepository;
 import com.softserve.teachua.service.UserService;
@@ -14,30 +17,32 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
 public class TestServiceImpl implements TestService {
+    private static final String CORRECT_MESSAGE = "Your answer is correct";
+    private static final String INCORRECT_MESSAGE = "Your answer is incorrect";
+    private static final String PARTIALLY_CORRECT_MESSAGE = "Your answer is partially correct";
+
     private final TestRepository testRepository;
+    private final ResultService resultService;
     private final TopicService topicService;
     private final UserService userService;
     private final QuestionService questionService;
     private final QuestionTestService questionTestService;
     private final QuestionTypeService questionTypeService;
     private final QuestionCategoryService questionCategoryService;
-
     private final DtoConverter dtoConverter;
 
     @Override
     public SuccessCreatedTest addTest(CreateTest testDto) {
-        //User user = userService.getCurrentUser();
+        User user = userService.getCurrentUser();
         Test test = dtoConverter.convertToEntity(testDto, new Test());
-        //test.setCreator(user);
+        test.setCreator(user);
         test.setDateOfCreation(LocalDate.now());
         test.setTopic(topicService.findByTitle(testDto.getTopicTitle()));
         test = testRepository.save(test);
@@ -51,7 +56,7 @@ public class TestServiceImpl implements TestService {
             if (Objects.isNull(question.getId())) {
                 String categoryTitle = questionProfile.getCategoryTitle();
                 QuestionCategory category = questionCategoryService.findByTitle(categoryTitle);
-                //question.setCreator(user);
+                question.setCreator(user);
                 question.setQuestionCategory(category);
                 question.setQuestionType(findQuestionType(questionProfile));
                 saveAnswers(questionProfile, question);
@@ -95,6 +100,68 @@ public class TestServiceImpl implements TestService {
                 ));
         testToArchive.setArchived(true);
     }
+
+    @Override
+    public ResultTest getResultTest(Long testId, Long resultId) {
+        ResultTest resultTest = new ResultTest();
+
+        Test test = findById(testId);
+        Result result = resultService.findById(resultId);
+        List<Question> questions = questionService.findQuestionsByTestId(testId);
+        Set<QuestionHistory> qHistories = result.getQuestionHistories();
+        Map<Long, Set<Long>> questionSelectedAnswers = new HashMap<>();
+        questions.forEach(x -> questionSelectedAnswers.put(x.getId(), new HashSet<>()));
+
+        qHistories.stream()
+                .map(QuestionHistory::getAnswer)
+                .forEach(x -> questionSelectedAnswers.get(x.getQuestion().getId()).add(x.getId()));
+
+        for (Question question : questions) {
+            QuestionResult questionResult = new QuestionResult();
+            int value = 0;
+            int correctAmount = 0;
+            int correctSelectedAmount = 0;
+
+            Set<Answer> answers = question.getAnswers();
+            Set<Long> selectedAnswerIds = questionSelectedAnswers.get(question.getId());
+
+            for (Answer answer: answers) {
+                boolean isCorrect = answer.isCorrect();
+                boolean selected = false;
+
+                if (isCorrect)
+                    correctAmount++;
+                if (selectedAnswerIds.contains(answer.getId())) {
+                    selected = true;
+
+                    if (isCorrect) {
+                        value += answer.getValue();
+                        correctSelectedAmount++;
+                    } else {
+                        value -= answer.getValue();
+                    }
+                }
+                questionResult.put(answer.getText(), selected);
+            }
+
+            questionResult.setTitle(question.getTitle());
+            questionResult.setValue(Math.max(value, 0));
+
+            if (correctSelectedAmount == correctAmount) {
+                questionResult.setStatus(CORRECT_MESSAGE);
+            } else if (correctSelectedAmount == 0) {
+                questionResult.setStatus(INCORRECT_MESSAGE);
+            } else {
+                questionResult.setStatus(PARTIALLY_CORRECT_MESSAGE);
+            }
+
+            resultTest.addQuestion(questionResult);
+        }
+        resultTest.setTitle(test.getTitle());
+
+        return resultTest;
+    }
+
 
     private QuestionType findQuestionType(QuestionProfile question) {
         int numberOfCorrectAnswers = question.getCorrectAnswerIndexes().size();
