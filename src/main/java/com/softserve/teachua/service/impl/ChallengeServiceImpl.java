@@ -181,13 +181,11 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     @Override
     public List<SuccessUpdatedTask> cloneChallenge(Long id, UpdateChallengeDate startDate) {
         Challenge challenge = getChallengeById(id);
-        List<Task> tasks = new ArrayList<>(challenge.getTasks());
+        List<Task> tasks = new ArrayList<>(challenge.getTasks()).stream()
+                .sorted(Comparator.comparing(Task::getStartDate))
+                .collect(Collectors.toList());
         List<SuccessUpdatedTask> updatedTasks = new ArrayList<>();
-        long firstTaskId = tasks.stream()
-                .map(Task::getId)
-                .min(Long::compare)
-                .get();
-        long daysBetween = DAYS.between(taskService.getTaskById(firstTaskId).getStartDate(), startDate.getStartDate());
+        long daysBetween = DAYS.between(tasks.get(0).getStartDate(), startDate.getStartDate());
         for (Task task : tasks) {
             LocalDate currentStartDate = task.getStartDate();
             task.setStartDate(currentStartDate.plusDays(daysBetween));
