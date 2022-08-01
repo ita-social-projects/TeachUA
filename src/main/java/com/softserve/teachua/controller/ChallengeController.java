@@ -132,8 +132,6 @@ public class ChallengeController implements Api {
     public List<SuccessUpdatedTask> cloneChallenge(
             @PathVariable Long id,
             @Valid @RequestBody UpdateChallengeDate startDate) {
-        System.out.println(id);
-        System.out.println(startDate.getStartDate());
         return challengeService.cloneChallenge(id, startDate);
     }
 
