@@ -72,6 +72,8 @@ public class TestServiceImpl implements TestService {
         return dtoConverter.convertFromDtoToDto(testDto, new SuccessCreatedTest());
     }
 
+
+
     @Override
     public List<Test> findActiveTests() {
         return testRepository.findActiveTests();
@@ -161,7 +163,6 @@ public class TestServiceImpl implements TestService {
 
         return resultTest;
     }
-
 
     private QuestionType findQuestionType(QuestionProfile question) {
         int numberOfCorrectAnswers = question.getCorrectAnswerIndexes().size();

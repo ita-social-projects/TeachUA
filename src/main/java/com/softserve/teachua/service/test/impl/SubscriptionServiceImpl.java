@@ -4,14 +4,13 @@ import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.model.test.Subscription;
 import com.softserve.teachua.repository.test.SubscriptionRepository;
+import com.softserve.teachua.service.UserService;
+import com.softserve.teachua.service.test.GroupService;
 import com.softserve.teachua.service.test.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -19,10 +18,18 @@ import java.util.stream.Collectors;
 @Service
 public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
+    private final GroupService groupService;
+    private final UserService userService;
 
-    public List<User> findUsersByGroup(Group group){
-        List<Subscription> subscriptions = subscriptionRepository.findSubscriptionsByGroup(group);
+    @Override
+    public void createSubscription(String enrollmentKey) {
+        Group group = groupService.findByEnrollmentKey(enrollmentKey);
+        User user = userService.getCurrentUser();
+        Subscription subscription = new Subscription();
+        subscription.setGroup(group);
+        subscription.setUser(user);
+        subscription.setExpirationDate(group.getEndDate());
 
-        return subscriptions.stream().map(Subscription::getUser).collect(Collectors.toList());
+        subscriptionRepository.save(subscription);
     }
 }
