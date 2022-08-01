@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.test.result.CreateResult;
 import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
+import com.softserve.teachua.repository.test.QuestionHistoryRepository;
 import com.softserve.teachua.repository.test.ResultRepository;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.QuestionService;
@@ -25,9 +26,8 @@ import java.util.NoSuchElementException;
 @Service
 public class ResultServiceImpl implements ResultService {
     private final ResultRepository resultRepository;
-    private final TestService testService;
-    private final UserService userService;
     private final QuestionService questionService;
+    private final QuestionHistoryRepository questionHistoryRepository;
 
     public List<Result> findResultsByTest(Test test) {
         return resultRepository.findResultsByTest(test);
@@ -46,20 +46,9 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
-    public SuccessCreatedResult addResult(CreateResult resultDto) {
-        Result result = new Result();
-        result.setTest(testService.findById(resultDto.getTestId()));
-        result.setUser(userService.getUserById(resultDto.getUserId()));
-        result.setGrade(countGrade(resultDto, questionService.findQuestionsByTestId(resultDto.getTestId())));
-        // TODO set time
-        List<Answer> selectedAnswers = getSelectedAnswers(resultDto);
-        createQuestionHistory(result, selectedAnswers);
-        return null;
-    }
-
-    private List<Answer> getSelectedAnswers(CreateResult resultDto){ // optimize
+    public List<Answer> getSelectedAnswers(CreateResult resultDto, List<Question> questions){
         List<Answer> selectedAnswers = new ArrayList<>();
-        for (Question q: questionService.findQuestionsByTestId(resultDto.getTestId())){
+        for (Question q: questions){
             for(Answer a: q.getAnswers()){
                 if(resultDto.getSelectedAnswers().contains(a.getText())){
                     selectedAnswers.add(a);
@@ -69,15 +58,17 @@ public class ResultServiceImpl implements ResultService {
         return selectedAnswers;
     }
 
-    private void createQuestionHistory(Result result, List<Answer> selectedAnswers) {
+    public void createQuestionHistory(Result result, List<Answer> selectedAnswers) {
         for (Answer a : selectedAnswers) {
             QuestionHistory questionHistory = new QuestionHistory();
             questionHistory.setResult(result);
             questionHistory.setAnswer(a);
+            questionHistoryRepository.save(questionHistory);
         }
+        resultRepository.save(result);
     }
 
-    private int countGrade(CreateResult resultDto, List<Question> questions) {
+    public int countGrade(CreateResult resultDto, List<Question> questions) {
         int grade = 0;
         for (Question q : questions) {
             grade += countGradeForQuestion(q, resultDto);
@@ -87,7 +78,7 @@ public class ResultServiceImpl implements ResultService {
 
     private int countGradeForQuestion(Question q, CreateResult resultDto) {
         int gradeForQuestion = 0;
-        if (q.getQuestionType().getTitle().equals("radio")) { // ask and fix
+        if (q.getQuestionType().getTitle().equals("radio")) {
             for (Answer a : q.getAnswers()) {
                 if (a.isCorrect() && resultDto.getSelectedAnswers().contains(a.getText())) {
                     gradeForQuestion += a.getValue();
@@ -104,7 +95,6 @@ public class ResultServiceImpl implements ResultService {
                 }
             }
         }
-        // TODO decide what to do if all options are selected
         if (gradeForQuestion < 0) gradeForQuestion = 0;
         return gradeForQuestion;
     }
