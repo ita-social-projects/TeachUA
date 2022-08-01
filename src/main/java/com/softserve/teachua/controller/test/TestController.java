@@ -40,6 +40,6 @@ public class TestController implements Api {
                                              @RequestBody CreateResult result){
         result.setUserId(userService.getCurrentUser().getId());
         result.setTestId(id);
-        return resultService.addResult(result);
+        return testService.saveResult(result);
     }
 }

@@ -3,6 +3,8 @@ package com.softserve.teachua.service.test.impl;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.dto.test.question.QuestionResult;
+import com.softserve.teachua.dto.test.result.CreateResult;
+import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
 import com.softserve.teachua.dto.test.test.CreateTest;
 import com.softserve.teachua.dto.test.test.ResultTest;
 import com.softserve.teachua.dto.test.test.SuccessCreatedTest;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -189,5 +192,26 @@ public class TestServiceImpl implements TestService {
 
             question.addAnswer(answer);
         }
+    }
+
+    public SuccessCreatedResult saveResult(CreateResult resultDto) {
+        Result result = new Result();
+        result.setTest(findById(resultDto.getTestId()));
+        result.setUser(userService.getUserById(resultDto.getUserId()));
+        result.setTestFinishTime(LocalDateTime.now());
+        // TODO set start time time
+
+        List<Question> testQuestions = questionService.findQuestionsByTestId(resultDto.getTestId());
+        result.setGrade(resultService.countGrade(resultDto, testQuestions));
+
+        List<Answer> selectedAnswers = resultService.getSelectedAnswers(resultDto, testQuestions);
+        resultService.createQuestionHistory(result, selectedAnswers);
+
+        SuccessCreatedResult success = new SuccessCreatedResult();
+        success.setSelectedAnswers(resultDto.getSelectedAnswers());
+        success.setTestId(resultDto.getTestId());
+        success.setUserId(resultDto.getUserId());
+        success.setGrade(result.getGrade());
+        return success;
     }
 }

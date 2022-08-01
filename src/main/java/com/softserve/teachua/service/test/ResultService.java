@@ -1,10 +1,15 @@
 package com.softserve.teachua.service.test;
 
 import com.softserve.teachua.dto.test.result.CreateResult;
-import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
+import com.softserve.teachua.model.test.Answer;
+import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.model.test.Result;
 
+import java.util.List;
+
 public interface ResultService {
-    SuccessCreatedResult addResult(CreateResult result);
     Result findById(Long id);
+    int countGrade(CreateResult resultDto, List<Question> questions);
+    List<Answer> getSelectedAnswers(CreateResult resultDto, List<Question> testQuestions);
+    void createQuestionHistory(Result result, List<Answer> selectedAnswers);
 }
