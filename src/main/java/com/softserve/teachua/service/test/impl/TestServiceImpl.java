@@ -1,13 +1,13 @@
 package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.test.answer.PassingTestAnswer;
+import com.softserve.teachua.dto.test.question.PassingTestQuestion;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.dto.test.question.QuestionResult;
 import com.softserve.teachua.dto.test.result.CreateResult;
 import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
-import com.softserve.teachua.dto.test.test.CreateTest;
-import com.softserve.teachua.dto.test.test.ResultTest;
-import com.softserve.teachua.dto.test.test.SuccessCreatedTest;
+import com.softserve.teachua.dto.test.test.*;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
 import com.softserve.teachua.repository.test.TestRepository;
@@ -170,20 +170,21 @@ public class TestServiceImpl implements TestService {
     }
 
     public SuccessCreatedResult saveResult(CreateResult resultDto) {
+        User user = userService.getCurrentUser();
         Result result = new Result();
+        result.setUser(user);
         result.setTest(findById(resultDto.getTestId()));
-        result.setUser(userService.getUserById(resultDto.getUserId()));
         result.setTestFinishTime(LocalDateTime.now());
-        List<Long> answerIds = resultDto.getSelectedAnswers();
+        List<Long> answerIds = resultDto.getSelectedAnswersIds();
         // TODO set start time time
 
         List<Answer> selectedAnswers = answerService.findAllById(answerIds);
         resultService.createResult(result, selectedAnswers);
 
         SuccessCreatedResult success = new SuccessCreatedResult();
-        success.setSelectedAnswers(answerIds);
+        success.setSelectedAnswersIds(answerIds);
         success.setTestId(resultDto.getTestId());
-        success.setUserId(resultDto.getUserId());
+        success.setUserId(user.getId());
         success.setGrade(result.getGrade());
         return success;
     }
@@ -213,5 +214,37 @@ public class TestServiceImpl implements TestService {
 
             question.addAnswer(answer);
         }
+    }
+
+    @Override
+    public PassTest findPassTestById(Long id) {
+        Test test = testRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format("There is no test with id '%s'", id)
+                ));
+        PassTest passTest = dtoConverter.convertToDto(test, PassTest.class);
+        passTest.setQuestions(getPassingTestQuestions(test));
+        return passTest;
+    }
+
+    @Override
+    public TestsContainer findUnarchivedTestProfiles() {
+        List<Test> tests = findUnarchivedTests();
+        List<TestProfile> testProfiles = new ArrayList<>();
+        for(Test t: tests){
+            testProfiles.add(dtoConverter.convertToDto(t, TestProfile.class));
+        }
+        TestsContainer testsContainer = new TestsContainer();
+        testsContainer.setTestProfiles(testProfiles);
+        return testsContainer;
+    }
+
+    private List<PassingTestQuestion> getPassingTestQuestions(Test test) {
+        List<PassingTestQuestion> passingTestQuestions = new ArrayList<>();
+        for (Question q: questionService.findQuestionsByTest(test)) {
+            PassingTestQuestion passingTestQuestion = dtoConverter.convertToDto(q, PassingTestQuestion.class);
+            passingTestQuestions.add(passingTestQuestion);
+        }
+        return passingTestQuestions;
     }
 }

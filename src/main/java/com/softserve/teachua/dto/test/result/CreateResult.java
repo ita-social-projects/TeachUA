@@ -6,7 +6,6 @@ import java.util.List;
 
 @Data
 public class CreateResult {
-    private Long userId;
     private Long testId;
-    private List<Long> selectedAnswers;
+    private List<Long> selectedAnswersIds;
 }

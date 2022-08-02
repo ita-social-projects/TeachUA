@@ -5,6 +5,7 @@ import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
 import com.softserve.teachua.repository.test.QuestionHistoryRepository;
 import com.softserve.teachua.repository.test.ResultRepository;
+import com.softserve.teachua.service.test.AnswerService;
 import com.softserve.teachua.service.test.QuestionService;
 import com.softserve.teachua.service.test.ResultService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -22,8 +22,7 @@ import java.util.NoSuchElementException;
 @Service
 public class ResultServiceImpl implements ResultService {
     private final ResultRepository resultRepository;
-    private final QuestionService questionService;
-    private final QuestionHistoryRepository questionHistoryRepository;
+    private final AnswerService answerService;
 
     public List<Result> findResultsByTest(Test test) {
         return resultRepository.findResultsByTest(test);
@@ -40,6 +39,7 @@ public class ResultServiceImpl implements ResultService {
                 ));
     }
 
+    @Override
     public void createResult(Result result, List<Answer> selectedAnswers) {
         for (Answer a : selectedAnswers) {
             QuestionHistory questionHistory = new QuestionHistory();
@@ -51,27 +51,28 @@ public class ResultServiceImpl implements ResultService {
 
     public int countGrade(CreateResult resultDto, List<Question> questions) {
         int grade = 0;
+        List<Answer> selectedAnswers = answerService.findAllById(resultDto.getSelectedAnswersIds());
         for (Question q : questions) {
-            grade += countGradeForQuestion(q, resultDto);
+            grade += countGradeForQuestion(q, selectedAnswers);
         }
         return grade;
     }
 
-    private int countGradeForQuestion(Question q, CreateResult resultDto) {
+    private int countGradeForQuestion(Question q, List<Answer> selectedAnswers) {
         int gradeForQuestion = 0;
         if (q.getQuestionType().getTitle().equals("radio")) {
             for (Answer a : q.getAnswers()) {
-                if (a.isCorrect() && resultDto.getSelectedAnswers().contains(a.getText())) {
+                if (a.isCorrect() && selectedAnswers.contains(a)) {
                     gradeForQuestion += a.getValue();
                 }
             }
         } else if (q.getQuestionType().getTitle().equals("checkbox")) {
             for (Answer a : q.getAnswers()) {
-                if (a.isCorrect() && resultDto.getSelectedAnswers().contains(a.getText())) {
+                if (a.isCorrect() && selectedAnswers.contains(a)) {
                     gradeForQuestion += a.getValue();
-                } else if (a.isCorrect() && !resultDto.getSelectedAnswers().contains(a.getText())) {
+                } else if (a.isCorrect() && !selectedAnswers.contains(a)) {
                     gradeForQuestion -= a.getValue();
-                } else if (!a.isCorrect() && resultDto.getSelectedAnswers().contains(a.getText())) {
+                } else if (!a.isCorrect() && selectedAnswers.contains(a)) {
                     gradeForQuestion -= a.getValue();
                 }
             }

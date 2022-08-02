@@ -1,5 +1,6 @@
 package com.softserve.teachua.model.test;
 
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "answers")
-public class Answer {
+public class Answer implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
