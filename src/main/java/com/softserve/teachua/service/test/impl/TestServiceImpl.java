@@ -1,13 +1,13 @@
 package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.test.answer.PassingTestAnswer;
+import com.softserve.teachua.dto.test.question.PassingTestQuestion;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.dto.test.question.QuestionResult;
 import com.softserve.teachua.dto.test.result.CreateResult;
 import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
-import com.softserve.teachua.dto.test.test.CreateTest;
-import com.softserve.teachua.dto.test.test.ResultTest;
-import com.softserve.teachua.dto.test.test.SuccessCreatedTest;
+import com.softserve.teachua.dto.test.test.*;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
 import com.softserve.teachua.repository.test.TestRepository;
@@ -40,6 +40,7 @@ public class TestServiceImpl implements TestService {
     private final QuestionTypeService questionTypeService;
     private final QuestionCategoryService questionCategoryService;
     private final DtoConverter dtoConverter;
+    private final AnswerService answerService;
 
     @Override
     public SuccessCreatedTest addTest(CreateTest testDto) {
@@ -213,5 +214,53 @@ public class TestServiceImpl implements TestService {
         success.setUserId(resultDto.getUserId());
         success.setGrade(result.getGrade());
         return success;
+    }
+
+    @Override
+    public PassTest findPassTestById(Long id) {
+        Test test = testRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format("There is no test with id '%s'", id)
+                ));
+        //PassTest passTest = dtoConverter.convertToDto(test, PassTest.class);
+        PassTest passTest = new PassTest();
+        passTest.setTitle(test.getTitle());
+        passTest.setQuestions(getPassingTestQuestions(test));
+        return passTest;
+    }
+
+    @Override
+    public List<TestProfile> findUnarchivedTestProfiles() {
+        List<Test> tests = findUnarchivedTests();
+        List<TestProfile> testProfiles = new ArrayList<>();
+        for(Test t: tests){
+            testProfiles.add(dtoConverter.convertToDto(t, TestProfile.class));
+        }
+        return testProfiles;
+    }
+
+    private List<PassingTestQuestion> getPassingTestQuestions(Test test) {
+        List<PassingTestQuestion> passingTestQuestions = new ArrayList<>();
+        for (Question q: questionService.findQuestionsByTest(test)) {
+            //PassingTestQuestion passingTestQuestion = dtoConverter.convertToDto(q, PassingTestQuestion.class);
+            PassingTestQuestion passingTestQuestion = new PassingTestQuestion();
+            passingTestQuestion.setTitle(q.getTitle());
+            passingTestQuestion.setDescription(q.getDescription());
+            passingTestQuestion.setAnswers(getPassingTestAnswers(q));
+            passingTestQuestions.add(passingTestQuestion);
+        }
+        return passingTestQuestions;
+    }
+
+    private List<PassingTestAnswer> getPassingTestAnswers(Question q) {
+        List<PassingTestAnswer> passingTestAnswers = new ArrayList<>();
+        for(Answer a: answerService.findByQuestionId(q.getId())){
+            //PassingTestAnswer passingTestAnswer = dtoConverter.convertToDto(a, PassingTestAnswer.class);
+            PassingTestAnswer passingTestAnswer = new PassingTestAnswer();
+            passingTestAnswer.setId(a.getId());
+            passingTestAnswer.setText(a.getText());
+            passingTestAnswers.add(passingTestAnswer);
+        }
+        return passingTestAnswers;
     }
 }
