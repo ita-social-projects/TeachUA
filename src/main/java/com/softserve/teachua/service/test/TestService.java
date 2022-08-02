@@ -17,5 +17,5 @@ public interface TestService {
     Test findById(Long id);
     void archiveTestById(Long id);
     ResultTest getResultTest(Long testId, Long resultId);
-    public SuccessCreatedResult saveResult(CreateResult resultDto);
+    SuccessCreatedResult saveResult(CreateResult resultDto);
 }

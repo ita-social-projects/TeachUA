@@ -39,7 +39,9 @@ public class TestServiceImpl implements TestService {
     private final QuestionTestService questionTestService;
     private final QuestionTypeService questionTypeService;
     private final QuestionCategoryService questionCategoryService;
+    private final AnswerService answerService;
     private final DtoConverter dtoConverter;
+
 
     @Override
     public SuccessCreatedTest addTest(CreateTest testDto) {
@@ -167,6 +169,25 @@ public class TestServiceImpl implements TestService {
         return resultTest;
     }
 
+    public SuccessCreatedResult saveResult(CreateResult resultDto) {
+        Result result = new Result();
+        result.setTest(findById(resultDto.getTestId()));
+        result.setUser(userService.getUserById(resultDto.getUserId()));
+        result.setTestFinishTime(LocalDateTime.now());
+        List<Long> answerIds = resultDto.getSelectedAnswers();
+        // TODO set start time time
+
+        List<Answer> selectedAnswers = answerService.findAllById(answerIds);
+        resultService.createResult(result, selectedAnswers);
+
+        SuccessCreatedResult success = new SuccessCreatedResult();
+        success.setSelectedAnswers(answerIds);
+        success.setTestId(resultDto.getTestId());
+        success.setUserId(resultDto.getUserId());
+        success.setGrade(result.getGrade());
+        return success;
+    }
+
     private QuestionType findQuestionType(QuestionProfile question) {
         int numberOfCorrectAnswers = question.getCorrectAnswerIndexes().size();
 
@@ -192,26 +213,5 @@ public class TestServiceImpl implements TestService {
 
             question.addAnswer(answer);
         }
-    }
-
-    public SuccessCreatedResult saveResult(CreateResult resultDto) {
-        Result result = new Result();
-        result.setTest(findById(resultDto.getTestId()));
-        result.setUser(userService.getUserById(resultDto.getUserId()));
-        result.setTestFinishTime(LocalDateTime.now());
-        // TODO set start time time
-
-        List<Question> testQuestions = questionService.findQuestionsByTestId(resultDto.getTestId());
-        result.setGrade(resultService.countGrade(resultDto, testQuestions));
-
-        List<Answer> selectedAnswers = resultService.getSelectedAnswers(resultDto, testQuestions);
-        resultService.createQuestionHistory(result, selectedAnswers);
-
-        SuccessCreatedResult success = new SuccessCreatedResult();
-        success.setSelectedAnswers(resultDto.getSelectedAnswers());
-        success.setTestId(resultDto.getTestId());
-        success.setUserId(resultDto.getUserId());
-        success.setGrade(result.getGrade());
-        return success;
     }
 }

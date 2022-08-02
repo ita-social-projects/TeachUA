@@ -13,14 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/tests")
 @RestController
 public class TestController implements Api {
     private final TestService testService;
     private final UserService userService;
     private final ResultService resultService;
 
-    @PostMapping("/{id}")
+    @PostMapping("/tests/{id}/archiving")
     public void archiveTest(@PathVariable Long id) {
         testService.archiveTestById(id);
     }
@@ -35,11 +34,9 @@ public class TestController implements Api {
         return testService.addTest(test);
     }
 
-    @PostMapping("/test/{id}")
-    public SuccessCreatedResult createResult(@PathVariable Long id,
-                                             @RequestBody CreateResult result){
+    @PostMapping("/tests/result")
+    public SuccessCreatedResult createResult(@RequestBody CreateResult result){
         result.setUserId(userService.getCurrentUser().getId());
-        result.setTestId(id);
         return testService.saveResult(result);
     }
 }

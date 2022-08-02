@@ -10,6 +10,5 @@ import java.util.List;
 public interface ResultService {
     Result findById(Long id);
     int countGrade(CreateResult resultDto, List<Question> questions);
-    List<Answer> getSelectedAnswers(CreateResult resultDto, List<Question> testQuestions);
-    void createQuestionHistory(Result result, List<Answer> selectedAnswers);
+    void createResult(Result result, List<Answer> selectedAnswers);
 }

@@ -18,10 +18,16 @@ import java.util.Objects;
 public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
 
+    @Override
     public List<Answer> findByQuestionId(Long id) {
         if (Objects.isNull(id))
             throw new IllegalArgumentException("Question id can't be null");
 
         return answerRepository.findAllByQuestionId(id);
+    }
+
+    @Override
+    public List<Answer> findAllById(List<Long> ids) {
+        return answerRepository.findAllById(ids);
     }
 }

@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "question_histories")
 public class QuestionHistory {
