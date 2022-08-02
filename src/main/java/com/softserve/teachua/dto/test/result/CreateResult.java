@@ -8,5 +8,5 @@ import java.util.List;
 public class CreateResult {
     private Long userId;
     private Long testId;
-    private List<String> selectedAnswers;
+    private List<Long> selectedAnswersId;
 }

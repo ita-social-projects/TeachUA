@@ -48,7 +48,7 @@ public class TestController implements Api {
     }
 
     @GetMapping("/tests")
-    public List<TestProfile> getUnarchivedTests(){
+    public TestsContainer getUnarchivedTests(){
         return testService.findUnarchivedTestProfiles();
     }
 }

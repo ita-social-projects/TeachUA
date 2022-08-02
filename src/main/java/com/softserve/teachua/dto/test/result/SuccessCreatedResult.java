@@ -9,6 +9,6 @@ import java.util.List;
 public class SuccessCreatedResult implements Convertible {
     private Long userId;
     private Long testId;
-    private List<String> selectedAnswers;
+    private List<Long> selectedAnswersId;
     private int grade;
 }

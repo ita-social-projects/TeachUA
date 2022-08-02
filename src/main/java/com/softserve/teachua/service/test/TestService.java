@@ -17,5 +17,5 @@ public interface TestService {
     ResultTest getResultTest(Long testId, Long resultId);
     SuccessCreatedResult saveResult(CreateResult resultDto);
     PassTest findPassTestById(Long id);
-    List<TestProfile> findUnarchivedTestProfiles();
+    TestsContainer findUnarchivedTestProfiles();
 }

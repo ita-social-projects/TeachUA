@@ -40,7 +40,6 @@ public class TestServiceImpl implements TestService {
     private final QuestionTypeService questionTypeService;
     private final QuestionCategoryService questionCategoryService;
     private final DtoConverter dtoConverter;
-    private final AnswerService answerService;
 
     @Override
     public SuccessCreatedTest addTest(CreateTest testDto) {
@@ -200,16 +199,16 @@ public class TestServiceImpl implements TestService {
         result.setTest(findById(resultDto.getTestId()));
         result.setUser(userService.getUserById(resultDto.getUserId()));
         result.setTestFinishTime(LocalDateTime.now());
-        // TODO set start time time
+        // TODO set start time
 
         List<Question> testQuestions = questionService.findQuestionsByTestId(resultDto.getTestId());
         result.setGrade(resultService.countGrade(resultDto, testQuestions));
 
-        List<Answer> selectedAnswers = resultService.getSelectedAnswers(resultDto, testQuestions);
+        List<Answer> selectedAnswers = resultService.getSelectedAnswers(resultDto);
         resultService.createQuestionHistory(result, selectedAnswers);
 
         SuccessCreatedResult success = new SuccessCreatedResult();
-        success.setSelectedAnswers(resultDto.getSelectedAnswers());
+        success.setSelectedAnswersId(resultDto.getSelectedAnswersId());
         success.setTestId(resultDto.getTestId());
         success.setUserId(resultDto.getUserId());
         success.setGrade(result.getGrade());
@@ -222,45 +221,30 @@ public class TestServiceImpl implements TestService {
                 .orElseThrow(() -> new NoSuchElementException(
                         String.format("There is no test with id '%s'", id)
                 ));
-        //PassTest passTest = dtoConverter.convertToDto(test, PassTest.class);
-        PassTest passTest = new PassTest();
-        passTest.setTitle(test.getTitle());
+        PassTest passTest = dtoConverter.convertToDto(test, PassTest.class);
         passTest.setQuestions(getPassingTestQuestions(test));
         return passTest;
     }
 
     @Override
-    public List<TestProfile> findUnarchivedTestProfiles() {
+    public TestsContainer findUnarchivedTestProfiles() {
         List<Test> tests = findUnarchivedTests();
         List<TestProfile> testProfiles = new ArrayList<>();
         for(Test t: tests){
             testProfiles.add(dtoConverter.convertToDto(t, TestProfile.class));
         }
-        return testProfiles;
+        TestsContainer testsContainer = new TestsContainer();
+        testsContainer.setTestProfiles(testProfiles);
+        return testsContainer;
     }
 
     private List<PassingTestQuestion> getPassingTestQuestions(Test test) {
         List<PassingTestQuestion> passingTestQuestions = new ArrayList<>();
         for (Question q: questionService.findQuestionsByTest(test)) {
-            //PassingTestQuestion passingTestQuestion = dtoConverter.convertToDto(q, PassingTestQuestion.class);
-            PassingTestQuestion passingTestQuestion = new PassingTestQuestion();
-            passingTestQuestion.setTitle(q.getTitle());
-            passingTestQuestion.setDescription(q.getDescription());
-            passingTestQuestion.setAnswers(getPassingTestAnswers(q));
+            PassingTestQuestion passingTestQuestion = dtoConverter.convertToDto(q, PassingTestQuestion.class);
             passingTestQuestions.add(passingTestQuestion);
         }
         return passingTestQuestions;
     }
 
-    private List<PassingTestAnswer> getPassingTestAnswers(Question q) {
-        List<PassingTestAnswer> passingTestAnswers = new ArrayList<>();
-        for(Answer a: answerService.findByQuestionId(q.getId())){
-            //PassingTestAnswer passingTestAnswer = dtoConverter.convertToDto(a, PassingTestAnswer.class);
-            PassingTestAnswer passingTestAnswer = new PassingTestAnswer();
-            passingTestAnswer.setId(a.getId());
-            passingTestAnswer.setText(a.getText());
-            passingTestAnswers.add(passingTestAnswer);
-        }
-        return passingTestAnswers;
-    }
 }

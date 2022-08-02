@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -23,5 +25,13 @@ public class AnswerServiceImpl implements AnswerService {
             throw new IllegalArgumentException("Question id can't be null");
 
         return answerRepository.findAllByQuestionId(id);
+    }
+
+    @Override
+    public Optional<Answer> findById(Long id) {
+        if (Objects.isNull(id))
+            throw new IllegalArgumentException("Answer id can't be null");
+
+        return answerRepository.findById(id);
     }
 }
