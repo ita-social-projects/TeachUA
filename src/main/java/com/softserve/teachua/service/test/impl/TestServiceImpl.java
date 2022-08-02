@@ -1,7 +1,7 @@
 package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.test.answer.PassingTestAnswer;
+import com.softserve.teachua.dto.test.answer.ResultAnswer;
 import com.softserve.teachua.dto.test.question.PassingTestQuestion;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.dto.test.question.QuestionResult;
@@ -111,14 +111,12 @@ public class TestServiceImpl implements TestService {
     @Override
     public ResultTest getResultTest(Long testId, Long resultId) {
         ResultTest resultTest = new ResultTest();
-
         Test test = findById(testId);
         Result result = resultService.findById(resultId);
         List<Question> questions = questionService.findQuestionsByTestId(testId);
         Set<QuestionHistory> qHistories = result.getQuestionHistories();
         Map<Long, Set<Long>> questionSelectedAnswers = new HashMap<>();
         questions.forEach(x -> questionSelectedAnswers.put(x.getId(), new HashSet<>()));
-
         qHistories.stream()
                 .map(QuestionHistory::getAnswer)
                 .forEach(x -> questionSelectedAnswers.get(x.getQuestion().getId()).add(x.getId()));
@@ -133,35 +131,38 @@ public class TestServiceImpl implements TestService {
             Set<Long> selectedAnswerIds = questionSelectedAnswers.get(question.getId());
 
             for (Answer answer: answers) {
-                boolean isCorrect = answer.isCorrect();
+                ResultAnswer resultAnswer = new ResultAnswer();
+                boolean correct = answer.isCorrect();
                 boolean selected = false;
+                int answerValue = answer.getValue();
 
-                if (isCorrect)
+                if (correct)
                     correctAmount++;
                 if (selectedAnswerIds.contains(answer.getId())) {
                     selected = true;
-
-                    if (isCorrect) {
-                        value += answer.getValue();
+                    if (correct) {
+                        value += answerValue;
                         correctSelectedAmount++;
                     } else {
-                        value -= answer.getValue();
+                        value -= answerValue;
                     }
                 }
-                questionResult.put(answer.getText(), selected);
+                resultAnswer.setTitle(answer.getText());
+                resultAnswer.setCorrect(correct);
+                resultAnswer.setChecked(selected);
+                questionResult.add(resultAnswer);
             }
-
             questionResult.setTitle(question.getTitle());
             questionResult.setValue(Math.max(value, 0));
 
-            if (correctSelectedAmount == correctAmount) {
+            if (correctSelectedAmount == correctAmount
+                    && correctAmount == selectedAnswerIds.size()) {
                 questionResult.setStatus(CORRECT_MESSAGE);
             } else if (correctSelectedAmount == 0) {
                 questionResult.setStatus(INCORRECT_MESSAGE);
             } else {
                 questionResult.setStatus(PARTIALLY_CORRECT_MESSAGE);
             }
-
             resultTest.addQuestion(questionResult);
         }
         resultTest.setTitle(test.getTitle());

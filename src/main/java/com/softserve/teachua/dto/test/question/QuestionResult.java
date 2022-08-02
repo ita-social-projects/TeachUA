@@ -1,8 +1,12 @@
 package com.softserve.teachua.dto.test.question;
 
+import com.softserve.teachua.dto.test.answer.ResultAnswer;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -11,9 +15,9 @@ public class QuestionResult {
     private String title;
     private String status;
     private int value;
-    private Map<String, Boolean> answersCorrect;
+    private List<ResultAnswer> answers = new ArrayList<>();
 
-    public void put(String answerTitle, Boolean correct) {
-        answersCorrect.put(answerTitle, correct);
+    public void add(ResultAnswer resultAnswer) {
+        answers.add(resultAnswer);
     }
 }
