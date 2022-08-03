@@ -18,7 +18,6 @@ public class GroupController implements Api {
     private final GroupTestService groupsTestsService;
     private final SubscriptionService subscriptionService;
 
-    // TODO: implement the ability to get all users by their group
     @GetMapping("/groups/{id}/users")
     public List<UserResponse> findUsersByGroup(@PathVariable Long id) {
         return subscriptionService.getUserResponseByGroupId(id);
