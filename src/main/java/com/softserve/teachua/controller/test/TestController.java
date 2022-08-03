@@ -1,21 +1,22 @@
 package com.softserve.teachua.controller.test;
 
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.test.group.ResponseGroup;
 import com.softserve.teachua.dto.test.result.CreateResult;
 import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
 import com.softserve.teachua.dto.test.test.*;
-import com.softserve.teachua.service.UserService;
-import com.softserve.teachua.service.test.ResultService;
+import com.softserve.teachua.service.test.GroupService;
 import com.softserve.teachua.service.test.TestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 public class TestController implements Api {
     private final TestService testService;
-    private final UserService userService;
-    private final ResultService resultService;
+    private final GroupService groupService;
 
     @GetMapping("/tests")
     public TestsContainer getUnarchivedTests(){
@@ -30,6 +31,11 @@ public class TestController implements Api {
     @GetMapping("/tests/{testId}/results/{resultId}")
     public ResultTest getTestResult(@PathVariable Long testId, @PathVariable Long resultId) {
         return testService.getResultTest(testId, resultId);
+    }
+
+    @GetMapping("/tests/{id}/groups")
+    public List<ResponseGroup> getGroups(@PathVariable Long id) {
+        return groupService.findResponseGroupsByTestId(id);
     }
 
     @PostMapping("/tests")

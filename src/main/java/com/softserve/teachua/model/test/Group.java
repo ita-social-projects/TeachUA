@@ -18,7 +18,7 @@ public class Group {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String enrollmentKey;
 
     @Column(nullable = false)

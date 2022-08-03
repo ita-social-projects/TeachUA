@@ -67,17 +67,13 @@ public class TestServiceImpl implements TestService {
                 saveAnswers(questionProfile, question);
                 question = questionService.save(question);
             }
-
             questionTest.setTest(test);
             questionTest.setQuestion(question);
             questionTestService.save(questionTest);
         }
-
         test.setGrade(grade);
         return dtoConverter.convertFromDtoToDto(testDto, new SuccessCreatedTest());
     }
-
-
 
     @Override
     public List<Test> findActiveTests() {
@@ -96,7 +92,10 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public Test findById(Long id) {
-        return testRepository.findById(id).orElse(null);
+        return testRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format("There's no test with id '%d'", id)
+                ));
     }
 
     @Override

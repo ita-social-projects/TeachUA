@@ -17,6 +17,7 @@ import java.util.NoSuchElementException;
 public class QuestionTypeServiceImpl implements QuestionTypeService {
     private final QuestionTypeRepository questionTypeRepository;
 
+    @Override
     public QuestionType findByTitle(String title) {
         return questionTypeRepository.findByTitle(title)
                 .orElseThrow(() -> new NoSuchElementException(

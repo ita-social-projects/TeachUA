@@ -17,10 +17,11 @@ import java.util.NoSuchElementException;
 public class QuestionCategoryServiceImpl implements QuestionCategoryService {
     private final QuestionCategoryRepository questionCategoryRepository;
 
+    @Override
     public QuestionCategory findByTitle(String title) {
         return questionCategoryRepository.findByTitle(title)
                 .orElseThrow(() -> new NoSuchElementException(
-                        String.format("There is no question category with title '%s'", title)
+                        String.format("There's no question category with title '%s'", title)
                 ));
     }
 }

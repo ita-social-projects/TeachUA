@@ -9,7 +9,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "group_test")
-public class GroupsTests {
+public class GroupTest {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;

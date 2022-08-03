@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.test.impl;
 
+import com.softserve.teachua.dto.test.subscription.CreateSubscription;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.model.test.Subscription;
@@ -12,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
@@ -22,14 +25,21 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final UserService userService;
 
     @Override
-    public void createSubscription(String enrollmentKey) {
-        Group group = groupService.findByEnrollmentKey(enrollmentKey);
-        User user = userService.getCurrentUser();
-        Subscription subscription = new Subscription();
-        subscription.setGroup(group);
-        subscription.setUser(user);
-        subscription.setExpirationDate(group.getEndDate());
+    public void createSubscription(CreateSubscription createSubscription) {
+        List<Group> groups = groupService.findAllByTestId(createSubscription.getTestId());
+        String enrollmentKey = createSubscription.getEnrollmentKey();
 
-        subscriptionRepository.save(subscription);
+        for (Group group : groups) {
+            if (group.getEnrollmentKey().equals(enrollmentKey)) {
+                User user = userService.getCurrentUser();
+                Subscription subscription = new Subscription();
+                subscription.setGroup(group);
+                subscription.setUser(user);
+                subscription.setExpirationDate(group.getEndDate());
+                subscriptionRepository.save(subscription);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Your key is incorrect");
     }
 }

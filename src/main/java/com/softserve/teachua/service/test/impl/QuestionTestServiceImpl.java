@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class QuestionTestServiceImpl implements QuestionTestService {
     private final QuestionTestRepository questionTestRepository;
 
+    @Override
     public void save(QuestionTest questionTest) {
         validate(questionTest);
         questionTestRepository.save(questionTest);
