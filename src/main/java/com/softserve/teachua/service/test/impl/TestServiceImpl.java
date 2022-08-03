@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.test.impl;
 
+import com.softserve.teachua.controller.test.TestController;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.test.answer.ResultAnswer;
 import com.softserve.teachua.dto.test.question.PassingTestQuestion;
@@ -15,12 +16,17 @@ import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -228,15 +234,34 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public TestsContainer findUnarchivedTestProfiles() {
+    public List<TestProfile> findUnarchivedTestProfiles() {
         List<Test> tests = findUnarchivedTests();
         List<TestProfile> testProfiles = new ArrayList<>();
         for(Test t: tests){
-            testProfiles.add(dtoConverter.convertToDto(t, TestProfile.class));
+            TestProfile testProfile = dtoConverter.convertToDto(t, TestProfile.class);
+
+            Link viewTest = linkTo(methodOn(TestController.class).viewTest(t.getId())).withRel("viewTest");
+            testProfile.add(viewTest);
+
+            testProfiles.add(testProfile);
         }
-        TestsContainer testsContainer = new TestsContainer();
-        testsContainer.setTestProfiles(testProfiles);
-        return testsContainer;
+        return testProfiles;
+    }
+
+    @Override
+    public ViewTest findViewTestById(Long id) {
+        Test test = testRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format("There is no test with id '%s'", id)
+                ));
+        ViewTest viewTest = dtoConverter.convertToDto(test, ViewTest.class);
+
+        Link testGroups = linkTo(methodOn(TestController.class).getGroups(id)).withRel("allGroups");
+        viewTest.add(testGroups);
+
+        Link passTest = linkTo(methodOn(TestController.class).passTest(id)).withRel("startTest");
+        viewTest.add(passTest);
+        return viewTest;
     }
 
     private List<PassingTestQuestion> getPassingTestQuestions(Test test) {

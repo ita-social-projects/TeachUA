@@ -49,6 +49,11 @@ public class ResultServiceImpl implements ResultService {
         resultRepository.save(result);
     }
 
+    @Override
+    public List<Result> findByUser(User user) {
+        return resultRepository.findResultsByUser(user);
+    }
+
     public int countGrade(CreateResult resultDto, List<Question> questions) {
         int grade = 0;
         List<Answer> selectedAnswers = answerService.findAllById(resultDto.getSelectedAnswersIds());

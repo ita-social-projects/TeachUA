@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
     List<Subscription> findSubscriptionsByGroup(Group group);
+    List<Subscription> findSubscriptionsByGroupId(Long groupId);
 }

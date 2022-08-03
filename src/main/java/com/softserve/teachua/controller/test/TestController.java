@@ -19,11 +19,16 @@ public class TestController implements Api {
     private final GroupService groupService;
 
     @GetMapping("/tests")
-    public TestsContainer getUnarchivedTests(){
+    public List<TestProfile> getUnarchivedTests(){
         return testService.findUnarchivedTestProfiles();
     }
 
     @GetMapping("/tests/{id}")
+    public ViewTest viewTest(@PathVariable Long id){
+        return testService.findViewTestById(id);
+    }
+
+    @GetMapping("/tests/{id}/passing")
     public PassTest passTest(@PathVariable Long id){
         return testService.findPassTestById(id);
     }
