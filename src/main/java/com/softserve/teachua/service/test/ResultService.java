@@ -21,11 +21,10 @@ public interface ResultService {
 
     /**
      * This method returns an integer value of grade of a certain result.
-     * @param resultDto - put body of dto {@code CreateResult}.
-     * @param questions - put list of test questions.
+     * @param answers - put list of selected answers.
      * @return int
      */
-    int countGrade(CreateResult resultDto, List<Question> questions);
+    int countGrade(List<Answer> answers);
 
     /**
      * This method adds result and answer history.

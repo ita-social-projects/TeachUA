@@ -1,6 +1,5 @@
 package com.softserve.teachua.service.test.impl;
 
-import com.softserve.teachua.dto.test.result.CreateResult;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
 import com.softserve.teachua.repository.test.ResultRepository;
@@ -12,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -52,37 +53,33 @@ public class ResultServiceImpl implements ResultService {
         return resultRepository.findResultsByUser(user);
     }
 
-    public int countGrade(CreateResult resultDto, List<Question> questions) {
+    @Override
+    public int countGrade(List<Answer> selectedAnswers) {
         int grade = 0;
-        List<Answer> selectedAnswers = answerService.findAllById(resultDto.getSelectedAnswersIds());
-        for (Question q : questions) {
-            grade += countGradeForQuestion(q, selectedAnswers);
-        }
-        return grade;
-    }
+        Map<Question, List<Answer>> idAnswers = selectedAnswers.stream()
+                .collect(Collectors.groupingBy(Answer::getQuestion));
 
-    private int countGradeForQuestion(Question q, List<Answer> selectedAnswers) {
-        int gradeForQuestion = 0;
-        if (q.getQuestionType().getTitle().equals("radio")) {
-            for (Answer a : q.getAnswers()) {
-                if (a.isCorrect() && selectedAnswers.contains(a)) {
-                    gradeForQuestion += a.getValue();
+        for (Map.Entry<Question, List<Answer>> pair : idAnswers.entrySet()) {
+            Question question = pair.getKey();
+            List<Answer> answers = pair.getValue();
+            int questionGrade = 0;
+
+            if (question.getQuestionType().getTitle().equals("radio")) {
+                for (Answer a : answers) {
+                    if (a.isCorrect() && selectedAnswers.contains(a)) {
+                        questionGrade += a.getValue();
+                    }
+                }
+            } else if (question.getQuestionType().getTitle().equals("checkbox")) {
+                for (Answer a : answers) {
+                    boolean answerIsCorrect = a.isCorrect();
+                    int value = a.getValue();
+                    questionGrade += answerIsCorrect ? value : -value;
                 }
             }
-        } else if (q.getQuestionType().getTitle().equals("checkbox")) {
-            for (Answer a : q.getAnswers()) {
-                boolean answerIsCorrect = a.isCorrect();
-                boolean answerIsSelected = selectedAnswers.contains(a);
-                if (answerIsCorrect && answerIsSelected) {
-                    gradeForQuestion += a.getValue();
-                } else if (answerIsCorrect) {
-                    gradeForQuestion -= a.getValue();
-                } else if (answerIsSelected) {
-                    gradeForQuestion -= a.getValue();
-                }
-            }
+            grade += Math.max(questionGrade, 0);
         }
-        if (gradeForQuestion < 0) gradeForQuestion = 0;
-        return gradeForQuestion;
+
+        return grade;
     }
 }

@@ -8,6 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Provides an interface for managing {@link Group} model.
+ */
+
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
     Optional<Group> findByEnrollmentKey(String enrollmentKey);

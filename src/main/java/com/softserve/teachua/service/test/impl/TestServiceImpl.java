@@ -175,6 +175,7 @@ public class TestServiceImpl implements TestService {
         return resultTest;
     }
 
+    @Override
     public SuccessCreatedResult saveResult(CreateResult resultDto) {
         User user = userService.getCurrentUser();
         Result result = new Result();
@@ -184,10 +185,9 @@ public class TestServiceImpl implements TestService {
         List<Long> answerIds = resultDto.getSelectedAnswersIds();
         // TODO set start time time
 
-        result.setGrade(resultService.countGrade(resultDto, questionService.findQuestionsByTestId(resultDto.getTestId())));
-
         List<Answer> selectedAnswers = answerService.findAllById(answerIds);
         resultService.createResult(result, selectedAnswers);
+        result.setGrade(resultService.countGrade(selectedAnswers));
 
         SuccessCreatedResult success = new SuccessCreatedResult();
         success.setSelectedAnswersIds(answerIds);

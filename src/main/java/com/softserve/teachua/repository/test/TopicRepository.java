@@ -6,6 +6,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Provides an interface for managing {@link Topic} model.
+ */
+
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Long> {
     Optional<Topic> findByTitle(String title);

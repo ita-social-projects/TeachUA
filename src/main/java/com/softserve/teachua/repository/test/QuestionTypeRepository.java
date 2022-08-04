@@ -6,6 +6,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Provides an interface for managing {@link QuestionType} model.
+ */
+
 @Repository
 public interface QuestionTypeRepository extends JpaRepository<QuestionType, Long> {
     Optional<QuestionType> findByTitle(String title);
