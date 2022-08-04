@@ -3,10 +3,8 @@ package com.softserve.teachua.service.test.impl;
 import com.softserve.teachua.dto.test.result.CreateResult;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
-import com.softserve.teachua.repository.test.QuestionHistoryRepository;
 import com.softserve.teachua.repository.test.ResultRepository;
 import com.softserve.teachua.service.test.AnswerService;
-import com.softserve.teachua.service.test.QuestionService;
 import com.softserve.teachua.service.test.ResultService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,11 +71,13 @@ public class ResultServiceImpl implements ResultService {
             }
         } else if (q.getQuestionType().getTitle().equals("checkbox")) {
             for (Answer a : q.getAnswers()) {
-                if (a.isCorrect() && selectedAnswers.contains(a)) {
+                boolean answerIsCorrect = a.isCorrect();
+                boolean answerIsSelected = selectedAnswers.contains(a);
+                if (answerIsCorrect && answerIsSelected) {
                     gradeForQuestion += a.getValue();
-                } else if (a.isCorrect() && !selectedAnswers.contains(a)) {
+                } else if (answerIsCorrect) {
                     gradeForQuestion -= a.getValue();
-                } else if (!a.isCorrect() && selectedAnswers.contains(a)) {
+                } else if (answerIsSelected) {
                     gradeForQuestion -= a.getValue();
                 }
             }

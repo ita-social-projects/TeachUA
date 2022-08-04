@@ -184,6 +184,8 @@ public class TestServiceImpl implements TestService {
         List<Long> answerIds = resultDto.getSelectedAnswersIds();
         // TODO set start time time
 
+        result.setGrade(resultService.countGrade(resultDto, questionService.findQuestionsByTestId(resultDto.getTestId())));
+
         List<Answer> selectedAnswers = answerService.findAllById(answerIds);
         resultService.createResult(result, selectedAnswers);
 
@@ -266,8 +268,8 @@ public class TestServiceImpl implements TestService {
 
     private List<PassingTestQuestion> getPassingTestQuestions(Test test) {
         List<PassingTestQuestion> passingTestQuestions = new ArrayList<>();
-        for (Question q: questionService.findQuestionsByTest(test)) {
-            PassingTestQuestion passingTestQuestion = dtoConverter.convertToDto(q, PassingTestQuestion.class);
+        for (Question question: questionService.findQuestionsByTest(test)) {
+            PassingTestQuestion passingTestQuestion = dtoConverter.convertToDto(question, PassingTestQuestion.class);
             passingTestQuestions.add(passingTestQuestion);
         }
         return passingTestQuestions;
