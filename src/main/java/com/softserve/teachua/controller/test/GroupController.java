@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 /**
  * This controller is for managing the groups.
  * */
@@ -29,7 +32,7 @@ public class GroupController implements Api {
      * @param id - post group ud here.
      * @return new {@code List<UserResponse>}.
      */
-    @GetMapping("/groups/{id}/users")
+    @GetMapping(value = "/groups/{id}/users", produces = APPLICATION_JSON_VALUE)
     public List<UserResponse> findUsersByGroup(@PathVariable Long id) {
         return subscriptionService.getUserResponseByGroupId(id);
     }
@@ -40,7 +43,8 @@ public class GroupController implements Api {
      * @param groupId - post group id here.
      * @param testId  - post test id here.
      */
-    @PostMapping("/groups/{groupId}/tests/{testId}")
+    @ResponseStatus(value = CREATED)
+    @PostMapping(value = "/groups/{groupId}/tests/{testId}")
     public void addTestToGroup(@PathVariable Long groupId,
                                @PathVariable Long testId) {
         groupsTestsService.addTestToGroup(testId, groupId);
@@ -53,7 +57,10 @@ public class GroupController implements Api {
      * @param group - post parameters of group here.
      * @return new {@code CreateGroup} - shows the created group.
      */
-    @PostMapping("/groups")
+    @ResponseStatus(value = CREATED)
+    @PostMapping(value = "/groups",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE)
     public CreateGroup addGroup(@RequestBody CreateGroup group) {
         return groupService.save(group);
     }
