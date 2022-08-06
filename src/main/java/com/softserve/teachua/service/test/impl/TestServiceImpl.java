@@ -16,6 +16,7 @@ import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -46,8 +47,9 @@ public class TestServiceImpl implements TestService {
     private final QuestionTypeService questionTypeService;
     private final QuestionCategoryService questionCategoryService;
     private final AnswerService answerService;
+    private final SubscriptionService subscriptionService;
     private final DtoConverter dtoConverter;
-
+    private final ModelMapper modelMapper;
 
     @Override
     public SuccessCreatedTest addTest(CreateTest testDto) {
@@ -197,6 +199,65 @@ public class TestServiceImpl implements TestService {
         return success;
     }
 
+    @Override
+    public PassTest findPassTestById(Long id) {
+        Test test = findById(id);
+        PassTest passTest = dtoConverter.convertToDto(test, PassTest.class);
+        passTest.setQuestions(getPassingTestQuestions(test));
+        return passTest;
+    }
+
+    @Override
+    public List<TestProfile> findUnarchivedTestProfiles() {
+        List<Test> tests = findUnarchivedTests();
+        List<TestProfile> testProfiles = new ArrayList<>();
+        for(Test t: tests){
+            TestProfile testProfile = dtoConverter.convertToDto(t, TestProfile.class);
+
+            Link viewTestLink = linkTo(methodOn(TestController.class)
+                    .viewTest(t.getId()))
+                    .withRel("viewTest");
+            testProfile.add(viewTestLink);
+
+            testProfiles.add(testProfile);
+        }
+        return testProfiles;
+    }
+
+    @Override
+    public ViewTest findViewTestById(Long id) {
+        Test test = findById(id);
+        User user = userService.getCurrentUser();
+        ViewTest viewTest = dtoConverter.convertToDto(test, ViewTest.class);
+
+        Link testGroups = linkTo(methodOn(TestController.class)
+                .getGroups(id))
+                .withRel("allGroups");
+        viewTest.add(testGroups);
+
+        if (test.isActive()) {
+            boolean hasSubscription = subscriptionService
+                    .hasSubscription(user.getId(), test.getId());
+
+            if (hasSubscription) {
+                Link passTest = linkTo(methodOn(TestController.class)
+                        .passTest(id))
+                        .withRel("startTest");
+                viewTest.add(passTest);
+                viewTest.setAllowed(true);
+            }
+        }
+        return viewTest;
+    }
+
+    private List<PassingTestQuestion> getPassingTestQuestions(Test test) {
+        List<Question> questions = questionService.findQuestionsByTest(test);
+        return questions.stream()
+                .map(question -> modelMapper.map(question, PassingTestQuestion.class))
+                .collect(Collectors.toList());
+    }
+
+
     private QuestionType findQuestionType(QuestionProfile question) {
         int numberOfCorrectAnswers = question.getCorrectAnswerIndexes().size();
 
@@ -222,56 +283,5 @@ public class TestServiceImpl implements TestService {
 
             question.addAnswer(answer);
         }
-    }
-
-    @Override
-    public PassTest findPassTestById(Long id) {
-        Test test = testRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
-                        String.format("There is no test with id '%s'", id)
-                ));
-        PassTest passTest = dtoConverter.convertToDto(test, PassTest.class);
-        passTest.setQuestions(getPassingTestQuestions(test));
-        return passTest;
-    }
-
-    @Override
-    public List<TestProfile> findUnarchivedTestProfiles() {
-        List<Test> tests = findUnarchivedTests();
-        List<TestProfile> testProfiles = new ArrayList<>();
-        for(Test t: tests){
-            TestProfile testProfile = dtoConverter.convertToDto(t, TestProfile.class);
-
-            Link viewTest = linkTo(methodOn(TestController.class).viewTest(t.getId())).withRel("viewTest");
-            testProfile.add(viewTest);
-
-            testProfiles.add(testProfile);
-        }
-        return testProfiles;
-    }
-
-    @Override
-    public ViewTest findViewTestById(Long id) {
-        Test test = testRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
-                        String.format("There is no test with id '%s'", id)
-                ));
-        ViewTest viewTest = dtoConverter.convertToDto(test, ViewTest.class);
-
-        Link testGroups = linkTo(methodOn(TestController.class).getGroups(id)).withRel("allGroups");
-        viewTest.add(testGroups);
-
-        Link passTest = linkTo(methodOn(TestController.class).passTest(id)).withRel("startTest");
-        viewTest.add(passTest);
-        return viewTest;
-    }
-
-    private List<PassingTestQuestion> getPassingTestQuestions(Test test) {
-        List<PassingTestQuestion> passingTestQuestions = new ArrayList<>();
-        for (Question question: questionService.findQuestionsByTest(test)) {
-            PassingTestQuestion passingTestQuestion = dtoConverter.convertToDto(question, PassingTestQuestion.class);
-            passingTestQuestions.add(passingTestQuestion);
-        }
-        return passingTestQuestions;
     }
 }

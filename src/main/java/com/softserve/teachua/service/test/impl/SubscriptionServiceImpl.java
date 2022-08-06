@@ -1,6 +1,5 @@
 package com.softserve.teachua.service.test.impl;
 
-import com.softserve.teachua.controller.test.GroupController;
 import com.softserve.teachua.controller.test.TestController;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.test.result.UserResult;
@@ -23,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -77,5 +78,20 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             userResponses.add(userResponse);
         }
         return userResponses;
+    }
+
+    @Override
+    public boolean hasSubscription(Long userId, Long testId) {
+        List<Long> userGroupsIds = subscriptionRepository.findAllByUserId(userId).stream()
+                .map(Subscription::getGroup)
+                .map(Group::getId)
+                .collect(Collectors.toList());
+        List<Group> testGroups = groupService.findAllByTestId(testId);
+
+        if (Objects.isNull(userId) || Objects.isNull(testId))
+            throw new IllegalArgumentException("User id or test id can't be null");
+
+        return testGroups.stream()
+                .anyMatch(group -> userGroupsIds.contains(group.getId()));
     }
 }

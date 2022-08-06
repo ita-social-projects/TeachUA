@@ -9,4 +9,5 @@ public class ViewTest extends RepresentationModel<ViewTest> {
     private String description;
     private int difficulty;
     private int duration;
+    private boolean allowed;
 }
