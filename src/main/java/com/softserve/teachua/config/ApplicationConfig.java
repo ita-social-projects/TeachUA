@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.servlet.Filter;
@@ -17,6 +18,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 @Configuration
+@EnableScheduling
 @ComponentScan(basePackages = {"com.softserve.teachua.controller"})
 public class ApplicationConfig {
     private static final String UPLOAD_LOCATION = "/upload/";

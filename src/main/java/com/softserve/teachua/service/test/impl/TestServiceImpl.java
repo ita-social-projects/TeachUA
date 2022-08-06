@@ -1,7 +1,6 @@
 package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.controller.test.TestController;
-import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.test.answer.ResultAnswer;
 import com.softserve.teachua.dto.test.question.PassingTestQuestion;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
@@ -18,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.Link;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,13 +48,33 @@ public class TestServiceImpl implements TestService {
     private final QuestionCategoryService questionCategoryService;
     private final AnswerService answerService;
     private final SubscriptionService subscriptionService;
-    private final DtoConverter dtoConverter;
+    private final GroupService groupService;
     private final ModelMapper modelMapper;
+
+    @Scheduled(fixedDelay = 1000 * 3600 * 24)
+    public void updateTestsStatus(){
+        List<Test> tests = testRepository.findAll();
+        LocalDate currentDate = LocalDate.now();
+
+        for(Test test : tests) {
+            boolean isActive = groupService.findAllByTestId(test.getId())
+                    .stream()
+                    .anyMatch(x -> {
+                        LocalDate startDate = x.getStartDate();
+                        LocalDate endDate = x.getEndDate();
+                        return currentDate.isAfter(startDate) &&
+                               currentDate.isBefore(endDate);
+                    });
+
+            test.setActive(isActive);
+            testRepository.save(test);
+        }
+    }
 
     @Override
     public SuccessCreatedTest addTest(CreateTest testDto) {
         User user = userService.getCurrentUser();
-        Test test = dtoConverter.convertToEntity(testDto, new Test());
+        Test test = modelMapper.map(testDto, Test.class);
         test.setCreator(user);
         test.setDateOfCreation(LocalDate.now());
         test.setTopic(topicService.findByTitle(testDto.getTopicTitle()));
@@ -62,7 +82,7 @@ public class TestServiceImpl implements TestService {
         int grade = 0;
 
         for (QuestionProfile questionProfile: testDto.getQuestions()) {
-            Question question = dtoConverter.convertToEntity(questionProfile, new Question());
+            Question question = modelMapper.map(questionProfile, Question.class);
             QuestionTest questionTest = new QuestionTest();
             grade += questionProfile.getValue();
 
@@ -80,7 +100,7 @@ public class TestServiceImpl implements TestService {
             questionTestService.save(questionTest);
         }
         test.setGrade(grade);
-        return dtoConverter.convertFromDtoToDto(testDto, new SuccessCreatedTest());
+        return modelMapper.map(testDto, SuccessCreatedTest.class);
     }
 
     @Override
@@ -202,7 +222,7 @@ public class TestServiceImpl implements TestService {
     @Override
     public PassTest findPassTestById(Long id) {
         Test test = findById(id);
-        PassTest passTest = dtoConverter.convertToDto(test, PassTest.class);
+        PassTest passTest = modelMapper.map(test, PassTest.class);
         passTest.setQuestions(getPassingTestQuestions(test));
         return passTest;
     }
@@ -212,7 +232,7 @@ public class TestServiceImpl implements TestService {
         List<Test> tests = findUnarchivedTests();
         List<TestProfile> testProfiles = new ArrayList<>();
         for(Test t: tests){
-            TestProfile testProfile = dtoConverter.convertToDto(t, TestProfile.class);
+            TestProfile testProfile = modelMapper.map(t, TestProfile.class);
 
             Link viewTestLink = linkTo(methodOn(TestController.class)
                     .viewTest(t.getId()))
@@ -228,7 +248,7 @@ public class TestServiceImpl implements TestService {
     public ViewTest findViewTestById(Long id) {
         Test test = findById(id);
         User user = userService.getCurrentUser();
-        ViewTest viewTest = dtoConverter.convertToDto(test, ViewTest.class);
+        ViewTest viewTest = modelMapper.map(test, ViewTest.class);
 
         Link testGroups = linkTo(methodOn(TestController.class)
                 .getGroups(id))
