@@ -3,7 +3,6 @@ package com.softserve.teachua.service.test;
 import com.softserve.teachua.model.test.Answer;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * This interface contains all methods needed to manage answers.

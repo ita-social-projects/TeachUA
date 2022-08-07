@@ -15,7 +15,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
- * This controller is for managing the groups.
+ * This controller is for managing groups.
  * */
 
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class GroupController implements Api {
      * Use this endpoint to get all users by specific group.
      * The controller returns list of user DTOs {@code List<UserResponse>}.
      *
-     * @param id - post group ud here.
+     * @param id - put group ud here.
      * @return new {@code List<UserResponse>}.
      */
     @GetMapping(value = "/groups/{id}/users", produces = APPLICATION_JSON_VALUE)
@@ -40,10 +40,9 @@ public class GroupController implements Api {
     /**
      * Use this endpoint to add a test to a specific group.
      *
-     * @param groupId - post group id here.
-     * @param testId  - post test id here.
+     * @param groupId - put group id here.
+     * @param testId  - put test id here.
      */
-    @ResponseStatus(value = CREATED)
     @PostMapping(value = "/groups/{groupId}/tests/{testId}")
     public void addTestToGroup(@PathVariable Long groupId,
                                @PathVariable Long testId) {
@@ -54,7 +53,7 @@ public class GroupController implements Api {
      * Use this endpoint to create a group.
      * This controller returns group DTO {@code CreateGroup}.
      *
-     * @param group - post parameters of group here.
+     * @param group - put parameters of group here.
      * @return new {@code CreateGroup} - shows the created group.
      */
     @ResponseStatus(value = CREATED)

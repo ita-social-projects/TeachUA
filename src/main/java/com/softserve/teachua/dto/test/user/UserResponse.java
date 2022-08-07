@@ -1,13 +1,12 @@
 package com.softserve.teachua.dto.test.user;
 
-import com.softserve.teachua.dto.test.result.UserResult;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
-import java.util.List;
-
-@Data
-public class UserResponse {
+@Getter
+@Setter
+public class UserResponse extends RepresentationModel<UserResponse> {
     private String firstName;
     private String lastName;
-    private List<UserResult> userResults;
 }

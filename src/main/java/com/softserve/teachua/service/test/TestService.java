@@ -1,7 +1,5 @@
 package com.softserve.teachua.service.test;
 
-import com.softserve.teachua.dto.test.result.CreateResult;
-import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
 import com.softserve.teachua.dto.test.test.*;
 import com.softserve.teachua.model.test.Test;
 
@@ -32,6 +30,13 @@ public interface TestService {
     List<Test> findArchivedTests();
 
     /**
+     * This method returns list of all tests by specific group.
+     * @param groupId - put group id here.
+     * @return new {@code List<Test>}
+     */
+    List<Test> findAllByGroupId(Long groupId);
+
+    /**
      * This method returns list of all unarchived tests.
      * @return new {@code List<Test>}.
      */
@@ -53,21 +58,6 @@ public interface TestService {
     void archiveTestById(Long id);
 
     /**
-     * This method returns dto {@code ResultTest} by test id and result id.
-     * @param testId - put test id.
-     * @param resultId - put result id.
-     * @return new {@code ResultTest}.
-     */
-    ResultTest getResultTest(Long testId, Long resultId);
-
-    /**
-     * This method returns dto {@code SuccessCreatedResult} if result was successfully added.
-     * @param resultDto - put body of dto {@code CreateResult}.
-     * @return new {@code SuccessCreatedResult}.
-     */
-    SuccessCreatedResult saveResult(CreateResult resultDto);
-
-    /**
      * This method returns dto {@code PassTest} by test id.
      * @param id - put test id.
      * @return new {@code PassTest}.
@@ -87,4 +77,14 @@ public interface TestService {
      * @return new {@code ViewTest}.
      */
     ViewTest findViewTestById(Long id);
+
+    /**
+     * This method returns true or false depending on whether the user has a subscription to the group
+     * which contains a specific test.
+     * @param userId - put user id here.
+     * @param testId put test id here.
+     * @return new {@code boolean}
+     * @throws IllegalArgumentException if the parameter is null.
+     */
+    boolean hasSubscription(Long userId, Long testId);
 }

@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
+import static com.softserve.teachua.utils.NullValidator.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -23,9 +23,7 @@ public class GroupTestServiceImpl implements GroupTestService {
 
     @Override
     public void addTestToGroup(Long testId, Long groupId) {
-        if (Objects.isNull(testId) || Objects.isNull(groupId))
-            throw new IllegalArgumentException("Test id or Group id can't be null");
-
+        checkNullIds(testId, groupId);
         GroupTest groupTest = new GroupTest();
         groupTest.setGroup(groupService.findById(groupId));
         groupTest.setTest(testService.findById(testId));

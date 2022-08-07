@@ -22,14 +22,4 @@ public interface SubscriptionService {
      * @return new {@code List<UserResponse>}.
      */
     List<UserResponse> getUserResponseByGroupId(Long id);
-
-    /**
-     * This method returns true or false depending on whether the user has a subscription to the group
-     * which contains a specific test.
-     * @param userId - put user id here.
-     * @param testId put test id here.
-     * @return new {@code boolean}
-     * @throws IllegalArgumentException if the parameter is null.
-     */
-    boolean hasSubscription(Long userId, Long testId);
 }

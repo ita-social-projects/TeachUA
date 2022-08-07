@@ -1,8 +1,6 @@
 package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.model.test.QuestionTest;
-import com.softserve.teachua.model.test.Question;
-import com.softserve.teachua.model.test.Test;
 import com.softserve.teachua.repository.test.QuestionTestRepository;
 import com.softserve.teachua.service.test.QuestionTestService;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j

@@ -14,8 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.softserve.teachua.utils.NullValidator.checkNull;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,41 +29,31 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> findQuestionsByTestId(Long id) {
-        if (Objects.isNull(id))
-            throw new IllegalArgumentException("Test id can't be null");
-
+        checkNull(id, "Test id");
         return questionRepository.findQuestionsByTestId(id);
     }
 
     @Override
     public List<Question> findQuestionsByTest(Test test) {
-        if (Objects.isNull(test))
-            throw new IllegalArgumentException("Test can't be null");
-
+        checkNull(test, "Test");
         return findQuestionsByTestId(test.getId());
     }
 
     @Override
     public List<QuestionResponse> findQuestionResponsesByTestId(Long id) {
-        if (Objects.isNull(id))
-            throw new IllegalArgumentException("Test id can't be null");
-
+        checkNull(id, "Test id");
         return mapToDtoList(questionRepository.findQuestionsByTestId(id));
     }
 
     @Override
     public List<QuestionResponse> findQuestionResponsesByTest(Test test) {
-        if (Objects.isNull(test))
-            throw new IllegalArgumentException("Test can't be null");
-
+        checkNull(test, "Test");
         return findQuestionResponsesByTestId(test.getId());
     }
 
     @Override
     public Question save(Question question) {
-        if (Objects.isNull(question))
-            throw new IllegalArgumentException("Question id can't be null");
-
+        checkNull(question, "Question");
         return questionRepository.save(question);
     }
 

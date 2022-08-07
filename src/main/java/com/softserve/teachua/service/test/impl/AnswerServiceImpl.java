@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+
+import static com.softserve.teachua.utils.NullValidator.*;
+
 
 @RequiredArgsConstructor
 @Slf4j
@@ -21,11 +21,9 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
 
     @Override
-    public List<Answer> findByQuestionId(Long id) {
-        if (Objects.isNull(id))
-            throw new IllegalArgumentException("Question id can't be null");
-
-        return answerRepository.findAllByQuestionId(id);
+    public List<Answer> findByQuestionId(Long questionId) {
+        checkNull(questionId, "Question id");
+        return answerRepository.findAllByQuestionId(questionId);
     }
 
     @Override

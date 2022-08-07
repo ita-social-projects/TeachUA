@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
+import static com.softserve.teachua.utils.NullValidator.*;
+
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
@@ -19,9 +21,9 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
 
     @Override
     public QuestionCategory findByTitle(String title) {
+        checkNull(title, "Question category");
         return questionCategoryRepository.findByTitle(title)
                 .orElseThrow(() -> new NoSuchElementException(
-                        String.format("There's no question category with title '%s'", title)
-                ));
+                        String.format("There's no question category with title '%s'", title)));
     }
 }

@@ -13,7 +13,7 @@ import static org.springframework.http.MediaType.*;
 import static org.springframework.http.HttpStatus.*;
 
 /**
- * This controller is for managing the subscriptions.
+ * This controller is for managing subscriptions.
  * */
 
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class SubscriptionController implements Api {
     /**
      * Use this endpoint to create new subscription.
      *
-     * @param subscription - post subscription details here.
+     * @param subscription - put subscription details here.
      */
     @ResponseStatus(value = CREATED)
     @PostMapping(value = "/subscriptions", consumes = APPLICATION_JSON_VALUE)
