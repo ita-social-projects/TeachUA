@@ -6,12 +6,12 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "certificate_types")
+@Table(name = "certificate_templates")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @With
-public class CertificateType {
+public class CertificateTemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -21,10 +21,10 @@ public class CertificateType {
     private String name;
 
     @Column(nullable = false)
-    private String file_path;
+    private String filePath;
 
-    @JsonManagedReference(value = "certificateType")
-    @OneToMany(mappedBy = "type")
-    @ToString.Exclude
-    private List<Certificate> certificates;
+//    @JsonManagedReference(value = "certificateType")
+//    @OneToMany(mappedBy = "type")
+//    @ToString.Exclude
+//    private List<Certificate> certificates;
 }

@@ -3,6 +3,8 @@ package com.softserve.teachua.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -13,39 +15,43 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @With
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Certificate implements Convertible {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "serial_number", unique = true, nullable = false)
+    @EqualsAndHashCode.Include
     private Long serialNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonBackReference(value = "userCertificate")
     @ToString.Exclude
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "user_name", nullable = false)
     private String userName;
 
-    @Column(nullable = false)
+    @Column(name = "user_email", nullable = false)
     private String userEmail;
 
-    @Column
-    private LocalDate certificateDate;
-
-    @Column
+    @Column(name = "send_status")
     private Boolean sendStatus;
 
-    @Column
+    @Column(name = "update_status")
     private LocalDate updateStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_id")
-    @JsonBackReference(value = "certificateType")
+    @JoinColumn(name = "template_id", referencedColumnName = "id")
+    @JsonBackReference(value = "certificateTemplate")
     @ToString.Exclude
-    private CertificateType type;
+    private CertificateTemplate template;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dates_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private CertificateDates dates;
 }

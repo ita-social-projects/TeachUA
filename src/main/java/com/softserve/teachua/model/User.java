@@ -54,9 +54,4 @@ public class User implements Convertible {
 
     @Column
     private String verificationCode;
-
-    @JsonManagedReference(value = "userCertificate")
-    @OneToMany
-    @ToString.Exclude
-    private List<Certificate> certificates;
 }

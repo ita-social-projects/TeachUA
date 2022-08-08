@@ -1,5 +1,5 @@
 package com.softserve.teachua.service;
 
-public interface CertificateTypeService {
+public interface CertificateTemplateService {
     //TODO
 }

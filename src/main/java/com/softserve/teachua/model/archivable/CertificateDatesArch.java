@@ -2,7 +2,7 @@ package com.softserve.teachua.model.archivable;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
-import com.softserve.teachua.service.impl.CertificateTypeServiceImpl;
+import com.softserve.teachua.service.impl.CertificateDatesServiceImpl;
 import lombok.*;
 
 @AllArgsConstructor
@@ -10,13 +10,14 @@ import lombok.*;
 @Builder
 @Data
 @With
-public class CertificateTypeArch implements Convertible, Archivable {
+public class CertificateDatesArch implements Convertible, Archivable {
 
-    private String name;
-    private String filePath;
+    private String dates;
+    private Integer hours;
+    private String duration;
 
     @Override
     public Class getServiceClass() {
-        return CertificateTypeServiceImpl.class;
+        return CertificateDatesServiceImpl.class;
     }
 }

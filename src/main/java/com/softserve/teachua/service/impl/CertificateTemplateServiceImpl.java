@@ -1,9 +1,9 @@
 package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.softserve.teachua.model.CertificateType;
+import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.service.ArchiveMark;
-import com.softserve.teachua.service.CertificateTypeService;
+import com.softserve.teachua.service.CertificateTemplateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class CertificateTypeServiceImpl implements CertificateTypeService, ArchiveMark<CertificateType> {
+public class CertificateTemplateServiceImpl implements CertificateTemplateService, ArchiveMark<CertificateTemplate> {
     @Override
-    public void archiveModel(CertificateType certificateType) {
+    public void archiveModel(CertificateTemplate certificateType) {
         //TODO
     }
 
