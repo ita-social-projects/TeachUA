@@ -1,7 +1,8 @@
 package com.softserve.teachua.service.test;
 
-import com.softserve.teachua.dto.test.answer.CreateGroup;
+import com.softserve.teachua.dto.test.group.GroupProfile;
 import com.softserve.teachua.dto.test.group.ResponseGroup;
+import com.softserve.teachua.dto.test.group.UpdateGroup;
 import com.softserve.teachua.model.test.Group;
 
 import java.util.List;
@@ -25,6 +26,12 @@ public interface GroupService {
     List<ResponseGroup> findResponseGroupsByTestId(Long id);
 
     /**
+     * This method returns a list of groups.
+     * @return new {@code List<Group>}
+     */
+    List<Group> findAll();
+
+    /**
      * This method returns a list of Group entities found by test id.
      * @param id - put test id.
      * @return new {@code List<Group>}.
@@ -39,9 +46,23 @@ public interface GroupService {
     Group findById(Long groupId);
 
     /**
-     * This method returns dto {@code CreateGroup} if group was successfully added.
+     * This method returns dto {@code GroupProfile} if group was successfully added.
      * @param group - put a group entity.
-     * @return new {@code Group}.
+     * @return new {@code GroupProfile}.
      */
-    CreateGroup save(CreateGroup group);
+    GroupProfile save(GroupProfile group);
+
+    /**
+     * This method returns dto {@code UpdateGroup} if group was successfully updated.
+     * @param group   - put a group entity.
+     * @param groupId - put group.
+     * @return new {@code UpdateGroup}.
+     */
+    UpdateGroup updateById(UpdateGroup group, Long groupId);
+
+    /**
+     * This method returns a list of group DTOs.
+     * @return new {@code List<GroupProfile>}.
+     */
+    List<GroupProfile> findAllGroupProfiles();
 }

@@ -94,8 +94,18 @@ public class TestController implements Api {
      *
      * @param id - post test id here.
      */
-    @PostMapping(value = "/tests/{id}/archiving")
+    @PostMapping(value = "/tests/{id}/archive")
     public void archiveTest(@PathVariable Long id) {
         testService.archiveTestById(id);
+    }
+
+    /**
+     * Use this endpoint to restore the test.
+     *
+     * @param id - post test id here.
+     */
+    @PostMapping(value = "/tests/{id}/restore")
+    public void restoreTest(@PathVariable Long id) {
+        testService.restoreTestById(id);
     }
 }

@@ -58,6 +58,13 @@ public interface TestService {
     void archiveTestById(Long id);
 
     /**
+     * This method restores test by id.
+     * @param id - put test id.
+     * @throws NoSuchElementException if test does not exist.
+     */
+    void restoreTestById(Long id);
+
+    /**
      * This method returns dto {@code PassTest} by test id.
      * @param id - put test id.
      * @return new {@code PassTest}.

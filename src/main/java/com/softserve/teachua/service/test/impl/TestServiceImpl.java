@@ -137,6 +137,15 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    public void restoreTestById(Long id) {
+        checkNull(id, "Test id");
+        Test testToRestore = testRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format("There is no test with id '%s'", id)));
+        testToRestore.setArchived(false);
+    }
+
+    @Override
     public PassTest findPassTestById(Long id) {
         checkNull(id, "Test id");
         Test test = findById(id);
@@ -151,12 +160,10 @@ public class TestServiceImpl implements TestService {
         List<TestProfile> testProfiles = new ArrayList<>();
         for(Test t: tests){
             TestProfile testProfile = modelMapper.map(t, TestProfile.class);
-
             Link viewTestLink = linkTo(methodOn(TestController.class)
                     .viewTest(t.getId()))
                     .withRel("viewTest");
             testProfile.add(viewTestLink);
-
             testProfiles.add(testProfile);
         }
         return testProfiles;
@@ -192,6 +199,7 @@ public class TestServiceImpl implements TestService {
     public boolean hasSubscription(Long userId, Long testId) {
         checkNullIds(userId, testId);
         List<Long> userGroupsIds = subscriptionRepository.findAllByUserId(userId).stream()
+                .filter(this::isActiveSubscription)
                 .map(Subscription::getGroup)
                 .map(Group::getId)
                 .collect(Collectors.toList());
@@ -208,6 +216,10 @@ public class TestServiceImpl implements TestService {
                 .collect(Collectors.toList());
     }
 
+    private boolean isActiveSubscription(Subscription subscription) {
+        Group group = subscription.getGroup();
+        return subscription.getExpirationDate().equals(group.getEndDate());
+    }
 
     private QuestionType findQuestionType(QuestionProfile question) {
         int numberOfCorrectAnswers = question.getCorrectAnswerIndexes().size();
@@ -231,7 +243,6 @@ public class TestServiceImpl implements TestService {
             answer.setValue(answerValue);
             answer.setText(answerTitles.get(i));
             answer.setCorrect(correctIndexes.contains(i));
-
             question.addAnswer(answer);
         }
     }

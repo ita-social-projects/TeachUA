@@ -1,9 +1,9 @@
 package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.controller.test.GroupController;
-import com.softserve.teachua.dto.test.answer.CreateGroup;
+import com.softserve.teachua.dto.test.group.GroupProfile;
 import com.softserve.teachua.dto.test.group.ResponseGroup;
-import com.softserve.teachua.model.User;
+import com.softserve.teachua.dto.test.group.UpdateGroup;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.repository.test.GroupRepository;
 import com.softserve.teachua.service.test.GroupService;
@@ -31,6 +31,26 @@ public class GroupServiceImpl implements GroupService {
     private final ModelMapper modelMapper;
 
     @Override
+    public List<Group> findAll() {
+        return groupRepository.findAll();
+    }
+
+    @Override
+    public List<GroupProfile> findAllGroupProfiles() {
+        List<GroupProfile> groupProfiles = new ArrayList<>();
+        for (Group group : findAll()) {
+            GroupProfile groupProfile = modelMapper.map(group, GroupProfile.class);
+            UpdateGroup updGroup = modelMapper.map(groupProfile, UpdateGroup.class);
+            Link updateGroup = linkTo(methodOn(GroupController.class)
+                    .updateGroup(group.getId(), updGroup))
+                    .withRel("update");
+            groupProfile.add(updateGroup);
+            groupProfiles.add(groupProfile);
+        }
+        return groupProfiles;
+    }
+
+    @Override
     public Group findById(Long groupId) {
         checkNull(groupId, "Group id");
         return groupRepository.findById(groupId)
@@ -45,10 +65,19 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public CreateGroup save(CreateGroup createGroup) {
-        Group group = modelMapper.map(createGroup, Group.class);
+    public UpdateGroup updateById(UpdateGroup updateGroup, Long groupId) {
+        Group group = findById(groupId);
+        group.setEndDate(updateGroup.getEndDate());
+        group.setStartDate(updateGroup.getStartDate());
+        group.setTitle(updateGroup.getTitle());
+        return updateGroup;
+    }
+
+    @Override
+    public GroupProfile save(GroupProfile groupProfile) {
+        Group group = modelMapper.map(groupProfile, Group.class);
         groupRepository.save(group);
-        return createGroup;
+        return groupProfile;
     }
 
     @Override

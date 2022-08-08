@@ -1,7 +1,8 @@
 package com.softserve.teachua.controller.test;
 
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.test.answer.CreateGroup;
+import com.softserve.teachua.dto.test.group.GroupProfile;
+import com.softserve.teachua.dto.test.group.UpdateGroup;
 import com.softserve.teachua.dto.test.user.UserResponse;
 import com.softserve.teachua.service.test.GroupService;
 import com.softserve.teachua.service.test.GroupTestService;
@@ -24,6 +25,16 @@ public class GroupController implements Api {
     private final GroupService groupService;
     private final GroupTestService groupsTestsService;
     private final SubscriptionService subscriptionService;
+
+    /**
+     * Use this endpoint to get all groups.
+     *
+     * @return new {@code List<GroupProfile>}.
+     */
+    @GetMapping(value = "/groups", produces = APPLICATION_JSON_VALUE)
+    public List<GroupProfile> getGroups() {
+        return groupService.findAllGroupProfiles();
+    }
 
     /**
      * Use this endpoint to get all users by specific group.
@@ -53,14 +64,30 @@ public class GroupController implements Api {
      * Use this endpoint to create a group.
      * This controller returns group DTO {@code CreateGroup}.
      *
-     * @param group - put parameters of group here.
+     * @param group - put of group parameters here.
      * @return new {@code CreateGroup} - shows the created group.
      */
     @ResponseStatus(value = CREATED)
     @PostMapping(value = "/groups",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public CreateGroup addGroup(@RequestBody CreateGroup group) {
+    public GroupProfile addGroup(@RequestBody GroupProfile group) {
         return groupService.save(group);
+    }
+
+    /**
+     * Use this endpoint to update the group.
+     * This controller returns group DTO {@code UpdateGroup}.
+     *
+     * @param groupId - put group id here.
+     * @param group   - put the updated group parameters here.
+     * @return new {@code UpdateGroup} - shows the updated group.
+     */
+    @PatchMapping(value = "/groups/{groupId}",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE)
+    public UpdateGroup updateGroup(@PathVariable Long groupId,
+                                   @RequestBody UpdateGroup group) {
+        return groupService.updateById(group, groupId);
     }
 }
