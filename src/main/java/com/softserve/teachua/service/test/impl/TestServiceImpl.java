@@ -4,6 +4,7 @@ import com.softserve.teachua.controller.test.TestController;
 import com.softserve.teachua.dto.test.question.PassingTestQuestion;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.dto.test.test.*;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
 import com.softserve.teachua.repository.test.SubscriptionRepository;
@@ -123,7 +124,7 @@ public class TestServiceImpl implements TestService {
     public Test findById(Long id) {
         checkNull(id, "Test id");
         return testRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format("There's no test with id '%d'", id)));
     }
 
@@ -131,7 +132,7 @@ public class TestServiceImpl implements TestService {
     public void archiveTestById(Long id) {
         checkNull(id, "Test id");
         Test testToArchive = testRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format("There is no test with id '%s'", id)));
         testToArchive.setArchived(true);
     }
@@ -140,7 +141,7 @@ public class TestServiceImpl implements TestService {
     public void restoreTestById(Long id) {
         checkNull(id, "Test id");
         Test testToRestore = testRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format("There is no test with id '%s'", id)));
         testToRestore.setArchived(false);
     }

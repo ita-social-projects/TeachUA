@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.test.impl;
 
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.QuestionCategory;
 import com.softserve.teachua.repository.test.QuestionCategoryRepository;
 import com.softserve.teachua.service.test.QuestionCategoryService;
@@ -23,7 +24,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
     public QuestionCategory findByTitle(String title) {
         checkNull(title, "Question category");
         return questionCategoryRepository.findByTitle(title)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format("There's no question category with title '%s'", title)));
     }
 }

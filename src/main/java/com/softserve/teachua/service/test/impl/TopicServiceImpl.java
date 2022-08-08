@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.test.impl;
 
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Topic;
 import com.softserve.teachua.repository.test.TopicRepository;
 import com.softserve.teachua.service.test.TopicService;
@@ -22,7 +23,7 @@ public class TopicServiceImpl implements TopicService {
     public Topic findByTitle(String title) {
         checkNull(title, "Topic title");
         return topicRepository.findByTitle(title)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format("There is no topic with title '%s'", title)));
     }
 }

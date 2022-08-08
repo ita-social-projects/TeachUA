@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.test.impl;
 
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.QuestionType;
 import com.softserve.teachua.repository.test.QuestionTypeRepository;
 import com.softserve.teachua.service.test.QuestionTypeService;
@@ -23,7 +24,7 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
     public QuestionType findByTitle(String title) {
         checkNull(title, "Question type");
         return questionTypeRepository.findByTitle(title)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format("There is no question type with title '%s'", title)));
     }
 }

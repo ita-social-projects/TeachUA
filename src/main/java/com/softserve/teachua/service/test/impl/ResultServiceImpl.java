@@ -7,6 +7,7 @@ import com.softserve.teachua.dto.test.result.CreateResult;
 import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
 import com.softserve.teachua.dto.test.result.UserResult;
 import com.softserve.teachua.dto.test.test.ResultTest;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
 import com.softserve.teachua.repository.test.ResultRepository;
@@ -168,7 +169,7 @@ public class ResultServiceImpl implements ResultService {
     public Result findById(Long id) {
         checkNull(id, "Result id");
         return resultRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format("There is no result with id '%s'", id)));
     }
 

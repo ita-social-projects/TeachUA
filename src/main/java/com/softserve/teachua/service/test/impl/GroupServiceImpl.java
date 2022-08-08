@@ -4,6 +4,7 @@ import com.softserve.teachua.controller.test.GroupController;
 import com.softserve.teachua.dto.test.group.GroupProfile;
 import com.softserve.teachua.dto.test.group.ResponseGroup;
 import com.softserve.teachua.dto.test.group.UpdateGroup;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.repository.test.GroupRepository;
 import com.softserve.teachua.service.test.GroupService;
@@ -54,7 +55,7 @@ public class GroupServiceImpl implements GroupService {
     public Group findById(Long groupId) {
         checkNull(groupId, "Group id");
         return groupRepository.findById(groupId)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format("There's no group with id '%d'", groupId)));
     }
 
