@@ -21,7 +21,7 @@ public class CertificateArch implements Archivable, Convertible {
     private LocalDate certificateDate;
     private boolean sendStatus;
     private LocalDate updateStatus;
-    private Integer typeId;
+    private Integer templateId;
 
     @Override
     public Class getServiceClass() {

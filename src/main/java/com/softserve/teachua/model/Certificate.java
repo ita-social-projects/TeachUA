@@ -3,8 +3,6 @@ package com.softserve.teachua.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -15,33 +13,30 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @With
 @Builder
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Certificate implements Convertible {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "serial_number", unique = true, nullable = false)
-    @EqualsAndHashCode.Include
+    @Column(unique = true, nullable = false)
     private Long serialNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonBackReference(value = "userCertificate")
     @ToString.Exclude
     private User user;
 
-    @Column(name = "user_name", nullable = false)
+    @Column(nullable = false)
     private String userName;
 
-    @Column(name = "user_email", nullable = false)
+    @Column(nullable = false)
     private String userEmail;
 
-    @Column(name = "send_status")
+    @Column
     private Boolean sendStatus;
 
-    @Column(name = "update_status")
+    @Column
     private LocalDate updateStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
