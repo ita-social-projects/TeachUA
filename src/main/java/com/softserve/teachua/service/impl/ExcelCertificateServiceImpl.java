@@ -34,8 +34,7 @@ public class ExcelCertificateServiceImpl implements ExcelCertificateService {
     private int[] indexes;
     private ExcelParsingResponse response;
     private final ExcelValidator validator = new ExcelValidator();
-//    private final static String NAME = "ім'я";
-//    private final static String INITIALS = "піб";
+    private final DataFormatter dataFormatter = new DataFormatter();
 
     @Override
     public ExcelParsingResponse parseExcel(InputStream inputStream) {
@@ -45,9 +44,8 @@ public class ExcelCertificateServiceImpl implements ExcelCertificateService {
         return response;
     }
 
-    private List<List<String>> excelToString(InputStream inputStream) {
-        List<List<String>> allCells = new ArrayList<List<String>>();
-        DataFormatter dataFormatter = new DataFormatter();
+    private List<List<Cell>> excelToString(InputStream inputStream) {
+        List<List<Cell>> allCells = new ArrayList<List<Cell>>();
         XSSFWorkbook workbook;
         Sheet sheet;
         try {
@@ -58,27 +56,28 @@ public class ExcelCertificateServiceImpl implements ExcelCertificateService {
         } catch (IOException e) {
             throw new RuntimeException(FILE_NOT_READ_EXCEPTION);
         }
+
         for (Row row : sheet) {
             if (isRowEmpty(row)) {
                 continue;
             }
             Iterator<Cell> cellIterator = row.iterator();
-            List<String> allRowCells = new ArrayList<>();
+            List<Cell> allRowCells = new ArrayList<>();
             while (cellIterator.hasNext()) {
-                Cell current = cellIterator.next();
-                if (!isColumnEmpty(sheet, current.getColumnIndex())) {
-                    String cell = dataFormatter.formatCellValue(current);
+                Cell currentCell = cellIterator.next();
+                if (!isColumnEmpty(sheet, currentCell.getColumnIndex())) {
+                    String cell = dataFormatter.formatCellValue(currentCell);
                     if (cell.toLowerCase().contains(DATE) || cell.toLowerCase().contains(SURNAME) || cell.toLowerCase().contains(EMAIL)) {
-                        headerRowIndex = current.getRowIndex();
+                        headerRowIndex = allCells.size();
                     }
-                    allRowCells.add(cell);
+                    allRowCells.add(currentCell);
                 }
             }
             System.out.println(allRowCells);
             allCells.add(allRowCells);
         }
         if (headerRowIndex == -1) {
-            response.getParsingMistakes().add(new ExcelParsingMistake(MISSING_HEADER_ROW, EMPTY_STRING));
+            response.getParsingMistakes().add(new ExcelParsingMistake(MISSING_HEADER_ROW, EMPTY_STRING, null));
             return allCells;
         } else {
             setIndexes(allCells.get(headerRowIndex));
@@ -100,19 +99,19 @@ public class ExcelCertificateServiceImpl implements ExcelCertificateService {
         return allCells;
     }
 
-    private CertificateExcel createUserCertificate(List<String> row) {
-        List<String> data = new ArrayList<>(row);
+    private CertificateExcel createUserCertificate(List<Cell> row) {
+        List<Cell> data = new ArrayList<>(row);
         String name = null;
         LocalDate date = null;
         String email = null;
         if (indexes[0] != -1) {
-            name = validator.validateName(response.getParsingMistakes(), data.get(indexes[0]).trim());
+            name = validator.validateName(response.getParsingMistakes(), data.get(indexes[0]));
         }
         if (indexes[1] != -1) {
-            date = validator.validateDate(response.getParsingMistakes(), data.get(indexes[1]).trim());
+            date = validator.validateDate(response.getParsingMistakes(), data.get(indexes[1]));
         }
         if (indexes[2] != -1) {
-            email = validator.validateEmail(response.getParsingMistakes(), data.get(indexes[2]).trim());
+            email = validator.validateEmail(response.getParsingMistakes(), data.get(indexes[2]));
         }
         try {
             return CertificateExcel.builder()
@@ -124,18 +123,19 @@ public class ExcelCertificateServiceImpl implements ExcelCertificateService {
         return new CertificateExcel();
     }
 
-    private List<CertificateExcel> createUserCertificates(List<List<String>> rows) {
+    private List<CertificateExcel> createUserCertificates(List<List<Cell>> rows) {
         List<CertificateExcel> result = new ArrayList<>();
         if (headerRowIndex != -1) {
             rows.remove(headerRowIndex);
         }
-        for (List<String> row : rows) {
+        for (List<Cell> row : rows) {
             result.add(createUserCertificate(row));
         }
         return result;
     }
 
-    private void setIndexes(List<String> headerRow) {
+    private void setIndexes(List<Cell> row) {
+        List<String> headerRow = cellToString(row);
         for (int i = 0; i < headerRow.size(); i++) {
             if (headerRow.get(i).toLowerCase().contains(SURNAME)) {
                 indexes[0] = i;
@@ -147,7 +147,16 @@ public class ExcelCertificateServiceImpl implements ExcelCertificateService {
                 indexes[2] = i;
             }
         }
-        validator.validateHeaders(response.getParsingMistakes(), headerRow, indexes);
+        System.out.println(headerRowIndex);
+        validator.validateHeaders(response.getParsingMistakes(), headerRow, indexes, headerRowIndex);
+    }
+
+    private List<String> cellToString(List<Cell> cells) {
+        List<String> row = new ArrayList<>();
+        for (Cell cell : cells) {
+            row.add(dataFormatter.formatCellValue(cell));
+        }
+        return row;
     }
 
     private boolean isRowEmpty(Row row) {
