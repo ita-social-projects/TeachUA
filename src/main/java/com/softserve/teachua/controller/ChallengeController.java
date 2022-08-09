@@ -124,6 +124,7 @@ public class ChallengeController implements Api {
      * This feature available only for admins.
      *
      * @param id - put challenge id here.
+     * @param id                     - put challenge id here.
      * @param startDate - put new start date here.
      * @return {@code List<SuccessUpdatedTask>} - shows result of updating tasks.
      */
