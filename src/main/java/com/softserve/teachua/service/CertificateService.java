@@ -1,8 +1,10 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.dto.certificate.CertificateContent;
 import com.softserve.teachua.dto.certificate.CertificateResponse;
 import com.softserve.teachua.model.Certificate;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -42,4 +44,8 @@ public interface CertificateService {
 
 
     CertificateResponse updateCertificateWithSerialNumber(Long id, CertificateResponse response);
+
+    Map<String, Object> getParameters(CertificateContent content) throws IOException;
+
+    byte[] getPdfOutput(CertificateResponse response);
 }

@@ -3,20 +3,30 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.certificate.CertificateContent;
 import com.softserve.teachua.dto.certificate.CertificateResponse;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.CertificateService;
+import com.softserve.teachua.utils.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -30,14 +40,16 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     private final DtoConverter dtoConverter;
     private final ObjectMapper objectMapper;
+    private final QRCodeService qrCodeService;
     private final CertificateRepository certificateRepository;
     @Value("${baseURL}")
     private String baseUrl;
 
     @Autowired
-    public CertificateServiceImpl(DtoConverter dtoConverter, ObjectMapper objectMapper, CertificateRepository certificateRepository) {
+    public CertificateServiceImpl(DtoConverter dtoConverter, ObjectMapper objectMapper, QRCodeService qrCodeService, CertificateRepository certificateRepository) {
         this.dtoConverter = dtoConverter;
         this.objectMapper = objectMapper;
+        this.qrCodeService = qrCodeService;
         this.certificateRepository = certificateRepository;
     }
 
@@ -74,6 +86,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         log.debug("getting certificate by id {}", certificate);
         return certificate;
     }
+
+
 
     @Override
     public Certificate getCertificateBySerialNumber(Long serialNumber) {
@@ -138,5 +152,44 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         log.debug("updating serial number of certificate by id {}", newCertificate);
 
         return dtoConverter.convertToDto(certificateRepository.save(newCertificate), CertificateResponse.class);
+    }
+
+    @Override
+    public Map<String, Object> getParameters(CertificateContent content){
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("CONTENT", content);
+        return parameters;
+    }
+
+    @Override
+    public byte[] getPdfOutput(CertificateResponse response){
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        CertificateContent content = dtoConverter.convertFromDtoToDto(response, new CertificateContent());
+
+        try{
+            JasperPrint jasperPrint = createJasperPrint(response.getTemplate().getFilePath(), content);
+            JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException | JRException e) {
+            e.printStackTrace();
+        }
+        return new byte[0];
+    }
+
+    public JasperPrint createJasperPrint(String templatePath, CertificateContent content) throws JRException, IOException {
+        try (InputStream inputStream = new FileInputStream(getRealFilePath(templatePath))) {
+            final JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
+            return JasperFillManager.fillReport(jasperReport, getParameters(content), getDataSource(content));
+        }
+    }
+
+    private String getRealFilePath(final String path) throws IOException{
+        Path resourcePath = Paths.get((new ClassPathResource(path)).getURI());
+        return resourcePath.toFile().getAbsolutePath();
+    }
+
+    private JRDataSource getDataSource(CertificateContent content){
+        return new JRBeanCollectionDataSource(Collections.singleton(content));
     }
 }

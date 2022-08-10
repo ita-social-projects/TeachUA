@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.ByteArrayInputStream;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,4 +35,9 @@ public class CertificateContent implements Convertible {
 
     @NotBlank
     private String studyDuration;
+
+    @NotBlank
+    private ByteArrayInputStream qrCode;
+
+    private String templatePath;
 }
