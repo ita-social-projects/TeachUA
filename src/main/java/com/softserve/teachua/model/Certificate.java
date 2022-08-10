@@ -19,7 +19,7 @@ public class Certificate implements Convertible {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private Long serialNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,10 +27,10 @@ public class Certificate implements Convertible {
     @ToString.Exclude
     private User user;
 
-    @Column(nullable = false)
+    @Column
     private String userName;
 
-    @Column(nullable = false)
+    @Column
     private String userEmail;
 
     @Column
@@ -38,6 +38,9 @@ public class Certificate implements Convertible {
 
     @Column
     private LocalDate updateStatus;
+
+    @Column
+    private Integer certificateType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "template_id", referencedColumnName = "id")
