@@ -11,6 +11,7 @@ import java.util.Map;
  */
 
 public interface CertificateService {
+    //TODO
     List<CertificateResponse> getListOfCertificates();
 
     /**
@@ -23,6 +24,14 @@ public interface CertificateService {
 
 
     Certificate getCertificateBySerialNumber(Long serialNumber);
+
+    /**
+     * Method finds {@link Certificate}
+     *
+     * @param username put User Name
+     * @return new {@code Certificate}
+     */
+    Certificate getCertificateByUserName(String username);
 
     /**
      * Method finds {@link CertificateResponse}
@@ -42,4 +51,8 @@ public interface CertificateService {
 
 
     CertificateResponse updateCertificateWithSerialNumber(Long id, CertificateResponse response);
+
+    Certificate createCertificate(Certificate certificate);
+
+    Certificate updateCertificateEmail(Long id, Certificate certificate);
 }

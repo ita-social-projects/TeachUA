@@ -4,7 +4,7 @@ import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
 import com.softserve.teachua.dto.certificateExcel.ExcelParsingMistake;
 import com.softserve.teachua.dto.certificateExcel.ExcelValidator;
 import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
-import com.softserve.teachua.service.ExcelCertificateService;
+import com.softserve.teachua.service.CertificateExcelService;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Service
-public class ExcelCertificateServiceImpl implements ExcelCertificateService {
+public class CertificateExcelServiceImpl implements CertificateExcelService {
     protected static final String FILE_NOT_FOUND_EXCEPTION = "File %s could not be found";
     protected static final String FILE_NOT_READ_EXCEPTION = "File %s could not be read";
     protected static final String FILE_NOT_CLOSE_EXCEPTION = "File %s could not be closed";

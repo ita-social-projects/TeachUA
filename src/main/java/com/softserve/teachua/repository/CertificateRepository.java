@@ -26,14 +26,14 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     boolean existsByUserEmail(String email);
 
     boolean existsBySerialNumber(Long serialNumber);
+    boolean existsByUserName(String name);
 
     List<Certificate> findAll();
 
     Optional<Certificate> findById(Long id);
 
-
     Optional<Certificate> findBySerialNumber(Long serialNumber);
-
+    Optional<Certificate> findByUserName(String username);
 
     @Query(value = "SELECT MAX(t.serialNumber) from Certificate t WHERE CONCAT(t.serialNumber, '') LIKE CONCAT(:type, :courseNumber, '%') ")
     Long findMaxSerialNumber(@Param("type") String type, @Param("courseNumber") String courseNumber);

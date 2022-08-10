@@ -27,6 +27,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     private static final String CERTIFICATE_NOT_FOUND_BY_ID = "Certificate not found by id %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_SERIAL_NUMBER = "Certificate not found by serial number %s";
+    private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME = "Certificate not found by username: %s";
 
     private final DtoConverter dtoConverter;
     private final ObjectMapper objectMapper;
@@ -89,6 +90,11 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
+    public Certificate getCertificateByUserName(String username) {
+        return certificateRepository.findByUserName(username).orElseThrow(() -> new NotExistException(String.format(CERTIFICATE_NOT_FOUND_BY_USERNAME, username)));
+    }
+
+    @Override
     public CertificateResponse getCertificateProfileById(Long id) {
         Certificate certificate = getCertificateById(id);
         return dtoConverter.convertToDto(certificate, CertificateResponse.class);
@@ -118,10 +124,10 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
-    public CertificateResponse updateCertificateWithSerialNumber(Long id, CertificateResponse response){
+    public CertificateResponse updateCertificateWithSerialNumber(Long id, CertificateResponse response) {
         Certificate certificate = getCertificateById(id);
 
-        if (response.getSerialNumber() == null){
+        if (response.getSerialNumber() == null) {
             response = generateSerialNumber(response);
         }
 
@@ -138,5 +144,18 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         log.debug("updating serial number of certificate by id {}", newCertificate);
 
         return dtoConverter.convertToDto(certificateRepository.save(newCertificate), CertificateResponse.class);
+    }
+
+    @Override
+    public Certificate createCertificate(Certificate certificate) {
+        return certificateRepository.save(certificate);
+    }
+
+    @Override
+    public Certificate updateCertificateEmail(Long id, Certificate certificate) {
+        Certificate certificateFound = getCertificateById(id);
+        certificateFound.setUserEmail(certificate.getUserEmail());
+        certificateFound.setSendStatus(certificate.getSendStatus());
+        return certificateRepository.save(certificateFound);
     }
 }

@@ -1,10 +1,14 @@
 package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.CertificateDates;
+import com.softserve.teachua.repository.CertificateDatesRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.CertificateDatesService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class CertificateDatesServiceImpl implements CertificateDatesService, ArchiveMark<CertificateDates> {
+    private static final String DATE_NOT_FOUND_BY_ID = "Certificate dates not found by id: %s";
+
+    private final CertificateDatesRepository certificateDatesRepository;
+
+    @Autowired
+    public CertificateDatesServiceImpl(CertificateDatesRepository certificateDatesRepository) {
+        this.certificateDatesRepository = certificateDatesRepository;
+    }
+
     @Override
     public void archiveModel(CertificateDates certificateDates) {
         //TODO
@@ -20,5 +33,16 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         //TODO
+    }
+
+    @Override
+    public CertificateDates getCertificateDatesById(Integer id) {
+        return certificateDatesRepository.findById(id)
+                .orElseThrow(() -> new NotExistException(String.format(DATE_NOT_FOUND_BY_ID, id)));
+    }
+
+    @Override
+    public CertificateDates addCertificateDates(CertificateDates dates) {
+        return certificateDatesRepository.save(dates);
     }
 }
