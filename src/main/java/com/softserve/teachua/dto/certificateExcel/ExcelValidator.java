@@ -1,5 +1,7 @@
 package com.softserve.teachua.dto.certificateExcel;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -23,20 +25,24 @@ public class ExcelValidator {
     private final static String NAME_PATTERN = "([А-ЯІЇЄ][а-яіїє']+[ ]*){2}(\\(?([А-ЯІЇЄ][а-яіїє']+)\\)?)?";
     private final static String EMAIL_PATTERN = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
     private final static String WORD = "[А-ЯІЇЄ][а-яіїє']+";
+    private final DataFormatter dataFormatter = new DataFormatter();
 
-    public void validateHeaders(List<ExcelParsingMistake> mistakes, List<String> headers, int[] indexes) {
+
+    public void validateHeaders(List<ExcelParsingMistake> mistakes, List<String> headerRow, int[] indexes, long headerRowIndex) {
+        headerRowIndex += 1;
         if (indexes[0] == -1) {
-            mistakes.add(new ExcelParsingMistake(MISSING_COLUMN_NAME_ERROR, headers.toString()));
+            mistakes.add(new ExcelParsingMistake(MISSING_COLUMN_NAME_ERROR, headerRow.toString(), headerRowIndex));
         }
         if (indexes[1] == -1) {
-            mistakes.add(new ExcelParsingMistake(MISSING_COLUMN_DATE_ERROR, headers.toString()));
+            mistakes.add(new ExcelParsingMistake(MISSING_COLUMN_DATE_ERROR, headerRow.toString(), headerRowIndex));
         }
         if (indexes[2] == -1) {
-            mistakes.add(new ExcelParsingMistake(MISSING_COLUMN_EMAIL_ERROR, headers.toString()));
+            mistakes.add(new ExcelParsingMistake(MISSING_COLUMN_EMAIL_ERROR, headerRow.toString(), headerRowIndex));
         }
     }
-    public String validateName(List<ExcelParsingMistake> mistakes, String name) {
+    public String validateName(List<ExcelParsingMistake> mistakes, Cell nameCell) {
         StringBuilder validatedName = new StringBuilder();
+        String name = dataFormatter.formatCellValue(nameCell).trim();
         if (!name.isEmpty() && Pattern.matches(NAME_PATTERN, name)) {
             Pattern pattern = Pattern.compile(WORD);
             Matcher matcher = pattern.matcher(name);
@@ -44,26 +50,26 @@ public class ExcelValidator {
                 validatedName.append(matcher.group()).append(SPACE);
             }
         } else {
-            mistakes.add(new ExcelParsingMistake(INCORRECT_NAME_FORMAT_ERROR, name));
+            mistakes.add(new ExcelParsingMistake(INCORRECT_NAME_FORMAT_ERROR, name, (long) nameCell.getRowIndex() + 1));
         }
         return validatedName.toString().trim();
     }
-
-    public String validateEmail(List<ExcelParsingMistake> mistakes, String email) {
+    public String validateEmail(List<ExcelParsingMistake> mistakes, Cell emailCell) {
+        String email = dataFormatter.formatCellValue(emailCell).trim();
         if (!Pattern.matches(EMAIL_PATTERN, email)) {
-            mistakes.add(new ExcelParsingMistake(INCORRECT_EMAIL_FORMAT_ERROR, email));
+            mistakes.add(new ExcelParsingMistake(INCORRECT_EMAIL_FORMAT_ERROR, email, (long) emailCell.getRowIndex() + 1));
         }
         return email;
     }
-
-    public LocalDate validateDate(List<ExcelParsingMistake> mistakes, String date) {
+    public LocalDate validateDate(List<ExcelParsingMistake> mistakes, Cell dateCell) {
         LocalDate localDate = null;
+        String date = dataFormatter.formatCellValue(dateCell).trim();
         if (date != null) {
             try {
                 localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(DATE_FORMAT));
                 return localDate;
             } catch (DateTimeParseException e) {
-                mistakes.add(new ExcelParsingMistake(INCORRECT_DATE_FORMAT_ERROR, date));
+                mistakes.add(new ExcelParsingMistake(INCORRECT_DATE_FORMAT_ERROR, date, (long) dateCell.getRowIndex() + 1));
             }
         }
         return localDate;

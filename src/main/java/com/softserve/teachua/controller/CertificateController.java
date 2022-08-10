@@ -2,12 +2,14 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.certificate.CertificateDataResponse;
 import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
-import com.softserve.teachua.service.CertificateService;
-import com.softserve.teachua.service.ExcelCertificateService;
+import com.softserve.teachua.service.CertificateDataLoaderService;
+import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,13 +20,13 @@ import java.io.InputStream;
 @RestController
 public class CertificateController implements Api {
     private static final String FILE_LOAD_EXCEPTION = "Could not load excel file";
-    private final ExcelCertificateService excelService;
-    private final CertificateService certificateService;
+    private final CertificateExcelService excelService;
+    private final CertificateDataLoaderService loaderService;
 
     @Autowired
-    public CertificateController(ExcelCertificateService excelService, CertificateService certificateService) {
+    public CertificateController(CertificateExcelService excelService, CertificateDataLoaderService loaderService) {
         this.excelService = excelService;
-        this.certificateService = certificateService;
+        this.loaderService = loaderService;
     }
 
     /**
@@ -43,5 +45,15 @@ public class CertificateController implements Api {
         }
     }
 
-
+    /**
+     * The method loads data to database.
+     *
+     * @param data - {@code CertificateDataToDatabase} read from form.
+     */
+    @AllowedRoles(RoleData.ADMIN)
+    @PostMapping("/certificate/load-to-db")
+    public void loadExcel(@RequestBody CertificateDataResponse data) {
+        System.out.println(data);
+        loaderService.loadToDatabase(data);
+    }
 }

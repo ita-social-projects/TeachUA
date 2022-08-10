@@ -37,6 +37,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     private static final String CERTIFICATE_NOT_FOUND_BY_ID = "Certificate not found by id %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_SERIAL_NUMBER = "Certificate not found by serial number %s";
+    private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME = "Certificate not found by username: %s";
 
     private final DtoConverter dtoConverter;
     private final ObjectMapper objectMapper;
@@ -87,8 +88,6 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         return certificate;
     }
 
-
-
     @Override
     public Certificate getCertificateBySerialNumber(Long serialNumber) {
         Optional<Certificate> optionalCertificate = getOptionalCertificateBySerialNumber(serialNumber);
@@ -100,6 +99,11 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         Certificate certificate = optionalCertificate.get();
         log.debug("getting certificate by serial number {}", certificate);
         return certificate;
+    }
+
+    @Override
+    public Certificate getCertificateByUserName(String username) {
+        return certificateRepository.findByUserName(username).orElseThrow(() -> new NotExistException(String.format(CERTIFICATE_NOT_FOUND_BY_USERNAME, username)));
     }
 
     @Override
@@ -132,10 +136,10 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
-    public CertificateResponse updateCertificateWithSerialNumber(Long id, CertificateResponse response){
+    public CertificateResponse updateCertificateWithSerialNumber(Long id, CertificateResponse response) {
         Certificate certificate = getCertificateById(id);
 
-        if (response.getSerialNumber() == null){
+        if (response.getSerialNumber() == null) {
             response = generateSerialNumber(response);
         }
 
@@ -191,5 +195,18 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     private JRDataSource getDataSource(CertificateContent content){
         return new JRBeanCollectionDataSource(Collections.singleton(content));
+    }
+
+    @Override
+    public Certificate createCertificate(Certificate certificate) {
+        return certificateRepository.save(certificate);
+    }
+
+    @Override
+    public Certificate updateCertificateEmail(Long id, Certificate certificate) {
+        Certificate certificateFound = getCertificateById(id);
+        certificateFound.setUserEmail(certificate.getUserEmail());
+        certificateFound.setSendStatus(certificate.getSendStatus());
+        return certificateRepository.save(certificateFound);
     }
 }
