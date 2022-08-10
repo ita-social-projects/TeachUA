@@ -15,6 +15,7 @@ import javax.validation.constraints.Size;
 @Builder
 @Data
 public class CertificateContent implements Convertible {
+    private Long id;
 
     @NotBlank
     @Size(min = 10, max = 10, message = "Неправильна довжина серійного номеру.")

@@ -4,6 +4,8 @@ import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,5 +31,10 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     Optional<Certificate> findById(Long id);
 
+
     Optional<Certificate> findBySerialNumber(Long serialNumber);
+
+
+    @Query(value = "SELECT MAX(t.serialNumber) from Certificate t WHERE CONCAT(t.serialNumber, '') LIKE CONCAT(:type, :courseNumber, '%') ")
+    Long findMaxSerialNumber(@Param("type") String type, @Param("courseNumber") String courseNumber);
 }
