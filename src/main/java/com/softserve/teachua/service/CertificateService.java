@@ -1,7 +1,7 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.certificate.CertificateContent;
-import com.softserve.teachua.dto.certificate.CertificateResponse;
+import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.model.Certificate;
 
 import java.io.IOException;
@@ -14,7 +14,9 @@ import java.util.Map;
 
 public interface CertificateService {
     //TODO
-    List<CertificateResponse> getListOfCertificates();
+    List<CertificateTransfer> getListOfCertificates();
+
+    List<CertificateTransfer> getListOfUnsentCertificates();
 
     /**
      * Method finds {@link Certificate}
@@ -36,12 +38,12 @@ public interface CertificateService {
     Certificate getCertificateByUserName(String username);
 
     /**
-     * Method finds {@link CertificateResponse}
+     * Method finds {@link CertificateTransfer}
      *
      * @param id put Certificate id
-     * @return new {@code CertificateResponse}
+     * @return new {@code CertificateTransfer}
      */
-    CertificateResponse getCertificateProfileById(Long id);
+    CertificateTransfer getCertificateProfileById(Long id);
 
     /**
      * Method generates serial number and puts it into the response
@@ -49,10 +51,10 @@ public interface CertificateService {
      * @param response
      * @return response with filled serial number
      */
-    CertificateResponse generateSerialNumber(CertificateResponse response);
+    CertificateTransfer generateSerialNumber(CertificateTransfer response);
 
 
-    CertificateResponse updateCertificateWithSerialNumber(Long id, CertificateResponse response);
+    CertificateTransfer updateCertificateWithSerialNumber(Long id, CertificateTransfer response);
 
     Certificate addCertificate(Certificate certificate);
 
@@ -60,5 +62,5 @@ public interface CertificateService {
 
     Map<String, Object> getParameters(CertificateContent content) throws IOException;
 
-    byte[] getPdfOutput(CertificateResponse response);
+    byte[] getPdfOutput(CertificateTransfer response);
 }

@@ -26,6 +26,6 @@ public class CertificateDates {
     @Column
     private String duration;
 
-    @Column
+    @Column(name = "course_number")
     private String courseNumber;
 }

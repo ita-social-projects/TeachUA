@@ -4,18 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.certificate.CertificateContent;
-import com.softserve.teachua.dto.certificate.CertificateResponse;
+import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.CertificateService;
+import com.softserve.teachua.utils.CertificateContentDecorator;
 import com.softserve.teachua.utils.QRCodeService;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,26 +43,38 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     private final ObjectMapper objectMapper;
     private final QRCodeService qrCodeService;
     private final CertificateRepository certificateRepository;
-    @Value("${baseURL}")
-    private String baseUrl;
+    private final CertificateContentDecorator certificateContentDecorator;
 
     @Autowired
-    public CertificateServiceImpl(DtoConverter dtoConverter, ObjectMapper objectMapper, QRCodeService qrCodeService, CertificateRepository certificateRepository) {
+    public CertificateServiceImpl(DtoConverter dtoConverter, ObjectMapper objectMapper, QRCodeService qrCodeService, CertificateRepository certificateRepository, CertificateContentDecorator certificateContentDecorator) {
         this.dtoConverter = dtoConverter;
         this.objectMapper = objectMapper;
         this.qrCodeService = qrCodeService;
         this.certificateRepository = certificateRepository;
+        this.certificateContentDecorator = certificateContentDecorator;
     }
 
     @Override
-    public List<CertificateResponse> getListOfCertificates() {
-        List<CertificateResponse> certificateResponses = certificateRepository.findAll()
+    public List<CertificateTransfer> getListOfCertificates() {
+        List<CertificateTransfer> certificateTransfers = certificateRepository.findCertificatesBySendStatus(false) //find by is sent
                 .stream()
-                .map(certificate -> (CertificateResponse) dtoConverter.convertToDto(certificate, CertificateResponse.class))
+                .map(certificate -> (CertificateTransfer) dtoConverter.convertToDto(certificate, CertificateTransfer.class))
                 .collect(Collectors.toList());
 
-        log.debug("getting list of certificates {}", certificateResponses);
-        return certificateResponses;
+        log.debug("getting list of certificates {}", certificateTransfers);
+        return certificateTransfers;
+    }
+
+    @Override
+    public List<CertificateTransfer> getListOfUnsentCertificates() {
+
+        List<CertificateTransfer> certificateTransfers = certificateRepository.findCertificatesBySendStatus(false)
+                .stream()
+                .map(certificate -> (CertificateTransfer) dtoConverter.convertToDto(certificate, CertificateTransfer.class))
+                .collect(Collectors.toList());
+
+        log.debug("getting list of unsent certificates {}", certificateTransfers);
+        return certificateTransfers;
     }
 
     @Override
@@ -107,9 +119,9 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
-    public CertificateResponse getCertificateProfileById(Long id) {
+    public CertificateTransfer getCertificateProfileById(Long id) {
         Certificate certificate = getCertificateById(id);
-        return dtoConverter.convertToDto(certificate, CertificateResponse.class);
+        return dtoConverter.convertToDto(certificate, CertificateTransfer.class);
     }
 
     private Optional<Certificate> getOptionalCertificateById(Long id){
@@ -121,14 +133,14 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
-    public CertificateResponse generateSerialNumber(CertificateResponse response) {
-        if (response.getType() == null || response.getDates().getCourseNumber() == null){
+    public CertificateTransfer generateSerialNumber(CertificateTransfer response) {
+        if (response.getTemplate().getCertificateType() == null || response.getDates().getCourseNumber() == null){
             // exception
         }
 
         String courseNumber = String.format("%02d", Integer.valueOf(response.getDates().getCourseNumber()));
 
-        Long largestSerialNumber = certificateRepository.findMaxSerialNumber(response.getType().toString(), courseNumber);
+        Long largestSerialNumber = certificateRepository.findMaxSerialNumber(response.getTemplate().getCertificateType().toString(), courseNumber);
 
         response.setSerialNumber(largestSerialNumber + 1);
 
@@ -136,7 +148,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
-    public CertificateResponse updateCertificateWithSerialNumber(Long id, CertificateResponse response) {
+    public CertificateTransfer updateCertificateWithSerialNumber(Long id, CertificateTransfer response) {
         Certificate certificate = getCertificateById(id);
 
         if (response.getSerialNumber() == null) {
@@ -144,7 +156,6 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         }
 
         Certificate newCertificate = dtoConverter.convertToEntity(response, certificate)
-                .withCertificateType(certificate.getCertificateType())
                 .withId(id)
                 .withDates(certificate.getDates())
                 .withSerialNumber(response.getSerialNumber())
@@ -155,7 +166,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
         log.debug("updating serial number of certificate by id {}", newCertificate);
 
-        return dtoConverter.convertToDto(certificateRepository.save(newCertificate), CertificateResponse.class);
+        return dtoConverter.convertToDto(certificateRepository.save(newCertificate), CertificateTransfer.class);
     }
 
     @Override
@@ -166,13 +177,27 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
-    public byte[] getPdfOutput(CertificateResponse response){
+    public byte[] getPdfOutput(CertificateTransfer transfer){
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        CertificateContent content = dtoConverter.convertFromDtoToDto(response, new CertificateContent());
+        //serial number
+        //Check!//TODO
+        transfer = updateCertificateWithSerialNumber(transfer.getId(), transfer);
+
+        //TODO
+        CertificateContent content = CertificateContent.builder()
+                .id(transfer.getId())
+                .serialNumber(transfer.getSerialNumber())
+                .issuanceDate(transfer.getDates().getDate())
+                .userName(transfer.getUserName())
+                .studyDuration(transfer.getDates().getDuration())
+                .build();
+
+        content.setStudyHours(certificateContentDecorator.formHours(transfer.getDates().getHours()));
+        content.setQrCode(qrCodeService.getQrCodeAsStream(content.getSerialNumber()));
 
         try{
-            JasperPrint jasperPrint = createJasperPrint(response.getTemplate().getFilePath(), content);
+            JasperPrint jasperPrint = createJasperPrint(transfer.getTemplate().getFilePath(), content);
             JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);
             return byteArrayOutputStream.toByteArray();
         } catch (IOException | JRException e) {

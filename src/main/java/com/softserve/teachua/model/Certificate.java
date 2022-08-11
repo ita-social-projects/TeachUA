@@ -19,36 +19,33 @@ public class Certificate implements Convertible {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, name = "serial_number")
     private Long serialNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ToString.Exclude
     private User user;
 
-    @Column
+    @Column(name = "user_name")
     private String userName;
 
-    @Column
+    @Column(name = "user_email")
     private String userEmail;
 
-    @Column
+    @Column(name = "send_status")
     private Boolean sendStatus;
 
-    @Column
+    @Column(name="update_status")
     private LocalDate updateStatus;
 
-    @Column
-    private Integer certificateType;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "template_id", referencedColumnName = "id")
     @JsonBackReference(value = "certificateTemplate")
     @ToString.Exclude
     private CertificateTemplate template;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dates_id", referencedColumnName = "id")
     @ToString.Exclude
     private CertificateDates dates;
