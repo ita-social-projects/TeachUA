@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -55,7 +56,7 @@ public class CertificateController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/certificate/load-to-db")
-    public void saveExcel(@RequestBody CertificateDataRequest data) {
+    public void saveExcel(@Valid @RequestBody CertificateDataRequest data) {
         log.info("Save excel " + data);
         loaderService.saveToDatabase(data);
     }

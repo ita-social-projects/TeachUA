@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -17,19 +18,24 @@ import java.util.List;
 @Data
 @Builder
 public class CertificateDataRequest {
+
     @NotNull
-    Integer template;
+    Integer type;
+
     @NotNull
     @Min(value = 1)
     Integer hours;
-    @NotBlank
-    @JsonDeserialize
-    String duration;
+
+    @NotNull
+    LocalDate startDate;
+
+    @NotNull
+    LocalDate endDate;
+
     @NotBlank
     @JsonDeserialize
     String courseNumber;
-    @NotNull
-    Integer certificateType;
+
     @NotNull
     List<CertificateExcel> excelList;
 }

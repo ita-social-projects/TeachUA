@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class CertificateDatesServiceImpl implements CertificateDatesService, ArchiveMark<CertificateDates> {
     private static final String DATE_NOT_FOUND_BY_ID = "Certificate dates not found by id: %s";
+    private static final String DATE_NOT_FOUND_BY_DURATION = "Certificate dates not found by duration: %s";
+    private static final String DATE_NOT_FOUND_BY_DURATION_AND_DATE = "Certificate dates not found by duration and date: %s, %s";
 
     private final CertificateDatesRepository certificateDatesRepository;
 
@@ -44,5 +46,17 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
     @Override
     public CertificateDates addCertificateDates(CertificateDates dates) {
         return certificateDatesRepository.save(dates);
+    }
+
+    @Override
+    public CertificateDates getCertificateDatesByDuration(String duration) {
+        return certificateDatesRepository.findByDuration(duration)
+                .orElseThrow(() -> new NotExistException(String.format(DATE_NOT_FOUND_BY_DURATION, duration)));
+    }
+
+    @Override
+    public CertificateDates getCertificateDatesByDurationAndDate(String duration, String date) {
+        return certificateDatesRepository.findByDurationAndDate(duration, date)
+                .orElseThrow(() -> new NotExistException(String.format(DATE_NOT_FOUND_BY_DURATION_AND_DATE, duration, date)));
     }
 }
