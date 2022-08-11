@@ -18,6 +18,13 @@ public interface QuestionService {
     List<Question> findQuestionsByTestId(Long testId);
 
     /**
+     * This method returns list of questions by test id using join fetch.
+     * @param testId - put test id.
+     * @return new {@code List<Question>}.
+     */
+    List<Question> findQuestionsByTestIdEager(Long testId);
+
+    /**
      * This method returns list of questions by test entity.
      * @param test - put test entity.
      * @return new {@code List<Question>}.

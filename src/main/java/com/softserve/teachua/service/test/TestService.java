@@ -93,5 +93,5 @@ public interface TestService {
      * @return new {@code boolean}
      * @throws IllegalArgumentException if the parameter is null.
      */
-    boolean hasSubscription(Long userId, Long testId);
+    boolean hasActiveSubscription(Long userId, Long testId);
 }

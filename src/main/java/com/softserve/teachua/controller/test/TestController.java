@@ -2,18 +2,16 @@ package com.softserve.teachua.controller.test;
 
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.test.group.ResponseGroup;
-import com.softserve.teachua.dto.test.result.CreateResult;
-import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
 import com.softserve.teachua.dto.test.test.*;
 import com.softserve.teachua.service.test.GroupService;
 import com.softserve.teachua.service.test.TestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.MediaType.*;
-import static org.springframework.http.HttpStatus.*;
-
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * This controller is for managing tests.

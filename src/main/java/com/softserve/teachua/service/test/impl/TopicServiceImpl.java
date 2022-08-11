@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
-import static com.softserve.teachua.utils.NullValidator.*;
+import static com.softserve.teachua.utils.test.NullValidator.*;
+import static com.softserve.teachua.utils.test.Messages.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -19,10 +20,11 @@ import static com.softserve.teachua.utils.NullValidator.*;
 public class TopicServiceImpl implements TopicService {
     private final TopicRepository topicRepository;
 
+    @Transactional(readOnly = true)
     public Topic findByTitle(String title) {
         checkNull(title, "Topic title");
         return topicRepository.findByTitle(title)
                 .orElseThrow(() -> new NoSuchElementException(
-                        String.format("There is no topic with title '%s'", title)));
+                        String.format(NO_TITLE_MESSAGE, "topic", title)));
     }
 }

@@ -50,8 +50,8 @@ public class ResultController implements Api {
     @GetMapping(value = "/results/groups/{groupId}/users/{userId}/tests/{testId}",
             produces = APPLICATION_JSON_VALUE)
     public List<UserResult> getUserResultsByTest(@PathVariable Long groupId,
-                                             @PathVariable Long userId,
-                                             @PathVariable Long testId) {
+                                                 @PathVariable Long userId,
+                                                 @PathVariable Long testId) {
         return resultService.findUserResultsByGroupIdAndUserIdAndTestId(groupId, userId, testId);
     }
 
@@ -59,7 +59,6 @@ public class ResultController implements Api {
      * Use this endpoint to get information about the result of passing a test.
      * This controller returns a test DTO {@code ResultTest}.
      *
-     * @param testId   - put test id here.
      * @param resultId - put result id here.
      * @return new {@code ResultTest}.
      */

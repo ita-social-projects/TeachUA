@@ -15,6 +15,9 @@ import java.util.Objects;
 @Transactional
 @Service
 public class QuestionTestServiceImpl implements QuestionTestService {
+    private final static String QUESTION_IS_NULL = "Question in questionTest is null;";
+    private final static String TEST_IS_NULL = "Test in questionTest is null;";
+
     private final QuestionTestRepository questionTestRepository;
 
     @Override
@@ -26,10 +29,10 @@ public class QuestionTestServiceImpl implements QuestionTestService {
     private void validate(QuestionTest questionTest) {
         String message = "";
         if (Objects.isNull(questionTest.getQuestion()))
-            message += "Question in questionTest is null;";
+            message += QUESTION_IS_NULL;
 
         if (Objects.isNull(questionTest.getTest()))
-            message += "Test in questionTest is null;";
+            message += TEST_IS_NULL;
 
         if (!message.isEmpty())
             throw new IllegalArgumentException(message);

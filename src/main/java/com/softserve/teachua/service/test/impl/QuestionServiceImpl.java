@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.softserve.teachua.utils.NullValidator.checkNull;
+import static com.softserve.teachua.utils.test.NullValidator.checkNull;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,24 +28,35 @@ public class QuestionServiceImpl implements QuestionService {
     private final AnswerService answerService;
 
     @Override
-    public List<Question> findQuestionsByTestId(Long id) {
-        checkNull(id, "Test id");
-        return questionRepository.findQuestionsByTestId(id);
+    @Transactional(readOnly = true)
+    public List<Question> findQuestionsByTestId(Long testId) {
+        checkNull(testId, "Test id");
+        return questionRepository.findQuestionsByTestId(testId);
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Question> findQuestionsByTestIdEager(Long testId) {
+        checkNull(testId, "Test id");
+        return questionRepository.findQuestionsByTestIdEager(testId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Question> findQuestionsByTest(Test test) {
         checkNull(test, "Test");
         return findQuestionsByTestId(test.getId());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<QuestionResponse> findQuestionResponsesByTestId(Long id) {
         checkNull(id, "Test id");
         return mapToDtoList(questionRepository.findQuestionsByTestId(id));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<QuestionResponse> findQuestionResponsesByTest(Test test) {
         checkNull(test, "Test");
         return findQuestionResponsesByTestId(test.getId());

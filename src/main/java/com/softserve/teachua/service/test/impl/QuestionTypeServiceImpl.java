@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
-import static com.softserve.teachua.utils.NullValidator.*;
+import static com.softserve.teachua.utils.test.NullValidator.*;
+import static com.softserve.teachua.utils.test.Messages.*;
+
 
 @RequiredArgsConstructor
 @Slf4j
@@ -20,10 +22,11 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
     private final QuestionTypeRepository questionTypeRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public QuestionType findByTitle(String title) {
         checkNull(title, "Question type");
         return questionTypeRepository.findByTitle(title)
                 .orElseThrow(() -> new NoSuchElementException(
-                        String.format("There is no question type with title '%s'", title)));
+                        String.format(NO_TITLE_MESSAGE, "question type", title)));
     }
 }

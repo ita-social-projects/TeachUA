@@ -25,8 +25,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.softserve.teachua.utils.NullValidator.checkNull;
-import static com.softserve.teachua.utils.NullValidator.checkNullIds;
+import static com.softserve.teachua.utils.test.NullValidator.*;
+import static com.softserve.teachua.utils.test.Messages.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -60,7 +60,6 @@ public class TestServiceImpl implements TestService {
                         return currentDate.isAfter(startDate) &&
                                currentDate.isBefore(endDate);
                     });
-
             test.setActive(isActive);
             testRepository.save(test);
         }
@@ -99,53 +98,55 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Test> findActiveTests() {
         return testRepository.findActiveTests();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Test> findArchivedTests(){
         return testRepository.findArchivedTests();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Test> findUnarchivedTests(){
         return testRepository.findUnarchivedTests();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Test> findAllByGroupId(Long groupId) {
         checkNull(groupId, "Group id");
         return testRepository.findAllByGroupId(groupId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Test findById(Long id) {
         checkNull(id, "Test id");
         return testRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException(
-                        String.format("There's no test with id '%d'", id)));
+                        String.format(NO_ID_MESSAGE, "test", id)));
     }
 
     @Override
     public void archiveTestById(Long id) {
         checkNull(id, "Test id");
-        Test testToArchive = testRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
-                        String.format("There is no test with id '%s'", id)));
+        Test testToArchive = findById(id);
         testToArchive.setArchived(true);
     }
 
     @Override
     public void restoreTestById(Long id) {
         checkNull(id, "Test id");
-        Test testToRestore = testRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
-                        String.format("There is no test with id '%s'", id)));
+        Test testToRestore = findById(id);
         testToRestore.setArchived(false);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PassTest findPassTestById(Long id) {
         checkNull(id, "Test id");
         Test test = findById(id);
@@ -155,6 +156,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TestProfile> findUnarchivedTestProfiles() {
         List<Test> tests = findUnarchivedTests();
         List<TestProfile> testProfiles = new ArrayList<>();
@@ -170,6 +172,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ViewTest findViewTestById(Long id) {
         checkNull(id, "Test id");
         Test test = findById(id);
@@ -182,7 +185,7 @@ public class TestServiceImpl implements TestService {
         viewTest.add(testGroups);
 
         if (test.isActive()) {
-            boolean hasSubscription = hasSubscription(user.getId(), test.getId());
+            boolean hasSubscription = hasActiveSubscription(user.getId(), test.getId());
 
             if (hasSubscription) {
                 Link passTest = linkTo(methodOn(TestController.class)
@@ -196,7 +199,8 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public boolean hasSubscription(Long userId, Long testId) {
+    @Transactional(readOnly = true)
+    public boolean hasActiveSubscription(Long userId, Long testId) {
         checkNullIds(userId, testId);
         List<Long> userGroupsIds = subscriptionRepository.findAllByUserId(userId).stream()
                 .filter(this::isActiveSubscription)

@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.softserve.teachua.utils.NullValidator.checkNull;
+import static com.softserve.teachua.utils.test.NullValidator.checkNull;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import static com.softserve.teachua.utils.test.Messages.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -31,11 +33,13 @@ public class GroupServiceImpl implements GroupService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Group> findAll() {
         return groupRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<GroupProfile> findAllGroupProfiles() {
         List<GroupProfile> groupProfiles = new ArrayList<>();
         for (Group group : findAll()) {
@@ -51,14 +55,16 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Group findById(Long groupId) {
         checkNull(groupId, "Group id");
         return groupRepository.findById(groupId)
                 .orElseThrow(() -> new NoSuchElementException(
-                        String.format("There's no group with id '%d'", groupId)));
+                        String.format(NO_ID_MESSAGE, "group", groupId)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Group> findAllByTestId(Long testId) {
         checkNull(testId, "Test id");
         return groupRepository.findByTestId(testId);
@@ -81,6 +87,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Group findByEnrollmentKey(String enrollmentKey) {
         checkNull(enrollmentKey, "Enrollment key");
         return groupRepository.findByEnrollmentKey(enrollmentKey)
@@ -89,6 +96,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResponseGroup> findResponseGroupsByTestId(Long testId) {
         checkNull(testId, "Test id");
         List<ResponseGroup> responseGroups = new ArrayList<>();

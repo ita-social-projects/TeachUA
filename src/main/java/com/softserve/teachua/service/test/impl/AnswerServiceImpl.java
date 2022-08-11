@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.softserve.teachua.utils.NullValidator.*;
+import static com.softserve.teachua.utils.test.NullValidator.*;
 
 
 @RequiredArgsConstructor
@@ -21,12 +21,14 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Answer> findByQuestionId(Long questionId) {
         checkNull(questionId, "Question id");
         return answerRepository.findAllByQuestionId(questionId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Answer> findAllById(List<Long> ids) {
         return answerRepository.findAllById(ids);
     }

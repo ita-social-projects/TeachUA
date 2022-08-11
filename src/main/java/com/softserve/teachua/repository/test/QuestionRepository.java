@@ -16,6 +16,13 @@ import java.util.Optional;
 @Repository("testQuestionRepository")
 public interface QuestionRepository extends JpaRepository<Question, Long> {
     Optional<Question> findByTitle(String title);
+
     @Query("SELECT qt.question FROM QuestionTest qt WHERE qt.test.id = :id")
     List<Question> findQuestionsByTestId(@Param("id") Long testId);
+
+    @Query("SELECT distinct qt.question " +
+            "FROM QuestionTest qt " +
+            "JOIN FETCH qt.question.answers " +
+            "WHERE qt.test.id = :id")
+    List<Question> findQuestionsByTestIdEager(@Param("id") Long testId);
 }

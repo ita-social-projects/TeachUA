@@ -1,4 +1,4 @@
-package com.softserve.teachua.utils;
+package com.softserve.teachua.utils.test;
 
 import java.util.Arrays;
 import java.util.Objects;

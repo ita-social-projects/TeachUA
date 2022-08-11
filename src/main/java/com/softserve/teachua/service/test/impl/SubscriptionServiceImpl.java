@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.softserve.teachua.utils.NullValidator.checkNull;
+import static com.softserve.teachua.utils.test.NullValidator.checkNull;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -50,10 +50,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 return;
             }
         }
-        throw new IllegalArgumentException("Your key is incorrect");
+        throw new IllegalArgumentException("Your enrollment key is incorrect");
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResponse> getUserResponseByGroupId(Long groupId) {
         checkNull(groupId, "Group id");
         List<Subscription> subscriptions = subscriptionRepository.findAllByGroupId(groupId);

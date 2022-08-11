@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-import static com.softserve.teachua.utils.NullValidator.*;
+import static com.softserve.teachua.utils.test.NullValidator.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -46,19 +46,21 @@ public class ResultServiceImpl implements ResultService {
     private final UserService userService;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Result> findResultsByUserId(Long userId) {
         checkNull(userId, "User");
         return resultRepository.findResultsByUserId(userId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResultTest getResultTest(Long resultId) {
         checkNullIds(resultId, "Result id");
         ResultTest resultTest = new ResultTest();
         Result result = findById(resultId);
         Long testId = result.getTest().getId();
         Test test = testService.findById(testId);
-        List<Question> questions = questionService.findQuestionsByTestId(testId);
+        List<Question> questions = questionService.findQuestionsByTestIdEager(testId);
         Set<QuestionHistory> qHistories = result.getQuestionHistories();
         Map<Long, Set<Long>> questionSelectedAnswers = new HashMap<>();
         questions.forEach(x -> questionSelectedAnswers.put(x.getId(), new HashSet<>()));
@@ -138,6 +140,7 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResult> findUserResultsByGroupIdAndUserId(Long groupId, Long userId) {
         checkNullIds(groupId, userId);
         List<Result> userResults = findResultsByUserId(userId);
@@ -153,6 +156,7 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResult> findUserResultsByGroupIdAndUserIdAndTestId(Long groupId, Long userId, Long testId) {
         checkNullIds(groupId, userId, testId);
         List<Result> userResults = findResultsByUserId(userId);
@@ -165,6 +169,7 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Result findById(Long id) {
         checkNull(id, "Result id");
         return resultRepository.findById(id)
@@ -183,9 +188,11 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public int countGrade(List<Answer> selectedAnswers) {
         int grade = 0;
-        Map<Question, List<Answer>> idAnswers = selectedAnswers.stream()
+        Map<Question, List<Answer>> idAnswers = selectedAnswers
+                .stream()
                 .collect(Collectors.groupingBy(Answer::getQuestion));
 
         for (Map.Entry<Question, List<Answer>> pair : idAnswers.entrySet()) {
