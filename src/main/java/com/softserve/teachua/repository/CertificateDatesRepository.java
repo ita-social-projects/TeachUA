@@ -13,4 +13,6 @@ public interface CertificateDatesRepository extends JpaRepository<CertificateDat
     List<CertificateDates> findAll();
 
     Optional<CertificateDates> findById(Integer integer);
+
+    Optional<CertificateDates> findByDuration(String duration);
 }

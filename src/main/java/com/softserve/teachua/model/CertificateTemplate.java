@@ -18,6 +18,9 @@ public class CertificateTemplate {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "certificate_type")
+    private Integer certificateType;
+
+    @Column(nullable = false, name = "file_path")
     private String filePath;
 }
