@@ -20,7 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.softserve.teachua.utils.test.NullValidator.checkNull;
+import static com.softserve.teachua.utils.test.NullValidator.*;
+import static com.softserve.teachua.utils.test.Messages.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -50,7 +51,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 return;
             }
         }
-        throw new IllegalArgumentException("Your enrollment key is incorrect");
+        throw new IllegalArgumentException(
+                String.format(INCORRECT_ENROLLMENT_KEY_MESSAGE, enrollmentKey));
     }
 
     @Override

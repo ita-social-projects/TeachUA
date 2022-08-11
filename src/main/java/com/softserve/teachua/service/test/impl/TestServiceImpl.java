@@ -4,7 +4,6 @@ import com.softserve.teachua.controller.test.TestController;
 import com.softserve.teachua.dto.test.question.PassingTestQuestion;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.dto.test.test.*;
-import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
 import com.softserve.teachua.repository.test.SubscriptionRepository;
@@ -26,8 +25,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.softserve.teachua.utils.test.NullValidator.*;
 import static com.softserve.teachua.utils.test.Messages.*;
+import static com.softserve.teachua.utils.test.NullValidator.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -134,14 +133,12 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public void archiveTestById(Long id) {
-        checkNull(id, "Test id");
         Test testToArchive = findById(id);
         testToArchive.setArchived(true);
     }
 
     @Override
     public void restoreTestById(Long id) {
-        checkNull(id, "Test id");
         Test testToRestore = findById(id);
         testToRestore.setArchived(false);
     }
@@ -149,7 +146,6 @@ public class TestServiceImpl implements TestService {
     @Override
     @Transactional(readOnly = true)
     public PassTest findPassTestById(Long id) {
-        checkNull(id, "Test id");
         Test test = findById(id);
         PassTest passTest = modelMapper.map(test, PassTest.class);
         passTest.setQuestions(getPassingTestQuestions(test));
@@ -175,7 +171,6 @@ public class TestServiceImpl implements TestService {
     @Override
     @Transactional(readOnly = true)
     public ViewTest findViewTestById(Long id) {
-        checkNull(id, "Test id");
         Test test = findById(id);
         User user = userService.getCurrentUser();
         ViewTest viewTest = modelMapper.map(test, ViewTest.class);
@@ -230,7 +225,7 @@ public class TestServiceImpl implements TestService {
         int numberOfCorrectAnswers = question.getCorrectAnswerIndexes().size();
 
         if (numberOfCorrectAnswers == 0)
-            throw new IllegalArgumentException("There must be at least one correct answer");
+            throw new IllegalArgumentException(NO_CORRECT_ANSWERS_MESSAGE);
         else if (numberOfCorrectAnswers == 1) {
             return questionTypeService.findByTitle("radio");
         } else {

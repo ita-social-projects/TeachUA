@@ -29,6 +29,5 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
         return questionTypeRepository.findByTitle(title)
                 .orElseThrow(() -> new NoSuchElementException(
                         String.format(NO_TITLE_MESSAGE, "question type", title)));
-
     }
 }

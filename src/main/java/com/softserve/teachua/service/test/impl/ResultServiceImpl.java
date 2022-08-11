@@ -29,16 +29,13 @@ import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import static com.softserve.teachua.utils.test.NullValidator.*;
+import static com.softserve.teachua.utils.test.Messages.*;
 
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
 public class ResultServiceImpl implements ResultService {
-    private static final String CORRECT_MESSAGE = "Your answer is correct";
-    private static final String INCORRECT_MESSAGE = "Your answer is incorrect";
-    private static final String PARTIALLY_CORRECT_MESSAGE = "Your answer is partially correct";
-
     private final ResultRepository resultRepository;
     private final TestService testService;
     private final ModelMapper modelMapper;

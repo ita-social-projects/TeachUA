@@ -10,14 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
+import static com.softserve.teachua.utils.test.Messages.*;
+
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
 public class QuestionTestServiceImpl implements QuestionTestService {
-    private final static String QUESTION_IS_NULL = "Question in questionTest is null;";
-    private final static String TEST_IS_NULL = "Test in questionTest is null;";
-
     private final QuestionTestRepository questionTestRepository;
 
     @Override
@@ -29,10 +28,10 @@ public class QuestionTestServiceImpl implements QuestionTestService {
     private void validate(QuestionTest questionTest) {
         String message = "";
         if (Objects.isNull(questionTest.getQuestion()))
-            message += QUESTION_IS_NULL;
+            message += QUESTION_IS_NULL_MESSAGE;
 
         if (Objects.isNull(questionTest.getTest()))
-            message += TEST_IS_NULL;
+            message += TEST_IS_NULL_MESSAGE;
 
         if (!message.isEmpty())
             throw new IllegalArgumentException(message);

@@ -4,7 +4,6 @@ import com.softserve.teachua.controller.test.GroupController;
 import com.softserve.teachua.dto.test.group.GroupProfile;
 import com.softserve.teachua.dto.test.group.ResponseGroup;
 import com.softserve.teachua.dto.test.group.UpdateGroup;
-import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.repository.test.GroupRepository;
 import com.softserve.teachua.service.test.GroupService;
@@ -19,11 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static com.softserve.teachua.utils.test.Messages.*;
 import static com.softserve.teachua.utils.test.NullValidator.checkNull;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
-import static com.softserve.teachua.utils.test.Messages.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -93,7 +91,7 @@ public class GroupServiceImpl implements GroupService {
         checkNull(enrollmentKey, "Enrollment key");
         return groupRepository.findByEnrollmentKey(enrollmentKey)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        String.format("Enrollment key '%s' is incorrect", enrollmentKey)));
+                        String.format(INCORRECT_ENROLLMENT_KEY_MESSAGE, enrollmentKey)));
     }
 
     @Override
