@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
-public class CertificateDataResponse {
+public class CertificateDataRequest {
     @NotNull
     Integer template;
     @NotNull

@@ -1,6 +1,6 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.teachua.dto.certificate.CertificateDataResponse;
+import com.softserve.teachua.dto.certificate.CertificateDataRequest;
 import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
@@ -8,7 +8,6 @@ import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.service.CertificateDataLoaderService;
 import com.softserve.teachua.service.CertificateDatesService;
 import com.softserve.teachua.service.CertificateService;
-import com.softserve.teachua.service.CertificateTemplateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,18 +30,18 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     }
 
     @Override
-    public void loadToDatabase(CertificateDataResponse data) {
+    public void saveToDatabase(CertificateDataRequest data) {
         CertificateDates dates = CertificateDates.builder()
             .date(data.getExcelList().get(0).getDateIssued().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
             .hours(data.getHours())
             .duration(data.getDuration())
             .courseNumber(data.getCourseNumber())
             .build();
-        loadDates(dates);
-        loadCertificates(data, dates);
+        saveDates(dates);
+        saveCertificates(data, dates);
     }
 
-    private void loadCertificates(CertificateDataResponse data, CertificateDates dates) {
+    private void saveCertificates(CertificateDataRequest data, CertificateDates dates) {
         for (CertificateExcel certificateExcel : data.getExcelList()) {
             Certificate certificate = Certificate.builder()
                     .userName(certificateExcel.getName())
@@ -53,7 +52,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                     .build();
             System.out.println(certificate);
             if (!certificateRepository.existsByUserName(certificate.getUserName())) {
-                certificateService.createCertificate(certificate);
+                certificateService.addCertificate(certificate);
             }
             else {
                 Certificate certificateFound = certificateService.getCertificateByUserName(certificate.getUserName());
@@ -64,7 +63,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             }
         }
     }
-    private void loadDates(CertificateDates dates) {
+    private void saveDates(CertificateDates dates) {
         certificateDatesService.addCertificateDates(dates);
     }
 }

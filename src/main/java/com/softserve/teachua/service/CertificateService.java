@@ -54,7 +54,7 @@ public interface CertificateService {
 
     CertificateResponse updateCertificateWithSerialNumber(Long id, CertificateResponse response);
 
-    Certificate createCertificate(Certificate certificate);
+    Certificate addCertificate(Certificate certificate);
 
     Certificate updateCertificateEmail(Long id, Certificate certificate);
 

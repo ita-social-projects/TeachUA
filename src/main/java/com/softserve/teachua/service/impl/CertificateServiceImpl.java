@@ -198,7 +198,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
-    public Certificate createCertificate(Certificate certificate) {
+    public Certificate addCertificate(Certificate certificate) {
         return certificateRepository.save(certificate);
     }
 
