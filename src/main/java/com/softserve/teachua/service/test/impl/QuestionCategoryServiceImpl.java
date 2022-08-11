@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.test.impl;
 
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.QuestionCategory;
 import com.softserve.teachua.repository.test.QuestionCategoryRepository;
 import com.softserve.teachua.service.test.QuestionCategoryService;

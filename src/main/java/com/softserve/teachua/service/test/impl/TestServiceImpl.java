@@ -4,6 +4,7 @@ import com.softserve.teachua.controller.test.TestController;
 import com.softserve.teachua.dto.test.question.PassingTestQuestion;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.dto.test.test.*;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
 import com.softserve.teachua.repository.test.SubscriptionRepository;
