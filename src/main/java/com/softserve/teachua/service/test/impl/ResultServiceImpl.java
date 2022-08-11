@@ -45,6 +45,44 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     @Transactional(readOnly = true)
+    public Result findById(Long id) {
+        checkNull(id, "Result id");
+        return resultRepository.findById(id)
+                .orElseThrow(() -> new NotExistException(
+                        String.format("There is no result with id '%s'", id)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserResult> findUserResultsByGroupIdAndUserId(Long groupId, Long userId) {
+        checkNullIds(groupId, userId);
+        List<Result> userResults = findResultsByUserId(userId);
+        List<Long> groupTestsIds = testService.findAllByGroupId(groupId).stream()
+                .map(Test::getId)
+                .collect(Collectors.toList());
+        List<Result> results = userResults.stream()
+                .filter(result -> groupTestsIds.contains(result.getTest().getId()))
+                .collect(Collectors.toList());
+        List<UserResult> dtoResults = mapToDtoList(results);
+        setResultLink(dtoResults);
+        return dtoResults;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserResult> findUserResultsByGroupIdAndUserIdAndTestId(Long groupId, Long userId, Long testId) {
+        checkNullIds(groupId, userId, testId);
+        List<Result> userResults = findResultsByUserId(userId);
+        List<Result> results = userResults.stream()
+                .filter(result -> result.getTest().getId().equals(testId))
+                .collect(Collectors.toList());
+        List<UserResult> dtoResults = mapToDtoList(results);
+        setResultLink(dtoResults);
+        return dtoResults;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Result> findResultsByUserId(Long userId) {
         checkNull(userId, "User");
         return resultRepository.findResultsByUserId(userId);
@@ -52,7 +90,7 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResultTest getResultTest(Long resultId) {
+    public ResultTest getResult(Long resultId) {
         checkNullIds(resultId, "Result id");
         ResultTest resultTest = new ResultTest();
         Result result = findById(resultId);
@@ -68,12 +106,11 @@ public class ResultServiceImpl implements ResultService {
 
         for (Question question : questions) {
             QuestionResult questionResult = new QuestionResult();
+            Set<Answer> answers = question.getAnswers();
+            Set<Long> selectedAnswerIds = questionSelectedAnswers.get(question.getId());
             int value = 0;
             int correctAmount = 0;
             int correctSelectedAmount = 0;
-
-            Set<Answer> answers = question.getAnswers();
-            Set<Long> selectedAnswerIds = questionSelectedAnswers.get(question.getId());
 
             for (Answer answer: answers) {
                 ResultAnswer resultAnswer = new ResultAnswer();
@@ -116,76 +153,6 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
-    public SuccessCreatedResult saveResult(CreateResult resultDto) {
-        User user = userService.getCurrentUser();
-        Result result = new Result();
-        result.setUser(user);
-        result.setTest(testService.findById(resultDto.getTestId()));
-        result.setTestFinishTime(LocalDateTime.now());
-        List<Long> answerIds = resultDto.getSelectedAnswersIds();
-        // TODO set start time time
-
-        List<Answer> selectedAnswers = answerService.findAllById(answerIds);
-        createResult(result, selectedAnswers);
-        result.setGrade(countGrade(selectedAnswers));
-
-        SuccessCreatedResult success = new SuccessCreatedResult();
-        success.setSelectedAnswersIds(answerIds);
-        success.setTestId(resultDto.getTestId());
-        success.setUserId(user.getId());
-        success.setGrade(result.getGrade());
-        return success;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserResult> findUserResultsByGroupIdAndUserId(Long groupId, Long userId) {
-        checkNullIds(groupId, userId);
-        List<Result> userResults = findResultsByUserId(userId);
-        List<Long> groupTestsIds = testService.findAllByGroupId(groupId).stream()
-                .map(Test::getId)
-                .collect(Collectors.toList());
-        List<Result> results = userResults.stream()
-                .filter(result -> groupTestsIds.contains(result.getTest().getId()))
-                .collect(Collectors.toList());
-        List<UserResult> dtoResults = mapToDtoList(results);
-        setResultLink(dtoResults);
-        return dtoResults;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserResult> findUserResultsByGroupIdAndUserIdAndTestId(Long groupId, Long userId, Long testId) {
-        checkNullIds(groupId, userId, testId);
-        List<Result> userResults = findResultsByUserId(userId);
-        List<Result> results = userResults.stream()
-                .filter(result -> result.getTest().getId().equals(testId))
-                .collect(Collectors.toList());
-        List<UserResult> dtoResults = mapToDtoList(results);
-        setResultLink(dtoResults);
-        return dtoResults;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Result findById(Long id) {
-        checkNull(id, "Result id");
-        return resultRepository.findById(id)
-                .orElseThrow(() -> new NotExistException(
-                        String.format("There is no result with id '%s'", id)));
-    }
-
-    @Override
-    public void createResult(Result result, List<Answer> selectedAnswers) {
-        for (Answer a : selectedAnswers) {
-            QuestionHistory questionHistory = new QuestionHistory();
-            questionHistory.setAnswer(a);
-            result.addQuestionHistory(questionHistory);
-        }
-        resultRepository.save(result);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public int countGrade(List<Answer> selectedAnswers) {
         int grade = 0;
@@ -214,6 +181,38 @@ public class ResultServiceImpl implements ResultService {
             grade += Math.max(questionGrade, 0);
         }
         return grade;
+    }
+
+    @Override
+    public SuccessCreatedResult saveResult(CreateResult resultDto) {
+        User user = userService.getCurrentUser();
+        Result result = new Result();
+        result.setUser(user);
+        result.setTest(testService.findById(resultDto.getTestId()));
+        result.setTestFinishTime(LocalDateTime.now());
+        List<Long> answerIds = resultDto.getSelectedAnswersIds();
+        // TODO set start time time
+
+        List<Answer> selectedAnswers = answerService.findAllById(answerIds);
+        createResult(result, selectedAnswers);
+        result.setGrade(countGrade(selectedAnswers));
+
+        SuccessCreatedResult success = new SuccessCreatedResult();
+        success.setSelectedAnswersIds(answerIds);
+        success.setTestId(resultDto.getTestId());
+        success.setUserId(user.getId());
+        success.setGrade(result.getGrade());
+        return success;
+    }
+
+    @Override
+    public void createResult(Result result, List<Answer> selectedAnswers) {
+        for (Answer a : selectedAnswers) {
+            QuestionHistory questionHistory = new QuestionHistory();
+            questionHistory.setAnswer(a);
+            result.addQuestionHistory(questionHistory);
+        }
+        resultRepository.save(result);
     }
 
     private void setResultLink(List<UserResult> results) {

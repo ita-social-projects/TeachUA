@@ -65,7 +65,7 @@ public class ResultController implements Api {
     @GetMapping(value = "/results/{resultId}",
             produces = APPLICATION_JSON_VALUE)
     public ResultTest getTestResult(@PathVariable Long resultId) {
-        return resultService.getResultTest(resultId);
+        return resultService.getResult(resultId);
     }
 
     /**

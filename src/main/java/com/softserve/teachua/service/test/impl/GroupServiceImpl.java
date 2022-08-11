@@ -33,6 +33,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional(readOnly = true)
+    public Group findById(Long groupId) {
+        checkNull(groupId, "Group id");
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format(NO_ID_MESSAGE, "group", groupId)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Group> findAll() {
         return groupRepository.findAll();
     }
@@ -55,34 +64,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional(readOnly = true)
-    public Group findById(Long groupId) {
-        checkNull(groupId, "Group id");
-        return groupRepository.findById(groupId)
-                .orElseThrow(() -> new NoSuchElementException(
-                        String.format(NO_ID_MESSAGE, "group", groupId)));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<Group> findAllByTestId(Long testId) {
         checkNull(testId, "Test id");
         return groupRepository.findByTestId(testId);
-    }
-
-    @Override
-    public UpdateGroup updateById(UpdateGroup updateGroup, Long groupId) {
-        Group group = findById(groupId);
-        group.setEndDate(updateGroup.getEndDate());
-        group.setStartDate(updateGroup.getStartDate());
-        group.setTitle(updateGroup.getTitle());
-        return updateGroup;
-    }
-
-    @Override
-    public GroupProfile save(GroupProfile groupProfile) {
-        Group group = modelMapper.map(groupProfile, Group.class);
-        groupRepository.save(group);
-        return groupProfile;
     }
 
     @Override
@@ -109,5 +93,21 @@ public class GroupServiceImpl implements GroupService {
             responseGroups.add(responseGroup);
         }
         return responseGroups;
+    }
+
+    @Override
+    public UpdateGroup updateById(UpdateGroup updateGroup, Long groupId) {
+        Group group = findById(groupId);
+        group.setEndDate(updateGroup.getEndDate());
+        group.setStartDate(updateGroup.getStartDate());
+        group.setTitle(updateGroup.getTitle());
+        return updateGroup;
+    }
+
+    @Override
+    public GroupProfile save(GroupProfile groupProfile) {
+        Group group = modelMapper.map(groupProfile, Group.class);
+        groupRepository.save(group);
+        return groupProfile;
     }
 }

@@ -36,6 +36,25 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional(readOnly = true)
+    public List<UserResponse> getUserResponseByGroupId(Long groupId) {
+        checkNull(groupId, "Group id");
+        List<Subscription> subscriptions = subscriptionRepository.findAllByGroupId(groupId);
+        List<UserResponse> userResponses = new ArrayList<>();
+        for (Subscription subscription : subscriptions) {
+            if (!isActiveSubscription(subscription)) continue;
+            User user = subscription.getUser();
+            UserResponse userResponse = modelMapper.map(user, UserResponse.class);
+            Link userResults = linkTo(methodOn(ResultController.class)
+                    .getUserResults(groupId, user.getId()))
+                    .withRel("results");
+            userResponse.add(userResults);
+            userResponses.add(userResponse);
+        }
+        return userResponses;
+    }
+
+    @Override
     public void createSubscription(CreateSubscription createSubscription) {
         List<Group> groups = groupService.findAllByTestId(createSubscription.getTestId());
         String enrollmentKey = createSubscription.getEnrollmentKey();
@@ -53,25 +72,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         }
         throw new IllegalArgumentException(
                 String.format(INCORRECT_ENROLLMENT_KEY_MESSAGE, enrollmentKey));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserResponse> getUserResponseByGroupId(Long groupId) {
-        checkNull(groupId, "Group id");
-        List<Subscription> subscriptions = subscriptionRepository.findAllByGroupId(groupId);
-        List<UserResponse> userResponses = new ArrayList<>();
-        for (Subscription subscription : subscriptions) {
-            if (!isActiveSubscription(subscription)) continue;
-            User user = subscription.getUser();
-            UserResponse userResponse = modelMapper.map(user, UserResponse.class);
-            Link userResults = linkTo(methodOn(ResultController.class)
-                    .getUserResults(groupId, user.getId()))
-                    .withRel("results");
-            userResponse.add(userResults);
-            userResponses.add(userResponse);
-        }
-        return userResponses;
     }
 
     private boolean isActiveSubscription(Subscription subscription) {

@@ -66,35 +66,12 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public SuccessCreatedTest addTest(CreateTest testDto) {
-        User user = userService.getCurrentUser();
-        Test test = modelMapper.map(testDto, Test.class);
-        test.setCreator(user);
-        test.setDateOfCreation(LocalDate.now());
-        test.setTopic(topicService.findByTitle(testDto.getTopicTitle()));
-        test = testRepository.save(test);
-        int grade = 0;
-
-        for (QuestionProfile questionProfile: testDto.getQuestions()) {
-            Question question = modelMapper.map(questionProfile, Question.class);
-            QuestionTest questionTest = new QuestionTest();
-            grade += questionProfile.getValue();
-
-            if (Objects.isNull(question.getId())) {
-                String categoryTitle = questionProfile.getCategoryTitle();
-                QuestionCategory category = questionCategoryService.findByTitle(categoryTitle);
-                question.setCreator(user);
-                question.setQuestionCategory(category);
-                question.setQuestionType(findQuestionType(questionProfile));
-                saveAnswers(questionProfile, question);
-                question = questionService.save(question);
-            }
-            questionTest.setTest(test);
-            questionTest.setQuestion(question);
-            questionTestService.save(questionTest);
-        }
-        test.setGrade(grade);
-        return modelMapper.map(testDto, SuccessCreatedTest.class);
+    @Transactional(readOnly = true)
+    public Test findById(Long id) {
+        checkNull(id, "Test id");
+        return testRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format(NO_ID_MESSAGE, "test", id)));
     }
 
     @Override
@@ -120,27 +97,6 @@ public class TestServiceImpl implements TestService {
     public List<Test> findAllByGroupId(Long groupId) {
         checkNull(groupId, "Group id");
         return testRepository.findAllByGroupId(groupId);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Test findById(Long id) {
-        checkNull(id, "Test id");
-        return testRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
-                        String.format(NO_ID_MESSAGE, "test", id)));
-    }
-
-    @Override
-    public void archiveTestById(Long id) {
-        Test testToArchive = findById(id);
-        testToArchive.setArchived(true);
-    }
-
-    @Override
-    public void restoreTestById(Long id) {
-        Test testToRestore = findById(id);
-        testToRestore.setArchived(false);
     }
 
     @Override
@@ -207,6 +163,50 @@ public class TestServiceImpl implements TestService {
         checkNullIds(userId, testId);
         return testGroups.stream()
                 .anyMatch(group -> userGroupsIds.contains(group.getId()));
+    }
+
+    @Override
+    public SuccessCreatedTest addTest(CreateTest testDto) {
+        User user = userService.getCurrentUser();
+        Test test = modelMapper.map(testDto, Test.class);
+        test.setCreator(user);
+        test.setDateOfCreation(LocalDate.now());
+        test.setTopic(topicService.findByTitle(testDto.getTopicTitle()));
+        test = testRepository.save(test);
+        int grade = 0;
+
+        for (QuestionProfile questionProfile: testDto.getQuestions()) {
+            Question question = modelMapper.map(questionProfile, Question.class);
+            QuestionTest questionTest = new QuestionTest();
+            grade += questionProfile.getValue();
+
+            if (Objects.isNull(question.getId())) {
+                String categoryTitle = questionProfile.getCategoryTitle();
+                QuestionCategory category = questionCategoryService.findByTitle(categoryTitle);
+                question.setCreator(user);
+                question.setQuestionCategory(category);
+                question.setQuestionType(findQuestionType(questionProfile));
+                saveAnswers(questionProfile, question);
+                question = questionService.save(question);
+            }
+            questionTest.setTest(test);
+            questionTest.setQuestion(question);
+            questionTestService.save(questionTest);
+        }
+        test.setGrade(grade);
+        return modelMapper.map(testDto, SuccessCreatedTest.class);
+    }
+
+    @Override
+    public void archiveTestById(Long id) {
+        Test testToArchive = findById(id);
+        testToArchive.setArchived(true);
+    }
+
+    @Override
+    public void restoreTestById(Long id) {
+        Test testToRestore = findById(id);
+        testToRestore.setArchived(false);
     }
 
     private List<PassingTestQuestion> getPassingTestQuestions(Test test) {

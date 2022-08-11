@@ -46,7 +46,7 @@ public interface ResultService {
      * @param resultId - put result id.
      * @return new {@code ResultTest}.
      */
-    ResultTest getResultTest(Long resultId);
+    ResultTest getResult(Long resultId);
 
     /**
      * This method returns dto {@code SuccessCreatedResult} if result was successfully added.
