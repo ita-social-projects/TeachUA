@@ -25,7 +25,7 @@ public class TopicServiceImpl implements TopicService {
     public Topic findByTitle(String title) {
         checkNull(title, "Topic title");
         return topicRepository.findByTitle(title)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format(NO_TITLE_MESSAGE, "topic", title)));
     }
 }

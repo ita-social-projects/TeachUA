@@ -4,6 +4,7 @@ import com.softserve.teachua.controller.test.TestController;
 import com.softserve.teachua.dto.test.question.PassingTestQuestion;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.dto.test.test.*;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.*;
 import com.softserve.teachua.repository.test.SubscriptionRepository;
@@ -70,7 +71,7 @@ public class TestServiceImpl implements TestService {
     public Test findById(Long id) {
         checkNull(id, "Test id");
         return testRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format(NO_ID_MESSAGE, "test", id)));
     }
 

@@ -26,7 +26,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
     public QuestionCategory findByTitle(String title) {
         checkNull(title, "Question category");
         return questionCategoryRepository.findByTitle(title)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format(NO_TITLE_MESSAGE, "question category", title)));
     }
 }

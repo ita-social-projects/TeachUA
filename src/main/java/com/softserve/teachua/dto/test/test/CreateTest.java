@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 public class CreateTest {
     @JsonDeserialize(using = TrimDeserialize.class)
+
     @NotBlank
     private String title;
     @NotBlank
