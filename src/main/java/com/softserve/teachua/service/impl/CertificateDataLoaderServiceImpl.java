@@ -49,7 +49,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             CertificateDates dates = CertificateDates.builder()
                     .date(data.getExcelList().get(index).getDateIssued().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
                     .hours(data.getHours())
-                    .duration(decorator.fromDates(data.getStartDate(), data.getEndDate()))
+                    .duration(decorator.formDates(data.getStartDate(), data.getEndDate()))
                     .courseNumber(data.getCourseNumber())
                     .build();
             Certificate certificate = Certificate.builder()

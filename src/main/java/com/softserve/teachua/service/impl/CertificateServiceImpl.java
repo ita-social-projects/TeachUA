@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -151,9 +152,11 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     public CertificateTransfer updateCertificateWithSerialNumber(Long id, CertificateTransfer response) {
         Certificate certificate = getCertificateById(id);
 
-        if (response.getSerialNumber() == null) {
-            response = generateSerialNumber(response);
+        if (response.getSerialNumber() != null) {
+            return response;
         }
+
+        response = generateSerialNumber(response);
 
         Certificate newCertificate = dtoConverter.convertToEntity(response, certificate)
                 .withId(id)
@@ -180,11 +183,10 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     public byte[] getPdfOutput(CertificateTransfer transfer){
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        //serial number
-        //Check!//TODO
-        transfer = updateCertificateWithSerialNumber(transfer.getId(), transfer);
+        if (transfer.getSerialNumber() == null){
+            transfer = updateCertificateWithSerialNumber(transfer.getId(), transfer);
+        }
 
-        //TODO
         CertificateContent content = CertificateContent.builder()
                 .id(transfer.getId())
                 .serialNumber(transfer.getSerialNumber())
@@ -207,7 +209,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     public JasperPrint createJasperPrint(String templatePath, CertificateContent content) throws JRException, IOException {
-        try (InputStream inputStream = new FileInputStream(getRealFilePath(templatePath))) {
+        try (InputStream inputStream = new FileInputStream(certificateContentDecorator.getRealFilePath(templatePath))) {
             final JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
             return JasperFillManager.fillReport(jasperReport, getParameters(content), getDataSource(content));
         }
