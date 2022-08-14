@@ -32,7 +32,7 @@ public class CertificateProfile implements Convertible {
 
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9-\\.]+@([a-zA-Z-]+\\.)+[a-zA-Z-]{2,4}$", message = "is not valid")
-    private String userEmail;
+    private String sendToEmail;
 
     private UserProfile profile;
 

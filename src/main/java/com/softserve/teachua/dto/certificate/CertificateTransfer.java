@@ -20,7 +20,7 @@ public class CertificateTransfer implements Convertible {
     private Long serialNumber;
     private User user;
     private String userName;
-    private String userEmail;
+    private String sendToEmail;
     private Boolean sendStatus;
     private LocalDate updateStatus;
     private CertificateTemplate template;

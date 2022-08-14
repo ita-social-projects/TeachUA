@@ -31,7 +31,7 @@ public class Certificate implements Convertible {
     private String userName;
 
     @Column(name = "user_email")
-    private String userEmail;
+    private String sendToEmail;
 
     @Column(name = "send_status")
     private Boolean sendStatus;

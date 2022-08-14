@@ -3,6 +3,7 @@ package com.softserve.teachua.service;
 import com.softserve.teachua.dto.certificate.CertificateContent;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.model.Certificate;
+import com.softserve.teachua.model.CertificateDates;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,12 +31,21 @@ public interface CertificateService {
     Certificate getCertificateBySerialNumber(Long serialNumber);
 
     /**
-     * Method finds {@link Certificate}
+     * The method returns {@link Certificate} by user name
      *
-     * @param username put User Name
+     * @param username put user name
      * @return new {@code Certificate}
      */
     Certificate getCertificateByUserName(String username);
+
+    /**
+     * The method returns {@link Certificate} by user name and dates
+     *
+     * @param username put user name
+     * @param dates put certificate dates
+     * @return new {@code Certificate}
+     */
+    Certificate getByUserNameAndDates(String username, CertificateDates dates);
 
     /**
      * Method finds {@link CertificateTransfer}

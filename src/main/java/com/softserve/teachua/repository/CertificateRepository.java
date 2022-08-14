@@ -1,6 +1,7 @@
 package com.softserve.teachua.repository;
 
 import com.softserve.teachua.model.Certificate;
+import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,6 +34,8 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     boolean existsByUserName(String name);
 
+    boolean existsByUserNameAndDates(String name, CertificateDates dates);
+
     List<Certificate> findAll();
 
     Optional<Certificate> findById(Long id);
@@ -40,6 +43,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     Optional<Certificate> findBySerialNumber(Long serialNumber);
 
     Optional<Certificate> findByUserName(String username);
+    Optional<Certificate> findByUserNameAndDates(String username, CertificateDates dates);
 
     @Query(value = "SELECT MAX(t.serialNumber) from Certificate t " +
             "WHERE CONCAT(t.serialNumber, '') " +

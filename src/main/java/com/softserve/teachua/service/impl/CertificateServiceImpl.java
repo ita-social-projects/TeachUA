@@ -7,6 +7,7 @@ import com.softserve.teachua.dto.certificate.CertificateContent;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
+import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.CertificateService;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,6 +39,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     private static final String CERTIFICATE_NOT_FOUND_BY_ID = "Certificate not found by id %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_SERIAL_NUMBER = "Certificate not found by serial number %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME = "Certificate not found by username: %s";
+    private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME_AND_DATES = "Certificate not found by username and dates: %s, %s";
 
     private final DtoConverter dtoConverter;
     private final ObjectMapper objectMapper;
@@ -120,6 +121,12 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
+    public Certificate getByUserNameAndDates(String username, CertificateDates dates) {
+        return certificateRepository.findByUserNameAndDates(username, dates)
+                .orElseThrow(() -> new NotExistException(String.format(CERTIFICATE_NOT_FOUND_BY_USERNAME_AND_DATES, username, dates)));
+    }
+
+    @Override
     public CertificateTransfer getCertificateProfileById(Long id) {
         Certificate certificate = getCertificateById(id);
         return dtoConverter.convertToDto(certificate, CertificateTransfer.class);
@@ -165,7 +172,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
                 .withTemplate(certificate.getTemplate())
                 .withUser(certificate.getUser())
                 .withUserName(certificate.getUserName())
-                .withUserEmail(certificate.getUserEmail());
+                .withSendToEmail(certificate.getSendToEmail());
 
         log.debug("updating serial number of certificate by id {}", newCertificate);
 
@@ -232,7 +239,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     @Override
     public Certificate updateCertificateEmail(Long id, Certificate certificate) {
         Certificate certificateFound = getCertificateById(id);
-        certificateFound.setUserEmail(certificate.getUserEmail());
+        certificateFound.setSendToEmail(certificate.getSendToEmail());
         certificateFound.setSendStatus(certificate.getSendStatus());
         return certificateRepository.save(certificateFound);
     }

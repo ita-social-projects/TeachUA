@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @Slf4j
@@ -45,5 +47,10 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
     public CertificateTemplate getTemplateByType(Integer type) {
         return certificateTemplateRepository.findByCertificateType(type)
                 .orElseThrow(() -> new NotExistException(String.format(TEMPLATE_NOT_FOUND_BY_TYPE, type)));
+    }
+
+    @Override
+    public CertificateTemplate addTemplate(CertificateTemplate certificateTemplate) {
+        return certificateTemplateRepository.save(certificateTemplate);
     }
 }

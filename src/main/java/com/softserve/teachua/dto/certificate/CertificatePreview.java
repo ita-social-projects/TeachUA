@@ -18,7 +18,7 @@ public class CertificatePreview implements Convertible {
     private Long id;
     private Long serialNumber;
     private String userName;
-    private String userEmail;
+    private String sendToEmail;
     private UserPreview user;
     private Integer type;
     private CertificateDatesResponse dates;

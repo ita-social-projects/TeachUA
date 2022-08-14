@@ -9,6 +9,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @With
+@Builder
 public class CertificateTemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

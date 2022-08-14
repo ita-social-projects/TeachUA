@@ -12,7 +12,6 @@ import java.util.Locale;
 
 @Component
 public class CertificateContentDecorator {
-
     public final static String PATTERN_WITHOUT_MONTH_AND_YEAR = "з dd";
     public final static String PATTERN_WITHOUT_YEAR = "з dd MMMM";
     public final static String PATTERN_WITH_MONTH_AND_YEAR = " до dd MMMM yyyy року";
@@ -20,7 +19,6 @@ public class CertificateContentDecorator {
     public String formHours(Integer hours){
         return "Тривалість навчання - " + hours + " годин.";
     }
-
     public String formDates(LocalDate startDate, LocalDate endDate) {
         Locale locale = Locale.forLanguageTag("uk-UA");
 
