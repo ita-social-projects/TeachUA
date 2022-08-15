@@ -19,21 +19,4 @@ public interface EmailService {
      */
     void sendMessageWithAttachmentAndGeneratedPdf(String to, String subject, String text, String name,
                                                   String userName, String date);
-
-    /**
-     * The method generate certificate.
-     *
-     * @param bytes - accepts bytes to construct pdf body part.
-     */
-    void constructPdfBodyPart(byte[] bytes);
-
-    /**
-     * The method construct mime message.
-     *
-     * @param to      - indicate receiver.
-     * @param subject - indicate subject of email.
-     * @param text    - indicate body text.
-     * @param message - indicate that current mime message can accept attachment.
-     */
-    void constructMimeMessageHelper(String to, String subject, String text, MimeMessage message);
 }

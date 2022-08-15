@@ -15,12 +15,10 @@ public class EmailServiceImpl implements EmailService {
 
     }
 
-    @Override
     public void constructPdfBodyPart(byte[] bytes) {
 
     }
 
-    @Override
     public void constructMimeMessageHelper(String to, String subject, String text, MimeMessage message) {
 
     }
