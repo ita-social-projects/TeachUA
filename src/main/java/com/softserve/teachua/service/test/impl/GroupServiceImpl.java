@@ -96,18 +96,21 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public GroupProfile save(GroupProfile groupProfile) {
+        checkNull(groupProfile, "Group");
+        Group group = modelMapper.map(groupProfile, Group.class);
+        groupRepository.save(group);
+        return groupProfile;
+    }
+
+    @Override
     public UpdateGroup updateById(UpdateGroup updateGroup, Long groupId) {
+        checkNull(updateGroup, "Group");
         Group group = findById(groupId);
         group.setEndDate(updateGroup.getEndDate());
         group.setStartDate(updateGroup.getStartDate());
         group.setTitle(updateGroup.getTitle());
-        return updateGroup;
-    }
-
-    @Override
-    public GroupProfile save(GroupProfile groupProfile) {
-        Group group = modelMapper.map(groupProfile, Group.class);
         groupRepository.save(group);
-        return groupProfile;
+        return updateGroup;
     }
 }

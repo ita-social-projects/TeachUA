@@ -48,7 +48,7 @@ public class Test implements Convertible {
     @JoinColumn(name = "topic_id", referencedColumnName = "id")
     private Topic topic;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
     private User creator;
 }

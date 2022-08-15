@@ -26,7 +26,7 @@ public interface GroupService {
     List<ResponseGroup> findResponseGroupsByTestId(Long id);
 
     /**
-     * This method returns a list of groups.
+     * This method returns a list of Group entities.
      * @return new {@code List<Group>}
      */
     List<Group> findAll();

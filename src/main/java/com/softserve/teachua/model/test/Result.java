@@ -21,11 +21,11 @@ public class Result implements Convertible {
     @Column(nullable = false)
     private int grade;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "test_id", referencedColumnName = "id")
     private Test test;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

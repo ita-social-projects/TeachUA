@@ -32,11 +32,11 @@ public class Question implements Convertible {
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
     private User creator;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "type_id", referencedColumnName = "id")
     private QuestionType questionType;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private QuestionCategory questionCategory;
 

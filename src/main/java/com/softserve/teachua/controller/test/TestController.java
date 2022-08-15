@@ -76,7 +76,7 @@ public class TestController implements Api {
      * This controller returns a test DTO {@code SuccessCreatedTest}
      * which contains general information about the test.
      *
-     * @param test - put information about the test and questions that relate to it.
+     * @param test - put information about the test and questions that relate to it here.
      * @return new {@code SuccessCreatedTest}.
      */
     @ResponseStatus(value = CREATED)

@@ -25,7 +25,7 @@ public class Answer implements Convertible {
     private int value;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "question_id", referencedColumnName = "id")
     private Question question;
 }

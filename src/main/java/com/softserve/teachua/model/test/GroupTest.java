@@ -14,11 +14,11 @@ public class GroupTest {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "test_id", referencedColumnName = "id")
     private Test test;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "group_id", referencedColumnName = "id")
     private Group group;
 }

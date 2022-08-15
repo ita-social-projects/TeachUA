@@ -13,11 +13,11 @@ public class QuestionHistory {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "result_id", referencedColumnName = "id")
     private Result result;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "answer_id", referencedColumnName = "id")
     private Answer answer;
 }

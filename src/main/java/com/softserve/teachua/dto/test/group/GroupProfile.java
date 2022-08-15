@@ -1,10 +1,9 @@
 package com.softserve.teachua.dto.test.group;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.softserve.teachua.utils.deserializers.TrimDeserialize;
 import com.softserve.teachua.utils.validations.CheckRussian;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Future;
@@ -13,7 +12,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 public class GroupProfile extends RepresentationModel<GroupProfile> {
     @NotBlank(message = "Назва групи не може бути порожньою.")
     @CheckRussian(message = "Назва групи містить недопустимі символи.")
