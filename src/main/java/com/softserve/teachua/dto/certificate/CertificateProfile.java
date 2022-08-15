@@ -1,10 +1,10 @@
 package com.softserve.teachua.dto.certificate;
 
 
-import com.softserve.teachua.dto.certificateDates.CertificateDatesResponse;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateResponse;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.dto.user.UserProfile;
+import com.softserve.teachua.model.CertificateDates;
+import com.softserve.teachua.model.CertificateTemplate;
+import com.softserve.teachua.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,19 +34,15 @@ public class CertificateProfile implements Convertible {
     @Pattern(regexp = "^[a-zA-Z0-9-\\.]+@([a-zA-Z-]+\\.)+[a-zA-Z-]{2,4}$", message = "is not valid")
     private String sendToEmail;
 
-    private UserProfile profile;
+    private User user;
 
     private Boolean sendStatus;
 
     private LocalDate updateStatus;
 
-    @NotBlank
-    @Pattern(regexp = "^[123]$")
-    private Integer certificateType;
+    @Valid
+    private CertificateDates dates;
 
     @Valid
-    private CertificateDatesResponse dates;
-
-    @Valid
-    private CertificateTemplateResponse template;
+    private CertificateTemplate template;
 }

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.certificate.CertificateContent;
+import com.softserve.teachua.dto.certificate.CertificateProfile;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
+import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
@@ -213,6 +215,33 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
             e.printStackTrace();
         }
         return new byte[0];
+    }
+
+    @Override
+    public CertificateVerificationResponse validateCertificate(Long serialNumber) {
+        Certificate certificate = null;
+
+        try{
+            certificate = getCertificateBySerialNumber(serialNumber);
+        }catch (NotExistException e){
+            return CertificateVerificationResponse.builder()
+                    .description("Сертифікат не знайдено.")
+                    .build();
+        }
+
+        //TODO, wait for customer
+        String description = "";
+        CertificateVerificationResponse response = CertificateVerificationResponse
+                .builder()
+                .date(certificate.getDates().getDate())
+                .duration(certificate.getDates().getDuration())
+                .userName(certificate.getUserName())
+                .serialNumber(serialNumber)
+                .description(description)
+                .build();
+        log.debug("verified certificate {}", certificate);
+
+        return response;
     }
 
     public JasperPrint createJasperPrint(String templatePath, CertificateContent content) throws JRException, IOException {

@@ -2,9 +2,7 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.certificate.CertificateDataRequest;
-import com.softserve.teachua.dto.certificate.CertificateDatabaseResponse;
-import com.softserve.teachua.dto.certificate.CertificateTransfer;
+import com.softserve.teachua.dto.certificate.*;
 import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
 import com.softserve.teachua.service.CertificateDataLoaderService;
 import com.softserve.teachua.service.CertificateExcelService;
@@ -12,11 +10,7 @@ import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -81,5 +75,15 @@ public class CertificateController implements Api {
     public List<CertificateDatabaseResponse> saveExcel(@Valid @RequestBody CertificateDataRequest data) {
         log.info("Save excel " + data);
         return loaderService.saveToDatabase(data);
+    }
+
+    /**
+     *
+     * @param serialNumber - serial number of certificate, being verified
+     * @return new {@code CertificateVerificationResponse}
+     */
+    @GetMapping("/certificate/{serialNumber}")
+    public CertificateVerificationResponse validateCertificate(@PathVariable("serialNumber")Long serialNumber){
+        return certificateService.validateCertificate(serialNumber);
     }
 }

@@ -1,7 +1,9 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.certificate.CertificateContent;
+import com.softserve.teachua.dto.certificate.CertificateProfile;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
+import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 
@@ -73,4 +75,6 @@ public interface CertificateService {
     Map<String, Object> getParameters(CertificateContent content) throws IOException;
 
     byte[] getPdfOutput(CertificateTransfer response);
+
+    CertificateVerificationResponse validateCertificate(Long serialNumber);
 }

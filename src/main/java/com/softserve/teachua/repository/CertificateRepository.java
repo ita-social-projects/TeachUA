@@ -43,6 +43,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     Optional<Certificate> findBySerialNumber(Long serialNumber);
 
     Optional<Certificate> findByUserName(String username);
+
     Optional<Certificate> findByUserNameAndDates(String username, CertificateDates dates);
 
     @Query(value = "SELECT MAX(t.serialNumber) from Certificate t " +
