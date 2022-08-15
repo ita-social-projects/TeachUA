@@ -6,6 +6,7 @@ import com.softserve.teachua.service.test.QuestionCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -39,7 +40,7 @@ public class QuestionCategoryController implements Api {
      */
     @ResponseStatus(value = CREATED)
     @PostMapping(path = "/question_categories", consumes = APPLICATION_JSON_VALUE)
-    public void createQuestionCategory(@RequestBody QuestionCategoryProfile categoryProfile) {
+    public void createQuestionCategory(@Valid @RequestBody QuestionCategoryProfile categoryProfile) {
         questionCategoryService.save(categoryProfile);
     }
 
@@ -50,7 +51,7 @@ public class QuestionCategoryController implements Api {
      */
     @ResponseStatus(value = NO_CONTENT)
     @PutMapping(path = "/question_categories/{id}", consumes = APPLICATION_JSON_VALUE)
-    public QuestionCategoryProfile updateQuestionCategory(@RequestBody QuestionCategoryProfile categoryProfile,
+    public QuestionCategoryProfile updateQuestionCategory(@Valid @RequestBody QuestionCategoryProfile categoryProfile,
                                        @PathVariable Long id) {
         return questionCategoryService.updateById(categoryProfile, id);
     }

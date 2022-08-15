@@ -10,6 +10,7 @@ import com.softserve.teachua.service.test.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -71,7 +72,7 @@ public class GroupController implements Api {
     @PostMapping(value = "/groups",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public GroupProfile addGroup(@RequestBody GroupProfile group) {
+    public GroupProfile addGroup(@Valid @RequestBody GroupProfile group) {
         return groupService.save(group);
     }
 
@@ -87,7 +88,7 @@ public class GroupController implements Api {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
     public UpdateGroup updateGroup(@PathVariable Long groupId,
-                                   @RequestBody UpdateGroup group) {
+                                   @Valid @RequestBody UpdateGroup group) {
         return groupService.updateById(group, groupId);
     }
 }

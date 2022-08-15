@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class UpdateGroup {
     @NotBlank(message = "Назва групи не може бути порожньою.")
     @CheckRussian(message = "Назва групи містить недопустимі символи.")
-    @Size(min = 3, message = "Group name must contain a minimum of 3 symbols" )
+    @Size(min = 3, message = "Назва групи повинна містити більше ніж 3 символи." )
     private String title;
 
     @JsonFormat(pattern = "yyyy-MM-dd")

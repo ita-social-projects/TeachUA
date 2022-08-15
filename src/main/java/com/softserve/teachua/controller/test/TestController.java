@@ -8,6 +8,7 @@ import com.softserve.teachua.service.test.TestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -83,7 +84,7 @@ public class TestController implements Api {
     @PostMapping(value = "/tests",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public SuccessCreatedTest addTest(@RequestBody CreateTest test) {
+    public SuccessCreatedTest addTest(@Valid @RequestBody CreateTest test) {
         return testService.addTest(test);
     }
 
