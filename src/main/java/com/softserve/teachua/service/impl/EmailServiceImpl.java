@@ -15,9 +15,9 @@ public class EmailServiceImpl implements EmailService {
 
     }
 
-    public void constructPdfBodyPart(byte[] bytes) {
-
-    }
+//    public void constructPdfBodyPart(byte[] bytes) {
+//
+//    }
 
     public void constructMimeMessageHelper(String to, String subject, String text, MimeMessage message) {
 
