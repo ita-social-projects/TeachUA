@@ -46,8 +46,8 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     Optional<Certificate> findByUserNameAndDates(String username, CertificateDates dates);
 
-    @Query(value = "SELECT MAX(t.serialNumber) from Certificate t " +
+    @Query(value = "SELECT MAX(SUBSTRING(CONCAT(t.serialNumber, ''), 4, 10)) from Certificate t " +
             "WHERE CONCAT(t.serialNumber, '') " +
-            "LIKE CONCAT(:type, :courseNumber, '%') ")
-    Long findMaxSerialNumber(@Param("type") String type, @Param("courseNumber") String courseNumber);
+            "LIKE CONCAT(:type, '%') ")
+    Long findMaxSerialNumber(@Param("type") String type);
 }
