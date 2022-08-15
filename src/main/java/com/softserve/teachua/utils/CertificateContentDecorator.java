@@ -12,9 +12,9 @@ import java.util.Locale;
 
 @Component
 public class CertificateContentDecorator {
-    public final static String PATTERN_WITHOUT_MONTH_AND_YEAR = "з dd";
-    public final static String PATTERN_WITHOUT_YEAR = "з dd MMMM";
-    public final static String PATTERN_WITH_MONTH_AND_YEAR = " до dd MMMM yyyy року";
+    public final static String PATTERN_WITHOUT_MONTH_AND_YEAR = "з d";
+    public final static String PATTERN_WITHOUT_YEAR = "з d MMMM";
+    public final static String PATTERN_WITH_MONTH_AND_YEAR = " до d MMMM yyyy року";
 
     public String formHours(Integer hours){
         return "Тривалість навчання - " + hours + " годин.";

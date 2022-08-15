@@ -152,6 +152,9 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
         Long largestSerialNumber = certificateRepository.findMaxSerialNumber(response.getTemplate().getCertificateType().toString(), courseNumber);
 
+        if (largestSerialNumber == null){
+            largestSerialNumber = Long.valueOf(response.getTemplate().getCertificateType().toString() + courseNumber + 0000000);
+        }
         response.setSerialNumber(largestSerialNumber + 1);
 
         return response;
