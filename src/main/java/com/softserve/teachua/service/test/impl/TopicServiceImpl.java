@@ -65,7 +65,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public TopicProfile updateById(TopicProfile topicProfile, Long id) {
         checkNull(topicProfile, "Topic");
-        Topic topic = modelMapper.map(topicProfile, Topic.class);
+        Topic topic = findById(id);
         topic.setTitle(topicProfile.getTitle());
         topicRepository.save(topic);
         return topicProfile;

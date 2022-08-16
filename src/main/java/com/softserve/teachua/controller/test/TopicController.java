@@ -6,6 +6,7 @@ import com.softserve.teachua.service.test.TopicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -37,7 +38,7 @@ public class TopicController implements Api {
      */
     @ResponseStatus(value = CREATED)
     @PostMapping(path = "/topics", consumes = APPLICATION_JSON_VALUE)
-    public void createTopic(@RequestBody TopicProfile topicProfile) {
+    public void createTopic(@Valid @RequestBody TopicProfile topicProfile) {
         topicService.save(topicProfile);
     }
 
@@ -47,7 +48,7 @@ public class TopicController implements Api {
      * @param id           - put topic id here.
      */
     @PutMapping(path = "/topics/{id}", consumes = APPLICATION_JSON_VALUE)
-    public TopicProfile updateTopic(@RequestBody TopicProfile topicProfile,
+    public TopicProfile updateTopic(@Valid @RequestBody TopicProfile topicProfile,
                                     @PathVariable Long id) {
         return topicService.updateById(topicProfile, id);
     }

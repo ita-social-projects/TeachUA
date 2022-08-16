@@ -4,6 +4,7 @@ import com.softserve.teachua.controller.test.GroupController;
 import com.softserve.teachua.dto.test.group.GroupProfile;
 import com.softserve.teachua.dto.test.group.ResponseGroup;
 import com.softserve.teachua.dto.test.group.UpdateGroup;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.repository.test.GroupRepository;
 import com.softserve.teachua.service.test.GroupService;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static com.softserve.teachua.utils.test.Messages.*;
 import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
@@ -36,7 +36,7 @@ public class GroupServiceImpl implements GroupService {
     public Group findById(Long groupId) {
         checkNull(groupId, "Group id");
         return groupRepository.findById(groupId)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format(NO_ID_MESSAGE, "group", groupId)));
     }
 
