@@ -41,15 +41,15 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendMessageWithAttachmentAndGeneratedPdf(String to, String subject, String text,
-                                                         String userName, CertificateDates date) {
+                                                         String userName, CertificateDates date, CertificateTransfer certificateTransfer) {
         MimeMessage message = emailSender.getJavaMailSender().createMimeMessage();
 
-        CertificateTransfer userInformation = CertificateTransfer.builder()
-                .userName(userName)
-                .dates(date)
-                .build();
+//        CertificateTransfer userInformation = CertificateTransfer.builder()
+//                .userName(userName)
+//                .dates(date)
+//                .build();
 
-        byte[] bytes = certificateService.getPdfOutput(userInformation);
+        byte[] bytes = certificateService.getPdfOutput(certificateTransfer);
 
         try {
             DataSource dataSource = new ByteArrayDataSource(bytes, "application/pdf");
