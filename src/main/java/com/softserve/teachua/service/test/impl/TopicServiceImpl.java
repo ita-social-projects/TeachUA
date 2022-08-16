@@ -60,6 +60,7 @@ public class TopicServiceImpl implements TopicService {
         checkNull(topicProfile, "Topic");
         Topic topic = modelMapper.map(topicProfile, Topic.class);
         topicRepository.save(topic);
+        log.info(String.format("**/Topic has been created. %s", topic.toString()));
     }
 
     @Override
@@ -68,6 +69,7 @@ public class TopicServiceImpl implements TopicService {
         Topic topic = findById(id);
         topic.setTitle(topicProfile.getTitle());
         topicRepository.save(topic);
+        log.info(String.format("**/Topic with id '%d' has been updated. %s", id, topic.toString()));
         return topicProfile;
     }
 

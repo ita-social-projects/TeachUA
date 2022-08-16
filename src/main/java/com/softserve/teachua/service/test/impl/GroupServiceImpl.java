@@ -100,6 +100,7 @@ public class GroupServiceImpl implements GroupService {
         checkNull(groupProfile, "Group");
         Group group = modelMapper.map(groupProfile, Group.class);
         groupRepository.save(group);
+        log.info(String.format("**/Group has been created. %s.", group));
         return groupProfile;
     }
 
@@ -111,6 +112,7 @@ public class GroupServiceImpl implements GroupService {
         group.setStartDate(updateGroup.getStartDate());
         group.setTitle(updateGroup.getTitle());
         groupRepository.save(group);
+        log.info(String.format("**/Group with id '%d' has been updated", groupId));
         return updateGroup;
     }
 }

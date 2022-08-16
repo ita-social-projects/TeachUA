@@ -2,10 +2,7 @@ package com.softserve.teachua.model.test;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.User;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Collections;
@@ -14,6 +11,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@ToString(of = {"title", "description"})
 @EqualsAndHashCode(of = {"title", "description"})
 @Entity(name = "testQuestion")
 @Table(name = "questions")

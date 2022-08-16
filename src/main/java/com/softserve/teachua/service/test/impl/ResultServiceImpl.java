@@ -197,12 +197,13 @@ public class ResultServiceImpl implements ResultService {
         createResult(result, selectedAnswers);
         result.setGrade(countGrade(selectedAnswers));
 
-        SuccessCreatedResult success = new SuccessCreatedResult();
-        success.setSelectedAnswersIds(answerIds);
-        success.setTestId(resultDto.getTestId());
-        success.setUserId(user.getId());
-        success.setGrade(result.getGrade());
-        return success;
+        SuccessCreatedResult successResult = new SuccessCreatedResult();
+        successResult.setSelectedAnswersIds(answerIds);
+        successResult.setTestId(resultDto.getTestId());
+        successResult.setUserId(user.getId());
+        successResult.setGrade(result.getGrade());
+        log.info(String.format("**/Result has been saved. %s", successResult.toString()));
+        return successResult;
     }
 
     @Override

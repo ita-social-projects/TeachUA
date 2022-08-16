@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = {"id"})
+@ToString(of = "title")
 @Entity
 @Table(name = "topics")
 public class Topic {

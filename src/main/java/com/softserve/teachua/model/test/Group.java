@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+@ToString
 @EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "groups")

@@ -65,6 +65,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Question save(Question question) {
         checkNull(question, "Question");
+        log.info(String.format("**/Question has been created. %s", question.toString()));
         return questionRepository.save(question);
     }
 

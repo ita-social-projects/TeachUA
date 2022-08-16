@@ -60,6 +60,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
         checkNull(categoryProfile, "Question category");
         QuestionCategory questionCategory = modelMapper.map(categoryProfile, QuestionCategory.class);
         questionCategoryRepository.save(questionCategory);
+        log.info(String.format("**/Question category has been created. %s", questionCategory.toString()));
     }
 
     @Override
@@ -68,6 +69,8 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
         QuestionCategory questionCategory = findById(id);
         questionCategory.setTitle(categoryProfile.getTitle());
         questionCategoryRepository.save(questionCategory);
+        log.info(String.format("**/Question category with id '%d' has been updated. %s",
+                id, questionCategory.toString()));
         return categoryProfile;
     }
 

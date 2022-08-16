@@ -173,6 +173,7 @@ public class TestServiceImpl implements TestService {
     public SuccessCreatedTest addTest(CreateTest testDto) {
         checkNull(testDto, "Test");
         validationService.validateTest(testDto);
+        SuccessCreatedTest successCreatedTest;
         User user = userService.getCurrentUser();
         Test test = modelMapper.map(testDto, Test.class);
         test.setCreator(user);
@@ -200,19 +201,23 @@ public class TestServiceImpl implements TestService {
             questionTestService.save(questionTest);
         }
         test.setGrade(grade);
-        return modelMapper.map(testDto, SuccessCreatedTest.class);
+        successCreatedTest = modelMapper.map(testDto, SuccessCreatedTest.class);
+        log.info(String.format("**/Test has been created. %s", successCreatedTest.toString()));
+        return successCreatedTest;
     }
 
     @Override
     public void archiveTestById(Long id) {
         Test testToArchive = findById(id);
         testToArchive.setArchived(true);
+        log.info(String.format("**/Test with id '%d' has been archived.", id));
     }
 
     @Override
     public void restoreTestById(Long id) {
         Test testToRestore = findById(id);
         testToRestore.setArchived(false);
+        log.info(String.format("**/Test with id '%d' has been restored.", id));
     }
 
     private List<PassingTestQuestion> getPassingTestQuestions(Test test) {
