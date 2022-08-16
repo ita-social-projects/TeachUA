@@ -43,7 +43,7 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
                     user.getDates());
         } else {
             postProcessor.destroy();
-            log.info("No more e-mails");
+            log.info("No e-mails to send");
             position = 0;
         }
     }
