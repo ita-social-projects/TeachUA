@@ -11,6 +11,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @Slf4j
 @Getter
@@ -41,6 +43,8 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
                     "Вітаю! В додатку ви можете знайти ваш сертифікат.",
                     user.getUserName(),
                     user.getDates());
+            user.setSendStatus(true);
+            user.setUpdateStatus(LocalDate.now());
         } else {
             postProcessor.destroy();
             log.info("No e-mails to send");
