@@ -1,6 +1,7 @@
 package com.softserve.teachua.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.schedule.TaskSchedule;
 import com.softserve.teachua.service.ScheduleSendService;
 import com.softserve.teachua.service.impl.ScheduleSendServiceImpl;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 @RestController
 @Slf4j
-public class ScheduleSendEmailController {
+public class ScheduleSendEmailController implements Api {
     private static final String SCHEDULED_TASKS = "scheduleSendService";
 
     private final ScheduleSendService scheduleSendService;
