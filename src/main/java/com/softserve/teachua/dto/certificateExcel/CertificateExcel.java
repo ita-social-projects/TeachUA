@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Email;
 import java.time.LocalDate;
 
 @Data
@@ -16,7 +18,9 @@ import java.time.LocalDate;
 public class CertificateExcel {
 
     private String name;
+    @DateTimeFormat(pattern = "dd.MM.YYYY")
     private LocalDate dateIssued;
+    @Email
     private String email;
 
 }

@@ -21,7 +21,6 @@ import java.util.List;
 @RestController
 @Slf4j
 public class CertificateController implements Api {
-    private static final String FILE_LOAD_EXCEPTION = "Could not load excel file";
     private final CertificateService certificateService;
     private final CertificateExcelService excelService;
     private final CertificateDataLoaderService loaderService;
@@ -41,9 +40,6 @@ public class CertificateController implements Api {
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/certificate/generate")
     public Integer getUnsentCertificates() {
-        for (CertificateTransfer certificate : certificateService.getListOfUnsentCertificates()) {
-            System.out.println(certificate.getSendToEmail());
-        }
         return certificateService.getListOfUnsentCertificates().size();
     }
 
@@ -54,14 +50,9 @@ public class CertificateController implements Api {
      * @return new {@code ExcelParsingResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/certificate/upload-excel")
+    @PostMapping("/certificate/excel")
     public ExcelParsingResponse uploadExcel(@RequestParam("excel-file") MultipartFile multipartFile) {
-        try (InputStream inputStream = multipartFile.getInputStream()) {
-            return excelService.parseExcel(inputStream);
-        } catch (IOException e) {
-            log.error("Upload excel error, " + FILE_LOAD_EXCEPTION);
-            throw new RuntimeException(FILE_LOAD_EXCEPTION);
-        }
+        return excelService.parseExcel(multipartFile);
     }
 
     /**

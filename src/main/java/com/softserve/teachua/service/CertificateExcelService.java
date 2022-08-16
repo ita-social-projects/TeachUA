@@ -1,8 +1,7 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
-
-import java.io.InputStream;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * This interface contains all needed methods to manage exel parser.
@@ -14,5 +13,5 @@ public interface CertificateExcelService {
      *
      * @return new {@code ExcelParsingResponse}.
      */
-    ExcelParsingResponse parseExcel(InputStream excelInputStream);
+    ExcelParsingResponse parseExcel(MultipartFile multipartFile);
 }
