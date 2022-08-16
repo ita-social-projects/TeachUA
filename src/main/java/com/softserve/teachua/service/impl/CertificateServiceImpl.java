@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.certificate.CertificateContent;
-import com.softserve.teachua.dto.certificate.CertificateProfile;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.exception.NotExistException;
@@ -163,7 +162,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
                     initialNumber = "0000061";
                     break;
                 case 3:
-                    initialNumber = ""; //TODO
+                    initialNumber = "0000001";
                     break;
                 default:
                     initialNumber = "0000001";
@@ -171,7 +170,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
             }
             response.setSerialNumber(Long.valueOf(response.getTemplate().getCertificateType().toString() + courseNumber + initialNumber));
         }else {
-            response.setSerialNumber(Long.valueOf(response.getTemplate().getCertificateType().toString() + courseNumber + (largestSerialNumber + 1)));
+            String certificateNumber = String.valueOf((largestSerialNumber + 1));
+            response.setSerialNumber(Long.valueOf(response.getTemplate().getCertificateType().toString() + courseNumber + certificateNumber));
         }
 
         return response;
