@@ -11,6 +11,7 @@ import com.softserve.teachua.repository.test.SubscriptionRepository;
 import com.softserve.teachua.repository.test.TestRepository;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.*;
+import com.softserve.teachua.utils.test.validation.service.TestValidationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -22,12 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.softserve.teachua.utils.test.Messages.*;
-import static com.softserve.teachua.utils.test.NullValidator.*;
+import static com.softserve.teachua.utils.test.Messages.NO_CORRECT_ANSWERS_MESSAGE;
+import static com.softserve.teachua.utils.test.Messages.NO_ID_MESSAGE;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNullIds;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -46,6 +48,7 @@ public class TestServiceImpl implements TestService {
     private final QuestionCategoryService questionCategoryService;
     private final GroupService groupService;
     private final ModelMapper modelMapper;
+    private final TestValidationService validationService;
 
     @Scheduled(fixedDelay = 1000 * 3600 * 24)
     public void updateTestsStatus(){
@@ -168,6 +171,8 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public SuccessCreatedTest addTest(CreateTest testDto) {
+        checkNull(testDto, "Test");
+        validationService.validateTest(testDto);
         User user = userService.getCurrentUser();
         Test test = modelMapper.map(testDto, Test.class);
         test.setCreator(user);

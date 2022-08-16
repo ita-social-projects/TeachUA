@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.softserve.teachua.utils.test.NullValidator.*;
+import static com.softserve.teachua.utils.test.validation.NullValidator.*;
 
 @RequiredArgsConstructor
 @Slf4j

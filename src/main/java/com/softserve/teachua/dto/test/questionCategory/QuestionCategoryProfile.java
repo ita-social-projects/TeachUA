@@ -11,8 +11,8 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class QuestionCategoryProfile extends RepresentationModel<QuestionCategoryProfile> {
-    @NotBlank(message = "Назва групи не може бути порожньою.")
-    @CheckRussian(message = "Назва групи містить недопустимі символи.")
-    @Size(min = 3, message = "Назва групи повинна містити більше ніж 3 символи." )
+    @NotBlank(message = "Назва категорії тесту не може бути порожньою.")
+    @CheckRussian(message = "Назва категорії тесту містить недопустимі символи.")
+    @Size(min = 3, message = "Назва категорії тесту повинна містити більше ніж 3 символи." )
     private String title;
 }

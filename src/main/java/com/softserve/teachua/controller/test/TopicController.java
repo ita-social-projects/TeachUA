@@ -44,11 +44,11 @@ public class TopicController implements Api {
     /**
      * User this endpoint to update the test topic.
      * @param topicProfile - put information about the topic here.
-     * @param id - put topic id here.
+     * @param id           - put topic id here.
      */
     @PutMapping(path = "/topics/{id}", consumes = APPLICATION_JSON_VALUE)
     public TopicProfile updateTopic(@RequestBody TopicProfile topicProfile,
-                            @PathVariable Long id) {
+                                    @PathVariable Long id) {
         return topicService.updateById(topicProfile, id);
     }
 }

@@ -1,4 +1,4 @@
-package com.softserve.teachua.utils.test;
+package com.softserve.teachua.utils.test.validation;
 
 import java.util.Arrays;
 import java.util.Objects;

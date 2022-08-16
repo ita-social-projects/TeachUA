@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.softserve.teachua.utils.test.NullValidator.*;
+import static com.softserve.teachua.utils.test.validation.NullValidator.*;
 
 
 @RequiredArgsConstructor

@@ -3,30 +3,39 @@ package com.softserve.teachua.dto.test.test;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.utils.deserializers.TrimDeserialize;
-import lombok.Data;
+import com.softserve.teachua.utils.test.validation.annotation.MaxAmount;
+import com.softserve.teachua.utils.test.validation.annotation.MinAmount;
+import com.softserve.teachua.utils.validations.CheckRussian;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import javax.validation.constraints.*;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class CreateTest {
     @JsonDeserialize(using = TrimDeserialize.class)
-
-    @NotBlank
+    @NotBlank(message = "Назва тесту не може бути порожньою.")
+    @CheckRussian(message = "Назва тесту містить недопустимі символи.")
+    @Size(min = 3, message = "Назва тесту повинна містити більше ніж 3 символи.")
     private String title;
-    @NotBlank
-    @Size(min = 20, max = 1000, message = "must contain a minimum of 20 and a maximum of 1000 letters")
+    @JsonDeserialize(using = TrimDeserialize.class)
+    @CheckRussian(message = "Опис тесту містить недопустимі символи.")
     private String description;
-    @NotNull
-    @Min(value = 1, message = "difficulty scale should range from 1 to 10 points")
+    @NotNull(message = "Вказане поле не може бути порожнім.")
+    @Min(value = 1, message = "1 - мінімальне значення складності тесту.")
+    @Max(value = 10, message = "10 - Максимальне значення складності тесту.")
     private int difficulty;
-    @NotNull
-    @Min(value = 1, message = "duration must be equals to or greater than 1 minute")
+    @NotNull(message = "Вказане поле не може бути порожнім.")
+    @Min(value = 1, message = "Тривалість тесту повинна бути рівною щонайменше 1 хвилині.")
     private int duration;
     @NotBlank
     private String topicTitle;
     @ToString.Exclude
-    @NotEmpty
+    @NotEmpty(message = "Тест повинен містити запитання.")
+    @MinAmount(min = 3, message = "Мінімальна кількість запитань - 3.")
+    @MaxAmount(max = 10, message = "Максимальна кількість запитань - 10.")
     private List<QuestionProfile> questions;
 }

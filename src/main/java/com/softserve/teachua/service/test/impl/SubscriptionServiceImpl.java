@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.softserve.teachua.utils.test.NullValidator.*;
+import static com.softserve.teachua.utils.test.validation.NullValidator.*;
 import static com.softserve.teachua.utils.test.Messages.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;

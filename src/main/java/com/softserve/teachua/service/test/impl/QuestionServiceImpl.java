@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.softserve.teachua.utils.test.NullValidator.checkNull;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
 
 @RequiredArgsConstructor
 @Slf4j

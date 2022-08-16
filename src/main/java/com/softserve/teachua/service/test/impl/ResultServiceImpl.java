@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-import static com.softserve.teachua.utils.test.NullValidator.*;
+import static com.softserve.teachua.utils.test.validation.NullValidator.*;
 import static com.softserve.teachua.utils.test.Messages.*;
 
 @RequiredArgsConstructor

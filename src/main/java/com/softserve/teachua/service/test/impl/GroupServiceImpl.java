@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.softserve.teachua.utils.test.Messages.*;
-import static com.softserve.teachua.utils.test.NullValidator.checkNull;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
