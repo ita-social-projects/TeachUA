@@ -1,6 +1,6 @@
 package com.softserve.teachua.service;
 
-import javax.mail.internet.MimeMessage;
+import com.softserve.teachua.model.CertificateDates;
 
 /**
  * This interface contains methods to work with emails.
@@ -13,10 +13,9 @@ public interface EmailService {
      * @param to       - indicate receiver.
      * @param subject  - indicate subject of email.
      * @param text     - indicate body text.
-     * @param name     - indicate name of user.
      * @param userName - indicate username of user.
      * @param date     - indicate date on certificate.
      */
-    void sendMessageWithAttachmentAndGeneratedPdf(String to, String subject, String text, String name,
-                                                  String userName, String date);
+    void sendMessageWithAttachmentAndGeneratedPdf(String to, String subject, String text,
+                                                  String userName, CertificateDates date);
 }
