@@ -170,7 +170,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
             }
             response.setSerialNumber(Long.valueOf(response.getTemplate().getCertificateType().toString() + courseNumber + initialNumber));
         }else {
-            String certificateNumber = String.valueOf((largestSerialNumber + 1));
+            String certificateNumber = String.format("%07d", largestSerialNumber + 1);
             response.setSerialNumber(Long.valueOf(response.getTemplate().getCertificateType().toString() + courseNumber + certificateNumber));
         }
 

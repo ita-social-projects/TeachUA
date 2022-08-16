@@ -19,7 +19,7 @@ public class Certificate implements Convertible {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = true, name = "serial_number")
+    @Column(nullable = true, unique = true, name = "serial_number")
     private Long serialNumber;
 
     @ManyToOne(fetch = FetchType.EAGER)
