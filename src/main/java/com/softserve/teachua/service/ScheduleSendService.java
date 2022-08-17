@@ -11,13 +11,17 @@ import java.util.Set;
 
 public interface ScheduleSendService {
     /**
-     * The method schedule sending of certificate.
+     * The method start scheduling.
      */
-    //void sendCertificateWithScheduler();
-
     void startSchedule();
 
+    /**
+     * The method stop scheduling.
+     */
     void stopSchedule();
 
+    /**
+     * The method get list of scheduled tasks.
+     */
     TaskSchedule listSchedules();
 }
