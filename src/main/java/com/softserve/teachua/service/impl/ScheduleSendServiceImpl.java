@@ -47,7 +47,8 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
                     "Certificate.",
                     "Вітаю! В додатку ви можете знайти ваш сертифікат.",
                     user.getUserName(),
-                    user.getDates());
+                    user.getDates(),
+                    user);
             user.setSendStatus(true);
             user.setUpdateStatus(LocalDate.now());
         } else {

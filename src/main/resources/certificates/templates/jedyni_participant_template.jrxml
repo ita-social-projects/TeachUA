@@ -96,7 +96,7 @@
             <staticText>
                 <reportElement x="330" y="620" width="300" height="35" uuid="cb540382-6575-4a56-928c-d44f2058a024"/>
                 <textElement>
-                    <font pdfFontName="/pdf-reports/font/Halvar Breitschrift Bold.ttf" size="24" pdfEncoding="cp1251" isPdfEmbedded="true"/>
+                    <font pdfFontName="/certificates/fonts/Halvar Breitschrift Bold.ttf" size="24" pdfEncoding="cp1251" isPdfEmbedded="true"/>
                 </textElement>
                 <text>Наталка Федечко</text>
             </staticText>
@@ -139,7 +139,7 @@
                 <reportElement x="330" y="306" width="670" height="35" uuid="67df464f-36c7-4834-983f-dc6a00170e6e"/>
 
                 <textElement textAlignment="Center">
-                    <font pdfFontName="/pdf-reports/font/Halvar Breitschrift Black.ttf" size="24" pdfEncoding="cp1251" isPdfEmbedded="true"/>
+                    <font pdfFontName="/certificates/fonts/Halvar Breitschrift Black.ttf" size="24" pdfEncoding="cp1251" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{userName}]]></textFieldExpression>
             </textField>

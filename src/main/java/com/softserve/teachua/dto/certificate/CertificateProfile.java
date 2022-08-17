@@ -4,6 +4,7 @@ package com.softserve.teachua.dto.certificate;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
+import com.softserve.teachua.model.Messenger;
 import com.softserve.teachua.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,10 @@ public class CertificateProfile implements Convertible {
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9-\\.]+@([a-zA-Z-]+\\.)+[a-zA-Z-]{2,4}$", message = "is not valid")
     private String sendToEmail;
+
+    private String messengerUserName;
+
+    private Messenger messenger;
 
     private User user;
 

@@ -26,7 +26,7 @@ public class QRCodeService {
     private static final Integer ENCODELEVEL = 3;
     private static final String ENCODING = "utf-8";
     @Value("${baseURL}")
-    private static String BASE_URL;
+    private String BASE_URL;
 
     /**
      *

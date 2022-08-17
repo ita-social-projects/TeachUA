@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.model.CertificateDates;
 
 /**
@@ -17,5 +18,5 @@ public interface EmailService {
      * @param date     - indicate date on certificate.
      */
     void sendMessageWithAttachmentAndGeneratedPdf(String to, String subject, String text,
-                                                  String userName, CertificateDates date);
+                                                  String userName, CertificateDates date, CertificateTransfer certificateTransfer);
 }
