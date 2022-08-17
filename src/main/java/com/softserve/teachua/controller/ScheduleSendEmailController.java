@@ -15,7 +15,6 @@ import java.util.Set;
 @RestController
 @Slf4j
 public class ScheduleSendEmailController implements Api {
-    private static final String SCHEDULED_TASKS = "scheduleSendService";
 
     private final ScheduleSendService scheduleSendService;
 

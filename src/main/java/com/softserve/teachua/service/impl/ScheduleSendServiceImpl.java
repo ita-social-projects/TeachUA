@@ -14,11 +14,9 @@ import org.springframework.scheduling.config.ScheduledTask;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Service
 @Slf4j
-@Getter
 public class ScheduleSendServiceImpl implements ScheduleSendService {
     private static final String SCHEDULED_TASKS = "scheduleSendService";
 
@@ -67,14 +65,14 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
     }
 
     public void startSchedule() {
-        getPostProcessor().postProcessBeforeDestruction(this, SCHEDULED_TASKS);
+        postProcessor.postProcessAfterInitialization(this, SCHEDULED_TASKS);
     }
 
     public void stopSchedule() {
-        getPostProcessor().postProcessAfterInitialization(this, SCHEDULED_TASKS);
+        postProcessor.postProcessBeforeDestruction(this, SCHEDULED_TASKS);
     }
 
     public TaskSchedule listSchedules() {
-        return new TaskSchedule(getPostProcessor().getScheduledTasks());
+        return new TaskSchedule(postProcessor.getScheduledTasks());
     }
 }
