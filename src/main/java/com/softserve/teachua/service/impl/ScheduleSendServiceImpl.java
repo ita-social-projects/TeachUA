@@ -28,7 +28,7 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
     private final CertificateService certificateService;
 
     private int position = 0;
-    private List<CertificateTransfer> certificateTransfers;
+    private List<CertificateTransfer> certificateTransfers = null;
 
     @Autowired
     public ScheduleSendServiceImpl(EmailService emailService, ScheduledAnnotationBeanPostProcessor postProcessor, CertificateService certificateService) {
@@ -56,6 +56,7 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
             //log.info("No e-mails to send");
             log.info("Scheduled Certification Service. Done. New task not found.");
             position = 0;
+            certificateTransfers = null;
         }
     }
 
