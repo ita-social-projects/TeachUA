@@ -14,6 +14,7 @@ import org.springframework.scheduling.config.ScheduledTask;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -26,7 +27,8 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
 
     private final CertificateService certificateService;
 
-    public int position = 0;
+    private int position = 0;
+    private List<CertificateTransfer> certificateTransfers;
 
     @Autowired
     public ScheduleSendServiceImpl(EmailService emailService, ScheduledAnnotationBeanPostProcessor postProcessor, CertificateService certificateService) {
@@ -39,7 +41,7 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
     //@Scheduled(fixedRate = 300000)
     @Scheduled(fixedRate = 10000)
     public void sendCertificateWithScheduler() {
-        CertificateTransfer user = getOneUserFromTheList();
+        CertificateTransfer user = getOneUserFromTheList(); // userCertificateTransfer
         if (user != null) {
             emailService.sendMessageWithAttachmentAndGeneratedPdf(user.getSendToEmail(),
                     "Certificate.",
@@ -47,28 +49,35 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
                     user.getUserName(),
                     user.getDates(),
                     user);
-            user.setSendStatus(true);
-            user.setUpdateStatus(LocalDate.now());
+//            user.setSendStatus(true);
+//            user.setUpdateStatus(LocalDate.now());
         } else {
             postProcessor.destroy();
-            log.info("No e-mails to send");
+            //log.info("No e-mails to send");
+            log.info("Scheduled Certification Service. Done. New task not found.");
             position = 0;
         }
     }
 
     public CertificateTransfer getOneUserFromTheList() {
         CertificateTransfer result = null;
-        if (certificateService.getListOfUnsentCertificates().size() > position){
-            result = certificateService.getListOfUnsentCertificates().get(position++);
+        if ((certificateTransfers != null)
+                && (certificateTransfers.size() > position)) {
+            result = certificateTransfers.get(position);
+            position++;
         }
         return result;
     }
 
     public void startSchedule() {
+        position = 0;
+        certificateTransfers = certificateService.getListOfUnsentCertificates();
         postProcessor.postProcessAfterInitialization(this, SCHEDULED_TASKS);
     }
 
     public void stopSchedule() {
+        position = 0;
+        certificateTransfers = null;
         postProcessor.postProcessBeforeDestruction(this, SCHEDULED_TASKS);
     }
 
