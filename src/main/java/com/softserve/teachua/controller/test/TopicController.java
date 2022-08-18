@@ -34,6 +34,7 @@ public class TopicController implements Api {
 
     /**
      * Use this endpoint to create the test topic.
+     *
      * @param topicProfile - put information about the topic here.
      */
     @ResponseStatus(value = CREATED)
@@ -44,6 +45,7 @@ public class TopicController implements Api {
 
     /**
      * User this endpoint to update the test topic.
+     *
      * @param topicProfile - put information about the topic here.
      * @param id           - put topic id here.
      */

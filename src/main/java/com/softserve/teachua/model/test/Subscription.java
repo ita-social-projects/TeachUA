@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = {"id"})
-@ToString(of = {"group", "user"})
+@ToString(of = {"group", "expirationDate"})
 @Entity
 @Table(name = "subscriptions")
 public class Subscription {

@@ -1,6 +1,6 @@
 package com.softserve.teachua.exception.test;
 
-import com.softserve.teachua.utils.test.validation.exception.CustomValidationException;
+import com.softserve.teachua.utils.test.validation.exception.TestValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class TestExceptionHandler {
-    @ExceptionHandler(value = CustomValidationException.class)
-    public ResponseEntity<?> handleTestValidationException(CustomValidationException exception) {
+    @ExceptionHandler(value = TestValidationException.class)
+    public ResponseEntity<?> handleTestValidationException(TestValidationException exception) {
         log.debug(exception.getMessage());
         return new ResponseEntity<>(exception.getContainer(), exception.getStatus());
     }

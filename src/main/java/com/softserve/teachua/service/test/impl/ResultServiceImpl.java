@@ -202,7 +202,7 @@ public class ResultServiceImpl implements ResultService {
         successResult.setTestId(resultDto.getTestId());
         successResult.setUserId(user.getId());
         successResult.setGrade(result.getGrade());
-        log.info(String.format("**/Result has been saved. %s", successResult.toString()));
+        log.info("**/Result has been saved. {}", successResult.toString());
         return successResult;
     }
 

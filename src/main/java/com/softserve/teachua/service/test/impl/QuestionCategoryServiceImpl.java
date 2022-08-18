@@ -13,9 +13,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static com.softserve.teachua.utils.test.Messages.NO_ID_MESSAGE;
 import static com.softserve.teachua.utils.test.Messages.NO_TITLE_MESSAGE;
@@ -60,7 +58,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
         checkNull(categoryProfile, "Question category");
         QuestionCategory questionCategory = modelMapper.map(categoryProfile, QuestionCategory.class);
         questionCategoryRepository.save(questionCategory);
-        log.info(String.format("**/Question category has been created. %s", questionCategory.toString()));
+        log.info("**/Question category has been created. {}", questionCategory.toString());
     }
 
     @Override
@@ -69,8 +67,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
         QuestionCategory questionCategory = findById(id);
         questionCategory.setTitle(categoryProfile.getTitle());
         questionCategoryRepository.save(questionCategory);
-        log.info(String.format("**/Question category with id '%d' has been updated. %s",
-                id, questionCategory.toString()));
+        log.info("**/Question category with id '{}' has been updated. {}", id, questionCategory.toString());
         return categoryProfile;
     }
 

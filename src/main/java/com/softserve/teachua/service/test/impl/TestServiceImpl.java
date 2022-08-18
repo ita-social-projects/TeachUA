@@ -164,7 +164,6 @@ public class TestServiceImpl implements TestService {
                 .map(Group::getId)
                 .collect(Collectors.toList());
         List<Group> testGroups = groupService.findAllByTestId(testId);
-        checkNullIds(userId, testId);
         return testGroups.stream()
                 .anyMatch(group -> userGroupsIds.contains(group.getId()));
     }
@@ -202,7 +201,7 @@ public class TestServiceImpl implements TestService {
         }
         test.setGrade(grade);
         successCreatedTest = modelMapper.map(testDto, SuccessCreatedTest.class);
-        log.info(String.format("**/Test has been created. %s", successCreatedTest.toString()));
+        log.info("**/Test has been created. {}", successCreatedTest.toString());
         return successCreatedTest;
     }
 
@@ -210,14 +209,14 @@ public class TestServiceImpl implements TestService {
     public void archiveTestById(Long id) {
         Test testToArchive = findById(id);
         testToArchive.setArchived(true);
-        log.info(String.format("**/Test with id '%d' has been archived.", id));
+        log.info("**/Test with id '{}' has been archived.", id);
     }
 
     @Override
     public void restoreTestById(Long id) {
         Test testToRestore = findById(id);
         testToRestore.setArchived(false);
-        log.info(String.format("**/Test with id '%d' has been restored.", id));
+        log.info("**/Test with id '{}' has been restored.", id);
     }
 
     private List<PassingTestQuestion> getPassingTestQuestions(Test test) {

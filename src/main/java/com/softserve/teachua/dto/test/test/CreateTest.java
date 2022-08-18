@@ -3,8 +3,6 @@ package com.softserve.teachua.dto.test.test;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.utils.deserializers.TrimDeserialize;
-import com.softserve.teachua.utils.test.validation.annotation.MaxAmount;
-import com.softserve.teachua.utils.test.validation.annotation.MinAmount;
 import com.softserve.teachua.utils.validations.CheckRussian;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,10 +22,12 @@ public class CreateTest {
     @JsonDeserialize(using = TrimDeserialize.class)
     @CheckRussian(message = "Опис тесту містить недопустимі символи.")
     private String description;
+    @Positive(message = "Значення складності тесту не може бути від'ємним.")
     @NotNull(message = "Вказане поле не може бути порожнім.")
     @Min(value = 1, message = "1 - мінімальне значення складності тесту.")
     @Max(value = 10, message = "10 - Максимальне значення складності тесту.")
     private int difficulty;
+    @Positive(message = "Значення тривалості проходження не може бути від'ємним.")
     @NotNull(message = "Вказане поле не може бути порожнім.")
     @Min(value = 1, message = "Тривалість тесту повинна бути рівною щонайменше 1 хвилині.")
     private int duration;
@@ -35,7 +35,6 @@ public class CreateTest {
     private String topicTitle;
     @ToString.Exclude
     @NotEmpty(message = "Тест повинен містити запитання.")
-    @MinAmount(min = 3, message = "Мінімальна кількість запитань - 3.")
-    @MaxAmount(max = 10, message = "Максимальна кількість запитань - 10.")
+    @Size(min = 3, message = "Мінімальна допустима кількість запитань в тесті - 3.")
     private List<QuestionProfile> questions;
 }

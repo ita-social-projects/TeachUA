@@ -28,6 +28,6 @@ public class GroupTestServiceImpl implements GroupTestService {
         groupTest.setGroup(groupService.findById(groupId));
         groupTest.setTest(testService.findById(testId));
         groupTestRepository.save(groupTest);
-        log.info(String.format("**/Test with id '%d' has been added to group with id '%d'.", testId, groupId));
+        log.info("**/Test with id '{}' has been added to group with id '{}'.", testId, groupId);
     }
 }
