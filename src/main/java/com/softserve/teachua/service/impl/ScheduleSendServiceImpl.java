@@ -45,6 +45,8 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
                     "Certificate.",
                     "Вітаю! В додатку ви можете знайти ваш сертифікат.",
                     user);
+            certificateService.updateDateAndSendStatus(user.getId(), true);
+
         } else {
             postProcessor.destroy();
             log.info("Scheduled Certification Service. Done. New task not found.");
