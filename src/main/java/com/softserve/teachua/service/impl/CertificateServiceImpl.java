@@ -82,13 +82,16 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
-    public void archiveModel(Certificate certificate) {
-        //TODO
-    }
+    public CertificateTransfer getOneUnsentCertificate(){
 
-    @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        //TODO
+        Certificate certificate = certificateRepository.findOneUnsentCertificate();
+
+        if (certificate == null){
+            return null;
+        }
+
+        log.debug("found unsent certificate: {}", certificate);
+        return dtoConverter.convertToDto(certificate, CertificateTransfer.class);
     }
 
     @Override
@@ -300,5 +303,15 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         certificateById.setSendStatus(status);
         certificateById.setUpdateStatus(LocalDate.now());
         certificateRepository.save(certificateById);
+    }
+
+    @Override
+    public void archiveModel(Certificate certificate) {
+        //TODO
+    }
+
+    @Override
+    public void restoreModel(String archiveObject) throws JsonProcessingException {
+        //TODO
     }
 }

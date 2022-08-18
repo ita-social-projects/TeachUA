@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * This controller is responsible for managing certificates
+ */
 @RestController
 @Slf4j
 public class CertificateController implements Api {
@@ -33,7 +36,7 @@ public class CertificateController implements Api {
     }
 
     /**
-     * The method checks the size of list of unsent certificates.
+     * This endpoint is used to get the number of unsent certificates
      *
      * @return number of unsent certificates
      */
@@ -69,6 +72,8 @@ public class CertificateController implements Api {
     }
 
     /**
+     * This endpoint is used to validate the certificate, user passes serial number
+     * into url, this controller returns {@code CertificateVerificationResponse}
      *
      * @param serialNumber - serial number of certificate, being verified
      * @return new {@code CertificateVerificationResponse}
