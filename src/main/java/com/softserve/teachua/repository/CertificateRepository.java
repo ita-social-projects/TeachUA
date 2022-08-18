@@ -50,4 +50,6 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
             "WHERE CONCAT(t.serialNumber, '') " +
             "LIKE CONCAT(:type, '%') ")
     Long findMaxSerialNumber(@Param("type") String type);
+
+    void updateSendStatus(boolean status);
 }
