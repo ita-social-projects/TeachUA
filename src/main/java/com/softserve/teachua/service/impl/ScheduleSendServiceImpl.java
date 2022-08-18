@@ -44,8 +44,6 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
             emailService.sendMessageWithAttachmentAndGeneratedPdf(user.getSendToEmail(),
                     "Certificate.",
                     "Вітаю! В додатку ви можете знайти ваш сертифікат.",
-                    user.getUserName(),
-                    user.getDates(),
                     user);
         } else {
             postProcessor.destroy();
