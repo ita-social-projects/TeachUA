@@ -41,13 +41,8 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendMessageWithAttachmentAndGeneratedPdf(String to, String subject, String text,
-                                                         String userName, CertificateDates date, CertificateTransfer certificateTransfer) {
+                                                         CertificateTransfer certificateTransfer) {
         MimeMessage message = emailSender.getJavaMailSender().createMimeMessage();
-
-//        CertificateTransfer userInformation = CertificateTransfer.builder()
-//                .userName(userName)
-//                .dates(date)
-//                .build();
 
         byte[] bytes = certificateService.getPdfOutput(certificateTransfer);
 

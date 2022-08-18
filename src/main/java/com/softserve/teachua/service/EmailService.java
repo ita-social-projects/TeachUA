@@ -14,9 +14,8 @@ public interface EmailService {
      * @param to       - indicate receiver.
      * @param subject  - indicate subject of email.
      * @param text     - indicate body text.
-     * @param userName - indicate username of user.
-     * @param date     - indicate date on certificate.
+     * @param certificateTransfer - dto User.
      */
     void sendMessageWithAttachmentAndGeneratedPdf(String to, String subject, String text,
-                                                  String userName, CertificateDates date, CertificateTransfer certificateTransfer);
+                                                  CertificateTransfer certificateTransfer);
 }

@@ -77,4 +77,6 @@ public interface CertificateService {
     byte[] getPdfOutput(CertificateTransfer response);
 
     CertificateVerificationResponse validateCertificate(Long serialNumber);
+
+    void updateDateAndSendStatus(Long id, boolean status);
 }

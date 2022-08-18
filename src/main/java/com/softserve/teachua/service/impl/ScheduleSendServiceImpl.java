@@ -37,8 +37,6 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
         this.certificateService = certificateService;
     }
 
-    //@Override
-    //@Scheduled(fixedRate = 300000)
     @Scheduled(fixedRate = 10000)
     public void sendCertificateWithScheduler() {
         CertificateTransfer user = getOneUserFromTheList(); // userCertificateTransfer
@@ -46,14 +44,11 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
             emailService.sendMessageWithAttachmentAndGeneratedPdf(user.getSendToEmail(),
                     "Certificate.",
                     "Вітаю! В додатку ви можете знайти ваш сертифікат.",
-                    user.getUserName(),
-                    user.getDates(),
                     user);
-//            user.setSendStatus(true);
-//            user.setUpdateStatus(LocalDate.now());
+            certificateService.updateDateAndSendStatus(user.getId(), true);
+
         } else {
             postProcessor.destroy();
-            //log.info("No e-mails to send");
             log.info("Scheduled Certification Service. Done. New task not found.");
             position = 0;
             certificateTransfers = null;
