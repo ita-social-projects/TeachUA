@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -293,5 +294,11 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         return certificateRepository.save(certificateFound);
     }
 
-
+    @Override
+    public void updateDateAndSendStatus(Long id, boolean status) {
+        Certificate certificateById = getCertificateById(id);
+        certificateById.setSendStatus(status);
+        certificateById.setUpdateStatus(LocalDate.now());
+        certificateRepository.save(certificateById);
+    }
 }
