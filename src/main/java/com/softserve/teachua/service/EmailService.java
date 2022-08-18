@@ -18,5 +18,5 @@ public interface EmailService {
      * @param date     - indicate date on certificate.
      */
     void sendMessageWithAttachmentAndGeneratedPdf(String to, String subject, String text,
-                                                  String userName, CertificateDates date, CertificateTransfer certificateTransfer);
+                                                  CertificateTransfer certificateTransfer);
 }
