@@ -292,4 +292,6 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         certificateFound.setSendStatus(certificate.getSendStatus());
         return certificateRepository.save(certificateFound);
     }
+
+
 }
