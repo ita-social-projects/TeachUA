@@ -37,7 +37,8 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
         this.certificateService = certificateService;
     }
 
-    @Scheduled(fixedRate = 10000)
+    //@Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 180000) // 1 email / 3 min
     public void sendCertificateWithScheduler() {
         CertificateTransfer user = getOneUserFromTheList(); // userCertificateTransfer
         if (user != null) {
