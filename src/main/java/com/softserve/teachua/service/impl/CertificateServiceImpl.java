@@ -60,7 +60,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     @Override
     public List<CertificateTransfer> getListOfCertificates() {
-        List<CertificateTransfer> certificateTransfers = certificateRepository.findCertificatesBySendStatus(false) //find by is sent
+        List<CertificateTransfer> certificateTransfers = certificateRepository.findAll()
                 .stream()
                 .map(certificate -> (CertificateTransfer) dtoConverter.convertToDto(certificate, CertificateTransfer.class))
                 .collect(Collectors.toList());
@@ -72,7 +72,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     @Override
     public List<CertificateTransfer> getListOfUnsentCertificates() {
 
-        List<CertificateTransfer> certificateTransfers = certificateRepository.findCertificatesBySendStatus(false)
+        List<CertificateTransfer> certificateTransfers = certificateRepository.findUnsentCertificates()
                 .stream()
                 .map(certificate -> (CertificateTransfer) dtoConverter.convertToDto(certificate, CertificateTransfer.class))
                 .collect(Collectors.toList());

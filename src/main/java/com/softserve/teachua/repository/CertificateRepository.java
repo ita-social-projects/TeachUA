@@ -21,12 +21,11 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     List<Certificate> findCertificatesByTemplate(CertificateTemplate template);
 
     @Query(value = "SELECT certificate from Certificate AS certificate " +
-            "WHERE certificate.sendStatus = :status OR certificate.sendStatus IS NULL")
-    List<Certificate> findCertificatesBySendStatus(@Param("status") Boolean status);
+            "WHERE certificate.sendStatus IS NULL")
+    List<Certificate> findUnsentCertificates();
 
     @Query(value = "SELECT certificate FROM certificates AS certificate " +
-            "WHERE certificate.send_status = false " +
-            "OR certificate.send_status IS NULL " +
+            "WHERE certificate.send_status IS NULL " +
             "ORDER BY certificate.id " +
             "LIMIT 1", nativeQuery = true)
     Certificate findOneUnsentCertificate();
