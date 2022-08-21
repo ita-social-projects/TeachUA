@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.certificate.CertificateContent;
+import com.softserve.teachua.dto.certificate.CertificatePreview;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.exception.NotExistException;
@@ -60,7 +61,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     @Override
     public List<CertificateTransfer> getListOfCertificates() {
-        List<CertificateTransfer> certificateTransfers = certificateRepository.findCertificatesBySendStatus(false) //find by is sent
+        List<CertificateTransfer> certificateTransfers = certificateRepository.findAll()
                 .stream()
                 .map(certificate -> (CertificateTransfer) dtoConverter.convertToDto(certificate, CertificateTransfer.class))
                 .collect(Collectors.toList());
@@ -70,9 +71,17 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
+    public List<CertificatePreview> getListOfSentCertificates() {
+        return certificateRepository.findSentCertificates()
+                .stream()
+                .map(certificate -> (CertificatePreview) dtoConverter.convertToDto(certificate, CertificatePreview.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<CertificateTransfer> getListOfUnsentCertificates() {
 
-        List<CertificateTransfer> certificateTransfers = certificateRepository.findCertificatesBySendStatus(false)
+        List<CertificateTransfer> certificateTransfers = certificateRepository.findUnsentCertificates()
                 .stream()
                 .map(certificate -> (CertificateTransfer) dtoConverter.convertToDto(certificate, CertificateTransfer.class))
                 .collect(Collectors.toList());

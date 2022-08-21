@@ -47,7 +47,7 @@ public class CertificateController implements Api {
     }
 
     /**
-     * The method uploads excel file and returns {@code ExcelParsingResponse}.
+     * This endpoint is used to upload the excel file with certificates information
      *
      * @param multipartFile - excel file.
      * @return new {@code ExcelParsingResponse}.
@@ -59,9 +59,9 @@ public class CertificateController implements Api {
     }
 
     /**
-     * The method saves data to database.
+     * This endpoint is used to save certificates data to database.
      *
-     * @param data - {@code CertificateDataToDatabase} read from form.
+     * @param data - {@code CertificateDataToDatabase} read from form on page.
      * @return new {@code List<CertificateDatabaseResponse>}
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -81,5 +81,15 @@ public class CertificateController implements Api {
     @GetMapping("/certificate/{serialNumber}")
     public CertificateVerificationResponse validateCertificate(@PathVariable("serialNumber")Long serialNumber){
         return certificateService.validateCertificate(serialNumber);
+    }
+
+    /**
+     * This endpoint is used to get the information about all sent certificates.
+     *
+     * @return {@code List<CertificatePreview>}
+     */
+    @GetMapping("/certificates")
+    public List<CertificatePreview> getSentCertificates() {
+        return certificateService.getListOfSentCertificates();
     }
 }

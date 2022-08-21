@@ -1,6 +1,7 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.certificate.CertificateContent;
+import com.softserve.teachua.dto.certificate.CertificatePreview;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.model.Certificate;
@@ -20,6 +21,13 @@ public interface CertificateService {
      * @return new {@code List<CertificateTransfer>}
      */
     List<CertificateTransfer> getListOfCertificates();
+
+    /**
+     * This method returns list of dto {@code CertificatePreview} of sent certificates
+     *
+     * @return new {@code List<CertificatePreview>}
+     */
+    List<CertificatePreview> getListOfSentCertificates();
 
     /**
      * This method returns list of dto {@code CertificateTransfer} of all unsent
@@ -54,7 +62,7 @@ public interface CertificateService {
     Certificate getCertificateBySerialNumber(Long serialNumber);
 
     /**
-     * The method returns {@link Certificate} by user name
+     * The method returns {@code Certificate} by user name
      *
      * @param username put user name
      * @return new {@code Certificate}
@@ -62,7 +70,7 @@ public interface CertificateService {
     Certificate getCertificateByUserName(String username);
 
     /**
-     * The method returns {@link Certificate} by user name and dates
+     * The method returns {@code Certificate} by user name and dates
      *
      * @param username put user name
      * @param dates put certificate dates
@@ -71,7 +79,7 @@ public interface CertificateService {
     Certificate getByUserNameAndDates(String username, CertificateDates dates);
 
     /**
-     * Method finds {@link CertificateTransfer}
+     * Method finds {@code CertificateTransfer}
      *
      * @param id put Certificate id
      * @return new {@code CertificateTransfer}
