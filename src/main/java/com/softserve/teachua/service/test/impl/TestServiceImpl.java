@@ -117,12 +117,28 @@ public class TestServiceImpl implements TestService {
     public List<TestProfile> findUnarchivedTestProfiles() {
         List<Test> tests = findUnarchivedTests();
         List<TestProfile> testProfiles = new ArrayList<>();
-        for(Test t: tests){
-            TestProfile testProfile = modelMapper.map(t, TestProfile.class);
-            Link viewTestLink = linkTo(methodOn(TestController.class)
-                    .viewTest(t.getId()))
+        for(Test test: tests){
+            TestProfile testProfile = modelMapper.map(test, TestProfile.class);
+            Link viewTest = linkTo(methodOn(TestController.class)
+                    .viewTest(test.getId()))
                     .withRel("viewTest");
-            testProfile.add(viewTestLink);
+            testProfile.add(viewTest);
+            testProfiles.add(testProfile);
+        }
+        return testProfiles;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TestProfile> findArchivedTestProfiles() {
+        List<Test> tests = findActiveTests();
+        List<TestProfile> testProfiles = new ArrayList<>();
+        for(Test test: tests){
+            TestProfile testProfile = modelMapper.map(test, TestProfile.class);
+            Link restoreTest = linkTo(methodOn(TestController.class)
+                    .restoreTest(test.getId()))
+                    .withRel("restore");
+            testProfile.add(restoreTest);
             testProfiles.add(testProfile);
         }
         return testProfiles;
@@ -206,17 +222,19 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public void archiveTestById(Long id) {
+    public TestProfile archiveTestById(Long id) {
         Test testToArchive = findById(id);
         testToArchive.setArchived(true);
         log.info("**/Test with id '{}' has been archived.", id);
+        return modelMapper.map(testToArchive, TestProfile.class);
     }
 
     @Override
-    public void restoreTestById(Long id) {
+    public TestProfile restoreTestById(Long id) {
         Test testToRestore = findById(id);
         testToRestore.setArchived(false);
         log.info("**/Test with id '{}' has been restored.", id);
+        return modelMapper.map(testToRestore, TestProfile.class);
     }
 
     private List<PassingTestQuestion> getPassingTestQuestions(Test test) {

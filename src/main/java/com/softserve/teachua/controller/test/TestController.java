@@ -35,6 +35,17 @@ public class TestController implements Api {
     }
 
     /**
+     * Use this endpoint to get all archived tests.
+     * The controller returns a list of test DTOs {@code List<TestProfile>}.
+     *
+     * @return new {@code List<TestProfile>}.
+     */
+    @GetMapping(value = "/tests/archived", produces = APPLICATION_JSON_VALUE)
+    public List<TestProfile> getArchivedTests(){
+        return testService.findArchivedTestProfiles();
+    }
+
+    /**
      * Use this endpoint to get general information about a specific test.
      * The controller returns a test DTO {@code ViewTest}.
      *
@@ -93,8 +104,8 @@ public class TestController implements Api {
      * @param id - post test id here.
      */
     @PostMapping(value = "/tests/{id}/archive")
-    public void archiveTest(@PathVariable Long id) {
-        testService.archiveTestById(id);
+    public TestProfile archiveTest(@PathVariable Long id) {
+        return testService.archiveTestById(id);
     }
 
     /**
@@ -103,7 +114,7 @@ public class TestController implements Api {
      * @param id - post test id here.
      */
     @PostMapping(value = "/tests/{id}/restore")
-    public void restoreTest(@PathVariable Long id) {
-        testService.restoreTestById(id);
+    public TestProfile restoreTest(@PathVariable Long id) {
+        return testService.restoreTestById(id);
     }
 }

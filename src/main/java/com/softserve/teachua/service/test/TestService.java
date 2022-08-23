@@ -54,15 +54,17 @@ public interface TestService {
      * This method archives test by id.
      * @param id - put test id.
      * @throws NoSuchElementException if test does not exist.
+     * @return new {@code TestProfile}
      */
-    void archiveTestById(Long id);
+    TestProfile archiveTestById(Long id);
 
     /**
      * This method restores test by id.
      * @param id - put test id.
      * @throws NoSuchElementException if test does not exist.
+     * @return new {@code TestProfile}
      */
-    void restoreTestById(Long id);
+    TestProfile restoreTestById(Long id);
 
     /**
      * This method returns dto {@code PassTest} by test id.
@@ -77,6 +79,12 @@ public interface TestService {
      * @return new {@code List<TestProfile>}.
      */
     List<TestProfile> findUnarchivedTestProfiles();
+
+    /**
+     * This method returns list of dto {@code List<TestProfile>} of all archived tests.
+     * @return new {@code List<TestProfile>}.
+     */
+    List<TestProfile> findArchivedTestProfiles();
 
     /**
      * This method returns dto {@code ViewTest} by test id.
