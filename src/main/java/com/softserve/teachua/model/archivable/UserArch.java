@@ -5,6 +5,8 @@ import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.service.impl.UserServiceImpl;
 import lombok.*;
 
+import java.util.List;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +26,7 @@ public class UserArch implements Convertible, Archivable {
     private String providerId;
     private boolean status;
     private String verificationCode;
+    private List<Long> certificatesIds;
 
     @Override
     public Class getServiceClass() {

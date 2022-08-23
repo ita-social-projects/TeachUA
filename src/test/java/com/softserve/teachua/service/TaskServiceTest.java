@@ -1,7 +1,12 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.task.*;
+import com.softserve.teachua.dto.task.CreateTask;
+import com.softserve.teachua.dto.task.SuccessCreatedTask;
+import com.softserve.teachua.dto.task.SuccessUpdatedTask;
+import com.softserve.teachua.dto.task.TaskPreview;
+import com.softserve.teachua.dto.task.TaskProfile;
+import com.softserve.teachua.dto.task.UpdateTask;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
@@ -105,6 +110,7 @@ public class TaskServiceTest {
                 .name(CORRECT_TASK_NAME)
                 .challengeId(CORRECT_CHALLENGE_ID)
                 .build();
+
     }
 
     @Test
@@ -178,5 +184,6 @@ public class TaskServiceTest {
         assertThat(taskService.deleteTask(CORRECT_TASK_ID))
                 .isEqualTo(taskProfile);
     }
+
 
 }

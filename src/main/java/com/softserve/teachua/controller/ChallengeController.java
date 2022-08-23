@@ -3,6 +3,7 @@ package com.softserve.teachua.controller;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.challenge.*;
+import com.softserve.teachua.dto.task.SuccessUpdatedTask;
 import com.softserve.teachua.service.ChallengeService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -116,4 +117,23 @@ public class ChallengeController implements Api {
             @Valid @RequestBody SuccessUpdateChallengePreview updateChallengePreview) {
         return challengeService.updateChallengePreview(id, updateChallengePreview);
     }
+
+    /**
+     * Use this endpoint to set new start date of challenge.
+     * The controller returns {@code List<SuccessUpdatedTask>}.
+     * This feature available only for admins.
+     *
+     * @param id - put challenge id here.
+     * @param id                     - put challenge id here.
+     * @param startDate - put new start date here.
+     * @return {@code List<SuccessUpdatedTask>} - shows result of updating tasks.
+     */
+    @AllowedRoles(RoleData.ADMIN)
+    @PutMapping("/challenge/{id}/clone")
+    public List<SuccessUpdatedTask> cloneChallenge(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateChallengeDate startDate) {
+        return challengeService.cloneChallenge(id, startDate);
+    }
+
 }

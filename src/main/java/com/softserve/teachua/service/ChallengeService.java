@@ -1,9 +1,11 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.challenge.*;
+import com.softserve.teachua.dto.task.SuccessUpdatedTask;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -79,4 +81,13 @@ public interface ChallengeService {
      * @return {@code Challenge}.
      */
     Challenge getChallengeByName(String name);
+
+    /**
+     * The method returns {@code List<SuccessUpdatedTask>}
+     *
+     * @param id                     - put Challenge id.
+     * @param startDate              - place body of dto {@code UpdateChallengeDate}.
+     * @return {@code List<SuccessUpdatedTask>}.
+     */
+    List<SuccessUpdatedTask> cloneChallenge(Long id, UpdateChallengeDate startDate);
 }
