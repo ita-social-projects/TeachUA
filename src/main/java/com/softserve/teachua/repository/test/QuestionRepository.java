@@ -24,5 +24,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             "FROM QuestionTest qt " +
             "JOIN FETCH qt.question.answers " +
             "WHERE qt.test.id = :id")
-    List<Question> findQuestionsByTestIdEager(@Param("id") Long testId);
+    List<Question> findAllQuestionsByTestIdFetch(@Param("id") Long testId);
 }

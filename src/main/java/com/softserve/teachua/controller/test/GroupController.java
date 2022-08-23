@@ -46,7 +46,7 @@ public class GroupController implements Api {
      */
     @GetMapping(value = "/groups/{id}/users", produces = APPLICATION_JSON_VALUE)
     public List<UserResponse> findUsersByGroup(@PathVariable Long id) {
-        return subscriptionService.getUserResponseByGroupId(id);
+        return subscriptionService.getUserResponsesByGroupId(id);
     }
 
     /**

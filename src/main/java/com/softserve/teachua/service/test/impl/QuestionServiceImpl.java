@@ -38,7 +38,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional(readOnly = true)
     public List<Question> findQuestionsByTestIdEager(Long testId) {
         checkNull(testId, "Test id");
-        return questionRepository.findQuestionsByTestIdEager(testId);
+        return questionRepository.findAllQuestionsByTestIdFetch(testId);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.controller.test.ResultController;
+import com.softserve.teachua.controller.test.SubscriptionController;
 import com.softserve.teachua.dto.test.subscription.CreateSubscription;
+import com.softserve.teachua.dto.test.subscription.SubscriptionProfile;
 import com.softserve.teachua.dto.test.user.UserResponse;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.Group;
@@ -19,9 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
-import static com.softserve.teachua.utils.test.validation.NullValidator.*;
 import static com.softserve.teachua.utils.test.Messages.*;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNullIds;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -36,22 +41,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final ModelMapper modelMapper;
 
     @Override
-    @Transactional(readOnly = true)
-    public List<UserResponse> getUserResponseByGroupId(Long groupId) {
-        checkNull(groupId, "Group id");
-        List<Subscription> subscriptions = subscriptionRepository.findAllByGroupId(groupId);
-        List<UserResponse> userResponses = new ArrayList<>();
-        for (Subscription subscription : subscriptions) {
-            if (!isActiveSubscription(subscription)) continue;
-            User user = subscription.getUser();
-            UserResponse userResponse = modelMapper.map(user, UserResponse.class);
-            Link userResults = linkTo(methodOn(ResultController.class)
-                    .getUserResults(groupId, user.getId()))
-                    .withRel("results");
-            userResponse.add(userResults);
-            userResponses.add(userResponse);
-        }
-        return userResponses;
+    public Subscription findByUserIdAndGroupId(Long userId, Long groupId) {
+        return subscriptionRepository.findByUserIdAndGroupId(userId, groupId);
     }
 
     @Override
@@ -62,6 +53,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         for (Group group : groups) {
             if (group.getEnrollmentKey().equals(enrollmentKey)) {
                 User user = userService.getCurrentUser();
+
+                if (hasSubscription(user, group)) {
+                    throw new IllegalStateException(
+                            String.format(SUBSCRIPTION_EXISTS_MESSAGE, user.getFirstName(), user.getLastName()));
+                }
                 Subscription subscription = new Subscription();
                 subscription.setGroup(group);
                 subscription.setUser(user);
@@ -75,8 +71,53 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 String.format(INCORRECT_ENROLLMENT_KEY_MESSAGE, enrollmentKey));
     }
 
+    @Override
+    public SubscriptionProfile deleteSubscriptionByUserIdAndGroupId(Long userId, Long groupId) {
+        checkNullIds(userId, groupId);
+        List<Subscription> subscriptions = subscriptionRepository.findAllByUserIdAndGroupId(userId, groupId);
+        Subscription subscription = subscriptions.stream()
+                .filter(this::isActiveSubscription)
+                .findAny()
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format(NO_SUBSCRIPTION_MESSAGE, groupId, userId)));
+        subscriptionRepository.delete(subscription);
+        SubscriptionProfile subscriptionProfile = new SubscriptionProfile();
+        subscriptionProfile.setExpirationDate(subscription.getExpirationDate());
+        subscriptionProfile.setUsername(subscription.getUser().getFirstName());
+        subscriptionProfile.setGroupTitle(subscription.getGroup().getTitle());
+        return subscriptionProfile;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserResponse> getUserResponsesByGroupId(Long groupId) {
+        checkNull(groupId, "Group id");
+        List<Subscription> subscriptions = subscriptionRepository.findAllByGroupId(groupId);
+        List<UserResponse> userResponses = new ArrayList<>();
+
+        for (Subscription subscription : subscriptions) {
+            if (!isActiveSubscription(subscription)) continue;
+            User user = subscription.getUser();
+            UserResponse userResponse = modelMapper.map(user, UserResponse.class);
+            Link userResults = linkTo(methodOn(ResultController.class)
+                    .getUserResults(groupId, user.getId()))
+                    .withRel("results");
+            Link dropUser = linkTo(methodOn(SubscriptionController.class)
+                    .deleteUserSubscription(groupId, user.getId()))
+                    .withRel("drop");
+            userResponse.add(userResults, dropUser);
+            userResponses.add(userResponse);
+        }
+        return userResponses;
+    }
+
     private boolean isActiveSubscription(Subscription subscription) {
         Group group = subscription.getGroup();
         return subscription.getExpirationDate().equals(group.getEndDate());
+    }
+
+    private boolean hasSubscription(User user, Group group) {
+        Subscription subscription = findByUserIdAndGroupId(user.getId(), group.getId());
+        return !Objects.isNull(subscription);
     }
 }

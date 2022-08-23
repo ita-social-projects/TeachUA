@@ -14,4 +14,6 @@ import java.util.List;
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
     List<Subscription> findAllByGroupId(Long groupId);
     List<Subscription> findAllByUserId(Long userId);
+    List<Subscription> findAllByUserIdAndGroupId(Long userId, Long groupId);
+    Subscription findByUserIdAndGroupId(Long userId, Long groupId);
 }
