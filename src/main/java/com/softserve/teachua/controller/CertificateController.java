@@ -89,7 +89,12 @@ public class CertificateController implements Api {
      * @return {@code List<CertificatePreview>}
      */
     @GetMapping("/certificates")
-    public List<CertificatePreview> getSentCertificates() {
-        return certificateService.getListOfSentCertificates();
+    public List<CertificatePreview> getAllCertificates() {
+        return certificateService.getListOfCertificatesPreview();
+    }
+
+    @PutMapping("/certificates/{id}")
+    public CertificatePreview updateCertificate(@PathVariable Long id, @Valid @RequestBody CertificatePreview certificatePreview) {
+        return certificateService.updateCertificatePreview(id, certificatePreview);
     }
 }

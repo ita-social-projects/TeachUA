@@ -23,11 +23,11 @@ public interface CertificateService {
     List<CertificateTransfer> getListOfCertificates();
 
     /**
-     * This method returns list of dto {@code CertificatePreview} of sent certificates
+     * This method returns list of dto {@code CertificatePreview} of all certificates
      *
      * @return new {@code List<CertificatePreview>}
      */
-    List<CertificatePreview> getListOfSentCertificates();
+    List<CertificatePreview> getListOfCertificatesPreview();
 
     /**
      * This method returns list of dto {@code CertificateTransfer} of all unsent
@@ -121,6 +121,8 @@ public interface CertificateService {
      * @return new {@code Certificate}
      */
     Certificate updateCertificateEmail(Long id, Certificate certificate);
+
+    CertificatePreview updateCertificatePreview(Long id, CertificatePreview certificatePreview);
 
     /**
      * This method prepares map with parameters {@code Map<String, Object>}

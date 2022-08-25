@@ -71,8 +71,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
-    public List<CertificatePreview> getListOfSentCertificates() {
-        return certificateRepository.findSentCertificates()
+    public List<CertificatePreview> getListOfCertificatesPreview() {
+        return certificateRepository.findAllByOrderByIdAsc()
                 .stream()
                 .map(certificate -> (CertificatePreview) dtoConverter.convertToDto(certificate, CertificatePreview.class))
                 .collect(Collectors.toList());
@@ -301,9 +301,21 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     @Override
     public Certificate updateCertificateEmail(Long id, Certificate certificate) {
         Certificate certificateFound = getCertificateById(id);
-        certificateFound.setSendToEmail(certificate.getSendToEmail());
         certificateFound.setSendStatus(certificate.getSendStatus());
+        certificateFound.setSendToEmail(certificate.getSendToEmail());
         return certificateRepository.save(certificateFound);
+    }
+
+    @Override
+    public CertificatePreview updateCertificatePreview(Long id, CertificatePreview certificatePreview) {
+        Certificate certificate = getCertificateById(id);
+        if (certificatePreview.getSendToEmail().equals(certificate.getSendToEmail())) {
+            certificate.setSendStatus(certificatePreview.getSendStatus());
+        } else {
+            certificate.setSendToEmail(certificatePreview.getSendToEmail());
+            certificate.setSendStatus(false);
+        }
+        return dtoConverter.convertToDto(certificateRepository.save(certificate), CertificatePreview.class);
     }
 
     @Override

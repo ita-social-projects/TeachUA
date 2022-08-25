@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 public class CertificatePreview implements Convertible {
     private Long id;
     private String userName;
+    @Email
     private String sendToEmail;
     private Boolean sendStatus;
     private Long serialNumber;
