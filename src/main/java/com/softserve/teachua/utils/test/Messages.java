@@ -12,4 +12,6 @@ public final class Messages {
     public static final String QUESTION_IS_NULL_MESSAGE = "Question in questionTest is null.";
     public static final String TEST_IS_NULL_MESSAGE = "Test in questionTest is null.";
     public static final String SUBSCRIPTION_EXISTS_MESSAGE = "'%s %s' already has a subscription.";
+    public static final String GROUP_EXISTS_WITH_ENROLLMENT_KEY = "Group with enrollment key %s already exists.";
+    public static final String GROUP_EXISTS_WITH_TITLE = "Group with name %s already exists.";
 }

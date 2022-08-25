@@ -5,9 +5,12 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
+@Builder
 @EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "groups")
@@ -16,7 +19,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String title;
 
     @Column(nullable = false, unique = true)

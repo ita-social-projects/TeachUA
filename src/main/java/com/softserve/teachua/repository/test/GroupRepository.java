@@ -19,4 +19,8 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     @Query("SELECT gt.group FROM GroupTest gt WHERE gt.test.id = :id")
     List<Group> findByTestId(@Param("id") Long id);
+
+    Boolean existsByEnrollmentKey(String enrollmentKey);
+
+    Boolean existsByTitle(String title);
 }
