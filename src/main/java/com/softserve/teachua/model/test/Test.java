@@ -9,6 +9,9 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "tests")

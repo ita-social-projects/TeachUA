@@ -11,6 +11,9 @@ import java.util.Set;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString(of = {"title", "description"})
 @EqualsAndHashCode(of = {"title", "description"})
 @Entity(name = "testQuestion")

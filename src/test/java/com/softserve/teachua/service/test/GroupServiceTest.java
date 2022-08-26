@@ -46,7 +46,6 @@ class GroupServiceTest {
     private final Long NOT_EXISTING_GROUP_ID = 100L;
 
     private final String EXISTING_GROUP_TITLE = "Existing Group Title";
-    private final String NOT_EXISTING_GROUP_TITLE = "Not Existing Group Title";
     private final String NEW_GROUP_TITLE = "New Group Title";
 
     private final String EXISTING_ENROLLMENT_KEY = "Existing Enrollment Key";

@@ -1,8 +1,7 @@
 package com.softserve.teachua.dto.test.questionCategory;
 
 import com.softserve.teachua.utils.validations.CheckRussian;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotBlank;
@@ -10,6 +9,9 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class QuestionCategoryProfile extends RepresentationModel<QuestionCategoryProfile> {
     @NotBlank(message = "Назва категорії тесту не може бути порожньою.")
     @CheckRussian(message = "Назва категорії тесту містить недопустимі символи.")

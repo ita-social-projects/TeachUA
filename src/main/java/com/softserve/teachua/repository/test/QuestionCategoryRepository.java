@@ -13,4 +13,6 @@ import java.util.Optional;
 @Repository
 public interface QuestionCategoryRepository extends JpaRepository<QuestionCategory, Long> {
     Optional<QuestionCategory> findByTitle(String title);
+
+    Boolean existsByTitle(String title);
 }

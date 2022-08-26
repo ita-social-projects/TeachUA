@@ -2,6 +2,7 @@ package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.controller.test.QuestionCategoryController;
 import com.softserve.teachua.dto.test.questionCategory.QuestionCategoryProfile;
+import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.QuestionCategory;
 import com.softserve.teachua.repository.test.QuestionCategoryRepository;
@@ -15,8 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static com.softserve.teachua.utils.test.Messages.NO_ID_MESSAGE;
-import static com.softserve.teachua.utils.test.Messages.NO_TITLE_MESSAGE;
+import static com.softserve.teachua.utils.test.Messages.*;
 import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -34,7 +34,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
     public QuestionCategory findById(Long id) {
         checkNull(id, "Question category id");
         return questionCategoryRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format(NO_ID_MESSAGE, "question", id)));
     }
 
@@ -54,20 +54,27 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
     }
 
     @Override
-    public void save(QuestionCategoryProfile categoryProfile) {
+    public QuestionCategoryProfile save(QuestionCategoryProfile categoryProfile) {
         checkNull(categoryProfile, "Question category");
+        if(questionCategoryRepository.existsByTitle(categoryProfile.getTitle())){
+            throw new AlreadyExistException(String.format(CATEGORY_EXISTS_WITH_TITLE, categoryProfile.getTitle()));
+        }
         QuestionCategory questionCategory = modelMapper.map(categoryProfile, QuestionCategory.class);
         questionCategoryRepository.save(questionCategory);
-        log.info("**/Question category has been created. {}", questionCategory.toString());
+        log.info("**/Question category has been created. {}", questionCategory);
+        return categoryProfile;
     }
 
     @Override
     public QuestionCategoryProfile updateById(QuestionCategoryProfile categoryProfile, Long id) {
         checkNull(categoryProfile, "Question category");
+        if(questionCategoryRepository.existsByTitle(categoryProfile.getTitle())){
+            throw new AlreadyExistException(String.format(CATEGORY_EXISTS_WITH_TITLE, categoryProfile.getTitle()));
+        }
         QuestionCategory questionCategory = findById(id);
         questionCategory.setTitle(categoryProfile.getTitle());
         questionCategoryRepository.save(questionCategory);
-        log.info("**/Question category with id '{}' has been updated. {}", id, questionCategory.toString());
+        log.info("**/Question category with id '{}' has been updated. {}", id, questionCategory);
         return categoryProfile;
     }
 

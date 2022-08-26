@@ -33,7 +33,7 @@ public interface QuestionCategoryService {
      * This method creates the new QuestionCategory entity.
      * @param categoryProfile - contains information about the new question category.
      */
-    void save(QuestionCategoryProfile categoryProfile);
+    QuestionCategoryProfile save(QuestionCategoryProfile categoryProfile);
 
     /**
      * This method returns dto {@code QuestionCategoryProfile}

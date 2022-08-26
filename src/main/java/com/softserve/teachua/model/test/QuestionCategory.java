@@ -7,6 +7,9 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString(of = "title")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(exclude = {"id"})
 @Entity
 @Table(name = "question_categories")
