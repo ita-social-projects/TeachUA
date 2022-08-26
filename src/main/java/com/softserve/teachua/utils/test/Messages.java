@@ -15,4 +15,5 @@ public final class Messages {
     public static final String GROUP_EXISTS_WITH_ENROLLMENT_KEY = "Group with enrollment key %s already exists.";
     public static final String GROUP_EXISTS_WITH_TITLE = "Group with title %s already exists.";
     public static final String CATEGORY_EXISTS_WITH_TITLE = "Category with title %s already exists.";
+    public static final String TOPIC_EXISTS_WITH_TITLE = "Topic with title %s already exists.";
 }

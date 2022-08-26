@@ -35,7 +35,7 @@ public interface TopicService {
      * This method creates new Topic entity.
      * @param topicProfile - contains information about the new topic.
      */
-    void save(TopicProfile topicProfile);
+    TopicProfile save(TopicProfile topicProfile);
 
     /**
      * This method returns dto {@code TopicProfile} if topic was successfully updated.

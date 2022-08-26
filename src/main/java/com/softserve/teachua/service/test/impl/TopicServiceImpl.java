@@ -2,6 +2,7 @@ package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.controller.test.TopicController;
 import com.softserve.teachua.dto.test.topic.TopicProfile;
+import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Topic;
 import com.softserve.teachua.repository.test.TopicRepository;
@@ -17,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.softserve.teachua.utils.test.Messages.NO_ID_MESSAGE;
-import static com.softserve.teachua.utils.test.Messages.NO_TITLE_MESSAGE;
+import static com.softserve.teachua.utils.test.Messages.*;
 import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -36,7 +36,7 @@ public class TopicServiceImpl implements TopicService {
     public Topic findById(Long id) {
         checkNull(id, "Topic id");
         return topicRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new NotExistException(
                         String.format(NO_ID_MESSAGE, "topic", id)));
     }
 
@@ -56,21 +56,30 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public void save(TopicProfile topicProfile) {
+    public TopicProfile save(TopicProfile topicProfile) {
         checkNull(topicProfile, "Topic");
+        checkIfExists(topicProfile.getTitle());
         Topic topic = modelMapper.map(topicProfile, Topic.class);
         topicRepository.save(topic);
-        log.info("**/Topic has been created. {}", topic.toString());
+        log.info("**/Topic has been created. {}", topic);
+        return topicProfile;
     }
 
     @Override
     public TopicProfile updateById(TopicProfile topicProfile, Long id) {
         checkNull(topicProfile, "Topic");
+        checkIfExists(topicProfile.getTitle());
         Topic topic = findById(id);
         topic.setTitle(topicProfile.getTitle());
         topicRepository.save(topic);
-        log.info("**/Topic with id '{}' has been updated. {}", id, topic.toString());
+        log.info("**/Topic with id '{}' has been updated. {}", id, topic);
         return topicProfile;
+    }
+
+    private void checkIfExists(String title) {
+        if(topicRepository.existsByTitle(title)){
+            throw new AlreadyExistException(String.format(TOPIC_EXISTS_WITH_TITLE, title));
+        }
     }
 
     private List<TopicProfile> mapToDtoList(List<Topic> topics) {

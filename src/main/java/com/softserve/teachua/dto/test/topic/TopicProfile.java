@@ -1,8 +1,7 @@
 package com.softserve.teachua.dto.test.topic;
 
 import com.softserve.teachua.utils.validations.CheckRussian;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotBlank;
@@ -10,6 +9,9 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TopicProfile extends RepresentationModel<TopicProfile> {
     @NotBlank(message = "Назва теми тесту не може бути порожньою.")
     @CheckRussian(message = "Назва теми тесту містить недопустимі символи.")
