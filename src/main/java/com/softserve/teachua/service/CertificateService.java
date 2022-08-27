@@ -67,7 +67,7 @@ public interface CertificateService {
      * @param username put user name
      * @return new {@code Certificate}
      */
-    Certificate getCertificateByUserName(String username);
+    List<Certificate> getCertificatesByUserName(String username);
 
     /**
      * The method returns {@code Certificate} by user name and dates

@@ -54,7 +54,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     Optional<Certificate> findBySerialNumber(Long serialNumber);
 
-    Optional<Certificate> findByUserName(String username);
+    List<Certificate> findByUserName(String username);
 
     Optional<Certificate> findByUserNameAndDates(String username, CertificateDates dates);
 
