@@ -56,7 +56,6 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
     @Override
     public QuestionCategoryProfile save(QuestionCategoryProfile categoryProfile) {
         checkNull(categoryProfile, "Question category");
-        checkIfExists(categoryProfile.getTitle());
         QuestionCategory questionCategory = modelMapper.map(categoryProfile, QuestionCategory.class);
         questionCategoryRepository.save(questionCategory);
         log.info("**/Question category has been created. {}", questionCategory);
@@ -66,18 +65,11 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
     @Override
     public QuestionCategoryProfile updateById(QuestionCategoryProfile categoryProfile, Long id) {
         checkNull(categoryProfile, "Question category");
-        checkIfExists(categoryProfile.getTitle());
         QuestionCategory questionCategory = findById(id);
         questionCategory.setTitle(categoryProfile.getTitle());
         questionCategoryRepository.save(questionCategory);
         log.info("**/Question category with id '{}' has been updated. {}", id, questionCategory);
         return categoryProfile;
-    }
-
-    private void checkIfExists(String title){
-        if(questionCategoryRepository.existsByTitle(title)){
-            throw new AlreadyExistException(String.format(CATEGORY_EXISTS_WITH_TITLE, title));
-        }
     }
 
     private List<QuestionCategoryProfile> mapToDtoList(List<QuestionCategory> questionCategories) {

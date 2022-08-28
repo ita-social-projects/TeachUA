@@ -106,27 +106,18 @@ class QuestionCategoryServiceTest {
     }
 
     @Test
-    void saveCategoryWithNotExistingTitleShouldReturnCategoryProfile() {
+    void saveCategoryShouldReturnCategoryProfile() {
         QuestionCategory newCategory = QuestionCategory.builder()
                 .title(NEW_CATEGORY_TITLE)
                 .build();
         QuestionCategoryProfile newCategoryProfile = QuestionCategoryProfile.builder()
                 .title(NEW_CATEGORY_TITLE)
                 .build();
-        when(questionCategoryRepository.existsByTitle(NEW_CATEGORY_TITLE)).thenReturn(false);
         when(modelMapper.map(newCategoryProfile, QuestionCategory.class)).thenReturn(newCategory);
         when(questionCategoryRepository.save(newCategory)).thenReturn(newCategory);
 
         QuestionCategoryProfile actual = questionCategoryService.save(newCategoryProfile);
         assertEquals(newCategoryProfile, actual);
-    }
-
-    @Test
-    void saveCategoryWithExistingTitleShouldThrowAlreadyExistException() {
-        when(questionCategoryRepository.existsByTitle(EXISTING_CATEGORY_TITLE)).thenReturn(true);
-
-        assertThatThrownBy(() -> questionCategoryService.save(questionCategoryProfile))
-                .isInstanceOf(AlreadyExistException.class);
     }
 
     @Test
@@ -136,14 +127,13 @@ class QuestionCategoryServiceTest {
     }
 
     @Test
-    void updateCategoryWithNotExistingTitleShouldReturnCategoryProfile() {
+    void updateCategoryShouldReturnCategoryProfile() {
         QuestionCategory newCategory = QuestionCategory.builder()
                 .title(NEW_CATEGORY_TITLE)
                 .build();
         QuestionCategoryProfile newCategoryProfile = QuestionCategoryProfile.builder()
                 .title(NEW_CATEGORY_TITLE)
                 .build();
-        when(questionCategoryRepository.existsByTitle(NEW_CATEGORY_TITLE)).thenReturn(false);
         when(questionCategoryRepository.findById(EXISTING_CATEGORY_ID)).thenReturn(Optional.of(questionCategory));
         when(questionCategoryRepository.save(newCategory)).thenReturn(newCategory);
 
@@ -153,7 +143,6 @@ class QuestionCategoryServiceTest {
 
     @Test
     void updateCategoryWithNotExistingIdShouldThrowNotExistException() {
-        when(questionCategoryRepository.existsByTitle(EXISTING_CATEGORY_TITLE)).thenReturn(false);
         when(questionCategoryRepository.findById(NOT_EXISTING_CATEGORY_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> questionCategoryService.updateById(questionCategoryProfile, NOT_EXISTING_CATEGORY_ID))
@@ -161,15 +150,7 @@ class QuestionCategoryServiceTest {
     }
 
     @Test
-    void updateCategoryWithExistingTitleShouldThrowAlreadyExistException() {
-        when(questionCategoryRepository.existsByTitle(EXISTING_CATEGORY_TITLE)).thenReturn(true);
-
-        assertThatThrownBy(() -> questionCategoryService.updateById(questionCategoryProfile, EXISTING_CATEGORY_ID))
-                .isInstanceOf(AlreadyExistException.class);
-    }
-
-    @Test
-    void updateCategoryWithNullTitleShouldThrowIllegalArgException() {
+    void updateCategoryWithNullShouldThrowIllegalArgException() {
         assertThatThrownBy(() -> questionCategoryService.updateById(null, EXISTING_CATEGORY_ID))
                 .isInstanceOf(IllegalArgumentException.class);
     }

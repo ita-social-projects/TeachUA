@@ -150,12 +150,15 @@ class QuestionServiceTest {
 
     @Test
     void findQuestionResponseByExistingTestShouldReturnListOfQuestionResponses() {
+        com.softserve.teachua.model.test.Test test = com.softserve.teachua.model.test.Test.builder()
+                .id(EXISTING_TEST_ID)
+                .build();
         when(questionRepository.findQuestionsByTestId(EXISTING_TEST_ID))
                 .thenReturn(Collections.singletonList(question));
         when(modelMapper.map(question, QuestionResponse.class)).thenReturn(questionResponse);
         when(answerService.findByQuestionId(question.getId())).thenReturn(Collections.emptyList());
 
-        List<QuestionResponse> actual = questionService.findQuestionResponsesByTestId(EXISTING_TEST_ID);
+        List<QuestionResponse> actual = questionService.findQuestionResponsesByTest(test);
         assertEquals(questionResponse, actual.get(0));
     }
 

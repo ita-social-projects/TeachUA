@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -198,30 +199,11 @@ class GroupServiceTest {
                 .startDate(START_DATE)
                 .endDate(END_DATE)
                 .build();
-        when(groupRepository.existsByEnrollmentKey(NOT_EXISTING_ENROLLMENT_KEY)).thenReturn(false);
-        when(groupRepository.existsByTitle(NEW_GROUP_TITLE)).thenReturn(false);
         when(modelMapper.map(newGroupProfile, Group.class)).thenReturn(newGroup);
         when(groupRepository.save(any())).thenReturn(newGroup);
 
         GroupProfile actual = groupService.save(newGroupProfile);
         assertEquals(groupProfile, actual);
-    }
-
-    @Test
-    void saveGroupWithExistingEnrollmentKeyShouldThrowAlreadyExistsException() {
-        when(groupRepository.existsByEnrollmentKey(EXISTING_ENROLLMENT_KEY)).thenReturn(true);
-
-        assertThatThrownBy(() -> groupService.save(groupProfile))
-                .isInstanceOf(AlreadyExistException.class);
-    }
-
-    @Test
-    void saveGroupWithExistingTitleShouldThrowAlreadyExistsException() {
-        when(groupRepository.existsByEnrollmentKey(EXISTING_ENROLLMENT_KEY)).thenReturn(false);
-        when(groupRepository.existsByTitle(EXISTING_GROUP_TITLE)).thenReturn(true);
-
-        assertThatThrownBy(() -> groupService.save(groupProfile))
-                .isInstanceOf(AlreadyExistException.class);
     }
 
     @Test
@@ -239,39 +221,22 @@ class GroupServiceTest {
     }
 
     @Test
-    void updateGroupWithTheSameTitleShouldReturnUpdateGroup() {
-        UpdateGroup updateGroupSameTitle = UpdateGroup.builder()
-                .title(EXISTING_GROUP_TITLE)
-                .startDate(START_DATE)
-                .endDate(END_DATE)
-                .build();
+    void updateGroupWithExistingIdShouldReturnUpdateGroup() {
         when(groupRepository.findById(EXISTING_GROUP_ID)).thenReturn(Optional.of(group));
-        when(groupRepository.save(group)).thenReturn(group);
-
-        UpdateGroup actual = groupService.updateById(updateGroupSameTitle, EXISTING_GROUP_ID);
-        assertEquals(updateGroupSameTitle, actual);
-    }
-
-    @Test
-    void updateGroupWithAnotherTitleThatDoesNotExistShouldReturnUpdateGroup() {
-        when(groupRepository.findById(EXISTING_GROUP_ID)).thenReturn(Optional.of(group));
-        when(groupRepository.existsByTitle(NEW_GROUP_TITLE)).thenReturn(false);
 
         UpdateGroup actual = groupService.updateById(updateGroup, EXISTING_GROUP_ID);
         assertEquals(updateGroup, actual);
     }
 
     @Test
-    void updateGroupWithAnotherTitleThatAlreadyExistsShouldThrowAlreadyExistsException() {
-        when(groupRepository.findById(EXISTING_GROUP_ID)).thenReturn(Optional.of(group));
-        when(groupRepository.existsByTitle(NEW_GROUP_TITLE)).thenReturn(true);
-
-        assertThatThrownBy(() -> groupService.updateById(updateGroup, EXISTING_GROUP_ID));
+    void updateNullShouldThrowIllegalArgException() {
+        assertThatThrownBy(() -> groupService.updateById(null, EXISTING_GROUP_ID))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void updateNullShouldThrowIllegalArgException() {
-        assertThatThrownBy(() -> groupService.updateById(null, EXISTING_GROUP_ID))
+    void updateGroupWithNullIdShouldThrowIllegalArgException(){
+        assertThatThrownBy(() -> groupService.updateById(updateGroup, null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

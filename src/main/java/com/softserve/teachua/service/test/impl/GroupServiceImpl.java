@@ -4,7 +4,6 @@ import com.softserve.teachua.controller.test.GroupController;
 import com.softserve.teachua.dto.test.group.GroupProfile;
 import com.softserve.teachua.dto.test.group.ResponseGroup;
 import com.softserve.teachua.dto.test.group.UpdateGroup;
-import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.repository.test.GroupRepository;
@@ -99,11 +98,6 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public GroupProfile save(GroupProfile groupProfile) {
         checkNull(groupProfile, "Group");
-        if(groupRepository.existsByEnrollmentKey(groupProfile.getEnrollmentKey())){
-            throw new AlreadyExistException(String.format(GROUP_EXISTS_WITH_ENROLLMENT_KEY, groupProfile.getEnrollmentKey()));
-        } else if (groupRepository.existsByTitle(groupProfile.getTitle())){
-            throw new AlreadyExistException(String.format(GROUP_EXISTS_WITH_TITLE, groupProfile.getTitle()));
-        }
         Group group = modelMapper.map(groupProfile, Group.class);
         groupRepository.save(group);
         log.info("**/Group has been created. {}.", group);
@@ -114,13 +108,7 @@ public class GroupServiceImpl implements GroupService {
     public UpdateGroup updateById(UpdateGroup updateGroup, Long groupId) {
         checkNull(updateGroup, "Group");
         Group group = findById(groupId);
-        if(!group.getTitle().equals(updateGroup.getTitle())){
-            if(groupRepository.existsByTitle(updateGroup.getTitle())){
-                throw new AlreadyExistException(String.format(GROUP_EXISTS_WITH_TITLE, updateGroup.getTitle()));
-            } else {
-                group.setTitle(updateGroup.getTitle());
-            }
-        }
+        group.setTitle(updateGroup.getTitle());
         group.setEndDate(updateGroup.getEndDate());
         group.setStartDate(updateGroup.getStartDate());
         groupRepository.save(group);
