@@ -9,6 +9,7 @@ public interface QuestionTestService {
     /**
      * This method adds new relation between questions and tests.
      * @param questionTest - put result entity.
+     * @return new {@code QuestionTest}
      */
-    void save(QuestionTest questionTest);
+    QuestionTest save(QuestionTest questionTest);
 }

@@ -8,6 +8,9 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(exclude = {"id"})
 @ToString(of = {"group", "expirationDate"})
 @Entity

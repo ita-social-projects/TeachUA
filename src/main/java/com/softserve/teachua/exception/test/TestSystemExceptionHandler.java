@@ -40,6 +40,7 @@ public class TestSystemExceptionHandler {
         }
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
                 .message(message)
+                .status(HttpStatus.BAD_REQUEST.value())
                 .build();
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)

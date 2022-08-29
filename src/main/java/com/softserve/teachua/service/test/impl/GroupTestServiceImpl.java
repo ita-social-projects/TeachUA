@@ -22,12 +22,13 @@ public class GroupTestServiceImpl implements GroupTestService {
     private final TestService testService;
 
     @Override
-    public void addTestToGroup(Long testId, Long groupId) {
+    public GroupTest addTestToGroup(Long testId, Long groupId) {
         checkNullIds(testId, groupId);
         GroupTest groupTest = new GroupTest();
         groupTest.setGroup(groupService.findById(groupId));
         groupTest.setTest(testService.findById(testId));
         groupTestRepository.save(groupTest);
         log.info("**/Test with id '{}' has been added to group with id '{}'.", testId, groupId);
+        return groupTest;
     }
 }

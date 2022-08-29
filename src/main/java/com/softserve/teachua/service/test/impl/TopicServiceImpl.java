@@ -58,7 +58,6 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public TopicProfile save(TopicProfile topicProfile) {
         checkNull(topicProfile, "Topic");
-        checkIfExists(topicProfile.getTitle());
         Topic topic = modelMapper.map(topicProfile, Topic.class);
         topicRepository.save(topic);
         log.info("**/Topic has been created. {}", topic);
@@ -68,18 +67,11 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public TopicProfile updateById(TopicProfile topicProfile, Long id) {
         checkNull(topicProfile, "Topic");
-        checkIfExists(topicProfile.getTitle());
         Topic topic = findById(id);
         topic.setTitle(topicProfile.getTitle());
         topicRepository.save(topic);
         log.info("**/Topic with id '{}' has been updated. {}", id, topic);
         return topicProfile;
-    }
-
-    private void checkIfExists(String title) {
-        if(topicRepository.existsByTitle(title)){
-            throw new AlreadyExistException(String.format(TOPIC_EXISTS_WITH_TITLE, title));
-        }
     }
 
     private List<TopicProfile> mapToDtoList(List<Topic> topics) {
