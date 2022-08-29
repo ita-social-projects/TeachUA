@@ -9,6 +9,10 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+/**
+ * Class get settings to SMTP.
+ */
+
 @Configuration
 @PropertySource(value = "classpath:application-dev.properties")
 public class ConfigureSMTPProperties {

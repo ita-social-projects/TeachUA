@@ -27,9 +27,6 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
 
     private final CertificateService certificateService;
 
-    private int position = 0;
-    private List<CertificateTransfer> certificateTransfers = null;
-
     @Autowired
     public ScheduleSendServiceImpl(EmailService emailService, ScheduledAnnotationBeanPostProcessor postProcessor, CertificateService certificateService) {
         this.emailService = emailService;
@@ -40,7 +37,7 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
     //@Scheduled(fixedRate = 10000)
     @Scheduled(fixedRate = 180000) // 1 email / 3 min
     public void sendCertificateWithScheduler() {
-        CertificateTransfer user = getOneUserFromTheList(); // userCertificateTransfer
+        CertificateTransfer user = certificateService.getOneUnsentCertificate();
         if (user != null) {
             emailService.sendMessageWithAttachmentAndGeneratedPdf(user.getSendToEmail(),
                     "Certificate.",
@@ -51,30 +48,14 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
         } else {
             postProcessor.destroy();
             log.info("Scheduled Certification Service. Done. New task not found.");
-            position = 0;
-            certificateTransfers = null;
         }
-    }
-
-    public CertificateTransfer getOneUserFromTheList() {
-        CertificateTransfer result = null;
-        if ((certificateTransfers != null)
-                && (certificateTransfers.size() > position)) {
-            result = certificateTransfers.get(position);
-            position++;
-        }
-        return result;
     }
 
     public void startSchedule() {
-        position = 0;
-        certificateTransfers = certificateService.getListOfUnsentCertificates();
         postProcessor.postProcessAfterInitialization(this, SCHEDULED_TASKS);
     }
 
     public void stopSchedule() {
-        position = 0;
-        certificateTransfers = null;
         postProcessor.postProcessBeforeDestruction(this, SCHEDULED_TASKS);
     }
 
