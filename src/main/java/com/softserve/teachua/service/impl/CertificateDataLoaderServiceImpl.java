@@ -65,7 +65,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             } else {
                 Certificate certificateFound = certificateService.getByUserNameAndDates(certificate.getUserName(), certificate.getDates());
                 if (!certificate.getSendToEmail().equals(certificateFound.getSendToEmail())) {
-                    certificate.setSendStatus(false);
+                    certificate.setSendStatus(null);
                     certificateService.updateCertificateEmail(certificateFound.getId(), certificate);
                     response.add(new CertificateDatabaseResponse(String.format(UPDATED_EMAIL, certificateFound.getUserName())));
                 } else if (!certificate.getDates().equals(certificateFound.getDates())) {
