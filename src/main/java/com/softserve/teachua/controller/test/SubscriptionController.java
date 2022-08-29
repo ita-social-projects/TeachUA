@@ -3,13 +3,12 @@ package com.softserve.teachua.controller.test;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.test.subscription.CreateSubscription;
 import com.softserve.teachua.dto.test.subscription.SubscriptionProfile;
-import com.softserve.teachua.model.test.Subscription;
 import com.softserve.teachua.service.test.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.MediaType.*;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * This controller is for managing subscriptions.
@@ -26,9 +25,17 @@ public class SubscriptionController implements Api {
      * @param subscription - put subscription details here.
      */
     @ResponseStatus(value = CREATED)
-    @PostMapping(value = "/subscriptions", consumes = APPLICATION_JSON_VALUE)
-    public void createSubscription(@RequestBody CreateSubscription subscription) {
-        subscriptionService.createSubscription(subscription);
+    @PostMapping(value = "/subscriptions/tests/{testId}", consumes = APPLICATION_JSON_VALUE)
+    public void createSubscriptionByTest(@RequestBody CreateSubscription subscription,
+                                         @PathVariable Long testId) {
+        subscriptionService.createSubscriptionByTestId(subscription, testId);
+    }
+
+    @ResponseStatus(value = CREATED)
+    @PostMapping(value = "/subscriptions/groups/{groupId}/users/{userId}")
+    public SubscriptionProfile createSubscriptionByGroup(@PathVariable Long groupId,
+                                                         @PathVariable Long userId) {
+        return subscriptionService.createSubscriptionByUserIdAndGroupId(userId, groupId);
     }
 
     /**

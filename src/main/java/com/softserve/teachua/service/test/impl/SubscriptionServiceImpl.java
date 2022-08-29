@@ -46,29 +46,40 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public void createSubscription(CreateSubscription createSubscription) {
-        List<Group> groups = groupService.findAllByTestId(createSubscription.getTestId());
+    public SubscriptionProfile createSubscriptionByTestId(CreateSubscription createSubscription, Long testId) {
+        List<Group> groups = groupService.findAllByTestId(testId);
         String enrollmentKey = createSubscription.getEnrollmentKey();
 
         for (Group group : groups) {
             if (group.getEnrollmentKey().equals(enrollmentKey)) {
                 User user = userService.getCurrentUser();
-
-                if (hasSubscription(user, group)) {
-                    throw new IllegalStateException(
-                            String.format(SUBSCRIPTION_EXISTS_MESSAGE, user.getFirstName(), user.getLastName()));
-                }
+                checkSubscription(user, group);
                 Subscription subscription = new Subscription();
                 subscription.setGroup(group);
                 subscription.setUser(user);
                 subscription.setExpirationDate(group.getEndDate());
                 subscriptionRepository.save(subscription);
                 log.info("**/Subscription has been created. {}", subscription.toString());
-                return;
+                return generateSubscriptionProfile(subscription);
             }
         }
         throw new IllegalArgumentException(
                 String.format(INCORRECT_ENROLLMENT_KEY_MESSAGE, enrollmentKey));
+    }
+
+    @Override
+    public SubscriptionProfile createSubscriptionByUserIdAndGroupId(Long userId, Long groupId) {
+        checkNullIds(userId, groupId);
+        User user = userService.getUserById(userId);
+        Group group = groupService.findById(groupId);
+        checkSubscription(user, group);
+        Subscription subscription = new Subscription();
+        subscription.setUser(user);
+        subscription.setGroup(group);
+        subscription.setExpirationDate(group.getEndDate());
+        subscriptionRepository.save(subscription);
+        log.info("**/Subscription has been created. {}", subscription.toString());
+        return generateSubscriptionProfile(subscription);
     }
 
     @Override
@@ -81,11 +92,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .orElseThrow(() -> new NoSuchElementException(
                         String.format(NO_SUBSCRIPTION_MESSAGE, groupId, userId)));
         subscriptionRepository.delete(subscription);
-        SubscriptionProfile subscriptionProfile = new SubscriptionProfile();
-        subscriptionProfile.setExpirationDate(subscription.getExpirationDate());
-        subscriptionProfile.setUsername(subscription.getUser().getFirstName());
-        subscriptionProfile.setGroupTitle(subscription.getGroup().getTitle());
-        return subscriptionProfile;
+        return generateSubscriptionProfile(subscription);
     }
 
     @Override
@@ -116,8 +123,23 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return subscription.getExpirationDate().equals(group.getEndDate());
     }
 
-    private boolean hasSubscription(User user, Group group) {
+    private boolean hasActiveSubscription(User user, Group group) {
         Subscription subscription = findByUserIdAndGroupId(user.getId(), group.getId());
-        return !Objects.isNull(subscription);
+        return !Objects.isNull(subscription) && isActiveSubscription(subscription);
+    }
+
+    private void checkSubscription(User user, Group group) {
+        if (hasActiveSubscription(user, group)) {
+            throw new IllegalStateException(
+                    String.format(SUBSCRIPTION_EXISTS_MESSAGE, user.getFirstName(), user.getLastName()));
+        }
+    }
+
+    private SubscriptionProfile generateSubscriptionProfile(Subscription subscription) {
+        SubscriptionProfile subscriptionProfile = new SubscriptionProfile();
+        subscriptionProfile.setExpirationDate(subscription.getExpirationDate());
+        subscriptionProfile.setUsername(subscription.getUser().getFirstName());
+        subscriptionProfile.setGroupTitle(subscription.getGroup().getTitle());
+        return subscriptionProfile;
     }
 }

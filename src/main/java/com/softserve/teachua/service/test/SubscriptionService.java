@@ -16,16 +16,26 @@ public interface SubscriptionService {
      * This method returns Subscription entity by user id and group id.
      * @param userId - put user id.
      * @param groupId - put group id.
-     * @return new
+     * @return new {@code Subscription}
      */
     Subscription findByUserIdAndGroupId(Long userId, Long groupId);
 
     /**
      * This method adds user subscription on a group if enrollment key was correct.
      * @param createSubscription - put body of dto {@code CreateSubscription}.
+     * @param testId - put test id here.
      * @throws IllegalArgumentException if enrollment key is incorrect.
      */
-    void createSubscription(CreateSubscription createSubscription);
+    SubscriptionProfile createSubscriptionByTestId(CreateSubscription createSubscription, Long testId);
+
+    /**
+     * This method adds user subscription on a group if enrollment key was correct.
+     * @param userId - put user id.
+     * @param groupId - put group id.
+     * @return new {@code SubscriptionProfile}
+     * @throws IllegalArgumentException if enrollment key is incorrect.
+     */
+    SubscriptionProfile createSubscriptionByUserIdAndGroupId(Long userId, Long groupId);
 
     /**
      * This method returns list of dto {@code List<UserResponse>} of all users of a group.

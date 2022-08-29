@@ -24,6 +24,12 @@ public class TestSystemExceptionHandler {
         return new ResponseEntity<>(exception.getContainer(), exception.getStatus());
     }
 
+    @ExceptionHandler(value = IllegalStateException.class)
+    public ResponseEntity<?> handleIllegalStateException(IllegalStateException exception) {
+        log.debug(exception.getMessage());
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(value = DataIntegrityViolationException.class)
     public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
         log.debug(exception.getMessage());
