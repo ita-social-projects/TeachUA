@@ -65,7 +65,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             } else {
                 Certificate certificateFound = certificateService.getByUserNameAndDates(certificate.getUserName(), certificate.getDates());
                 if (!certificate.getSendToEmail().equals(certificateFound.getSendToEmail())) {
-                    certificate.setSendStatus(false);
+                    certificate.setSendStatus(null);
                     certificateService.updateCertificateEmail(certificateFound.getId(), certificate);
                     response.add(new CertificateDatabaseResponse(String.format(UPDATED_EMAIL, certificateFound.getUserName())));
                 } else if (!certificate.getDates().equals(certificateFound.getDates())) {
@@ -85,6 +85,9 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                 .hours(data.getHours())
                 .duration(decorator.formDates(data.getStartDate(), data.getEndDate()))
                 .courseNumber(data.getCourseNumber())
+                .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
+                .projectDescription("Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
+                .picturePath("/static/images/certificate/validation/jedyni_banner.png")
                 .build();
         if (!datesRepository.existsByDurationAndAndDate(dates.getDuration(), dates.getDate())) {
             return certificateDatesService.addCertificateDates(dates);
