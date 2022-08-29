@@ -27,4 +27,11 @@ public class CertificateDatesProfile implements Convertible {
     @NotBlank
     @Pattern(regexp = "^[0-9]{2}$", message = "Неправильний формат.")
     private String courseNumber;
+
+    private String courseDescription;
+
+    private String projectDescription;
+
+    private String picturePath;
+
 }

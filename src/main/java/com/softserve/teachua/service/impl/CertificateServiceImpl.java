@@ -112,6 +112,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         Optional<Certificate> optionalCertificate = getOptionalCertificateBySerialNumber(serialNumber);
 
         if (!optionalCertificate.isPresent()){
+            log.debug("certificate with serial number {} not found", serialNumber);
             throw new NotExistException(String.format(CERTIFICATE_NOT_FOUND_BY_SERIAL_NUMBER, serialNumber));
         }
 
@@ -243,25 +244,16 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     @Override
     public CertificateVerificationResponse validateCertificate(Long serialNumber) {
-        Certificate certificate = null;
+        Certificate certificate = getCertificateBySerialNumber(serialNumber);
 
-        try{
-            certificate = getCertificateBySerialNumber(serialNumber);
-        }catch (NotExistException e){
-            return CertificateVerificationResponse.builder()
-                    .description("Сертифікат не знайдено.")
-                    .build();
-        }
-
-        //TODO, wait for customer
-        String description = "";
         CertificateVerificationResponse response = CertificateVerificationResponse
                 .builder()
-                .date(certificate.getDates().getDate())
-                .duration(certificate.getDates().getDuration())
+                .certificateType(certificate.getTemplate().getCertificateType())
+                .courseDescription(certificate.getDates().getCourseDescription())
+                .picturePath(certificate.getDates().getPicturePath())
+                .projectDescription(certificate.getDates().getProjectDescription())
+                .serialNumber(certificate.getSerialNumber())
                 .userName(certificate.getUserName())
-                .serialNumber(serialNumber)
-                .description(description)
                 .build();
         log.debug("verified certificate {}", certificate);
 

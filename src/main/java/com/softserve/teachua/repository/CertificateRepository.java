@@ -24,7 +24,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
             "WHERE certificate.sendStatus IS NULL")
     List<Certificate> findUnsentCertificates();
 
-    @Query(value = "SELECT certificate FROM certificates AS certificate " +
+    @Query(value = "SELECT * FROM certificates AS certificate " +
             "WHERE certificate.send_status IS NULL " +
             "ORDER BY certificate.id " +
             "LIMIT 1", nativeQuery = true)
