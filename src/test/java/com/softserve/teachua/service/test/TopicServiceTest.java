@@ -1,10 +1,7 @@
 package com.softserve.teachua.service.test;
 
-import com.softserve.teachua.dto.test.questionCategory.QuestionCategoryProfile;
 import com.softserve.teachua.dto.test.topic.TopicProfile;
-import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.model.test.QuestionCategory;
 import com.softserve.teachua.model.test.Topic;
 import com.softserve.teachua.repository.test.TopicRepository;
 import com.softserve.teachua.service.test.impl.TopicServiceImpl;
@@ -42,17 +39,17 @@ class TopicServiceTest {
     private final Long EXISTING_TOPIC_ID = 1L;
     private final Long NOT_EXISTING_TOPIC_ID = 100L;
 
-    private final String EXISTING_TOPIC_TITLE = "Existing topic title";
     private final String NOT_EXISTING_TOPIC_TITLE = "Not existing topic title";
 
     @BeforeEach
     public void setUp() {
+        String existingTopicTitle = "Existing topic title";
         topic = Topic.builder()
                 .id(EXISTING_TOPIC_ID)
-                .title(EXISTING_TOPIC_TITLE)
+                .title(existingTopicTitle)
                 .build();
         topicProfile = TopicProfile.builder()
-                .title(EXISTING_TOPIC_TITLE)
+                .title(existingTopicTitle)
                 .build();
     }
 
@@ -115,20 +112,11 @@ class TopicServiceTest {
         Topic newTopic = Topic.builder()
                 .title(NOT_EXISTING_TOPIC_TITLE)
                 .build();
-        when(topicRepository.existsByTitle(NOT_EXISTING_TOPIC_TITLE)).thenReturn(false);
         when(modelMapper.map(newTopicProfile, Topic.class)).thenReturn(newTopic);
         when(topicRepository.save(newTopic)).thenReturn(newTopic);
 
         TopicProfile actual = topicService.save(newTopicProfile);
         assertEquals(newTopicProfile, actual);
-    }
-
-    @Test
-    void saveTopicWithExistingTitleShouldThrowAlreadyExistException() {
-        when(topicRepository.existsByTitle(EXISTING_TOPIC_TITLE)).thenReturn(true);
-
-        assertThatThrownBy(() -> topicService.save(topicProfile))
-                .isInstanceOf(AlreadyExistException.class);
     }
 
     @Test
@@ -145,7 +133,6 @@ class TopicServiceTest {
         TopicProfile newTopicProfile = TopicProfile.builder()
                 .title(NOT_EXISTING_TOPIC_TITLE)
                 .build();
-        when(topicRepository.existsByTitle(NOT_EXISTING_TOPIC_TITLE)).thenReturn(false);
         when(topicRepository.findById(EXISTING_TOPIC_ID)).thenReturn(Optional.of(topic));
         when(topicRepository.save(newTopic)).thenReturn(newTopic);
 
@@ -155,19 +142,10 @@ class TopicServiceTest {
 
     @Test
     void updateTopicWithNotExistingIdShouldThrowNotExistException() {
-        when(topicRepository.existsByTitle(EXISTING_TOPIC_TITLE)).thenReturn(false);
         when(topicRepository.findById(NOT_EXISTING_TOPIC_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> topicService.updateById(topicProfile, NOT_EXISTING_TOPIC_ID))
                 .isInstanceOf(NotExistException.class);
-    }
-
-    @Test
-    void updateTopicWithExistingTitleShouldThrowAlreadyExistException() {
-        when(topicRepository.existsByTitle(EXISTING_TOPIC_TITLE)).thenReturn(true);
-
-        assertThatThrownBy(() -> topicService.updateById(topicProfile, EXISTING_TOPIC_ID))
-                .isInstanceOf(AlreadyExistException.class);
     }
 
     @Test

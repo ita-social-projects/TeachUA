@@ -3,7 +3,6 @@ package com.softserve.teachua.service.test;
 import com.softserve.teachua.dto.test.group.GroupProfile;
 import com.softserve.teachua.dto.test.group.ResponseGroup;
 import com.softserve.teachua.dto.test.group.UpdateGroup;
-import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.repository.test.GroupRepository;
@@ -15,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -46,7 +44,6 @@ class GroupServiceTest {
     private final Long EXISTING_GROUP_ID = 1L;
     private final Long NOT_EXISTING_GROUP_ID = 100L;
 
-    private final String EXISTING_GROUP_TITLE = "Existing Group Title";
     private final String NEW_GROUP_TITLE = "New Group Title";
 
     private final String EXISTING_ENROLLMENT_KEY = "Existing Enrollment Key";
@@ -60,21 +57,22 @@ class GroupServiceTest {
 
     @BeforeEach
     public void setUp() {
+        String existingGroupTitle = "Existing Group Title";
         group = Group.builder()
                 .id(EXISTING_GROUP_ID)
-                .title(EXISTING_GROUP_TITLE)
+                .title(existingGroupTitle)
                 .enrollmentKey(EXISTING_ENROLLMENT_KEY)
                 .startDate(START_DATE)
                 .endDate(END_DATE)
                 .build();
         groupProfile = GroupProfile.builder()
-                .title(EXISTING_GROUP_TITLE)
+                .title(existingGroupTitle)
                 .enrollmentKey(EXISTING_ENROLLMENT_KEY)
                 .startDate(START_DATE)
                 .endDate(END_DATE)
                 .build();
         responseGroup = ResponseGroup.builder()
-                .title(EXISTING_GROUP_TITLE)
+                .title(existingGroupTitle)
                 .build();
         updateGroup = UpdateGroup.builder()
                 .title(NEW_GROUP_TITLE)

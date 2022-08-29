@@ -63,7 +63,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 subscription.setUser(user);
                 subscription.setExpirationDate(group.getEndDate());
                 subscriptionRepository.save(subscription);
-                log.info("**/Subscription has been created. {}", subscription.toString());
+                log.info("**/Subscription has been created. {}", subscription);
                 return;
             }
         }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
+import static com.softserve.teachua.utils.test.validation.NullValidator.*;
 import static com.softserve.teachua.utils.test.Messages.*;
 
 @RequiredArgsConstructor
@@ -20,9 +21,10 @@ public class QuestionTestServiceImpl implements QuestionTestService {
     private final QuestionTestRepository questionTestRepository;
 
     @Override
-    public void save(QuestionTest questionTest) {
+    public QuestionTest save(QuestionTest questionTest) {
+        checkNull(questionTest, "Question-test");
         validate(questionTest);
-        questionTestRepository.save(questionTest);
+        return questionTestRepository.save(questionTest);
     }
 
     private void validate(QuestionTest questionTest) {
