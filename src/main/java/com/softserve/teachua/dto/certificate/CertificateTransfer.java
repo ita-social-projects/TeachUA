@@ -31,5 +31,4 @@ public class CertificateTransfer implements Convertible {
     private LocalDate updateStatus;
     private CertificateTemplate template;
     private CertificateDates dates;
-
 }

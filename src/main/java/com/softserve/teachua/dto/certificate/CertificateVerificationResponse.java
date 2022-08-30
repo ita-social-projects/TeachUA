@@ -13,11 +13,14 @@ public class CertificateVerificationResponse implements Convertible {
 
     private Long serialNumber;
 
-    private String date;
-
-    private String duration;
+    private Integer certificateType;
 
     private String userName;
 
-    private String description;
+    private String courseDescription;
+
+    private String projectDescription;
+
+    private String picturePath;
+
 }
