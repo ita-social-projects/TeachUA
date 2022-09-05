@@ -40,8 +40,11 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
         CertificateTransfer user = certificateService.getOneUnsentCertificate();
         if (user != null) {
             emailService.sendMessageWithAttachmentAndGeneratedPdf(user.getSendToEmail(),
-                    "Certificate.",
-                    "Вітаю! В додатку ви можете знайти ваш сертифікат.",
+                    //"Certificate.",
+                    //"Вітаю! В додатку ви можете знайти ваш сертифікат.",
+                    "Сертифікат проєкту \"Єдині\"",
+                    "Вітаємо! Дякуємо Вам, що долучилися до проєкту \"Єдині\". Дякуємо за спільну роботу задля великої мети."
+                            + "\nВаш сертифікат додано у вкладенні до цього листа.",
                     user);
             certificateService.updateDateAndSendStatus(user.getId(), true);
 

@@ -62,14 +62,14 @@
                 <textElement textAlignment="Center">
                     <font size="20" isBold="false"/>
                 </textElement>
-                <text>брав (-ла) участь у проєкті "Єдині"</text>
+                <text>брав(-ла) участь у проєкті "Єдині"</text>
             </staticText>
             <staticText>
                 <reportElement x="350" y="370" width="650" height="70" uuid="94d5fdfa-9439-4090-b1c5-312832d23b36"/>
                 <textElement textAlignment="Center">
                     <font size="20" isBold="false"/>
                 </textElement>
-                <text>та успішно закінчив (-ла) 28-денний курс підтримки у переході на українську мову.</text>
+                <text>та успішно закінчив(-ла) 28-денний курс підтримки у переході на українську мову.</text>
             </staticText>
             <textField>
                 <reportElement x="330" y="455" width="500" height="35" uuid="cc8ec782-950d-4f13-ba7c-cadf15587a3e"/>
@@ -84,7 +84,7 @@
                 <textElement>
                     <font size="18" isBold="false"/>
                 </textElement>
-                <textFieldExpression>"Проєкт реалізований у період "+<![CDATA[$F{studyDuration}]]> + " Ініціативою \"Навчай українською\","</textFieldExpression>
+                <textFieldExpression>"Проєкт реалізований у період "+<![CDATA[$F{studyDuration}]]> + " ініціативою \"Навчай українською\","</textFieldExpression>
             </textField>
             <staticText>
                 <reportElement x="330" y="553" width="630" height="50" uuid="8d5ebb5d-34ad-40d2-a66f-8046c287bdcf"/>
