@@ -218,7 +218,9 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         if (transfer.getSerialNumber() == null){
-            transfer = updateCertificateWithSerialNumber(transfer.getId(), transfer);
+            // UNCOMMENT TO MAKE SERIAL NUMBERS WORK
+//            transfer = updateCertificateWithSerialNumber(transfer.getId(), transfer);
+            transfer.setSerialNumber(null); // REMOVE WHEN WE NEED SERIAL NUMBERS
         }
 
         CertificateContent content = CertificateContent.builder()
