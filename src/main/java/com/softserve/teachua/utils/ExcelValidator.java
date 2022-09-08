@@ -1,5 +1,6 @@
-package com.softserve.teachua.dto.certificateExcel;
+package com.softserve.teachua.utils;
 
+import com.softserve.teachua.dto.certificateExcel.ExcelParsingMistake;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.springframework.stereotype.Component;
@@ -40,39 +41,51 @@ public class ExcelValidator {
             mistakes.add(new ExcelParsingMistake(MISSING_COLUMN_EMAIL_ERROR, headerRow.toString(), headerRowIndex));
         }
     }
-    public String validateName(List<ExcelParsingMistake> mistakes, Cell nameCell) {
-        StringBuilder validatedName = new StringBuilder();
-        String name = dataFormatter.formatCellValue(nameCell).trim();
-        if (!name.isEmpty() && Pattern.matches(NAME_PATTERN, name)) {
-            Pattern pattern = Pattern.compile(WORD);
-            Matcher matcher = pattern.matcher(name);
-            while (matcher.find()) {
-                validatedName.append(matcher.group()).append(SPACE);
-            }
-        } else {
-            mistakes.add(new ExcelParsingMistake(INCORRECT_NAME_FORMAT_ERROR, name, (long) nameCell.getRowIndex() + 1));
-        }
-        return validatedName.toString().trim();
-    }
-    public String validateEmail(List<ExcelParsingMistake> mistakes, Cell emailCell) {
-        String email = dataFormatter.formatCellValue(emailCell).trim();
-        if (!Pattern.matches(EMAIL_PATTERN, email)) {
-            mistakes.add(new ExcelParsingMistake(INCORRECT_EMAIL_FORMAT_ERROR, email, (long) emailCell.getRowIndex() + 1));
-        }
-        return email;
-    }
-    public LocalDate validateDate(List<ExcelParsingMistake> mistakes, Cell dateCell) {
-        LocalDate localDate = null;
-        String date = dataFormatter.formatCellValue(dateCell).trim();
-        if (date != null) {
-            try {
-                localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(DATE_FORMAT));
-                return localDate;
-            } catch (DateTimeParseException e) {
-                mistakes.add(new ExcelParsingMistake(INCORRECT_DATE_FORMAT_ERROR, date, (long) dateCell.getRowIndex() + 1));
-            }
-        }
-        return localDate;
-    }
+
+//    public String validateName(List<ExcelParsingMistake> mistakes, Cell nameCell) {
+//        StringBuilder validatedName = new StringBuilder();
+//        String name = dataFormatter.formatCellValue(nameCell).trim();
+//        Pattern pattern = Pattern.compile(WORD);
+//        Matcher matcher = pattern.matcher(name);
+//        while (matcher.find()) {
+//            validatedName.append(matcher.group()).append(SPACE);
+//        }
+//        return validatedName.toString().trim();
+//    }
+
+//    public String validateName(List<ExcelParsingMistake> mistakes, Cell nameCell) {
+//        StringBuilder validatedName = new StringBuilder();
+//        String name = dataFormatter.formatCellValue(nameCell).trim();
+//        if (!name.isEmpty() && Pattern.matches(NAME_PATTERN, name)) {
+//            Pattern pattern = Pattern.compile(WORD);
+//            Matcher matcher = pattern.matcher(name);
+//            while (matcher.find()) {
+//                validatedName.append(matcher.group()).append(SPACE);
+//            }
+//        } else {
+//            mistakes.add(new ExcelParsingMistake(INCORRECT_NAME_FORMAT_ERROR, name, (long) nameCell.getRowIndex() + 1));
+//        }
+//        return validatedName.toString().trim();
+//    }
+//    public String validateEmail(List<ExcelParsingMistake> mistakes, Cell emailCell) {
+//        String email = dataFormatter.formatCellValue(emailCell).trim();
+//        if (!Pattern.matches(EMAIL_PATTERN, email)) {
+//            mistakes.add(new ExcelParsingMistake(INCORRECT_EMAIL_FORMAT_ERROR, email, (long) emailCell.getRowIndex() + 1));
+//        }
+//        return email;
+//    }
+//    public LocalDate validateDate(List<ExcelParsingMistake> mistakes, Cell dateCell) {
+//        LocalDate localDate = null;
+//        String date = dataFormatter.formatCellValue(dateCell).trim();
+//        if (date != null) {
+//            try {
+//                localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern(DATE_FORMAT));
+//                return localDate;
+//            } catch (DateTimeParseException e) {
+//                mistakes.add(new ExcelParsingMistake(INCORRECT_DATE_FORMAT_ERROR, date, (long) dateCell.getRowIndex() + 1));
+//            }
+//        }
+//        return localDate;
+//    }
 
 }

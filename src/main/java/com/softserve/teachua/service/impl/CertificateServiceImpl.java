@@ -92,7 +92,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     @Override
     public CertificateTransfer getOneUnsentCertificate(){
 
-        Certificate certificate = certificateRepository.findOneUnsentCertificate();
+//        Certificate certificate = certificateRepository.findOneUnsentCertificate();
+        Certificate certificate = certificateRepository.findTopBySendStatusNullOrderByIdAsc();
 
         if (certificate == null){
             return null;
@@ -312,7 +313,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
             certificate.setSendStatus(certificatePreview.getSendStatus());
         } else {
             certificate.setSendToEmail(certificatePreview.getSendToEmail());
-            certificate.setSendStatus(false);
+            certificate.setSendStatus(null);
         }
         return dtoConverter.convertToDto(certificateRepository.save(certificate), CertificatePreview.class);
     }
