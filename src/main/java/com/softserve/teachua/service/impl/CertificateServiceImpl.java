@@ -92,7 +92,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     @Override
     public CertificateTransfer getOneUnsentCertificate(){
 
-//        Certificate certificate = certificateRepository.findOneUnsentCertificate();
+        //Certificate certificate = certificateRepository.findOneUnsentCertificate();
         Certificate certificate = certificateRepository.findTopBySendStatusNullOrderByIdAsc();
 
         if (certificate == null){
