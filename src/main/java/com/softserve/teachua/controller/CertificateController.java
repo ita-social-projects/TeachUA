@@ -82,4 +82,26 @@ public class CertificateController implements Api {
     public CertificateVerificationResponse validateCertificate(@PathVariable("serialNumber")Long serialNumber){
         return certificateService.validateCertificate(serialNumber);
     }
+
+    /**
+     * This endpoint is used to get the information about all sent certificates.
+     *
+     * @return {@code List<CertificatePreview>}
+     */
+    @GetMapping("/certificates")
+    public List<CertificatePreview> getAllCertificates() {
+        return certificateService.getListOfCertificatesPreview();
+    }
+
+    /**
+     * This endpoint is used to get update certificate.
+     *
+     * @param id - put certificate id
+     * @param certificatePreview - {@code CertificatePreview} to update
+     * @return {@code List<CertificatePreview>}
+     */
+    @PutMapping("/certificates/{id}")
+    public CertificatePreview updateCertificate(@PathVariable Long id, @Valid @RequestBody CertificatePreview certificatePreview) {
+        return certificateService.updateCertificatePreview(id, certificatePreview);
+    }
 }
