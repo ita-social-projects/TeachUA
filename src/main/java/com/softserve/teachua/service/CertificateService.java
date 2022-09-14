@@ -1,6 +1,7 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.certificate.CertificateContent;
+import com.softserve.teachua.dto.certificate.CertificatePreview;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.model.Certificate;
@@ -20,6 +21,13 @@ public interface CertificateService {
      * @return new {@code List<CertificateTransfer>}
      */
     List<CertificateTransfer> getListOfCertificates();
+
+    /**
+     * This method returns list of dto {@code CertificatePreview} of all certificates
+     *
+     * @return new {@code List<CertificatePreview>}
+     */
+    List<CertificatePreview> getListOfCertificatesPreview();
 
     /**
      * This method returns list of dto {@code CertificateTransfer} of all unsent
@@ -44,7 +52,6 @@ public interface CertificateService {
      */
     Certificate getCertificateById(Long id);
 
-
     /**
      * This method returns entity of {@code Certificate}, found by serialNumber
      *
@@ -59,7 +66,7 @@ public interface CertificateService {
      * @param username put user name
      * @return new {@code Certificate}
      */
-    Certificate getCertificateByUserName(String username);
+    List<Certificate> getCertificatesByUserName(String username);
 
     /**
      * The method returns {@link Certificate} by user name and dates
@@ -85,7 +92,6 @@ public interface CertificateService {
      * @return new {@code CertificateTransfer} with filled serial number
      */
     CertificateTransfer generateSerialNumber(CertificateTransfer response);
-
 
     /**
      * This method updates {@code Certificate} with specified id in database
@@ -113,6 +119,16 @@ public interface CertificateService {
      * @return new {@code Certificate}
      */
     Certificate updateCertificateEmail(Long id, Certificate certificate);
+
+    /**
+     * This method updates certificate in database,
+     * returns dto {@code CertificatePreview} of updated certificate
+     *
+     * @param id id of certificate to update
+     * @param certificatePreview dto, containing data
+     * @return new {@code CertificatePreview}
+     */
+    CertificatePreview updateCertificatePreview(Long id, CertificatePreview certificatePreview);
 
     /**
      * This method prepares map with parameters {@code Map<String, Object>}

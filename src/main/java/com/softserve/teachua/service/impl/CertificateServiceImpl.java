@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.certificate.CertificateContent;
+import com.softserve.teachua.dto.certificate.CertificatePreview;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.exception.NotExistException;
@@ -40,7 +41,6 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     private static final String CERTIFICATE_NOT_FOUND_BY_ID = "Certificate not found by id %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_SERIAL_NUMBER = "Certificate not found by serial number %s";
-    private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME = "Certificate not found by username: %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME_AND_DATES = "Certificate not found by username and dates: %s, %s";
 
     private final DtoConverter dtoConverter;
@@ -67,6 +67,14 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
         log.debug("getting list of certificates {}", certificateTransfers);
         return certificateTransfers;
+    }
+
+    @Override
+    public List<CertificatePreview> getListOfCertificatesPreview() {
+        return certificateRepository.findAllByOrderByIdAsc()
+                .stream()
+                .map(certificate -> (CertificatePreview) dtoConverter.convertToDto(certificate, CertificatePreview.class))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -123,8 +131,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
-    public Certificate getCertificateByUserName(String username) {
-        return certificateRepository.findByUserName(username).orElseThrow(() -> new NotExistException(String.format(CERTIFICATE_NOT_FOUND_BY_USERNAME, username)));
+    public List<Certificate> getCertificatesByUserName(String username) {
+        return certificateRepository.findByUserName(username);
     }
 
     @Override
@@ -290,6 +298,18 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         certificateFound.setSendToEmail(certificate.getSendToEmail());
         certificateFound.setSendStatus(certificate.getSendStatus());
         return certificateRepository.save(certificateFound);
+    }
+
+    @Override
+    public CertificatePreview updateCertificatePreview(Long id, CertificatePreview certificatePreview) {
+        Certificate certificate = getCertificateById(id);
+        if (certificatePreview.getSendToEmail().equals(certificate.getSendToEmail())) {
+            certificate.setSendStatus(certificatePreview.getSendStatus());
+        } else {
+            certificate.setSendToEmail(certificatePreview.getSendToEmail());
+            certificate.setSendStatus(null);
+        }
+        return dtoConverter.convertToDto(certificateRepository.save(certificate), CertificatePreview.class);
     }
 
     @Override
