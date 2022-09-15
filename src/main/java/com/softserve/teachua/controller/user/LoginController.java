@@ -17,7 +17,7 @@ import javax.validation.Valid;
 
 /**
  * This controller is for managing the login process.
- * */
+ */
 
 @RestController
 @Tag(name = "login", description = "the Login API")
@@ -44,15 +44,14 @@ public class LoginController implements Api {
     /**
      * The controller returns dto {@code SuccessLogin} of sign-inned user.
      *
-     * @param userLogin - dto with all params.
+     * @param userLogin
+     *            - dto with all params.
+     *
      * @return new {@code SuccessLogin}.
      */
     @PreAuthorize("!isAuthenticated()")
     @PostMapping("/signin")
-    public SuccessLogin signIn(
-            @Valid
-            @RequestBody
-                    UserLogin userLogin) {
+    public SuccessLogin signIn(@Valid @RequestBody UserLogin userLogin) {
         return userService.validateUser(userLogin);
     }
 }

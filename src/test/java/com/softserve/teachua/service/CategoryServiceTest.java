@@ -52,15 +52,8 @@ public class CategoryServiceTest {
     private ArchiveService archiveService;
     @InjectMocks
     private CategoryServiceImpl categoryService;
-    private Category correctCategory = Category.builder()
-            .id(CORRECT_ID)
-            .name(CORRECT_NAME)
-            .build();
-    ;
-    private CategoryProfile categoryProfile = CategoryProfile.builder()
-            .id(CORRECT_ID)
-            .name(CORRECT_NAME)
-            .build();
+    private Category correctCategory = Category.builder().id(CORRECT_ID).name(CORRECT_NAME).build();;
+    private CategoryProfile categoryProfile = CategoryProfile.builder().id(CORRECT_ID).name(CORRECT_NAME).build();
     private List<Category> list;
     private List<CategoryResponse> responseList;
     private CategoryArch categoryArch;
@@ -69,23 +62,14 @@ public class CategoryServiceTest {
     public void setMocks() {
         list = new LinkedList<>();
         for (long i = 1L; i <= 3; i++) {
-            list.add(Category.builder()
-                    .id(i)
-                    .name(i + " category")
-                    .sortby((int) (i * 10))
-                    .build());
+            list.add(Category.builder().id(i).name(i + " category").sortby((int) (i * 10)).build());
         }
         responseList = new LinkedList<>();
         for (Category category : list) {
-            responseList.add(CategoryResponse.builder()
-                    .id(category.getId())
-                    .name(category.getName())
-                    .sortby(category.getSortby())
-                    .build());
+            responseList.add(CategoryResponse.builder().id(category.getId()).name(category.getName())
+                    .sortby(category.getSortby()).build());
         }
-        categoryArch = CategoryArch.builder()
-                .name(CORRECT_NAME)
-                .build();
+        categoryArch = CategoryArch.builder().name(CORRECT_NAME).build();
     }
 
     @Test
@@ -97,7 +81,8 @@ public class CategoryServiceTest {
     @Test
     public void getCategoryByWrongIdShouldThrowNotExistException() {
         when(categoryRepository.findById(WRONG_ID)).thenReturn(Optional.empty());
-        NotExistException exception = assertThrows(NotExistException.class, () -> categoryService.getCategoryById(WRONG_ID));
+        NotExistException exception = assertThrows(NotExistException.class,
+                () -> categoryService.getCategoryById(WRONG_ID));
         assertTrue(exception.getMessage().contains(WRONG_ID.toString()));
     }
 
@@ -110,7 +95,8 @@ public class CategoryServiceTest {
     @Test
     public void getCategoryByWrongNameShouldThrowNotExistException() {
         when(categoryRepository.findByName(WRONG_NAME)).thenReturn(Optional.empty());
-        NotExistException exception = assertThrows(NotExistException.class, () -> categoryService.getCategoryByName(WRONG_NAME));
+        NotExistException exception = assertThrows(NotExistException.class,
+                () -> categoryService.getCategoryByName(WRONG_NAME));
         assertTrue(exception.getMessage().contains(WRONG_NAME));
     }
 
@@ -119,18 +105,18 @@ public class CategoryServiceTest {
         when(categoryRepository.existsByName(categoryProfile.getName())).thenReturn(false);
         when(dtoConverter.convertToEntity(categoryProfile, new Category())).thenReturn(correctCategory);
         when(categoryRepository.save(correctCategory)).thenReturn(correctCategory);
-        SuccessCreatedCategory successCreatedCategory =
-                SuccessCreatedCategory.builder()
-                        .id(categoryProfile.getId())
-                        .name(categoryProfile.getName()).build();
-        when(dtoConverter.convertToDto(correctCategory, SuccessCreatedCategory.class)).thenReturn(successCreatedCategory);
+        SuccessCreatedCategory successCreatedCategory = SuccessCreatedCategory.builder().id(categoryProfile.getId())
+                .name(categoryProfile.getName()).build();
+        when(dtoConverter.convertToDto(correctCategory, SuccessCreatedCategory.class))
+                .thenReturn(successCreatedCategory);
         assertThat(categoryService.addCategory(categoryProfile)).isEqualTo(successCreatedCategory);
     }
 
     @Test
     public void addCategoryWithExistingNameShouldThrowAlreadyExistException() {
         when(categoryRepository.existsByName(categoryProfile.getName())).thenReturn(true);
-        AlreadyExistException exception = assertThrows(AlreadyExistException.class, () -> categoryService.addCategory(categoryProfile));
+        AlreadyExistException exception = assertThrows(AlreadyExistException.class,
+                () -> categoryService.addCategory(categoryProfile));
         assertTrue(exception.getMessage().contains(categoryProfile.getName()));
     }
 
@@ -163,10 +149,8 @@ public class CategoryServiceTest {
 
     @Test
     public void deleteCategoryByIdShouldSuccessfullyDeleteCategory() {
-        CategoryResponse response = CategoryResponse.builder()
-                .id(correctCategory.getId())
-                .name(correctCategory.getName())
-                .build();
+        CategoryResponse response = CategoryResponse.builder().id(correctCategory.getId())
+                .name(correctCategory.getName()).build();
         setMockReturnOptionalWhenFindByCorrectId();
         when(dtoConverter.convertToDto(correctCategory, CategoryArch.class)).thenReturn(categoryArch);
         when(archiveService.saveModel(categoryArch)).thenReturn(Archive.builder().build());
@@ -186,11 +170,10 @@ public class CategoryServiceTest {
         when(categoryRepository.findRandomTop3ByName(CORRECT_NAME)).thenReturn(list);
         List<SearchPossibleResponse> possibleResponses = new LinkedList<>();
         for (int i = 0; i < list.size(); i++) {
-            possibleResponses.add(
-                    SearchPossibleResponse.builder()
-                            .id(list.get(i).getId())
-                            .name(list.get(i).getName()).build());
-            when(dtoConverter.convertToDto(list.get(i), SearchPossibleResponse.class)).thenReturn(possibleResponses.get(i));
+            possibleResponses
+                    .add(SearchPossibleResponse.builder().id(list.get(i).getId()).name(list.get(i).getName()).build());
+            when(dtoConverter.convertToDto(list.get(i), SearchPossibleResponse.class))
+                    .thenReturn(possibleResponses.get(i));
         }
         assertThat(categoryService.getPossibleCategoryByName(CORRECT_NAME)).isEqualTo(possibleResponses);
     }

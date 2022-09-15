@@ -30,23 +30,28 @@ public class QRCodeService {
 
     /**
      *
-     * @param content content to be put into image
-     * @param width width of QR code
-     * @param height height of QR code
-     * @param hints settings of the QR code
+     * @param content
+     *            content to be put into image
+     * @param width
+     *            width of QR code
+     * @param height
+     *            height of QR code
+     * @param hints
+     *            settings of the QR code
+     *
      * @return returns a generated QR code image as {@code BufferedImage}
      */
-    private BufferedImage getQrCodeImage(String content, int width, int height, Hashtable hints){
+    private BufferedImage getQrCodeImage(String content, int width, int height, Hashtable hints) {
         QRCodeWriter writer = new QRCodeWriter();
-        if (hints == null){
+        if (hints == null) {
             hints = new Hashtable();
             hints.put(EncodeHintType.CHARACTER_SET, ENCODING);
         }
         BitMatrix matrix = null;
 
-        try{
+        try {
             matrix = writer.encode(content, BarcodeFormat.QR_CODE, width, height, hints);
-        }catch (WriterException e) {
+        } catch (WriterException e) {
             log.debug("Error occured while making image");
         }
 
@@ -55,7 +60,7 @@ public class QRCodeService {
         return bufferedImage;
     }
 
-    private byte[] getQrCodeImageBytes(String content, int width, int height){
+    private byte[] getQrCodeImageBytes(String content, int width, int height) {
         Hashtable hints = new Hashtable();
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.forBits(ENCODELEVEL));
         hints.put(EncodeHintType.CHARACTER_SET, ENCODING);
@@ -74,11 +79,11 @@ public class QRCodeService {
         return binaryData;
     }
 
-    private String formContentUrl(Long serialNumber){
+    private String formContentUrl(Long serialNumber) {
         return BASE_URL + "/certificate/" + serialNumber;
     }
 
-    public ByteArrayInputStream getQrCodeAsStream(Long serialNumber){
+    public ByteArrayInputStream getQrCodeAsStream(Long serialNumber) {
         return new ByteArrayInputStream(getQrCodeImageBytes(formContentUrl(serialNumber), WIDTH, HEIGHT));
     }
 }

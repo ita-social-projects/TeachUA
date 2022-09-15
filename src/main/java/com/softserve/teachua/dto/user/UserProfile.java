@@ -27,15 +27,13 @@ public class UserProfile implements Convertible {
     private String lastName;
 
     @NotBlank
-    @Pattern(regexp = "0[0-9]{9}$",message = "Phone can have only numbers and length 10 and starts with 0 ")
+    @Pattern(regexp = "0[0-9]{9}$", message = "Phone can have only numbers and length 10 and starts with 0 ")
     private String phone;
 
     @NotBlank
     @Size(min = 8, max = 20)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).*$",
-            message = "must contain at least one uppercase and lowercase letter")
-    @Pattern(regexp = "^(?=.*\\d)(?=.*[~`!@#$%^&()_=+{}\\[\\]/|:;,\"<>?]).*$",
-            message = "must contain at least one number and special symbol")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).*$", message = "must contain at least one uppercase and lowercase letter")
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[~`!@#$%^&()_=+{}\\[\\]/|:;,\"<>?]).*$", message = "must contain at least one number and special symbol")
     @Pattern(regexp = "^[^А-Яа-яЇїІіЄєҐґЁёЪъЫыЭэ]+$", message = "must contain only latin letters")
     private String password;
 

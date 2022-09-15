@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the contact types.
- * */
+ */
 
 @RestController
 @Tag(name = "contact", description = "the Contact API")
@@ -32,10 +32,11 @@ public class ContactTypeController implements Api {
     }
 
     /**
-     * Use this endpoint to get contact type by id.
-     * The controller returns {@code ContactType}.
+     * Use this endpoint to get contact type by id. The controller returns {@code ContactType}.
      *
-     * @param id - put id here.
+     * @param id
+     *            - put id here.
+     *
      * @return {@code ContactType}.
      */
     @GetMapping("/contact-type-view/{id}")
@@ -44,10 +45,11 @@ public class ContactTypeController implements Api {
     }
 
     /**
-     * Use this endpoint to create contact type.
-     * The controller returns {@code SuccessCreatedContactType}.
+     * Use this endpoint to create contact type. The controller returns {@code SuccessCreatedContactType}.
      *
-     * @param contactTypeProfile - put contact type info here.
+     * @param contactTypeProfile
+     *            - put contact type info here.
+     *
      * @return new {@code SuccessCreatedContactType}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -57,26 +59,28 @@ public class ContactTypeController implements Api {
     }
 
     /**
-     * Use this endpoint to update contact type by id.
-     * The controller returns {@code ContactTypeProfile}.
+     * Use this endpoint to update contact type by id. The controller returns {@code ContactTypeProfile}.
      *
-     * @param id                 - put contact type id here.
-     * @param contactTypeProfile - put contact type info here.
+     * @param id
+     *            - put contact type id here.
+     * @param contactTypeProfile
+     *            - put contact type info here.
+     *
      * @return {@code ContactTypeProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/contact-type/{id}")
-    public ContactTypeProfile updateContactType(
-            @PathVariable Long id,
+    public ContactTypeProfile updateContactType(@PathVariable Long id,
             @Valid @RequestBody ContactTypeProfile contactTypeProfile) {
         return contactTypeService.updateContactType(id, contactTypeProfile);
     }
 
     /**
-     * Use this endpoint to delete contact type by id.
-     * The controller returns {@code ContactTypeResponse}.
+     * Use this endpoint to delete contact type by id. The controller returns {@code ContactTypeResponse}.
      *
-     * @param id - put id here.
+     * @param id
+     *            - put id here.
+     *
      * @return {@code ContactTypeResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -86,8 +90,7 @@ public class ContactTypeController implements Api {
     }
 
     /**
-     * Use this endpoint to get all contact types.
-     * The controller returns {@code List<ContactTypeResponse>}.
+     * Use this endpoint to get all contact types. The controller returns {@code List<ContactTypeResponse>}.
      *
      * @return new {@code List<ContactTypeResponse>}.
      */

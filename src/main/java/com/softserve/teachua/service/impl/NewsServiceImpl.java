@@ -45,11 +45,8 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    NewsServiceImpl(NewsRepository newsRepository,
-                    DtoConverter dtoConverter,
-                    ArchiveService archiveService,
-                    UserService userService,
-                    ObjectMapper objectMapper) {
+    NewsServiceImpl(NewsRepository newsRepository, DtoConverter dtoConverter, ArchiveService archiveService,
+            UserService userService, ObjectMapper objectMapper) {
         this.newsRepository = newsRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
@@ -76,24 +73,22 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
 
     @Override
     public SuccessCreatedNews addNews(NewsProfile newsProfile) {
-        News news = newsRepository.save(dtoConverter.convertToEntity(newsProfile, new News())
-                .withUser(userService.getCurrentUser()));
+        News news = newsRepository
+                .save(dtoConverter.convertToEntity(newsProfile, new News()).withUser(userService.getCurrentUser()));
         return dtoConverter.convertToDto(news, SuccessCreatedNews.class);
     }
 
     @Override
     public List<NewsResponse> getAllNews() {
-        List<NewsResponse> newsResponses = newsRepository.findAll()
-                .stream()
+        List<NewsResponse> newsResponses = newsRepository.findAll().stream()
                 .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
                 .collect(Collectors.toList());
         log.debug("get list of news = " + newsResponses);
         return newsResponses;
     }
 
-    public List<NewsResponse> getAllCurrentNews(){
-        List<NewsResponse> newsResponses = newsRepository.getAllCurrentNews()
-                .stream()
+    public List<NewsResponse> getAllCurrentNews() {
+        List<NewsResponse> newsResponses = newsRepository.getAllCurrentNews().stream()
                 .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
                 .collect(Collectors.toList());
         return newsResponses;
@@ -101,8 +96,7 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
 
     @Override
     public List<NewsResponse> getSimilarNewsByTitle(SimmilarNewsProfile newsProfile) {
-        List<NewsResponse> newsResponses = newsRepository.getNewsByTitle(newsProfile.getTitle())
-                .stream()
+        List<NewsResponse> newsResponses = newsRepository.getNewsByTitle(newsProfile.getTitle()).stream()
                 .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
                 .collect(Collectors.toList());
         return newsResponses;
@@ -111,11 +105,9 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
     @Override
     public Page<NewsResponse> getListOfNews(Pageable pageable) {
         Page<News> newsResponses = newsRepository.findAll(pageable);
-        return new PageImpl<>(newsResponses
-                .stream()
+        return new PageImpl<>(newsResponses.stream()
                 .map(category -> (NewsResponse) dtoConverter.convertToDto(category, NewsResponse.class))
-                .collect(Collectors.toList()),
-                newsResponses.getPageable(), newsResponses.getTotalElements());
+                .collect(Collectors.toList()), newsResponses.getPageable(), newsResponses.getTotalElements());
     }
 
     @Override
@@ -153,8 +145,7 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         NewsArch newsArch = objectMapper.readValue(archiveObject, NewsArch.class);
-        News news = dtoConverter.convertToEntity(newsArch, News.builder().build())
-                .withId(null)
+        News news = dtoConverter.convertToEntity(newsArch, News.builder().build()).withId(null)
                 .withUser(Optional.ofNullable(newsArch.getUserId()).isPresent()
                         ? userService.getUserById(newsArch.getUserId()) : null);
         newsRepository.save(news);

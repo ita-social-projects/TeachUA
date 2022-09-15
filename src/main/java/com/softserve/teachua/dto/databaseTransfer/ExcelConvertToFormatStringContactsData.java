@@ -5,8 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExcelConvertToFormatStringContactsData {
     public String collectAllContactsData(String siteUrlField, String phoneField) {
-        return parseSiteUrlCell(siteUrlField)
-                .concat(parsePhoneCell(phoneField));
+        return parseSiteUrlCell(siteUrlField).concat(parsePhoneCell(phoneField));
     }
 
     private String parsePhoneCell(String phoneRow) {

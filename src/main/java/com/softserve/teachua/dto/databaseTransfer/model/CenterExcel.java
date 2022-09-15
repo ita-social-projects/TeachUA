@@ -22,10 +22,7 @@ public class CenterExcel implements Convertible {
     private Long centerExternalId;
 
     @NotBlank
-    @Size(
-            min = 5,
-            max = 100,
-            message = "Довжина назви має бути від 5 до 100 символів")
+    @Size(min = 5, max = 100, message = "Довжина назви має бути від 5 до 100 символів")
     private String name;
 
     @CheckRussian
@@ -38,10 +35,10 @@ public class CenterExcel implements Convertible {
     // site field can include social media too
     private String site;
 
-    //    private String city;
-    //    private String address;
-    //    private Double longitude;
-    //    private Double latitude;
-    //    private String district;
-    //    private String station;
+    // private String city;
+    // private String address;
+    // private Double longitude;
+    // private Double latitude;
+    // private String district;
+    // private String station;
 }

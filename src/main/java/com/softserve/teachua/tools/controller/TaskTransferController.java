@@ -21,10 +21,12 @@ public class TaskTransferController implements Api {
     }
 
     /**
-     * Use this endpoint to create task from file.
-     * The controller returns list of dto {@code List<SuccessCreatedTask>} of created tasks.
+     * Use this endpoint to create task from file. The controller returns list of dto {@code List<SuccessCreatedTask>}
+     * of created tasks.
      *
-     * @param filePath - path to file with jsons of tasks.
+     * @param filePath
+     *            - path to file with jsons of tasks.
+     *
      * @return new {@code List<SuccessCreatedTask>}.
      */
     @DevPermit
@@ -34,8 +36,8 @@ public class TaskTransferController implements Api {
     }
 
     /**
-     * Use this endpoint to create task from infoRepository class.
-     * The controller returns list of dto {@code List<SuccessCreatedTask>} of created tasks.
+     * Use this endpoint to create task from infoRepository class. The controller returns list of dto
+     * {@code List<SuccessCreatedTask>} of created tasks.
      *
      * @return new {@code List<SuccessCreatedTask>}.
      */
@@ -47,21 +49,21 @@ public class TaskTransferController implements Api {
 
     @DevPermit
     @DeleteMapping("transfer/task/addconst")
-    public ResponseEntity<String> alterDb(){
+    public ResponseEntity<String> alterDb() {
         taskTransferService.addConstrain();
         return ResponseEntity.ok(ALTER_WELL);
     }
 
     @DevPermit
     @DeleteMapping("transfer/task/dropconst")
-    public ResponseEntity<String> dropConstrain(){
+    public ResponseEntity<String> dropConstrain() {
         taskTransferService.dropConstrain();
         return ResponseEntity.ok(ALTER_WELL);
     }
 
     @DevPermit
     @DeleteMapping("transfer/task/droptable")
-    public ResponseEntity<String> dropTable(){
+    public ResponseEntity<String> dropTable() {
         taskTransferService.dropRedundantTable();
         return ResponseEntity.ok(ALTER_WELL);
     }

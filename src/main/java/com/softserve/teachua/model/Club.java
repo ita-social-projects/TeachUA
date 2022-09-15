@@ -73,9 +73,8 @@ public class Club implements Convertible {
     private Set<Feedback> feedbacks;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "club_category",
-            joinColumns = {@JoinColumn(name = "club_id")},
-            inverseJoinColumns = {@JoinColumn(name = "category_id")})
+    @JoinTable(name = "club_category", joinColumns = { @JoinColumn(name = "club_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "category_id") })
     @ToString.Exclude
     private Set<Category> categories = new HashSet<>();
 

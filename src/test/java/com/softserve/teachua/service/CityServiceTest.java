@@ -54,25 +54,17 @@ public class CityServiceTest {
 
     @BeforeEach
     public void setUp() {
-        city = City.builder()
-                .id(EXISTING_ID)
-                .name(EXISTING_NAME)
-                .build();
-        cityProfile = CityProfile.builder()
-                .name(NEW_NAME)
-                .build();
-        cityResponse = CityResponse.builder()
-                .name(EXISTING_NAME)
-                .build();
-        cityArch = CityArch.builder()
-                .name(EXISTING_NAME)
-                .build();
+        city = City.builder().id(EXISTING_ID).name(EXISTING_NAME).build();
+        cityProfile = CityProfile.builder().name(NEW_NAME).build();
+        cityResponse = CityResponse.builder().name(EXISTING_NAME).build();
+        cityArch = CityArch.builder().name(EXISTING_NAME).build();
     }
 
     @Test
     void getCityProfileByExistingIdShouldReturnCorrectCityProfile() {
         when(cityRepository.findById(EXISTING_ID)).thenReturn(Optional.of(city));
-        when(dtoConverter.convertToDto(city, CityResponse.class)).thenReturn(CityResponse.builder().name(EXISTING_NAME).build());
+        when(dtoConverter.convertToDto(city, CityResponse.class))
+                .thenReturn(CityResponse.builder().name(EXISTING_NAME).build());
 
         CityResponse actual = cityService.getCityProfileById(EXISTING_ID);
         assertEquals(city.getName(), actual.getName());
@@ -128,7 +120,8 @@ public class CityServiceTest {
         when(cityRepository.existsByName(NEW_NAME)).thenReturn(false);
         when(dtoConverter.convertToEntity(cityProfile, new City())).thenReturn(newCity);
         when(cityRepository.save(any())).thenReturn(newCity);
-        when(dtoConverter.convertToDto(newCity, SuccessCreatedCity.class)).thenReturn(SuccessCreatedCity.builder().name(NEW_NAME).build());
+        when(dtoConverter.convertToDto(newCity, SuccessCreatedCity.class))
+                .thenReturn(SuccessCreatedCity.builder().name(NEW_NAME).build());
 
         SuccessCreatedCity actual = cityService.addCity(cityProfile);
         assertEquals(cityProfile.getName(), actual.getName());
@@ -160,8 +153,8 @@ public class CityServiceTest {
     void updateCityByExistingIdShouldReturnCorrectCityProfile() {
         when(cityRepository.findById(EXISTING_ID)).thenReturn(Optional.of(city));
         when(cityRepository.save(any())).thenReturn(city);
-        when(dtoConverter.convertToEntity(cityProfile, city)).thenReturn(City.builder()
-                .name(cityProfile.getName()).build());
+        when(dtoConverter.convertToEntity(cityProfile, city))
+                .thenReturn(City.builder().name(cityProfile.getName()).build());
         when(dtoConverter.convertToDto(city, CityProfile.class)).thenReturn(cityProfile);
 
         CityProfile actual = cityService.updateCity(EXISTING_ID, cityProfile);
@@ -180,7 +173,7 @@ public class CityServiceTest {
     @Test
     void deleteCityByExistingIdShouldReturnCityResponse() {
         when(cityRepository.findById(EXISTING_ID)).thenReturn(Optional.of(city));
-//        when(archiveService.saveModel(city)).thenReturn(city);
+        // when(archiveService.saveModel(city)).thenReturn(city);
         doNothing().when(cityRepository).deleteById(EXISTING_ID);
         doNothing().when(cityRepository).flush();
         when(dtoConverter.convertToDto(city, CityResponse.class))

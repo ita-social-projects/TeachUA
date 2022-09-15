@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.Collections;
 import java.util.Optional;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,7 +42,7 @@ public class StationRepositoryIT {
     }
 
     @Test
-    public void findAllByExistingCityNameShouldReturnListOfStations(){
+    public void findAllByExistingCityNameShouldReturnListOfStations() {
         assertThat(stationRepository.findAllByCityName(EXISTING_CITY_NAME)).hasSize(RETURN_LIST_SIZE);
         assertThat(stationRepository.findAll().get(0).getId()).isEqualTo(1L);
         assertThat(stationRepository.findAll().get(1).getId()).isEqualTo(2L);
@@ -59,31 +58,28 @@ public class StationRepositoryIT {
     }
 
     @Test
-    public void findAllByNotExistingCityNameShouldReturnEmptyListOfStations(){
+    public void findAllByNotExistingCityNameShouldReturnEmptyListOfStations() {
         assertThat(stationRepository.findAllByCityName(NOT_EXISTING_CITY_NAME)).isEqualTo(Collections.emptyList());
     }
 
     @Test
-    public void findByExistingNameShouldReturnCorrectStationEntity(){
+    public void findByExistingNameShouldReturnCorrectStationEntity() {
         assertThat(stationRepository.findByName(EXISTING_NAME).get().getName()).isEqualTo(EXISTING_NAME);
     }
 
     @Test
-    public void findByNotExistingNameShouldReturnOptionalEmpty(){
+    public void findByNotExistingNameShouldReturnOptionalEmpty() {
         assertThat(stationRepository.findByName(NOT_EXISTING_NAME)).isEqualTo(Optional.empty());
     }
 
     @Test
-    public void existsByNameShouldReturnTrue(){
+    public void existsByNameShouldReturnTrue() {
         assertTrue(stationRepository.existsByName(EXISTING_NAME));
     }
 
     @Test
-    public void notExistsByNameShouldReturnFalse(){
+    public void notExistsByNameShouldReturnFalse() {
         assertFalse(stationRepository.existsByName(NOT_EXISTING_NAME));
     }
-
-
-
 
 }

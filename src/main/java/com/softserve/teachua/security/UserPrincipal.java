@@ -29,19 +29,12 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     public static UserPrincipal create(User user) {
         List<GrantedAuthority> authorities;
         if (user.getRole() != null) {
-            authorities = Collections
-                    .singletonList(new SimpleGrantedAuthority(user.getRole().getName()));
+            authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getName()));
         } else {
-            authorities = Collections
-                    .singletonList(new SimpleGrantedAuthority(RoleData.USER.getDBRoleName()));
+            authorities = Collections.singletonList(new SimpleGrantedAuthority(RoleData.USER.getDBRoleName()));
         }
 
-        return new UserPrincipal(
-                user.getId(),
-                user.getEmail(),
-                user.getPassword(),
-                authorities
-        );
+        return new UserPrincipal(user.getId(), user.getEmail(), user.getPassword(), authorities);
     }
 
     public static UserPrincipal create(User user, Map<String, Object> attributes) {

@@ -30,7 +30,8 @@ public class ArchiveServiceImpl implements ArchiveService {
     private final DtoConverter dtoConverter;
 
     @Autowired
-    public ArchiveServiceImpl(ArchiveRepository archiveRepository, ObjectMapper objectMapper, ApplicationContext context, DtoConverter dtoConverter) {
+    public ArchiveServiceImpl(ArchiveRepository archiveRepository, ObjectMapper objectMapper,
+            ApplicationContext context, DtoConverter dtoConverter) {
         this.archiveRepository = archiveRepository;
         this.objectMapper = objectMapper;
         this.context = context;
@@ -52,13 +53,11 @@ public class ArchiveServiceImpl implements ArchiveService {
     @Override
     @Transactional
     public Archive saveModel(Archivable archiveModel) {
-        Optional <Archive> archive;
+        Optional<Archive> archive;
         log.debug("archiveModel: " + archiveModel);
         try {
-            archive = Optional.of(Archive.builder()
-                    .className(archiveModel.getServiceClass().getName())
-                    .data(objectMapper.writeValueAsString(archiveModel))
-                    .build());
+            archive = Optional.of(Archive.builder().className(archiveModel.getServiceClass().getName())
+                    .data(objectMapper.writeValueAsString(archiveModel)).build());
         } catch (JsonProcessingException exception) {
             log.error(RestoreArchiveException.CANT_WRITE_JSON, exception);
             throw new RestoreArchiveException(RestoreArchiveException.CANT_WRITE_JSON);
@@ -72,10 +71,10 @@ public class ArchiveServiceImpl implements ArchiveService {
         try {
             ArchiveMark archiveMark = (ArchiveMark) context.getBean(Class.forName(archiveObject.getClassName()));
             archiveMark.restoreModel(archiveObject.getData());
-        }catch (ClassNotFoundException exception) {
+        } catch (ClassNotFoundException exception) {
             log.error(RestoreArchiveException.CANT_FIND_CLASS, exception);
             throw new RestoreArchiveException(RestoreArchiveException.CANT_FIND_CLASS);
-        }catch (JsonProcessingException exception) {
+        } catch (JsonProcessingException exception) {
             log.error(RestoreArchiveException.CANT_READ_JSON, exception);
             throw new RestoreArchiveException(RestoreArchiveException.CANT_READ_JSON);
         }
@@ -87,7 +86,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     public Archive getArchiveObjectById(Long id) {
         Optional<Archive> model = archiveRepository.findById(id);
 
-        if(!model.isPresent()){
+        if (!model.isPresent()) {
             throw new NotExistException();
         }
 

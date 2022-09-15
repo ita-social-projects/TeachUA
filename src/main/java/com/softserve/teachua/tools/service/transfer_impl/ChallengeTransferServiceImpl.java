@@ -16,18 +16,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class ChallengeTransferServiceImpl implements ChallengeTransferService {
-    private final String ALTER_DESCRIPTION = "Challenges description was altered successfully," +
-            " now description is varchar(30 000)";
-    private final String RENAME_DESCRIPTION = "Table сhallenges was renamed to challenges " +
-            "(before renaming 'c' - was ukraine letter)";
+    private final String ALTER_DESCRIPTION = "Challenges description was altered successfully,"
+            + " now description is varchar(30 000)";
+    private final String RENAME_DESCRIPTION = "Table сhallenges was renamed to challenges "
+            + "(before renaming 'c' - was ukraine letter)";
     private final FileUtils fileUtils;
     private final DtoConverter dtoConverter;
     private final ChallengeRepository challengeRepository;
     private final ChallengeDao challengeDao;
 
-    public ChallengeTransferServiceImpl(
-            FileUtils fileUtils,
-            DtoConverter dtoConverter, ChallengeRepository challengeRepository, ChallengeDao challengeDao) {
+    public ChallengeTransferServiceImpl(FileUtils fileUtils, DtoConverter dtoConverter,
+            ChallengeRepository challengeRepository, ChallengeDao challengeDao) {
         this.fileUtils = fileUtils;
         this.dtoConverter = dtoConverter;
         this.challengeRepository = challengeRepository;
@@ -45,14 +44,11 @@ public class ChallengeTransferServiceImpl implements ChallengeTransferService {
     }
 
     private List<SuccessCreatedChallenge> createTasks(List<ChallengeTransfer> challenges) {
-        return challenges
-                .stream()
-                .map(createChallenge -> {
-                    createChallenge.setPicture(fileUtils.moveImage(createChallenge.getPicture(), "challenges"));
-                    return dtoConverter.convertToEntity(createChallenge, Challenge.builder().build()).withId(null);
-                }).map(challengeRepository::save)
-                .map(challenge -> (SuccessCreatedChallenge) dtoConverter.convertToDto(challenge, SuccessCreatedChallenge.class))
-                .collect(Collectors.toList());
+        return challenges.stream().map(createChallenge -> {
+            createChallenge.setPicture(fileUtils.moveImage(createChallenge.getPicture(), "challenges"));
+            return dtoConverter.convertToEntity(createChallenge, Challenge.builder().build()).withId(null);
+        }).map(challengeRepository::save).map(challenge -> (SuccessCreatedChallenge) dtoConverter
+                .convertToDto(challenge, SuccessCreatedChallenge.class)).collect(Collectors.toList());
     }
 
     @Override

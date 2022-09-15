@@ -25,35 +25,50 @@ public interface ContactTypeService {
     /**
      * The method returns dto {@code SuccessCreatedContactType} if contact type successfully added.
      *
-     * @param contactTypeProfile - place dto with all params.
+     * @param contactTypeProfile
+     *            - place dto with all params.
+     *
      * @return new {@code SuccessCreatedContactType}.
-     * @throws AlreadyExistException if contact type already exists.
+     *
+     * @throws AlreadyExistException
+     *             if contact type already exists.
      */
     SuccessCreatedContactType addContactType(ContactTypeProfile contactTypeProfile);
 
     /**
      * The method returns dto {@code ContactTypeProfile} of updated club.
      *
-     * @param id                 - put contact type id
-     * @param contactTypeProfile - place body of dto {@code ContactTypeProfile}.
+     * @param id
+     *            - put contact type id
+     * @param contactTypeProfile
+     *            - place body of dto {@code ContactTypeProfile}.
+     *
      * @return new {@code ContactTypeProfile}.
-     * @throws NotExistException if contact type not exists by id.
+     *
+     * @throws NotExistException
+     *             if contact type not exists by id.
      */
     ContactTypeProfile updateContactType(Long id, ContactTypeProfile contactTypeProfile);
 
     /**
      * The method returns dto {@code ContactTypeResponse} of deleted contact type by id.
      *
-     * @param id - put contact type id
+     * @param id
+     *            - put contact type id
+     *
      * @return new {@code ContactTypeResponse}.
-     * @throws DatabaseRepositoryException if contact type contain foreign keys.
+     *
+     * @throws DatabaseRepositoryException
+     *             if contact type contain foreign keys.
      */
     ContactTypeResponse deleteContactTypeById(Long id);
 
     /**
      * Method finds {@link ContactType}.
      *
-     * @param id - place contact type id
+     * @param id
+     *            - place contact type id
+     *
      * @return ContactType
      */
     ContactType getContactTypeById(Long id);
@@ -61,7 +76,9 @@ public interface ContactTypeService {
     /**
      * Method finds {@link ContactType}, and convert it to object of DTO class.
      *
-     * @param id - place contact type id
+     * @param id
+     *            - place contact type id
+     *
      * @return new {@code ContactTypeProfile}
      */
     ContactTypeProfile getContactTypeProfileById(Long id);

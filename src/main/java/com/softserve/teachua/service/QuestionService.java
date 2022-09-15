@@ -16,7 +16,9 @@ public interface QuestionService {
     /**
      * Method find {@link Question}.
      *
-     * @param id - place question id
+     * @param id
+     *            - place question id
+     *
      * @return new {@code Question}
      */
     Question getQuestionById(Long id);
@@ -24,17 +26,24 @@ public interface QuestionService {
     /**
      * The method returns dto {@code QuestionResponse} if question successfully added.
      *
-     * @param questionProfile - place dto with all params.
+     * @param questionProfile
+     *            - place dto with all params.
+     *
      * @return new {@code QuestionResponse}.
-     * @throws AlreadyExistException if question already exists.
+     *
+     * @throws AlreadyExistException
+     *             if question already exists.
      */
     QuestionResponse addQuestion(QuestionProfile questionProfile);
 
     /**
      * The method returns dto {@code QuestionProfile} of updated question.
      *
-     * @param id              - put question id
-     * @param questionProfile - place body of dto {@code QuestionProfile}.
+     * @param id
+     *            - put question id
+     * @param questionProfile
+     *            - place body of dto {@code QuestionProfile}.
+     *
      * @return new {@code QuestionProfile}.
      */
     QuestionProfile updateQuestionById(Long id, QuestionProfile questionProfile);
@@ -42,9 +51,13 @@ public interface QuestionService {
     /**
      * The method returns dto {@code QuestionProfile} of deleted question by id.
      *
-     * @param id - put question id
+     * @param id
+     *            - put question id
+     *
      * @return new {@code QuestionProfile}.
-     * @throws DatabaseRepositoryException if question contain foreign keys.
+     *
+     * @throws DatabaseRepositoryException
+     *             if question contain foreign keys.
      */
     QuestionProfile deleteQuestionById(Long id);
 

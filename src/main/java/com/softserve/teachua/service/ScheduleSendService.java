@@ -22,6 +22,7 @@ public interface ScheduleSendService {
 
     /**
      * The method get list of scheduled tasks.
+     *
      * @return new {@code TaskSchedule}
      */
     TaskSchedule listSchedules();

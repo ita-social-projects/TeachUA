@@ -86,57 +86,21 @@ public class CenterServiceTest {
 
     @BeforeEach
     public void setMocks() {
-        correctCenter = Center.builder()
-                .id(CORRECT_CENTER_ID)
-                .name("Correct center")
-                .contacts("Some contacts")
-                .urlBackgroundPicture("URL to picture")
-                .description("Description")
-                .urlWeb("URL to picture")
-                .urlWeb("URL to picture")
-                .locations(Sets.newSet())
-                .clubs(CLUBS)
-                .build();
-        correctCenterResponse = CenterResponse.builder()
-                .id(CORRECT_CENTER_ID)
-                .name("Correct center")
-                .phones("Some contacts")
-                .urlBackgroundPicture("URL to picture")
-                .description("Description")
-                .urlWeb("URL to picture")
-                .urlWeb("URL to picture")
-                .socialLinks("Some links")
-                .email("Email")
-                .build();
-        centerProfile = CenterProfile.builder()
-                .name("Create center")
-                .userId(1L)
-                .clubsId(CLUBS_ID)
-                .build();
-        createCenter = Center.builder()
-                .id(1L)
-                .name(centerProfile.getName())
-                .user(User.builder().id(1L).build())
-                .clubs(CLUBS)
-                .build();
-        successCreatedCenter = SuccessCreatedCenter.builder()
-                .id(1L)
-                .name(centerProfile.getName())
-                .build();
-        club = Club.builder()
-                .id(CLUB_ID)
-                .center(correctCenter)
-                .build();
+        correctCenter = Center.builder().id(CORRECT_CENTER_ID).name("Correct center").contacts("Some contacts")
+                .urlBackgroundPicture("URL to picture").description("Description").urlWeb("URL to picture")
+                .urlWeb("URL to picture").locations(Sets.newSet()).clubs(CLUBS).build();
+        correctCenterResponse = CenterResponse.builder().id(CORRECT_CENTER_ID).name("Correct center")
+                .phones("Some contacts").urlBackgroundPicture("URL to picture").description("Description")
+                .urlWeb("URL to picture").urlWeb("URL to picture").socialLinks("Some links").email("Email").build();
+        centerProfile = CenterProfile.builder().name("Create center").userId(1L).clubsId(CLUBS_ID).build();
+        createCenter = Center.builder().id(1L).name(centerProfile.getName()).user(User.builder().id(1L).build())
+                .clubs(CLUBS).build();
+        successCreatedCenter = SuccessCreatedCenter.builder().id(1L).name(centerProfile.getName()).build();
+        club = Club.builder().id(CLUB_ID).center(correctCenter).build();
 
-        user = User.builder()
-                .id(USER_ID)
-                .email(USER_EMAIL)
-                .build();
+        user = User.builder().id(USER_ID).email(USER_EMAIL).build();
 
-        centerArch = CenterArch.builder()
-                .name("Create center")
-                .userId(1L)
-                .build();
+        centerArch = CenterArch.builder().name("Create center").userId(1L).build();
         centerService.setClubService(clubService);
     }
 
@@ -150,24 +114,22 @@ public class CenterServiceTest {
     @Test
     public void getCenterByWrongIdShouldThrowNotExistException() {
         when(centerRepository.findById(WRONG_CENTER_ID)).thenReturn(Optional.empty());
-        NotExistException exception = assertThrows(NotExistException.class, () -> centerService.getCenterById(WRONG_CENTER_ID));
+        NotExistException exception = assertThrows(NotExistException.class,
+                () -> centerService.getCenterById(WRONG_CENTER_ID));
         assertTrue(exception.getMessage().contains(WRONG_CENTER_ID.toString()));
     }
 
     @Test
     public void getCenterResponseByCorrectIdShouldReturnCorrectCenterResponse() {
         when(centerRepository.findById(CORRECT_CENTER_ID)).thenReturn(Optional.of(correctCenter));
-        when(centerToCenterResponseConverter.convertToCenterResponse(correctCenter))
-                .thenReturn(correctCenterResponse);
+        when(centerToCenterResponseConverter.convertToCenterResponse(correctCenter)).thenReturn(correctCenterResponse);
         CenterResponse actual = centerService.getCenterProfileById(CORRECT_CENTER_ID);
         assertThat(actual).isEqualTo(correctCenterResponse);
     }
 
     private void setAddCenterMocks() {
-        when(centerRepository.save(any(Center.class)))
-                .thenReturn(createCenter);
-        when(dtoConverter.convertToEntity(any(CenterProfile.class), any(Center.class)))
-                .thenReturn(new Center());
+        when(centerRepository.save(any(Center.class))).thenReturn(createCenter);
+        when(dtoConverter.convertToEntity(any(CenterProfile.class), any(Center.class))).thenReturn(new Center());
         when(dtoConverter.convertToDto(createCenter, SuccessCreatedCenter.class)).thenReturn(successCreatedCenter);
         when(clubService.getClubById(club.getId())).thenReturn(club);
         when(userService.getCurrentUser()).thenReturn(user);
@@ -200,8 +162,7 @@ public class CenterServiceTest {
     public void addCenterShouldThrowAlreadyExistExceptionWhenCenterExist() {
         when(centerRepository.existsByName(centerProfile.getName())).thenReturn(true);
 
-        assertThatThrownBy(() -> centerService.addCenter(centerProfile))
-                .isInstanceOf(AlreadyExistException.class);
+        assertThatThrownBy(() -> centerService.addCenter(centerProfile)).isInstanceOf(AlreadyExistException.class);
     }
 
     @Test
@@ -219,7 +180,8 @@ public class CenterServiceTest {
     public void updateCenterShouldThrowAlreadyExistException() {
         when(centerRepository.existsByName(centerProfile.getName())).thenReturn(true);
         when(centerRepository.findById(CORRECT_CENTER_ID)).thenReturn(Optional.of(correctCenter));
-        AlreadyExistException exception = assertThrows(AlreadyExistException.class, () -> centerService.updateCenter(1L, centerProfile));
+        AlreadyExistException exception = assertThrows(AlreadyExistException.class,
+                () -> centerService.updateCenter(1L, centerProfile));
         assertThat(exception.getMessage()).contains(centerProfile.getName());
     }
 }

@@ -5,9 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * This class is custom exception for entity which already
- * exists in Database or other data storage.
- * The constructor accepts message for Exception
+ * This class is custom exception for entity which already exists in Database or other data storage. The constructor
+ * accepts message for Exception
  * <p>
  * Use @code throw new AlreadyExistException("Entity already exists")
  *
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class MatchingPasswordException extends IllegalArgumentException {
     private static final long serialVersionUID = 1L;
     private static final String PASSWORD_MATCH_EXCEPTION = "Old and new passwords match";
-
 
     public MatchingPasswordException(String message) {
         super(message.isEmpty() ? PASSWORD_MATCH_EXCEPTION : message);

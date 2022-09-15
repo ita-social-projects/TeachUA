@@ -77,15 +77,10 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private String baseUrl;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,
-                           EncoderService encodeService,
-                           RoleService roleService,
-                           DtoConverter dtoConverter,
-                           ArchiveService archiveService,
-                           JwtProvider jwtProvider,
-                           AuthenticationManager authenticationManager,
-                           JavaMailSender javaMailSender,
-                           PasswordEncoder passwordEncoder, ObjectMapper objectMapper) {
+    public UserServiceImpl(UserRepository userRepository, EncoderService encodeService, RoleService roleService,
+            DtoConverter dtoConverter, ArchiveService archiveService, JwtProvider jwtProvider,
+            AuthenticationManager authenticationManager, JavaMailSender javaMailSender, PasswordEncoder passwordEncoder,
+            ObjectMapper objectMapper) {
         this.userRepository = userRepository;
         this.encodeService = encodeService;
         this.roleService = roleService;
@@ -123,11 +118,10 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
 
     @Override
     public List<UserResponse> getUserResponsesByRole(String roleName) {
-        List<User> users = userRepository.findByRoleName(roleName)
-                .orElseThrow(() -> {
-                    log.error("users not found by role name - {}", roleName);
-                    return new NotExistException(String.format(USERS_NOT_FOUND_BY_ROLE_NAME, roleName));
-                });
+        List<User> users = userRepository.findByRoleName(roleName).orElseThrow(() -> {
+            log.error("users not found by role name - {}", roleName);
+            return new NotExistException(String.format(USERS_NOT_FOUND_BY_ROLE_NAME, roleName));
+        });
         List<UserResponse> userResponses = users.stream()
                 .map(user -> (UserResponse) dtoConverter.convertToDto(user, UserResponse.class))
                 .collect(Collectors.toList());
@@ -159,8 +153,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
 
     @Override
     public List<UserResponse> getListOfUsers() {
-        List<UserResponse> userResponses = userRepository.findAll()
-                .stream()
+        List<UserResponse> userResponses = userRepository.findAll().stream()
                 .map(user -> (UserResponse) dtoConverter.convertToDto(user, UserResponse.class))
                 .collect(Collectors.toList());
 
@@ -234,13 +227,8 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         }
         log.debug("user {} logged successfully", userLogin);
 
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        userLogin.getEmail(),
-                        userLogin.getPassword()
-                )
-        );
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -255,18 +243,15 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         if (!userProfile.getEmail().equals(user.getEmail())) {
             throw new IncorrectInputException(EMAIL_UPDATING_ERROR);
         }
-        /*   Admin must be able to appoint someone else as the admin
-
-        if (userProfile.getRoleName().equals(RoleData.ADMIN.getDBRoleName())
-                && !user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
-            throw new IncorrectInputException(ROLE_UPDATING_ERROR);
-        }
-        */
-        User newUser = dtoConverter.convertToEntity(userProfile, user)
-                .withPassword(user.getPassword())
-                .withId(id)
-                .withRole(roleService.findByName(userProfile.getRoleName()))
-                .withPhone(userProfile.getPhone());
+        /*
+         * Admin must be able to appoint someone else as the admin
+         *
+         * if (userProfile.getRoleName().equals(RoleData.ADMIN.getDBRoleName()) &&
+         * !user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) { throw new
+         * IncorrectInputException(ROLE_UPDATING_ERROR); }
+         */
+        User newUser = dtoConverter.convertToEntity(userProfile, user).withPassword(user.getPassword()).withId(id)
+                .withRole(roleService.findByName(userProfile.getRoleName())).withPhone(userProfile.getPhone());
 
         log.debug("updating role by id {}", newUser);
 
@@ -300,34 +285,36 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         userRepository.save(user);
 
         SuccessVerification successVerificationUser = dtoConverter.convertToDto(user, SuccessVerification.class);
-        successVerificationUser.setMessage(String.format("Користувач %s %s успішно зареєстрований",
-                user.getFirstName(),
-                user.getLastName()));
+        successVerificationUser.setMessage(
+                String.format("Користувач %s %s успішно зареєстрований", user.getFirstName(), user.getLastName()));
         return successVerificationUser;
     }
 
     /**
      * The method send message {@code message} to new user after registration.
      *
-     * @param user - put user entity
-     * @throws MessagingException           if message isn`t sent
-     * @throws UnsupportedEncodingException if there is wrong encoding
+     * @param user
+     *            - put user entity
+     *
+     * @throws MessagingException
+     *             if message isn`t sent
+     * @throws UnsupportedEncodingException
+     *             if there is wrong encoding
+     *
      * @value toAddress - an email of user to send verificationCode with httpRequest
      * @value fromAddress - an email of company getting from environment variables
      * @value senderName - name of company or name of user-sender
      * @value subject - email header
      * @value content - email body
      */
-    private void sendVerificationEmail(User user)
-            throws MessagingException, UnsupportedEncodingException {
+    private void sendVerificationEmail(User user) throws MessagingException, UnsupportedEncodingException {
         String toAddress = user.getEmail();
         String fromAddress = (System.getenv("USER_EMAIL"));
         String senderName = "TeachUA";
         String subject = "Підтвердіть Вашу реєстрацію";
         String content = "Шановний/а [[userFullName]]!<br>"
                 + "Для підтвердження Вашої реєстрації, будь ласка, перейдіть за посиланням нижче: \n<br>"
-                + "<h3><a href=\"[[URL]]\" target=\"_self\">Підтвердити реєстрацію</a></h3>"
-                + "Дякуємо!<br>"
+                + "<h3><a href=\"[[URL]]\" target=\"_self\">Підтвердити реєстрацію</a></h3>" + "Дякуємо!<br>"
                 + "Ініціатива \"Навчай українською\"";
 
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -366,9 +353,8 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
 
     @Override
     public User getUserFromRequest(HttpServletRequest httpServletRequest) {
-        return userRepository.findById(
-                jwtProvider.getUserIdFromToken(
-                        jwtProvider.getJwtFromRequest(httpServletRequest)))
+        return userRepository
+                .findById(jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest)))
                 .orElseThrow(() -> new WrongAuthenticationException());
     }
 
@@ -404,7 +390,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     }
 
     @Override
-    public SuccessUserPasswordReset resetPassword(UserResetPassword userResetPassword) { //todo
+    public SuccessUserPasswordReset resetPassword(UserResetPassword userResetPassword) { // todo
         User user = getUserByEmail(userResetPassword.getEmail());
         user.setVerificationCode(RandomString.make(64));
         try {
@@ -414,8 +400,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
             String subject = "Відновлення паролю";
             String content = "Шановний/а [[userFullName]]!<br>"
                     + "Для відновлення Вашого паролю, будь ласка, перейдіть за посиланням нижче: \n<br>"
-                    + "<h3><a href=\"[[URL]]\" target=\"_self\">Змінити пароль</a></h3>"
-                    + "Дякуємо!<br>"
+                    + "<h3><a href=\"[[URL]]\" target=\"_self\">Змінити пароль</a></h3>" + "Дякуємо!<br>"
                     + "Ініціатива \"Навчай українською\"";
 
             MimeMessage message = javaMailSender.createMimeMessage();
@@ -454,11 +439,9 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         userPasswordReset.setVerificationCode(verificationCode);
         userPasswordReset.setEmail(user.getEmail());
         userPasswordReset.setId(user.getId());
-        SuccessVerification
-                successVerificationUser = dtoConverter.convertToDto(user, SuccessVerification.class);
-        successVerificationUser.setMessage(String.format("Користувач %s %s верифікований",
-                user.getFirstName(),
-                user.getLastName()));
+        SuccessVerification successVerificationUser = dtoConverter.convertToDto(user, SuccessVerification.class);
+        successVerificationUser
+                .setMessage(String.format("Користувач %s %s верифікований", user.getFirstName(), user.getLastName()));
 
         log.debug("step 2: " + userPasswordReset.getVerificationCode() + " " + userPasswordReset.getEmail());
         // return userPasswordReset;
@@ -520,12 +503,10 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         UserArch userArch = objectMapper.readValue(archiveObject, UserArch.class);
-        User user = dtoConverter.convertToEntity(userArch, User.builder().build())
-                .withId(null)
+        User user = dtoConverter.convertToEntity(userArch, User.builder().build()).withId(null)
                 .withRole(roleService.getRoleById(userArch.getRoleId()))
                 .withProvider(Optional.ofNullable(userArch.getProvider()).isPresent()
-                        ? AuthProvider.valueOf(userArch.getProvider())
-                        : null);
+                        ? AuthProvider.valueOf(userArch.getProvider()) : null);
         userRepository.save(user);
     }
 }

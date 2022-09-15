@@ -20,8 +20,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     List<Certificate> findCertificatesByTemplate(CertificateTemplate template);
 
-    @Query(value = "SELECT certificate from Certificate AS certificate " +
-            "WHERE certificate.sendStatus IS NULL")
+    @Query(value = "SELECT certificate from Certificate AS certificate " + "WHERE certificate.sendStatus IS NULL")
     List<Certificate> findUnsentCertificates();
 
     /*-
@@ -58,8 +57,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     Optional<Certificate> findByUserNameAndDates(String username, CertificateDates dates);
 
-    @Query(value = "SELECT MAX(SUBSTRING(CONCAT(t.serialNumber, ''), 4, 10)) from Certificate t " +
-            "WHERE CONCAT(t.serialNumber, '') " +
-            "LIKE CONCAT(:type, '%') ")
+    @Query(value = "SELECT MAX(SUBSTRING(CONCAT(t.serialNumber, ''), 4, 10)) from Certificate t "
+            + "WHERE CONCAT(t.serialNumber, '') " + "LIKE CONCAT(:type, '%') ")
     Long findMaxSerialNumber(@Param("type") String type);
 }

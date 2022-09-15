@@ -25,13 +25,16 @@ public class BackUpController implements Api {
     }
 
     /**
-     *  Use this endpoint to see files for backup
+     * Use this endpoint to see files for backup
+     *
      * @param fileName
+     *
      * @return
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/backup/files")
-    public List<String> getAllFileForBackUp(@RequestParam(value = "fileName", required = false, defaultValue = "all") String fileName) {
+    public List<String> getAllFileForBackUp(
+            @RequestParam(value = "fileName", required = false, defaultValue = "all") String fileName) {
         return backupService.getAllBackupFiles(fileName);
     }
 
@@ -39,11 +42,12 @@ public class BackUpController implements Api {
      * Use this endpoint to download .zip file with backup resources
      *
      * @param response
+     *
      * @throws IOException
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping(value = "/backup/download", produces = "application/.zip")
-    public void downloadBackup(HttpServletResponse response)  throws IOException{
+    public void downloadBackup(HttpServletResponse response) throws IOException {
         backupService.downloadBackup(response);
     }
 
@@ -52,13 +56,14 @@ public class BackUpController implements Api {
      * Use this endpoint to upload backup archive(.zip(downloaded from /backup/download)) to project
      *
      * @param file
+     *
      * @return
+     *
      * @throws IOException
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping(value = "/backup/upload")
     public List<String> uploadBackUp(@RequestParam("file") MultipartFile file) throws IOException {
-       return backupService.uploadBackup(file);
+        return backupService.uploadBackup(file);
     }
 }
-

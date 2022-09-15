@@ -10,6 +10,6 @@ import java.util.List;
 public interface SqlDataExportService {
     /**
      * The method return created script.
-     * */
+     */
     String createScript() throws SQLException;
 }

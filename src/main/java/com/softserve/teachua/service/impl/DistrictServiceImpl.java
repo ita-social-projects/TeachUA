@@ -43,8 +43,8 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public DistrictServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService,
-                               CityService cityService, DistrictRepository districtRepository, ObjectMapper objectMapper) {
+    public DistrictServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService, CityService cityService,
+            DistrictRepository districtRepository, ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
         this.cityService = cityService;
@@ -102,8 +102,7 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
 
     @Override
     public List<DistrictResponse> getListOfDistricts() {
-        List<DistrictResponse> districtResponses = districtRepository.findAllByOrderByIdAsc()
-                .stream()
+        List<DistrictResponse> districtResponses = districtRepository.findAllByOrderByIdAsc().stream()
                 .map(district -> (DistrictResponse) dtoConverter.convertToDto(district, DistrictResponse.class))
                 .collect(Collectors.toList());
 
@@ -113,8 +112,7 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
 
     @Override
     public List<DistrictResponse> getListOfDistrictsByCityName(String name) {
-        List<DistrictResponse> districtResponses = districtRepository.findAllByCityName(name)
-                .stream()
+        List<DistrictResponse> districtResponses = districtRepository.findAllByCityName(name).stream()
                 .map(district -> (DistrictResponse) dtoConverter.convertToDto(district, DistrictResponse.class))
                 .collect(Collectors.toList());
 
@@ -125,8 +123,7 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
     @Override
     public DistrictProfile updateDistrict(Long id, DistrictProfile districtProfile) {
         District district = getDistrictById(id);
-        District newDistrict = dtoConverter.convertToEntity(districtProfile, district)
-                .withId(id)
+        District newDistrict = dtoConverter.convertToEntity(districtProfile, district).withId(id)
                 .withCity(cityService.getCityByName(districtProfile.getCityName()));
 
         log.debug("**/updating district by id = " + newDistrict);
@@ -166,8 +163,7 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         DistrictArch districtArch = objectMapper.readValue(archiveObject, DistrictArch.class);
-        District district = dtoConverter.convertToEntity(districtArch, District.builder().build())
-                .withId(null)
+        District district = dtoConverter.convertToEntity(districtArch, District.builder().build()).withId(null)
                 .withCity(cityService.getCityById(districtArch.getCityId()));
         districtRepository.save(district);
     }

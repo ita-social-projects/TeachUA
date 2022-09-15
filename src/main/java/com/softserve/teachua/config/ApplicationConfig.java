@@ -17,7 +17,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 @Configuration
-@ComponentScan(basePackages = {"com.softserve.teachua.controller"})
+@ComponentScan(basePackages = { "com.softserve.teachua.controller" })
 public class ApplicationConfig {
     private static final String UPLOAD_LOCATION = "/upload/";
     private static final String STATIC_LOCATION = "/static/";
@@ -43,8 +43,7 @@ public class ApplicationConfig {
                     && !req.getRequestURI().startsWith(removeSecondSlash(rootUri + API_LOCATION))
                     && !req.getRequestURI().equals(removeSecondSlash(rootUri + SLASH))
                     && !req.getRequestURI().startsWith(removeSecondSlash(rootUri + SWAGGER_UI))
-                    && !req.getRequestURI().contains(SWAGGER_RESOURCE)
-            ) {
+                    && !req.getRequestURI().contains(SWAGGER_RESOURCE)) {
                 RequestDispatcher requestDispatcher = request.getRequestDispatcher(SLASH);
                 requestDispatcher.forward(request, response);
                 return;
@@ -67,4 +66,3 @@ public class ApplicationConfig {
         return mapper;
     }
 }
-

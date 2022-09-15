@@ -31,10 +31,8 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public List<String> getAllLogs(String filter, String content) {
-        log.info(filter+ " " +content);
-        return FileUtils.listFiles(new File(path), null, false)
-                .stream()
-                .map(File::getName)
+        log.info(filter + " " + content);
+        return FileUtils.listFiles(new File(path), null, false).stream().map(File::getName)
                 .filter(name -> name.contains(filter))
                 .filter(name -> getLogByName(name).stream().anyMatch(row -> row.contains(content)))
                 .collect(Collectors.toList());
@@ -63,36 +61,33 @@ public class LogServiceImpl implements LogService {
         List<String> notDeletedLogs = new LinkedList<>();
 
         if (filter.equals("deleteAll")) {
-            FileUtils.listFiles(new File(path), null, false).forEach(
-                    file -> {
-                        File pathFile = new File((path + file.getName()).replace(" ", ""));
-                        if (!pathFile.getName().contains("catalina") && !pathFile.isDirectory()) {
-                            correctFilter.set(true);
-                            try {
-                                FileUtils.forceDelete(pathFile);
-                                deletedLogs.add("deleted: " + pathFile.getName());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                notDeletedLogs.add("NOT deleted: " + pathFile.getName());
-                            }
-                        }
+            FileUtils.listFiles(new File(path), null, false).forEach(file -> {
+                File pathFile = new File((path + file.getName()).replace(" ", ""));
+                if (!pathFile.getName().contains("catalina") && !pathFile.isDirectory()) {
+                    correctFilter.set(true);
+                    try {
+                        FileUtils.forceDelete(pathFile);
+                        deletedLogs.add("deleted: " + pathFile.getName());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        notDeletedLogs.add("NOT deleted: " + pathFile.getName());
                     }
-            );
+                }
+            });
         } else {
-            FileUtils.listFiles(new File(path), null, false).forEach(
-                    file -> {
-                        File pathFile = new File((path + file.getName()).replace(" ", ""));
-                        if (!file.getName().contains("catalina") && file.getName().contains(filter) && !pathFile.isDirectory()) {
-                            correctFilter.set(true);
-                            try {
-                                FileUtils.forceDelete(pathFile);
-                                deletedLogs.add(" deleted: " + pathFile.getName());
-                            } catch (IOException e) {
-                                notDeletedLogs.add("NOT deleted: " + pathFile.getName());
-                            }
-                        }
+            FileUtils.listFiles(new File(path), null, false).forEach(file -> {
+                File pathFile = new File((path + file.getName()).replace(" ", ""));
+                if (!file.getName().contains("catalina") && file.getName().contains(filter)
+                        && !pathFile.isDirectory()) {
+                    correctFilter.set(true);
+                    try {
+                        FileUtils.forceDelete(pathFile);
+                        deletedLogs.add(" deleted: " + pathFile.getName());
+                    } catch (IOException e) {
+                        notDeletedLogs.add("NOT deleted: " + pathFile.getName());
                     }
-            );
+                }
+            });
         }
         if (!correctFilter.get()) {
             throw new NotExistException("Not found file by this filter or directory is empty");
@@ -105,13 +100,11 @@ public class LogServiceImpl implements LogService {
     public List<String> getAbsolutePathForLogs() {
 
         List<String> pathList = new LinkedList<>();
-        FileUtils.listFiles(new File(path), null, false)
-                .stream()
-                .forEach(file -> {
-                    if (!file.getName().contains("catalina")) {
-                        pathList.add(file.getAbsolutePath());
-                    }
-                });
+        FileUtils.listFiles(new File(path), null, false).stream().forEach(file -> {
+            if (!file.getName().contains("catalina")) {
+                pathList.add(file.getAbsolutePath());
+            }
+        });
 
         return pathList;
     }
@@ -137,7 +130,7 @@ public class LogServiceImpl implements LogService {
             }
             FileUtils.forceMkdir(file);
         }
-        return String.format(CREATE_MESSAGE,file.getName());
+        return String.format(CREATE_MESSAGE, file.getName());
     }
 
     @Override
@@ -178,8 +171,7 @@ public class LogServiceImpl implements LogService {
         List<String> notDeletedLogs = new LinkedList<>();
 
         if (filter) {
-            FileUtils.listFiles(new File(path), null, false).forEach(file ->
-            {
+            FileUtils.listFiles(new File(path), null, false).forEach(file -> {
                 String fileName = (path + file.getName()).replace(" ", "");
                 File checkedFile = FileUtils.getFile(fileName);
                 try {

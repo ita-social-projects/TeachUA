@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Data
 public class NewsProfile implements Convertible {
     @NotNull
-    @FutureOrPresent(message="Дата повинна бути сьогоднішньою або майбутньою.")
+    @FutureOrPresent(message = "Дата повинна бути сьогоднішньою або майбутньою.")
     private LocalDate date;
 
     @NotBlank(message = "Заголовок не може бути порожнім.")
@@ -31,11 +31,10 @@ public class NewsProfile implements Convertible {
 
     @NotBlank
     @Size(max = 517, message = "Назва фото баннера повинна містити максимум 500 символів.")
-    @Pattern(regexp = "/upload/news/[^/]+\\.[A-z]{3,5}",
-            message = "Неправильний шлях до файлу. Має виглядати як /upload/news/*.png")
+    @Pattern(regexp = "/upload/news/[^/]+\\.[A-z]{3,5}", message = "Неправильний шлях до файлу. Має виглядати як /upload/news/*.png")
     private String urlTitleLogo;
 
-//    @NotNull
-//    @Pattern(regexp = "^true$|^false$", message = "allowed input: true or false")
+    // @NotNull
+    // @Pattern(regexp = "^true$|^false$", message = "allowed input: true or false")
     private Boolean isActive;
 }

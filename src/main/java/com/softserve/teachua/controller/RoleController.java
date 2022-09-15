@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the roles.
- * */
+ */
 
 @RestController
 @Tag(name = "role", description = "the Role API")
@@ -30,10 +30,11 @@ public class RoleController implements Api {
     }
 
     /**
-     * Use this endpoint to return a role.
-     * The controller returns {@code RoleResponse}.
+     * Use this endpoint to return a role. The controller returns {@code RoleResponse}.
      *
-     * @param id - put role id.
+     * @param id
+     *            - put role id.
+     *
      * @return {@code RoleResponse}
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -43,10 +44,11 @@ public class RoleController implements Api {
     }
 
     /**
-     * Use this endpoint to add a new role.
-     * The controller returns {@code RoleProfile}.
+     * Use this endpoint to add a new role. The controller returns {@code RoleProfile}.
      *
-     * @param roleProfile - put json role here.
+     * @param roleProfile
+     *            - put json role here.
+     *
      * @return new {@code RoleProfile}
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -56,27 +58,27 @@ public class RoleController implements Api {
     }
 
     /**
-     * Use this endpoint to update existing role.
-     * The controller returns {@code RoleProfile}.
+     * Use this endpoint to update existing role. The controller returns {@code RoleProfile}.
      *
-     * @param id          - put role id.
-     * @param roleProfile - put json role
+     * @param id
+     *            - put role id.
+     * @param roleProfile
+     *            - put json role
+     *
      * @return new {@code RoleProfile}
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/role/{id}")
-    public RoleProfile addRole(
-            @PathVariable Integer id,
-            @Valid
-            @RequestBody RoleProfile roleProfile) {
+    public RoleProfile addRole(@PathVariable Integer id, @Valid @RequestBody RoleProfile roleProfile) {
         return roleService.updateRole(id, roleProfile);
     }
 
     /**
-     * Use this endpoint to delete role by id.
-     * The controller returns {@code RoleResponse}.
+     * Use this endpoint to delete role by id. The controller returns {@code RoleResponse}.
      *
-     * @param id - put role id here.
+     * @param id
+     *            - put role id here.
+     *
      * @return {@code RoleResponse}
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -86,8 +88,7 @@ public class RoleController implements Api {
     }
 
     /**
-     * Use this endpoint to return array of existing roles.
-     * The controller returns {@code List<RoleResponse>}.
+     * Use this endpoint to return array of existing roles. The controller returns {@code List<RoleResponse>}.
      *
      * @return {@code List<RoleResponse>}
      */

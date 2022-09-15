@@ -22,22 +22,22 @@ public class ContactTypeRepositoryIT {
     private ContactTypeRepository contactTypeRepository;
 
     @Test
-    public void findByExistingNameShouldReturnCorrectContactTypeEntity(){
+    public void findByExistingNameShouldReturnCorrectContactTypeEntity() {
         assertThat(contactTypeRepository.findByName(EXISTING_NAME).get().getName()).isEqualTo(EXISTING_NAME);
     }
 
     @Test
-    public void findByNotExistingNameShouldReturnOptionalEmpty(){
+    public void findByNotExistingNameShouldReturnOptionalEmpty() {
         assertThat(contactTypeRepository.findByName(NOT_EXISTING_NAME)).isEqualTo(Optional.empty());
     }
 
     @Test
-    public void existsByNameShouldReturnTrue(){
+    public void existsByNameShouldReturnTrue() {
         assertTrue(contactTypeRepository.existsByName(EXISTING_NAME));
     }
 
     @Test
-    public void notExistsByNameShouldReturnFalse(){
+    public void notExistsByNameShouldReturnFalse() {
         assertFalse(contactTypeRepository.existsByName(NOT_EXISTING_NAME));
     }
 }

@@ -44,12 +44,9 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     private final ClubService clubService;
 
     @Autowired
-    public ComplaintServiceImpl(ComplaintRepository complaintRepository,
-                                DtoConverter dtoConverter,
-                                ClubRepository clubRepository,
-                                ArchiveService archiveService,
-                                UserRepository userRepository,
-                                UserService userService, ObjectMapper objectMapper, ClubService clubService) {
+    public ComplaintServiceImpl(ComplaintRepository complaintRepository, DtoConverter dtoConverter,
+            ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository,
+            UserService userService, ObjectMapper objectMapper, ClubService clubService) {
         this.complaintRepository = complaintRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
@@ -78,8 +75,8 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     }
 
     @Override
-    public SuccessCreatedComplaint addComplaint(
-            ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest) {
+    public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile,
+            HttpServletRequest httpServletRequest) {
         complaintProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
 
         if (!clubRepository.existsById(complaintProfile.getClubId())) {
@@ -89,8 +86,8 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
             throw new NotExistException("User with id " + complaintProfile.getUserId() + "does`nt exists");
         }
 
-        Complaint complaint = complaintRepository.save(dtoConverter
-                .convertToEntity(complaintProfile, new Complaint()).withDate(LocalDate.now()));
+        Complaint complaint = complaintRepository
+                .save(dtoConverter.convertToEntity(complaintProfile, new Complaint()).withDate(LocalDate.now()));
 
         log.debug("add new complaint {}", complaint);
         return dtoConverter.convertToDto(complaint, SuccessCreatedComplaint.class);
@@ -98,8 +95,7 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
 
     @Override
     public List<ComplaintResponse> getAll() {
-        List<ComplaintResponse> complaintResponses = complaintRepository.findAll()
-                .stream()
+        List<ComplaintResponse> complaintResponses = complaintRepository.findAll().stream()
                 .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
                 .collect(Collectors.toList());
 
@@ -109,8 +105,7 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
 
     @Override
     public List<ComplaintResponse> getAllByClubId(Long clubId) {
-        List<ComplaintResponse> complaintResponses = complaintRepository.getAllByClubId(clubId)
-                .stream()
+        List<ComplaintResponse> complaintResponses = complaintRepository.getAllByClubId(clubId).stream()
                 .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
                 .collect(Collectors.toList());
 
@@ -155,8 +150,7 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         ComplaintArch complaintArch = objectMapper.readValue(archiveObject, ComplaintArch.class);
         Complaint complaint = Complaint.builder().build();
-        complaint = dtoConverter.convertToEntity(complaintArch, complaint)
-                .withId(null)
+        complaint = dtoConverter.convertToEntity(complaintArch, complaint).withId(null)
                 .withClub(clubService.getClubById(complaintArch.getClubId()))
                 .withUser(userService.getUserById(complaintArch.getUserId()));
         complaintRepository.save(complaint);

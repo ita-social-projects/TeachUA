@@ -44,7 +44,7 @@ public class Certificate implements Convertible {
     @Column(name = "send_status")
     private Boolean sendStatus;
 
-    @Column(name="update_status")
+    @Column(name = "update_status")
     private LocalDate updateStatus;
 
     @ManyToOne(fetch = FetchType.EAGER)

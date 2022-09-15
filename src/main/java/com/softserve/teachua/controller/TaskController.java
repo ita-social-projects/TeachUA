@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the tasks.
- * */
+ */
 
 @RestController
 @Slf4j
@@ -31,11 +31,12 @@ public class TaskController implements Api {
     }
 
     /**
-     * Use this endpoint to get all tasks of challenge, including tasks that have not yet begun.
-     * This feature available only for admins.
-     * The controller returns {@code List<TaskPreview>}.
+     * Use this endpoint to get all tasks of challenge, including tasks that have not yet begun. This feature available
+     * only for admins. The controller returns {@code List<TaskPreview>}.
      *
-     * @param id - put challenge id here.
+     * @param id
+     *            - put challenge id here.
+     *
      * @return {@code List<TaskPreview>}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -45,8 +46,7 @@ public class TaskController implements Api {
     }
 
     /**
-     * Use this endpoint to get all tasks despite challenge.
-     * The controller returns {@code List <TaskPreview>}.
+     * Use this endpoint to get all tasks despite challenge. The controller returns {@code List <TaskPreview>}.
      *
      * @return new {@code List<TaskPreview>}
      */
@@ -57,10 +57,11 @@ public class TaskController implements Api {
     }
 
     /**
-     * Use this endpoint to get full information about task.
-     * The controller returns {@code TaskProfile}.
+     * Use this endpoint to get full information about task. The controller returns {@code TaskProfile}.
      *
-     * @param id - put task id here.
+     * @param id
+     *            - put task id here.
+     *
      * @return {@code TaskProfile}
      */
     @GetMapping("/challenge/task/{id}")
@@ -69,12 +70,14 @@ public class TaskController implements Api {
     }
 
     /**
-     * Use this endpoint to create and add new task to challenge.
-     * This feature available only for admins.
-     * The controller returns {@code SuccessCreatedTask}.
+     * Use this endpoint to create and add new task to challenge. This feature available only for admins. The controller
+     * returns {@code SuccessCreatedTask}.
      *
-     * @param id         - put challenge id here.
-     * @param createTask - put required parameters here.
+     * @param id
+     *            - put challenge id here.
+     * @param createTask
+     *            - put required parameters here.
+     *
      * @return {@code SuccessCreatedTask}
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -84,12 +87,14 @@ public class TaskController implements Api {
     }
 
     /**
-     * Use this endpoint to update some values of task, including the id of the challenge to which it is linked.
-     * This feature available only for admins.
-     * The controller returns {@code SuccessUpdatedTask}.
+     * Use this endpoint to update some values of task, including the id of the challenge to which it is linked. This
+     * feature available only for admins. The controller returns {@code SuccessUpdatedTask}.
      *
-     * @param id         - put task id here.
-     * @param updateTask - put new and old parameters here.
+     * @param id
+     *            - put task id here.
+     * @param updateTask
+     *            - put new and old parameters here.
+     *
      * @return {@code SuccessUpdatedTask} - shows result of updating task.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -99,11 +104,12 @@ public class TaskController implements Api {
     }
 
     /**
-     * Use this endpoint to archive task.
-     * This feature available only for admins.
-     * The controller returns {@code TaskProfile}.
+     * Use this endpoint to archive task. This feature available only for admins. The controller returns
+     * {@code TaskProfile}.
      *
-     * @param id - put task id here.
+     * @param id
+     *            - put task id here.
+     *
      * @return {@code TaskProfile} - shows which task was removed.
      */
     @AllowedRoles(RoleData.ADMIN)

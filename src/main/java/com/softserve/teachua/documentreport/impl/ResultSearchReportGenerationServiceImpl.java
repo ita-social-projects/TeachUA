@@ -29,10 +29,10 @@ import java.util.Map;
 @Service
 public class ResultSearchReportGenerationServiceImpl implements ReportGenerationService<Page<ClubResponse>> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResultSearchReportGenerationServiceImpl.class.getName());
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(ResultSearchReportGenerationServiceImpl.class.getName());
     private static final String TEMPLATE_PATH = "/pdf-reports/template/ResultSearchPdfReportTemplate.jrxml";
     private static final String CLUB_SUB_REPORT_TEMPLATE_PATH = "/pdf-reports/template/SubClubReportTemplate.jrxml";
-
 
     @Override
     public byte[] getPdfOutput(Page<ClubResponse> clubResponses) {
@@ -50,7 +50,8 @@ public class ResultSearchReportGenerationServiceImpl implements ReportGeneration
     private JasperPrint createJasperPrint(Page<ClubResponse> clubResponses) throws JRException, IOException {
         try (InputStream inputStream = new FileInputStream(getRealFilePath(TEMPLATE_PATH))) {
             final JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
-            return JasperFillManager.fillReport(jasperReport, getParameters(clubResponses), getDataSource(clubResponses));
+            return JasperFillManager.fillReport(jasperReport, getParameters(clubResponses),
+                    getDataSource(clubResponses));
         }
     }
 

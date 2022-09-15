@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the centers.
- * */
+ */
 
 @Slf4j
 @RestController
@@ -38,10 +38,11 @@ public class CenterController implements Api {
     }
 
     /**
-     * Use this endpoint to get a center by its id.
-     * The controller returns {@code CenterResponse}.
+     * Use this endpoint to get a center by its id. The controller returns {@code CenterResponse}.
      *
-     * @param id - put center id.
+     * @param id
+     *            - put center id.
+     *
      * @return new {@code CenterResponse}.
      */
     @GetMapping("/center/{id}")
@@ -50,55 +51,49 @@ public class CenterController implements Api {
     }
 
     /**
-     * Use this endpoint to get information about centers by id of user-owner with pagination.
-     * The controller returns {@code List<CenterResponse>} about centers by id of user-owner.
+     * Use this endpoint to get information about centers by id of user-owner with pagination. The controller returns
+     * {@code List<CenterResponse>} about centers by id of user-owner.
      *
-     * @param id - put user id.
+     * @param id
+     *            - put user id.
+     *
      * @return new {@code Page<CenterResponse>}.
      */
     @GetMapping("centers/{id}")
-    public Page<CenterResponse> getCentersByUserId(
-            @PathVariable Long id,
-            @PageableDefault(
-                    value = CENTERS_PER_USER_PAGE,
-                    sort = "id") Pageable pageable) {
+    public Page<CenterResponse> getCentersByUserId(@PathVariable Long id,
+            @PageableDefault(value = CENTERS_PER_USER_PAGE, sort = "id") Pageable pageable) {
         return centerService.getCentersByUserId(id, pageable);
     }
 
     /**
-     * Use this endpoint to create a center.
-     * The controller returns {@code SuccessCreatedCenter}.
+     * Use this endpoint to create a center. The controller returns {@code SuccessCreatedCenter}.
      *
      * @return new {@code SuccessCreatedCenter}.
      */
-    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
+    @AllowedRoles({ RoleData.ADMIN, RoleData.MANAGER })
     @PostMapping("/center")
-    public SuccessCreatedCenter addCenter(
-            @Valid
-            @RequestBody CenterProfile centerProfile) {
+    public SuccessCreatedCenter addCenter(@Valid @RequestBody CenterProfile centerProfile) {
         return centerService.addCenterRequest(centerProfile);
     }
 
     /**
-     * Use this endpoint to update the center.
-     * The controller returns {@code  CenterProfile}.
+     * Use this endpoint to update the center. The controller returns {@code  CenterProfile}.
      *
-     * @param id            - put center id here.
-     * @param centerProfile - put center information here.
+     * @param id
+     *            - put center id here.
+     * @param centerProfile
+     *            - put center information here.
+     *
      * @return new {@code CenterProfile}.
      */
-    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
+    @AllowedRoles({ RoleData.ADMIN, RoleData.MANAGER })
     @PutMapping("/center/{id}")
-    public CenterProfile updateCenter(
-            @PathVariable Long id,
-            @Valid
-            @RequestBody CenterProfile centerProfile) {
+    public CenterProfile updateCenter(@PathVariable Long id, @Valid @RequestBody CenterProfile centerProfile) {
         return centerService.updateCenter(id, centerProfile);
     }
 
     /**
-     * Use this endpoint to get information about all centers.
-     * The controller returns {@code List <CenterResponse>}.
+     * Use this endpoint to get information about all centers. The controller returns {@code List <CenterResponse>}.
      *
      * @return new {@code List <CenterResponse>}.
      */
@@ -108,31 +103,31 @@ public class CenterController implements Api {
     }
 
     /**
-     * Use this endpoint to get the advanced search result for center with pagination.
-     * The controller returns {@code {@link CenterProfile }}.
+     * Use this endpoint to get the advanced search result for center with pagination. The controller returns
+     * {@code {@link CenterProfile }}.
      *
-     * @param advancedSearchCenterProfile - Place dto with all parameters for searched club.
+     * @param advancedSearchCenterProfile
+     *            - Place dto with all parameters for searched club.
+     *
      * @return new {@code ClubProfile}.
      */
     @GetMapping("/centers/search/advanced")
-    public Page<CenterResponse> getAdvancedSearchClubs(
-            AdvancedSearchCenterProfile advancedSearchCenterProfile,
-            @PageableDefault(
-                    value = 6,
-                    sort = "id") Pageable pageable) {
+    public Page<CenterResponse> getAdvancedSearchClubs(AdvancedSearchCenterProfile advancedSearchCenterProfile,
+            @PageableDefault(value = 6, sort = "id") Pageable pageable) {
         log.debug("===== centerController started ======");
         return centerService.getAdvancedSearchCenters(advancedSearchCenterProfile, pageable);
     }
 
     /**
-     * Use this endpoint to delete center by id.
-     * The controller returns dto {@code CenterResponse} of deleted center.
+     * Use this endpoint to delete center by id. The controller returns dto {@code CenterResponse} of deleted center.
      *
-     * @param id - put category id.
+     * @param id
+     *            - put category id.
+     *
      * @return new {@code CenterResponse}.
      */
-    //TODO
-    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
+    // TODO
+    @AllowedRoles({ RoleData.ADMIN, RoleData.MANAGER })
     @DeleteMapping("/center/{id}")
     public CenterResponse deleteCenter(@PathVariable Long id) {
         return centerService.deleteCenterById(id);
@@ -143,7 +138,7 @@ public class CenterController implements Api {
      *
      * @return list of updated centers
      */
-    @AllowedRoles({RoleData.ADMIN})
+    @AllowedRoles({ RoleData.ADMIN })
     @PatchMapping("/centers/rating")
     public List<CenterResponse> updateCentersRating() {
         return centerService.updateRatingForAllCenters();

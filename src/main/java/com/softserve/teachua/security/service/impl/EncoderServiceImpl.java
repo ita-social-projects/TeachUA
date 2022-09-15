@@ -21,10 +21,8 @@ public class EncoderServiceImpl implements EncoderService {
     }
 
     public boolean isValidPassword(UserLogin userLogin, UserEntity userEntity) {
-        return passwordEncoder.matches(userLogin.getPassword(),
-                userEntity.getPassword());
+        return passwordEncoder.matches(userLogin.getPassword(), userEntity.getPassword());
     }
-
 
     public boolean isValidStatus(UserEntity userEntity) {
         return (userEntity.isStatus());

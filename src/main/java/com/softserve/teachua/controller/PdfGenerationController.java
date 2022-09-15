@@ -25,10 +25,9 @@ public class PdfGenerationController implements Api {
 
     @Autowired
     public PdfGenerationController(ReportGenerationService<ClubResponse> clubReportGenerationService,
-                                   ReportGenerationService<CenterResponse> centerReportGenerationService,
-                                   ReportGenerationService<Page<ClubResponse>> resultSearchReportGenerationService,
-                                   ClubService clubService,
-                                   CenterService centerService) {
+            ReportGenerationService<CenterResponse> centerReportGenerationService,
+            ReportGenerationService<Page<ClubResponse>> resultSearchReportGenerationService, ClubService clubService,
+            CenterService centerService) {
         this.clubReportGenerationService = clubReportGenerationService;
         this.centerReportGenerationService = centerReportGenerationService;
         this.resultSearchReportGenerationService = resultSearchReportGenerationService;
@@ -36,19 +35,20 @@ public class PdfGenerationController implements Api {
         this.centerService = centerService;
     }
 
-    @GetMapping(value = {"/pdf/club/{clubId}"}, produces = {"application/pdf"})
+    @GetMapping(value = { "/pdf/club/{clubId}" }, produces = { "application/pdf" })
     public byte[] generateClubPdfReport(@PathVariable Long clubId) {
         return clubReportGenerationService.getPdfOutput(clubService.getClubProfileById(clubId));
     }
 
-    @GetMapping(value = {"/pdf/center/{centerId}"}, produces = {"application/pdf"})
+    @GetMapping(value = { "/pdf/center/{centerId}" }, produces = { "application/pdf" })
     public byte[] generateCenterPdfReport(@PathVariable Long centerId) {
         return centerReportGenerationService.getPdfOutput(centerService.getCenterProfileById(centerId));
     }
 
-    @GetMapping(value = {"/pdf/resultsearch"}, produces = {"application/pdf"})
+    @GetMapping(value = { "/pdf/resultsearch" }, produces = { "application/pdf" })
     public byte[] generateResultSearchPdfReport(SearchClubProfile searchClubProfile,
-                                                @PageableDefault(sort = "id", value = 50) Pageable pageable) {
-        return resultSearchReportGenerationService.getPdfOutput(clubService.getClubsBySearchParameters(searchClubProfile, pageable));
+            @PageableDefault(sort = "id", value = 50) Pageable pageable) {
+        return resultSearchReportGenerationService
+                .getPdfOutput(clubService.getClubsBySearchParameters(searchClubProfile, pageable));
     }
 }

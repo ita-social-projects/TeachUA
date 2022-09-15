@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the categories.
- * */
+ */
 
 @RestController
 @Slf4j
@@ -36,10 +36,11 @@ public class CategoryController implements Api {
     }
 
     /**
-     * Use this endpoint to get information on a specific category.
-     * The controller returns {@code CategoryResponse}.
+     * Use this endpoint to get information on a specific category. The controller returns {@code CategoryResponse}.
      *
-     * @param id - put category id.
+     * @param id
+     *            - put category id.
+     *
      * @return {@code CategoryResponse}.
      */
     @GetMapping("/category/{id}")
@@ -48,8 +49,7 @@ public class CategoryController implements Api {
     }
 
     /**
-     * Use this endpoint to get information on all categories.
-     * The controller returns {@code List<CategoryResponse>}.
+     * Use this endpoint to get information on all categories. The controller returns {@code List<CategoryResponse>}.
      *
      * @return {@code CategoryResponse}.
      */
@@ -59,55 +59,55 @@ public class CategoryController implements Api {
     }
 
     /**
-     * Use this endpoint to get result of the categories search with pagination.
-     * The controller returns {@code Page<CategoryResponse>}.
+     * Use this endpoint to get result of the categories search with pagination. The controller returns
+     * {@code Page<CategoryResponse>}.
      *
-     * @param pageable - put pageable parameters as request parameters.
+     * @param pageable
+     *            - put pageable parameters as request parameters.
+     *
      * @return {@code Page<CategoryResponse>} - all Categories with pagination.
      */
     @GetMapping("/categories/search")
-    public Page<CategoryResponse> getListOfCategories(
-            @PageableDefault(value = 4, sort = "id") Pageable pageable) {
+    public Page<CategoryResponse> getListOfCategories(@PageableDefault(value = 4, sort = "id") Pageable pageable) {
         return categoryService.getListOfCategories(pageable);
     }
 
     /**
-     * Use this endpoint to create a category.
-     * The controller returns {@code SuccessCreatedCategory}.
+     * Use this endpoint to create a category. The controller returns {@code SuccessCreatedCategory}.
      *
-     * @param categoryProfile - Place dto with all parameters for adding new category.
+     * @param categoryProfile
+     *            - Place dto with all parameters for adding new category.
+     *
      * @return new {@code SuccessCreatedCategory}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/category")
-    public SuccessCreatedCategory addCategory(
-            @Valid
-            @RequestBody CategoryProfile categoryProfile) {
+    public SuccessCreatedCategory addCategory(@Valid @RequestBody CategoryProfile categoryProfile) {
         return categoryService.addCategory(categoryProfile);
     }
 
     /**
-     * Use this endpoint to update the category by id.
-     * The controller returns {@code  CategoryProfile}.
+     * Use this endpoint to update the category by id. The controller returns {@code  CategoryProfile}.
      *
-     * @param id              - put Category id here.
-     * @param categoryProfile - put dto with all parameters here.
+     * @param id
+     *            - put Category id here.
+     * @param categoryProfile
+     *            - put dto with all parameters here.
+     *
      * @return {@code CategoryProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/category/{id}")
-    public CategoryProfile updateCategory(
-            @PathVariable Long id,
-            @Valid
-            @RequestBody CategoryProfile categoryProfile) {
+    public CategoryProfile updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryProfile categoryProfile) {
         return categoryService.updateCategory(id, categoryProfile);
     }
 
     /**
-     * Use this endpoint to archive a category by id.
-     * The controller returns {@code CategoryResponse}.
+     * Use this endpoint to archive a category by id. The controller returns {@code CategoryResponse}.
      *
-     * @param id - put category id.
+     * @param id
+     *            - put category id.
+     *
      * @return {@code CategoryResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)

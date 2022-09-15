@@ -13,6 +13,8 @@ import java.lang.annotation.Target;
 
 public @interface ClubDescription {
     String message() default "Invalid description";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

@@ -39,10 +39,8 @@ public class RoleServiceImpl implements RoleService, ArchiveMark<Role> {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public RoleServiceImpl(RoleRepository roleRepository,
-                           ArchiveService archiveService,
-                           DtoConverter dtoConverter,
-                           ObjectMapper objectMapper) {
+    public RoleServiceImpl(RoleRepository roleRepository, ArchiveService archiveService, DtoConverter dtoConverter,
+            ObjectMapper objectMapper) {
         this.roleRepository = roleRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
@@ -52,8 +50,7 @@ public class RoleServiceImpl implements RoleService, ArchiveMark<Role> {
     @Override
     public List<RoleResponse> getListOfRoles() {
         log.debug("**/getting all roles");
-        return roleRepository.findAll()
-                .stream()
+        return roleRepository.findAll().stream()
                 .map(role -> (RoleResponse) dtoConverter.convertToDto(role, RoleResponse.class))
                 .collect(Collectors.toList());
     }
@@ -77,8 +74,7 @@ public class RoleServiceImpl implements RoleService, ArchiveMark<Role> {
     @Override
     public RoleProfile updateRole(Integer id, RoleProfile roleProfile) {
         Role role = getRoleById(id);
-        Role newRole = dtoConverter.convertToEntity(roleProfile, role)
-                .withId(id);
+        Role newRole = dtoConverter.convertToEntity(roleProfile, role).withId(id);
 
         log.debug("**/updating role by id = " + newRole);
         return dtoConverter.convertToDto(roleRepository.save(newRole), RoleProfile.class);

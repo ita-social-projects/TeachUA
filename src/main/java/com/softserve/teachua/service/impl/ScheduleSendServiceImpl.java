@@ -28,20 +28,21 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
     private final CertificateService certificateService;
 
     @Autowired
-    public ScheduleSendServiceImpl(EmailService emailService, ScheduledAnnotationBeanPostProcessor postProcessor, CertificateService certificateService) {
+    public ScheduleSendServiceImpl(EmailService emailService, ScheduledAnnotationBeanPostProcessor postProcessor,
+            CertificateService certificateService) {
         this.emailService = emailService;
         this.postProcessor = postProcessor;
         this.certificateService = certificateService;
     }
 
-    //@Scheduled(fixedRate = 10000)
+    // @Scheduled(fixedRate = 10000)
     @Scheduled(fixedRate = 180000) // 1 email / 3 min
     public void sendCertificateWithScheduler() {
         CertificateTransfer user = certificateService.getOneUnsentCertificate();
         if (user != null) {
             emailService.sendMessageWithAttachmentAndGeneratedPdf(user.getSendToEmail(),
-                    //"Certificate.",
-                    //"Вітаю! В додатку ви можете знайти ваш сертифікат.",
+                    // "Certificate.",
+                    // "Вітаю! В додатку ви можете знайти ваш сертифікат.",
                     "Сертифікат проєкту \"Єдині\"",
                     "Вітаємо! Дякуємо Вам, що долучилися до проєкту \"Єдині\". Дякуємо за спільну роботу задля великої мети."
                             + "\nВаш сертифікат додано у вкладенні до цього листа.",

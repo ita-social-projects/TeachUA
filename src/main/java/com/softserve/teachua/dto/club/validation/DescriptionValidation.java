@@ -68,4 +68,3 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
         return false;
     }
 }
-

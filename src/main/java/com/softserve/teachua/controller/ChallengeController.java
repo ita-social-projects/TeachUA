@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the challenges.
- * */
+ */
 
 @RestController
 @Tag(name = "challenge", description = "the Challenge API")
@@ -30,10 +30,12 @@ public class ChallengeController implements Api {
     }
 
     /**
-     * Use this endpoint to get all challenges, either active or non-active challenges.
-     * The controller returns {@code List<ChallengePreview>}.
+     * Use this endpoint to get all challenges, either active or non-active challenges. The controller returns
+     * {@code List<ChallengePreview>}.
      *
-     * @param active - Ignore this param to get all challenges, or put true/false to get active or not challenges.
+     * @param active
+     *            - Ignore this param to get all challenges, or put true/false to get active or not challenges.
+     *
      * @return {@code List<ChallengePreview>}.
      */
     // @Operation(summary = "Get all challenges")
@@ -43,11 +45,12 @@ public class ChallengeController implements Api {
     }
 
     /**
-     * Use this endpoint to get full information about challenge by its id with tasks that have already begun.
-     * Only the admin can get the challenge if it is not active.
-     * The controller returns {@code ChallengeProfile}.
+     * Use this endpoint to get full information about challenge by its id with tasks that have already begun. Only the
+     * admin can get the challenge if it is not active. The controller returns {@code ChallengeProfile}.
      *
-     * @param id - put challenge id here.
+     * @param id
+     *            - put challenge id here.
+     *
      * @return {@code ChallengeProfile}.
      */
     @GetMapping("/challenge/{id}")
@@ -56,43 +59,45 @@ public class ChallengeController implements Api {
     }
 
     /**
-     * Use this endpoint to create new challenge.
-     * The controller returns {@code SuccessCreatedChallenge}.
-     * This feature available only for admins.
+     * Use this endpoint to create new challenge. The controller returns {@code SuccessCreatedChallenge}. This feature
+     * available only for admins.
      *
-     * @param createChallenge    - put required parameters here.
+     * @param createChallenge
+     *            - put required parameters here.
+     *
      * @return {@code SuccessCreatedChallenge}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/challenge")
-    public SuccessCreatedChallenge createChallenge(
-            @Valid @RequestBody CreateChallenge createChallenge) {
+    public SuccessCreatedChallenge createChallenge(@Valid @RequestBody CreateChallenge createChallenge) {
         return challengeService.createChallenge(createChallenge);
     }
 
     /**
-     * Use this endpoint to update some values of challenge.
-     * The controller returns {@code SuccessUpdatedChallenge}.
+     * Use this endpoint to update some values of challenge. The controller returns {@code SuccessUpdatedChallenge}.
      * This feature available only for admins.
      *
-     * @param id              - put challenge id here.
-     * @param updateChallenge - put new and old parameters here.
+     * @param id
+     *            - put challenge id here.
+     * @param updateChallenge
+     *            - put new and old parameters here.
+     *
      * @return {@code SuccessUpdatedChallenge} - shows result of updating challenge.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/challenge/{id}")
-    public SuccessUpdatedChallenge updateChallenge(
-            @PathVariable Long id,
+    public SuccessUpdatedChallenge updateChallenge(@PathVariable Long id,
             @Valid @RequestBody UpdateChallenge updateChallenge) {
         return challengeService.updateChallenge(id, updateChallenge);
     }
 
     /**
-     * Use this endpoint to archive challenge and its tasks.
-     * The controller returns {@code ChallengeDeleteResponse}.
+     * Use this endpoint to archive challenge and its tasks. The controller returns {@code ChallengeDeleteResponse}.
      * This feature available only for admins.
      *
-     * @param id - put challenge id here.
+     * @param id
+     *            - put challenge id here.
+     *
      * @return {@code ChallengeDeleteResponse} - shows which challenge and tasks was removed.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -102,36 +107,39 @@ public class ChallengeController implements Api {
     }
 
     /**
-     * Use this endpoint to update some values of challenge.
-     * The controller returns {@code SuccessUpdateChallengePreview}.
-     * This feature available only for admins.
+     * Use this endpoint to update some values of challenge. The controller returns
+     * {@code SuccessUpdateChallengePreview}. This feature available only for admins.
      *
-     * @param id                     - put challenge id here.
-     * @param updateChallengePreview - put new and old parameters here.
+     * @param id
+     *            - put challenge id here.
+     * @param updateChallengePreview
+     *            - put new and old parameters here.
+     *
      * @return {@code SuccessUpdateChallengePreview} - shows result of updating challenge.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PatchMapping("/challenge/{id}")
-    public SuccessUpdateChallengePreview updateChallengePreview(
-            @PathVariable Long id,
+    public SuccessUpdateChallengePreview updateChallengePreview(@PathVariable Long id,
             @Valid @RequestBody SuccessUpdateChallengePreview updateChallengePreview) {
         return challengeService.updateChallengePreview(id, updateChallengePreview);
     }
 
     /**
-     * Use this endpoint to set new start date of challenge.
-     * The controller returns {@code List<SuccessUpdatedTask>}.
+     * Use this endpoint to set new start date of challenge. The controller returns {@code List<SuccessUpdatedTask>}.
      * This feature available only for admins.
      *
-     * @param id - put challenge id here.
-     * @param id                     - put challenge id here.
-     * @param startDate - put new start date here.
+     * @param id
+     *            - put challenge id here.
+     * @param id
+     *            - put challenge id here.
+     * @param startDate
+     *            - put new start date here.
+     *
      * @return {@code List<SuccessUpdatedTask>} - shows result of updating tasks.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/challenge/{id}/clone")
-    public List<SuccessUpdatedTask> cloneChallenge(
-            @PathVariable Long id,
+    public List<SuccessUpdatedTask> cloneChallenge(@PathVariable Long id,
             @Valid @RequestBody UpdateChallengeDate startDate) {
         return challengeService.cloneChallenge(id, startDate);
     }

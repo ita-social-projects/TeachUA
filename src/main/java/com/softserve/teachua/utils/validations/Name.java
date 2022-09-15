@@ -8,8 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Use this annotation to check firstname and lastname fields on valid length,
- * containing valid letters. Allowed ukrainian and english letters.
+ * Use this annotation to check firstname and lastname fields on valid length, containing valid letters. Allowed
+ * ukrainian and english letters.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

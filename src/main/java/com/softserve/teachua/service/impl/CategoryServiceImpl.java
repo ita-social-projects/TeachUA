@@ -45,8 +45,8 @@ public class CategoryServiceImpl implements CategoryService, ArchiveMark<Categor
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository,
-                               DtoConverter dtoConverter, ArchiveService archiveService, ObjectMapper objectMapper) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, DtoConverter dtoConverter,
+            ArchiveService archiveService, ObjectMapper objectMapper) {
         this.categoryRepository = categoryRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
@@ -98,8 +98,7 @@ public class CategoryServiceImpl implements CategoryService, ArchiveMark<Categor
     public List<CategoryResponse> getAllCategories() {
         List<Category> categoryList = categoryRepository.findInSortedOrder();
 
-        List<CategoryResponse> categoryResponses = categoryList
-                .stream()
+        List<CategoryResponse> categoryResponses = categoryList.stream()
                 .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
                 .collect(Collectors.toList());
         log.debug("Getting list of categories = {}", categoryResponses);
@@ -109,10 +108,10 @@ public class CategoryServiceImpl implements CategoryService, ArchiveMark<Categor
     @Override
     public Page<CategoryResponse> getListOfCategories(Pageable pageable) {
         Page<Category> categoryResponses = categoryRepository.findAll(pageable);
-        return new PageImpl<>(categoryResponses
-                .stream()
-                .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
-                .collect(Collectors.toList()),
+        return new PageImpl<>(
+                categoryResponses.stream()
+                        .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
+                        .collect(Collectors.toList()),
                 categoryResponses.getPageable(), categoryResponses.getTotalElements());
     }
 
@@ -139,18 +138,15 @@ public class CategoryServiceImpl implements CategoryService, ArchiveMark<Categor
         if (categories == null) {
             return Collections.emptyList();
         }
-        return categories
-                .stream()
-                .map(category ->
-                        (SearchPossibleResponse) dtoConverter.convertToDto(category, SearchPossibleResponse.class))
+        return categories.stream().map(
+                category -> (SearchPossibleResponse) dtoConverter.convertToDto(category, SearchPossibleResponse.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     public CategoryProfile updateCategory(Long id, CategoryProfile categoryProfile) {
         Category category = getCategoryById(id);
-        Category newCategory = dtoConverter.convertToEntity(categoryProfile, category)
-                .withId(id);
+        Category newCategory = dtoConverter.convertToEntity(categoryProfile, category).withId(id);
 
         log.debug("Updating category by id = {}", newCategory);
         return dtoConverter.convertToDto(categoryRepository.save(newCategory), CategoryProfile.class);

@@ -80,72 +80,23 @@ class MessageServiceTest {
 
     @BeforeEach
     void setUp() {
-        Club club = Club.builder()
-                .id(EXISTING_ID)
-                .name(CLUB_NAME)
-                .build();
-        User sender = User.builder()
-                .id(SENDER_ID)
-                .build();
-        User recipient = User.builder()
-                .id(RECIPIENT_ID)
-                .build();
-        UserPreview senderPrev = UserPreview.builder()
-                .id(SENDER_ID)
-                .build();
-        UserPreview recipientPrev = UserPreview.builder()
-                .id(RECIPIENT_ID)
-                .build();
-        MessagesClub messagesClub = MessagesClub.builder()
-                .id(EXISTING_ID)
-                .name(CLUB_NAME)
-                .build();
-        message = Message.builder()
-                .id(EXISTING_ID)
-                .club(club)
-                .date(TIME_NOW)
-                .sender(sender)
-                .recipient(recipient)
-                .text(TEXT)
-                .isActive(ACTIVE)
-                .build();
-        messageProfile = MessageProfile.builder()
-                .id(EXISTING_ID)
-                .clubId(EXISTING_ID)
-                .senderId(SENDER_ID)
-                .recipientId(RECIPIENT_ID)
-                .text(TEXT)
-                .isActive(null)
-                .build();
-        messageResponseDto = MessageResponseDto.builder()
-                .id(EXISTING_ID)
-                .club(messagesClub)
-                .date(TIME_NOW)
-                .sender(senderPrev)
-                .recipient(recipientPrev)
-                .text(TEXT)
-                .isActive(ACTIVE)
-                .build();
-        updateTextDto = MessageUpdateText.builder()
-                .text(UPDATED_TEXT)
-                .build();
-        updateIsActiveDto = MessageUpdateIsActive.builder()
-                .isActive(false)
-                .build();
-        messageArch = MessageArch.builder()
-                .id(EXISTING_ID)
-                .clubId(EXISTING_ID)
-                .date(TIME_NOW)
-                .senderId(SENDER_ID)
-                .recipientId(RECIPIENT_ID)
-                .text(TEXT)
-                .isActive(ACTIVE)
-                .build();
-        archiveMessage = Archive.builder()
-                .id(EXISTING_ID)
-                .className(ARCHIVE_CLASS_NAME)
-                .data(ARCHIVE_DATA)
-                .build();
+        Club club = Club.builder().id(EXISTING_ID).name(CLUB_NAME).build();
+        User sender = User.builder().id(SENDER_ID).build();
+        User recipient = User.builder().id(RECIPIENT_ID).build();
+        UserPreview senderPrev = UserPreview.builder().id(SENDER_ID).build();
+        UserPreview recipientPrev = UserPreview.builder().id(RECIPIENT_ID).build();
+        MessagesClub messagesClub = MessagesClub.builder().id(EXISTING_ID).name(CLUB_NAME).build();
+        message = Message.builder().id(EXISTING_ID).club(club).date(TIME_NOW).sender(sender).recipient(recipient)
+                .text(TEXT).isActive(ACTIVE).build();
+        messageProfile = MessageProfile.builder().id(EXISTING_ID).clubId(EXISTING_ID).senderId(SENDER_ID)
+                .recipientId(RECIPIENT_ID).text(TEXT).isActive(null).build();
+        messageResponseDto = MessageResponseDto.builder().id(EXISTING_ID).club(messagesClub).date(TIME_NOW)
+                .sender(senderPrev).recipient(recipientPrev).text(TEXT).isActive(ACTIVE).build();
+        updateTextDto = MessageUpdateText.builder().text(UPDATED_TEXT).build();
+        updateIsActiveDto = MessageUpdateIsActive.builder().isActive(false).build();
+        messageArch = MessageArch.builder().id(EXISTING_ID).clubId(EXISTING_ID).date(TIME_NOW).senderId(SENDER_ID)
+                .recipientId(RECIPIENT_ID).text(TEXT).isActive(ACTIVE).build();
+        archiveMessage = Archive.builder().id(EXISTING_ID).className(ARCHIVE_CLASS_NAME).data(ARCHIVE_DATA).build();
     }
 
     @Test
@@ -215,11 +166,9 @@ class MessageServiceTest {
 
         when(messageRepository.findById(EXISTING_ID)).thenReturn(Optional.of(message));
         when(messageRepository.save(messageUpdatedText)).thenReturn(messageUpdatedText);
-        when(dtoConverter.convertToDto(messageUpdatedText, MESSAGE_RESPONSE_DTO_CLASS))
-                .thenReturn(messageResponseDto);
+        when(dtoConverter.convertToDto(messageUpdatedText, MESSAGE_RESPONSE_DTO_CLASS)).thenReturn(messageResponseDto);
 
-        assertEquals(messageResponseDto,
-                messageService.updateMessageTextById(EXISTING_ID, updateTextDto));
+        assertEquals(messageResponseDto, messageService.updateMessageTextById(EXISTING_ID, updateTextDto));
     }
 
     @Test
@@ -232,8 +181,7 @@ class MessageServiceTest {
         when(dtoConverter.convertToDto(messageUpdatedIsActive, MESSAGE_RESPONSE_DTO_CLASS))
                 .thenReturn(messageResponseDto);
 
-        assertEquals(messageResponseDto,
-                messageService.updateMessageIsActiveById(EXISTING_ID, updateIsActiveDto));
+        assertEquals(messageResponseDto, messageService.updateMessageIsActiveById(EXISTING_ID, updateIsActiveDto));
     }
 
     @Test

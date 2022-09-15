@@ -24,13 +24,10 @@ import java.time.format.DateTimeParseException;
 
 import static org.springframework.http.HttpStatus.*;
 
-
 /**
- * Custom exception handler to handle own exceptions
- * and handle Spring's exceptions(BadRequest, MethodNotSupported).
+ * Custom exception handler to handle own exceptions and handle Spring's exceptions(BadRequest, MethodNotSupported).
  * <p>
- * Use @code buildExceptionBody(Exception exception, HttpStatus status) to create
- * own exception body.
+ * Use @code buildExceptionBody(Exception exception, HttpStatus status) to create own exception body.
  *
  * @author Denis Burko
  */
@@ -97,22 +94,21 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> handleRestoreArchiveException(RestoreArchiveException exception) {
         return buildExceptionBody(exception, BAD_REQUEST);
     }
+
     @ExceptionHandler(StreamCloseException.class)
-    public final ResponseEntity<Object> handleStreamCloseException(StreamCloseException exception){
+    public final ResponseEntity<Object> handleStreamCloseException(StreamCloseException exception) {
         return buildExceptionBody(exception, BAD_REQUEST);
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
-                                                                  HttpHeaders headers, HttpStatus status,
-                                                                  WebRequest request) {
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
         Map<String, String> mapMessage = new HashMap<>();
         mapMessage.put("startDate Invalid future date", "Дата не може бути у минулому");
 
         StringBuilder sb = new StringBuilder();
         exception.getBindingResult().getFieldErrors().forEach((error) -> {
-            if ( (error.getField() + " " + error.getDefaultMessage())
-                  .contains("startDate Invalid future date") ) {
+            if ((error.getField() + " " + error.getDefaultMessage()).contains("startDate Invalid future date")) {
                 sb.append(mapMessage.get("startDate Invalid future date")).append(" and ");
             } else {
                 sb.append(error.getField()).append(" ").append(error.getDefaultMessage()).append(" and ");
@@ -122,18 +118,16 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildExceptionBody(new BadRequestException(sb.toString()), status);
     }
 
-
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception,
-                                                                  HttpHeaders headers, HttpStatus status,
-                                                                  WebRequest request) {
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
         return buildExceptionBody(new BadRequestException(exception.getMessage()), status);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
-            HttpRequestMethodNotSupportedException exception, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
+            HttpRequestMethodNotSupportedException exception, HttpHeaders headers, HttpStatus status,
+            WebRequest request) {
         return buildExceptionBody(new MethodNotSupportedException(exception.getMessage()), status);
     }
 
@@ -145,14 +139,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> buildExceptionBody(Exception exception, HttpStatus httpStatus) {
-        ExceptionResponse exceptionResponse = ExceptionResponse.builder()
-                .status(httpStatus.value())
-                .message(exception.getMessage())
-                .build();
+        ExceptionResponse exceptionResponse = ExceptionResponse.builder().status(httpStatus.value())
+                .message(exception.getMessage()).build();
         log.debug(exception.getMessage());
-        return ResponseEntity
-                .status(httpStatus)
-                .body(exceptionResponse);
+        return ResponseEntity.status(httpStatus).body(exceptionResponse);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

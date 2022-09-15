@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the users.
- * */
+ */
 
 @Slf4j
 @RestController
@@ -39,10 +39,11 @@ public class UserController implements Api {
     }
 
     /**
-     * Use this endpoint to get user by id.
-     * The controller returns {@code UserResponse}.
+     * Use this endpoint to get user by id. The controller returns {@code UserResponse}.
      *
-     * @param id - put user id.
+     * @param id
+     *            - put user id.
+     *
      * @return {@code UserResponse}.
      */
     @GetMapping("/user/{id}")
@@ -52,10 +53,11 @@ public class UserController implements Api {
     }
 
     /**
-     * Use this endpoint to get users by roleName.
-     * The controller returns {@code List<UserResponse>}.
+     * Use this endpoint to get users by roleName. The controller returns {@code List<UserResponse>}.
      *
-     * @param roleName - put role name.
+     * @param roleName
+     *            - put role name.
+     *
      * @return {@code List<UserResponse>}.
      */
     @GetMapping("/users/{role}")
@@ -64,8 +66,7 @@ public class UserController implements Api {
     }
 
     /**
-     * Use this endpoint to get users.
-     * The controller returns {@code List <UserResponse>}.
+     * Use this endpoint to get users. The controller returns {@code List <UserResponse>}.
      *
      * @return new {@code List <UserResponse>}.
      */
@@ -75,27 +76,27 @@ public class UserController implements Api {
     }
 
     /**
-     * Use this endpoint to update user by id.
-     * The controller returns {@code SuccessUpdatedUser}.
+     * Use this endpoint to update user by id. The controller returns {@code SuccessUpdatedUser}.
      *
-     * @param id                 - put user id.
-     * @param userProfile        - Place dto with all parameters for update existed user.
-     * @param httpServletRequest - autowired by spring.
+     * @param id
+     *            - put user id.
+     * @param userProfile
+     *            - Place dto with all parameters for update existed user.
+     * @param httpServletRequest
+     *            - autowired by spring.
+     *
      * @return {@code SuccessUpdatedUser}.
      */
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/user/{id}")
-    public SuccessUpdatedUser updateUser(
-            @PathVariable Long id,
-            @Valid
-            @RequestBody UserUpdateProfile userProfile, HttpServletRequest httpServletRequest) {
+    public SuccessUpdatedUser updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateProfile userProfile,
+            HttpServletRequest httpServletRequest) {
         userService.validateUserId(id, httpServletRequest);
         return userService.updateUser(id, userProfile);
     }
 
     /**
-     * Use this endpoint to delete user by id.
-     * The controller returns {@code UserResponse}.
+     * Use this endpoint to delete user by id. The controller returns {@code UserResponse}.
      */
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/user/{id}")
@@ -110,18 +111,19 @@ public class UserController implements Api {
     }
 
     /**
-     * Use this endpoint to change user password.
-     * The controller returns {@code UserResponse}.
+     * Use this endpoint to change user password. The controller returns {@code UserResponse}.
      *
-     * @param httpServletRequest - autowired by spring.
-     * @param passwordUpdate     - password
-     * @param id                 - id
+     * @param httpServletRequest
+     *            - autowired by spring.
+     * @param passwordUpdate
+     *            - password
+     * @param id
+     *            - id
      */
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/user/{id}")
-    public void changePassword(@PathVariable("id") Long id,
-                               @Valid @RequestBody UserPasswordUpdate passwordUpdate,
-                               HttpServletRequest httpServletRequest) {
+    public void changePassword(@PathVariable("id") Long id, @Valid @RequestBody UserPasswordUpdate passwordUpdate,
+            HttpServletRequest httpServletRequest) {
         userService.validateUserId(id, httpServletRequest);
         userService.updatePassword(id, passwordUpdate);
     }

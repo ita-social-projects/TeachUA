@@ -29,12 +29,12 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
 
     @Override
     public void archiveModel(CertificateTemplate certificateType) {
-        //TODO
+        // TODO
     }
 
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
-        //TODO
+        // TODO
     }
 
     @Override
