@@ -41,7 +41,7 @@ public class ContactTypeServiceImpl implements ContactTypeService, ArchiveMark<C
 
     @Autowired
     public ContactTypeServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService,
-                                  ContactTypeRepository contactTypeRepository, ObjectMapper objectMapper) {
+            ContactTypeRepository contactTypeRepository, ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
         this.contactTypeRepository = contactTypeRepository;
@@ -50,8 +50,7 @@ public class ContactTypeServiceImpl implements ContactTypeService, ArchiveMark<C
 
     @Override
     public List<ContactTypeResponse> getListOfContactTypes() {
-        List<ContactTypeResponse> contactTypeResponses = contactTypeRepository.findAll()
-                .stream()
+        List<ContactTypeResponse> contactTypeResponses = contactTypeRepository.findAll().stream()
                 .map(type -> (ContactTypeResponse) dtoConverter.convertToDto(type, ContactTypeResponse.class))
                 .collect(Collectors.toList());
 
@@ -66,8 +65,8 @@ public class ContactTypeServiceImpl implements ContactTypeService, ArchiveMark<C
             throw new AlreadyExistException(String.format(CONTACT_TYPE_ALREADY_EXIST, contactTypeProfile.getName()));
         }
 
-        ContactType contactType = contactTypeRepository.save(dtoConverter
-                .convertToEntity(contactTypeProfile, new ContactType()));
+        ContactType contactType = contactTypeRepository
+                .save(dtoConverter.convertToEntity(contactTypeProfile, new ContactType()));
         log.debug("**/adding new contact type = " + contactType);
         return dtoConverter.convertToDto(contactType, SuccessCreatedContactType.class);
     }
@@ -75,8 +74,7 @@ public class ContactTypeServiceImpl implements ContactTypeService, ArchiveMark<C
     @Override
     public ContactTypeProfile updateContactType(Long id, ContactTypeProfile contactTypeProfile) {
         ContactType contactType = getContactTypeById(id);
-        ContactType newContactType = dtoConverter.convertToEntity(contactTypeProfile, contactType)
-                .withId(id);
+        ContactType newContactType = dtoConverter.convertToEntity(contactTypeProfile, contactType).withId(id);
 
         log.debug("**/updating contact type by id = " + newContactType);
 

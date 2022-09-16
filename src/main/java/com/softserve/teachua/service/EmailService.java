@@ -11,11 +11,15 @@ public interface EmailService {
     /**
      * The method handle all additional methods and send email to proper user.
      *
-     * @param to       - indicate receiver.
-     * @param subject  - indicate subject of email.
-     * @param text     - indicate body text.
-     * @param certificateTransfer - dto User.
+     * @param to
+     *            - indicate receiver.
+     * @param subject
+     *            - indicate subject of email.
+     * @param text
+     *            - indicate body text.
+     * @param certificateTransfer
+     *            - dto User.
      */
     void sendMessageWithAttachmentAndGeneratedPdf(String to, String subject, String text,
-                                                  CertificateTransfer certificateTransfer);
+            CertificateTransfer certificateTransfer);
 }

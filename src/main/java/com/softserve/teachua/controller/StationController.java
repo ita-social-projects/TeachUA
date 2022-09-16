@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the stations.
- * */
+ */
 
 @RestController
 @Tag(name = "station", description = "the Station API")
@@ -32,10 +32,11 @@ public class StationController implements Api {
     }
 
     /**
-     * Use this endpoint to get station by id.
-     * The controller returns {@code StationResponse}.
+     * Use this endpoint to get station by id. The controller returns {@code StationResponse}.
      *
-     * @param id - put station id.
+     * @param id
+     *            - put station id.
+     *
      * @return {@code StationResponse}.
      */
     @GetMapping("/station/{id}")
@@ -44,40 +45,37 @@ public class StationController implements Api {
     }
 
     /**
-     * Use this endpoint to create station.
-     * The controller returns {@code SuccessCreatedStation}.
+     * Use this endpoint to create station. The controller returns {@code SuccessCreatedStation}.
      *
-     * @param stationProfile - place body to {@code StationProfile}.
+     * @param stationProfile
+     *            - place body to {@code StationProfile}.
+     *
      * @return new {@code SuccessCreatedStation}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/station")
-    public SuccessCreatedStation addStation(
-            @Valid
-            @RequestBody StationProfile stationProfile) {
+    public SuccessCreatedStation addStation(@Valid @RequestBody StationProfile stationProfile) {
         return stationService.addStation(stationProfile);
     }
 
     /**
-     * Use this endpoint to update station by id.
-     * The controller returns {@code StationProfile}.
+     * Use this endpoint to update station by id. The controller returns {@code StationProfile}.
      *
-     * @param id             - put station id.
-     * @param stationProfile - place body to {@link CityProfile}.
+     * @param id
+     *            - put station id.
+     * @param stationProfile
+     *            - place body to {@link CityProfile}.
+     *
      * @return {@code StationProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/station/{id}")
-    public StationProfile updateStation(
-            @PathVariable Long id,
-            @Valid
-            @RequestBody StationProfile stationProfile) {
+    public StationProfile updateStation(@PathVariable Long id, @Valid @RequestBody StationProfile stationProfile) {
         return stationService.updateStation(id, stationProfile);
     }
 
     /**
-     * Use this endpoint to get all stations.
-     * The controller returns list of {@code List<StationResponse>}.
+     * Use this endpoint to get all stations. The controller returns list of {@code List<StationResponse>}.
      *
      * @return {@code List<StationResponse>}.
      */
@@ -87,28 +85,30 @@ public class StationController implements Api {
     }
 
     /**
-     * Use this endpoint to get stations by name.
-     * The controller returns list of {@code List<StationResponse>}.
+     * Use this endpoint to get stations by name. The controller returns list of {@code List<StationResponse>}.
      *
-     * @param name - put city name.
+     * @param name
+     *            - put city name.
+     *
      * @return {@code List<StationResponse>}.
      */
     @GetMapping("/stations/{name}")
     public List<StationResponse> getStationsByCityName(@PathVariable String name) {
         return stationService.getListOfStationsByCityName(name);
     }
-    @PostMapping("/district/stations")
-    public List<StationResponse> getStationsByDistrictNameAndCityName(@RequestBody StationProfile stationProfile){
 
-        return  stationService.getAllByDistrictNameAndCityName(stationProfile);
+    @PostMapping("/district/stations")
+    public List<StationResponse> getStationsByDistrictNameAndCityName(@RequestBody StationProfile stationProfile) {
+
+        return stationService.getAllByDistrictNameAndCityName(stationProfile);
     }
 
-
     /**
-     * Use this endpoint to delete station by id.
-     * The controller returns {@code StationResponse}.
+     * Use this endpoint to delete station by id. The controller returns {@code StationResponse}.
      *
-     * @param id - put station id.
+     * @param id
+     *            - put station id.
+     *
      * @return {@code StationResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)

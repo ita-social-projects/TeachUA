@@ -26,7 +26,7 @@ public class LocationResponse {
     private String address;
     @NotBlank
     @CheckRussian
-    private String  cityName;
+    private String cityName;
     @NotBlank
     @CheckRussian
     private String districtName;
@@ -47,6 +47,6 @@ public class LocationResponse {
     private Double longitude;
     private Double latitude;
 
-    @Pattern(regexp = "0[\\d]{9}",message = "Incorrect phone number")
+    @Pattern(regexp = "0[\\d]{9}", message = "Incorrect phone number")
     private String phone;
 }

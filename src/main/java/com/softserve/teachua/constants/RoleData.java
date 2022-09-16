@@ -4,9 +4,8 @@ package com.softserve.teachua.constants;
  * Enum class to refer to roles in code.
  */
 public enum RoleData {
-    ADMIN("ADMIN"),
-    USER("USER"),
-    MANAGER("MANAGER");
+    ADMIN("ADMIN"), USER("USER"), MANAGER("MANAGER");
+
     private static final String DB_PREFIX = "ROLE_";
     private String name;
 

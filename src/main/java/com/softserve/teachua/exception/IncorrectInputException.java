@@ -15,4 +15,3 @@ public class IncorrectInputException extends IllegalArgumentException {
         super(INCORRECT_INPUT_EXCEPTION);
     }
 }
-

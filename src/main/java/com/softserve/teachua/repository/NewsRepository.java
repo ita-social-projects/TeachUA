@@ -21,7 +21,6 @@ public interface NewsRepository extends JpaRepository<News, Long> {
     @Query("SELECT distinct n FROM News AS n WHERE n.isActive = true AND  n.date <= CURRENT_DATE ORDER BY n.date desc, n.id desc")
     Page<News> findAll(Pageable pageable);
 
-
     @Query("SELECT n FROM News AS n WHERE n.isActive = true AND n.date <= CURRENT_DATE ORDER BY n.date desc, n.id desc")
     List<News> getAllCurrentNews();
 

@@ -21,7 +21,9 @@ public interface CategoryService {
     /**
      * The method returns dto {@code CategoryResponse} of category by id.
      *
-     * @param id - put category id.
+     * @param id
+     *            - put category id.
+     *
      * @return new {@code CategoryResponse}.
      */
     CategoryResponse getCategoryProfileById(Long id);
@@ -29,27 +31,39 @@ public interface CategoryService {
     /**
      * The method returns entity {@code Category} of category by id.
      *
-     * @param id - put category id.
+     * @param id
+     *            - put category id.
+     *
      * @return new {@code Category}.
-     * @throws NotExistException if category does not exist.
+     *
+     * @throws NotExistException
+     *             if category does not exist.
      */
     Category getCategoryById(Long id);
 
     /**
      * The method returns entity {@code Category} of category by name.
      *
-     * @param name - put category name.
+     * @param name
+     *            - put category name.
+     *
      * @return new {@code Category}.
-     * @throws NotExistException if category does not exist.
+     *
+     * @throws NotExistException
+     *             if category does not exist.
      */
     Category getCategoryByName(String name);
 
     /**
      * The method returns dto {@code SuccessCreatedCategory} if category successfully added.
      *
-     * @param categoryProfile - place body of dto {@code CategoryProfile}.
+     * @param categoryProfile
+     *            - place body of dto {@code CategoryProfile}.
+     *
      * @return new {@code SuccessCreatedCategory}.
-     * @throws AlreadyExistException if category already exists.
+     *
+     * @throws AlreadyExistException
+     *             if category already exists.
      */
     SuccessCreatedCategory addCategory(CategoryProfile categoryProfile);
 
@@ -70,9 +84,13 @@ public interface CategoryService {
     /**
      * The method returns dto {@code CategoryResponse} of deleted category by id.
      *
-     * @param id - put category id.
+     * @param id
+     *            - put category id.
+     *
      * @return new {@code CategoryResponse}.
-     * @throws DatabaseRepositoryException if category contains foreign keys.
+     *
+     * @throws DatabaseRepositoryException
+     *             if category contains foreign keys.
      */
     CategoryResponse deleteCategoryById(Long id);
 
@@ -86,7 +104,9 @@ public interface CategoryService {
     /**
      * The method returns dto {@code CategoryProfile} of updated category.
      *
-     * @param categoryProfile - place body of dto {@code CategoryProfile}.
+     * @param categoryProfile
+     *            - place body of dto {@code CategoryProfile}.
+     *
      * @return new {@code CategoryProfile}.
      */
     CategoryProfile updateCategory(Long id, CategoryProfile categoryProfile);

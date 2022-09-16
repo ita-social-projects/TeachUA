@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing the searching process.
- * */
+ */
 
 @RestController
 @Validated
@@ -32,19 +32,18 @@ public class SearchController implements Api {
     }
 
     /**
-     * Use this endpoint to get possible results of search by entered text.
-     * The controller returns {@code CombinedPossibleResponse}.
+     * Use this endpoint to get possible results of search by entered text. The controller returns
+     * {@code CombinedPossibleResponse}.
      *
-     * @param text - put search text.
+     * @param text
+     *            - put search text.
+     *
      * @return {@link CombinedPossibleResponse }
      */
     @GetMapping("/search")
-    public CombinedPossibleResponse possibleResponses(
-            @RequestParam @Length(max = 50) String text,
+    public CombinedPossibleResponse possibleResponses(@RequestParam @Length(max = 50) String text,
             @RequestParam String cityName) {
-        return CombinedPossibleResponse.builder()
-                .categories(categoryService.getPossibleCategoryByName(text))
-                .clubs(clubService.getPossibleClubByName(text, cityName))
-                .build();
+        return CombinedPossibleResponse.builder().categories(categoryService.getPossibleCategoryByName(text))
+                .clubs(clubService.getPossibleClubByName(text, cityName)).build();
     }
 }

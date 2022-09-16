@@ -15,7 +15,7 @@ import javax.validation.Valid;
 
 /**
  * This controller is for managing the password.
- * */
+ */
 
 @RestController
 @Tag(name = "password", description = "the Password API")
@@ -29,18 +29,16 @@ public class PasswordController implements Api {
     }
 
     /**
-     * Use this endpoint to create new password for signed-in users.
-     * The controller returns {@code UserVerifyPassword}.
+     * Use this endpoint to create new password for signed-in users. The controller returns {@code UserVerifyPassword}.
      *
-     * @param userLogin - dto with all params.
+     * @param userLogin
+     *            - dto with all params.
+     *
      * @return new {@code UserVerifyPassword}.
      */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/verify")
-    public UserVerifyPassword verify(
-            @Valid
-            @RequestBody
-                    UserVerifyPassword userLogin) {
+    public UserVerifyPassword verify(@Valid @RequestBody UserVerifyPassword userLogin) {
         return userService.validateUser(userLogin);
     }
 }

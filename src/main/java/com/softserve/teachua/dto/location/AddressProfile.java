@@ -1,6 +1,5 @@
 package com.softserve.teachua.dto.location;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,8 +11,8 @@ import lombok.With;
 @NoArgsConstructor
 public class AddressProfile {
 
-    private  Long id;
-    private  String addressText;
-    private  String realCity;
+    private Long id;
+    private String addressText;
+    private String realCity;
 
 }

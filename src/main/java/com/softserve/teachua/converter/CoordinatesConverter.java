@@ -20,7 +20,7 @@ public class CoordinatesConverter {
     }
 
     public void locationProfileConverterToDb(LocationProfile location) {
-        if(location != null && location.getCoordinates() != null){
+        if (location != null && location.getCoordinates() != null) {
             String coordinates = location.getCoordinates();
             String[] latAndLng = coordinates.replaceAll(" ", "").split(",");
             location.setLatitude(Double.valueOf(latAndLng[0]));
@@ -29,7 +29,7 @@ public class CoordinatesConverter {
     }
 
     public void locationResponseConverterToDb(LocationResponse location) {
-        if(location != null && location.getCoordinates() != null){
+        if (location != null && location.getCoordinates() != null) {
             String coordinates = location.getCoordinates();
             String[] latAndLng = coordinates.replaceAll(" ", "").split(",");
             location.setLatitude(Double.valueOf(latAndLng[0]));

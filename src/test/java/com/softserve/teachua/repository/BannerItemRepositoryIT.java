@@ -22,27 +22,12 @@ public class BannerItemRepositoryIT {
     private static final Integer BANNER_ITEM_SEQUENCE_NUMBER_2 = 1;
     private static final Integer BANNER_ITEM_SEQUENCE_NUMBER_3 = 50;
 
-    private final BannerItem bannerItem1 = BannerItem
-            .builder()
-            .title(BANNER_ITEM_1)
-            .subtitle(BANNER_ITEM_1)
-            .picture(BANNER_ITEM_1)
-            .sequenceNumber(BANNER_ITEM_SEQUENCE_NUMBER_1)
-            .build();
-    private final BannerItem bannerItem2 = BannerItem
-            .builder()
-            .title(BANNER_ITEM_2)
-            .subtitle(BANNER_ITEM_2)
-            .picture(BANNER_ITEM_2)
-            .sequenceNumber(BANNER_ITEM_SEQUENCE_NUMBER_2)
-            .build();
-    private final BannerItem bannerItem3 = BannerItem
-            .builder()
-            .title(BANNER_ITEM_3)
-            .subtitle(BANNER_ITEM_3)
-            .picture(BANNER_ITEM_3)
-            .sequenceNumber(BANNER_ITEM_SEQUENCE_NUMBER_3)
-            .build();
+    private final BannerItem bannerItem1 = BannerItem.builder().title(BANNER_ITEM_1).subtitle(BANNER_ITEM_1)
+            .picture(BANNER_ITEM_1).sequenceNumber(BANNER_ITEM_SEQUENCE_NUMBER_1).build();
+    private final BannerItem bannerItem2 = BannerItem.builder().title(BANNER_ITEM_2).subtitle(BANNER_ITEM_2)
+            .picture(BANNER_ITEM_2).sequenceNumber(BANNER_ITEM_SEQUENCE_NUMBER_2).build();
+    private final BannerItem bannerItem3 = BannerItem.builder().title(BANNER_ITEM_3).subtitle(BANNER_ITEM_3)
+            .picture(BANNER_ITEM_3).sequenceNumber(BANNER_ITEM_SEQUENCE_NUMBER_3).build();
 
     private final List<BannerItem> sortedBannerItems = Arrays.asList(bannerItem2, bannerItem3, bannerItem1);
     @Autowired

@@ -29,14 +29,11 @@ public class ClubProfile implements Convertible {
 
     @CheckRussian
     @ClubDescription
-    @Size(min = 40,max = 1500,message = "Description should be between 40 and 1500 chars")
+    @Size(min = 40, max = 1500, message = "Description should be between 40 and 1500 chars")
     public String description;
 
     @NotEmpty
-    @Size(
-            min = 5,
-            max = 100,
-            message = "Довжина назви має бути від 5 до 100 символів")
+    @Size(min = 5, max = 100, message = "Довжина назви має бути від 5 до 100 символів")
     @CheckRussian
     private String name;
 
@@ -59,7 +56,7 @@ public class ClubProfile implements Convertible {
     private Boolean isOnline;
 
     private String contacts;
-  
+
     private Boolean isApproved;
 
     private Long userId;

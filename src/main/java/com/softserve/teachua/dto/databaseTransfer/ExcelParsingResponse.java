@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @Data
 public class ExcelParsingResponse {
     private final List<ExcelParsingMistake> parsingMistakes = new ArrayList<>();

@@ -19,7 +19,9 @@ public interface NewsService {
     /**
      * Method finds {@code News}, and converts it to object of DTO class {@code NewsResponce}.
      *
-     * @param id - put News id.
+     * @param id
+     *            - put News id.
+     *
      * @return new {@code NewsResponce}.
      **/
     NewsResponse getNewsProfileById(Long id);
@@ -27,7 +29,9 @@ public interface NewsService {
     /**
      * Method finds {@link News}.
      *
-     * @param id - put News id.
+     * @param id
+     *            - put News id.
+     *
      * @return new {@code News}
      **/
     News getNewsById(Long id);
@@ -35,7 +39,9 @@ public interface NewsService {
     /**
      * Method add and save new {@link Feedback}, returns dto {@code SuccessCreatedNews}.
      *
-     * @param newsProfile - place body of dto {@code NewsProfile}.
+     * @param newsProfile
+     *            - place body of dto {@code NewsProfile}.
+     *
      * @return new {@code SuccessCreatedNews}.
      **/
     SuccessCreatedNews addNews(NewsProfile newsProfile);
@@ -57,8 +63,11 @@ public interface NewsService {
     /**
      * Method find {@link News} by id, and update data.
      *
-     * @param id          - put News id.
-     * @param newsProfile - place body of dto {@code NewsProfile}.
+     * @param id
+     *            - put News id.
+     * @param newsProfile
+     *            - place body of dto {@code NewsProfile}.
+     *
      * @return new {@code SuccessCreatedNews}.
      **/
     SuccessCreatedNews updateNewsProfileById(Long id, NewsProfile newsProfile);
@@ -66,7 +75,9 @@ public interface NewsService {
     /**
      * The method deletes news by id and returns dto {@code NewsResponse}.
      *
-     * @param id - put News id.
+     * @param id
+     *            - put News id.
+     *
      * @return new {@code NewsResponse}.
      **/
     NewsResponse deleteNewsById(Long id);

@@ -42,7 +42,6 @@ public class StationServiceImplTest {
     @Mock
     private ArchiveService archiveService;
 
-
     @InjectMocks
     private StationServiceImpl stationService;
 
@@ -66,78 +65,57 @@ public class StationServiceImplTest {
     private final Double CITY_LONGITUDE = 2.22D;
 
     @BeforeEach
-    public void setMocks(){
-        city = City.builder()
-                .id(CORRECT_CITY_ID)
-                .name(CITY_NAME)
-                .latitude(CITY_LATITUDE)
-                .longitude(CITY_LONGITUDE)
+    public void setMocks() {
+        city = City.builder().id(CORRECT_CITY_ID).name(CITY_NAME).latitude(CITY_LATITUDE).longitude(CITY_LONGITUDE)
                 .build();
 
-        station = Station.builder()
-                .id(CORRECT_STATION_ID)
-                .name(CORRECT_STATION_NAME)
-                .city(city)
-                .build();
+        station = Station.builder().id(CORRECT_STATION_ID).name(CORRECT_STATION_NAME).city(city).build();
 
-        stationResponse = StationResponse.builder()
-                .id(CORRECT_STATION_ID)
-                .name(CORRECT_STATION_NAME)
-                .cityName(CITY_NAME)
-                .build();
+        stationResponse = StationResponse.builder().id(CORRECT_STATION_ID).name(CORRECT_STATION_NAME)
+                .cityName(CITY_NAME).build();
 
-        stationProfile = StationProfile.builder()
-                .name(CORRECT_STATION_NAME)
-                .cityName(CITY_NAME)
-                .build();
+        stationProfile = StationProfile.builder().name(CORRECT_STATION_NAME).cityName(CITY_NAME).build();
 
-        successCreatedStation = SuccessCreatedStation.builder()
-                .id(CORRECT_STATION_ID)
-                .name(CORRECT_STATION_NAME)
-                .cityName(CITY_NAME)
-                .build();
+        successCreatedStation = SuccessCreatedStation.builder().id(CORRECT_STATION_ID).name(CORRECT_STATION_NAME)
+                .cityName(CITY_NAME).build();
     }
 
-//    @Test
-//    public void getOptionalStationByIdShouldReturnOptionalStation(){
-//        when(stationRepository.findById(CORRECT_STATION_ID)).thenReturn();
-//    }
+    // @Test
+    // public void getOptionalStationByIdShouldReturnOptionalStation(){
+    // when(stationRepository.findById(CORRECT_STATION_ID)).thenReturn();
+    // }
 
     @Test
-    public void getStationByCorrectIdShouldReturnStation(){
+    public void getStationByCorrectIdShouldReturnStation() {
         when(stationRepository.findById(CORRECT_STATION_ID)).thenReturn(Optional.of(station));
         Station actual = stationService.getStationById(CORRECT_STATION_ID);
-        assertThat(actual)
-                .isEqualTo(station);
+        assertThat(actual).isEqualTo(station);
     }
 
     @Test
-    public void getStationByWrongIdShouldReturnNull(){
+    public void getStationByWrongIdShouldReturnNull() {
         when(stationRepository.findById(WRONG_STATION_ID)).thenReturn(Optional.empty());
         Station actual = stationService.getStationById(WRONG_STATION_ID);
-        assertThat(actual)
-                .isEqualTo(null);
+        assertThat(actual).isEqualTo(null);
     }
 
     @Test
-    public void getStationProfileByIdShouldReturnStationResponse(){
+    public void getStationProfileByIdShouldReturnStationResponse() {
         when(stationRepository.findById(CORRECT_STATION_ID)).thenReturn(Optional.of(station));
         when(dtoConverter.convertToDto(station, StationResponse.class)).thenReturn(stationResponse);
         StationResponse actual = stationService.getStationProfileById(CORRECT_STATION_ID);
-        assertThat(actual)
-                .isEqualTo(stationResponse);
+        assertThat(actual).isEqualTo(stationResponse);
     }
 
     @Test
-    public void getStationByCorrectNameShouldReturnStation(){
+    public void getStationByCorrectNameShouldReturnStation() {
         when(stationRepository.findByName(CORRECT_STATION_NAME)).thenReturn(Optional.of(station));
         Station actual = stationService.getStationByName(CORRECT_STATION_NAME);
-        assertThat(actual)
-                .isEqualTo(station);
+        assertThat(actual).isEqualTo(station);
     }
 
     @Test
-    public void getStationByWrongNameShouldThrowNotExistException(){
+    public void getStationByWrongNameShouldThrowNotExistException() {
         when(stationRepository.findByName(WRONG_STATION_NAME)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> {
             stationService.getStationByName(WRONG_STATION_NAME);
@@ -146,18 +124,17 @@ public class StationServiceImplTest {
     }
 
     @Test
-    public void addStationShouldReturnSuccessCreatedStation(){
+    public void addStationShouldReturnSuccessCreatedStation() {
         when(stationRepository.existsByName(CORRECT_STATION_NAME)).thenReturn(false);
         when(cityService.getCityByName(CITY_NAME)).thenReturn(city);
         when(dtoConverter.convertToEntity(stationProfile, new Station())).thenReturn(station);
         when(stationRepository.save(station)).thenReturn(station);
         when(dtoConverter.convertToDto(station, SuccessCreatedStation.class)).thenReturn(successCreatedStation);
-        assertThat(stationService.addStation(stationProfile))
-                .isEqualTo(successCreatedStation);
+        assertThat(stationService.addStation(stationProfile)).isEqualTo(successCreatedStation);
     }
 
     @Test
-    public void addStationShouldThrowAlreadyExistException(){
+    public void addStationShouldThrowAlreadyExistException() {
         when(stationRepository.existsByName(CORRECT_STATION_NAME)).thenReturn(true);
         assertThatThrownBy(() -> {
             stationService.addStation(stationProfile);
@@ -165,32 +142,26 @@ public class StationServiceImplTest {
     }
 
     @Test
-    public void getListOfStationsShouldReturnListOfStationResponses(){
+    public void getListOfStationsShouldReturnListOfStationResponses() {
         when(stationRepository.findAll()).thenReturn(Arrays.asList(station));
-        when(dtoConverter.convertToDto(station, StationResponse.class))
-                .thenReturn(stationResponse);
+        when(dtoConverter.convertToDto(station, StationResponse.class)).thenReturn(stationResponse);
 
-        assertThat(stationService.getListOfStations())
-                .isNotEmpty()
-                .isEqualTo(Arrays.asList(stationResponse));
+        assertThat(stationService.getListOfStations()).isNotEmpty().isEqualTo(Arrays.asList(stationResponse));
     }
 
     @Test
-    public void getListOfStationsByCorrectCityNameShouldReturnListOfStationResponses(){
+    public void getListOfStationsByCorrectCityNameShouldReturnListOfStationResponses() {
         when(stationRepository.findAllByCityName(CITY_NAME)).thenReturn(Arrays.asList(station));
-        when(dtoConverter.convertToDto(station, StationResponse.class))
-                .thenReturn(stationResponse);
+        when(dtoConverter.convertToDto(station, StationResponse.class)).thenReturn(stationResponse);
 
-        assertThat(stationService.getListOfStationsByCityName(CITY_NAME))
-                .isNotEmpty()
+        assertThat(stationService.getListOfStationsByCityName(CITY_NAME)).isNotEmpty()
                 .isEqualTo(Arrays.asList(stationResponse));
     }
 
     @Test
-    public void getListOfStationsByWrongCityNameShouldReturnListOfStationResponses(){
+    public void getListOfStationsByWrongCityNameShouldReturnListOfStationResponses() {
         when(stationRepository.findAllByCityName(WRONG_CITY_NAME)).thenReturn(Arrays.asList());
-        assertThat(stationService.getListOfStationsByCityName(WRONG_CITY_NAME))
-                .isEmpty();
+        assertThat(stationService.getListOfStationsByCityName(WRONG_CITY_NAME)).isEmpty();
     }
 
 }

@@ -66,17 +66,11 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
     @Autowired
     public CenterServiceImpl(LocationService locationService, CenterRepository centerRepository,
-                             ArchiveService archiveService,
-                             DtoConverter dtoConverter,
-                             LocationRepository locationRepository,
-                             CityService cityService,
-                             DistrictService districtService,
-                             StationService stationService,
-                             ClubRepository clubRepository,
-                             UserRepository userRepository,
-                             UserService userService,
-                             CenterToCenterResponseConverter centerToCenterResponseConverter,
-                             CoordinatesConverter coordinatesConverter, ObjectMapper objectMapper) {
+            ArchiveService archiveService, DtoConverter dtoConverter, LocationRepository locationRepository,
+            CityService cityService, DistrictService districtService, StationService stationService,
+            ClubRepository clubRepository, UserRepository userRepository, UserService userService,
+            CenterToCenterResponseConverter centerToCenterResponseConverter, CoordinatesConverter coordinatesConverter,
+            ObjectMapper objectMapper) {
         this.locationService = locationService;
         this.centerRepository = centerRepository;
         this.archiveService = archiveService;
@@ -97,7 +91,6 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     public void setClubService(ClubService clubService) {
         this.clubService = clubService;
     }
-
 
     private void convertCoordinates(LocationProfile locationProfile) {
         coordinatesConverter.locationProfileConverterToDb(locationProfile);
@@ -144,27 +137,23 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
             log.debug("CenterServiceImpl=> centerProfile.userId == null");
         }
 
-        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
-                .withUser(user));
+        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center()).withUser(user));
 
         List<LocationProfile> locations = centerProfile.getLocations();
         if (locations != null && !locations.isEmpty()) {
             for (LocationProfile profile : locations) {
                 convertCoordinates(profile);
             }
-            center.setLocations(locations
-                    .stream()
-                    .map(locationProfile -> locationRepository.save(
-                            dtoConverter.convertToEntity(locationProfile, new Location())
-                                    .withCenter(center)
+            center.setLocations(
+                    locations.stream()
+                            .map(locationProfile -> locationRepository.save(dtoConverter
+                                    .convertToEntity(locationProfile, new Location()).withCenter(center)
                                     .withCity(cityService.getCityByName(locationProfile.getCityName()))
                                     .withDistrict(locationProfile.getDistrictName() == null ? null
                                             : districtService.getDistrictByName(locationProfile.getDistrictName()))
                                     .withStation(locationProfile.getStationName() == null ? null
-                                            : stationService.getStationByName(locationProfile.getStationName()))
-                    ))
-                    .collect(Collectors.toSet())
-            );
+                                            : stationService.getStationByName(locationProfile.getStationName()))))
+                            .collect(Collectors.toSet()));
         }
 
         List<Long> clubsId = centerProfile.getClubsId();
@@ -216,8 +205,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         }
 
         Set<LocationProfile> locations = setLocationToCenter(centerProfile.getLocations(), id);
-        Center newCenter = dtoConverter.convertToEntity(centerProfile, center)
-                .withId(id)
+        Center newCenter = dtoConverter.convertToEntity(centerProfile, center).withId(id)
                 .withLocations(locationService.updateCenterLocation(locations, center));
 
         log.debug("**/updating center by id = " + newCenter);
@@ -248,27 +236,24 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     public Page<CenterResponse> getCentersByUserId(Long id, Pageable pageable) {
         Page<Center> centerResponses = centerRepository.findAllByUserId(id, pageable);
 
-        return new PageImpl<>(centerResponses
-                .stream()
-                .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
-                .collect(Collectors.toList()),
+        return new PageImpl<>(
+                centerResponses.stream()
+                        .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
+                        .collect(Collectors.toList()),
                 centerResponses.getPageable(), centerResponses.getTotalElements());
     }
 
     @Override
     public Page<CenterResponse> getAdvancedSearchCenters(AdvancedSearchCenterProfile advancedSearchCenterProfile,
-                                                         Pageable pageable) {
+            Pageable pageable) {
         Page<Center> centersOnPage = centerRepository.findAllBylAdvancedSearch(
-                advancedSearchCenterProfile.getCityName(),
-                advancedSearchCenterProfile.getDistrictName(),
-                advancedSearchCenterProfile.getStationName(),
-                pageable);
+                advancedSearchCenterProfile.getCityName(), advancedSearchCenterProfile.getDistrictName(),
+                advancedSearchCenterProfile.getStationName(), pageable);
 
-        return new PageImpl<>(centersOnPage
-                .stream()
-                .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
-                .peek(centerResponse -> log.debug(centerResponse.toString()))
-                .collect(Collectors.toList()),
+        return new PageImpl<>(
+                centersOnPage.stream()
+                        .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
+                        .peek(centerResponse -> log.debug(centerResponse.toString())).collect(Collectors.toList()),
                 centersOnPage.getPageable(), centersOnPage.getTotalElements());
     }
 
@@ -286,8 +271,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
     @Override
     public List<CenterResponse> getListOfCenters() {
-        List<CenterResponse> centerResponses = centerRepository.findAll()
-                .stream()
+        List<CenterResponse> centerResponses = centerRepository.findAll().stream()
                 .map(center -> (CenterResponse) centerToCenterResponseConverter.convertToCenterResponse(center))
                 .collect(Collectors.toList());
 
@@ -318,15 +302,15 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
         if (updatedClub.getFeedbackCount() == 0) {
             newClubCount = center.getClubCount() - 1;
-            newRating = newClubCount == 0 ? 0 :
-                    (center.getRating() * center.getClubCount() - previousClub.getRating()) / newClubCount;
+            newRating = newClubCount == 0 ? 0
+                    : (center.getRating() * center.getClubCount() - previousClub.getRating()) / newClubCount;
         } else if (previousClub.getFeedbackCount() == 0) {
             newClubCount = center.getClubCount() + 1;
             newRating = (center.getRating() * center.getClubCount() + updatedClub.getRating()) / newClubCount;
         } else {
             newClubCount = center.getClubCount();
-            newRating = newClubCount == 0 ? 0 :
-                    (center.getRating() * center.getClubCount() - previousClub.getRating() + updatedClub.getRating())
+            newRating = newClubCount == 0 ? 0
+                    : (center.getRating() * center.getClubCount() - previousClub.getRating() + updatedClub.getRating())
                             / newClubCount;
         }
 
@@ -340,8 +324,8 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         Center center = getCenterById(clubResponse.getCenter().getId());
 
         Long newClubCount = center.getClubCount() - 1;
-        Double newRating = newClubCount == 0 ? 0 :
-                (center.getRating() * center.getClubCount() - clubResponse.getRating()) / newClubCount;
+        Double newRating = newClubCount == 0 ? 0
+                : (center.getRating() * center.getClubCount() - clubResponse.getRating()) / newClubCount;
 
         clubRepository.updateRating(center.getId(), newRating, newClubCount);
 
@@ -352,8 +336,8 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     public List<CenterResponse> updateRatingForAllCenters() {
         return getListOfCenters().stream().map(centerResponse -> {
             Center updCenter = getCenterById(centerResponse.getId());
-            updCenter.setClubCount(clubRepository.findClubsByCenter(updCenter)
-                    .stream().filter(club -> club.getFeedbackCount() > 0).count());
+            updCenter.setClubCount(clubRepository.findClubsByCenter(updCenter).stream()
+                    .filter(club -> club.getFeedbackCount() > 0).count());
             updCenter.setRating(clubRepository.findAvgRating(centerResponse.getId()));
             centerRepository.save(updCenter);
             return centerResponse;
@@ -364,8 +348,8 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     public void archiveModel(Center center) {
         CenterArch centerArch = dtoConverter.convertToDto(center, CenterArch.class);
         centerArch.setClubsIds(center.getClubs().stream().map(club -> club.getId()).collect(Collectors.toSet()));
-        centerArch.setLocationsIds(center.getLocations().stream()
-                .map(location -> location.getId()).collect(Collectors.toSet()));
+        centerArch.setLocationsIds(
+                center.getLocations().stream().map(location -> location.getId()).collect(Collectors.toSet()));
         archiveService.saveModel(centerArch);
     }
 
@@ -373,8 +357,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         CenterArch centerArch = objectMapper.readValue(archiveObject, CenterArch.class);
         Center center = Center.builder().build();
-        center = dtoConverter.convertToEntity(centerArch, center)
-                .withId(null)
+        center = dtoConverter.convertToEntity(centerArch, center).withId(null)
                 .withUser(userService.getUserById(centerArch.getUserId()));
 
         Center finalCenter = centerRepository.save(center);

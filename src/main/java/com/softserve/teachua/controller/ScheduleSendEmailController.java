@@ -48,8 +48,8 @@ public class ScheduleSendEmailController implements Api {
     }
 
     /**
-     * Use this endpoint to get scheduled task.
-     * The controller returns dto {@code TaskSchedule} information about scheduled task.
+     * Use this endpoint to get scheduled task. The controller returns dto {@code TaskSchedule} information about
+     * scheduled task.
      *
      * @return new {@code TaskSchedule}.
      */
@@ -57,9 +57,8 @@ public class ScheduleSendEmailController implements Api {
     @GetMapping(value = "/scheduler")
     public TaskSchedule listSchedules() {
         TaskSchedule taskSchedule = scheduleSendService.listSchedules();
-        log.info(taskSchedule.getTasks().isEmpty()
-                ?"Currently no scheduler tasks are running"
-                :"Task is working: " + scheduleSendService.listSchedules());
+        log.info(taskSchedule.getTasks().isEmpty() ? "Currently no scheduler tasks are running"
+                : "Task is working: " + scheduleSendService.listSchedules());
         return taskSchedule;
     }
 }

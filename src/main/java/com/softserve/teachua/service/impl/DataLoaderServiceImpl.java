@@ -69,19 +69,13 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     private final ExcelClubEntityRepository excelClubEntityRepository;
 
     @Autowired
-    public DataLoaderServiceImpl(CategoryService categoryService,
-                                 CenterService centerService,
-                                 ClubService clubService,
-                                 DistrictService districtService,
-                                 StationService stationService,
-                                 UserService userService,
-                                 CityService cityService,
-                                 ClubRepository clubRepository,
-                                 LocationService locationService,
-                                 ExcelConvertToFormatStringContactsData contactsConverter,
-                                 ExcelConvertToFormatStringContactsData excelContactsConverter,
-                                 ExcelCenterEntityRepository excelCenterEntityRepository,
-                                 ExcelClubEntityRepository excelClubEntityRepository) {
+    public DataLoaderServiceImpl(CategoryService categoryService, CenterService centerService, ClubService clubService,
+            DistrictService districtService, StationService stationService, UserService userService,
+            CityService cityService, ClubRepository clubRepository, LocationService locationService,
+            ExcelConvertToFormatStringContactsData contactsConverter,
+            ExcelConvertToFormatStringContactsData excelContactsConverter,
+            ExcelCenterEntityRepository excelCenterEntityRepository,
+            ExcelClubEntityRepository excelClubEntityRepository) {
         this.categoryService = categoryService;
         this.centerService = centerService;
         this.clubService = clubService;
@@ -150,16 +144,11 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                     stationIdCheck = stationService.getOptionalStationByName(location.getStation()).get().getId();
                 }
 
-                LocationProfile locationProfile = LocationProfile.builder()
-                        .id(location.getId())
-                        .address(location.getAddress())
-                        .latitude(location.getLatitude())
-                        .longitude(location.getLongitude())
-                        .name(location.getName())
-                        .cityId(cityService.getCityByName(cityName).getId())
-                        .districtId(districtIdCheck)
-                        .stationId(stationIdCheck)
-                        .build();
+                LocationProfile locationProfile = LocationProfile.builder().id(location.getId())
+                        .address(location.getAddress()).latitude(location.getLatitude())
+                        .longitude(location.getLongitude()).name(location.getName())
+                        .cityId(cityService.getCityByName(cityName).getId()).districtId(districtIdCheck)
+                        .stationId(stationIdCheck).build();
                 if (location.getClubExternalId() == null) {
                     locationProfile = locationProfile.withClubId(null);
                     if (location.getCenterExternalId() == null) {
@@ -167,16 +156,16 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         throw new DataFormatException();
                     } else {
                         log.debug("getCenterByExternalId = " + location.getCenterExternalId());
-                        locationProfile = locationProfile.withCenterId(centerService
-                                .getCenterByExternalId(location.getCenterExternalId()).getId());
+                        locationProfile = locationProfile.withCenterId(
+                                centerService.getCenterByExternalId(location.getCenterExternalId()).getId());
                     }
                 } else {
                     log.debug("Review Club Location location.getClubExternalId() = " + location.getClubExternalId());
                     while (clubService.getClubByClubExternalId(location.getClubExternalId()).size() == 0) {
                         location.setClubExternalId(location.getClubExternalId() - 1);
                     }
-                    locationProfile = locationProfile.withClubId(clubService
-                            .getClubByClubExternalId(location.getClubExternalId()).get(0).getId());
+                    locationProfile = locationProfile.withClubId(
+                            clubService.getClubByClubExternalId(location.getClubExternalId()).get(0).getId());
                 }
                 log.debug("LocationProfile before saving : " + locationProfile);
 
@@ -197,16 +186,11 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         for (CenterExcel center : excelParsingData.getCenters()) {
             log.debug("CENTER_EXCEL obj: " + center.toString());
             try {
-                SuccessCreatedCenter createdCenter = centerService.addCenter(CenterProfile
-                        .builder()
-                        .description(center.getDescription())
-                        .userId(DEFAULT_USER_OWNER_ID)
-                        .name(center.getName())
-                        .urlWeb(CENTER_DEFAULT_URL_WEB)
-                        .urlLogo(CENTER_DEFAULT_LOGO_URL)
+                SuccessCreatedCenter createdCenter = centerService.addCenter(CenterProfile.builder()
+                        .description(center.getDescription()).userId(DEFAULT_USER_OWNER_ID).name(center.getName())
+                        .urlWeb(CENTER_DEFAULT_URL_WEB).urlLogo(CENTER_DEFAULT_LOGO_URL)
                         .contacts(excelContactsConverter.collectAllContactsData(center.getSite(), center.getPhone()))
-                        .centerExternalId(center.getCenterExternalId())
-                        .build());
+                        .centerExternalId(center.getCenterExternalId()).build());
                 excelIdToDbId.put(center.getCenterExternalId(), createdCenter.getId());
             } catch (AlreadyExistException e) {
                 log.error("***###ERROR CENTER to DB: " + center.toString());
@@ -235,29 +219,20 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                     realCenterId = center.getId();
                 }
 
-                //******************************* TODO
+                // ******************************* TODO
 
-                ClubProfile clubProfile = ClubProfile
-                        .builder()
-                        .ageFrom(club.getAgeFrom())
-                        .ageTo(club.getAgeTo())
-                        .centerId(realCenterId)
-                        .centerExternalId(club.getCenterExternalId())
+                ClubProfile clubProfile = ClubProfile.builder().ageFrom(club.getAgeFrom()).ageTo(club.getAgeTo())
+                        .centerId(realCenterId).centerExternalId(club.getCenterExternalId())
                         .clubExternalId(club.getClubExternalId())
-                        .description(DESCRIPTION_JSON_LEFT
-                                + (club.getDescription().isEmpty()
-                                ? CLUB_DEFAULT_DESCRIPTION :
-                                club.getDescription()
-                                        .replace("\"", "''")
-                                        .replace("\\", "/")
-                                        .replace("\n", " ")
-                                        .replace("\r", " ")) + DESCRIPTION_JSON_RIGHT)
-                        .name(club.getName())
-                        .urlBackground(DEFAULT_CLUB_URL_BACKGROUND)
-                        .urlLogo(DEFAULT_CLUB_URL_LOGO)
+                        .description(
+                                DESCRIPTION_JSON_LEFT
+                                        + (club.getDescription().isEmpty() ? CLUB_DEFAULT_DESCRIPTION
+                                                : club.getDescription().replace("\"", "''").replace("\\", "/")
+                                                        .replace("\n", " ").replace("\r", " "))
+                                        + DESCRIPTION_JSON_RIGHT)
+                        .name(club.getName()).urlBackground(DEFAULT_CLUB_URL_BACKGROUND).urlLogo(DEFAULT_CLUB_URL_LOGO)
                         .categoriesName(getFullCategoryName(categories, club.getCategories()))
-                        .contacts(contactsConverter.collectAllContactsData(club.getSite(), club.getPhone()))
-                        .build();
+                        .contacts(contactsConverter.collectAllContactsData(club.getSite(), club.getPhone())).build();
                 if (club.getCenterExternalId() == null) {
                     clubProfile = clubProfile.withCenterId(null);
                 } else {
@@ -285,11 +260,8 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     private void loadDistricts(ExcelParsingData excelParsingData) {
         for (DistrictExcel district : excelParsingData.getDistricts()) {
             try {
-                districtService.addDistrict(DistrictProfile
-                        .builder()
-                        .cityName(district.getCity())
-                        .name(district.getName())
-                        .build());
+                districtService.addDistrict(
+                        DistrictProfile.builder().cityName(district.getCity()).name(district.getName()).build());
             } catch (AlreadyExistException e) {
                 log.warn("Trying to add already exists district from excel");
             }
@@ -300,12 +272,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         for (StationExcel station : excelParsingData.getStations()) {
             try {
                 City city = cityService.getCityByName(station.getCity());
-                stationService.addStation(StationProfile
-                        .builder()
-                        .cityName(city.getName())
+                stationService.addStation(StationProfile.builder().cityName(city.getName())
                         .districtName(districtService.getListOfDistrictsByCityName(city.getName()).get(0).getName())
-                        .name(station.getName())
-                        .build());
+                        .name(station.getName()).build());
             } catch (AlreadyExistException e) {
                 log.warn("Trying to add already exists station from excel");
             }
@@ -313,10 +282,8 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     }
 
     private List<String> getFullCategoryName(Set<String> categoriesNames, List<String> shortCategoryNames) {
-        return categoriesNames.stream()
-                .filter(s -> shortCategoryNames.stream()
-                        .map(String::toLowerCase)
-                        .anyMatch(b -> s.toLowerCase().contains(b)))
+        return categoriesNames.stream().filter(
+                s -> shortCategoryNames.stream().map(String::toLowerCase).anyMatch(b -> s.toLowerCase().contains(b)))
                 .collect(Collectors.toList());
     }
 
@@ -324,13 +291,9 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         for (CategoryExcel category : excelParsingData.getCategories()) {
             try {
                 categoriesNames.add(category.getName());
-                categoryService.addCategory(CategoryProfile
-                        .builder()
-                        .backgroundColor(DEFAULT_CATEGORY_BACKGROUND_COLOR)
-                        .description(category.getDescription())
-                        .urlLogo(DEFAULT_CATEGORY_ICON_URL)
-                        .name(category.getName())
-                        .build());
+                categoryService.addCategory(CategoryProfile.builder().backgroundColor(DEFAULT_CATEGORY_BACKGROUND_COLOR)
+                        .description(category.getDescription()).urlLogo(DEFAULT_CATEGORY_ICON_URL)
+                        .name(category.getName()).build());
             } catch (AlreadyExistException e) {
                 log.warn("Trying to add already exists category from excel");
             }

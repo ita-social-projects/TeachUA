@@ -83,49 +83,27 @@ public class NewsServiceTest {
     @BeforeEach
     public void setMocks() {
 
-        user = User.builder()
-                .id(USER_EXISTING_ID)
-                .firstName(USER_EXISTING_NAME)
-                .lastName(USER_EXISTING_LASTNAME)
+        user = User.builder().id(USER_EXISTING_ID).firstName(USER_EXISTING_NAME).lastName(USER_EXISTING_LASTNAME)
                 .build();
 
-        news = News.builder()
-                .id(CORRECT_NEWS_ID)
-                .title(CORRECT_NEWS_TITLE)
-                .user(user)
-                .build();
+        news = News.builder().id(CORRECT_NEWS_ID).title(CORRECT_NEWS_TITLE).user(user).build();
 
-        newsResponse = NewsResponse.builder()
-                .id(CORRECT_NEWS_ID)
-                .title(CORRECT_NEWS_TITLE)
-                .build();
+        newsResponse = NewsResponse.builder().id(CORRECT_NEWS_ID).title(CORRECT_NEWS_TITLE).build();
 
-        successCreatedNews = SuccessCreatedNews.builder()
-                .id(CORRECT_NEWS_ID)
-                .title(CORRECT_NEWS_TITLE)
-                .build();
+        successCreatedNews = SuccessCreatedNews.builder().id(CORRECT_NEWS_ID).title(CORRECT_NEWS_TITLE).build();
 
-        newsProfile = NewsProfile.builder()
-                .title(CORRECT_NEWS_TITLE)
-                .description(DESCRIPTION)
-                .urlTitleLogo(URL)
-                .isActive(ISACTIVE)
-                .build();
+        newsProfile = NewsProfile.builder().title(CORRECT_NEWS_TITLE).description(DESCRIPTION).urlTitleLogo(URL)
+                .isActive(ISACTIVE).build();
 
-        newsArch = NewsArch.builder()
-                .title(CORRECT_NEWS_TITLE)
-                .description(DESCRIPTION)
-                .urlTitleLogo(URL)
-                .isActive(ISACTIVE)
-                .build();
+        newsArch = NewsArch.builder().title(CORRECT_NEWS_TITLE).description(DESCRIPTION).urlTitleLogo(URL)
+                .isActive(ISACTIVE).build();
     }
 
     @Test
     public void getNewsByCorrectIdShouldReturnNews() {
         when(newsRepository.findById(CORRECT_NEWS_ID)).thenReturn(Optional.of(news));
         News actual = newsService.getNewsById(CORRECT_NEWS_ID);
-        assertThat(actual)
-                .isEqualTo(news);
+        assertThat(actual).isEqualTo(news);
     }
 
     @Test
@@ -158,11 +136,8 @@ public class NewsServiceTest {
     @Test
     public void getListOfNewsShouldReturnList() {
         when(newsRepository.findAll()).thenReturn(Arrays.asList(news));
-        when(dtoConverter.convertToDto(news, NewsResponse.class))
-                .thenReturn(newsResponse);
-        assertThat(newsService.getAllNews())
-                .isNotEmpty()
-                .isEqualTo(Arrays.asList(newsResponse));
+        when(dtoConverter.convertToDto(news, NewsResponse.class)).thenReturn(newsResponse);
+        assertThat(newsService.getAllNews()).isNotEmpty().isEqualTo(Arrays.asList(newsResponse));
     }
 
     @Test
@@ -170,25 +145,23 @@ public class NewsServiceTest {
         when(newsRepository.findById(CORRECT_NEWS_ID)).thenReturn(Optional.of(news));
         when(newsRepository.save(news)).thenReturn(news);
         when(dtoConverter.convertToDto(news, SuccessCreatedNews.class)).thenReturn(successCreatedNews);
-        assertThat(newsService.updateNewsProfileById(CORRECT_NEWS_ID, newsProfile))
-                .isEqualTo(successCreatedNews);
-    }
-    @Test
-    public void createNewsShouldReturnSuccessCreatedNews(){
-        when(dtoConverter.convertToEntity(newsProfile, new News())).thenReturn(news);
-        when(newsRepository.save(news)).thenReturn(news);
-        when(dtoConverter.convertToDto(news, SuccessCreatedNews.class)).thenReturn(successCreatedNews);
-        assertThat(newsService.addNews(newsProfile))
-                .isEqualTo(successCreatedNews);
+        assertThat(newsService.updateNewsProfileById(CORRECT_NEWS_ID, newsProfile)).isEqualTo(successCreatedNews);
     }
 
     @Test
-    public void getNewsProfileByIdShouldReturnNewsResponse(){
+    public void createNewsShouldReturnSuccessCreatedNews() {
+        when(dtoConverter.convertToEntity(newsProfile, new News())).thenReturn(news);
+        when(newsRepository.save(news)).thenReturn(news);
+        when(dtoConverter.convertToDto(news, SuccessCreatedNews.class)).thenReturn(successCreatedNews);
+        assertThat(newsService.addNews(newsProfile)).isEqualTo(successCreatedNews);
+    }
+
+    @Test
+    public void getNewsProfileByIdShouldReturnNewsResponse() {
         when(newsRepository.findById(CORRECT_NEWS_ID)).thenReturn(Optional.of(news));
         when(dtoConverter.convertToDto(news, NewsResponse.class)).thenReturn(newsResponse);
         NewsResponse actual = newsService.getNewsProfileById(CORRECT_NEWS_ID);
-        assertThat(actual)
-                .isEqualTo(newsResponse);
+        assertThat(actual).isEqualTo(newsResponse);
     }
 
 }

@@ -11,32 +11,15 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Mark interface that provides "/api" URI for path
- * Implement this interface to add.
+ * Mark interface that provides "/api" URI for path Implement this interface to add.
  *
  * @author Denis Burko
  */
 @RequestMapping("/api")
 @CrossOrigin
-@OpenAPIDefinition(info = @Info(title = "Teach UA API",
-        description = "API for major TeachUA endpoints. For DataTransfer and Logs endpoints, please contact dev team.",
-        version = "v0.1"),
-        servers = {
-                @Server(
-                        description = "localhost",
-                        url = "http://localhost:8080/dev"
-                ),
-                @Server(
-                        description = "dev server",
-                        url = "https://speak-ukrainian.org.ua/dev/"
-                )
-        }
-)
-@SecurityScheme(
-        name = "api",
-        scheme = "bearer",
-        bearerFormat = "JWT",
-        type = SecuritySchemeType.HTTP,
-        in = SecuritySchemeIn.HEADER)
+@OpenAPIDefinition(info = @Info(title = "Teach UA API", description = "API for major TeachUA endpoints. For DataTransfer and Logs endpoints, please contact dev team.", version = "v0.1"), servers = {
+        @Server(description = "localhost", url = "http://localhost:8080/dev"),
+        @Server(description = "dev server", url = "https://speak-ukrainian.org.ua/dev/") })
+@SecurityScheme(name = "api", scheme = "bearer", bearerFormat = "JWT", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 public interface Api {
 }

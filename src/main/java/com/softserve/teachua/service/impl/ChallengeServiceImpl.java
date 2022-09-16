@@ -43,12 +43,8 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public ChallengeServiceImpl(
-            ChallengeRepository challengeRepository,
-            DtoConverter dtoConverter,
-            UserService userService,
-            ArchiveService archiveService,
-            TaskRepository taskRepository,
+    public ChallengeServiceImpl(ChallengeRepository challengeRepository, DtoConverter dtoConverter,
+            UserService userService, ArchiveService archiveService, TaskRepository taskRepository,
             ObjectMapper objectMapper) {
         this.challengeRepository = challengeRepository;
         this.dtoConverter = dtoConverter;
@@ -67,11 +63,9 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     public List<ChallengePreview> getAllChallenges(Boolean active) {
         List<ChallengePreview> resultList = new LinkedList<>();
         List<Challenge> list;
-        list = active != null
-                ? challengeRepository.getByIsActiveOrderBySortNumberDesc(active)
+        list = active != null ? challengeRepository.getByIsActiveOrderBySortNumberDesc(active)
                 : challengeRepository.findAll(Sort.by(Sort.Direction.DESC, "sortNumber"));
-        list.forEach((challenge ->
-                resultList.add(dtoConverter.convertToDto(challenge, ChallengePreview.class))));
+        list.forEach((challenge -> resultList.add(dtoConverter.convertToDto(challenge, ChallengePreview.class))));
         return resultList;
     }
 
@@ -82,8 +76,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     }
 
     @Override
-    public SuccessCreatedChallenge createChallenge(
-            CreateChallenge createChallenge) {
+    public SuccessCreatedChallenge createChallenge(CreateChallenge createChallenge) {
         HtmlUtils.validateDescription(createChallenge.getDescription());
         validateSortNumber(createChallenge.getSortNumber());
         Challenge challenge = dtoConverter.convertToEntity(createChallenge, new Challenge());
@@ -103,8 +96,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     @Override
     public ChallengeDeleteResponse deleteChallenge(Long id) {
         Challenge challenge = getChallengeById(id);
-        ChallengeDeleteResponse challengeResponse =
-                dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class);
+        ChallengeDeleteResponse challengeResponse = dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class);
         challenge.getTasks().forEach((task) -> {
             task.setChallenge(null);
             taskRepository.save(task);
@@ -121,21 +113,18 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         if (!challenge.getIsActive()) {
             userService.verifyIsUserAdmin();
         }
-        ChallengeProfile challengeProfile =
-                dtoConverter.convertToDto(challenge, ChallengeProfile.class);
+        ChallengeProfile challengeProfile = dtoConverter.convertToDto(challenge, ChallengeProfile.class);
         Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
-        List<TaskPreview> tasks = taskRepository
-                .findCurrentTasksByChallenge(challenge)
-                //.findTaskByChallengeOrderByStartDate(challenge)
+        List<TaskPreview> tasks = taskRepository.findCurrentTasksByChallenge(challenge)
+                // .findTaskByChallengeOrderByStartDate(challenge)
                 .stream().map(function).collect(Collectors.toList());
         challengeProfile.setTasks(tasks);
         return challengeProfile;
     }
 
-
     @Override
     public SuccessUpdateChallengePreview updateChallengePreview(Long id,
-                                                                SuccessUpdateChallengePreview updateChallengePreview) {
+            SuccessUpdateChallengePreview updateChallengePreview) {
         Challenge challenge = getChallengeById(id);
         BeanUtils.copyProperties(updateChallengePreview, challenge);
         return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdateChallengePreview.class);
@@ -152,28 +141,23 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         ChallengeArch challengeArch = objectMapper.readValue(archiveObject, ChallengeArch.class);
         Challenge challenge = Challenge.builder().build();
-        challenge = dtoConverter.convertToEntity(challengeArch, challenge)
-                .withId(null);
-        if(Optional.ofNullable(challengeArch.getUserId()).isPresent()){
+        challenge = dtoConverter.convertToEntity(challengeArch, challenge).withId(null);
+        if (Optional.ofNullable(challengeArch.getUserId()).isPresent()) {
             challenge.setUser(userService.getUserById(challengeArch.getUserId()));
         }
         Challenge finalChallenge = challengeRepository.save(challenge);
-        challengeArch.getTasksIds().stream().map(taskService::getTaskById).forEach(task -> task.setChallenge(finalChallenge));
+        challengeArch.getTasksIds().stream().map(taskService::getTaskById)
+                .forEach(task -> task.setChallenge(finalChallenge));
     }
 
     @Override
-    public Challenge getChallengeByName(String name){
-        return challengeRepository
-                .findByName(name)
-                .stream()
-                .findAny()
+    public Challenge getChallengeByName(String name) {
+        return challengeRepository.findByName(name).stream().findAny()
                 .orElseThrow(() -> new NotExistException(String.format("Challenge not found by name: %s", name)));
     }
 
-    private void validateSortNumber(Long sortNumber){
-        List<Long> unavailableSortNumbers = challengeRepository.findAll()
-                .stream()
-                .map(Challenge::getSortNumber)
+    private void validateSortNumber(Long sortNumber) {
+        List<Long> unavailableSortNumbers = challengeRepository.findAll().stream().map(Challenge::getSortNumber)
                 .collect(Collectors.toList());
         ChallengeUtil.validateSortNumber(sortNumber, unavailableSortNumbers);
     }
@@ -182,8 +166,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     public List<SuccessUpdatedTask> cloneChallenge(Long id, UpdateChallengeDate startDate) {
         Challenge challenge = getChallengeById(id);
         List<Task> tasks = new ArrayList<>(challenge.getTasks()).stream()
-                .sorted(Comparator.comparing(Task::getStartDate))
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparing(Task::getStartDate)).collect(Collectors.toList());
         List<SuccessUpdatedTask> updatedTasks = new ArrayList<>();
         long daysBetween = DAYS.between(tasks.get(0).getStartDate(), startDate.getStartDate());
         for (Task task : tasks) {

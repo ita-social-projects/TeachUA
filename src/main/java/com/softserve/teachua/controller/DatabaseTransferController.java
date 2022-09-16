@@ -27,7 +27,7 @@ import java.sql.SQLException;
 
 /**
  * This controller is for managing the database transfering.
- * */
+ */
 
 @RestController
 @Hidden
@@ -39,7 +39,7 @@ public class DatabaseTransferController implements Api {
 
     @Autowired
     public DatabaseTransferController(ExcelParserService excelParserService, SqlDataExportService sqlDataExportService,
-                                      DataLoaderService dataLoaderService) {
+            DataLoaderService dataLoaderService) {
         this.excelParserService = excelParserService;
         this.sqlDataExportService = sqlDataExportService;
         this.dataLoaderService = dataLoaderService;
@@ -48,7 +48,9 @@ public class DatabaseTransferController implements Api {
     /**
      * The method uploads excel file and returns {@code ExcelParsingResponse}.
      *
-     * @param multipartFile - excel file.
+     * @param multipartFile
+     *            - excel file.
+     *
      * @return new {@code ExcelParsingResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -64,7 +66,9 @@ public class DatabaseTransferController implements Api {
     /**
      * The method loads data to database and returns {@code ExcelLoadSuccess}.
      *
-     * @param dataToLoad - object of {@code ExcelParsingData}.
+     * @param dataToLoad
+     *            - object of {@code ExcelParsingData}.
+     *
      * @return new {@code ExcelLoadSuccess}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -89,10 +93,7 @@ public class DatabaseTransferController implements Api {
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=data.sql.txt");
 
-        return ResponseEntity.ok()
-                .headers(header)
-                .contentLength(bytes.length)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(resource);
+        return ResponseEntity.ok().headers(header).contentLength(bytes.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
     }
 }

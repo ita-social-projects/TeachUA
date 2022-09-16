@@ -16,7 +16,9 @@ public interface FeedbackService {
     /**
      * Method find {@link Feedback}, and convert it to object of DTO class.
      *
-     * @param id - place id here.
+     * @param id
+     *            - place id here.
+     *
      * @return new {@code FeedbackResponse}
      **/
     FeedbackResponse getFeedbackProfileById(Long id);
@@ -24,7 +26,9 @@ public interface FeedbackService {
     /**
      * Method find {@link Feedback}.
      *
-     * @param id - place id
+     * @param id
+     *            - place id
+     *
      * @return Feedback
      **/
     Feedback getFeedbackById(Long id);
@@ -32,20 +36,22 @@ public interface FeedbackService {
     /**
      * Method add and save new {@link Feedback}.
      *
-     * @param feedbackProfile - put dto 'FeedbackProfile'
+     * @param feedbackProfile
+     *            - put dto 'FeedbackProfile'
+     *
      * @return SuccessCreatedFeedback
      **/
     SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile);
 
     /**
-     * The method returns list of  {@code List<FeedbackResponse>}.
+     * The method returns list of {@code List<FeedbackResponse>}.
      *
      * @return new {@code List<FeedbackResponse>}
      **/
     List<FeedbackResponse> getListOfFeedback();
 
     /**
-     * The method returns list of  {@code List<FeedbackResponse>} by club id.
+     * The method returns list of {@code List<FeedbackResponse>} by club id.
      *
      * @return new {@code List<FeedbackResponse>}
      **/
@@ -54,7 +60,9 @@ public interface FeedbackService {
     /**
      * Method delete {@link Feedback} and update Club rating.
      *
-     * @param id - place id
+     * @param id
+     *            - place id
+     *
      * @return new {@code FeedbackResponse}
      **/
     FeedbackResponse deleteFeedbackById(Long id);
@@ -62,8 +70,11 @@ public interface FeedbackService {
     /**
      * Method find {@link Feedback} by id, and update data and Club rating.
      *
-     * @param id              - place id
-     * @param feedbackProfile - put dto 'FeedbackProfile'
+     * @param id
+     *            - place id
+     * @param feedbackProfile
+     *            - put dto 'FeedbackProfile'
+     *
      * @return FeedbackResponse
      **/
     FeedbackResponse updateFeedbackProfileById(Long id, FeedbackProfile feedbackProfile);

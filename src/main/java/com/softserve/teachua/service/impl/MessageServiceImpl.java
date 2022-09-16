@@ -49,18 +49,17 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
 
         if (!clubRepository.existsById(messageProfile.getClubId())) {
             log.warn("Message not added because club with id - {} doesn't exists", messageProfile.getClubId());
-            throw new NotExistException(String
-                    .format("Club with id - %s doesn't exists", messageProfile.getClubId()));
+            throw new NotExistException(String.format("Club with id - %s doesn't exists", messageProfile.getClubId()));
         }
         if (!userRepository.existsById(messageProfile.getSenderId())) {
             log.warn("Message not added because user with id - {} doesn't exists", messageProfile.getSenderId());
-            throw new NotExistException(String
-                    .format("User with id - %s doesn't exists", messageProfile.getSenderId()));
+            throw new NotExistException(
+                    String.format("User with id - %s doesn't exists", messageProfile.getSenderId()));
         }
         if (!userRepository.existsById(messageProfile.getRecipientId())) {
             log.warn("Message not added because user with id - {} doesn't exists", messageProfile.getRecipientId());
-            throw new NotExistException(String
-                    .format("User with id - %s doesn't exists", messageProfile.getRecipientId()));
+            throw new NotExistException(
+                    String.format("User with id - %s doesn't exists", messageProfile.getRecipientId()));
         }
         messageProfile.setIsActive(true);
         Message message = messageRepository.save(dtoConverter.convertToEntity(messageProfile, new Message()));
@@ -105,28 +104,25 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
 
     @Override
     public List<MessageResponseDto> getMessageResponsesByUserId(Long id, boolean isSender) {
-        return getMessagesByUserId(id, isSender)
-                .stream()
+        return getMessagesByUserId(id, isSender).stream()
                 .map(message -> (MessageResponseDto) dtoConverter.convertToDto(message, MessageResponseDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     public MessageResponseDto updateMessageTextById(Long id, MessageUpdateText messageUpdateText) {
-        Message updatedMessage = getMessageById(id)
-                .withText(messageUpdateText.getText());
-        MessageResponseDto messageResponseDto =
-                dtoConverter.convertToDto(messageRepository.save(updatedMessage), MessageResponseDto.class);
+        Message updatedMessage = getMessageById(id).withText(messageUpdateText.getText());
+        MessageResponseDto messageResponseDto = dtoConverter.convertToDto(messageRepository.save(updatedMessage),
+                MessageResponseDto.class);
         log.debug("update message text by id - {}", id);
         return messageResponseDto;
     }
 
     @Override
     public MessageResponseDto updateMessageIsActiveById(Long id, MessageUpdateIsActive messageUpdateIsActive) {
-        Message updatedMessage = getMessageById(id)
-                .withIsActive(messageUpdateIsActive.getIsActive());
-        MessageResponseDto messageResponseDto =
-                dtoConverter.convertToDto(messageRepository.save(updatedMessage), MessageResponseDto.class);
+        Message updatedMessage = getMessageById(id).withIsActive(messageUpdateIsActive.getIsActive());
+        MessageResponseDto messageResponseDto = dtoConverter.convertToDto(messageRepository.save(updatedMessage),
+                MessageResponseDto.class);
         log.debug("update message isActive by id - {}", id);
         return messageResponseDto;
     }
@@ -139,8 +135,8 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
             messageRepository.deleteById(id);
         } catch (DataAccessException | ValidationException e) {
             log.warn("Message with id - {} not deleted cause of relationship", id);
-            throw new DatabaseRepositoryException(String
-                    .format("Can't delete message with id - %s, cause of relationship", id));
+            throw new DatabaseRepositoryException(
+                    String.format("Can't delete message with id - %s, cause of relationship", id));
         }
 
         archiveModel(message);

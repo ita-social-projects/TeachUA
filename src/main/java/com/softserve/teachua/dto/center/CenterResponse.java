@@ -43,4 +43,3 @@ public class CenterResponse implements Convertible {
 
     private Set<ContactDataResponse> contacts;
 }
-

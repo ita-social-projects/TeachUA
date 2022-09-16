@@ -29,7 +29,8 @@ public class CertificateController implements Api {
     private final CertificateDataLoaderService loaderService;
 
     @Autowired
-    public CertificateController(CertificateService certificateService, CertificateExcelService excelService, CertificateDataLoaderService loaderService) {
+    public CertificateController(CertificateService certificateService, CertificateExcelService excelService,
+            CertificateDataLoaderService loaderService) {
         this.certificateService = certificateService;
         this.excelService = excelService;
         this.loaderService = loaderService;
@@ -49,7 +50,9 @@ public class CertificateController implements Api {
     /**
      * The method uploads excel file and returns {@code ExcelParsingResponse}.
      *
-     * @param multipartFile - excel file.
+     * @param multipartFile
+     *            - excel file.
+     *
      * @return new {@code ExcelParsingResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -61,7 +64,9 @@ public class CertificateController implements Api {
     /**
      * The method saves data to database.
      *
-     * @param data - {@code CertificateDataToDatabase} read from form.
+     * @param data
+     *            - {@code CertificateDataToDatabase} read from form.
+     *
      * @return new {@code List<CertificateDatabaseResponse>}
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -72,14 +77,16 @@ public class CertificateController implements Api {
     }
 
     /**
-     * This endpoint is used to validate the certificate, user passes serial number
-     * into url, this controller returns {@code CertificateVerificationResponse}
+     * This endpoint is used to validate the certificate, user passes serial number into url, this controller returns
+     * {@code CertificateVerificationResponse}
      *
-     * @param serialNumber - serial number of certificate, being verified
+     * @param serialNumber
+     *            - serial number of certificate, being verified
+     *
      * @return new {@code CertificateVerificationResponse}
      */
     @GetMapping("/certificate/{serialNumber}")
-    public CertificateVerificationResponse validateCertificate(@PathVariable("serialNumber")Long serialNumber){
+    public CertificateVerificationResponse validateCertificate(@PathVariable("serialNumber") Long serialNumber) {
         return certificateService.validateCertificate(serialNumber);
     }
 
@@ -96,12 +103,16 @@ public class CertificateController implements Api {
     /**
      * This endpoint is used to get update certificate.
      *
-     * @param id - put certificate id
-     * @param certificatePreview - {@code CertificatePreview} to update
+     * @param id
+     *            - put certificate id
+     * @param certificatePreview
+     *            - {@code CertificatePreview} to update
+     *
      * @return {@code List<CertificatePreview>}
      */
     @PutMapping("/certificates/{id}")
-    public CertificatePreview updateCertificate(@PathVariable Long id, @Valid @RequestBody CertificatePreview certificatePreview) {
+    public CertificatePreview updateCertificate(@PathVariable Long id,
+            @Valid @RequestBody CertificatePreview certificatePreview) {
         return certificateService.updateCertificatePreview(id, certificatePreview);
     }
 }

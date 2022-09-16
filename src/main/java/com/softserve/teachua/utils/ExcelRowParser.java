@@ -75,15 +75,9 @@ public class ExcelRowParser {
         } else if (mistakes != null) {
             if (!maybeEmpty) {
                 errorsFlag = true;
-                mistakes.add(ExcelParsingMistake.builder()
-                        .cellValue("")
-                        .rowIndex((long) row.getRowNum() + 1)
-                        .columnName(getColumnName(column))
-                        .errorDetails(EMPTY_CELL_ERROR)
-                        .sheetName(sheet.getSheetName())
-                        .critical(errorType == ExcelErrorType.CRITICAL)
-                        .build()
-                );
+                mistakes.add(ExcelParsingMistake.builder().cellValue("").rowIndex((long) row.getRowNum() + 1)
+                        .columnName(getColumnName(column)).errorDetails(EMPTY_CELL_ERROR)
+                        .sheetName(sheet.getSheetName()).critical(errorType == ExcelErrorType.CRITICAL).build());
             }
         }
         return "";
@@ -125,35 +119,24 @@ public class ExcelRowParser {
             log.debug(Arrays.toString(coordinateStrings));
             if (coordinateStrings.length != 2 || coordinateStrings[0].isEmpty() || coordinateStrings[1].isEmpty()) {
                 errorsFlag = true;
-                mistakes.add(ExcelParsingMistake.builder()
-                        .cellValue(coordinates)
-                        .rowIndex((long) row.getRowNum() + 1)
-                        .columnName(getColumnName(column))
-                        .errorDetails(INCORRECT_COORDINATES_FORMAT_ERROR)
-                        .sheetName(sheet.getSheetName())
-                        .critical(true)
-                        .build()
-                );
+                mistakes.add(ExcelParsingMistake.builder().cellValue(coordinates).rowIndex((long) row.getRowNum() + 1)
+                        .columnName(getColumnName(column)).errorDetails(INCORRECT_COORDINATES_FORMAT_ERROR)
+                        .sheetName(sheet.getSheetName()).critical(true).build());
             } else {
                 try {
                     double longitude = Double.parseDouble(coordinateStrings[0]);
                     double latitude = Double.parseDouble(coordinateStrings[1]);
-                    return new Double[]{latitude, longitude};
+                    return new Double[] { latitude, longitude };
                 } catch (NumberFormatException e) {
                     errorsFlag = true;
-                    mistakes.add(ExcelParsingMistake.builder()
-                            .cellValue(coordinates)
-                            .rowIndex((long) row.getRowNum() + 1)
-                            .columnName(getColumnName(column))
-                            .errorDetails(INCORRECT_COORDINATES_NUMERIC_FORMAT_ERROR)
-                            .sheetName(sheet.getSheetName())
-                            .critical(true)
-                            .build()
-                    );
+                    mistakes.add(ExcelParsingMistake.builder().cellValue(coordinates)
+                            .rowIndex((long) row.getRowNum() + 1).columnName(getColumnName(column))
+                            .errorDetails(INCORRECT_COORDINATES_NUMERIC_FORMAT_ERROR).sheetName(sheet.getSheetName())
+                            .critical(true).build());
                 }
             }
         }
-        return new Double[]{null, null};
+        return new Double[] { null, null };
     }
 
     public List<String> parseCategories(int column, boolean maybeEmpty) {
@@ -181,7 +164,6 @@ public class ExcelRowParser {
         return parseAges(column, false);
     }
 
-
     public Integer[] parseAges(int column, boolean maybeEmpty) {
         String ages = getString(column, maybeEmpty, ExcelErrorType.CRITICAL);
 
@@ -193,40 +175,39 @@ public class ExcelRowParser {
                 log.debug("=== ageString after replace : " + formattedAges);
                 String[] fromToAges = formattedAges.split("-");
                 if (fromToAges.length < 2) {
-                    return new Integer[]{null, null};
+                    return new Integer[] { null, null };
                 }
-                return new Integer[]{Integer.parseInt(fromToAges[0]), Integer.parseInt(fromToAges[1])};
+                return new Integer[] { Integer.parseInt(fromToAges[0]), Integer.parseInt(fromToAges[1]) };
             } catch (NumberFormatException e) {
                 log.error(e.getMessage());
             }
         }
 
-        //        code below is temporarily useless because of improvement of excel file
+        // code below is temporarily useless because of improvement of excel file
 
-        //        if (!ages.isEmpty()) {
-        //            Pattern p = Pattern.compile("\\d+");
-        //            Matcher m = p.matcher(ages);
+        // if (!ages.isEmpty()) {
+        // Pattern p = Pattern.compile("\\d+");
+        // Matcher m = p.matcher(ages);
         //
-        //            int minAge = 1000;
-        //            int maxAge = 0;
+        // int minAge = 1000;
+        // int maxAge = 0;
         //
-        //            while (m.find()) {
-        //                String ageString = m.group();
+        // while (m.find()) {
+        // String ageString = m.group();
         //
-        //                int age = Integer.parseInt(ageString);
+        // int age = Integer.parseInt(ageString);
         //
-        //                if (age <= minAge)
-        //                    minAge = age;
+        // if (age <= minAge)
+        // minAge = age;
         //
-        //                if (age >= maxAge)
-        //                    maxAge = age;
-        //            }
+        // if (age >= maxAge)
+        // maxAge = age;
+        // }
         //
-        //            return new Integer[]{minAge, maxAge};
-        //        }
-        return new Integer[]{null, null};
+        // return new Integer[]{minAge, maxAge};
+        // }
+        return new Integer[] { null, null };
     }
-
 
     public Long getLong(int column, ExcelErrorType errorType) {
         String rowString = getString(column, errorType);
@@ -235,15 +216,9 @@ public class ExcelRowParser {
                 return Double.valueOf(rowString).longValue();
             } catch (NumberFormatException e) {
                 errorsFlag = true;
-                mistakes.add(ExcelParsingMistake.builder()
-                        .cellValue(rowString)
-                        .rowIndex((long) row.getRowNum() + 1)
-                        .columnName(getColumnName(column))
-                        .errorDetails(INCORRECT_NUMERIC_FORMAT_ERROR)
-                        .sheetName(sheet.getSheetName())
-                        .critical(true)
-                        .build()
-                );
+                mistakes.add(ExcelParsingMistake.builder().cellValue(rowString).rowIndex((long) row.getRowNum() + 1)
+                        .columnName(getColumnName(column)).errorDetails(INCORRECT_NUMERIC_FORMAT_ERROR)
+                        .sheetName(sheet.getSheetName()).critical(true).build());
             }
         }
         return null;

@@ -1,6 +1,5 @@
 package com.softserve.teachua.dto.certificate;
 
-
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;

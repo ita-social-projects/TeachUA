@@ -28,8 +28,7 @@ public class DevPermitAspect {
     @Around("@annotation(DevPermit)")
     public Object checkJwToken(ProceedingJoinPoint joinPoint) throws Throwable {
         String currentJwt = jwtProvider.getJwtFromRequest(
-                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                        .getRequest());
+                ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
         if (currentJwt.equals(JWT) && fileUtils.isKeyFileExists()) {
             return joinPoint.proceed();
         }

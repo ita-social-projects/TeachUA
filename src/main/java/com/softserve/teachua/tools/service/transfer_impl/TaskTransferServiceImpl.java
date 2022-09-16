@@ -37,12 +37,9 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     private static final String targetPackageForData = "tasks/taskData";
     private final Map imageMap;
 
-
     @Autowired
-    public TaskTransferServiceImpl(
-            FileUtils fileReader,
-            DtoConverter dtoConverter,
-            TaskRepository taskRepository, ChallengeService challengeService, TaskDao taskDao) {
+    public TaskTransferServiceImpl(FileUtils fileReader, DtoConverter dtoConverter, TaskRepository taskRepository,
+            ChallengeService challengeService, TaskDao taskDao) {
         this.fileUtils = fileReader;
         this.dtoConverter = dtoConverter;
         this.taskRepository = taskRepository;
@@ -50,12 +47,8 @@ public class TaskTransferServiceImpl implements TaskTransferService {
         this.taskDao = taskDao;
         imageMap = new HashMap<String, List<String>>();
         imageMap.put("Крок 16. Рахуйте українською ",
-                Arrays.asList(
-                        "data_for_db/taskData/day16_1.png",
-                        "data_for_db/taskData/day16_2.png",
-                        "data_for_db/taskData/day16_3.png",
-                        "data_for_db/taskData/day16_4.png"
-                ));
+                Arrays.asList("data_for_db/taskData/day16_1.png", "data_for_db/taskData/day16_2.png",
+                        "data_for_db/taskData/day16_3.png", "data_for_db/taskData/day16_4.png"));
         imageMap.put("Крок 17. Мандруйте Україною ", Arrays.asList("data_for_db/taskData/day17_1.png"));
         imageMap.put("Крок 24. Пізнавайте українське мистецтво", Arrays.asList("data_for_db/taskData/day24_1.jpg"));
     }
@@ -71,63 +64,51 @@ public class TaskTransferServiceImpl implements TaskTransferService {
         return createTasks(TaskInfoRepository.getTasksList());
     }
 
-    private void moveImages(){
+    private void moveImages() {
         uaTeachChallengeImage = fileUtils.moveImage(uaTeachChallengeImage, targetPackage);
         languageChallengeImage = fileUtils.moveImage(languageChallengeImage, targetPackage);
     }
 
     private List<SuccessCreatedTask> createTasks(List<TaskProfile> tasks) {
-        return tasks
-                .stream()
-                .map(taskProfile -> {
-//                    if(!taskProfile.getPicture().isEmpty()) {
-//                        taskProfile.setPicture(fileUtils.moveImage(taskProfile.getPicture(), "tasks"));
-//                    }
-//                    temporary implementation (uses only once)
-                    if(taskProfile.getChallengeId() == 1){
-                        taskProfile.setChallengeId(challengeService.getChallengeByName(uaTeachChallenge).getId());
-                        taskProfile.setPicture(uaTeachChallengeImage);
-                    }else{
-                        taskProfile.setChallengeId(challengeService.getChallengeByName(languageChallenge).getId());
-                        taskProfile.setPicture(languageChallengeImage);
-                    }
+        return tasks.stream().map(taskProfile -> {
+            // if(!taskProfile.getPicture().isEmpty()) {
+            // taskProfile.setPicture(fileUtils.moveImage(taskProfile.getPicture(), "tasks"));
+            // }
+            // temporary implementation (uses only once)
+            if (taskProfile.getChallengeId() == 1) {
+                taskProfile.setChallengeId(challengeService.getChallengeByName(uaTeachChallenge).getId());
+                taskProfile.setPicture(uaTeachChallengeImage);
+            } else {
+                taskProfile.setChallengeId(challengeService.getChallengeByName(languageChallenge).getId());
+                taskProfile.setPicture(languageChallengeImage);
+            }
 
-                    if(imageMap.containsKey(taskProfile.getName())){
-                        ((List<String>)imageMap.get(taskProfile.getName()))
-                                .stream()
-                                .forEach(url ->
-                                    taskProfile.setDescription(
-                                            taskProfile
-                                            .getDescription()
-                                            .replace(url,
-                                                    System.getenv("BASE_URL")
-                                                            + fileUtils.moveImage(url, targetPackageForData))
-                                    )
-                                );
-                    }
+            if (imageMap.containsKey(taskProfile.getName())) {
+                ((List<String>) imageMap.get(taskProfile.getName())).stream()
+                        .forEach(url -> taskProfile.setDescription(taskProfile.getDescription().replace(url,
+                                System.getenv("BASE_URL") + fileUtils.moveImage(url, targetPackageForData))));
+            }
 
-                    log.info("add task: " + taskProfile);
-                    return dtoConverter.convertToEntity(taskProfile, Task.builder().build()).withId(null);
-                }).map(taskRepository::save)
-                .map(task -> {
-                    log.info("Task: " + task);
-                    return (SuccessCreatedTask) dtoConverter.convertToDto(task, SuccessCreatedTask.class);
-                })
-                .collect(Collectors.toList());
+            log.info("add task: " + taskProfile);
+            return dtoConverter.convertToEntity(taskProfile, Task.builder().build()).withId(null);
+        }).map(taskRepository::save).map(task -> {
+            log.info("Task: " + task);
+            return (SuccessCreatedTask) dtoConverter.convertToDto(task, SuccessCreatedTask.class);
+        }).collect(Collectors.toList());
     }
 
     @Override
-    public void dropRedundantTable(){
+    public void dropRedundantTable() {
         taskDao.dropRedundantChallenges();
     }
 
     @Override
-    public void addConstrain(){
+    public void addConstrain() {
         taskDao.alterTaskConstrain();
     }
 
     @Override
-    public void dropConstrain(){
+    public void dropConstrain() {
         taskDao.alterTaskConstrain();
     }
 

@@ -63,70 +63,49 @@ public class DistrictServiceTest {
 
     @BeforeEach
     public void setMocks() {
-        city = City.builder()
-                .id(CORRECT_CITY_ID)
-                .name(CITY_NAME)
-                .latitude(CITY_LATITUDE)
-                .longitude(CITY_LONGITUDE)
+        city = City.builder().id(CORRECT_CITY_ID).name(CITY_NAME).latitude(CITY_LATITUDE).longitude(CITY_LONGITUDE)
                 .build();
 
-        district = District.builder()
-                .id(CORRECT_DISTRICT_ID)
-                .name(CORRECT_DISTRICT_NAME)
-                .city(city)
-                .build();
+        district = District.builder().id(CORRECT_DISTRICT_ID).name(CORRECT_DISTRICT_NAME).city(city).build();
 
-        districtResponse = DistrictResponse.builder()
-                .id(CORRECT_DISTRICT_ID)
-                .name(CORRECT_DISTRICT_NAME)
-                .cityName(CITY_NAME)
-                .build();
+        districtResponse = DistrictResponse.builder().id(CORRECT_DISTRICT_ID).name(CORRECT_DISTRICT_NAME)
+                .cityName(CITY_NAME).build();
 
-        successCreatedDistrict = SuccessCreatedDistrict.builder()
-                .id(CORRECT_DISTRICT_ID)
-                .name(CORRECT_DISTRICT_NAME)
-                .cityName(CITY_NAME)
-                .build();
+        successCreatedDistrict = SuccessCreatedDistrict.builder().id(CORRECT_DISTRICT_ID).name(CORRECT_DISTRICT_NAME)
+                .cityName(CITY_NAME).build();
 
-        districtProfile = DistrictProfile.builder()
-                .name(CORRECT_DISTRICT_NAME)
-                .cityName(CITY_NAME)
-                .build();
+        districtProfile = DistrictProfile.builder().name(CORRECT_DISTRICT_NAME).cityName(CITY_NAME).build();
     }
 
     @Test
-    public void getDistrictByCorrectIdShouldReturnDistrict(){
+    public void getDistrictByCorrectIdShouldReturnDistrict() {
         when(districtRepository.findById(CORRECT_DISTRICT_ID)).thenReturn(Optional.of(district));
         District actual = districtService.getDistrictById(CORRECT_DISTRICT_ID);
-        assertThat(actual)
-                .isEqualTo(district);
+        assertThat(actual).isEqualTo(district);
     }
 
     @Test
-    public void getDistrictByWrongIdShouldReturnNull(){
+    public void getDistrictByWrongIdShouldReturnNull() {
         when(districtRepository.findById(WRONG_DISTRICT_ID)).thenReturn(Optional.empty());
         District actual = districtService.getDistrictById(WRONG_DISTRICT_ID);
-        assertThat(actual)
-                .isEqualTo(null);
+        assertThat(actual).isEqualTo(null);
     }
 
     @Test
-    public void getDistrictProfileByIdShouldReturnDistrictResponse(){
+    public void getDistrictProfileByIdShouldReturnDistrictResponse() {
         when(districtRepository.findById(CORRECT_DISTRICT_ID)).thenReturn(Optional.of(district));
         when(dtoConverter.convertToDto(district, DistrictResponse.class)).thenReturn(districtResponse);
-        assertThat(districtService.getDistrictProfileById(CORRECT_DISTRICT_ID))
-                .isEqualTo(districtResponse);
+        assertThat(districtService.getDistrictProfileById(CORRECT_DISTRICT_ID)).isEqualTo(districtResponse);
     }
 
     @Test
-    public void getDistrictByCorrectNameShouldReturnDistrict(){
+    public void getDistrictByCorrectNameShouldReturnDistrict() {
         when(districtRepository.findFirstByName(CORRECT_DISTRICT_NAME)).thenReturn(Optional.of(district));
-        assertThat(districtService.getDistrictByName(CORRECT_DISTRICT_NAME))
-                .isEqualTo(district);
+        assertThat(districtService.getDistrictByName(CORRECT_DISTRICT_NAME)).isEqualTo(district);
     }
 
     @Test
-    public void getDistrictByWrongNameShouldThrowNotExistException(){
+    public void getDistrictByWrongNameShouldThrowNotExistException() {
         when(districtRepository.findFirstByName(WRONG_DISTRICT_NAME)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> {
             districtService.getDistrictByName(WRONG_DISTRICT_NAME);
@@ -135,18 +114,17 @@ public class DistrictServiceTest {
     }
 
     @Test
-    public void addDistrictShouldReturnSuccessCreatedDistrict(){
+    public void addDistrictShouldReturnSuccessCreatedDistrict() {
         when(districtRepository.existsByName(CORRECT_DISTRICT_NAME)).thenReturn(false);
         when(cityService.getCityByName(CITY_NAME)).thenReturn(city);
         when(dtoConverter.convertToEntity(districtProfile, new District())).thenReturn(district);
         when(districtRepository.save(district)).thenReturn(district);
         when(dtoConverter.convertToDto(district, SuccessCreatedDistrict.class)).thenReturn(successCreatedDistrict);
-        assertThat(districtService.addDistrict(districtProfile))
-                .isEqualTo(successCreatedDistrict);
+        assertThat(districtService.addDistrict(districtProfile)).isEqualTo(successCreatedDistrict);
     }
 
     @Test
-    public void addDistrictShouldThrowAlreadyExistException(){
+    public void addDistrictShouldThrowAlreadyExistException() {
         when(districtRepository.existsByName(CORRECT_DISTRICT_NAME)).thenReturn(true);
         assertThatThrownBy(() -> {
             districtService.addDistrict(districtProfile);
@@ -154,32 +132,26 @@ public class DistrictServiceTest {
     }
 
     @Test
-    public void getListOfDistrictsShouldReturnListOfDistrictResponses(){
+    public void getListOfDistrictsShouldReturnListOfDistrictResponses() {
         when(districtRepository.findAllByOrderByIdAsc()).thenReturn(Arrays.asList(district));
-        when(dtoConverter.convertToDto(district, DistrictResponse.class))
-                .thenReturn(districtResponse);
+        when(dtoConverter.convertToDto(district, DistrictResponse.class)).thenReturn(districtResponse);
 
-        assertThat(districtService.getListOfDistricts())
-                .isNotEmpty()
-                .isEqualTo(Arrays.asList(districtResponse));
+        assertThat(districtService.getListOfDistricts()).isNotEmpty().isEqualTo(Arrays.asList(districtResponse));
     }
 
     @Test
-    public void getListOfDistrictsByCorrectCityNameShouldReturnListOfDistrictResponses(){
+    public void getListOfDistrictsByCorrectCityNameShouldReturnListOfDistrictResponses() {
         when(districtRepository.findAllByCityName(CITY_NAME)).thenReturn(Arrays.asList(district));
-        when(dtoConverter.convertToDto(district, DistrictResponse.class))
-                .thenReturn(districtResponse);
+        when(dtoConverter.convertToDto(district, DistrictResponse.class)).thenReturn(districtResponse);
 
-        assertThat(districtService.getListOfDistrictsByCityName(CITY_NAME))
-                .isNotEmpty()
+        assertThat(districtService.getListOfDistrictsByCityName(CITY_NAME)).isNotEmpty()
                 .isEqualTo(Arrays.asList(districtResponse));
     }
 
     @Test
-    public void getListOfDistrictsByWrongCityNameShouldReturnListOfDistrictResponses(){
+    public void getListOfDistrictsByWrongCityNameShouldReturnListOfDistrictResponses() {
         when(districtRepository.findAllByCityName(WRONG_CITY_NAME)).thenReturn(Arrays.asList());
-        assertThat(districtService.getListOfDistrictsByCityName(WRONG_CITY_NAME))
-                .isEmpty();
+        assertThat(districtService.getListOfDistrictsByCityName(WRONG_CITY_NAME)).isEmpty();
     }
 
 }

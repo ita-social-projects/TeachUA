@@ -18,7 +18,9 @@ public interface DistrictService {
     /**
      * The method returns dto {@code DistrictResponse} of district by id.
      *
-     * @param id - put district id.
+     * @param id
+     *            - put district id.
+     *
      * @return new {@code DistrictResponse}.
      */
     DistrictResponse getDistrictProfileById(Long id);
@@ -26,36 +28,52 @@ public interface DistrictService {
     /**
      * The method returns entity {@code District} of district by id.
      *
-     * @param id - put district id.
+     * @param id
+     *            - put district id.
+     *
      * @return new {@code District}.
-     * @throws NotExistException if district not exists.
+     *
+     * @throws NotExistException
+     *             if district not exists.
      */
     District getDistrictById(Long id);
 
     /**
      * The method returns entity {@code District} of district by name.
      *
-     * @param name - put center name.
+     * @param name
+     *            - put center name.
+     *
      * @return new {@code District}.
-     * @throws NotExistException if district not exists.
+     *
+     * @throws NotExistException
+     *             if district not exists.
      */
     District getDistrictByName(String name);
 
     /**
      * The method returns optional {@code Optional<District>} of district by name.
      *
-     * @param name - put center name.
+     * @param name
+     *            - put center name.
+     *
      * @return new {@code Optional<District>}.
-     * @throws NotExistException if district not exists.
+     *
+     * @throws NotExistException
+     *             if district not exists.
      */
     Optional<District> getOptionalDistrictByName(String name);
 
     /**
      * The method returns dto {@code SuccessCreatedDistrict} if district successfully added.
      *
-     * @param districtProfile - place place body of dto {@code DistrictProfile}.
+     * @param districtProfile
+     *            - place place body of dto {@code DistrictProfile}.
+     *
      * @return new {@code SuccessCreatedDistrict}.
-     * @throws AlreadyExistException if district already exists.
+     *
+     * @throws AlreadyExistException
+     *             if district already exists.
      */
     SuccessCreatedDistrict addDistrict(DistrictProfile districtProfile);
 
@@ -76,17 +94,23 @@ public interface DistrictService {
     /**
      * The method returns dto {@code DistrictProfile} of updated district.
      *
-     * @param districtProfile - place body of dto {@code DistrictProfile}.
+     * @param districtProfile
+     *            - place body of dto {@code DistrictProfile}.
+     *
      * @return new {@code DistrictProfile}.
      */
     DistrictProfile updateDistrict(Long id, DistrictProfile districtProfile);
 
     /**
-     * The method deletes district {@link  District}.
+     * The method deletes district {@link District}.
      *
-     * @param id - id of district to delete
+     * @param id
+     *            - id of district to delete
+     *
      * @return new {@code  DistrictResponse}.
-     * @throws NotExistException if the district doesn't exist.
+     *
+     * @throws NotExistException
+     *             if the district doesn't exist.
      */
     DistrictResponse deleteDistrictById(Long id);
 }

@@ -24,12 +24,12 @@ public class RoleRepositoryIT {
     private RoleRepository roleRepository;
 
     @Test
-    public void findByExistingNameShouldReturnCorrectRoleEntity(){
+    public void findByExistingNameShouldReturnCorrectRoleEntity() {
         assertThat(roleRepository.findByName(EXISTING_NAME).get().getName()).isEqualTo(EXISTING_NAME);
     }
 
     @Test
-    public void findByNotExistingNameShouldReturnOptionalEmpty(){
+    public void findByNotExistingNameShouldReturnOptionalEmpty() {
         assertThat(roleRepository.findByName(NOT_EXISTING_NAME)).isEqualTo(Optional.empty());
     }
 
@@ -42,12 +42,12 @@ public class RoleRepositoryIT {
     }
 
     @Test
-    public void existsByNameShouldReturnTrue(){
+    public void existsByNameShouldReturnTrue() {
         assertTrue(roleRepository.existsByName(EXISTING_NAME));
     }
 
     @Test
-    public void notExistsByNameShouldReturnFalse(){
+    public void notExistsByNameShouldReturnFalse() {
         assertFalse(roleRepository.existsByName(NOT_EXISTING_NAME));
     }
 

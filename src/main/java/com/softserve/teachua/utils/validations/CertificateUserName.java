@@ -8,8 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Use this annotation to check userName field on valid length,
- * and valid words.
+ * Use this annotation to check userName field on valid length, and valid words.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

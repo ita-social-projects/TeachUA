@@ -19,25 +19,25 @@ public class CenterToCenterResponseConverter {
     private ContactsStringConverter contactsStringConverter;
 
     @Autowired
-    public CenterToCenterResponseConverter(
-            ContactsStringConverter contactsStringConverter,
-            DtoConverter dtoConverter) {
+    public CenterToCenterResponseConverter(ContactsStringConverter contactsStringConverter, DtoConverter dtoConverter) {
         this.dtoConverter = dtoConverter;
         this.contactsStringConverter = contactsStringConverter;
     }
 
     /**
-     * The method returns dto {@code CenterResponse} of center and fetch data by contact_type_id
-     * from contact_types table from DB to fulfill contact field with consistent data.
+     * The method returns dto {@code CenterResponse} of center and fetch data by contact_type_id from contact_types
+     * table from DB to fulfill contact field with consistent data.
      *
-     * @param center - put center .
+     * @param center
+     *            - put center .
+     *
      * @return new {@code ClubResponse}.
+     *
      * @author Vasyl Khula
      */
     public CenterResponse convertToCenterResponse(Center center) {
         CenterResponse centerResponse = dtoConverter.convertToDto(center, CenterResponse.class);
-        centerResponse.setContacts(
-                contactsStringConverter.convertStringToContactDataResponses(center.getContacts()));
+        centerResponse.setContacts(contactsStringConverter.convertStringToContactDataResponses(center.getContacts()));
         return centerResponse;
     }
 }

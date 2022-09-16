@@ -40,11 +40,11 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     protected static final String FILE_NOT_FOUND_EXCEPTION = "File %s could not be found";
     protected static final String FILE_NOT_READ_EXCEPTION = "File %s could not be read";
     protected static final String FILE_NOT_CLOSE_EXCEPTION = "File %s could not be closed";
-    public static final String MISSING_HEADER_ROW = "Відсутній рядок з назвами колонок";
-    public static final String INCORRECT_DATE_FORMAT_ERROR = "Неможливо розпізнати дату видачі сертифікату";
-    public static final String MISSING_COLUMN_NAME_ERROR = "Відсутня колонка з ім'ям та прізвищем";
-    public static final String MISSING_COLUMN_DATE_ERROR = "Відсутня колонка з датою видачі сертифікату";
-    public static final String MISSING_COLUMN_EMAIL_ERROR = "Відсутня колонка з електронною адресою";
+    private static final String MISSING_HEADER_ROW = "Відсутній рядок з назвами колонок";
+    private static final String INCORRECT_DATE_FORMAT_ERROR = "Неможливо розпізнати дату видачі сертифікату";
+    private static final String MISSING_COLUMN_NAME_ERROR = "Відсутня колонка з ім'ям та прізвищем";
+    private static final String MISSING_COLUMN_DATE_ERROR = "Відсутня колонка з датою видачі сертифікату";
+    private static final String MISSING_COLUMN_EMAIL_ERROR = "Відсутня колонка з електронною адресою";
     private final static String EMPTY_STRING = "";
     private final static String SURNAME = "прізвище";
     private final static String DATE = "дата";
@@ -59,7 +59,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     @Override
     public ExcelParsingResponse parseExcel(MultipartFile multipartFile) {
         response = new ExcelParsingResponse();
-        indexes = new int[]{-1, -1, -1};
+        indexes = new int[] { -1, -1, -1 };
         try (InputStream inputStream = multipartFile.getInputStream()) {
             response.setCertificatesInfo(createUserCertificates(excelToList(inputStream)));
         } catch (IOException e) {
@@ -91,7 +91,8 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
                 Cell currentCell = cellIterator.next();
                 if (!isColumnEmpty(sheet, currentCell.getColumnIndex())) {
                     String cell = dataFormatter.formatCellValue(currentCell);
-                    if (cell.toLowerCase().contains(DATE) || cell.toLowerCase().contains(SURNAME) || cell.toLowerCase().contains(EMAIL)) {
+                    if (cell.toLowerCase().contains(DATE) || cell.toLowerCase().contains(SURNAME)
+                            || cell.toLowerCase().contains(EMAIL)) {
                         headerRowIndex = allCells.size();
                     }
                     allRowCells.add(currentCell);
@@ -136,17 +137,14 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
             try {
                 date = LocalDate.parse(stringDate, DateTimeFormatter.ofPattern(DATE_FORMAT));
             } catch (DateTimeParseException e) {
-                response.getParsingMistakes().add(new ExcelParsingMistake(INCORRECT_DATE_FORMAT_ERROR, stringDate, rowIndex));
+                response.getParsingMistakes()
+                        .add(new ExcelParsingMistake(INCORRECT_DATE_FORMAT_ERROR, stringDate, rowIndex));
             }
         }
         if (indexes[2] != -1) {
             email = dataFormatter.formatCellValue(data.get(indexes[2])).trim();
         }
-        CertificateExcel certificateExcel = CertificateExcel.builder()
-                .name(name)
-                .dateIssued(date)
-                .email(email)
-                .build();
+        CertificateExcel certificateExcel = CertificateExcel.builder().name(name).dateIssued(date).email(email).build();
         validateCertificateExcel(certificateExcel, response, rowIndex);
         return certificateExcel;
     }
@@ -176,13 +174,16 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
             }
         }
         if (indexes[0] == -1) {
-            response.getParsingMistakes().add(new ExcelParsingMistake(MISSING_COLUMN_NAME_ERROR, row.toString(), (long) headerRowIndex));
+            response.getParsingMistakes()
+                    .add(new ExcelParsingMistake(MISSING_COLUMN_NAME_ERROR, row.toString(), (long) headerRowIndex));
         }
         if (indexes[1] == -1) {
-            response.getParsingMistakes().add(new ExcelParsingMistake(MISSING_COLUMN_DATE_ERROR, row.toString(), (long) headerRowIndex));
+            response.getParsingMistakes()
+                    .add(new ExcelParsingMistake(MISSING_COLUMN_DATE_ERROR, row.toString(), (long) headerRowIndex));
         }
         if (indexes[2] == -1) {
-            response.getParsingMistakes().add(new ExcelParsingMistake(MISSING_COLUMN_EMAIL_ERROR, row.toString(), (long) headerRowIndex));
+            response.getParsingMistakes()
+                    .add(new ExcelParsingMistake(MISSING_COLUMN_EMAIL_ERROR, row.toString(), (long) headerRowIndex));
         }
     }
 
@@ -221,14 +222,16 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
         return validatedName.toString().trim();
     }
 
-    private void validateCertificateExcel(CertificateExcel certificateExcel, ExcelParsingResponse response, long rowIndex) {
+    private void validateCertificateExcel(CertificateExcel certificateExcel, ExcelParsingResponse response,
+            long rowIndex) {
         Validator validator;
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             validator = factory.getValidator();
         }
         Set<ConstraintViolation<CertificateExcel>> violations = validator.validate(certificateExcel);
         for (ConstraintViolation<CertificateExcel> violation : violations) {
-            response.getParsingMistakes().add(new ExcelParsingMistake(violation.getMessage(), violation.getInvalidValue().toString(), rowIndex));
+            response.getParsingMistakes().add(
+                    new ExcelParsingMistake(violation.getMessage(), violation.getInvalidValue().toString(), rowIndex));
         }
     }
 }

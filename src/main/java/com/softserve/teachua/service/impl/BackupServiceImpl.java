@@ -1,6 +1,5 @@
 package com.softserve.teachua.service.impl;
 
-
 import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.exception.MethodNotSupportedException;
 import com.softserve.teachua.exception.NotExistException;
@@ -61,11 +60,10 @@ public class BackupServiceImpl implements BackupService {
     private final ChallengeRepository challengeRepository;
 
     public BackupServiceImpl(AboutUsItemRepository aboutUsItemRepository, BannerItemRepository bannerItemRepository,
-                             CategoryRepository categoryRepository, CenterRepository centerRepository,
-                             ClubRepository clubRepository, ContactTypeRepository contactTypeRepository,
-                             GalleryRepository galleryRepository, NewsRepository newsRepository,
-                             TaskRepository taskRepository, UserRepository userRepository,
-                             ChallengeRepository challengeRepository) {
+            CategoryRepository categoryRepository, CenterRepository centerRepository, ClubRepository clubRepository,
+            ContactTypeRepository contactTypeRepository, GalleryRepository galleryRepository,
+            NewsRepository newsRepository, TaskRepository taskRepository, UserRepository userRepository,
+            ChallengeRepository challengeRepository) {
         this.aboutUsItemRepository = aboutUsItemRepository;
         this.bannerItemRepository = bannerItemRepository;
         this.categoryRepository = categoryRepository;
@@ -79,40 +77,42 @@ public class BackupServiceImpl implements BackupService {
         this.challengeRepository = challengeRepository;
     }
 
-
     @Override
     public List<String> getAllBackupFiles(String fileName) {
 
         List<List<String>> filePathForBackup = new LinkedList<>();
-        filePathForBackup.add(aboutUsItemRepository.findAll().stream().map(AboutUsItem::getPicture).collect(Collectors.toList()));
-        filePathForBackup.add(bannerItemRepository.findAll().stream().map(BannerItem::getPicture).collect(Collectors.toList()));
-        filePathForBackup.add(categoryRepository.findAll().stream().map(Category::getUrlLogo).collect(Collectors.toList()));
-        filePathForBackup.add(centerRepository.findAll().stream().map(Center::getUrlBackgroundPicture).collect(Collectors.toList()));
+        filePathForBackup.add(
+                aboutUsItemRepository.findAll().stream().map(AboutUsItem::getPicture).collect(Collectors.toList()));
+        filePathForBackup
+                .add(bannerItemRepository.findAll().stream().map(BannerItem::getPicture).collect(Collectors.toList()));
+        filePathForBackup
+                .add(categoryRepository.findAll().stream().map(Category::getUrlLogo).collect(Collectors.toList()));
+        filePathForBackup.add(
+                centerRepository.findAll().stream().map(Center::getUrlBackgroundPicture).collect(Collectors.toList()));
         filePathForBackup.add(centerRepository.findAll().stream().map(Center::getUrlLogo).collect(Collectors.toList()));
-        filePathForBackup.add(clubRepository.findAll().stream().map(Club::getUrlBackground).collect(Collectors.toList()));
+        filePathForBackup
+                .add(clubRepository.findAll().stream().map(Club::getUrlBackground).collect(Collectors.toList()));
         filePathForBackup.add(clubRepository.findAll().stream().map(Club::getUrlLogo).collect(Collectors.toList()));
-        filePathForBackup.add(contactTypeRepository.findAll().stream().map(ContactType::getUrlLogo).collect(Collectors.toList()));
-        filePathForBackup.add(galleryRepository.findAll().stream().map(GalleryPhoto::getUrl).collect(Collectors.toList()));
-        filePathForBackup.add(newsRepository.findAll().stream().map(News::getUrlTitleLogo).collect(Collectors.toList()));
+        filePathForBackup.add(
+                contactTypeRepository.findAll().stream().map(ContactType::getUrlLogo).collect(Collectors.toList()));
+        filePathForBackup
+                .add(galleryRepository.findAll().stream().map(GalleryPhoto::getUrl).collect(Collectors.toList()));
+        filePathForBackup
+                .add(newsRepository.findAll().stream().map(News::getUrlTitleLogo).collect(Collectors.toList()));
         filePathForBackup.add(taskRepository.findAll().stream().map(Task::getPicture).collect(Collectors.toList()));
         filePathForBackup.add(userRepository.findAll().stream().map(User::getUrlLogo).collect(Collectors.toList()));
-        filePathForBackup.add(challengeRepository.findAll().stream().map(Challenge::getPicture).collect(Collectors.toList()));
-        filePathForBackup.add(FileUtils.listFiles(new File(IMAGES_DIRECTORY), null, false).stream().map(File::getName).collect(Collectors.toList()));
+        filePathForBackup
+                .add(challengeRepository.findAll().stream().map(Challenge::getPicture).collect(Collectors.toList()));
+        filePathForBackup.add(FileUtils.listFiles(new File(IMAGES_DIRECTORY), null, false).stream().map(File::getName)
+                .collect(Collectors.toList()));
 
         log.debug("**/ getting file list for backup");
         if (!fileName.equals(ALL_FILES)) {
-            return filePathForBackup
-                    .stream()
-                    .flatMap(Collection::stream)
-                    .distinct()
-                    .filter(file -> file != null && file.contains(fileName))
-                    .collect(Collectors.toList());
+            return filePathForBackup.stream().flatMap(Collection::stream).distinct()
+                    .filter(file -> file != null && file.contains(fileName)).collect(Collectors.toList());
         }
-        return filePathForBackup.stream()
-                .flatMap(Collection::stream)
-                .distinct()
-                .filter(file -> file != null && !file.isEmpty())
-                .collect(Collectors.toList());
+        return filePathForBackup.stream().flatMap(Collection::stream).distinct()
+                .filter(file -> file != null && !file.isEmpty()).collect(Collectors.toList());
     }
 
     @Override
@@ -123,7 +123,6 @@ public class BackupServiceImpl implements BackupService {
         } catch (IOException e) {
             throw new FileUploadException(ZIP_STREAM_EXCEPTION);
         }
-
 
         for (String file : getAllBackupFiles(ALL_FILES)) {
 
@@ -190,7 +189,6 @@ public class BackupServiceImpl implements BackupService {
         try {
             zipEntry = zipInputStream.getNextEntry();
 
-
             while (zipEntry != null) {
                 String zipDirectory = zipEntry.getName().split("TeachUA\\\\")[1];
                 File newFile = new File(zipDirectory);
@@ -204,7 +202,7 @@ public class BackupServiceImpl implements BackupService {
                         throw new IOException(String.format(CANT_CREATE_DIRECTORY, parent));
                     }
 
-                   int len;
+                    int len;
                     try (FileOutputStream fos = new FileOutputStream(newFile)) {
                         while ((len = zipInputStream.read(buffer)) > 0) {
                             fos.write(buffer, 0, len);
@@ -224,7 +222,7 @@ public class BackupServiceImpl implements BackupService {
             zipInputStream.close();
         }
         if (!(new File(BACKUP_DIRECTORY).delete())) {
-            throw new MethodNotSupportedException(String.format(CANT_DELETE_DIRECTORY,BACKUP_DIRECTORY));
+            throw new MethodNotSupportedException(String.format(CANT_DELETE_DIRECTORY, BACKUP_DIRECTORY));
 
         }
         return movedFileList;

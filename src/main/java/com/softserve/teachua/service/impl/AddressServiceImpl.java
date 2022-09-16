@@ -34,28 +34,21 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public List<AddressProfile> getNotRelativeAddress() {
 
-        List<Location> locationList = locationRepository
-                .findAll()
-                .stream()
-                .filter(location ->
-                        (hasAddressOtherCity(location.getAddress()))
-                                &&
-                                !location.getAddress().matches(".*(" + location.getCity().getName() + "[^а-яА-ЯіІїЇєЄ]+).*")
+        List<Location> locationList = locationRepository.findAll().stream()
+                .filter(location -> (hasAddressOtherCity(location.getAddress()))
+                        && !location.getAddress().matches(".*(" + location.getCity().getName() + "[^а-яА-ЯіІїЇєЄ]+).*")
 
                 ).collect(Collectors.toList());
 
         List<AddressProfile> addressProfileList = new LinkedList<>();
 
         for (Location location : locationList) {
-            addressProfileList.add(new AddressProfile()
-                    .withId(location.getId())
-                    .withAddressText(location.getAddress())
+            addressProfileList.add(new AddressProfile().withId(location.getId()).withAddressText(location.getAddress())
                     .withRealCity(cityRepository.getOne(location.getCity().getId()).getName()));
         }
 
         return addressProfileList;
     }
-
 
     public List<AddressProfile> replaceAllIncorrectCity(List<AddressProfile> addressProfileList) {
 
@@ -63,8 +56,7 @@ public class AddressServiceImpl implements AddressService {
 
         addressProfileList.forEach(address -> cities.forEach(city -> {
             if (address.getAddressText().matches(".*(" + city.getName() + "[^а-яА-ЯіІїЇєЄ]+).*")
-                    ||
-                    address.getAddressText().matches("^" + city.getName() + "$")) {
+                    || address.getAddressText().matches("^" + city.getName() + "$")) {
                 Location location = locationRepository.getOne(address.getId()).withCity(city);
                 address.setRealCity(locationRepository.save(location).getCity().getName());
             }
@@ -78,7 +70,9 @@ public class AddressServiceImpl implements AddressService {
 
         cityRepository.findAll().forEach(city -> {
 
-            if ((city != null && !city.getName().isEmpty()) && (address != null && address.contains(city.getName()) && (address.matches(".*(" + city.getName() + "[^а-яА-ЯіІїЇєЄ]+).*")))
+            if ((city != null && !city.getName().isEmpty())
+                    && (address != null && address.contains(city.getName())
+                            && (address.matches(".*(" + city.getName() + "[^а-яА-ЯіІїЇєЄ]+).*")))
                     || Objects.requireNonNull(address).matches("^" + city.getName() + "$")) {
                 hasCity.set(true);
             }

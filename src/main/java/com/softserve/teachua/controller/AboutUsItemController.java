@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the ABOUT US page.
- * */
+ */
 
 @Slf4j
 @RestController
@@ -33,8 +33,7 @@ public class AboutUsItemController implements Api {
     }
 
     /**
-     * Use this endpoint to get the About us information.
-     * The controller returns {@code List<AboutUsItemResponse>}.
+     * Use this endpoint to get the About us information. The controller returns {@code List<AboutUsItemResponse>}.
      *
      * @return {@code List<AboutUsItemResponse>}.
      */
@@ -44,83 +43,77 @@ public class AboutUsItemController implements Api {
     }
 
     /**
-     * Use this endpoint to get the specific About us item.
-     * The controller returns {@code AboutUsItemResponse}.
+     * Use this endpoint to get the specific About us item. The controller returns {@code AboutUsItemResponse}.
      *
-     * @param id - put About us item id here.
+     * @param id
+     *            - put About us item id here.
+     *
      * @return {@code AboutUsItemResponse}.
      */
     @GetMapping("/about/{id}")
-    public AboutUsItemResponse getAboutUsItems(
-            @PathVariable Long id
-    ) {
+    public AboutUsItemResponse getAboutUsItems(@PathVariable Long id) {
         return aboutUsItemService.getAboutUsItemResponseById(id);
     }
 
     /**
-     * Use this endpoint to create a specific About us item.
-     * The controller returns {@code AboutUsItemResponse}.
+     * Use this endpoint to create a specific About us item. The controller returns {@code AboutUsItemResponse}.
      *
-     * @param aboutUsItemProfile - put required parameters here.
+     * @param aboutUsItemProfile
+     *            - put required parameters here.
+     *
      * @return {@code AboutUsItemResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/about")
-    public AboutUsItemResponse addAboutUsItem(
-            @Valid
-            @RequestBody AboutUsItemProfile aboutUsItemProfile
-    ) {
+    public AboutUsItemResponse addAboutUsItem(@Valid @RequestBody AboutUsItemProfile aboutUsItemProfile) {
         return aboutUsItemService.addAboutUsItem(aboutUsItemProfile);
     }
 
     /**
-     * Use this endpoint to update the specific About us item.
-     * The controller returns {@code AboutUsItemResponse}.
+     * Use this endpoint to update the specific About us item. The controller returns {@code AboutUsItemResponse}.
      *
-     * @param id                 - put About us item id here.
-     * @param aboutUsItemProfile - put required parameters here.
+     * @param id
+     *            - put About us item id here.
+     * @param aboutUsItemProfile
+     *            - put required parameters here.
+     *
      * @return {@code AboutUsItemResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/about/{id}")
 
-    public AboutUsItemResponse updateAboutUsItem(
-            @PathVariable Long id,
-            @Valid
-            @RequestBody AboutUsItemProfile aboutUsItemProfile
-    ) {
+    public AboutUsItemResponse updateAboutUsItem(@PathVariable Long id,
+            @Valid @RequestBody AboutUsItemProfile aboutUsItemProfile) {
         return aboutUsItemService.updateAboutUsItem(id, aboutUsItemProfile);
     }
 
     /**
-     * Use this endpoint to archive a specific About us item.
-     * The controller returns {@code AboutUsItemResponse}.
+     * Use this endpoint to archive a specific About us item. The controller returns {@code AboutUsItemResponse}.
      *
-     * @param id - put About us item id here.
+     * @param id
+     *            - put About us item id here.
+     *
      * @return {@code AboutUsItemResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/about/{id}")
-    public AboutUsItemResponse deleteAboutUsItem(
-            @PathVariable Long id
-    ) {
+    public AboutUsItemResponse deleteAboutUsItem(@PathVariable Long id) {
         return aboutUsItemService.deleteAboutUsItemById(id);
     }
 
     /**
-     * Use this endpoint to update the order in About us.
-     * The controller returns success.
+     * Use this endpoint to update the order in About us. The controller returns success.
      *
-     * @param id     - put About us item id here.
-     * @param number - put number here.
+     * @param id
+     *            - put About us item id here.
+     * @param number
+     *            - put number here.
+     *
      * @return {@code "success"}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PatchMapping("/about/{id}")
-    public String changeOrder(
-            @PathVariable Long id,
-            @RequestBody NumberDto number
-    ) {
+    public String changeOrder(@PathVariable Long id, @RequestBody NumberDto number) {
         aboutUsItemService.changeOrder(id, number.getNumber());
         return "success";
     }

@@ -4,9 +4,8 @@ import javassist.tools.web.BadHttpRequest;
 import org.springframework.lang.Nullable;
 
 /**
- * This class is custom exception for interrupt
- * Spring's BadRequest and adding own message to this exception.
- * The constructor accepts message for Exception
+ * This class is custom exception for interrupt Spring's BadRequest and adding own message to this exception. The
+ * constructor accepts message for Exception
  * <p>
  * Use @code new BadRequestException("Bad request")
  *

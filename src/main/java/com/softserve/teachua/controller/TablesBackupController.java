@@ -51,11 +51,8 @@ public class TablesBackupController implements Api {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(backupService.getAllTables(tableNames).getBytes());
         InputStreamResource resource = new InputStreamResource(inputStream);
 
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentLength(inputStream.available())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(resource);
+        return ResponseEntity.ok().headers(headers).contentLength(inputStream.available())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
     }
 
 }

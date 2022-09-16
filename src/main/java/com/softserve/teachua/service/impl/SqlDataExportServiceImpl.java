@@ -99,18 +99,15 @@ public class SqlDataExportServiceImpl implements SqlDataExportService {
     }
 
     private ResultSet getTableRows(String tableName, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(
-                "select * from " + tableName);
+        PreparedStatement statement = connection.prepareStatement("select * from " + tableName);
         return statement.executeQuery();
     }
-
 
     private List<String> getListOfTableNames(Connection connection) {
         List<String> list = new ArrayList<>();
         try {
             DatabaseMetaData databaseMetaData = connection.getMetaData();
-            ResultSet resultSet = databaseMetaData.getTables(null, null,
-                    null, new String[]{"TABLE"});
+            ResultSet resultSet = databaseMetaData.getTables(null, null, null, new String[] { "TABLE" });
             while (resultSet.next()) {
                 String tableName = resultSet.getString(3);
                 list.add(tableName);

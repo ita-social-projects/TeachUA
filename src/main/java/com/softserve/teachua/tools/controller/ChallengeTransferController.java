@@ -23,10 +23,12 @@ public class ChallengeTransferController implements Api {
     }
 
     /**
-     * Use this endpoint to create challenges from file.
-     * The controller returns list of dto {@code List<SuccessCreatedChallenge>} of created challenges.
+     * Use this endpoint to create challenges from file. The controller returns list of dto
+     * {@code List<SuccessCreatedChallenge>} of created challenges.
      *
-     * @param filePath - path to file with jsons of tasks.
+     * @param filePath
+     *            - path to file with jsons of tasks.
+     *
      * @return new {@code List<SuccessCreatedChallenge>}.
      */
     @DevPermit
@@ -36,8 +38,8 @@ public class ChallengeTransferController implements Api {
     }
 
     /**
-     * Use this endpoint to create challenges from infoRepository class.
-     * The controller returns list of dto {@code List<SuccessCreatedChallenge>} of created challenges.
+     * Use this endpoint to create challenges from infoRepository class. The controller returns list of dto
+     * {@code List<SuccessCreatedChallenge>} of created challenges.
      *
      * @return new {@code List<SuccessCreatedChallenge>}.
      */

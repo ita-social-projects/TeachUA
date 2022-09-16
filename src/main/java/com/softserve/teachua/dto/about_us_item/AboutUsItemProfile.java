@@ -21,8 +21,7 @@ public class AboutUsItemProfile implements Convertible {
 
     private String picture;
 
-    @Pattern(regexp = "(https\\:\\/\\/www\\.youtube\\.com\\/+watch\\?v\\=)(.*)",
-            message = "must match https://www.youtube.com/watch?v=")
+    @Pattern(regexp = "(https\\:\\/\\/www\\.youtube\\.com\\/+watch\\?v\\=)(.*)", message = "must match https://www.youtube.com/watch?v=")
     private String video;
 
     @NotNull

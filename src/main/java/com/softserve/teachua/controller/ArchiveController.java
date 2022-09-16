@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the archive.
- * */
+ */
 
 @RestController
 @Slf4j
@@ -33,8 +33,8 @@ public class ArchiveController implements Api {
     }
 
     /**
-     * Use this endpoint to get the Archive information for all Archives.
-     * The controller returns information {@code List <Archive>} about archives.
+     * Use this endpoint to get the Archive information for all Archives. The controller returns information
+     * {@code List <Archive>} about archives.
      *
      * @return new {@code List <Archive>}.
      */
@@ -45,10 +45,12 @@ public class ArchiveController implements Api {
     }
 
     /**
-     * Use this endpoint to get the Archive information based on ClassName.
-     * The controller returns information {@code List <Archive>} about archives by className.
+     * Use this endpoint to get the Archive information based on ClassName. The controller returns information
+     * {@code List <Archive>} about archives by className.
      *
-     * @param className - put className here.
+     * @param className
+     *            - put className here.
+     *
      * @return new {@code List <Archive>}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -58,10 +60,11 @@ public class ArchiveController implements Api {
     }
 
     /**
-     * Use this endpoint to restore the model from archive by id
-     * The controller returns information {@code Archive}.
+     * Use this endpoint to restore the model from archive by id The controller returns information {@code Archive}.
      *
-     * @param id - id of archived model to restore
+     * @param id
+     *            - id of archived model to restore
+     *
      * @return new {@code Archive}
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -69,6 +72,5 @@ public class ArchiveController implements Api {
     public Archive restoreFromArchive(@PathVariable("id") Long id) {
         return archiveService.restoreArchiveObject(id);
     }
-
 
 }

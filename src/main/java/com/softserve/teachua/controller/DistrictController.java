@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the districts.
- * */
+ */
 
 @RestController
 @Tag(name = "district", description = "the District API")
@@ -31,10 +31,11 @@ public class DistrictController implements Api {
     }
 
     /**
-     * Use this endpoint to get district by id.
-     * The controller returns {@code DistrictResponse}.
+     * Use this endpoint to get district by id. The controller returns {@code DistrictResponse}.
      *
-     * @param id - put district id.
+     * @param id
+     *            - put district id.
+     *
      * @return new {@code DistrictResponse}.
      */
     @GetMapping("/district/{id}")
@@ -43,42 +44,41 @@ public class DistrictController implements Api {
     }
 
     /**
-     * Use this endpoint to create district.
-     * The controller returns {@code SuccessCreatedDistrict}.
+     * Use this endpoint to create district. The controller returns {@code SuccessCreatedDistrict}.
      *
-     * @param districtProfile - place body to {@link DistrictProfile}.
+     * @param districtProfile
+     *            - place body to {@link DistrictProfile}.
+     *
      * @return new {@code SuccessCreatedDistrict}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/district")
-    public SuccessCreatedDistrict addDistrict(
-            @Valid
-            @RequestBody DistrictProfile districtProfile) {
+    public SuccessCreatedDistrict addDistrict(@Valid @RequestBody DistrictProfile districtProfile) {
         return districtService.addDistrict(districtProfile);
     }
 
     /**
-     * Use this endpoint to update district by id.
-     * The controller returns {@code DistrictProfile}.
+     * Use this endpoint to update district by id. The controller returns {@code DistrictProfile}.
      *
-     * @param id              - put district id here.
-     * @param districtProfile - put district profile information here.
+     * @param id
+     *            - put district id here.
+     * @param districtProfile
+     *            - put district profile information here.
+     *
      * @return new {@code DistrictProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/district/{id}")
-    public DistrictProfile updateDistrict(
-            @PathVariable Long id,
-            @Valid
-            @RequestBody DistrictProfile districtProfile) {
+    public DistrictProfile updateDistrict(@PathVariable Long id, @Valid @RequestBody DistrictProfile districtProfile) {
         return districtService.updateDistrict(id, districtProfile);
     }
 
     /**
-     * Use this endpoint to get districts by name.
-     * The controller returns list {@code List<DistrictResponse>}.
+     * Use this endpoint to get districts by name. The controller returns list {@code List<DistrictResponse>}.
      *
-     * @param name - put district name here.
+     * @param name
+     *            - put district name here.
+     *
      * @return new {@code List<DistrictResponse>}.
      */
     @GetMapping("/districts/{name}")
@@ -87,8 +87,7 @@ public class DistrictController implements Api {
     }
 
     /**
-     * Use this endpoint to get all districts.
-     * The controller returns list of {@code List<DistrictResponse>}.
+     * Use this endpoint to get all districts. The controller returns list of {@code List<DistrictResponse>}.
      *
      * @return new {@code List<DistrictResponse>}.
      */
@@ -98,10 +97,11 @@ public class DistrictController implements Api {
     }
 
     /**
-     * Use this endpoint to delete district by id.
-     * The controller returns {@code DistrictResponse}.
+     * Use this endpoint to delete district by id. The controller returns {@code DistrictResponse}.
      *
-     * @param id - put district id here.
+     * @param id
+     *            - put district id here.
+     *
      * @return new {@code List<DistrictResponse>}.
      */
     @AllowedRoles(RoleData.ADMIN)

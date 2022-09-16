@@ -14,39 +14,54 @@ import java.util.List;
 
 public interface TaskService {
     /**
-     * The method deletes entity {@code Task}
-     * returns dto {@code TaskProfile} of deleted task by id.
+     * The method deletes entity {@code Task} returns dto {@code TaskProfile} of deleted task by id.
      *
-     * @param id - id of Task to delete.
+     * @param id
+     *            - id of Task to delete.
+     *
      * @return new {@code TaskProfile}.
-     * @throws NotExistException if task not exists.
+     *
+     * @throws NotExistException
+     *             if task not exists.
      */
     TaskProfile deleteTask(Long id);
 
     /**
      * The method returns entity {@code Task} of task by id.
      *
-     * @param id - put Task id.
+     * @param id
+     *            - put Task id.
+     *
      * @return new {@code Task}.
-     * @throws NotExistException if task not exists.
+     *
+     * @throws NotExistException
+     *             if task not exists.
      */
     Task getTaskById(Long id);
 
     /**
      * The method returns list {@code List<TaskPreview>} of task dto by challenge id.
      *
-     * @param id - put Challenge id.
+     * @param id
+     *            - put Challenge id.
+     *
      * @return new {@code List<TaskPreview>}.
-     * @throws NotExistException if challenge not exists.
+     *
+     * @throws NotExistException
+     *             if challenge not exists.
      */
     List<TaskPreview> getTasksByChallengeId(Long id);
 
     /**
      * The method returns list {@code List<TaskPreview>} of task with startDate earlier from now, by challenge id
      *
-     * @param id - put Challenge id.
+     * @param id
+     *            - put Challenge id.
+     *
      * @return new {@code List<TaskPreview>}.
-     * @throws NotExistException if challenge not exists.
+     *
+     * @throws NotExistException
+     *             if challenge not exists.
      */
     List<TaskPreview> getCurrentTasksByChallengeId(Long id);
 
@@ -60,16 +75,22 @@ public interface TaskService {
     /**
      * The method returns dto {@code TaskProfile} of task by id.
      *
-     * @param id - put Task id.
+     * @param id
+     *            - put Task id.
+     *
      * @return new {@code TaskProfile}.
-     * @throws NotExistException if task not exists.
+     *
+     * @throws NotExistException
+     *             if task not exists.
      */
     TaskProfile getTask(Long id);
 
     /**
      * The method returns dto {@code SuccessCreatedTask} if task successfully added.
      *
-     * @param createTask - place body of dto {@code CreateTask}.
+     * @param createTask
+     *            - place body of dto {@code CreateTask}.
+     *
      * @return new {@code SuccessCreatedTask}.
      */
     SuccessCreatedTask createTask(Long id, CreateTask createTask);
@@ -77,8 +98,11 @@ public interface TaskService {
     /**
      * The method returns dto {@code SuccessUpdatedTask} of updated task.
      *
-     * @param id         - put Task id.
-     * @param updateTask - place body of dto {@code UpdateTask}.
+     * @param id
+     *            - put Task id.
+     * @param updateTask
+     *            - place body of dto {@code UpdateTask}.
+     *
      * @return new {@code SuccessUpdatedTask}.
      */
     SuccessUpdatedTask updateTask(Long id, UpdateTask updateTask);

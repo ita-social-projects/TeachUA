@@ -41,7 +41,8 @@ public class CityServiceImpl implements CityService, ArchiveMark<City> {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public CityServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService, CityRepository cityRepository, ObjectMapper objectMapper) {
+    public CityServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService, CityRepository cityRepository,
+            ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
         this.cityRepository = cityRepository;
@@ -88,8 +89,7 @@ public class CityServiceImpl implements CityService, ArchiveMark<City> {
 
     @Override
     public List<CityResponse> getListOfCities() {
-        List<CityResponse> cityResponses = cityRepository.findAllByOrderByIdAsc()
-                .stream()
+        List<CityResponse> cityResponses = cityRepository.findAllByOrderByIdAsc().stream()
                 .map(city -> (CityResponse) dtoConverter.convertToDto(city, CityResponse.class))
                 .collect(Collectors.toList());
 
@@ -100,8 +100,7 @@ public class CityServiceImpl implements CityService, ArchiveMark<City> {
     @Override
     public CityProfile updateCity(Long id, CityProfile cityProfile) {
         City city = getCityById(id);
-        City newCity = dtoConverter.convertToEntity(cityProfile, city)
-                .withId(id);
+        City newCity = dtoConverter.convertToEntity(cityProfile, city).withId(id);
 
         log.debug("**/updating city by id = " + newCity);
         return dtoConverter.convertToDto(cityRepository.save(newCity), CityProfile.class);

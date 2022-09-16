@@ -67,61 +67,36 @@ public class TaskServiceTest {
     private final String CORRECT_CHALLENGE_NAME = "MyChallenge";
 
     @BeforeEach
-    public void setMocks(){
-        challenge = Challenge.builder()
-                .id(CORRECT_CHALLENGE_ID)
-                .name(CORRECT_CHALLENGE_NAME)
-                .build();
+    public void setMocks() {
+        challenge = Challenge.builder().id(CORRECT_CHALLENGE_ID).name(CORRECT_CHALLENGE_NAME).build();
 
-        task = Task.builder()
-                .id(CORRECT_TASK_ID)
-                .name(CORRECT_TASK_NAME)
-                .challenge(challenge)
-                .build();
+        task = Task.builder().id(CORRECT_TASK_ID).name(CORRECT_TASK_NAME).challenge(challenge).build();
 
-        taskPreview = TaskPreview.builder()
-                .id(CORRECT_TASK_ID)
-                .name(CORRECT_TASK_NAME)
-                .build();
+        taskPreview = TaskPreview.builder().id(CORRECT_TASK_ID).name(CORRECT_TASK_NAME).build();
 
-        updateTask = UpdateTask.builder()
-                .name(CORRECT_TASK_NAME)
-                .challengeId(CORRECT_CHALLENGE_ID)
-                .build();
+        updateTask = UpdateTask.builder().name(CORRECT_TASK_NAME).challengeId(CORRECT_CHALLENGE_ID).build();
 
-        successUpdatedTask = SuccessUpdatedTask.builder()
-                .id(CORRECT_TASK_ID)
-                .name(CORRECT_TASK_NAME)
-                .challengeId(CORRECT_CHALLENGE_ID)
-                .build();
+        successUpdatedTask = SuccessUpdatedTask.builder().id(CORRECT_TASK_ID).name(CORRECT_TASK_NAME)
+                .challengeId(CORRECT_CHALLENGE_ID).build();
 
-        createTask = CreateTask.builder()
-                .name(CORRECT_TASK_NAME)
-                .build();
+        createTask = CreateTask.builder().name(CORRECT_TASK_NAME).build();
 
-        successCreatedTask = SuccessCreatedTask.builder()
-                .id(CORRECT_TASK_ID)
-                .name(CORRECT_TASK_NAME)
-                .challengeId(CORRECT_CHALLENGE_ID)
-                .build();
+        successCreatedTask = SuccessCreatedTask.builder().id(CORRECT_TASK_ID).name(CORRECT_TASK_NAME)
+                .challengeId(CORRECT_CHALLENGE_ID).build();
 
-        taskProfile = TaskProfile.builder()
-                .id(CORRECT_TASK_ID)
-                .name(CORRECT_TASK_NAME)
-                .challengeId(CORRECT_CHALLENGE_ID)
-                .build();
+        taskProfile = TaskProfile.builder().id(CORRECT_TASK_ID).name(CORRECT_TASK_NAME)
+                .challengeId(CORRECT_CHALLENGE_ID).build();
 
     }
 
     @Test
-    public void getTaskByCorrectIdShouldReturnTask(){
+    public void getTaskByCorrectIdShouldReturnTask() {
         when(taskRepository.findById(CORRECT_TASK_ID)).thenReturn(Optional.of(task));
-        assertThat(taskService.getTaskById(CORRECT_TASK_ID))
-                .isEqualTo(task);
+        assertThat(taskService.getTaskById(CORRECT_TASK_ID)).isEqualTo(task);
     }
 
     @Test
-    public void getTaskByWrongIdShouldThrowNotExistException(){
+    public void getTaskByWrongIdShouldThrowNotExistException() {
         when(taskRepository.findById(WRONG_TASK_ID)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> {
             taskService.getTaskById(WRONG_TASK_ID);
@@ -129,12 +104,11 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void getTasksByCorrectChallengeIdShouldReturnListOfTaskPreview(){
+    public void getTasksByCorrectChallengeIdShouldReturnListOfTaskPreview() {
         when(challengeService.getChallengeById(CORRECT_CHALLENGE_ID)).thenReturn(challenge);
         when(dtoConverter.convertToDto(task, TaskPreview.class)).thenReturn(taskPreview);
         when(taskRepository.findTasksByChallenge(challenge)).thenReturn(Arrays.asList(task));
-        assertThat(taskService.getTasksByChallengeId(CORRECT_CHALLENGE_ID))
-                .isNotEmpty()
+        assertThat(taskService.getTasksByChallengeId(CORRECT_CHALLENGE_ID)).isNotEmpty()
                 .isEqualTo(Arrays.asList(taskPreview));
     }
 
@@ -142,48 +116,41 @@ public class TaskServiceTest {
     public void getListOfTasksShouldReturnListOfTaskPreview() {
         when(taskRepository.findAll()).thenReturn(Arrays.asList(task));
         when(dtoConverter.convertToDto(task, TaskPreview.class)).thenReturn(taskPreview);
-        assertThat(taskService.getListOfTasks())
-                .isNotEmpty()
-                .isEqualTo(Arrays.asList(taskPreview));
+        assertThat(taskService.getListOfTasks()).isNotEmpty().isEqualTo(Arrays.asList(taskPreview));
     }
 
     @Test
     public void getListOfTasksShouldReturnEmptyList() {
         when(taskRepository.findAll()).thenReturn(Arrays.asList());
-        assertThat(taskService.getListOfTasks())
-                .isEmpty();
+        assertThat(taskService.getListOfTasks()).isEmpty();
     }
 
     @Test
-    public void createTaskShouldReturnSuccessCreatedTask(){
+    public void createTaskShouldReturnSuccessCreatedTask() {
         when(challengeService.getChallengeById(CORRECT_CHALLENGE_ID)).thenReturn(challenge);
         when(dtoConverter.convertToEntity(createTask, new Task())).thenReturn(task);
         when(taskRepository.save(task)).thenReturn(task);
         when(dtoConverter.convertToDto(task, SuccessCreatedTask.class)).thenReturn(successCreatedTask);
-        assertThat(taskService.createTask(CORRECT_CHALLENGE_ID, createTask))
-                .isEqualTo(successCreatedTask);
+        assertThat(taskService.createTask(CORRECT_CHALLENGE_ID, createTask)).isEqualTo(successCreatedTask);
     }
 
     @Test
-    public void updateTaskShouldReturnSuccessUpdatedTask(){
+    public void updateTaskShouldReturnSuccessUpdatedTask() {
         when(taskRepository.findById(CORRECT_TASK_ID)).thenReturn(Optional.of(task));
         when(challengeService.getChallengeById(CORRECT_CHALLENGE_ID)).thenReturn(challenge);
         when(taskRepository.save(task)).thenReturn(task);
         when(dtoConverter.convertToDto(task, SuccessUpdatedTask.class)).thenReturn(successUpdatedTask);
-        assertThat(taskService.updateTask(CORRECT_TASK_ID, updateTask))
-                .isEqualTo(successUpdatedTask);
+        assertThat(taskService.updateTask(CORRECT_TASK_ID, updateTask)).isEqualTo(successUpdatedTask);
     }
 
     @Test
-    public void deleteTaskShouldReturnTaskProfile(){
+    public void deleteTaskShouldReturnTaskProfile() {
         when(taskRepository.findById(CORRECT_TASK_ID)).thenReturn(Optional.of(task));
         when(dtoConverter.convertToDto(task, TaskProfile.class)).thenReturn(taskProfile);
-//        when(archiveService.saveModel(task)).thenReturn(task);
+        // when(archiveService.saveModel(task)).thenReturn(task);
         doNothing().when(taskRepository).deleteById(anyLong());
         doNothing().when(taskRepository).flush();
-        assertThat(taskService.deleteTask(CORRECT_TASK_ID))
-                .isEqualTo(taskProfile);
+        assertThat(taskService.deleteTask(CORRECT_TASK_ID)).isEqualTo(taskProfile);
     }
-
 
 }

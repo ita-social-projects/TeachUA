@@ -37,7 +37,10 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     private final CertificateContentDecorator decorator;
 
     @Autowired
-    public CertificateDataLoaderServiceImpl(CertificateService certificateService, CertificateDatesService certificateDatesService, CertificateTemplateService templateService, CertificateRepository certificateRepository, CertificateDatesRepository datesRepository, CertificateTemplateRepository templateRepository, CertificateContentDecorator decorator) {
+    public CertificateDataLoaderServiceImpl(CertificateService certificateService,
+            CertificateDatesService certificateDatesService, CertificateTemplateService templateService,
+            CertificateRepository certificateRepository, CertificateDatesRepository datesRepository,
+            CertificateTemplateRepository templateRepository, CertificateContentDecorator decorator) {
         this.certificateService = certificateService;
         this.certificateDatesService = certificateDatesService;
         this.templateService = templateService;
@@ -54,24 +57,23 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
         for (CertificateExcel certificateExcel : data.getExcelList()) {
             CertificateDates dates = saveDates(data, index);
             CertificateTemplate template = saveTemplate(data.getType());
-            Certificate certificate = Certificate.builder()
-                    .userName(certificateExcel.getName())
-                    .sendToEmail(certificateExcel.getEmail())
-                    .template(template)
-                    .dates(dates)
-                    .build();
+            Certificate certificate = Certificate.builder().userName(certificateExcel.getName())
+                    .sendToEmail(certificateExcel.getEmail()).template(template).dates(dates).build();
             if (!certificateRepository.existsByUserNameAndDates(certificate.getUserName(), certificate.getDates())) {
                 certificateService.addCertificate(certificate);
             } else {
-                Certificate certificateFound = certificateService.getByUserNameAndDates(certificate.getUserName(), certificate.getDates());
+                Certificate certificateFound = certificateService.getByUserNameAndDates(certificate.getUserName(),
+                        certificate.getDates());
                 if (!certificate.getSendToEmail().equals(certificateFound.getSendToEmail())) {
                     certificate.setSendStatus(null);
                     certificateService.updateCertificateEmail(certificateFound.getId(), certificate);
-                    response.add(new CertificateDatabaseResponse(String.format(UPDATED_EMAIL, certificateFound.getUserName())));
+                    response.add(new CertificateDatabaseResponse(
+                            String.format(UPDATED_EMAIL, certificateFound.getUserName())));
                 } else if (!certificate.getDates().equals(certificateFound.getDates())) {
                     certificateService.addCertificate(certificate);
                 } else {
-                    response.add(new CertificateDatabaseResponse(String.format(ALREADY_EXISTS, certificateFound.getUserName(), certificateFound.getDates().getDate())));
+                    response.add(new CertificateDatabaseResponse(String.format(ALREADY_EXISTS,
+                            certificateFound.getUserName(), certificateFound.getDates().getDate())));
                 }
             }
             index++;
@@ -82,13 +84,12 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     private CertificateDates saveDates(CertificateDataRequest data, Integer index) {
         CertificateDates dates = CertificateDates.builder()
                 .date(data.getExcelList().get(index).getDateIssued().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
-                .hours(data.getHours())
-                .duration(decorator.formDates(data.getStartDate(), data.getEndDate()))
+                .hours(data.getHours()).duration(decorator.formDates(data.getStartDate(), data.getEndDate()))
                 .courseNumber(data.getCourseNumber())
                 .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
-                .projectDescription("Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
-                .picturePath("/static/images/certificate/validation/jedyni_banner.png")
-                .build();
+                .projectDescription(
+                        "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
+                .picturePath("/static/images/certificate/validation/jedyni_banner.png").build();
         if (!datesRepository.existsByDurationAndAndDate(dates.getDuration(), dates.getDate())) {
             return certificateDatesService.addCertificateDates(dates);
         }
@@ -97,12 +98,8 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
 
     private CertificateTemplate saveTemplate(Integer type) {
         if (!templateRepository.existsBy()) {
-            return templateService.addTemplate(CertificateTemplate
-                    .builder()
-                    .name("Єдині учасник")
-                    .certificateType(3)
-                    .filePath("/certificates/templates/jedyni_participant_template.jrxml")
-                    .build());
+            return templateService.addTemplate(CertificateTemplate.builder().name("Єдині учасник").certificateType(3)
+                    .filePath("/certificates/templates/jedyni_participant_template.jrxml").build());
         }
         return templateService.getTemplateByType(type);
     }
