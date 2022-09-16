@@ -189,9 +189,9 @@ public class ResultServiceImpl implements ResultService {
         Result result = new Result();
         result.setUser(user);
         result.setTest(testService.findById(resultDto.getTestId()));
+        result.setTestStartTime(resultDto.getStartTime());
         result.setTestFinishTime(LocalDateTime.now());
         List<Long> answerIds = resultDto.getSelectedAnswersIds();
-        // TODO set start time time
 
         List<Answer> selectedAnswers = answerService.findAllById(answerIds);
         createResult(result, selectedAnswers);
