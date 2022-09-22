@@ -179,7 +179,7 @@ public interface CertificateService {
      * @param serialNumber
      *            put serial number to verify
      *
-     * @return filled {@code byte[]}
+     * @return filled {@code CertificateVerificationResponse}
      */
     CertificateVerificationResponse validateCertificate(Long serialNumber);
 
@@ -192,4 +192,13 @@ public interface CertificateService {
      *            put new status
      */
     void updateDateAndSendStatus(Long id, boolean status);
+
+    /**
+     * This method takes userName and finds certificates with username partially or fully equal to param
+     *
+     * @param userName - put username
+     *
+     * @return - List of Certificates
+     */
+    List<CertificatePreview> getSimilarCertificatesByUserName(String userName);
 }
