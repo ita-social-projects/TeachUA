@@ -100,6 +100,11 @@ public class CertificateController implements Api {
         return certificateService.getListOfCertificatesPreview();
     }
 
+    @GetMapping("/certificate")
+    public List<CertificatePreview> searchCertificatesUser(@RequestParam(name="userName") String userName){
+        return certificateService.getSimilarCertificatesByUserName(userName);
+    }
+
     /**
      * This endpoint is used to get update certificate.
      *

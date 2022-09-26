@@ -311,6 +311,13 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
+    public List<CertificatePreview> getSimilarCertificatesByUserName(String userName){
+        return certificateRepository.findSimilarByUserName(userName).stream().map(
+                        certificate -> (CertificatePreview) dtoConverter.convertToDto(certificate, CertificatePreview.class))
+                        .collect(Collectors.toList());
+    }
+
+    @Override
     public void archiveModel(Certificate certificate) {
         // TODO
     }
