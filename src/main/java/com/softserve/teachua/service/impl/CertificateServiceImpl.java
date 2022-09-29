@@ -224,8 +224,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
         if (transfer.getSerialNumber() == null) {
             // UNCOMMENT TO MAKE SERIAL NUMBERS WORK
-            // transfer = updateCertificateWithSerialNumber(transfer.getId(), transfer);
-            transfer.setSerialNumber(null); // REMOVE WHEN WE NEED SERIAL NUMBERS
+            transfer = updateCertificateWithSerialNumber(transfer.getId(), transfer);
+            //transfer.setSerialNumber(null); // REMOVE WHEN WE NEED SERIAL NUMBERS
         }
 
         CertificateContent content = CertificateContent.builder().id(transfer.getId())

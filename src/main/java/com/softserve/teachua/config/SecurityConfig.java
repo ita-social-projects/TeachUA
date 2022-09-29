@@ -21,6 +21,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -28,6 +29,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+//public class SecurityConfig {
     private static final String ADMIN = RoleData.ADMIN.getRoleName();
     private static final String USER = RoleData.USER.getRoleName();
     private static final String MANAGER = RoleData.MANAGER.getRoleName();
@@ -59,8 +61,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    //@Bean
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+    //protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.httpBasic().disable().csrf().disable().cors().and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling()
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint()).and().authorizeRequests()
@@ -89,6 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler(oAuth2AuthenticationFailureHandler).and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/signout")).logoutSuccessUrl("/signin");
+        //return http.build();
     }
 
     @Autowired

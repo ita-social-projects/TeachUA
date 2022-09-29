@@ -39,6 +39,7 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
     @Scheduled(fixedRate = 180000) // 1 email / 3 min
     public void sendCertificateWithScheduler() {
         CertificateTransfer user = certificateService.getOneUnsentCertificate();
+        //log.info("Generate Certificate for " + user.toString());
         if (user != null) {
             emailService.sendMessageWithAttachmentAndGeneratedPdf(user.getSendToEmail(),
                     // "Certificate.",

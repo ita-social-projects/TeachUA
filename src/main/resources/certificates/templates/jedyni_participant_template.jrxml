@@ -11,7 +11,9 @@
     <field name="userName" class="java.lang.String"/>
     <field name="issuanceDate" class="java.lang.String"/>
     <field name="qrCode" class="java.io.ByteArrayInputStream"/>
-<!--    <field name="serialNumber" class="java.lang.Long"/>-->
+<!--            SERIAL NUMBER           -->
+    <field name="serialNumber" class="java.lang.Long"/>
+<!--            SERIAL NUMBER DONE           -->
     <field name="studyDuration" class="java.lang.String"/>
     <field name="studyHours" class="java.lang.String"/>
 
@@ -41,13 +43,14 @@
                 <text>Сертифікат</text>
             </staticText>
 <!--            SERIAL NUMBER           -->
-<!--            <textField>-->
-<!--                <reportElement x="330" y="205" width="670" height="35" forecolor="#020203" uuid="40bfc687-bc05-457c-9c6d-45d7b78a082f"/>-->
-<!--                <textElement textAlignment="Center">-->
-<!--                    <font size="24" isBold="false"/>-->
-<!--                </textElement>-->
-<!--                <textFieldExpression>"№"+<![CDATA[$F{serialNumber}]]></textFieldExpression>-->
-<!--            </textField>-->
+            <textField>
+                <reportElement x="330" y="205" width="670" height="35" forecolor="#020203" uuid="40bfc687-bc05-457c-9c6d-45d7b78a082f"/>
+                <textElement textAlignment="Center">
+                    <font size="24" isBold="false"/>
+                </textElement>
+                <textFieldExpression>"№"+<![CDATA[$F{serialNumber}]]></textFieldExpression>
+            </textField>
+ <!--            SERIAL NUMBER DONE           -->
             <staticText>
                 <reportElement x="330" y="260" width="670" height="35" forecolor="#020203" uuid="40bfc687-bc05-457c-9c6d-45d7b78a082f"/>
                 <textElement textAlignment="Center">
