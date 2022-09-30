@@ -18,7 +18,8 @@ import java.util.Date;
 public class JwtProvider {
     private static final int TOKEN_LIFE_HOURS = 1;
 
-    @Value("$(jwt.secret)")
+    //@Value("$(jwt.secret)")
+    @Value("${application.jwt.secret}")
     private String jwtSecret;
 
     /**
@@ -27,6 +28,7 @@ public class JwtProvider {
      * @return jwt
      */
     public String generateToken(Authentication authentication) {
+        log.info("jwtSecret = " + jwtSecret);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         Calendar calendar = Calendar.getInstance();
