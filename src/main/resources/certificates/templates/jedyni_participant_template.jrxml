@@ -124,12 +124,12 @@
                 <imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
             </image>
             <image>
-                <reportElement x="350" y="715" width="160" height="70" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/ministry.jpg")]]></imageExpression>
+                <reportElement x="332" y="715" width="160" height="70" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/wnis.png")]]></imageExpression>
             </image>
             <image>
                 <reportElement x="530" y="715" width="160" height="70" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/summit.jpg")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/uhp.png")]]></imageExpression>
             </image>
             <image>
                 <reportElement x="720" y="715" width="160" height="70" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
