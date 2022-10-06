@@ -62,7 +62,7 @@ public abstract class TopPart {
     private WebElement reason;
     private WebElement helpProjectButton;
 
-    // Abstraction
+    // Abstract classes
     private Pagination pagination;
 
     // Constructor
@@ -402,13 +402,12 @@ public abstract class TopPart {
     // pagination
     private Pagination getPagination() {
         if (pagination == null) {
-            // TODO Develop Custom Exception
             throw new RuntimeException(OPTION_NULL_MESSAGE);                    // throw RuntimeException
         }
         return pagination;
     }
 
-    private Pagination createPagination() {
+    protected Pagination createPagination() {
         pagination = new Pagination(driver);                                    // create new object of Pagination type
         return getPagination();
     }
@@ -416,20 +415,6 @@ public abstract class TopPart {
     /*
      * Functional
      */
-
-    // Overload
-    private void presentationSleep() {
-        presentationSleep(1);
-    }
-
-    // Overload
-    private void presentationSleep(int seconds) {
-        try {
-            Thread.sleep(seconds * ONE_SECOND_DELAY);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     protected void scrolltoElement(WebElement element) {
         ((JavascriptExecutor) driver).executeScript(SCROLL_TO, element);        // scroll to element using JS
@@ -439,8 +424,13 @@ public abstract class TopPart {
         return createPagination().countNumberOfPages();                         // get actual number of pages
     }
 
-    public int getExpectedNumberOfPages() {
-        return createPagination().getTotalPageNumberValue();                    // get actual number of pages
+    // Only for presentation
+    protected void presentationSleep(int seconds) {
+        try {
+            Thread.sleep(seconds * ONE_SECOND_DELAY);                           // set seconds to sleep
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /*

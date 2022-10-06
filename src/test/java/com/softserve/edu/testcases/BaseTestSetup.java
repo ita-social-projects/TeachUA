@@ -1,6 +1,8 @@
 package com.softserve.edu.testcases;
 
 import com.softserve.edu.pages.common.home.HomePage;
+import com.softserve.edu.services.database.Database;
+import com.softserve.edu.utils.ConfigPropertiesReader;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
@@ -28,6 +30,7 @@ public abstract class BaseTestSetup {
     protected ConfigPropertiesReader config = new ConfigPropertiesReader();             // get test data
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());           // logger
     protected SoftAssert softAssert = new SoftAssert();                                 // soft asserts
+    protected Database db = new Database();                                             // database connection
 
     // Overload
     protected void presentationSleep() {

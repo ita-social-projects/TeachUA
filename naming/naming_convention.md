@@ -8,9 +8,10 @@
 `get<ElementName>Text` - get element text  
 `get<ElementName>AttributeValue` - get element attribute value
 `get<ElementName>Value` - get element numeric value  
-`get<ElementGroupName>Size` - get element group size  
+`get<ElementGroupName>Count` - get element group size  
 `print<ElementGroupName>` - print element group  
 `goto<PageName>Page` - go to a certain page  
+`is<ElementName>Enabled` - check if element is enabled  
 
 ### File names:
 `<PageName>Page` - functionality of the whole page  

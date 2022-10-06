@@ -110,6 +110,20 @@
             <version>2.11.0</version>
         </dependency>
 
+        <!-- - - - - - Database - - - - - -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.5.0</version>
+        </dependency>
+
+        <!-- - - - - - Hibernate - - - - - -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.1.4.Final</version>
+        </dependency>
+
     </dependencies>
 
     <build>
