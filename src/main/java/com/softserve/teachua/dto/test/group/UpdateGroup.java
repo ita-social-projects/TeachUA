@@ -13,6 +13,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateGroup {
     @NotBlank(message = "Назва групи не може бути порожньою.")
     @CheckRussian(message = "Назва групи містить недопустимі символи.")
