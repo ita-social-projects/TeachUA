@@ -3,6 +3,8 @@
 /workspace.xml
 /.idea
 /target/
+/allure-results/
+/screenshots/
 
 # Log file
 *.log
