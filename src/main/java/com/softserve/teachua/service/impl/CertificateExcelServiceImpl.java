@@ -50,7 +50,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     private final static String DATE = "дата";
     private final static String EMAIL = "електронна";
     private final static String DATE_FORMAT = "d.MM.yyyy";
-    private final static String WORD = "([А-ЯІЇЄ][а-яіїє']+[-]?){1,2}";
+    private final static String WORD = "([А-ЯІЇЄ][а-яіїє']+[-–]?){1,2}";
     private int headerRowIndex = -1;
     private int[] indexes;
     private ExcelParsingResponse response;
