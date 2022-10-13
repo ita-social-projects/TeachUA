@@ -12,6 +12,13 @@ import java.util.List;
  */
 public interface GroupService {
     /**
+     * This method returns a group dto found by its id.
+     * @param id - put group id here.
+     * @return new {@code GroupProfile}.
+     */
+    GroupProfile findGroupProfileById(Long id);
+
+    /**
      * This method returns a group entity found by its enrollment key.
      * @param enrollmentKey - put enrollment key.
      * @return new {@code Group}.
@@ -43,7 +50,7 @@ public interface GroupService {
      * @param groupId - put group id.
      * @return new {@code Group}.
      */
-    Group findById(Long groupId);
+    Group findGroupById(Long groupId);
 
     /**
      * This method returns dto {@code GroupProfile} if group was successfully added.

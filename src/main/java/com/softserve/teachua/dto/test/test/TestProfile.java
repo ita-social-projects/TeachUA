@@ -13,4 +13,5 @@ public class TestProfile extends RepresentationModel<TestProfile> implements Con
     private String description;
     private int difficulty;
     private int duration;
+    private boolean archived;
 }

@@ -17,6 +17,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GroupProfile extends RepresentationModel<GroupProfile> {
+    private Long id;
+
     @NotBlank(message = "Назва групи не може бути порожньою.")
     @CheckRussian(message = "Назва групи містить недопустимі символи.")
     @Size(min = 3, message = "Назва групи повинна містити більше ніж 3 символи." )

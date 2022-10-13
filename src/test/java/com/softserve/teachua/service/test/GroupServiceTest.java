@@ -85,7 +85,7 @@ class GroupServiceTest {
     void findGroupByExistingIdShouldReturnGroup() {
         when(groupRepository.findById(EXISTING_GROUP_ID)).thenReturn(Optional.of(group));
 
-        Group actual = groupService.findById(EXISTING_GROUP_ID);
+        Group actual = groupService.findGroupById(EXISTING_GROUP_ID);
         assertEquals(group, actual);
     }
 
@@ -93,13 +93,13 @@ class GroupServiceTest {
     void findGroupByNotExistingIdShouldThrowNotExistException() {
         when(groupRepository.findById(NOT_EXISTING_GROUP_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> groupService.findById(NOT_EXISTING_GROUP_ID))
+        assertThatThrownBy(() -> groupService.findGroupById(NOT_EXISTING_GROUP_ID))
                 .isInstanceOf(NotExistException.class);
     }
 
     @Test
     void findGroupByNullIdShouldThrowIllegalArgException() {
-        assertThatThrownBy(() -> groupService.findById(null))
+        assertThatThrownBy(() -> groupService.findGroupById(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

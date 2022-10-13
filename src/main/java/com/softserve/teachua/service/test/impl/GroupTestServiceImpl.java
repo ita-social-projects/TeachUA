@@ -25,7 +25,7 @@ public class GroupTestServiceImpl implements GroupTestService {
     public GroupTest addTestToGroup(Long testId, Long groupId) {
         checkNullIds(testId, groupId);
         GroupTest groupTest = new GroupTest();
-        groupTest.setGroup(groupService.findById(groupId));
+        groupTest.setGroup(groupService.findGroupById(groupId));
         groupTest.setTest(testService.findById(testId));
         groupTestRepository.save(groupTest);
         log.info("**/Test with id '{}' has been added to group with id '{}'.", testId, groupId);

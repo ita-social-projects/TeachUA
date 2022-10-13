@@ -48,10 +48,10 @@ public class TestServiceImpl implements TestService {
     private final QuestionCategoryService questionCategoryService;
     private final GroupService groupService;
     private final ModelMapper modelMapper;
-    private final TestValidationService validationService;
+    private final TestValidationService testValidationService;
 
     @Scheduled(fixedDelay = 1000 * 3600 * 24)
-    public void updateTestsStatus(){
+    public void updateTestsStatus() {
         List<Test> tests = testRepository.findAll();
         LocalDate currentDate = LocalDate.now();
 
@@ -187,25 +187,30 @@ public class TestServiceImpl implements TestService {
     @Override
     public SuccessCreatedTest addTest(CreateTest testDto) {
         checkNull(testDto, "Test");
-        validationService.validateTest(testDto);
+        testValidationService.validateTest(testDto);
         SuccessCreatedTest successCreatedTest;
         User user = userService.getCurrentUser();
         Test test = modelMapper.map(testDto, Test.class);
         test.setCreator(user);
         test.setDateOfCreation(LocalDate.now());
         test.setTopic(topicService.findByTitle(testDto.getTopicTitle()));
-        test = testRepository.save(test);
-        int grade = 0;
+        setQuestions(testDto, test);
+        testRepository.save(test);
+        successCreatedTest = modelMapper.map(testDto, SuccessCreatedTest.class);
+        log.info("**/Test has been created. {}", successCreatedTest.toString());
+        return successCreatedTest;
+    }
 
+    private void setQuestions(CreateTest testDto, Test test) {
+        int grade = 0;
         for (QuestionProfile questionProfile: testDto.getQuestions()) {
             Question question = modelMapper.map(questionProfile, Question.class);
             QuestionTest questionTest = new QuestionTest();
             grade += questionProfile.getValue();
-
             if (Objects.isNull(question.getId())) {
                 String categoryTitle = questionProfile.getCategoryTitle();
                 QuestionCategory category = questionCategoryService.findByTitle(categoryTitle);
-                question.setCreator(user);
+                question.setCreator(test.getCreator());
                 question.setQuestionCategory(category);
                 question.setQuestionType(findQuestionType(questionProfile));
                 saveAnswers(questionProfile, question);
@@ -216,9 +221,6 @@ public class TestServiceImpl implements TestService {
             questionTestService.save(questionTest);
         }
         test.setGrade(grade);
-        successCreatedTest = modelMapper.map(testDto, SuccessCreatedTest.class);
-        log.info("**/Test has been created. {}", successCreatedTest.toString());
-        return successCreatedTest;
     }
 
     @Override

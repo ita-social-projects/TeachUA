@@ -72,7 +72,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public SubscriptionProfile createSubscriptionByUserIdAndGroupId(Long userId, Long groupId) {
         checkNullIds(userId, groupId);
         User user = userService.getUserById(userId);
-        Group group = groupService.findById(groupId);
+        Group group = groupService.findGroupById(groupId);
         checkSubscription(user, group);
         Subscription subscription = new Subscription();
         subscription.setUser(user);

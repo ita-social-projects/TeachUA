@@ -33,7 +33,13 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional(readOnly = true)
-    public Group findById(Long groupId) {
+    public GroupProfile findGroupProfileById(Long id) {
+        return modelMapper.map(findGroupById(id), GroupProfile.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Group findGroupById(Long groupId) {
         checkNull(groupId, "Group id");
         return groupRepository.findById(groupId)
                 .orElseThrow(() -> new NotExistException(
@@ -107,10 +113,8 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public UpdateGroup updateById(UpdateGroup updateGroup, Long groupId) {
         checkNull(updateGroup, "Group");
-        Group group = findById(groupId);
-        group.setTitle(updateGroup.getTitle());
-        group.setEndDate(updateGroup.getEndDate());
-        group.setStartDate(updateGroup.getStartDate());
+        Group group = modelMapper.map(updateGroup, Group.class);
+        group.setId(groupId);
         groupRepository.save(group);
         log.info("**/Group with id '{}' has been updated", groupId);
         return updateGroup;

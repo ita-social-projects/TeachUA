@@ -3,7 +3,9 @@ package com.softserve.teachua.dto.test.question;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.utils.deserializers.TrimDeserialize;
 import com.softserve.teachua.utils.validations.CheckRussian;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +13,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+@Builder
 @Data
 public class QuestionProfile {
     private Long id;

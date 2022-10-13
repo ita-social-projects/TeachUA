@@ -65,7 +65,7 @@ class GroupTestServiceTest {
 
     @Test
     void saveGroupTestShouldReturnGroupTest() {
-        when(groupService.findById(EXISTING_GROUP_ID)).thenReturn(group);
+        when(groupService.findGroupById(EXISTING_GROUP_ID)).thenReturn(group);
         when(testService.findById(EXISTING_TEST_ID)).thenReturn(test);
         when(groupTestRepository.save(groupTest)).thenReturn(groupTest);
 

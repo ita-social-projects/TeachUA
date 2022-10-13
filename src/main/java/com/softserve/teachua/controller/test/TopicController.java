@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
@@ -49,6 +50,7 @@ public class TopicController implements Api {
      * @param topicProfile - put information about the topic here.
      * @param id           - put topic id here.
      */
+    @ResponseStatus(value = NO_CONTENT)
     @PutMapping(path = "/topics/{id}", consumes = APPLICATION_JSON_VALUE)
     public TopicProfile updateTopic(@Valid @RequestBody TopicProfile topicProfile,
                                     @PathVariable Long id) {

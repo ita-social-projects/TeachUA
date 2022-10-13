@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.utils.deserializers.TrimDeserialize;
 import com.softserve.teachua.utils.validations.CheckRussian;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.*;
+import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Getter
 @Setter
 public class CreateTest {
@@ -37,4 +37,8 @@ public class CreateTest {
     @NotEmpty(message = "Тест повинен містити запитання.")
     @Size(min = 3, message = "Мінімальна допустима кількість запитань в тесті - 3.")
     private List<QuestionProfile> questions;
+
+    public void addQuestion(QuestionProfile question) {
+        questions.add(question);
+    }
 }

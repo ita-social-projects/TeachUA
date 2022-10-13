@@ -28,6 +28,16 @@ public class GroupController implements Api {
     private final SubscriptionService subscriptionService;
 
     /**
+     * Use this endpoint to get a particular group by id.
+     *
+     * @return new {@code GroupProfile}.
+     */
+    @GetMapping(value = "/groups/{id}", produces = APPLICATION_JSON_VALUE)
+    public GroupProfile getGroup(@PathVariable Long id) {
+        return groupService.findGroupProfileById(id);
+    }
+
+    /**
      * Use this endpoint to get all groups.
      *
      * @return new {@code List<GroupProfile>}.
@@ -84,6 +94,7 @@ public class GroupController implements Api {
      * @param group   - put the updated group parameters here.
      * @return new {@code UpdateGroup} - shows the updated group.
      */
+
     @PatchMapping(value = "/groups/{groupId}",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
