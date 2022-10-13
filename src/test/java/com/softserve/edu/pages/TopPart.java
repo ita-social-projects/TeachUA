@@ -433,6 +433,15 @@ public abstract class TopPart {
         }
     }
 
+    public void searchClub(String title) {
+        logger.debug("Entering and searching club by its title started");
+        clickSearchTopField();                                                  // click search top field
+        clearSearchTopField();                                                  // clear search top field
+        sendSearchTopFieldText(title);                                          // send text into search top field
+        clickSearchTopButton();                                                 // click search top button to search club
+        logger.debug("Entering and searching club by its title started");
+    }
+
     /*
      * Business Logic
      */

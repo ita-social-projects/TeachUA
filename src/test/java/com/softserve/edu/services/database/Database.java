@@ -140,8 +140,6 @@ public class Database {
                 rs.close();                                     // close connection to the DB
             }
         } catch (SQLException e) {
-            logger.error("Error Code = " + e.getErrorCode());
-            logger.error("SQL state = " + e.getSQLState());
             logger.error("Message = " + e.getMessage());
             logger.error("printTrace \n");
             e.printStackTrace();
@@ -151,8 +149,6 @@ public class Database {
                 statement.close();                              // close statement
             }
         } catch (SQLException e) {
-            logger.error("Error Code = " + e.getErrorCode());
-            logger.error("SQL state = " + e.getSQLState());
             logger.error("Message = " + e.getMessage());
             logger.error("printTrace \n");
             e.printStackTrace();
@@ -164,8 +160,6 @@ public class Database {
                 }
             }
         } catch (SQLException e) {
-            logger.error("Error Code = " + e.getErrorCode());
-            logger.error("SQL state = " + e.getSQLState());
             logger.error("Message = " + e.getMessage());
             logger.error("printTrace \n");
             e.printStackTrace();
@@ -191,8 +185,6 @@ public class Database {
             }
 
         } catch (SQLException e) {
-            logger.error("Error Code = " + e.getErrorCode());
-            logger.error("SQL state = " + e.getSQLState());
             logger.error("Message = " + e.getMessage());
             logger.error("printTrace \n");
             e.printStackTrace();
@@ -228,8 +220,6 @@ public class Database {
                 }
             }
         } catch (SQLException e) {
-            logger.error("Error Code = " + e.getErrorCode());
-            logger.error("SQL state = " + e.getSQLState());
             logger.error("Message = " + e.getMessage());
             logger.error("printTrace \n");
             e.printStackTrace();
@@ -266,8 +256,6 @@ public class Database {
             }
 
         } catch (SQLException e) {
-            logger.error("Error Code = " + e.getErrorCode()); // print error code
-            logger.error("SQL state = " + e.getSQLState());   // print SQL state
             logger.error("Message = " + e.getMessage());      // print error message
             logger.error("printTrace \n");
             e.printStackTrace();                                    // print stack trace

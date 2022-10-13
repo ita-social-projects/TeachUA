@@ -91,13 +91,15 @@ public class ClubsPage extends TopPart {
 
     // Get number of clubs on all pages on Clubs page
     public List<String> getAllClubTitles() {
+        int count = 0;
         List<String> allClubTitles = new ArrayList<>();
         try{
             while(createPagination().isNextButtonEnabled()) {
                 // Add all titles on the current page to the list with all titles
                 allClubTitles.addAll(createClubsContainer().getClubComponentTitles());
                 createPagination().clickNextButton();                               // click on next button
-                presentationSleep(3);
+                System.out.println(count++);
+                presentationSleep(5);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,6 +110,11 @@ public class ClubsPage extends TopPart {
     public int getTotalNumberOfPagesFromDatabase(String total) {
         // Number of pages needed to place all the components
         return (int)Math.ceil((Double.parseDouble(total) / (double)createClubsContainer().getClubComponentsCount()));
+    }
+
+    // Check if club is present on the page
+    public boolean isClubPresentOnThePage(String title) {
+        return createClubsContainer().isClubComponentPresent(title);
     }
 
     /*

@@ -37,7 +37,7 @@ public class ClubComponent {
         title = clubLayout.findElement(By.cssSelector(".title .name"));
         category = clubLayout.findElement(By.cssSelector(".ant-tag.tag .name"));
         partialDescription = clubLayout.findElement(By.cssSelector(".ant-card-body .description"));
-        rate = clubLayout.findElement(By.cssSelector(".ant-rate.ant-rate-disabled.rating"));
+        rate = clubLayout.findElement(By.cssSelector("ul.ant-rate.ant-rate-disabled.rating"));
         location = clubLayout.findElement(By.cssSelector(".oneAddress"));
         detailsButton = clubLayout.findElement(By.cssSelector(".ant-btn.ant-btn-default.outlined-button.details-button a"));
     }

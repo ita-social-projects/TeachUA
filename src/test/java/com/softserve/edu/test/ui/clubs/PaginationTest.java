@@ -6,6 +6,8 @@ import com.softserve.edu.pages.common.home.HomePage;
 import com.softserve.edu.testcases.BaseTestSetup;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 public class PaginationTest extends BaseTestSetup {
 
     String SELECT_ALL_CLUBS = "SELECT COUNT(DISTINCT c.name)\n" +

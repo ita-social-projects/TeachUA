@@ -3,6 +3,8 @@ package com.softserve.edu.pages.common.clubs;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,8 @@ public class ClubsContainer {
     private final String CLUB_NOT_FOUND = "There is no product that matches the search criteria.";
     // Selector for club container
     private final String CLUB_COMPONENT_CSS_SELECTOR = ".ant-card.ant-card-bordered.card";
+    // Logger
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     protected WebDriver driver;
 
@@ -109,7 +113,7 @@ public class ClubsContainer {
                 result = component;
                 break;
             }
-            if(result == null) {
+            if(!isClubComponentPresent(clubTitle)) {
                 // Throw exception once club with needed title has not been found
                 throw new RuntimeException("Club " + clubTitle + " has not been found");
             }
@@ -122,7 +126,8 @@ public class ClubsContainer {
         boolean result = false;
         for(ClubComponent component : getClubComponents()) {
             // Compare provided club title with value from club components list to find needed one
-            if(component.getTitleText().equalsIgnoreCase(clubTitle)) {
+            if(component.getTitleText().contains(clubTitle)) {
+                logger.info("Component with title " + clubTitle + " found on the page");
                 result = true;
                 break;
             }

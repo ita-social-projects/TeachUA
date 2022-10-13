@@ -13,7 +13,7 @@
         <!-- Default schema -->
         <property name="default_schema">public</property>
         <!-- Hibernate dialect for PostgreSQL DB -->
-        <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="dialect">org.hibernate.dialect.PostgreSQL10Dialect</property>
         <!-- DB Driver -->
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <!-- Shows SQL instructions in shell when you run your program and do any CRUD operation into the DB (show SQL in console) -->
