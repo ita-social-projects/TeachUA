@@ -1,7 +1,7 @@
 package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.controller.test.ResultController;
-import com.softserve.teachua.dto.test.answer.ResultAnswer;
+import com.softserve.teachua.dto.test.answer.AnswerResult;
 import com.softserve.teachua.dto.test.question.QuestionResult;
 import com.softserve.teachua.dto.test.result.CreateResult;
 import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
@@ -16,6 +16,8 @@ import com.softserve.teachua.service.test.AnswerService;
 import com.softserve.teachua.service.test.QuestionService;
 import com.softserve.teachua.service.test.ResultService;
 import com.softserve.teachua.service.test.TestService;
+import com.softserve.teachua.utils.test.containers.AnswerResultContainer;
+import com.softserve.teachua.utils.test.containers.QuestionResultContainer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -29,7 +31,6 @@ import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import static com.softserve.teachua.utils.test.validation.NullValidator.*;
-import static com.softserve.teachua.utils.test.Messages.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -103,52 +104,8 @@ public class ResultServiceImpl implements ResultService {
         qHistories.stream()
                 .map(QuestionHistory::getAnswer)
                 .forEach(x -> questionSelectedAnswers.get(x.getQuestion().getId()).add(x.getId()));
-
-        for (Question question : questions) {
-            QuestionResult questionResult = new QuestionResult();
-            Set<Answer> answers = question.getAnswers();
-            Set<Long> selectedAnswerIds = questionSelectedAnswers.get(question.getId());
-            int value = 0;
-            int correctAmount = 0;
-            int correctSelectedAmount = 0;
-
-            for (Answer answer: answers) {
-                ResultAnswer resultAnswer = new ResultAnswer();
-                boolean correct = answer.isCorrect();
-                boolean selected = false;
-                int answerValue = answer.getValue();
-
-                if (correct)
-                    correctAmount++;
-                if (selectedAnswerIds.contains(answer.getId())) {
-                    selected = true;
-                    if (correct) {
-                        value += answerValue;
-                        correctSelectedAmount++;
-                    } else {
-                        value -= answerValue;
-                    }
-                }
-                resultAnswer.setTitle(answer.getText());
-                resultAnswer.setCorrect(correct);
-                resultAnswer.setChecked(selected);
-                questionResult.add(resultAnswer);
-            }
-            questionResult.setTitle(question.getTitle());
-            questionResult.setValue(Math.max(value, 0));
-
-            if (correctSelectedAmount == correctAmount
-                    && correctAmount == selectedAnswerIds.size()) {
-                questionResult.setStatus(CORRECT_MESSAGE);
-            } else if (correctSelectedAmount == 0) {
-                questionResult.setStatus(INCORRECT_MESSAGE);
-            } else {
-                questionResult.setStatus(PARTIALLY_CORRECT_MESSAGE);
-            }
-            resultTest.addQuestion(questionResult);
-        }
+        calculateResult(questions, resultTest, questionSelectedAnswers);
         resultTest.setTitle(test.getTitle());
-
         return resultTest;
     }
 
@@ -214,6 +171,30 @@ public class ResultServiceImpl implements ResultService {
             result.addQuestionHistory(questionHistory);
         }
         resultRepository.save(result);
+    }
+
+    private void calculateResult(List<Question> questions, ResultTest resultTest,
+                                 Map<Long, Set<Long>> questionSelectedAnswers) {
+        for (Question question : questions) {
+            QuestionResult questionResult = new QuestionResult();
+            Set<Answer> answers = question.getAnswers();
+            Set<Long> selectedAnswerIds = questionSelectedAnswers.get(question.getId());
+            QuestionResultContainer questionResultContainer = new QuestionResultContainer();
+
+            for (Answer answer: answers) {
+                AnswerResult answerResult = new AnswerResult();
+                AnswerResultContainer answerResultContainer = new AnswerResultContainer(answer);
+                answerResultContainer.calculateGrade(questionResultContainer, selectedAnswerIds);
+                answerResult.setTitle(answer.getText());
+                answerResult.setCorrect(answerResultContainer.isCorrect());
+                answerResult.setChecked(answerResultContainer.isSelected());
+                questionResult.add(answerResult);
+            }
+            questionResult.setTitle(question.getTitle());
+            questionResult.setValue(questionResultContainer.getGrade());
+            resultTest.addQuestion(questionResult);
+            questionResultContainer.setQuestionResultStatus(questionResult, selectedAnswerIds);
+        }
     }
 
     private void setResultLink(List<UserResult> results) {

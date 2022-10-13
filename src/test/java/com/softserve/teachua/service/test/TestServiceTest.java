@@ -74,49 +74,21 @@ public class TestServiceTest {
         subscriptionsByUser = new ArrayList<>();
         groupsByTest = new ArrayList<>();
         questionProfile = generateQuestion();
-        Subscription firstSubscription = Subscription.builder()
-                .expirationDate(LocalDate.of(2022, 1, 31))
-                .build();
-        firstSubscription.setGroup(Group.builder()
-                .id(1L)
-                .endDate(LocalDate.of(2022, 1, 31))
-                .build());
-        Subscription secondSubscription = Subscription.builder()
-                .expirationDate(LocalDate.of(2022, 1, 31))
-                .build();
-        secondSubscription.setGroup(Group.builder()
-                .id(3L)
-                .endDate(LocalDate.of(2022, 1, 31))
-                .build());
+        createTest = generateCreateTest();
+        passTest = generatePassTest();
+        Subscription firstSubscription = generateSubscription();
+        Subscription secondSubscription = generateSubscription();
+        firstSubscription.setGroup(generateGroupWithId(1L));
+        secondSubscription.setGroup(generateGroupWithId(3L));
         subscriptionsByUser.add(firstSubscription);
         subscriptionsByUser.add(secondSubscription);
-        groupsByTest.add(Group.builder()
-                .id(1L)
-                .endDate(LocalDate.of(2022, 1, 31))
-                .build());
-        groupsByTest.add(Group.builder()
-                .id(2L)
-                .endDate(LocalDate.of(2022, 1, 31))
-                .build());
-
-        createTest = CreateTest.builder()
-                    .difficulty(5)
-                    .duration(23)
-                    .title("testTitle")
-                    .topicTitle("cats")
-                    .questions(new ArrayList<>())
-                    .description("testDescription")
-                    .build();
-        passTest = PassTest.builder()
-                    .title("passTest")
-                    .build();
-
+        groupsByTest.add(generateGroupWithId(1L));
+        groupsByTest.add(generateGroupWithId(2L));
         test = mapper.map(createTest, com.softserve.teachua.model.test.Test.class);
         testProfile = mapper.map(createTest, TestProfile.class);
         viewTest = mapper.map(createTest, ViewTest.class);
         successCreatedTest = mapper.map(createTest, SuccessCreatedTest.class);
         question = mapper.map(questionProfile, Question.class);
-
         Stream.generate(this::generateQuestion)
                 .limit(5)
                 .forEach(question -> createTest.addQuestion(question));
@@ -287,6 +259,36 @@ public class TestServiceTest {
                 .title("questionTitle")
                 .value(5)
                 .correctAnswerIndexes(Arrays.asList(1, 2))
+                .build();
+    }
+
+    private Subscription generateSubscription() {
+        return Subscription.builder()
+                .expirationDate(LocalDate.of(2022, 1, 31))
+                .build();
+    }
+
+    private Group generateGroupWithId(Long id) {
+        return Group.builder()
+                .id(id)
+                .endDate(LocalDate.of(2022, 1, 31))
+                .build();
+    }
+
+    private CreateTest generateCreateTest() {
+        return CreateTest.builder()
+                .difficulty(5)
+                .duration(23)
+                .title("testTitle")
+                .topicTitle("cats")
+                .questions(new ArrayList<>())
+                .description("testDescription")
+                .build();
+    }
+
+    private PassTest generatePassTest() {
+        return PassTest.builder()
+                .title("passTest")
                 .build();
     }
 }
