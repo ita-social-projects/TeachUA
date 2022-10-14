@@ -29,28 +29,28 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class TestServiceTest {
     @Mock
-    TestRepository testRepository;
+    private TestRepository testRepository;
     @Mock
-    SubscriptionRepository subscriptionRepository;
+    private SubscriptionRepository subscriptionRepository;
     @Mock
-    GroupService groupService;
+    private GroupService groupService;
     @Mock
-    TopicService topicService;
+    private TopicService topicService;
     @Mock
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
     @Mock
-    UserService userService;
+    private UserService userService;
     @Mock
-    QuestionService questionService;
+    private QuestionService questionService;
     @Mock
-    QuestionTestService questionTestService;
+    private QuestionTestService questionTestService;
     @Mock
-    QuestionCategoryService questionCategoryService;
+    private QuestionCategoryService questionCategoryService;
     @Mock
-    QuestionTypeService questionTypeService;
+    private QuestionTypeService questionTypeService;
 
     @InjectMocks
-    TestServiceImpl testService;
+    private TestServiceImpl testService;
 
     private final Long EXISTING_TEST_ID = 1L;
     private final Long NOT_EXISTING_TEST_ID = 100L;
@@ -101,16 +101,16 @@ public class TestServiceTest {
     }
 
     @Test
-    void findByNullShouldThrowIllegalArgumentException() {
-        assertThatThrownBy(() -> testService.findById(null))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     void findByNotExistingIdShouldThrowNotExistException() {
         when(testRepository.findById(NOT_EXISTING_TEST_ID)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> testService.findById(NOT_EXISTING_TEST_ID))
                 .isInstanceOf(NotExistException.class);
+    }
+
+    @Test
+    void findByNullShouldThrowIllegalArgumentException() {
+        assertThatThrownBy(() -> testService.findById(null))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -217,10 +217,34 @@ public class TestServiceTest {
     }
 
     @Test
+    void archiveTestByNotExistingTestIdShouldReturnTestProfileWithArchivedIsTrue() {
+        assertThatThrownBy(() -> testService.archiveTestById(NOT_EXISTING_TEST_ID))
+                .isInstanceOf(NotExistException.class);
+    }
+
+    @Test
+    void archiveTestByNullShouldReturnTestProfileWithArchivedIsTrue() {
+        assertThatThrownBy(() -> testService.archiveTestById(null))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void restoreTestByExistingTestIdShouldReturnTestProfileWithArchivedIsFalse() {
         when(testRepository.findById(EXISTING_TEST_ID)).thenReturn(Optional.of(test));
         when(modelMapper.map(test, TestProfile.class)).thenReturn(testProfile);
         assertFalse(testService.restoreTestById(EXISTING_TEST_ID).isArchived());
+    }
+
+    @Test
+    void restoreTestByNotExistingTestIdShouldReturnTestProfileWithArchivedIsTrue() {
+        assertThatThrownBy(() -> testService.restoreTestById(NOT_EXISTING_TEST_ID))
+                .isInstanceOf(NotExistException.class);
+    }
+
+    @Test
+    void restoreTestByNullShouldReturnTestProfileWithArchivedIsTrue() {
+        assertThatThrownBy(() -> testService.restoreTestById(null))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -246,7 +270,7 @@ public class TestServiceTest {
     }
 
     @Test
-    void createTestWithNullShouldReturnSuccessCreatedTest() {
+    void createTestIsNullShouldReturnSuccessCreatedTest() {
         assertThatThrownBy(() -> testService.addTest(null))
             .isInstanceOf(IllegalArgumentException.class);
     }

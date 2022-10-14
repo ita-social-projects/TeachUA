@@ -28,13 +28,6 @@ public interface ResultService {
     int countGrade(List<Answer> answers);
 
     /**
-     * This method adds result and answer history.
-     * @param result - put result entity.
-     * @param selectedAnswers - put list of answer entities.
-     */
-    void createResult(Result result, List<Answer> selectedAnswers);
-
-    /**
      * This method returns all results by user id.
      * @param userId - put user id here.
      * @return new {@code List<Result>}
@@ -46,7 +39,7 @@ public interface ResultService {
      * @param resultId - put result id.
      * @return new {@code ResultTest}.
      */
-    ResultTest getResult(Long resultId);
+    ResultTest getDetailedResultById(Long resultId);
 
     /**
      * This method returns dto {@code SuccessCreatedResult} if result was successfully added.

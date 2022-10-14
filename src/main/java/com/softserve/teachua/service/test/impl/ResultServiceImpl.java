@@ -29,8 +29,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-import static com.softserve.teachua.utils.test.validation.NullValidator.*;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNullIds;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -91,20 +93,19 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResultTest getResult(Long resultId) {
-        checkNullIds(resultId, "Result id");
+    public ResultTest getDetailedResultById(Long resultId) {
+        checkNull(resultId, "Result id");
         ResultTest resultTest = new ResultTest();
         Result result = findById(resultId);
-        Long testId = result.getTest().getId();
-        Test test = testService.findById(testId);
-        List<Question> questions = questionService.findQuestionsByTestIdEager(testId);
+        Test test = result.getTest();
+        List<Question> questions = questionService.findQuestionsByTestIdEager(test.getId());
         Set<QuestionHistory> qHistories = result.getQuestionHistories();
         Map<Long, Set<Long>> questionSelectedAnswers = new HashMap<>();
         questions.forEach(x -> questionSelectedAnswers.put(x.getId(), new HashSet<>()));
         qHistories.stream()
                 .map(QuestionHistory::getAnswer)
                 .forEach(x -> questionSelectedAnswers.get(x.getQuestion().getId()).add(x.getId()));
-        calculateResult(questions, resultTest, questionSelectedAnswers);
+        generateResultTestBody(questions, resultTest, questionSelectedAnswers);
         resultTest.setTitle(test.getTitle());
         return resultTest;
     }
@@ -142,6 +143,7 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public SuccessCreatedResult saveResult(CreateResult resultDto) {
+        checkNull(resultDto, "Create result dto");
         User user = userService.getCurrentUser();
         Result result = new Result();
         result.setUser(user);
@@ -163,8 +165,7 @@ public class ResultServiceImpl implements ResultService {
         return successResult;
     }
 
-    @Override
-    public void createResult(Result result, List<Answer> selectedAnswers) {
+    private void createResult(Result result, List<Answer> selectedAnswers) {
         for (Answer a : selectedAnswers) {
             QuestionHistory questionHistory = new QuestionHistory();
             questionHistory.setAnswer(a);
@@ -173,8 +174,8 @@ public class ResultServiceImpl implements ResultService {
         resultRepository.save(result);
     }
 
-    private void calculateResult(List<Question> questions, ResultTest resultTest,
-                                 Map<Long, Set<Long>> questionSelectedAnswers) {
+    private void generateResultTestBody(List<Question> questions, ResultTest resultTest,
+                                        Map<Long, Set<Long>> questionSelectedAnswers) {
         for (Question question : questions) {
             QuestionResult questionResult = new QuestionResult();
             Set<Answer> answers = question.getAnswers();

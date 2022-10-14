@@ -47,6 +47,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public SubscriptionProfile createSubscriptionByTestId(CreateSubscription createSubscription, Long testId) {
+        checkNull(createSubscription, "Create subscription dto");
         List<Group> groups = groupService.findAllByTestId(testId);
         String enrollmentKey = createSubscription.getEnrollmentKey();
 
