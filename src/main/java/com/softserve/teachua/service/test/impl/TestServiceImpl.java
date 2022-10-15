@@ -56,11 +56,12 @@ public class TestServiceImpl implements TestService {
         LocalDate currentDate = LocalDate.now();
 
         for(Test test : tests) {
-            boolean isActive = groupService.findAllByTestId(test.getId())
+            List<Group> groups = groupService.findAllByTestId(test.getId());
+            boolean isActive = groups
                     .stream()
-                    .anyMatch(x -> {
-                        LocalDate startDate = x.getStartDate();
-                        LocalDate endDate = x.getEndDate();
+                    .anyMatch(group -> {
+                        LocalDate startDate = group.getStartDate();
+                        LocalDate endDate = group.getEndDate();
                         return currentDate.isAfter(startDate) &&
                                currentDate.isBefore(endDate);
                     });
@@ -131,7 +132,7 @@ public class TestServiceImpl implements TestService {
     @Override
     @Transactional(readOnly = true)
     public List<TestProfile> findArchivedTestProfiles() {
-        List<Test> tests = findActiveTests();
+        List<Test> tests = findArchivedTests();
         List<TestProfile> testProfiles = new ArrayList<>();
         for(Test test: tests){
             TestProfile testProfile = modelMapper.map(test, TestProfile.class);
@@ -147,10 +148,10 @@ public class TestServiceImpl implements TestService {
     @Override
     @Transactional(readOnly = true)
     public ViewTest findViewTestById(Long id) {
+        checkNull(id, "test id");
         Test test = findById(id);
         User user = userService.getCurrentUser();
         ViewTest viewTest = modelMapper.map(test, ViewTest.class);
-
         Link testGroups = linkTo(methodOn(TestController.class)
                 .getGroups(id))
                 .withRel("allGroups");
@@ -210,9 +211,9 @@ public class TestServiceImpl implements TestService {
             if (Objects.isNull(question.getId())) {
                 String categoryTitle = questionProfile.getCategoryTitle();
                 QuestionCategory category = questionCategoryService.findByTitle(categoryTitle);
+                question.setQuestionType(findQuestionType(questionProfile));
                 question.setCreator(test.getCreator());
                 question.setQuestionCategory(category);
-                question.setQuestionType(findQuestionType(questionProfile));
                 saveAnswers(questionProfile, question);
                 question = questionService.save(question);
             }
