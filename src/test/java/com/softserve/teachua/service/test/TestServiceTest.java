@@ -95,20 +95,20 @@ public class TestServiceTest {
     }
 
     @Test
-    void findByExistingIdShouldReturnTest() {
+    void findTestByExistingIdShouldReturnTest() {
         when(testRepository.findById(EXISTING_TEST_ID)).thenReturn(Optional.of(test));
         assertEquals(test, testService.findById(EXISTING_TEST_ID));
     }
 
     @Test
-    void findByNotExistingIdShouldThrowNotExistException() {
+    void findTestByNotExistingIdShouldThrowNotExistException() {
         when(testRepository.findById(NOT_EXISTING_TEST_ID)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> testService.findById(NOT_EXISTING_TEST_ID))
                 .isInstanceOf(NotExistException.class);
     }
 
     @Test
-    void findByNullShouldThrowIllegalArgumentException() {
+    void findTestByTestIdIsNullShouldThrowIllegalArgumentException() {
         assertThatThrownBy(() -> testService.findById(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -149,7 +149,7 @@ public class TestServiceTest {
     }
 
     @Test
-    void findAllTestsByNullShouldThrowIllegalArgumentException() {
+    void findAllTestsByGroupIdIsNullShouldThrowIllegalArgumentException() {
         assertThatThrownBy(() -> testService.findAllByGroupId(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -203,7 +203,7 @@ public class TestServiceTest {
     }
 
     @Test
-    void hasActiveSubscriptionByNullShouldThrowIllegalArgumentException() {
+    void hasActiveSubscriptionByUserIdIsNullAndTestIdIsNullShouldThrowIllegalArgumentException() {
         assertThatThrownBy(() -> testService.hasActiveSubscription(null, null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -217,13 +217,14 @@ public class TestServiceTest {
     }
 
     @Test
-    void archiveTestByNotExistingTestIdShouldReturnTestProfileWithArchivedIsTrue() {
+    void archiveTestByNotExistingTestIdShouldThrowNotExistException() {
+        when(testRepository.findById(NOT_EXISTING_TEST_ID)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> testService.archiveTestById(NOT_EXISTING_TEST_ID))
                 .isInstanceOf(NotExistException.class);
     }
 
     @Test
-    void archiveTestByNullShouldReturnTestProfileWithArchivedIsTrue() {
+    void archiveTestByTestIdIsNullShouldThrowIllegalArgumentException() {
         assertThatThrownBy(() -> testService.archiveTestById(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -236,13 +237,14 @@ public class TestServiceTest {
     }
 
     @Test
-    void restoreTestByNotExistingTestIdShouldReturnTestProfileWithArchivedIsTrue() {
+    void restoreTestByNotExistingTestIdShouldThrowNotExistException() {
+        when(testRepository.findById(NOT_EXISTING_TEST_ID)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> testService.restoreTestById(NOT_EXISTING_TEST_ID))
                 .isInstanceOf(NotExistException.class);
     }
 
     @Test
-    void restoreTestByNullShouldReturnTestProfileWithArchivedIsTrue() {
+    void restoreTestByTestIdIsNullShouldThrowIllegalArgumentException() {
         assertThatThrownBy(() -> testService.restoreTestById(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -270,7 +272,7 @@ public class TestServiceTest {
     }
 
     @Test
-    void createTestIsNullShouldReturnSuccessCreatedTest() {
+    void createTestByTestDtoIsNullShouldReturnSuccessCreatedTest() {
         assertThatThrownBy(() -> testService.addTest(null))
             .isInstanceOf(IllegalArgumentException.class);
     }

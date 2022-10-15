@@ -101,7 +101,7 @@ public class ResultServiceTest {
     }
 
     @Test
-    void findResultByNullShouldThrowIllegalArgumentException() {
+    void findResultByResultIdIsNullShouldThrowIllegalArgumentException() {
         assertThatThrownBy(() -> resultService.findById(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -118,7 +118,7 @@ public class ResultServiceTest {
     }
 
     @Test
-    void findUserResultsByNullAndNullShouldThrowIllegalArgumentException() {
+    void findUserResultsByGroupIdIsNullAndUserIdIsNullShouldThrowIllegalArgumentException() {
         assertThatThrownBy(() -> resultService
                 .findUserResultsByGroupIdAndUserId(null, null))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -135,7 +135,7 @@ public class ResultServiceTest {
     }
 
     @Test
-    void findUserResultsByNullAndNullAndNullShouldThrowIllegalArgumentException() {
+    void findUserResultsByGroupIdIsNullAndUserIdIsNullAndTestIdIsNullShouldThrowIllegalArgumentException() {
         assertThatThrownBy(() -> resultService
                 .findUserResultsByGroupIdAndUserIdAndTestId(null, null, null))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -148,7 +148,7 @@ public class ResultServiceTest {
     }
 
     @Test
-    void findResultsByNullShouldThrowIllegalArgumentException() {
+    void findResultsByUserIdNullShouldThrowIllegalArgumentException() {
         assertThatThrownBy(() -> resultService
                 .findResultsByUserId(null))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -165,12 +165,13 @@ public class ResultServiceTest {
 
     @Test
     void getDetailedResultByNotExistingResultIdShouldThrowNotExistException() {
+        when(resultRepository.findById(NOT_EXISTING_RESULT_ID)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> resultService.getDetailedResultById(NOT_EXISTING_RESULT_ID))
                 .isInstanceOf(NotExistException.class);
     }
 
     @Test
-    void getDetailedResultByNullIdShouldThrowIllegalArgumentException() {
+    void getDetailedResultByResultIdIsNullIdShouldThrowIllegalArgumentException() {
         assertThatThrownBy(() -> resultService.getDetailedResultById(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -190,7 +191,7 @@ public class ResultServiceTest {
     }
 
     @Test
-    void saveResultIsNullShouldThrowIllegalArgumentException() {
+    void saveResultWithResultDtoIsNullShouldThrowIllegalArgumentException() {
         assertThatThrownBy(() -> resultService.saveResult(null))
             .isInstanceOf(IllegalArgumentException.class);
     }
@@ -225,7 +226,8 @@ public class ResultServiceTest {
     private List<Question> generateQuestionsList() {
         List<Question> questions = new ArrayList<>();
         for (long i = 0, k = 1; i < 2; i++, k+=3) {
-            questions.add(generateQuestionWithId(i, k));
+            String type = i == 1 ? "radio" : "checkbox";
+            questions.add(generateQuestionWithId(i, k, type));
         }
         return questions;
     }
@@ -330,10 +332,10 @@ public class ResultServiceTest {
         return questionHistory;
     }
 
-    private Question generateQuestionWithId(Long id, Long startAnswerId) {
+    private Question generateQuestionWithId(Long id, Long startAnswerId, String type) {
         Question question = new Question();
         QuestionType questionType = new QuestionType();
-        questionType.setTitle("radio");
+        questionType.setTitle(type);
         question.setQuestionType(questionType);
         question.setId(id);
         question.setTitle(String.format("questionTitle %d", id));

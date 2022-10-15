@@ -5,6 +5,7 @@ import com.softserve.teachua.controller.test.SubscriptionController;
 import com.softserve.teachua.dto.test.subscription.CreateSubscription;
 import com.softserve.teachua.dto.test.subscription.SubscriptionProfile;
 import com.softserve.teachua.dto.test.user.UserResponse;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.model.test.Subscription;
@@ -42,14 +43,18 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Subscription findByUserIdAndGroupId(Long userId, Long groupId) {
+        checkNullIds(userId, groupId);
         return subscriptionRepository.findByUserIdAndGroupId(userId, groupId);
     }
 
     @Override
     public SubscriptionProfile createSubscriptionByTestId(CreateSubscription createSubscription, Long testId) {
-        checkNull(createSubscription, "Create subscription dto");
+        checkNullIds(createSubscription, testId);
         List<Group> groups = groupService.findAllByTestId(testId);
         String enrollmentKey = createSubscription.getEnrollmentKey();
+
+        if (groups.isEmpty())
+            throw new NoSuchElementException(String.format(TEST_WITHOUT_GROUP_MESSAGE, testId));
 
         for (Group group : groups) {
             if (group.getEnrollmentKey().equals(enrollmentKey)) {
@@ -62,7 +67,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 subscriptionRepository.save(subscription);
                 log.info("**/Subscription has been created. {}", subscription);
                 return generateSubscriptionProfile(subscription);
-
             }
         }
         throw new IllegalArgumentException(
@@ -92,7 +96,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .filter(this::isActiveSubscription)
                 .findAny()
                 .orElseThrow(() -> new NoSuchElementException(
-                        String.format(NO_SUBSCRIPTION_MESSAGE, groupId, userId)));
+                        String.format(NO_SUBSCRIPTION_MESSAGE, userId, groupId)));
         subscriptionRepository.delete(subscription);
         return generateSubscriptionProfile(subscription);
     }
