@@ -188,7 +188,7 @@ public class TestServiceImpl implements TestService {
     @Override
     public SuccessCreatedTest addTest(CreateTest testDto) {
         checkNull(testDto, "Test");
-        //testValidationService.validateTest(testDto);
+        testValidationService.validateTest(testDto);
         SuccessCreatedTest successCreatedTest;
         User user = userService.getCurrentUser();
         Test test = modelMapper.map(testDto, Test.class);

@@ -59,11 +59,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         for (Group group : groups) {
             if (group.getEnrollmentKey().equals(enrollmentKey)) {
                 User user = userService.getCurrentUser();
-                checkSubscription(user, group);
-                Subscription subscription = new Subscription();
-                subscription.setGroup(group);
-                subscription.setUser(user);
-                subscription.setExpirationDate(group.getEndDate());
+                Subscription subscription = generateSubscription(group, user);
                 subscriptionRepository.save(subscription);
                 log.info("**/Subscription has been created. {}", subscription);
                 return generateSubscriptionProfile(subscription);
@@ -78,11 +74,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         checkNullIds(userId, groupId);
         User user = userService.getUserById(userId);
         Group group = groupService.findGroupById(groupId);
-        checkSubscription(user, group);
-        Subscription subscription = new Subscription();
-        subscription.setUser(user);
-        subscription.setGroup(group);
-        subscription.setExpirationDate(group.getEndDate());
+        Subscription subscription = generateSubscription(group, user);
         subscriptionRepository.save(subscription);
         log.info("**/Subscription has been created. {}", subscription.toString());
         return generateSubscriptionProfile(subscription);
@@ -109,17 +101,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         List<UserResponse> userResponses = new ArrayList<>();
 
         for (Subscription subscription : subscriptions) {
-            if (!isActiveSubscription(subscription)) continue;
-            User user = subscription.getUser();
-            UserResponse userResponse = modelMapper.map(user, UserResponse.class);
-            Link userResults = linkTo(methodOn(ResultController.class)
-                    .getUserResults(groupId, user.getId()))
-                    .withRel("results");
-            Link dropUser = linkTo(methodOn(SubscriptionController.class)
-                    .deleteUserSubscription(groupId, user.getId()))
-                    .withRel("drop");
-            userResponse.add(userResults, dropUser);
-            userResponses.add(userResponse);
+            if (isActiveSubscription(subscription)) {
+                User user = subscription.getUser();
+                UserResponse userResponse = generateUserResponse(user, groupId);
+                userResponses.add(userResponse);
+            }
         }
         return userResponses;
     }
@@ -139,6 +125,27 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new IllegalStateException(
                     String.format(SUBSCRIPTION_EXISTS_MESSAGE, user.getFirstName(), user.getLastName()));
         }
+    }
+
+    private Subscription generateSubscription(Group group, User user) {
+        checkSubscription(user, group);
+        Subscription subscription = new Subscription();
+        subscription.setGroup(group);
+        subscription.setUser(user);
+        subscription.setExpirationDate(group.getEndDate());
+        return subscription;
+    }
+
+    private UserResponse generateUserResponse(User user, Long groupId) {
+        UserResponse userResponse = modelMapper.map(user, UserResponse.class);
+        Link userResults = linkTo(methodOn(ResultController.class)
+                .getUserResults(groupId, user.getId()))
+                .withRel("results");
+        Link dropUser = linkTo(methodOn(SubscriptionController.class)
+                .deleteUserSubscription(groupId, user.getId()))
+                .withRel("drop");
+        userResponse.add(userResults, dropUser);
+        return userResponse;
     }
 
     private SubscriptionProfile generateSubscriptionProfile(Subscription subscription) {
