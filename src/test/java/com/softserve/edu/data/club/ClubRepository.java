@@ -49,5 +49,4 @@ public final class ClubRepository {
                 .build();
     }
 
-
 }

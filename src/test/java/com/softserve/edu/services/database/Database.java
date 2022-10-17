@@ -1,6 +1,7 @@
 package com.softserve.edu.services.database;
 
 import com.softserve.edu.utils.ConfigPropertiesReader;
+import io.qameta.allure.Step;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -13,10 +14,7 @@ import org.slf4j.LoggerFactory;
 //import org.hibernate.cfg.Configuration;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Database {
 
@@ -195,6 +193,7 @@ public class Database {
     }
 
     // Get list of values
+    @Step("Get result from DB as list")
     public List<String> getList(String query) {
 
         List<String> result = new ArrayList<>();
@@ -216,9 +215,10 @@ public class Database {
             // Get all values and add them to the List
             while (rs.next()) {
                 for (int i = 1; i <= columnsNumber; i++) {
-                    result.add(rs.getString(i));
+                    result.add(rs.getString(i).trim());
                 }
             }
+            Collections.sort(result);
         } catch (SQLException e) {
             logger.error("Message = " + e.getMessage());
             logger.error("printTrace \n");
@@ -251,7 +251,7 @@ public class Database {
             // Get all values and add them to the HashMap
             while (rs.next()) {
                 for (int i = 1; i <= columnsNumber; i++) {
-                    resultsHashMap.put(rsmd.getColumnName(i), rs.getString(i));
+                    resultsHashMap.put(rsmd.getColumnName(i).trim(), rs.getString(i).trim());
                 }
             }
 

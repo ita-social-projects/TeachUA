@@ -7,7 +7,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClubsPage extends TopPart {
 
@@ -91,20 +93,25 @@ public class ClubsPage extends TopPart {
 
     // Get number of clubs on all pages on Clubs page
     public List<String> getAllClubTitles() {
-        int count = 0;
         List<String> allClubTitles = new ArrayList<>();
         try{
-            while(createPagination().isNextButtonEnabled()) {
-                // Add all titles on the current page to the list with all titles
-                allClubTitles.addAll(createClubsContainer().getClubComponentTitles());
-                createPagination().clickNextButton();                               // click on next button
-                System.out.println(count++);
-                presentationSleep(5);
+            presentationSleep(20);
+            allClubTitles.addAll(createClubsContainer().getClubComponentTitles());
+            // Check if pagination is present on the page
+            if(createPagination().isNextButtonPresent()) {
+                while(createPagination().isNextButtonEnabled()) {
+                    createPagination().clickNextButton();                           // click on next button
+                    presentationSleep(3);
+                    // Add all titles on the current page to the list with all titles
+                    allClubTitles.addAll(createClubsContainer().getClubComponentTitles());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return allClubTitles;                                                       // get actual number of pages
+        // Sort final list
+        Collections.sort(allClubTitles);
+        return allClubTitles;
     }
 
     public int getTotalNumberOfPagesFromDatabase(String total) {

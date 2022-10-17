@@ -13,18 +13,18 @@ public class Pagination {
     private final WebDriver driver;
     private final Long ONE_SECOND_DELAY = 1000L;                                // one-second delay
 
-    private WebElement nextButton;                                              // next button element
+    //private WebElement nextButton;                                              // next button element
 
     // Constructor
     public Pagination(WebDriver driver) {
         this.driver = driver;
-        initElements();                                                         // initialize elements
+        //initElements();                                                         // initialize elements
     }
 
-    // Check if elements present on the page
-    private void initElements() {
-        nextButton = driver.findElement(By.xpath("//span[contains(@class,'right')]/../..//button[@class='ant-pagination-item-link']"));
-    }
+//    // Check if elements present on the page
+//    private void initElements() {
+//        nextButton = driver.findElement(By.xpath("//span[contains(@class,'right')]/../..//button[@class='ant-pagination-item-link']"));
+//    }
 
     /*
      * Page Object
@@ -32,7 +32,8 @@ public class Pagination {
 
     // nextButton
     private WebElement getNextButton() {
-        return this.nextButton;                                                 // get nextButton element
+        // Get nextButton element
+        return driver.findElement(By.xpath("//span[contains(@class,'right')]/../..//button[@class='ant-pagination-item-link']"));
     }
 
     public boolean isNextButtonEnabled() {
@@ -70,6 +71,11 @@ public class Pagination {
             e.printStackTrace();
         }
         return counter;
+    }
+
+    public boolean isNextButtonPresent() {
+        // Check if nextButton exists
+        return driver.findElements(By.xpath("//span[contains(@class,'right')]/../..//button[@class='ant-pagination-item-link']")).size() != 0;
     }
 
     /*

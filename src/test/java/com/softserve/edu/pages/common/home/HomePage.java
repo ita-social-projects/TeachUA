@@ -1,5 +1,6 @@
 package com.softserve.edu.pages.common.home;
 
+import com.softserve.edu.data.Locations;
 import com.softserve.edu.pages.TopPart;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -22,6 +23,10 @@ public class HomePage extends TopPart {
         initiative = driver.findElement(By.cssSelector(".city-name-box>h2.city-name"));
     }
 
+    /*
+     * Page Object
+     */
+
     // addClubButton
     private WebElement getAddClubButton() {
         return addClubButton;                                                   // get addClubButton element
@@ -42,6 +47,19 @@ public class HomePage extends TopPart {
 
     private String getInitiativeText() {
         return getInitiative().getText();                                       // get initiative text
+    }
+
+    /*
+     * Functional
+     */
+
+    /*
+     * Business Logic
+     */
+
+    public HomePage chooseLocation(Locations location) {
+        clickLocationByPartialName(location);                                   // click on provided location
+        return new HomePage(driver);                                            // return HomePage
     }
 
 }

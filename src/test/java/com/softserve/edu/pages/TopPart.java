@@ -1,25 +1,28 @@
 package com.softserve.edu.pages;
 
+import com.softserve.edu.data.Locations;
 import com.softserve.edu.pages.common.clubs.ClubsPage;
 import com.softserve.edu.pages.common.home.HomePage;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import io.qameta.allure.Step;
+import org.openqa.selenium.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.RecursiveTask;
 
 public abstract class TopPart {
 
-    protected WebDriver driver;                                                 // WebDriver instance
+    private static final String SCROLL_TO = "arguments[0].scrollIntoView(true);";   // scroll to element using JS
+    private final Long ONE_SECOND_DELAY = 1000L;                                    // one-second delay
+    // CSS locator to find each location on dropdown list of locations
+    private final String LIST_LOCATIONS_CSS_SELECTOR = ".ant-dropdown-menu-vertical>.ant-dropdown-menu-item";
+    protected WebDriver driver;                                                     // WebDriver instance
     // this.getClass() means that logger will be created from the name of the class where it is used
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static final String SCROLL_TO = "arguments[0].scrollIntoView(true);"; // scroll to element using JS
-    private final Long ONE_SECOND_DELAY = 1000L;                                // one-second delay
-    protected final String OPTION_NULL_MESSAGE = "Pagination is null";          // error message
+    protected final String OPTION_NULL_MESSAGE = "Pagination is null";              // error message
+    protected final String OPTION_NOT_FOUND_MESSAGE = "Option %s not found in %s";  // option not found error message
 
     /*
      * Header elements
@@ -64,6 +67,7 @@ public abstract class TopPart {
 
     // Abstract classes
     private Pagination pagination;
+    private LocationDropdownComponent locationDropdownComponent;
 
     // Constructor
     public TopPart(WebDriver driver) {
@@ -82,7 +86,7 @@ public abstract class TopPart {
         searchTopField = driver.findElement(By.cssSelector("input.ant-select-selection-search-input"));
         searchTopButton = driver.findElement(By.cssSelector("span.anticon.anticon-search.advanced-icon"));
         extendedSearchButton = driver.findElement(By.cssSelector("span.anticon.anticon-control.advanced-icon"));
-        location = driver.findElement(By.cssSelector("span.anticon.anticon-environment.icon"));
+        location = driver.findElement(By.cssSelector(".ant-dropdown-trigger.city"));
         myProfile = driver.findElement(By.cssSelector("span.ant-avatar.ant-avatar-lg.ant-avatar-circle"));
         teachUALogo = driver.findElement(By.cssSelector(".footer-logo"));
         watchword = driver.findElement(By.cssSelector(".description>.text"));
@@ -202,6 +206,10 @@ public abstract class TopPart {
         getSearchTopField().sendKeys(text);                                     // send text into searchTopField
     }
 
+    public void clickEnterButton() {
+        getSearchTopField().sendKeys(Keys.ENTER);                               // press enter
+    }
+
     // searchTopButton
     private WebElement getSearchTopButton() {
         return this.searchTopButton;                                            // get searchTopButton element
@@ -225,7 +233,8 @@ public abstract class TopPart {
         return this.location;                                                   // get location element
     }
 
-    private String getLocationText() {
+    @Step("Get location")
+    public String getLocationText() {
         return getLocation().getText();                                         // get location text
     }
 
@@ -412,14 +421,66 @@ public abstract class TopPart {
         return getPagination();
     }
 
+    // locationDropdownComponent
+    protected LocationDropdownComponent getLocationDropdownComponent() {
+        // Check if locationDropdownComponent object is created
+        if(locationDropdownComponent == null) {
+            throw new RuntimeException(OPTION_NULL_MESSAGE);
+        }
+        return locationDropdownComponent;                                       // return locationDropdownComponent
+    }
+
+    private LocationDropdownComponent createLocationDropdownComponent(By searchLocator) {
+        // Create and initialize object of the class LocationDropdownComponent
+        locationDropdownComponent = new LocationDropdownComponent(driver, searchLocator);
+        return getLocationDropdownComponent();                                  // return locationDropdownComponent
+    }
+
+    private void clickLocationDropdownComponentByPartialName(String optionName) {
+        // Check if needed option exists in the list
+        if(!getLocationDropdownComponent().isDropdownOptionByPartialNameExist(optionName)) {
+            // Throw special exception if element does not exist
+            throw new RuntimeException(String.format(OPTION_NOT_FOUND_MESSAGE, optionName,
+                    getLocationDropdownComponent().getListOptionsText().toString()));
+        }
+        // Click on option with set partial name
+        getLocationDropdownComponent().clickDropdownOptionByPartialName(optionName);
+        // Assign null to object to know that such element does not exist anymore
+        locationDropdownComponent = null;
+    }
+
+    protected void closeLocationDropdownComponent() {
+        // Click on search top field to close LocationDropdownComponent
+        clickSearchTopField();
+        // Assign null to object to know that such element does not exist anymore
+        locationDropdownComponent = null;
+    }
+
     /*
      * Functional
      */
 
+    // location
+    private void openLocationDropdownComponent() {
+        // clickSearchTopField is needed because it's unknown if location dropdown already opened or not
+        clickSearchTopField();                                                  // click search top field
+        clickLocation();                                                        // click location
+        // If we clicked on location component, we need to create it and provide css selector to find needed location
+        createLocationDropdownComponent(By.cssSelector(LIST_LOCATIONS_CSS_SELECTOR));
+    }
+
+    // optionName with type Locations we need to avoid mistakes in writing location name
+    protected void clickLocationByPartialName(Locations optionName) {           // void because we can be on any page
+        openLocationDropdownComponent();                                        // open location dropdown component
+        clickLocationDropdownComponentByPartialName(optionName.toString());     // click location by its partial name
+    }
+
+    // scrolltoElement
     protected void scrolltoElement(WebElement element) {
         ((JavascriptExecutor) driver).executeScript(SCROLL_TO, element);        // scroll to element using JS
     }
 
+    // pagination
     public int getActualNumberOfPages() {
         return createPagination().countNumberOfPages();                         // get actual number of pages
     }
@@ -433,13 +494,21 @@ public abstract class TopPart {
         }
     }
 
-    public void searchClub(String title) {
-        logger.debug("Entering and searching club by its title started");
+    @Step("Enter club title")
+    public void sendTextIntoInputSearchField(String text) {
+        logger.debug("Enter club title started");
         clickSearchTopField();                                                  // click search top field
         clearSearchTopField();                                                  // clear search top field
-        sendSearchTopFieldText(title);                                          // send text into search top field
+        sendSearchTopFieldText(text);                                           // send text into search top field
+        logger.debug("Enter club title started");
+    }
+
+    @Step("Press ENTER button")
+    public void searchClub(String title) {
+        logger.debug("Enter and searching club by its title started");
+        sendTextIntoInputSearchField(title);                                    // send text into search top field
         clickSearchTopButton();                                                 // click search top button to search club
-        logger.debug("Entering and searching club by its title started");
+        logger.debug("Enter and searching club by its title started");
     }
 
     /*
@@ -451,6 +520,7 @@ public abstract class TopPart {
         return new HomePage(driver);
     }
 
+    @Step("Go to clubs page")
     public ClubsPage gotoClubsPage() {
         clickClubs();                                                           // click Clubs page
         return new ClubsPage(driver);

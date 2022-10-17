@@ -13,7 +13,7 @@ public class ClubsContainer {
 
     // Message if there is no such component found
     private final String CLUB_NOT_FOUND = "There is no product that matches the search criteria.";
-    // Selector for club container
+    // Selector to find the whole club container
     private final String CLUB_COMPONENT_CSS_SELECTOR = ".ant-card.ant-card-bordered.card";
     // Logger
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -127,7 +127,7 @@ public class ClubsContainer {
         for(ClubComponent component : getClubComponents()) {
             // Compare provided club title with value from club components list to find needed one
             if(component.getTitleText().contains(clubTitle)) {
-                logger.info("Component with title " + clubTitle + " found on the page");
+                logger.info("Component with partial or the same title as " + clubTitle + " found on the page");
                 result = true;
                 break;
             }
@@ -138,7 +138,8 @@ public class ClubsContainer {
     public List<String> getClubComponentTitles() {
         List<String> clubComponentTitles = new ArrayList<>();
         for(ClubComponent component : getClubComponents()) {
-            clubComponentTitles.add(component.getTitleText());                  // add clubComponentTitles to the list
+            // Remove all spaces at the beginning and at the end of the title and add clubComponentTitles to the list
+            clubComponentTitles.add(component.getTitleText().trim());
         }
         return clubComponentTitles;                                             // get the list with all clubComponentTitles
     }
