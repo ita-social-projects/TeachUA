@@ -43,7 +43,11 @@ public class JwtProvider {
      * @return id
      */
     public Long getUserIdFromToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+        log.info("\t\t\tTOKEN  " + token);
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
         String claimsId = claims.getId();
         claimsId = claimsId == null ? "0" : claimsId;
         log.debug("claims.getId() = " + claimsId);

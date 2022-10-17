@@ -247,8 +247,12 @@
 			<artifactId>json</artifactId>
 			<version>20211205</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.hateoas</groupId>
+			<artifactId>spring-hateoas</artifactId>
+			<version>1.2.0</version>
+		</dependency>
 
-		<!-- Dependencies for QR codes -->
 		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>core</artifactId>
@@ -327,7 +331,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><configuration><source>8</source><target>8</target></configuration></plugin>
 
 			<plugin>
 				<groupId>net.revelc.code.formatter</groupId>

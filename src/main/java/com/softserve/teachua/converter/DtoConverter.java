@@ -1,6 +1,8 @@
 package com.softserve.teachua.converter;
 
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.dto.test.test.CreateTest;
+import com.softserve.teachua.model.test.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
