@@ -35,7 +35,9 @@ public class LocationController implements Api {
     /**
      * The controller returns entity {@code Location}.
      *
-     * @param id - put Location id.
+     * @param id
+     *            - put Location id.
+     *
      * @return new {@code Location}.
      */
     @GetMapping("/location/{id}")
@@ -56,37 +58,39 @@ public class LocationController implements Api {
     /**
      * The controller returns entity {@code Location} of created location.
      *
-     * @param locationProfile - place body to {@link LocationProfile}.
+     * @param locationProfile
+     *            - place body to {@link LocationProfile}.
+     *
      * @return new {@code Location}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/location")
-    public Location addLocation(
-            @Valid
-            @RequestBody LocationProfile locationProfile) {
+    public Location addLocation(@Valid @RequestBody LocationProfile locationProfile) {
         return locationService.addLocation(locationProfile);
     }
 
     /**
      * The controller returns entity {@code Location } of updated location.
      *
-     * @param id              - put Location id.
-     * @param locationProfile - place body to {@link LocationProfile}.
+     * @param id
+     *            - put Location id.
+     * @param locationProfile
+     *            - place body to {@link LocationProfile}.
+     *
      * @return new {@code Location}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/location/{id}")
-    public Location updateLocation(
-            @PathVariable Long id,
-            @Valid
-            @RequestBody LocationProfile locationProfile) {
+    public Location updateLocation(@PathVariable Long id, @Valid @RequestBody LocationProfile locationProfile) {
         return locationService.updateLocation(id, locationProfile);
     }
 
     /**
      * The controller returns dto {@code LocationResponse} of deleted location by id.
      *
-     * @param id - put Location id.
+     * @param id
+     *            - put Location id.
+     *
      * @return new {@code LocationResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)

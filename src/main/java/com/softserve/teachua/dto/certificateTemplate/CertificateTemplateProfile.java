@@ -20,4 +20,6 @@ public class CertificateTemplateProfile implements Convertible {
 
     @NotBlank
     private String filePath;
+
+    private Integer certificateType;
 }

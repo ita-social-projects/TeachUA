@@ -29,12 +29,12 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
 
     @Override
     public void archiveModel(CertificateDates certificateDates) {
-        //TODO
+        // TODO
     }
 
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
-        //TODO
+        // TODO
     }
 
     @Override
@@ -56,7 +56,7 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
 
     @Override
     public CertificateDates getCertificateDatesByDurationAndDate(String duration, String date) {
-        return certificateDatesRepository.findByDurationAndDate(duration, date)
-                .orElseThrow(() -> new NotExistException(String.format(DATE_NOT_FOUND_BY_DURATION_AND_DATE, duration, date)));
+        return certificateDatesRepository.findByDurationAndDate(duration, date).orElseThrow(
+                () -> new NotExistException(String.format(DATE_NOT_FOUND_BY_DURATION_AND_DATE, duration, date)));
     }
 }

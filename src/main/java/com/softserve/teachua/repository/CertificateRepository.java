@@ -21,8 +21,18 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     List<Certificate> findCertificatesByTemplate(CertificateTemplate template);
 
     @Query(value = "SELECT certificate from Certificate AS certificate " +
-            "WHERE certificate.sendStatus = :status OR certificate.sendStatus IS NULL")
-    List<Certificate> findCertificatesBySendStatus(@Param("status") Boolean status);
+            "WHERE certificate.sendStatus IS NULL")
+    List<Certificate> findUnsentCertificates();
+
+    /*-
+    @Query(value = "SELECT * FROM certificates AS certificate " +
+            "WHERE certificate.send_status IS NULL " +
+            "ORDER BY certificate.id " +
+            "LIMIT 1", nativeQuery = true)
+    Certificate findOneUnsentCertificate();
+    */
+
+    Certificate findTopBySendStatusNullOrderByIdAsc();
 
     Set<Certificate> deleteAllByUser(User user);
 
@@ -38,16 +48,20 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     List<Certificate> findAll();
 
+    List<Certificate> findAllByOrderByIdAsc();
+
     Optional<Certificate> findById(Long id);
 
     Optional<Certificate> findBySerialNumber(Long serialNumber);
 
-    Optional<Certificate> findByUserName(String username);
+    List<Certificate> findByUserName(String username);
 
     Optional<Certificate> findByUserNameAndDates(String username, CertificateDates dates);
 
-    @Query(value = "SELECT MAX(SUBSTRING(CONCAT(t.serialNumber, ''), 4, 10)) from Certificate t " +
-            "WHERE CONCAT(t.serialNumber, '') " +
-            "LIKE CONCAT(:type, '%') ")
+    @Query(value = "SELECT MAX(SUBSTRING(CONCAT(t.serialNumber, ''), 4, 10)) from Certificate t "
+            + "WHERE CONCAT(t.serialNumber, '') " + "LIKE CONCAT(:type, '%') ")
     Long findMaxSerialNumber(@Param("type") String type);
+
+    @Query(value = "SELECT certificates from Certificate AS certificates where LOWER(certificates.userName) LIKE LOWER(CONCAT('%', :username, '%')) ORDER BY certificates.id ASC")
+    List<Certificate> findSimilarByUserName(@Param("username") String userName);
 }

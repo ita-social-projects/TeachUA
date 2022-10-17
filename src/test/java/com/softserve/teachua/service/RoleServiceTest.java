@@ -68,7 +68,7 @@ public class RoleServiceTest {
     }
 
     @Test
-    public void getListOfRolesShouldReturnCorrectRoleResponse(){
+    public void getListOfRolesShouldReturnCorrectRoleResponse() {
         when(roleRepository.findAll()).thenReturn(Arrays.asList(correctRole));
         when(dtoConverter.convertToDto(correctRole, RoleResponse.class)).thenReturn(correctRoleResponse);
 
@@ -78,7 +78,7 @@ public class RoleServiceTest {
     }
 
     @Test
-    public void getRoleProfileByCorrectIdShouldReturnCorrectRoleResponse(){
+    public void getRoleProfileByCorrectIdShouldReturnCorrectRoleResponse() {
         when(roleRepository.findById(CORRECT_ID)).thenReturn(Optional.of(correctRole));
         when(dtoConverter.convertToDto(correctRole, RoleResponse.class)).thenReturn(correctRoleResponse);
 
@@ -87,7 +87,7 @@ public class RoleServiceTest {
     }
 
     @Test
-    public void getRoleProfileByWrongIdShouldReturnCorrectRoleResponse(){
+    public void getRoleProfileByWrongIdShouldReturnCorrectRoleResponse() {
         when(roleRepository.findById(WRONG_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
@@ -96,7 +96,7 @@ public class RoleServiceTest {
     }
 
     @Test
-    public void getRoleByCorrectNameShouldReturnCorrectRole(){
+    public void getRoleByCorrectNameShouldReturnCorrectRole() {
         when(roleRepository.findByName(CORRECT_NAME)).thenReturn(Optional.of(correctRole));
 
         Role actual = roleRepository.findByName(CORRECT_NAME).get();
@@ -181,11 +181,10 @@ public class RoleServiceTest {
     @Test
     public void deleteRoleShouldReturnCorrectRoleResponse() {
         when(roleRepository.findById(CORRECT_ID)).thenReturn(Optional.of(correctRole));
-//        when(archiveService.saveModel(correctRole)).thenReturn(correctRole);
+        // when(archiveService.saveModel(correctRole)).thenReturn(correctRole);
         doNothing().when(roleRepository).deleteById(CORRECT_ID);
         doNothing().when(roleRepository).flush();
-        when(dtoConverter.convertToDto(correctRole, RoleResponse.class))
-                .thenReturn(correctRoleResponse);
+        when(dtoConverter.convertToDto(correctRole, RoleResponse.class)).thenReturn(correctRoleResponse);
         when(dtoConverter.convertToDto(correctRole, RoleArch.class)).thenReturn(roleArch);
         when(archiveService.saveModel(roleArch)).thenReturn(Archive.builder().build());
         RoleResponse actual = roleService.deleteRoleById(CORRECT_ID);

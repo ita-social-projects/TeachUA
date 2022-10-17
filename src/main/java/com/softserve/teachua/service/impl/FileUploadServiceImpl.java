@@ -105,7 +105,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
     }
 
-    //filePath - '/upload/...../fileName.extension'
+    // filePath - '/upload/...../fileName.extension'
     @Override
     public void deleteFile(String filePath) {
         if (filePath.contains(UPLOAD_PLUG)) {

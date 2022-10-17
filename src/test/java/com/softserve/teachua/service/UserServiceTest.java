@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
- class UserServiceTest {
+class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
@@ -78,42 +78,20 @@ import static org.mockito.Mockito.*;
     private final String PASSWORD = "12345";
     private final String TOKEN = "osfljlksdflkfjlsdfkldsfsdf";
 
-
     @BeforeEach
-     void init() {
-        role = Role.builder()
-                .id(ROLE_ID)
-                .name(ROLE_NAME)
+    void init() {
+        role = Role.builder().id(ROLE_ID).name(ROLE_NAME).build();
+        user = User.builder().id(EXISTING_ID).email(EXISTING_EMAIL).status(IS_STATUS).password(PASSWORD).role(role)
                 .build();
-        user = User.builder()
-                .id(EXISTING_ID)
-                .email(EXISTING_EMAIL)
-                .status(IS_STATUS)
-                .password(PASSWORD)
-                .role(role)
-                .build();
-        userProfile = UserProfile.builder()
-                .email(NEW_EMAIL)
-                .password(PASSWORD)
-                .roleName(ROLE_NAME)
+        userProfile = UserProfile.builder().email(NEW_EMAIL).password(PASSWORD).roleName(ROLE_NAME)
                 .firstName("username").build();
-        updUser = User.builder()
-                .id(EXISTING_ID)
-                .email(EXISTING_EMAIL)
-                .password(PASSWORD)
-                .firstName("username").build();
-        userArch = UserArch.builder()
-                .email(EXISTING_EMAIL)
-                .password(PASSWORD)
-                .firstName("username").build();
-        userUpdateProfile = UserUpdateProfile.builder()
-                .email(EXISTING_EMAIL)
-                .roleName(ROLE_NAME)
-                .build();
+        updUser = User.builder().id(EXISTING_ID).email(EXISTING_EMAIL).password(PASSWORD).firstName("username").build();
+        userArch = UserArch.builder().email(EXISTING_EMAIL).password(PASSWORD).firstName("username").build();
+        userUpdateProfile = UserUpdateProfile.builder().email(EXISTING_EMAIL).roleName(ROLE_NAME).build();
     }
 
     @Test
-     void getUserByIdTest() {
+    void getUserByIdTest() {
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
 
         User actual = userService.getUserById(EXISTING_ID);
@@ -121,14 +99,14 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void getUserByNotExistingIdTest() {
+    void getUserByNotExistingIdTest() {
         when(userRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.getUserById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
-     void getUserByIdEmailTest() {
+    void getUserByIdEmailTest() {
         when(userRepository.findByEmail(EXISTING_EMAIL)).thenReturn(Optional.of(user));
 
         User actual = userService.getUserByEmail(EXISTING_EMAIL);
@@ -136,30 +114,30 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void getUserByNotExistingEmailTest() {
+    void getUserByNotExistingEmailTest() {
         when(userRepository.findByEmail(NOT_EXISTING_EMAIL)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.getUserByEmail(NOT_EXISTING_EMAIL)).isInstanceOf(NotExistException.class);
     }
 
-//    @Test
-//     void registerNewUserTest() {
-//        User newUser = User.builder().email(NEW_EMAIL).build();
-//
-//        when(userRepository.existsByEmail(NEW_EMAIL)).thenReturn(false);
-//        when(dtoConverter.convertToEntity(userProfile, new User())).thenReturn(newUser);
-//        when(encodeService.encodePassword(PASSWORD)).thenReturn("encoded password");
-//        when(userRepository.save(any())).thenReturn(newUser);
-//        when(roleService.findByName(ROLE_NAME)).thenReturn(role);
-//        when(dtoConverter.convertToDto(newUser, SuccessRegistration.class))
-//                .thenReturn(SuccessRegistration.builder().email(NEW_EMAIL).build());
-//
-//        SuccessRegistration actual = userService.registerUser(userProfile);
-//        assertEquals(actual.getEmail(), userProfile.getEmail());
-//    }
+    // @Test
+    // void registerNewUserTest() {
+    // User newUser = User.builder().email(NEW_EMAIL).build();
+    //
+    // when(userRepository.existsByEmail(NEW_EMAIL)).thenReturn(false);
+    // when(dtoConverter.convertToEntity(userProfile, new User())).thenReturn(newUser);
+    // when(encodeService.encodePassword(PASSWORD)).thenReturn("encoded password");
+    // when(userRepository.save(any())).thenReturn(newUser);
+    // when(roleService.findByName(ROLE_NAME)).thenReturn(role);
+    // when(dtoConverter.convertToDto(newUser, SuccessRegistration.class))
+    // .thenReturn(SuccessRegistration.builder().email(NEW_EMAIL).build());
+    //
+    // SuccessRegistration actual = userService.registerUser(userProfile);
+    // assertEquals(actual.getEmail(), userProfile.getEmail());
+    // }
 
     @Test
-     void registerExistingUserTest() {
+    void registerExistingUserTest() {
         userProfile.setEmail(EXISTING_EMAIL);
         when(userRepository.existsByEmail(EXISTING_EMAIL)).thenReturn(true);
 
@@ -169,7 +147,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void validateUserWithValidPasswordTest() {
+    void validateUserWithValidPasswordTest() {
         UserLogin userLogin = new UserLogin(NEW_EMAIL, PASSWORD);
         User newUser = User.builder().email(NEW_EMAIL).password(PASSWORD).status(IS_STATUS).build();
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
@@ -182,11 +160,9 @@ import static org.mockito.Mockito.*;
                 .thenReturn(SuccessLogin.builder().email(NEW_EMAIL).build());
         when(encodeService.isValidStatus(userEntity)).thenReturn(true);
 
-        when(authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    userLogin.getEmail(),
-                    userLogin.getPassword()
-                ))).thenReturn(authentication);
+        when(authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword())))
+                .thenReturn(authentication);
 
         when(jwtProvider.generateToken(authentication)).thenReturn(TOKEN);
 
@@ -212,11 +188,10 @@ import static org.mockito.Mockito.*;
         }).isInstanceOf(WrongAuthenticationException.class);
     }
 
-   @Test
+    @Test
     public void updateUserTest() {
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
-        when(dtoConverter.convertToEntity(userUpdateProfile, user))
-                .thenReturn(updUser);
+        when(dtoConverter.convertToEntity(userUpdateProfile, user)).thenReturn(updUser);
         when(userRepository.save(any())).thenReturn(user);
         when(dtoConverter.convertToDto(user, SuccessUpdatedUser.class))
                 .thenReturn(SuccessUpdatedUser.builder().email(EXISTING_EMAIL).build());
@@ -237,11 +212,11 @@ import static org.mockito.Mockito.*;
     @Test
     public void deleteUserByIdTest() {
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
-//        when(archiveService.saveModel(user)).thenReturn(user);
+        // when(archiveService.saveModel(user)).thenReturn(user);
         doNothing().when(userRepository).deleteById(EXISTING_ID);
         doNothing().when(userRepository).flush();
-        when(dtoConverter.convertToDto(user, UserResponse.class)).thenReturn(UserResponse.builder()
-                .id(user.getId()).email(user.getEmail()).firstName(user.getFirstName()).build());
+        when(dtoConverter.convertToDto(user, UserResponse.class)).thenReturn(
+                UserResponse.builder().id(user.getId()).email(user.getEmail()).firstName(user.getFirstName()).build());
         when(dtoConverter.convertToDto(user, UserArch.class)).thenReturn(userArch);
         when(archiveService.saveModel(userArch)).thenReturn(Archive.builder().build());
         UserResponse userResponse = userService.deleteUserById(EXISTING_ID);

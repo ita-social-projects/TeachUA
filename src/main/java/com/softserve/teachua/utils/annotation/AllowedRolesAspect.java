@@ -25,8 +25,9 @@ public class AllowedRolesAspect {
 
     @Around("@annotation(com.softserve.teachua.utils.annotation.AllowedRoles)")
     public Object doSomething(ProceedingJoinPoint jp) throws Throwable {
-        Set<RoleData> roles = Arrays.stream(((MethodSignature) jp.getSignature()).getMethod()
-                .getAnnotation(AllowedRoles.class).value()).collect(Collectors.toSet());
+        Set<RoleData> roles = Arrays
+                .stream(((MethodSignature) jp.getSignature()).getMethod().getAnnotation(AllowedRoles.class).value())
+                .collect(Collectors.toSet());
         log.debug("Allowed roles: {}", roles);
         HttpServletRequest httpServletRequest = getRequest();
         for (RoleData role : roles) {
@@ -39,8 +40,8 @@ public class AllowedRolesAspect {
     }
 
     private HttpServletRequest getRequest() {
-        ServletRequestAttributes servletRequestAttributes =
-                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes();
         return servletRequestAttributes.getRequest();
     }
 }

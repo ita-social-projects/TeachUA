@@ -37,9 +37,7 @@ public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<Ban
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public BannerItemServiceImpl(
-            BannerItemRepository bannerItemRepository,
-            ArchiveService archiveService,
+    public BannerItemServiceImpl(BannerItemRepository bannerItemRepository, ArchiveService archiveService,
             DtoConverter dtoConverter, ObjectMapper objectMapper) {
         this.bannerItemRepository = bannerItemRepository;
         this.archiveService = archiveService;
@@ -60,8 +58,7 @@ public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<Ban
 
     @Override
     public List<BannerItemResponse> getListOfBannerItems() {
-        List<BannerItemResponse> itemResponses = bannerItemRepository.findAllByOrderBySequenceNumberAsc()
-                .stream()
+        List<BannerItemResponse> itemResponses = bannerItemRepository.findAllByOrderBySequenceNumberAsc().stream()
                 .map(item -> (BannerItemResponse) dtoConverter.convertToDto(item, BannerItemResponse.class))
                 .collect(Collectors.toList());
 
@@ -71,8 +68,8 @@ public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<Ban
 
     @Override
     public SuccessCreatedBannerItem addBannerItem(BannerItemProfile bannerItemProfile) {
-        BannerItem bannerItem =
-                bannerItemRepository.save(dtoConverter.convertToEntity(bannerItemProfile, new BannerItem()));
+        BannerItem bannerItem = bannerItemRepository
+                .save(dtoConverter.convertToEntity(bannerItemProfile, new BannerItem()));
 
         log.debug("**/adding new banner item = " + bannerItem);
         return dtoConverter.convertToDto(bannerItem, SuccessCreatedBannerItem.class);
@@ -81,8 +78,7 @@ public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<Ban
     @Override
     public BannerItemResponse updateBannerItem(Long id, BannerItemProfile bannerItemProfile) {
         BannerItem bannerItem = getBannerItemById(id);
-        BannerItem newBannerItem = dtoConverter.convertToEntity(bannerItemProfile, bannerItem)
-                .withId(id);
+        BannerItem newBannerItem = dtoConverter.convertToEntity(bannerItemProfile, bannerItem).withId(id);
 
         log.info("**/updating banner item by id = " + newBannerItem);
         return dtoConverter.convertToDto(bannerItemRepository.save(newBannerItem), BannerItemResponse.class);

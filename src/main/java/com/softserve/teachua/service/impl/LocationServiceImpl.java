@@ -40,15 +40,10 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
     private final StationService stationService;
 
     @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository,
-                               DtoConverter dtoConverter,
-                               ObjectMapper objectMapper,
-                               ArchiveService archiveService,
-                               @Lazy CenterService centerService,
-                               @Lazy ClubService clubService,
-                               CityService cityService,
-                               DistrictService districtService,
-                               StationService stationService) {
+    public LocationServiceImpl(LocationRepository locationRepository, DtoConverter dtoConverter,
+            ObjectMapper objectMapper, ArchiveService archiveService, @Lazy CenterService centerService,
+            @Lazy ClubService clubService, CityService cityService, DistrictService districtService,
+            StationService stationService) {
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
         this.objectMapper = objectMapper;
@@ -75,11 +70,8 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
     @Override
     public Location updateLocation(Long id, LocationProfile locationProfile) {
         Location location = getLocationById(id);
-        Location newLocation = dtoConverter.convertToEntity(locationProfile, location)
-                .withId(id)
-                .withClub(location.getClub())
-                .withCity(location.getCity())
-                .withDistrict(location.getDistrict())
+        Location newLocation = dtoConverter.convertToEntity(locationProfile, location).withId(id)
+                .withClub(location.getClub()).withCity(location.getCity()).withDistrict(location.getDistrict())
                 .withStation(location.getStation());
 
         log.info("**/updating location by id = " + newLocation);
@@ -94,13 +86,11 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
 
         locationRepository.deleteAllByCenter(center);
 
-        return locations.stream()
-                .map(locationProfile -> locationRepository
-                        .save(dtoConverter.convertToEntity(locationProfile, new Location())
-                                .withCenter(center)
-                                .withCity(cityService.getCityById(locationProfile.getCityId()))
-                                .withDistrict(districtService.getDistrictById(locationProfile.getDistrictId()))
-                                .withStation(stationService.getStationById(locationProfile.getStationId()))))
+        return locations.stream().map(
+                locationProfile -> locationRepository.save(dtoConverter.convertToEntity(locationProfile, new Location())
+                        .withCenter(center).withCity(cityService.getCityById(locationProfile.getCityId()))
+                        .withDistrict(districtService.getDistrictById(locationProfile.getDistrictId()))
+                        .withStation(stationService.getStationById(locationProfile.getStationId()))))
                 .collect(Collectors.toSet());
     }
 
@@ -112,11 +102,9 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
 
         locationRepository.deleteAllByClub(club);
 
-
         return locations.stream()
                 .map(locationResponse -> locationRepository
-                        .save(dtoConverter.convertToEntity(locationResponse, new Location())
-                                .withClub(club)
+                        .save(dtoConverter.convertToEntity(locationResponse, new Location()).withClub(club)
                                 .withCity(cityService.getCityById(locationResponse.getCityId()))
                                 .withDistrict(districtService.getDistrictById(locationResponse.getDistrictId()))
                                 .withStation(stationService.getStationById(locationResponse.getStationId()))))
@@ -150,8 +138,7 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         LocationArch locationArch = objectMapper.readValue(archiveObject, LocationArch.class);
-        Location location = dtoConverter.convertToEntity(locationArch, Location.builder().build())
-                .withId(null);
+        Location location = dtoConverter.convertToEntity(locationArch, Location.builder().build()).withId(null);
         if (Optional.ofNullable(locationArch.getCityId()).isPresent()) {
             location.setCity(cityService.getCityById(locationArch.getCityId()));
         }

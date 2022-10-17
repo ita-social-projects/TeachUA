@@ -39,8 +39,8 @@ public class QuestionServiceImpl implements QuestionService, ArchiveMark<Questio
     private final ObjectMapper objectMapper;
 
     @Autowired
-    QuestionServiceImpl(QuestionRepository questionRepository, DtoConverter dtoConverter,
-                        ArchiveService archiveService, ObjectMapper objectMapper) {
+    QuestionServiceImpl(QuestionRepository questionRepository, DtoConverter dtoConverter, ArchiveService archiveService,
+            ObjectMapper objectMapper) {
         this.questionRepository = questionRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
@@ -73,8 +73,7 @@ public class QuestionServiceImpl implements QuestionService, ArchiveMark<Questio
     @Override
     public QuestionProfile updateQuestionById(Long id, QuestionProfile questionProfile) {
         Question question = getQuestionById(id);
-        Question newQuestion = dtoConverter.convertToEntity(questionProfile, question)
-                .withId(id);
+        Question newQuestion = dtoConverter.convertToEntity(questionProfile, question).withId(id);
         log.debug("**/updating question by id = " + newQuestion);
 
         return dtoConverter.convertToDto(questionRepository.save(newQuestion), QuestionProfile.class);
@@ -99,8 +98,7 @@ public class QuestionServiceImpl implements QuestionService, ArchiveMark<Questio
 
     @Override
     public List<QuestionResponse> getAllQuestions() {
-        List<QuestionResponse> questionResponses = questionRepository.findAll()
-                .stream()
+        List<QuestionResponse> questionResponses = questionRepository.findAll().stream()
                 .map(question -> (QuestionResponse) dtoConverter.convertToDto(question, QuestionResponse.class))
                 .collect(Collectors.toList());
 

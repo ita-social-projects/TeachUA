@@ -1,6 +1,5 @@
 package com.softserve.teachua.controller;
 
-
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.location.AddressProfile;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AddressController implements Api {
 
-
     private final AddressServiceImpl addressService;
 
     @Autowired
@@ -27,13 +25,13 @@ public class AddressController implements Api {
 
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/getAllBadAddress")
-    public List<AddressProfile> getAllAddress(){
+    public List<AddressProfile> getAllAddress() {
         return addressService.getNotRelativeAddress();
     }
 
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/replaceIncorrectCity")
-    public List<AddressProfile> replaceIncorrectCity(){
+    public List<AddressProfile> replaceIncorrectCity() {
         return addressService.replaceAllIncorrectCity(addressService.getNotRelativeAddress());
     }
 

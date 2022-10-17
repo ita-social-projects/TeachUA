@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * This controller is responsible for managing certificates
+ */
 @RestController
 @Slf4j
 public class CertificateController implements Api {
@@ -26,14 +29,15 @@ public class CertificateController implements Api {
     private final CertificateDataLoaderService loaderService;
 
     @Autowired
-    public CertificateController(CertificateService certificateService, CertificateExcelService excelService, CertificateDataLoaderService loaderService) {
+    public CertificateController(CertificateService certificateService, CertificateExcelService excelService,
+            CertificateDataLoaderService loaderService) {
         this.certificateService = certificateService;
         this.excelService = excelService;
         this.loaderService = loaderService;
     }
 
     /**
-     * The method checks the size of list of unsent certificates.
+     * This endpoint is used to get the number of unsent certificates
      *
      * @return number of unsent certificates
      */
@@ -46,7 +50,9 @@ public class CertificateController implements Api {
     /**
      * The method uploads excel file and returns {@code ExcelParsingResponse}.
      *
-     * @param multipartFile - excel file.
+     * @param multipartFile
+     *            - excel file.
+     *
      * @return new {@code ExcelParsingResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -58,7 +64,9 @@ public class CertificateController implements Api {
     /**
      * The method saves data to database.
      *
-     * @param data - {@code CertificateDataToDatabase} read from form.
+     * @param data
+     *            - {@code CertificateDataToDatabase} read from form.
+     *
      * @return new {@code List<CertificateDatabaseResponse>}
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -69,12 +77,47 @@ public class CertificateController implements Api {
     }
 
     /**
+     * This endpoint is used to validate the certificate, user passes serial number into url, this controller returns
+     * {@code CertificateVerificationResponse}
      *
-     * @param serialNumber - serial number of certificate, being verified
+     * @param serialNumber
+     *            - serial number of certificate, being verified
+     *
      * @return new {@code CertificateVerificationResponse}
      */
     @GetMapping("/certificate/{serialNumber}")
-    public CertificateVerificationResponse validateCertificate(@PathVariable("serialNumber")Long serialNumber){
+    public CertificateVerificationResponse validateCertificate(@PathVariable("serialNumber") Long serialNumber) {
         return certificateService.validateCertificate(serialNumber);
+    }
+
+    /**
+     * This endpoint is used to get the information about all sent certificates.
+     *
+     * @return {@code List<CertificatePreview>}
+     */
+    @GetMapping("/certificates")
+    public List<CertificatePreview> getAllCertificates() {
+        return certificateService.getListOfCertificatesPreview();
+    }
+
+    @GetMapping("/certificate")
+    public List<CertificatePreview> searchCertificatesUser(@RequestParam(name="userName") String userName){
+        return certificateService.getSimilarCertificatesByUserName(userName);
+    }
+
+    /**
+     * This endpoint is used to get update certificate.
+     *
+     * @param id
+     *            - put certificate id
+     * @param certificatePreview
+     *            - {@code CertificatePreview} to update
+     *
+     * @return {@code List<CertificatePreview>}
+     */
+    @PutMapping("/certificates/{id}")
+    public CertificatePreview updateCertificate(@PathVariable Long id,
+            @Valid @RequestBody CertificatePreview certificatePreview) {
+        return certificateService.updateCertificatePreview(id, certificatePreview);
     }
 }

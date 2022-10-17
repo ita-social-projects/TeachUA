@@ -34,12 +34,8 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public TaskServiceImpl(
-            TaskRepository taskRepository,
-            ArchiveService archiveService,
-            DtoConverter dtoConverter,
-            ChallengeService challengeService,
-            UserService userService, ObjectMapper objectMapper) {
+    public TaskServiceImpl(TaskRepository taskRepository, ArchiveService archiveService, DtoConverter dtoConverter,
+            ChallengeService challengeService, UserService userService, ObjectMapper objectMapper) {
         this.taskRepository = taskRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
@@ -69,16 +65,15 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
     public List<TaskPreview> getTasksByChallengeId(Long id) {
         Challenge challenge = challengeService.getChallengeById(id);
         Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
-        return taskRepository.findTasksByChallenge(challenge)
-                .stream().map(function).collect(Collectors.toList());
+        return taskRepository.findTasksByChallenge(challenge).stream().map(function).collect(Collectors.toList());
     }
 
     @Override
     public List<TaskPreview> getCurrentTasksByChallengeId(Long id) {
         Challenge challenge = challengeService.getChallengeById(id);
         Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
-        return taskRepository.findCurrentTasksByChallenge(challenge)
-                .stream().map(function).collect(Collectors.toList());
+        return taskRepository.findCurrentTasksByChallenge(challenge).stream().map(function)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -94,8 +89,7 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
 
     @Override
     public List<TaskPreview> getListOfTasks() {
-        List<TaskPreview> taskPreviewList = taskRepository.findAll()
-                .stream()
+        List<TaskPreview> taskPreviewList = taskRepository.findAll().stream()
                 .map(task -> (TaskPreview) dtoConverter.convertToDto(task, TaskPreview.class))
                 .collect(Collectors.toList());
 
@@ -133,8 +127,7 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
     @Override
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         TaskArch taskArch = objectMapper.readValue(archiveObject, TaskArch.class);
-        Task task = dtoConverter.convertToEntity(taskArch, Task.builder().build())
-                .withId(null)
+        Task task = dtoConverter.convertToEntity(taskArch, Task.builder().build()).withId(null)
                 .withChallenge(challengeService.getChallengeById(taskArch.getChallengeId()));
         taskRepository.save(task);
     }

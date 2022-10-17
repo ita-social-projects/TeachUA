@@ -9,26 +9,32 @@ import com.softserve.teachua.model.CertificateTemplate;
 public interface CertificateTemplateService {
 
     /**
-     * The method returns {@link CertificateTemplate} by id
+     * This method returns entity of {@code CertificateTemplate} found by id
      *
-     * @param id - put template id
+     * @param id
+     *            - put CertificateTemplate id
+     *
      * @return new {@code CertificateTemplate}
      */
     CertificateTemplate getTemplateById(Integer id);
 
     /**
-     * The method returns {@link CertificateTemplate} by type
+     * This method returns entity of {@code CertificateTemplate} found by type
      *
-     * @param type - put template type
-     * @return new {@code Certificate}
+     * @param type
+     *            - put CertificateTemplate type
+     *
+     * @return new {@code CertificateTemplate}
      */
     CertificateTemplate getTemplateByType(Integer type);
 
     /**
-     * The method returns {@link CertificateTemplate} if template successfully added
+     * This method returns entity of {@code CertificateTemplate} if template successfully added
      *
-     * @param certificateTemplate - put body of {@code CertificateTemplate}
-     * @return new {@code Certificate}
+     * @param certificateTemplate
+     *            - put body of {@code CertificateTemplate}
+     *
+     * @return new {@code CertificateTemplate}
      */
     CertificateTemplate addTemplate(CertificateTemplate certificateTemplate);
 }

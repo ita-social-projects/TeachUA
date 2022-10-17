@@ -16,7 +16,8 @@ public class BannerItemTransferServiceImpl implements BannerItemTransferService 
     private final com.softserve.teachua.tools.FileUtils fileUtils;
 
     @Autowired
-    public BannerItemTransferServiceImpl(BannerItemServiceImpl bannerItemService, com.softserve.teachua.tools.FileUtils fileUtils) {
+    public BannerItemTransferServiceImpl(BannerItemServiceImpl bannerItemService,
+            com.softserve.teachua.tools.FileUtils fileUtils) {
         this.bannerItemService = bannerItemService;
         this.fileUtils = fileUtils;
     }
@@ -24,13 +25,9 @@ public class BannerItemTransferServiceImpl implements BannerItemTransferService 
     @Override
     public List<SuccessCreatedBannerItem> moveBannerToDB() {
 
-        return BannerInfoRepository
-                .getBannersInfo()
-                .stream()
-                .map(banner -> {
-                    banner.setPicture(fileUtils.moveImage(banner.getPicture(), "banner"));
-                    return banner;
-                })
-                .map(bannerItemService::addBannerItem).collect(Collectors.toList());
+        return BannerInfoRepository.getBannersInfo().stream().map(banner -> {
+            banner.setPicture(fileUtils.moveImage(banner.getPicture(), "banner"));
+            return banner;
+        }).map(bannerItemService::addBannerItem).collect(Collectors.toList());
     }
 }

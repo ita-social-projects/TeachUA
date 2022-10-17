@@ -8,7 +8,9 @@ public interface TaskTransferService {
     /**
      * The method returns list of dto {@code List<SuccessCreatedTask>} if tasks successfully added.
      *
-     * @param filePath - path to file with jsons of tasks.
+     * @param filePath
+     *            - path to file with jsons of tasks.
+     *
      * @return new {@code List<SuccessCreatedTask>}.
      */
     List<SuccessCreatedTask> createTasksFromFile(String filePath);
@@ -21,6 +23,8 @@ public interface TaskTransferService {
     List<SuccessCreatedTask> createTasksFromRepository();
 
     void dropRedundantTable();
+
     void addConstrain();
+
     void dropConstrain();
 }

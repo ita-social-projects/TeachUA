@@ -20,7 +20,7 @@ import javax.validation.Valid;
 
 /**
  * This controller is for managing the reset password process.
- * */
+ */
 
 @Slf4j
 @RestController
@@ -37,14 +37,14 @@ public class ResetPasswordController implements Api {
     /**
      * The controller returns dto {@code SuccessUserPasswordReset} of user.
      *
-     * @param userProfile - dto with all params.
+     * @param userProfile
+     *            - dto with all params.
+     *
      * @return new {@code SuccessUserPasswordReset}.
      */
     @PreAuthorize("!isAuthenticated()")
     @PostMapping("/resetpassword")
-    public SuccessUserPasswordReset resetPassword(
-            @Valid
-            @RequestBody UserResetPassword userProfile) {
+    public SuccessUserPasswordReset resetPassword(@Valid @RequestBody UserResetPassword userProfile) {
         log.debug("Controller \"resetpassword\", userProfile = " + userProfile.toString());
         return userService.resetPassword(userProfile);
     }
@@ -52,7 +52,9 @@ public class ResetPasswordController implements Api {
     /**
      * The controller returns dto {@code SuccessRegistration} of sign-upped user.
      *
-     * @param code - code of user verification
+     * @param code
+     *            - code of user verification
+     *
      * @return new {@code SuccessRegistration}.
      */
     @PreAuthorize("!isAuthenticated()")
@@ -65,14 +67,14 @@ public class ResetPasswordController implements Api {
     /**
      * The controller returns dto {@code SuccessUserPasswordReset} of user.
      *
-     * @param userProfile - dto with all params.
+     * @param userProfile
+     *            - dto with all params.
+     *
      * @return new {@code SuccessUserPasswordReset}.
      */
     @PreAuthorize("!isAuthenticated()")
     @PostMapping("/verifyreset")
-    public SuccessUserPasswordReset changePassword(
-            @Valid
-            @RequestBody SuccessUserPasswordReset userProfile) {
+    public SuccessUserPasswordReset changePassword(@Valid @RequestBody SuccessUserPasswordReset userProfile) {
         return userService.verifyChangePassword(userProfile);
     }
 }

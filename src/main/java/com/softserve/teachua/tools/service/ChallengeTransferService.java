@@ -8,7 +8,9 @@ public interface ChallengeTransferService {
     /**
      * The method returns list of dto {@code List<SuccessCreatedChallenge>} if challenges successfully added.
      *
-     * @param filePath - path to file with jsons of tasks.
+     * @param filePath
+     *            - path to file with jsons of tasks.
+     *
      * @return new {@code List<SuccessCreatedChallenge>}.
      */
     List<SuccessCreatedChallenge> createChallengesFromFile(String filePath);

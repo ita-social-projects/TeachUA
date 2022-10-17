@@ -30,62 +30,57 @@ public class UserRepositoryIT {
     private static final Long DELETED_ID = 199L;
 
     @Test
-    public void existsByAdminEmailShouldReturnTrue(){
+    public void existsByAdminEmailShouldReturnTrue() {
         assertTrue(userRepository.existsByEmail(ADMIN_EMAIL));
     }
 
     @Test
-    public void existsByWrongEmailShouldReturnFalse(){
+    public void existsByWrongEmailShouldReturnFalse() {
         assertFalse(userRepository.existsByEmail(WRONG_EMAIL));
     }
 
     @Test
-    public void findByAdminEmailShouldReturnUser(){
-        assertThat(userRepository.findByEmail(ADMIN_EMAIL).get().getEmail())
-                .isEqualTo(ADMIN_EMAIL);
+    public void findByAdminEmailShouldReturnUser() {
+        assertThat(userRepository.findByEmail(ADMIN_EMAIL).get().getEmail()).isEqualTo(ADMIN_EMAIL);
     }
 
     @Test
-    public void findByAdminEmailShouldReturnOptionalEmpty(){
-        assertThat(userRepository.findByEmail(WRONG_EMAIL))
-                .isEqualTo(Optional.empty());
+    public void findByAdminEmailShouldReturnOptionalEmpty() {
+        assertThat(userRepository.findByEmail(WRONG_EMAIL)).isEqualTo(Optional.empty());
     }
 
     @Test
-    public void findByExistingIdShouldReturnAdminEmail(){
+    public void findByExistingIdShouldReturnAdminEmail() {
         Optional<User> user = userRepository.findById(EXISTING_ID);
         String userEmail = user.isPresent() ? user.get().getEmail() : null;
-        assertThat(userEmail)
-                .isEqualTo(ADMIN_EMAIL);
+        assertThat(userEmail).isEqualTo(ADMIN_EMAIL);
     }
 
     @Test
-    public void findByExistingIdShouldThrowNotExistException(){
-        assertThat(userRepository.findById(WRONG_ID))
-                .isEqualTo(Optional.empty());
+    public void findByExistingIdShouldThrowNotExistException() {
+        assertThat(userRepository.findById(WRONG_ID)).isEqualTo(Optional.empty());
     }
 
     @Test
-    public void existsByExistingIdShouldReturnTrue(){
+    public void existsByExistingIdShouldReturnTrue() {
         assertTrue(userRepository.existsById(EXISTING_ID));
     }
 
     @Test
-    public void existsByWrongIdShouldReturnFalse(){
+    public void existsByWrongIdShouldReturnFalse() {
         assertFalse(userRepository.existsById(WRONG_ID));
     }
 
     @Test
-    public void findAllShouldReturnListWithUserOnSecondPosition(){
+    public void findAllShouldReturnListWithUserOnSecondPosition() {
         List<User> userList = userRepository.findAll();
         assertThat(userList).isNotEmpty();
         assertThat(userList.get(1).getEmail()).isEqualTo(USER_EMAIL);
     }
 
     @Test
-    public void deleteByDeletedIdShouldDelete(){
+    public void deleteByDeletedIdShouldDelete() {
         userRepository.deleteById(DELETED_ID);
-        assertThat(userRepository.findById(DELETED_ID))
-                .isEqualTo(Optional.empty());
+        assertThat(userRepository.findById(DELETED_ID)).isEqualTo(Optional.empty());
     }
 }

@@ -1,6 +1,5 @@
 package com.softserve.teachua.dto.certificate;
 
-
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
@@ -11,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;

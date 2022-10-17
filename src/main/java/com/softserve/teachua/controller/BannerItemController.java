@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the banner items.
- * */
+ */
 
 @Slf4j
 @RestController
@@ -35,7 +35,9 @@ public class BannerItemController implements Api {
     /**
      * The controller returns dto {@code BannerItemResponse} about banner item.
      *
-     * @param id - put BannerItem id.
+     * @param id
+     *            - put BannerItem id.
+     *
      * @return new {@code BannerItemResponse}.
      */
     @GetMapping("/banner/{id}")
@@ -56,37 +58,40 @@ public class BannerItemController implements Api {
     /**
      * The controller returns dto {@code SuccessCreatedBannerItem} of created banner item.
      *
-     * @param bannerItemProfile - place body to {@link BannerItemProfile}.
+     * @param bannerItemProfile
+     *            - place body to {@link BannerItemProfile}.
+     *
      * @return new {@code SuccessCreatedBannerItem}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/banner")
-    public SuccessCreatedBannerItem addBannerItem(
-            @Valid
-            @RequestBody BannerItemProfile bannerItemProfile) {
+    public SuccessCreatedBannerItem addBannerItem(@Valid @RequestBody BannerItemProfile bannerItemProfile) {
         return bannerItemService.addBannerItem(bannerItemProfile);
     }
 
     /**
      * The controller returns dto {@code BannerItemResponse } of updated banner item.
      *
-     * @param id - put BannerItem id.
-     * @param bannerItemProfile - place body to {@link BannerItemProfile}.
+     * @param id
+     *            - put BannerItem id.
+     * @param bannerItemProfile
+     *            - place body to {@link BannerItemProfile}.
+     *
      * @return new {@code BannerItemResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/banner/{id}")
-    public BannerItemResponse updateBannerItem(
-            @PathVariable Long id,
-            @Valid
-            @RequestBody BannerItemProfile bannerItemProfile) {
+    public BannerItemResponse updateBannerItem(@PathVariable Long id,
+            @Valid @RequestBody BannerItemProfile bannerItemProfile) {
         return bannerItemService.updateBannerItem(id, bannerItemProfile);
     }
 
     /**
      * The controller returns dto {@code BannerItemResponse} of deleted banner item by id.
      *
-     * @param id - put BannerItem id.
+     * @param id
+     *            - put BannerItem id.
+     *
      * @return new {@code BannerItemResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)

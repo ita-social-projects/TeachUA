@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the complaints.
- * */
+ */
 
 @Slf4j
 @RestController
@@ -33,10 +33,11 @@ public class ComplaintController implements Api {
     }
 
     /**
-     * Use this endpoint to get Complaint by id.
-     * The controller returns {@code ComplaintResponse}.
+     * Use this endpoint to get Complaint by id. The controller returns {@code ComplaintResponse}.
      *
-     * @param id - put complaint id here.
+     * @param id
+     *            - put complaint id here.
+     *
      * @return {@link ComplaintResponse}
      */
     @GetMapping("/complaint/{id}")
@@ -45,8 +46,7 @@ public class ComplaintController implements Api {
     }
 
     /**
-     * Use this endpoint to get all Complaints.
-     * The controller returns {@code List<ComplaintResponse>}.
+     * Use this endpoint to get all Complaints. The controller returns {@code List<ComplaintResponse>}.
      *
      * @return {@code List<ComplaintResponse>}
      */
@@ -56,10 +56,11 @@ public class ComplaintController implements Api {
     }
 
     /**
-     * Use this endpoint to get all Complaints by club id
-     * The controller returns {@code List<ComplaintResponse>}.
+     * Use this endpoint to get all Complaints by club id The controller returns {@code List<ComplaintResponse>}.
      *
-     * @param id - put club id here.
+     * @param id
+     *            - put club id here.
+     *
      * @return {@code List<ComplaintResponse>}
      */
     @GetMapping("/complaints/club/{id}")
@@ -68,39 +69,43 @@ public class ComplaintController implements Api {
     }
 
     /**
-     * Use this endpoint to create a new Complaint
-     * The controller returns {@code SuccessCreatedComplaint}.
+     * Use this endpoint to create a new Complaint The controller returns {@code SuccessCreatedComplaint}.
      *
-     * @param complaintProfile - put complaint information here.
+     * @param complaintProfile
+     *            - put complaint information here.
+     *
      * @return new {@link SuccessCreatedComplaint}
      */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/complaint")
-    public SuccessCreatedComplaint addComplaint(
-            @Valid @RequestBody ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest) {
+    public SuccessCreatedComplaint addComplaint(@Valid @RequestBody ComplaintProfile complaintProfile,
+            HttpServletRequest httpServletRequest) {
         return complaintService.addComplaint(complaintProfile, httpServletRequest);
     }
 
     /**
-     * Use this endpoint to update Complaint.
-     * The controller returns {@code ComplaintProfile}.
+     * Use this endpoint to update Complaint. The controller returns {@code ComplaintProfile}.
      *
-     * @param id               Complaint id
-     * @param complaintProfile Complaint profile with new data
+     * @param id
+     *            Complaint id
+     * @param complaintProfile
+     *            Complaint profile with new data
+     *
      * @return {@code ComplaintProfile}.
      */
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/complaint/{id}")
     public ComplaintProfile updateComplaint(@PathVariable Long id,
-                                            @Valid @RequestBody ComplaintProfile complaintProfile) {
+            @Valid @RequestBody ComplaintProfile complaintProfile) {
         return complaintService.updateComplaintProfileById(id, complaintProfile);
     }
 
     /**
-     * Use this endpoint to delete Complaint
-     * The controller returns {@code ComplaintResponse}.
+     * Use this endpoint to delete Complaint The controller returns {@code ComplaintResponse}.
      *
-     * @param id - put complaint id here.
+     * @param id
+     *            - put complaint id here.
+     *
      * @return {@link ComplaintResponse}
      */
     @PreAuthorize("isAuthenticated()")

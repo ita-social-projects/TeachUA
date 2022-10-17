@@ -25,7 +25,9 @@ public class ContactsStringConverter {
     /**
      * The method returns {@code Set<ContactDataResponse>} after parsing string contacts from center object.
      *
-     * @param contacts - put center .
+     * @param contacts
+     *            - put center .
+     *
      * @return new {@code Set<ContactDataResponse>}.
      */
     public Set<ContactDataResponse> convertStringToContactDataResponses(String contacts) {
@@ -54,19 +56,19 @@ public class ContactsStringConverter {
         return result;
     }
 
-    public String convertContactDataResponseToString(Set<ContactDataResponse> contactDataResponses){
-        StringBuilder result= new StringBuilder();
-            try {
-                for (ContactDataResponse contactResponse: contactDataResponses) {
-                    result.append(contactResponse.getContactType().getId());
-                    result.append("::");
-                    result.append(contactResponse.getContactData());
-                    result.append(", ");
-                }
-                result.deleteCharAt(result.lastIndexOf(","));
-            }catch (Exception e){
-                log.error(e.getMessage());
+    public String convertContactDataResponseToString(Set<ContactDataResponse> contactDataResponses) {
+        StringBuilder result = new StringBuilder();
+        try {
+            for (ContactDataResponse contactResponse : contactDataResponses) {
+                result.append(contactResponse.getContactType().getId());
+                result.append("::");
+                result.append(contactResponse.getContactData());
+                result.append(", ");
             }
+            result.deleteCharAt(result.lastIndexOf(","));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
 
         return result.toString();
     }

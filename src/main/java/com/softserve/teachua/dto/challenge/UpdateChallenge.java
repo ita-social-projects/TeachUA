@@ -38,8 +38,7 @@ public class UpdateChallenge implements Convertible {
     @Size(min = 40, max = 25000, message = "must contain a minimum of 40 and a maximum of 25000 letters")
     private String description;
     @JsonDeserialize(using = TrimDeserialize.class)
-    @Pattern(regexp = "^https://docs\\.google\\.com/forms/d/e/[A-z0-9_-]+/viewform\\?embedded=true$",
-            message = "must match https://docs.google.com/forms/d/e/{formCode}/viewform?embedded=true")
+    @Pattern(regexp = "^https://docs\\.google\\.com/forms/d/e/[A-z0-9_-]+/viewform\\?embedded=true$", message = "must match https://docs.google.com/forms/d/e/{formCode}/viewform?embedded=true")
     @Size(max = 130, message = "must contain a maximum of 130 letters")
     private String registrationLink;
     @NotBlank

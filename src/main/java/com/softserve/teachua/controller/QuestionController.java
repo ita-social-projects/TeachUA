@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the questions.
- * */
+ */
 
 @RestController
 @Tag(name = "question", description = "the Question API")
@@ -30,10 +30,11 @@ public class QuestionController implements Api {
     }
 
     /**
-     * Use this endpoint to get Question by id.
-     * The controller returns {@code Question}.
+     * Use this endpoint to get Question by id. The controller returns {@code Question}.
      *
-     * @param id - put Question id here.
+     * @param id
+     *            - put Question id here.
+     *
      * @return {@code Question}
      */
     @GetMapping("/question/{id}")
@@ -42,10 +43,11 @@ public class QuestionController implements Api {
     }
 
     /**
-     * Use this endpoint to create a new Question
-     * The controller returns {@code QuestionResponse}.
+     * Use this endpoint to create a new Question The controller returns {@code QuestionResponse}.
      *
-     * @param questionProfile - object of DTO class
+     * @param questionProfile
+     *            - object of DTO class
+     *
      * @return new {@code QuestionResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -55,11 +57,13 @@ public class QuestionController implements Api {
     }
 
     /**
-     * Use this endpoint to update Question by id.
-     * The controller returns {@code QuestionProfile}.
+     * Use this endpoint to update Question by id. The controller returns {@code QuestionProfile}.
      *
-     * @param id              - put question id here.
-     * @param questionProfile - put question information here.
+     * @param id
+     *            - put question id here.
+     * @param questionProfile
+     *            - put question information here.
+     *
      * @return {@code QuestionProfile}
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -69,10 +73,11 @@ public class QuestionController implements Api {
     }
 
     /**
-     * Use this endpoint to delete Question by id.
-     * The controller returns {@code QuestionProfile}.
+     * Use this endpoint to delete Question by id. The controller returns {@code QuestionProfile}.
      *
-     * @param id - put question id here.
+     * @param id
+     *            - put question id here.
+     *
      * @return {@code QuestionProfile}
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -82,8 +87,7 @@ public class QuestionController implements Api {
     }
 
     /**
-     * Use this endpoint to get all Questions.
-     * The controller returns {@code List<QuestionResponse>}.
+     * Use this endpoint to get all Questions. The controller returns {@code List<QuestionResponse>}.
      *
      * @return {@code List<QuestionResponse>}
      */

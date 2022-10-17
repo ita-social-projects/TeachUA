@@ -11,7 +11,9 @@
     <field name="userName" class="java.lang.String"/>
     <field name="issuanceDate" class="java.lang.String"/>
     <field name="qrCode" class="java.io.ByteArrayInputStream"/>
+<!--            SERIAL NUMBER           -->
     <field name="serialNumber" class="java.lang.Long"/>
+<!--            SERIAL NUMBER DONE           -->
     <field name="studyDuration" class="java.lang.String"/>
     <field name="studyHours" class="java.lang.String"/>
 
@@ -40,6 +42,7 @@
                 </textElement>
                 <text>Сертифікат</text>
             </staticText>
+<!--            SERIAL NUMBER           -->
             <textField>
                 <reportElement x="330" y="205" width="670" height="35" forecolor="#020203" uuid="40bfc687-bc05-457c-9c6d-45d7b78a082f"/>
                 <textElement textAlignment="Center">
@@ -47,6 +50,7 @@
                 </textElement>
                 <textFieldExpression>"№"+<![CDATA[$F{serialNumber}]]></textFieldExpression>
             </textField>
+ <!--            SERIAL NUMBER DONE           -->
             <staticText>
                 <reportElement x="330" y="260" width="670" height="35" forecolor="#020203" uuid="40bfc687-bc05-457c-9c6d-45d7b78a082f"/>
                 <textElement textAlignment="Center">
@@ -62,14 +66,14 @@
                 <textElement textAlignment="Center">
                     <font size="20" isBold="false"/>
                 </textElement>
-                <text>брав (-ла) участь у проєкті "Єдині"</text>
+                <text>брав(-ла) участь у проєкті "Єдині"</text>
             </staticText>
             <staticText>
                 <reportElement x="350" y="370" width="650" height="70" uuid="94d5fdfa-9439-4090-b1c5-312832d23b36"/>
                 <textElement textAlignment="Center">
                     <font size="20" isBold="false"/>
                 </textElement>
-                <text>та успішно закінчив (-ла) 28-денний курс підтримки у переході на українську мову.</text>
+                <text>та успішно закінчив(-ла) 28-денний курс підтримки у переході на українську мову.</text>
             </staticText>
             <textField>
                 <reportElement x="330" y="455" width="500" height="35" uuid="cc8ec782-950d-4f13-ba7c-cadf15587a3e"/>
@@ -84,7 +88,7 @@
                 <textElement>
                     <font size="18" isBold="false"/>
                 </textElement>
-                <textFieldExpression>"Проєкт реалізований у період "+<![CDATA[$F{studyDuration}]]> + " Ініціативою \"Навчай українською\","</textFieldExpression>
+                <textFieldExpression>"Проєкт реалізований у період "+<![CDATA[$F{studyDuration}]]> + " ініціативою \"Навчай українською\","</textFieldExpression>
             </textField>
             <staticText>
                 <reportElement x="330" y="553" width="630" height="50" uuid="8d5ebb5d-34ad-40d2-a66f-8046c287bdcf"/>
@@ -120,12 +124,12 @@
                 <imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
             </image>
             <image>
-                <reportElement x="350" y="715" width="160" height="70" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/ministry.jpg")]]></imageExpression>
+                <reportElement x="332" y="715" width="160" height="70" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/wnis.png")]]></imageExpression>
             </image>
             <image>
                 <reportElement x="530" y="715" width="160" height="70" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/summit.jpg")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/uhp.png")]]></imageExpression>
             </image>
             <image>
                 <reportElement x="720" y="715" width="160" height="70" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>

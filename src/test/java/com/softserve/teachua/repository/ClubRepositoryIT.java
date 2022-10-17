@@ -160,21 +160,13 @@ public class ClubRepositoryIT {
     public void advancedSearchWithCorrectAgeShouldReturnListOfCorrectClubEntities() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithCorrectAge();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                testClub.getAge(),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, testClub.getAge(), null, null, null, null, null, null).getContent();
 
         assertThat(clubs.size()).isGreaterThan(0);
 
         clubs.forEach(club -> {
-            assertThat(testClub.getAge())
-                    .isGreaterThanOrEqualTo(club.getAgeFrom())
+            assertThat(testClub.getAge()).isGreaterThanOrEqualTo(club.getAgeFrom())
                     .isLessThanOrEqualTo(club.getAgeTo());
         });
     }
@@ -183,12 +175,8 @@ public class ClubRepositoryIT {
     public void advancedSearchWithAgeThatIsLessThanIsAllowedShouldReturnEmptyList() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithLessAge();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                testClub.getAge(),
-                null, null,
-                null, null,
-                null, null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, testClub.getAge(), null, null, null, null, null, null).getContent();
 
         assertThat(clubs.size()).isEqualTo(0);
     }
@@ -197,12 +185,8 @@ public class ClubRepositoryIT {
     public void advancedSearchWithAgeThatIsGreaterThanIsAllowedShouldReturnEmptyList() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithGreaterAge();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                testClub.getAge(),
-                null, null,
-                null, null,
-                null, null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, testClub.getAge(), null, null, null, null, null, null).getContent();
 
         assertThat(clubs.size()).isEqualTo(0);
     }
@@ -211,11 +195,8 @@ public class ClubRepositoryIT {
     public void advancedSearchWithOnlineClubsShouldReturnAllClubsWitchIsOnline() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getOnlineClub();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, null, null,
-                null, null,
-                testClub.isOnline(), null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, null, null, null, null, null, testClub.isOnline(), null).getContent();
 
         assertThat(clubs.size()).isGreaterThan(0);
 
@@ -228,11 +209,8 @@ public class ClubRepositoryIT {
     public void advancedSearchWithNotOnlineClubsShouldReturnAllClubsWitchIsNotOnline() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getNotOnlineClub();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, null, null,
-                null, null,
-                testClub.isOnline(), null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, null, null, null, null, null, testClub.isOnline(), null).getContent();
 
         assertThat(clubs.size()).isGreaterThan(0);
 
@@ -245,17 +223,14 @@ public class ClubRepositoryIT {
     public void advancedSearchWithOneCategoryNameShouldReturnAllClubsWithThatCategory() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithOneCategoryName();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, null, null,
-                null, testClub.getCategoriesNames(),
-                null, null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, null, null, null, null, testClub.getCategoriesNames(), null, null)
+                .getContent();
 
         assertThat(clubs.size()).isGreaterThan(0);
 
         clubs.forEach(club -> {
-            assertTrue(club.getCategories().stream()
-                    .map(category -> category.getName())
+            assertTrue(club.getCategories().stream().map(category -> category.getName())
                     .anyMatch(testClub.getCategoriesNames()::contains));
         });
     }
@@ -264,17 +239,14 @@ public class ClubRepositoryIT {
     public void advancedSearchWithManyCategoryNameShouldReturnAllClubsWithThatCategories() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithManyCategoryName();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, null, null,
-                null, testClub.getCategoriesNames(),
-                null, null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, null, null, null, null, testClub.getCategoriesNames(), null, null)
+                .getContent();
 
         assertThat(clubs.size()).isGreaterThan(0);
 
         clubs.forEach(club -> {
-            assertTrue(club.getCategories().stream()
-                    .map(category -> category.getName())
+            assertTrue(club.getCategories().stream().map(category -> category.getName())
                     .anyMatch(testClub.getCategoriesNames()::contains));
         });
     }
@@ -283,11 +255,9 @@ public class ClubRepositoryIT {
     public void advancedSearchWithZeroCategoryNamesShouldReturnAllClubs() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithZeroCategoryName();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, null, null,
-                null, testClub.getCategoriesNames(),
-                null, null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, null, null, null, null, testClub.getCategoriesNames(), null, null)
+                .getContent();
 
         assertThat(clubs.size()).isGreaterThan(0);
     }
@@ -296,19 +266,15 @@ public class ClubRepositoryIT {
     public void advancedSearchWithExistingCityName1ShouldReturnListOfClubsFromThatCity() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithExistingCityName1();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, testClub.getCityName(), null,
-                null, null,
-                null, null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, null, testClub.getCityName(), null, null, null, null, null)
+                .getContent();
 
         assertThat(clubs.size()).isGreaterThan(0);
 
         clubs.forEach(club -> {
-            assertTrue(
-                    club.getLocations().stream()
-                            .map(location -> location.getCity().getName())
-                            .anyMatch(testClub.getCityName()::contains));
+            assertTrue(club.getLocations().stream().map(location -> location.getCity().getName())
+                    .anyMatch(testClub.getCityName()::contains));
         });
     }
 
@@ -316,19 +282,15 @@ public class ClubRepositoryIT {
     public void advancedSearchWithExistingCityName2ShouldReturnListOfClubsFromThatCity() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithExistingCityName2();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, testClub.getCityName(), null,
-                null, null,
-                null, null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, null, testClub.getCityName(), null, null, null, null, null)
+                .getContent();
 
         assertThat(clubs.size()).isGreaterThan(0);
 
         clubs.forEach(club -> {
-            assertTrue(
-                    club.getLocations().stream()
-                            .map(location -> location.getCity().getName())
-                            .anyMatch(testClub.getCityName()::contains));
+            assertTrue(club.getLocations().stream().map(location -> location.getCity().getName())
+                    .anyMatch(testClub.getCityName()::contains));
         });
     }
 
@@ -336,11 +298,9 @@ public class ClubRepositoryIT {
     public void advancedSearchWithNotExistingCityNameShouldReturnEmptyList() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithNotExistingCityName();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, testClub.getCityName(), null,
-                null, null,
-                null, null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, null, testClub.getCityName(), null, null, null, null, null)
+                .getContent();
 
         assertThat(clubs.size()).isEqualTo(0);
     }
@@ -349,17 +309,14 @@ public class ClubRepositoryIT {
     public void advancedSearchWithExistingDistrictShouldReturnCorrectListOfClubs() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithCorrectDistrict();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, null, testClub.getDistrictName(),
-                null, null,
-                null, null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, null, null, testClub.getDistrictName(), null, null, null, null)
+                .getContent();
 
         assertThat(clubs.size()).isGreaterThan(0);
 
         clubs.forEach(club -> {
-            assertTrue(club.getLocations().stream()
-                    .map(location -> location.getDistrict().getName())
+            assertTrue(club.getLocations().stream().map(location -> location.getDistrict().getName())
                     .anyMatch(testClub.getDistrictName()::contains));
         });
     }
@@ -368,11 +325,9 @@ public class ClubRepositoryIT {
     public void advancedSearchWithNotExistingDistrictShouldReturnEmptyList() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithIncorrectDistrict();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, null, testClub.getDistrictName(),
-                null, null,
-                null, null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, null, null, testClub.getDistrictName(), null, null, null, null)
+                .getContent();
 
         assertThat(clubs.size()).isEqualTo(0);
     }
@@ -381,17 +336,14 @@ public class ClubRepositoryIT {
     public void advancedSearchWithExistingStationNameShouldReturnCorrectListOfClubs() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithCorrectStationName();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, null, null,
-                testClub.getStationName(), null,
-                null, null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, null, null, null, testClub.getStationName(), null, null, null)
+                .getContent();
 
         assertThat(clubs.size()).isGreaterThan(0);
 
         clubs.forEach(club -> {
-            assertTrue(club.getLocations().stream()
-                    .map(location -> location.getStation().getName())
+            assertTrue(club.getLocations().stream().map(location -> location.getStation().getName())
                     .anyMatch(testClub.getStationName()::contains));
         });
     }
@@ -400,11 +352,9 @@ public class ClubRepositoryIT {
     public void advancedSearchWithNotExistingStationNameShouldReturnEmptyList() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithIncorrectStationName();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, null, null,
-                testClub.getStationName(), null,
-                null, null).getContent();
+        List<Club> clubs = clubRepository
+                .findAllBylAdvancedSearch(null, null, null, null, testClub.getStationName(), null, null, null)
+                .getContent();
 
         assertThat(clubs.size()).isEqualTo(0);
     }
@@ -413,32 +363,22 @@ public class ClubRepositoryIT {
     public void advancedSearchWithAllCorrectParamsShouldReturnEmptyList() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubAsListWithAllCorrectData();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                testClub.getName(),
-                testClub.getAge(),
-                testClub.getCityName(),
-                testClub.getDistrictName(),
-                testClub.getStationName(),
-                testClub.getCategoriesNames(),
-                null, null).getContent();
+        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(testClub.getName(), testClub.getAge(),
+                testClub.getCityName(), testClub.getDistrictName(), testClub.getStationName(),
+                testClub.getCategoriesNames(), null, null).getContent();
 
         assertThat(clubs.size()).isGreaterThan(0);
 
         clubs.forEach(club -> {
-            assertThat(testClub.getAge())
-                    .isGreaterThanOrEqualTo(club.getAgeFrom())
+            assertThat(testClub.getAge()).isGreaterThanOrEqualTo(club.getAgeFrom())
                     .isLessThanOrEqualTo(club.getAgeTo());
-            assertTrue(club.getLocations().stream()
-                    .map(location -> location.getCity().getName())
+            assertTrue(club.getLocations().stream().map(location -> location.getCity().getName())
                     .anyMatch(testClub.getCityName()::contains));
-            assertTrue(club.getLocations().stream()
-                    .map(location -> location.getDistrict().getName())
+            assertTrue(club.getLocations().stream().map(location -> location.getDistrict().getName())
                     .anyMatch(testClub.getDistrictName()::contains));
-            assertTrue(club.getLocations().stream()
-                    .map(location -> location.getStation().getName())
+            assertTrue(club.getLocations().stream().map(location -> location.getStation().getName())
                     .anyMatch(testClub.getStationName()::contains));
-            assertTrue(club.getCategories().stream()
-                    .map(category -> category.getName())
+            assertTrue(club.getCategories().stream().map(category -> category.getName())
                     .anyMatch(testClub.getCategoriesNames()::contains));
         });
     }
@@ -447,9 +387,7 @@ public class ClubRepositoryIT {
     public void advancedSearchWithPageableShouldReturnPageWithSomeClubs() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubAsPage();
 
-        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(
-                null,
-                null, null, null, null, null, null,
+        List<Club> clubs = clubRepository.findAllBylAdvancedSearch(null, null, null, null, null, null, null,
                 PageRequest.of(testClub.getPageNumber(), 6)).getContent();
 
         assertThat(clubs.size()).isEqualTo(6);

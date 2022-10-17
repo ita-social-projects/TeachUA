@@ -32,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-                                    FilterChain filterChain) throws ServletException, IOException {
+            FilterChain filterChain) throws ServletException, IOException {
         log.debug("**doFilter start, requestURI {}", httpServletRequest.getRequestURI());
         try {
             String jwt = jwtProvider.getJwtFromRequest(httpServletRequest);
@@ -47,9 +47,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
                 log.debug("USER AUTHORITIES");
                 log.debug(userDetails.getAuthorities().toString());
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails,
-                                null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.debug("User " + userDetails.getUsername() + "successfully authenticate with token" + jwt);

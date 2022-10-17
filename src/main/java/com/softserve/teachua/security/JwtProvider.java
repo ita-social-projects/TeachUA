@@ -18,7 +18,8 @@ import java.util.Date;
 public class JwtProvider {
     private static final int TOKEN_LIFE_HOURS = 1;
 
-    @Value("$(jwt.secret)")
+    //@Value("$(jwt.secret)")
+    @Value("${application.jwt.secret}")
     private String jwtSecret;
 
     /**
@@ -27,16 +28,13 @@ public class JwtProvider {
      * @return jwt
      */
     public String generateToken(Authentication authentication) {
+        log.info("jwtSecret = " + jwtSecret);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, TOKEN_LIFE_HOURS);
-        return Jwts.builder()
-                .setSubject(userPrincipal.getEmail())
-                .setId(Long.toString(userPrincipal.getId()))
-                .setExpiration(calendar.getTime())
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
+        return Jwts.builder().setSubject(userPrincipal.getEmail()).setId(Long.toString(userPrincipal.getId()))
+                .setExpiration(calendar.getTime()).signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
     }
 
     /**
@@ -53,7 +51,7 @@ public class JwtProvider {
         String claimsId = claims.getId();
         claimsId = claimsId == null ? "0" : claimsId;
         log.debug("claims.getId() = " + claimsId);
-        //return Long.parseLong(claims.getId());
+        // return Long.parseLong(claims.getId());
         return Long.parseLong(claimsId);
     }
 
@@ -64,12 +62,10 @@ public class JwtProvider {
      */
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(jwtSecret)
-                    .parseClaimsJws(token);
+            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-//            log.error("invalid token"); //Produces many logsgit
+            // log.error("invalid token"); //Produces many logsgit
         }
         return false;
     }
@@ -80,20 +76,12 @@ public class JwtProvider {
      * @return email
      */
     public String getEmailFromToken(String token) {
-        Claims claims = Jwts
-                .parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
         return claims.getSubject();
     }
 
     public Date getExpirationDate(String token) {
-        Claims claims = Jwts
-                .parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
         return claims.getExpiration();
     }
 

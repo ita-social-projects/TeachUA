@@ -3,9 +3,8 @@ package com.softserve.teachua.exception;
 import com.sun.istack.Nullable;
 
 /**
- * This class is custom exception for every Database repository problem.
- * (Database isn't available, can't save entity to Database etc.)
- * The constructor accepts message for Exception
+ * This class is custom exception for every Database repository problem. (Database isn't available, can't save entity to
+ * Database etc.) The constructor accepts message for Exception
  * <p>
  * Use @code throw new DatabaseRepositoryException("Some problem with Database")
  *
@@ -23,4 +22,3 @@ public class DatabaseRepositoryException extends RuntimeException {
         super(DATABASE_REPOSITORY_EXCEPTION);
     }
 }
-

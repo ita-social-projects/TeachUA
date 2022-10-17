@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * This controller is for managing the scheduling of sending certificates.
+ */
+
 @RestController
 @Slf4j
 public class ScheduleSendEmailController implements Api {
@@ -23,6 +27,9 @@ public class ScheduleSendEmailController implements Api {
         this.scheduleSendService = scheduleSendService;
     }
 
+    /**
+     * Use this endpoint to stop scheduling.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping(value = "/scheduler")
     public void stopSchedule() {
@@ -30,6 +37,9 @@ public class ScheduleSendEmailController implements Api {
         log.info("Scheduler was stopped.");
     }
 
+    /**
+     * Use this endpoint to start scheduling.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping(value = "/scheduler")
     public void startSchedule() {
@@ -37,13 +47,18 @@ public class ScheduleSendEmailController implements Api {
         log.info("Scheduler running.");
     }
 
+    /**
+     * Use this endpoint to get scheduled task. The controller returns dto {@code TaskSchedule} information about
+     * scheduled task.
+     *
+     * @return new {@code TaskSchedule}.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping(value = "/scheduler")
     public TaskSchedule listSchedules() {
         TaskSchedule taskSchedule = scheduleSendService.listSchedules();
-        log.info(taskSchedule.getTasks().isEmpty()
-                ?"Currently no scheduler tasks are running"
-                :"Task is working: " + scheduleSendService.listSchedules());
+        log.info(taskSchedule.getTasks().isEmpty() ? "Currently no scheduler tasks are running"
+                : "Task is working: " + scheduleSendService.listSchedules());
         return taskSchedule;
     }
 }

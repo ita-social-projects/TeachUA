@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the cities.
- * */
+ */
 
 @RestController
 @Tag(name = "city", description = "the City API")
@@ -31,10 +31,11 @@ public class CityController implements Api {
     }
 
     /**
-     * Use this endpoint to get city by id.
-     * The controller returns {@code CityResponse}.
+     * Use this endpoint to get city by id. The controller returns {@code CityResponse}.
      *
-     * @param id - put city id.
+     * @param id
+     *            - put city id.
+     *
      * @return new {@code CityResponse}.
      */
     @GetMapping("/city/{id}")
@@ -43,40 +44,37 @@ public class CityController implements Api {
     }
 
     /**
-     * Use this endpoint to create city.
-     * The controller returns dto {@code SuccessCreatedCity} of created city.
+     * Use this endpoint to create city. The controller returns dto {@code SuccessCreatedCity} of created city.
      *
-     * @param cityProfile - place body to {@link CityProfile}.
+     * @param cityProfile
+     *            - place body to {@link CityProfile}.
+     *
      * @return new {@code SuccessCreatedCity}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/city")
-    public SuccessCreatedCity addCity(
-            @Valid
-            @RequestBody CityProfile cityProfile) {
+    public SuccessCreatedCity addCity(@Valid @RequestBody CityProfile cityProfile) {
         return cityService.addCity(cityProfile);
     }
 
     /**
-     * Use this endpoint to update city by id.
-     * The controller returns dto {@code CityProfile} about city.
+     * Use this endpoint to update city by id. The controller returns dto {@code CityProfile} about city.
      *
-     * @param id          - put city id here.
-     * @param cityProfile - put city information here.
+     * @param id
+     *            - put city id here.
+     * @param cityProfile
+     *            - put city information here.
+     *
      * @return new {@code CityProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/city/{id}")
-    public CityProfile updateCity(
-            @PathVariable Long id,
-            @Valid
-            @RequestBody CityProfile cityProfile) {
+    public CityProfile updateCity(@PathVariable Long id, @Valid @RequestBody CityProfile cityProfile) {
         return cityService.updateCity(id, cityProfile);
     }
 
     /**
-     * Use this endpoint to get all cities.
-     * The controller returns list of {@code List<CityResponse>}.
+     * Use this endpoint to get all cities. The controller returns list of {@code List<CityResponse>}.
      *
      * @return new {@code List<CityResponse>}.
      */
@@ -85,12 +83,12 @@ public class CityController implements Api {
         return cityService.getListOfCities();
     }
 
-
     /**
-     * Use this endpoint to delete city by id.
-     * The controller returns list of dto {@code List<CityResponse>} of city.
+     * Use this endpoint to delete city by id. The controller returns list of dto {@code List<CityResponse>} of city.
      *
-     * @param id - put city id here.
+     * @param id
+     *            - put city id here.
+     *
      * @return new {@code List<CityResponse>}.
      */
     @AllowedRoles(RoleData.ADMIN)

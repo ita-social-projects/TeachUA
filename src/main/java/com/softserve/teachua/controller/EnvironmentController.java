@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @Hidden
-public class EnvironmentController implements Api  {
+public class EnvironmentController implements Api {
 
     private EnvironmentService environmentService;
 
@@ -25,8 +25,7 @@ public class EnvironmentController implements Api  {
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/env")
     public EnvironmentResponce getEnvironment(
-            @RequestParam(value = "name", required = false, defaultValue = "")
-            String name) {
+            @RequestParam(value = "name", required = false, defaultValue = "") String name) {
         return environmentService.getEnvironment(name);
     }
 

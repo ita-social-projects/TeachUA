@@ -26,7 +26,6 @@ public class Center implements Convertible {
     @Column(nullable = false)
     private String name;
 
-
     @Column(length = 3000)
     private String contacts;
 

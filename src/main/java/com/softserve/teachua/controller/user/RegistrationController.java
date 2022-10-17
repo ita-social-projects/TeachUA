@@ -20,7 +20,7 @@ import javax.validation.Valid;
 
 /**
  * This controller is for managing the registration process.
- * */
+ */
 
 @RestController
 @Slf4j
@@ -37,7 +37,9 @@ public class RegistrationController implements Api {
     /**
      * The controller returns dto {@code SuccessRegistration} of sign-upped user.
      *
-     * @param code - code of user verification
+     * @param code
+     *            - code of user verification
+     *
      * @return new {@code SuccessRegistration}.
      */
     @PreAuthorize("!isAuthenticated()")
@@ -50,15 +52,14 @@ public class RegistrationController implements Api {
     /**
      * The controller returns dto {@code SuccessRegistration} of sign-upped user.
      *
-     * @param userProfile - dto with all params.
+     * @param userProfile
+     *            - dto with all params.
+     *
      * @return new {@code SuccessRegistration}.
      */
     @PreAuthorize("!isAuthenticated()")
     @PostMapping("/signup")
-    public SuccessRegistration signUp(
-            @Valid
-            @RequestBody
-                    UserProfile userProfile) {
+    public SuccessRegistration signUp(@Valid @RequestBody UserProfile userProfile) {
         log.debug("Controller \"signup\", userProfile = " + userProfile.toString());
         return userService.registerUser(userProfile);
     }

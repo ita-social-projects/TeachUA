@@ -62,33 +62,16 @@ public class BannerItemServiceTest {
 
     @BeforeEach
     public void setUp() {
-        bannerItem = BannerItem.builder()
-                .id(EXISTING_ID)
-                .title(VALID_TITLE)
-                .subtitle(VALID_SUBTITLE)
-                .picture(VALID_PICTURE_PATH)
-                .sequenceNumber(VALID_SEQUENCE_NUMBER)
-                .build();
-        bannerItemProfile = BannerItemProfile.builder()
-                .title(NEW_VALID_TITLE)
-                .picture(NEW_VALID_PICTURE_PATH)
-                .sequenceNumber(VALID_SEQUENCE_NUMBER)
-                .build();
-        bannerItemResponse = BannerItemResponse.builder()
-                .title(VALID_TITLE)
-                .picture(VALID_PICTURE_PATH)
-                .sequenceNumber(VALID_SEQUENCE_NUMBER)
-                .build();
-        successCreatedBannerItem = SuccessCreatedBannerItem.builder()
-                .title(NEW_VALID_TITLE)
-                .picture(NEW_VALID_PICTURE_PATH)
-                .sequenceNumber(VALID_SEQUENCE_NUMBER)
-                .build();
-        bannerItemArch = BannerItemArch.builder()
-                .title(VALID_TITLE)
-                .picture(VALID_PICTURE_PATH)
-                .sequenceNumber(VALID_SEQUENCE_NUMBER)
-                .build();
+        bannerItem = BannerItem.builder().id(EXISTING_ID).title(VALID_TITLE).subtitle(VALID_SUBTITLE)
+                .picture(VALID_PICTURE_PATH).sequenceNumber(VALID_SEQUENCE_NUMBER).build();
+        bannerItemProfile = BannerItemProfile.builder().title(NEW_VALID_TITLE).picture(NEW_VALID_PICTURE_PATH)
+                .sequenceNumber(VALID_SEQUENCE_NUMBER).build();
+        bannerItemResponse = BannerItemResponse.builder().title(VALID_TITLE).picture(VALID_PICTURE_PATH)
+                .sequenceNumber(VALID_SEQUENCE_NUMBER).build();
+        successCreatedBannerItem = SuccessCreatedBannerItem.builder().title(NEW_VALID_TITLE)
+                .picture(NEW_VALID_PICTURE_PATH).sequenceNumber(VALID_SEQUENCE_NUMBER).build();
+        bannerItemArch = BannerItemArch.builder().title(VALID_TITLE).picture(VALID_PICTURE_PATH)
+                .sequenceNumber(VALID_SEQUENCE_NUMBER).build();
     }
 
     @Test
@@ -147,8 +130,9 @@ public class BannerItemServiceTest {
 
         when(dtoConverter.convertToEntity(bannerItemProfile, new BannerItem())).thenReturn(newBanner);
         when(bannerItemRepository.save(any())).thenReturn(newBanner);
-        when(dtoConverter.convertToDto(newBanner, SuccessCreatedBannerItem.class)).thenReturn(SuccessCreatedBannerItem.builder()
-                .title(NEW_VALID_TITLE).picture(NEW_VALID_PICTURE_PATH).sequenceNumber(VALID_SEQUENCE_NUMBER).build());
+        when(dtoConverter.convertToDto(newBanner, SuccessCreatedBannerItem.class))
+                .thenReturn(SuccessCreatedBannerItem.builder().title(NEW_VALID_TITLE).picture(NEW_VALID_PICTURE_PATH)
+                        .sequenceNumber(VALID_SEQUENCE_NUMBER).build());
 
         SuccessCreatedBannerItem actual = bannerItemService.addBannerItem(bannerItemProfile);
         assertEquals(successCreatedBannerItem, actual);
@@ -156,8 +140,8 @@ public class BannerItemServiceTest {
 
     @Test
     public void updateBannerItemWithExistingIdShouldReturnBannerItemResponse() {
-        BannerItemResponse expected = BannerItemResponse.builder()
-                .title(NEW_VALID_TITLE).picture(NEW_VALID_PICTURE_PATH).sequenceNumber(VALID_SEQUENCE_NUMBER).build();
+        BannerItemResponse expected = BannerItemResponse.builder().title(NEW_VALID_TITLE)
+                .picture(NEW_VALID_PICTURE_PATH).sequenceNumber(VALID_SEQUENCE_NUMBER).build();
 
         when(bannerItemRepository.findById(EXISTING_ID)).thenReturn(Optional.of(bannerItem));
         when(bannerItemRepository.save(any())).thenReturn(bannerItem);

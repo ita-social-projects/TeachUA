@@ -39,11 +39,8 @@ public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<A
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public AboutUsItemServiceImpl(
-            AboutUsItemRepository aboutUsItemRepository,
-            ArchiveService archiveService,
-            DtoConverter dtoConverter,
-            ObjectMapper objectMapper) {
+    public AboutUsItemServiceImpl(AboutUsItemRepository aboutUsItemRepository, ArchiveService archiveService,
+            DtoConverter dtoConverter, ObjectMapper objectMapper) {
         this.aboutUsItemRepository = aboutUsItemRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
@@ -68,8 +65,7 @@ public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<A
 
     @Override
     public List<AboutUsItemResponse> getListOfAboutUsItemResponses() {
-        List<AboutUsItemResponse> aboutUsItemResponses = aboutUsItemRepository.findAllByOrderByNumberAsc()
-                .stream()
+        List<AboutUsItemResponse> aboutUsItemResponses = aboutUsItemRepository.findAllByOrderByNumberAsc().stream()
                 .map(item -> (AboutUsItemResponse) dtoConverter.convertToDto(item, AboutUsItemResponse.class))
                 .collect(Collectors.toList());
         return aboutUsItemResponses;

@@ -16,19 +16,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
 import java.util.HashSet;
 import java.util.Set;
 
-import  static  org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class LocationServiceTest {
 
-    private static final Long CORRECT_LOCATION_ID=1l;
-    private static final Long CORRECT_CENTER_ID=3l;
+    private static final Long CORRECT_LOCATION_ID = 1l;
+    private static final Long CORRECT_CENTER_ID = 3l;
     private static final Long CORRECT_CLUB_ID = 5l;
 
     @Mock
@@ -45,37 +44,22 @@ public class LocationServiceTest {
     private Location correctLocation;
     private LocationProfile correctLocationProfile;
     private LocationResponse locationResponse;
-    private  Set<LocationProfile> filledLocationProfileSet;
+    private Set<LocationProfile> filledLocationProfileSet;
     private Set<Location> locationSet;
     private Set<LocationResponse> locationResponses;
 
-
     @BeforeEach
-    public  void  setMocks(){
-        correctClub = Club
-                .builder()
-                .id(CORRECT_CLUB_ID)
-                .locations(locationSet).build();
+    public void setMocks() {
+        correctClub = Club.builder().id(CORRECT_CLUB_ID).locations(locationSet).build();
 
-        correctCenter = Center
-                .builder()
-                .id(CORRECT_CENTER_ID)
-                .locations(locationSet).build();
+        correctCenter = Center.builder().id(CORRECT_CENTER_ID).locations(locationSet).build();
 
-        correctLocation = Location
-                .builder()
-                .id(CORRECT_LOCATION_ID)
-                .center(correctCenter)
+        correctLocation = Location.builder().id(CORRECT_LOCATION_ID).center(correctCenter).build();
+
+        correctLocationProfile = LocationProfile.builder().id(CORRECT_LOCATION_ID).centerId(correctCenter.getId())
                 .build();
 
-        correctLocationProfile = LocationProfile
-                .builder()
-                .id(CORRECT_LOCATION_ID)
-                .centerId(correctCenter.getId()).build();
-
-        locationResponse = LocationResponse
-                .builder()
-                .id(CORRECT_LOCATION_ID).build();
+        locationResponse = LocationResponse.builder().id(CORRECT_LOCATION_ID).build();
 
         filledLocationProfileSet = new HashSet<>();
         filledLocationProfileSet.add(correctLocationProfile);
@@ -89,40 +73,43 @@ public class LocationServiceTest {
     }
 
     @Test
-    public void addLocationShouldReturnCreatedLocation(){
-        when(dtoConverter.convertToEntity(correctLocationProfile,new Location())).thenReturn(correctLocation);
+    public void addLocationShouldReturnCreatedLocation() {
+        when(dtoConverter.convertToEntity(correctLocationProfile, new Location())).thenReturn(correctLocation);
         when(locationRepository.save(correctLocation)).thenReturn(correctLocation);
         Location actual = locationService.addLocation(correctLocationProfile);
         assertThat(actual).isEqualTo(correctLocation);
     }
 
     @Test
-    public void updateCenterLocationByFilledSetShouldReturnLocationSet(){
+    public void updateCenterLocationByFilledSetShouldReturnLocationSet() {
         when(locationRepository.deleteAllByCenter(correctCenter)).thenReturn(locationSet);
-        when(dtoConverter.convertToEntity(correctLocationProfile,new Location().withCenter(correctCenter))).thenReturn(correctLocation);
+        when(dtoConverter.convertToEntity(correctLocationProfile, new Location().withCenter(correctCenter)))
+                .thenReturn(correctLocation);
         when(locationRepository.save(correctLocation)).thenReturn(correctLocation);
-        Set<Location> actual = locationService.updateCenterLocation(filledLocationProfileSet,correctCenter);
+        Set<Location> actual = locationService.updateCenterLocation(filledLocationProfileSet, correctCenter);
         assertThat(actual).isEqualTo(locationSet);
     }
 
     @Test
-    public void updateCenterLocationByEmptyLocationProfileSetShouldReturnIncorrectInputException(){
-        assertThatThrownBy(()->{locationService.updateCenterLocation(null,correctCenter);})
-                .isInstanceOf(IncorrectInputException.class);
+    public void updateCenterLocationByEmptyLocationProfileSetShouldReturnIncorrectInputException() {
+        assertThatThrownBy(() -> {
+            locationService.updateCenterLocation(null, correctCenter);
+        }).isInstanceOf(IncorrectInputException.class);
     }
 
     @Test
-    public void updateLocationByFilledClubShouldReturnLocationSet(){
+    public void updateLocationByFilledClubShouldReturnLocationSet() {
         when(locationRepository.deleteAllByClub(correctClub)).thenReturn(locationSet);
-        when(dtoConverter.convertToEntity(locationResponse,new Location().withClub(correctClub))).thenReturn(correctLocation);
+        when(dtoConverter.convertToEntity(locationResponse, new Location().withClub(correctClub)))
+                .thenReturn(correctLocation);
         when(locationRepository.save(correctLocation)).thenReturn(correctLocation);
-        Set<Location> actual = locationService.updateLocationByClub(locationResponses,correctClub);
+        Set<Location> actual = locationService.updateLocationByClub(locationResponses, correctClub);
         assertThat(actual).isEqualTo(locationSet);
     }
 
     @Test
-    public  void  updateLocationByEmptyClubShouldReturnNull(){
-        Set<Location> expected = locationService.updateLocationByClub(null,correctClub);
+    public void updateLocationByEmptyClubShouldReturnNull() {
+        Set<Location> expected = locationService.updateLocationByClub(null, correctClub);
         assertThat(expected).isEqualTo(null);
     }
 

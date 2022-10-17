@@ -1,8 +1,7 @@
 package com.softserve.teachua.exception;
 
 /**
- * This class is custom exception for interrupt
- * Spring's MethodNotSupported and adding own message to this exception.
+ * This class is custom exception for interrupt Spring's MethodNotSupported and adding own message to this exception.
  * The constructor accepts message for Exception
  * <p>
  * Use @code new BadRequestException("Method not supported")

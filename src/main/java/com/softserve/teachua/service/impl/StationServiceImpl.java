@@ -39,8 +39,8 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public StationServiceImpl(DtoConverter dtoConverter, StationRepository stationRepository,
-                              CityService cityService, DistrictService districtService, ArchiveService archiveService, ObjectMapper objectMapper) {
+    public StationServiceImpl(DtoConverter dtoConverter, StationRepository stationRepository, CityService cityService,
+            DistrictService districtService, ArchiveService archiveService, ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.stationRepository = stationRepository;
         this.cityService = cityService;
@@ -82,13 +82,12 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     @Override
     public List<StationResponse> getAllByDistrictNameAndCityName(StationProfile stationProfile) {
 
-        List<StationResponse> stationList= stationRepository.findAllByDistrictNameAndCityName(
-                    stationProfile.getDistrictName(),stationProfile.getCityName())
-                .stream()
-                .map(station -> (StationResponse)dtoConverter.convertToDto(station,StationResponse.class))
+        List<StationResponse> stationList = stationRepository
+                .findAllByDistrictNameAndCityName(stationProfile.getDistrictName(), stationProfile.getCityName())
+                .stream().map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
                 .collect(Collectors.toList());
 
-        log.debug("**/get all stations by District = "+stationList);
+        log.debug("**/get all stations by District = " + stationList);
 
         return stationList;
     }
@@ -112,8 +111,7 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
 
     @Override
     public List<StationResponse> getListOfStations() {
-        List<StationResponse> stationResponses = stationRepository.findAll()
-                .stream()
+        List<StationResponse> stationResponses = stationRepository.findAll().stream()
                 .map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
                 .collect(Collectors.toList());
 
@@ -123,8 +121,7 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
 
     @Override
     public List<StationResponse> getListOfStationsByCityName(String name) {
-        List<StationResponse> stationResponses = stationRepository.findAllByCityName(name)
-                .stream()
+        List<StationResponse> stationResponses = stationRepository.findAllByCityName(name).stream()
                 .map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
                 .collect(Collectors.toList());
 
@@ -135,8 +132,7 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     @Override
     public StationProfile updateStation(Long id, StationProfile stationProfile) {
         Station station = getStationById(id);
-        Station newStation = dtoConverter.convertToEntity(stationProfile, station)
-                .withId(id)
+        Station newStation = dtoConverter.convertToEntity(stationProfile, station).withId(id)
                 .withCity(cityService.getCityByName(stationProfile.getCityName()))
                 .withDistrict(districtService.getDistrictByName(stationProfile.getDistrictName()));
 
@@ -178,8 +174,7 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         StationArch stationArch = objectMapper.readValue(archiveObject, StationArch.class);
         Station station = Station.builder().build();
-        station = dtoConverter.convertToEntity(stationArch, station)
-                .withId(null)
+        station = dtoConverter.convertToEntity(stationArch, station).withId(null)
                 .withCity(cityService.getCityById(stationArch.getCityId()));
         stationRepository.save(station);
     }

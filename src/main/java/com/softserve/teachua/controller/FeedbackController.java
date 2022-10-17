@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * This controller is for managing the feedbacks.
- * */
+ */
 
 @Slf4j
 @RestController
@@ -32,10 +32,11 @@ public class FeedbackController implements Api {
     }
 
     /**
-     * Use this endpoint to get Feedback by id.
-     * The controller returns {@code FeedbackResponse}.
+     * Use this endpoint to get Feedback by id. The controller returns {@code FeedbackResponse}.
      *
-     * @param id - put id of Feedback here.
+     * @param id
+     *            - put id of Feedback here.
+     *
      * @return {@code FeedbackResponse}.
      */
     @GetMapping("/feedback/{id}")
@@ -44,8 +45,7 @@ public class FeedbackController implements Api {
     }
 
     /**
-     * Use this endpoint to get all Feedbacks.
-     * The controller returns {@code List<FeedbackResponse>}.
+     * Use this endpoint to get all Feedbacks. The controller returns {@code List<FeedbackResponse>}.
      *
      * @return {@code List<FeedbackResponse>}.
      */
@@ -55,8 +55,7 @@ public class FeedbackController implements Api {
     }
 
     /**
-     * Use this endpoint to get all Feedbacks by Club id.
-     * The controller returns {@code List<FeedbackResponse>}.
+     * Use this endpoint to get all Feedbacks by Club id. The controller returns {@code List<FeedbackResponse>}.
      *
      * @return {@code List<FeedbackResponse>}
      */
@@ -66,42 +65,41 @@ public class FeedbackController implements Api {
     }
 
     /**
-     * Use this endpoint to create a new Feedback.
-     * The controller returns {@code SuccessCreatedFeedback}.
+     * Use this endpoint to create a new Feedback. The controller returns {@code SuccessCreatedFeedback}.
      *
-     * @param feedbackProfile - object of DTO class.
+     * @param feedbackProfile
+     *            - object of DTO class.
+     *
      * @return {@code SuccessCreatedFeedback}
      */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/feedback")
-    public SuccessCreatedFeedback addFeedback(
-            @Valid
-            @RequestBody FeedbackProfile feedbackProfile) {
+    public SuccessCreatedFeedback addFeedback(@Valid @RequestBody FeedbackProfile feedbackProfile) {
         return feedbackService.addFeedback(feedbackProfile);
     }
 
     /**
-     * Use this endpoint to update Feedback by id.
-     * The controller returns {@code FeedbackProfile}.
+     * Use this endpoint to update Feedback by id. The controller returns {@code FeedbackProfile}.
      *
-     * @param id              - put feedback id here.
-     * @param feedbackProfile - put feedback information here.
+     * @param id
+     *            - put feedback id here.
+     * @param feedbackProfile
+     *            - put feedback information here.
+     *
      * @return {@code FeedbackProfile}.
      */
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/feedback/{id}")
-    public FeedbackResponse updateFeedback(
-            @PathVariable Long id,
-            @Valid
-            @RequestBody FeedbackProfile feedbackProfile) {
+    public FeedbackResponse updateFeedback(@PathVariable Long id, @Valid @RequestBody FeedbackProfile feedbackProfile) {
         return feedbackService.updateFeedbackProfileById(id, feedbackProfile);
     }
 
     /**
-     * Use this endpoint to delete Feedback by id.
-     * The controller returns {@code FeedbackResponse}.
+     * Use this endpoint to delete Feedback by id. The controller returns {@code FeedbackResponse}.
      *
-     * @param id - put feedback id here.
+     * @param id
+     *            - put feedback id here.
+     *
      * @return {@code FeedbackResponse}
      */
     @PreAuthorize("isAuthenticated()")

@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     List<Challenge> getByIsActiveOrderBySortNumberDesc(Boolean isActive);
+
     List<Challenge> findByName(String name);
 }

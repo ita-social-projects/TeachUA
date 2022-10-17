@@ -18,6 +18,7 @@ import java.time.LocalDate;
 @Setter
 @Builder
 @With
+@ToString
 public class CertificateTransfer implements Convertible {
 
     private Long id;
@@ -31,5 +32,4 @@ public class CertificateTransfer implements Convertible {
     private LocalDate updateStatus;
     private CertificateTemplate template;
     private CertificateDates dates;
-
 }

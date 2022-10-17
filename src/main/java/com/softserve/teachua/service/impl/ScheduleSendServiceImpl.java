@@ -27,54 +27,40 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
 
     private final CertificateService certificateService;
 
-    private int position = 0;
-    private List<CertificateTransfer> certificateTransfers = null;
-
     @Autowired
-    public ScheduleSendServiceImpl(EmailService emailService, ScheduledAnnotationBeanPostProcessor postProcessor, CertificateService certificateService) {
+    public ScheduleSendServiceImpl(EmailService emailService, ScheduledAnnotationBeanPostProcessor postProcessor,
+            CertificateService certificateService) {
         this.emailService = emailService;
         this.postProcessor = postProcessor;
         this.certificateService = certificateService;
     }
 
-    //@Scheduled(fixedRate = 10000)
+    // @Scheduled(fixedRate = 10000)
     @Scheduled(fixedRate = 180000) // 1 email / 3 min
     public void sendCertificateWithScheduler() {
-        CertificateTransfer user = getOneUserFromTheList(); // userCertificateTransfer
+        CertificateTransfer user = certificateService.getOneUnsentCertificate();
+        //log.info("Generate Certificate for " + user.toString());
         if (user != null) {
             emailService.sendMessageWithAttachmentAndGeneratedPdf(user.getSendToEmail(),
-                    "Certificate.",
-                    "Вітаю! В додатку ви можете знайти ваш сертифікат.",
+                    // "Certificate.",
+                    // "Вітаю! В додатку ви можете знайти ваш сертифікат.",
+                    "Сертифікат проєкту \"Єдині\"",
+                    "Вітаємо! Дякуємо Вам, що долучилися до проєкту \"Єдині\". Дякуємо за спільну роботу задля великої мети."
+                            + "\n\nВаш сертифікат додано у вкладенні до цього листа.",
                     user);
             certificateService.updateDateAndSendStatus(user.getId(), true);
 
         } else {
             postProcessor.destroy();
             log.info("Scheduled Certification Service. Done. New task not found.");
-            position = 0;
-            certificateTransfers = null;
         }
-    }
-
-    public CertificateTransfer getOneUserFromTheList() {
-        CertificateTransfer result = null;
-        if ((certificateTransfers != null)
-                && (certificateTransfers.size() > position)) {
-            result = certificateTransfers.get(position);
-            position++;
-        }
-        return result;
     }
 
     public void startSchedule() {
-        position = 0;
-        certificateTransfers = certificateService.getListOfUnsentCertificates();
         postProcessor.postProcessAfterInitialization(this, SCHEDULED_TASKS);
     }
 
     public void stopSchedule() {
-        position = 0;
-        certificateTransfers = null;
         postProcessor.postProcessBeforeDestruction(this, SCHEDULED_TASKS);
     }
 

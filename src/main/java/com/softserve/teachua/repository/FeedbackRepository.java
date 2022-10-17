@@ -24,6 +24,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
      * Method to get average rating by club id.
      *
      * @param clubId
+     *
      * @return Double if club have any feedback
      */
     @Query("SELECT case  when (AVG(feedback.rate)) is null then 0.0 else AVG(feedback.rate)  end "

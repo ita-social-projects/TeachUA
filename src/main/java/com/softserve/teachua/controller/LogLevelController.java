@@ -22,13 +22,15 @@ public class LogLevelController implements Api {
     /**
      * Use this endpoint to change logs level for package/class
      *
-     * @param level use this param to select the logging level
-     * @param packagePath use this param to pave the path to package/class
+     * @param level
+     *            use this param to select the logging level
+     * @param packagePath
+     *            use this param to pave the path to package/class
      */
     @AllowedRoles(RoleData.ADMIN)
     @PatchMapping("/logs/level")
     public void changeLogLevel(@RequestParam LogLevel level,
-                               @RequestParam(required = false, defaultValue = "") String packagePath) {
+            @RequestParam(required = false, defaultValue = "") String packagePath) {
         logLevelService.changeLogLevel(level, packagePath);
     }
 }

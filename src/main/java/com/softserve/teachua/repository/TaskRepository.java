@@ -14,8 +14,7 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findTasksByChallenge(Challenge challenge);
 
-    @Query("SELECT task FROM Task AS task"
-            + " WHERE task.challenge = :challenge AND task.startDate <= CURRENT_DATE"
+    @Query("SELECT task FROM Task AS task" + " WHERE task.challenge = :challenge AND task.startDate <= CURRENT_DATE"
             + " ORDER BY task.startDate")
     List<Task> findCurrentTasksByChallenge(@Param("challenge") Challenge challenge);
 

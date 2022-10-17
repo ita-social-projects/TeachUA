@@ -45,8 +45,7 @@ public class ApplicationConfig {
                     && !req.getRequestURI().startsWith(removeSecondSlash(rootUri + API_LOCATION))
                     && !req.getRequestURI().equals(removeSecondSlash(rootUri + SLASH))
                     && !req.getRequestURI().startsWith(removeSecondSlash(rootUri + SWAGGER_UI))
-                    && !req.getRequestURI().contains(SWAGGER_RESOURCE)
-            ) {
+                    && !req.getRequestURI().contains(SWAGGER_RESOURCE)) {
                 RequestDispatcher requestDispatcher = request.getRequestDispatcher(SLASH);
                 requestDispatcher.forward(request, response);
                 return;
@@ -69,4 +68,3 @@ public class ApplicationConfig {
         return mapper;
     }
 }
-
