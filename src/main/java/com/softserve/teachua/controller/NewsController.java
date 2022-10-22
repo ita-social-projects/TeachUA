@@ -110,6 +110,12 @@ public class NewsController implements Api {
      */
     @GetMapping("/newslist/search")
     public Page<NewsResponse> getListOfNews(@PageableDefault(value = NEWS_PER_PAGE, sort = "id") Pageable pageable) {
+        /*
+        Page<NewsResponse> result =  newsService.getListOfNews(pageable);
+        System.out.println("**** Page<NewsResponse> result = " + result);
+        result.forEach(System.out::println);
+        return result;
+        */
         return newsService.getListOfNews(pageable);
     }
 
