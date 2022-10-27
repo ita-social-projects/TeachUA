@@ -1,4 +1,4 @@
-package com.softserve.edu.pages.common.clubs;
+package com.softserve.edu.pages.guest.clubs;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,7 +12,7 @@ import java.util.List;
 public class ClubsContainer {
 
     // Message if there is no such component found
-    private final String CLUB_NOT_FOUND = "There is no product that matches the search criteria.";
+    private final String CLUB_NOT_FOUND = "There is no сдги that matches the search criteria.";
     // Selector to find the whole club container
     private final String CLUB_COMPONENT_CSS_SELECTOR = ".ant-card.ant-card-bordered.card";
     // Logger
@@ -124,15 +124,22 @@ public class ClubsContainer {
     // Check is needed club is present on the page
     public boolean isClubComponentPresent(String clubTitle) {
         boolean result = false;
-        for(ClubComponent component : getClubComponents()) {
-            // Compare provided club title with value from club components list to find needed one
-            if(component.getTitleText().contains(clubTitle)) {
-                logger.info("Component with partial or the same title as " + clubTitle + " found on the page");
-                result = true;
-                break;
+        try {
+            Thread.sleep(7000);
+            for(ClubComponent component : getClubComponents()) {
+                // Compare provided club title with value from club components list to find needed one
+                if(component.getTitleText().contains(clubTitle)) {
+                    logger.info("Component with partial or the same title as " + clubTitle + " found on the page");
+                    result = true;
+                    break;
+                }
             }
+            return result;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            logger.error(CLUB_NOT_FOUND);
+            return result;
         }
-        return result;
     }
 
     public List<String> getClubComponentTitles() {

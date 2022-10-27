@@ -12,6 +12,7 @@
 `print<ElementGroupName>` - print element group  
 `goto<PageName>Page` - go to a certain page  
 `is<ElementName>Enabled` - check if element is enabled  
+`is<ElementName>Exist` - check if element exists  
 
 ### File names:
 `<PageName>Page` - functionality of the whole page  

@@ -1,11 +1,8 @@
 package com.softserve.edu.pages;
 
-import com.softserve.edu.pages.common.clubs.ClubsContainer;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
-import java.util.List;
 
 public class Pagination {
 

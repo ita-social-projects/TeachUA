@@ -1,16 +1,16 @@
 package com.softserve.edu.pages;
 
 import com.softserve.edu.data.Locations;
-import com.softserve.edu.pages.common.clubs.ClubsPage;
-import com.softserve.edu.pages.common.home.HomePage;
+import com.softserve.edu.pages.guest.aboutus.AboutUsPage;
+import com.softserve.edu.pages.guest.challenge.ChallengePage;
+import com.softserve.edu.pages.guest.clubs.ClubsPage;
+import com.softserve.edu.pages.guest.home.HomePage;
+import com.softserve.edu.pages.guest.news.NewsPage;
+import com.softserve.edu.pages.guest.servicesinukrainian.ServicesInUkrainianPage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.RecursiveTask;
 
 public abstract class TopPart {
 
@@ -21,53 +21,54 @@ public abstract class TopPart {
     protected WebDriver driver;                                                     // WebDriver instance
     // this.getClass() means that logger will be created from the name of the class where it is used
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-    protected final String OPTION_NULL_MESSAGE = "Pagination is null";              // error message
+    protected final String OPTION_NULL_MESSAGE = "Option is null";                  // error message
     protected final String OPTION_NOT_FOUND_MESSAGE = "Option %s not found in %s";  // option not found error message
 
     /*
      * Header elements
       */
-    private WebElement logo;
-    private WebElement clubs;
-    private WebElement challenges;
-    private WebElement news;
-    private WebElement aboutUs;
-    private WebElement servicesInUkrainian;
-    private WebElement searchTopField;
-    private WebElement searchTopButton;
-    private WebElement extendedSearchButton;
-    private WebElement location;
-    private WebElement myProfile;
+    private WebElement logo;                                                    // logo element
+    private WebElement clubs;                                                   // clubs page
+    private WebElement challenges;                                              // challenges page
+    private WebElement news;                                                    // news page
+    private WebElement aboutUs;                                                 // about us page
+    private WebElement servicesInUkrainian;                                     // services in ukrainian page
+    private WebElement searchTopField;                                          // search top field element
+    private WebElement searchTopButton;                                         // search top button
+    private WebElement advancedSearchButton;                                    // advanced search button
+    private WebElement location;                                                // location element
+    private WebElement myProfile;                                               // my profile element
 
     /*
      * Footer elements
      */
     // Social media
-    private WebElement teachUALogo;
-    private WebElement watchword;
-    private WebElement facebook;
-    private WebElement youtube;
-    private WebElement instagram;
-    private WebElement designedBy;
+    private WebElement teachUALogo;                                             // teach UA logo
+    private WebElement watchword;                                               // watchword element
+    private WebElement facebook;                                                // facebook logo
+    private WebElement youtube;                                                 // youtube logo
+    private WebElement instagram;                                               // instagram logo
+    private WebElement designedBy;                                              // designed by element
 
     // Partners
-    private WebElement outPartners;
-    private WebElement softServe;
-    private WebElement languageUnites;
-    private WebElement edEra;
-    private WebElement isLanguage;
-    private WebElement countryFm;
-    private WebElement ucf;
-    private WebElement freedom;
+    private WebElement outPartners;                                             // our partners element
+    private WebElement softServe;                                               // softserve logo
+    private WebElement languageUnites;                                          // language unites logo
+    private WebElement edEra;                                                   // ed era logo
+    private WebElement isLanguage;                                              // is-language logo
+    private WebElement countryFm;                                               // country fm logo
+    private WebElement ucf;                                                     // ucf logo
+    private WebElement freedom;                                                 // freedom logo
 
     // Donate
-    private WebElement howToHelpProject;
-    private WebElement reason;
-    private WebElement helpProjectButton;
+    private WebElement howToHelpProject;                                        // how to help project element
+    private WebElement reason;                                                  // reason element
+    private WebElement helpProjectButton;                                       // help project button
 
     // Abstract classes
-    private Pagination pagination;
-    private LocationDropdownComponent locationDropdownComponent;
+    private Pagination pagination;                                              // pagination abstract class
+    private LocationDropdownComponent locationDropdownComponent;                // location dropdown abstract class
+    private LinksImagesCheck linksImagesCheck;                                  // links and images check abstract class
 
     // Constructor
     public TopPart(WebDriver driver) {
@@ -75,7 +76,7 @@ public abstract class TopPart {
         initElements();                                                         // initialize elements
     }
 
-    // Check if elements present on the page
+    // Check if elements are present on the page
     private void initElements() {
         logo = driver.findElement(By.cssSelector(".left-side-menu>a"));
         clubs = driver.findElement(By.xpath("//span[contains(@class,'anticon-apartment')]/parent::a"));
@@ -85,7 +86,7 @@ public abstract class TopPart {
         servicesInUkrainian = driver.findElement(By.xpath("//span[@aria-label='container']/../../..//following-sibling::li/span"));
         searchTopField = driver.findElement(By.cssSelector("input.ant-select-selection-search-input"));
         searchTopButton = driver.findElement(By.cssSelector("span.anticon.anticon-search.advanced-icon"));
-        extendedSearchButton = driver.findElement(By.cssSelector("span.anticon.anticon-control.advanced-icon"));
+        advancedSearchButton = driver.findElement(By.cssSelector("span.anticon.anticon-control.advanced-icon"));
         location = driver.findElement(By.cssSelector(".ant-dropdown-trigger.city"));
         myProfile = driver.findElement(By.cssSelector("span.ant-avatar.ant-avatar-lg.ant-avatar-circle"));
         teachUALogo = driver.findElement(By.cssSelector(".footer-logo"));
@@ -144,6 +145,16 @@ public abstract class TopPart {
 
     private void clickChallenges() {
         getChallenges().click();                                                // click challenges
+    }
+
+    // Open first challenge
+    private WebElement getFirstChallenge() {
+        // Get firstChallenge element
+        return driver.findElement(By.xpath("//a[contains(@href,'424')]"));
+    }
+
+    private void clickFirstChallenge() {
+        getFirstChallenge().click();                                            // click first challenge
     }
 
     // news
@@ -219,13 +230,13 @@ public abstract class TopPart {
         getSearchTopButton().click();                                           // click searchTopButton
     }
 
-    // extendedSearchButton
-    private WebElement getExtendedSearchButton() {
-        return this.extendedSearchButton;                                       // get extendedSearchButton element
+    // advancedSearchButton
+    private WebElement getAdvancedSearchButton() {
+        return this.advancedSearchButton;                                       // get advancedSearchButton element
     }
 
-    private void clickExtendedSearchButton() {
-        getExtendedSearchButton().click();                                      // click extendedSearchButton
+    protected void clickAdvancedSearchButton() {
+        getAdvancedSearchButton().click();                                      // click advancedSearchButton
     }
 
     // location
@@ -410,6 +421,7 @@ public abstract class TopPart {
 
     // pagination
     private Pagination getPagination() {
+        // Check if pagination object is created
         if (pagination == null) {
             throw new RuntimeException(OPTION_NULL_MESSAGE);                    // throw RuntimeException
         }
@@ -425,7 +437,7 @@ public abstract class TopPart {
     protected LocationDropdownComponent getLocationDropdownComponent() {
         // Check if locationDropdownComponent object is created
         if(locationDropdownComponent == null) {
-            throw new RuntimeException(OPTION_NULL_MESSAGE);
+            throw new RuntimeException(OPTION_NULL_MESSAGE);                    // throw RuntimeException
         }
         return locationDropdownComponent;                                       // return locationDropdownComponent
     }
@@ -454,6 +466,20 @@ public abstract class TopPart {
         clickSearchTopField();
         // Assign null to object to know that such element does not exist anymore
         locationDropdownComponent = null;
+    }
+
+    // linksCheck
+    private LinksImagesCheck getLinksImagesCheck() {
+        // Check if linksCheck object is created
+        if (linksImagesCheck == null) {
+            throw new RuntimeException(OPTION_NULL_MESSAGE);                    // throw RuntimeException
+        }
+        return linksImagesCheck;
+    }
+
+    protected LinksImagesCheck createLinksImagesCheck() {
+        linksImagesCheck = new LinksImagesCheck(driver);                        // create new object of LinksImagesCheck type
+        return getLinksImagesCheck();
     }
 
     /*
@@ -485,6 +511,13 @@ public abstract class TopPart {
         return createPagination().countNumberOfPages();                         // get actual number of pages
     }
 
+    // linksImagesCheck
+    public void verifyPageLinksImages() {
+        createLinksImagesCheck();                                               // create linksImagesCheck object and initialize it
+        getLinksImagesCheck().checkLinks();                                     // check if links are good
+        getLinksImagesCheck().checkImages();                                    // check if images are good
+    }
+
     // Only for presentation
     protected void presentationSleep(int seconds) {
         try {
@@ -508,6 +541,7 @@ public abstract class TopPart {
         logger.debug("Enter and searching club by its title started");
         sendTextIntoInputSearchField(title);                                    // send text into search top field
         clickSearchTopButton();                                                 // click search top button to search club
+        logger.info("Button clicked");
         logger.debug("Enter and searching club by its title started");
     }
 
@@ -515,15 +549,50 @@ public abstract class TopPart {
      * Business Logic
      */
 
+    @Step("Go to Home page")
     public HomePage gotoHomePage() {
         clickLogo();                                                            // click logo
+        logger.info("Home page opened");                                        // information about current page
         return new HomePage(driver);
     }
 
-    @Step("Go to clubs page")
+    @Step("Go to Clubs page")
     public ClubsPage gotoClubsPage() {
         clickClubs();                                                           // click Clubs page
+        logger.info("Clubs page opened");                                       // information about current page
         return new ClubsPage(driver);
+    }
+
+    // Temporary solution, just to be able to perform smoke tests for now
+    @Step("Go to Challenge page")
+    public ChallengePage openChallengePage() {
+        clickChallenges();                                                      // click Challenge tab
+        logger.info("Challenges dropdown opened");                              // information about current page
+        verifyPageLinksImages();                                                // verify links on opened dropdown
+        clickFirstChallenge();                                                  // click first challenge
+        logger.info("Challenge page opened");                              // information about current page
+        return new ChallengePage(driver);
+    }
+
+    @Step("Go to News page")
+    public NewsPage gotoNewsPage() {
+        clickNews();                                                            // click News page
+        logger.info("News page opened");                                        // information about current page
+        return new NewsPage(driver);
+    }
+
+    @Step("Go to About us page")
+    public AboutUsPage gotoAboutUsPage() {
+        clickAboutUs();                                                         // click About us page
+        logger.info("About us page opened");                                    // information about current page
+        return new AboutUsPage(driver);
+    }
+
+    @Step("Go to Services in ukrainian page")
+    public ServicesInUkrainianPage gotoServicesInUkrainianPage() {
+        clickServicesInUkrainian();                                             // click Services in ukrainian page
+        logger.info("Services in ukrainian page opened");                       // information about current page
+        return new ServicesInUkrainianPage(driver);
     }
 
 }

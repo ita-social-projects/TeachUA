@@ -1,4 +1,4 @@
-package com.softserve.edu.pages.common.home;
+package com.softserve.edu.pages.guest.home;
 
 import com.softserve.edu.data.Locations;
 import com.softserve.edu.pages.TopPart;
@@ -8,8 +8,8 @@ import org.openqa.selenium.WebElement;
 
 public class HomePage extends TopPart {
 
-    private WebElement addClubButton;
-    private WebElement initiative;
+    private WebElement addClubButton;                                           // add club button
+    private WebElement initiative;                                              // page name text
 
     // Constructor
     public HomePage(WebDriver driver) {
@@ -29,24 +29,24 @@ public class HomePage extends TopPart {
 
     // addClubButton
     private WebElement getAddClubButton() {
-        return addClubButton;                                                   // get addClubButton element
+        return this.addClubButton;                                                   // get addClubButton element
     }
 
     private String getAddClubButtonText() {
-        return getAddClubButton().getText();                                    // get addClubButton text
+        return getAddClubButton().getText();                                        // get addClubButton text
     }
 
     private void clickAddClubButton() {
-        getAddClubButton().click();                                             // click addClubButton
+        getAddClubButton().click();                                                 // click addClubButton
     }
 
     // initiative
     private WebElement getInitiative() {
-        return initiative;                                                      // get initiative element
+        return this.initiative;                                                     // get initiative element
     }
 
-    private String getInitiativeText() {
-        return getInitiative().getText();                                       // get initiative text
+    protected String getInitiativeText() {
+        return getInitiative().getText();                                           // get initiative text
     }
 
     /*

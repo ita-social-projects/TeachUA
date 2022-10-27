@@ -1,10 +1,7 @@
-package com.softserve.edu.pages.common.clubs;
+package com.softserve.edu.pages.guest.clubs;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClubComponent {
 
@@ -14,6 +11,8 @@ public class ClubComponent {
     private final String RATE_VALUE_SELECTOR = ">div";
     // Attribute to set position number of the star in rate
     private final String ARIA_POSINSET_ATTRIBUTE = "aria-posinset";
+    // CSS selector to find location element
+    private final String LOCATION_CSS_SELECTOR = ".oneAddress";
 
     // Element that represents the whole component
     private WebElement clubLayout;
@@ -38,7 +37,6 @@ public class ClubComponent {
         category = clubLayout.findElement(By.cssSelector(".ant-tag.tag .name"));
         partialDescription = clubLayout.findElement(By.cssSelector(".ant-card-body .description"));
         rate = clubLayout.findElement(By.cssSelector("ul.ant-rate.ant-rate-disabled.rating"));
-        location = clubLayout.findElement(By.cssSelector(".oneAddress"));
         detailsButton = clubLayout.findElement(By.cssSelector(".ant-btn.ant-btn-default.outlined-button.details-button a"));
     }
 
@@ -91,6 +89,9 @@ public class ClubComponent {
 
     // location
     private WebElement getLocation() {
+        // Presence of location element should be checked here to prevent test failure when there is no location
+        // selected in advanced search
+        location = clubLayout.findElement(By.cssSelector(LOCATION_CSS_SELECTOR));
         return this.location;                                                   // get location element
     }
 

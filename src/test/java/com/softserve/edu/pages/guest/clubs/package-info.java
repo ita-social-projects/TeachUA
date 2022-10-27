@@ -1,5 +1,5 @@
 /**
- * This package contains a description of the Clubs page from the guest perspective
+ * This package contains common elements of the Clubs page
  */
 
 package com.softserve.edu.pages.guest.clubs;

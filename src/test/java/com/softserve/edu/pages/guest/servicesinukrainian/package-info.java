@@ -1,5 +1,5 @@
 /**
- * This package contains a description of the Services In Ukrainian page from the guest perspective
+ * This package contains common elements of the Services In Ukrainian page
  */
 
 package com.softserve.edu.pages.guest.servicesinukrainian;

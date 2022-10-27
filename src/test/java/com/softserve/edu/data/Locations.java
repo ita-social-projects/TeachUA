@@ -5,7 +5,13 @@ public enum Locations {
     LVIV("Львів"),
     KYIV("Київ"),
     DNIPRO("Дніпро"),
-    KHARKIV("Харків");
+    KHARKIV("Харків"),
+    ODESA("Одеса"),
+    ZAPORIZHZHIA("Запоріжжя"),
+    RIVNE("Рівне"),
+    LUTSK("Луцьк"),
+    SOLONKA("Солонка"),
+    BIBRKA("Бібрка");
 
     private String city;
 

@@ -1,5 +1,5 @@
 /**
- * This package contains a description of the About Us page from the guest perspective
+ * This package contains common elements of the About Us page
  */
 
 package com.softserve.edu.pages.guest.aboutus;

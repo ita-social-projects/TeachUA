@@ -14,7 +14,7 @@
         <!-- - - - - - Encoding - - - - - -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- - - - - - Java - - - - - -->
-        <java.version>1.11</java.version>
+        <java.version>1.8</java.version>
         <!-- - - - - - Reports - - - - - -->
         <testng.reports.directory>./target/surefire-reports/test-output</testng.reports.directory>
         <!-- - - - - - Tests - - - - - -->
@@ -181,6 +181,8 @@
                     </includes>
                     <reportsDirectory>${testng.reports.directory}</reportsDirectory>
                     <suiteXmlFiles>
+                        <!-- Smoke tests -->
+                        <suiteXmlFile>smoke-testsuite.xml</suiteXmlFile>
                     </suiteXmlFiles>
                     <argLine>
                         <!-- Attach aspectj as java agent -->

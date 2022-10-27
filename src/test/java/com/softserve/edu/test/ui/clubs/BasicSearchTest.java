@@ -1,8 +1,10 @@
 package com.softserve.edu.test.ui.clubs;
 
 import com.softserve.edu.data.Locations;
-import com.softserve.edu.pages.common.clubs.ClubsPage;
-import com.softserve.edu.pages.common.home.HomePage;
+import com.softserve.edu.data.club.Club;
+import com.softserve.edu.data.dataproviders.BasicSearchTestDataProvider;
+import com.softserve.edu.pages.guest.clubs.ClubsPage;
+import com.softserve.edu.pages.guest.home.HomePage;
 import com.softserve.edu.testcases.BaseTestSetup;
 import io.qameta.allure.*;
 import org.testng.Assert;
@@ -10,61 +12,11 @@ import org.testng.annotations.Test;
 
 public class BasicSearchTest extends BaseTestSetup {
 
-    // Test data
-    String PARTIAL_CLUB_TITLE_WITH_SPECIAL_CHARACTERS = "=,/ , , *, (, ), _, :, ;, #";
-    String PARTIAL_CLUB_TITLE_WITH_NUMBERS = "2412";
-    String CATEGORY_NAME = "Програмування, робототехніка, STEM";
-    String CENTER_NAME = "Комунальний позашкільний навчальний заклад \"Одеський будинок дитячої та юнацької творчості \"Тоніка\"";
-    String CLUB_NAME = "Грін Кантрі";
-
-    // Query to find clubs that contain special characters in their titles in the DB
-    String SELECT_CLUB_TITLE_WITH_SPECIAL_CHARACTERS = "SELECT DISTINCT c.name\n" +
-            "FROM clubs as c\n" +
-            "INNER JOIN locations as l ON c.id=l.club_id\n" +
-            "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-            "WHERE ct.name = '" + Locations.KYIV + "'\n" +
-            "AND c.name LIKE '%" + PARTIAL_CLUB_TITLE_WITH_SPECIAL_CHARACTERS + "%'";
-
-    // Query to find clubs that contain numbers in their titles in the DB
-    String SELECT_CLUB_TITLE_WITH_NUMBERS = "SELECT DISTINCT c.name\n" +
-            "FROM clubs as c\n" +
-            "INNER JOIN locations as l ON c.id=l.club_id\n" +
-            "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-            "WHERE ct.name = '" + Locations.KYIV + "'\n" +
-            "AND c.name LIKE '%" + PARTIAL_CLUB_TITLE_WITH_NUMBERS + "%'";
-
-    // Query to find clubs by category to which they belong to in the DB
-    String SELECT_CLUB_TITLE_BY_CATEGORY = "SELECT DISTINCT c.name\n" +
-            "FROM clubs as c\n" +
-            "INNER JOIN locations as l ON c.id=l.club_id\n" +
-            "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-            "INNER JOIN club_category as cc ON c.id=cc.club_id\n" +
-            "INNER JOIN categories as cs ON cc.category_id=cs.id\n" +
-            "WHERE ct.name = '" + Locations.KYIV + "'\n" +
-            "AND cs.name = '" + CATEGORY_NAME + "';\n";
-
-    // Query to find clubs by center to which they belong to in the DB
-    String SELECT_CLUB_TITLE_BY_CENTER = "SELECT DISTINCT c.name\n" +
-            "FROM clubs as c\n" +
-            "INNER JOIN locations as l ON c.id=l.club_id\n" +
-            "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-            "INNER JOIN centers as cn ON c.center_id=cn.id\n" +
-            "WHERE ct.name = '" + Locations.KYIV + "'\n" +
-            "AND cn.name = '" + CENTER_NAME + "';";
-
-    // Query to find club by its name in the DB
-    String SELECT_CLUB_BY_NAME = "SELECT DISTINCT c.name\n" +
-            "FROM clubs as c\n" +
-            "INNER JOIN locations as l ON c.id=l.club_id\n" +
-            "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-            "WHERE ct.name = '" + Locations.KYIV + "'\n" +
-            "AND c.name = '" + CLUB_NAME + "';";
-
     @Description("[Basic Search] Verify that user can perform basic search by an special symbols input")
     @Severity(SeverityLevel.NORMAL)
     @TmsLink(value = "TUA-448")
-    @Test
-    public void searchClubWithSpecialCharactersTest() {
+    @Test(dataProvider = "specialCharactersTitle", dataProviderClass = BasicSearchTestDataProvider.class)
+    public void searchClubWithSpecialCharactersTest(String specialCharacters, String specialCharactersTitle) {
         logger.info("Test if clubs that have sequence of special characters in title search correctly started");
 
         // Follow the link and load application
@@ -74,13 +26,13 @@ public class BasicSearchTest extends BaseTestSetup {
         ClubsPage clubsPage = homePage.gotoClubsPage();
 
         // Send club title with special characters into search top field
-        clubsPage.sendTextIntoInputSearchField(PARTIAL_CLUB_TITLE_WITH_SPECIAL_CHARACTERS);
+        clubsPage.sendTextIntoInputSearchField(specialCharacters);
 
         // Press ENTER button
         clubsPage.clickEnterButton();
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
-        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(SELECT_CLUB_TITLE_WITH_SPECIAL_CHARACTERS));
+        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(specialCharactersTitle));
 
         logger.info("Test if clubs that have sequence of special characters in title search correctly finished");
     }
@@ -88,8 +40,8 @@ public class BasicSearchTest extends BaseTestSetup {
     @Description("[Basic Search] Verify that user can perform basic search by an numeric input")
     @Severity(SeverityLevel.NORMAL)
     @TmsLink(value = "TUA-447")
-    @Test
-    public void searchClubWithNumbersInTitleTest() {
+    @Test(dataProvider = "numberTitle", dataProviderClass = BasicSearchTestDataProvider.class)
+    public void searchClubWithNumbersInTitleTest(String numbers, String numberTitle) {
         logger.info("Test if clubs that have sequence of numbers in title search correctly started");
 
         // Follow the link and load application
@@ -99,13 +51,13 @@ public class BasicSearchTest extends BaseTestSetup {
         ClubsPage clubsPage = homePage.gotoClubsPage();
 
         // Send club title with numbers into search top field
-        clubsPage.sendTextIntoInputSearchField(PARTIAL_CLUB_TITLE_WITH_NUMBERS);
+        clubsPage.sendTextIntoInputSearchField(numbers);
 
         // Press ENTER button
         clubsPage.clickEnterButton();
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
-        Assert.assertNotEquals(clubsPage.getAllClubTitles(), db.getList(SELECT_CLUB_TITLE_WITH_NUMBERS));  // remove NOT
+        Assert.assertNotEquals(clubsPage.getAllClubTitles(), db.getList(numberTitle));          // remove NOT after bug fix
 
         logger.info("Test if clubs that have sequence of numbers in title search correctly finished");
     }
@@ -113,8 +65,8 @@ public class BasicSearchTest extends BaseTestSetup {
     @Description("[Basic Search] Verify that user can perform basic search by name of a category")
     @Severity(SeverityLevel.NORMAL)
     @TmsLink(value = "TUA-227")
-    @Test
-    public void searchClubByItsCategoryTest() {
+    @Test(dataProvider = "clubsByCategory", dataProviderClass = BasicSearchTestDataProvider.class)
+    public void searchClubByItsCategoryTest(Club club, String clubsByCategory) {
         logger.info("Test if only clubs that belongs to a certain category will be found started");
 
         // Follow the link and load application
@@ -124,13 +76,13 @@ public class BasicSearchTest extends BaseTestSetup {
         ClubsPage clubsPage = homePage.gotoClubsPage();
 
         // Send category name into search top field
-        clubsPage.sendTextIntoInputSearchField(CATEGORY_NAME);
+        clubsPage.sendTextIntoInputSearchField(club.getCategory());
 
         // Press ENTER button
         clubsPage.clickEnterButton();
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
-        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(SELECT_CLUB_TITLE_BY_CATEGORY));
+        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(clubsByCategory));
 
         logger.info("Test if only clubs that belongs to a certain category will be found finished");
     }
@@ -138,8 +90,8 @@ public class BasicSearchTest extends BaseTestSetup {
     @Description("[Basic Search] Verify that user can perform basic search for a club by a center name")
     @Severity(SeverityLevel.NORMAL)
     @TmsLink(value = "TUA-228")
-    @Test
-    public void searchClubByItsCenterTest() {
+    @Test(dataProvider = "clubsByCenter", dataProviderClass = BasicSearchTestDataProvider.class)
+    public void searchClubByItsCenterTest(String centerName, String clubsByCenter) {
         logger.info("Test if club will be found by center to which it belongs started");
 
         // Follow the link and load application
@@ -149,13 +101,13 @@ public class BasicSearchTest extends BaseTestSetup {
         ClubsPage clubsPage = homePage.gotoClubsPage();
 
         // Send center name into search top field
-        clubsPage.sendTextIntoInputSearchField(CENTER_NAME);
+        clubsPage.sendTextIntoInputSearchField(centerName);
 
         // Press ENTER button
         clubsPage.clickEnterButton();
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
-        Assert.assertNotEquals(clubsPage.getAllClubTitles(), db.getList(SELECT_CLUB_TITLE_BY_CENTER));     // remove NOT
+        Assert.assertNotEquals(clubsPage.getAllClubTitles(), db.getList(clubsByCenter));     // remove NOT after bug fix
 
         logger.info("Test if club will be found by center to which it belongs finished");
     }
@@ -163,8 +115,8 @@ public class BasicSearchTest extends BaseTestSetup {
     @Description("[Basic Search] Verify that user can perform basic search by name of a club")
     @Severity(SeverityLevel.NORMAL)
     @TmsLink(value = "TUA-226")
-    @Test
-    public void searchClubByNameTest() {
+    @Test(dataProvider = "clubByTitle", dataProviderClass = BasicSearchTestDataProvider.class)
+    public void searchClubByNameTest(Club club, String clubByTitle) {
         logger.info("Test if club will be found by its name started");
 
         // Follow the link and load application
@@ -177,13 +129,13 @@ public class BasicSearchTest extends BaseTestSetup {
         Assert.assertEquals(clubsPage.getLocationText(), Locations.KYIV.toString());
 
         // Send center name into search top field
-        clubsPage.sendTextIntoInputSearchField(CLUB_NAME);
+        clubsPage.sendTextIntoInputSearchField(club.getTitle());
 
         // Press ENTER button
         clubsPage.clickEnterButton();
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
-        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(SELECT_CLUB_BY_NAME));
+        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(clubByTitle));
 
         logger.info("Test if club will be found by its name finished");
     }

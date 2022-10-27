@@ -1,6 +1,6 @@
 package com.softserve.edu.testcases;
 
-import com.softserve.edu.pages.common.home.HomePage;
+import com.softserve.edu.pages.guest.home.HomePage;
 import com.softserve.edu.services.database.Database;
 import com.softserve.edu.utils.ConfigPropertiesReader;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -20,9 +20,7 @@ import org.testng.asserts.SoftAssert;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Date;
 
 public abstract class BaseTestSetup {
 
@@ -130,6 +128,7 @@ public abstract class BaseTestSetup {
 
     @Step("Load application")
     protected HomePage loadApplication() {
+        logger.info("Home page opened");                                                // information about current page
         return new HomePage(driver);                                                    // load HomePage
     }
 
