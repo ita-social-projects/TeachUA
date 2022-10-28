@@ -50,4 +50,14 @@ public interface CertificateDatesService {
      * @return new {@code CertificateDates}
      */
     CertificateDates addCertificateDates(CertificateDates dates);
+
+    /**
+     * The method returns {@code CertificateDates} found by date
+     *
+     * @param date
+     *            - put CertificateDates date
+     *
+     * @return new {@code CertificateDates}
+     */
+    CertificateDates getCertificateDatesByDate(String date);
 }

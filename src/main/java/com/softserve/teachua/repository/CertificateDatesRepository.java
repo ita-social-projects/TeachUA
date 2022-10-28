@@ -19,4 +19,8 @@ public interface CertificateDatesRepository extends JpaRepository<CertificateDat
     boolean existsByDurationAndAndDate(String duration, String date);
 
     Optional<CertificateDates> findByDurationAndDate(String duration, String date);
+
+    boolean existsByDate(String date);
+
+    Optional<CertificateDates> findByDate(String date);
 }
