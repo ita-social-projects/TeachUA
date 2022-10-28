@@ -40,4 +40,6 @@ public class CertificateContent implements Convertible {
     private ByteArrayInputStream qrCode;
 
     private String templatePath;
+
+    private String studyForm = "дистанційна";
 }

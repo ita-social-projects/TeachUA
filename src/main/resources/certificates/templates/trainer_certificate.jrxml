@@ -6,7 +6,7 @@
               name="Certificate_template_1" pageWidth="1123" pageHeight="794" columnWidth="1103"
               leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" uuid="89117ad6-3c84-4403-a7cf-a658d34ec888">
 
-    <style name="Default" isDefault="true" pdfFontName="/pdf-reports/font/Halvar Breitschrift Medium.ttf" fontSize="24" pdfEncoding="Cp1251" isPdfEmbedded="true" forecolor="#FFFFFF"/>
+    <style name="Default" isDefault="true" pdfFontName="/certificates/fonts/Halvar Breitschrift Medium.ttf" fontSize="24" pdfEncoding="Cp1251" isPdfEmbedded="true" forecolor="#FFFFFF"/>
 
     <field name="userName" class="java.lang.String"/>
     <field name="issuanceDate" class="java.lang.String"/>
@@ -118,7 +118,7 @@
             <staticText>
                 <reportElement x="330" y="620" width="300" height="35" uuid="cb540382-6575-4a56-928c-d44f2058a024"/>
                 <textElement>
-                    <font pdfFontName="/pdf-reports/font/Halvar Breitschrift Bold.ttf" size="24" pdfEncoding="cp1251" isPdfEmbedded="true"/>
+                    <font pdfFontName="/certificates/fonts/Halvar Breitschrift Bold.ttf" size="24" pdfEncoding="cp1251" isPdfEmbedded="true"/>
                 </textElement>
                 <text>Наталка Федечко</text>
             </staticText>
@@ -138,7 +138,7 @@
             </staticText>
 
             <image>
-                <reportElement x="923" y="60" width="200" height="200" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
+                <reportElement x="923" y="40" width="200" height="200" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
                 <imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
             </image>
             <image>
@@ -161,7 +161,7 @@
                 <reportElement x="330" y="306" width="670" height="35" uuid="67df464f-36c7-4834-983f-dc6a00170e6e"/>
 
                 <textElement textAlignment="Center">
-                    <font pdfFontName="/pdf-reports/font/Halvar Breitschrift Black.ttf" size="24" pdfEncoding="cp1251" isPdfEmbedded="true"/>
+                    <font pdfFontName="/certificates/fonts/Halvar Breitschrift Black.ttf" size="24" pdfEncoding="cp1251" isPdfEmbedded="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{userName}]]></textFieldExpression>
             </textField>
