@@ -24,4 +24,5 @@ public class CertificateTemplate {
 
     @Column(nullable = false, name = "file_path")
     private String filePath;
+
 }

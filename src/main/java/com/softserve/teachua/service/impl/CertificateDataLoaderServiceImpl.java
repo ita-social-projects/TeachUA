@@ -109,15 +109,15 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                     .filePath("/certificates/templates/jedyni_participant_template.jrxml").build());
         }
         if (!templateRepository.existsCertificateTemplateByCertificateType(1)) { // Trainer
-            return templateService.addTemplate(CertificateTemplate.builder().name("Єдині тренер").certificateType(1)
+            templateService.addTemplate(CertificateTemplate.builder().name("Єдині тренер").certificateType(1)
                     .filePath("/certificates/templates/trainer_certificate.jrxml").build());
         }
         if (!templateRepository.existsCertificateTemplateByCertificateType(2)) { // Moderator
-            return templateService.addTemplate(CertificateTemplate.builder().name("Єдині модератор").certificateType(2)
+            templateService.addTemplate(CertificateTemplate.builder().name("Єдині модератор").certificateType(2)
                     .filePath("/certificates/templates/moderator_certificate.jrxml").build());
         }
         if (!templateRepository.existsCertificateTemplateByCertificateType(3)) {
-            return templateService.addTemplate(CertificateTemplate.builder().name("Єдині учасник").certificateType(3)
+            templateService.addTemplate(CertificateTemplate.builder().name("Єдині учасник").certificateType(3)
                     .filePath("/certificates/templates/jedyni_participant_template.jrxml").build());
         }
         return templateService.getTemplateByType(type);
