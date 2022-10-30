@@ -4,7 +4,9 @@ import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.certificate.*;
 import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
+import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.service.CertificateDataLoaderService;
+import com.softserve.teachua.service.CertificateDateDataMoverService;
 import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
@@ -14,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -27,13 +27,15 @@ public class CertificateController implements Api {
     private final CertificateService certificateService;
     private final CertificateExcelService excelService;
     private final CertificateDataLoaderService loaderService;
+    private final CertificateDateDataMoverService moverService;
 
     @Autowired
     public CertificateController(CertificateService certificateService, CertificateExcelService excelService,
-            CertificateDataLoaderService loaderService) {
+            CertificateDataLoaderService loaderService, CertificateDateDataMoverService moverService) {
         this.certificateService = certificateService;
         this.excelService = excelService;
         this.loaderService = loaderService;
+        this.moverService = moverService;
     }
 
     /**
@@ -120,4 +122,15 @@ public class CertificateController implements Api {
             @Valid @RequestBody CertificatePreview certificatePreview) {
         return certificateService.updateCertificatePreview(id, certificatePreview);
     }
+
+    /**
+     * This endpoint is used to move misplaced data from certificate_dates table to certificate_templates table.
+     *
+     * @return {@code List<CertificateTemplate>}
+     */
+    @PutMapping("/certificates/move-dates-data")
+    public List<CertificateTemplate> moveDatesData() {
+        return moverService.moveData();
+    }
+
 }
