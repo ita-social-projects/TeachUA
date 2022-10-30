@@ -84,16 +84,23 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     private CertificateDates saveDates(CertificateDataRequest data, Integer index) {
         CertificateDates dates = CertificateDates.builder()
                 .date(data.getExcelList().get(index).getDateIssued().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
-                .hours(data.getHours()).duration(decorator.formDates(data.getStartDate(), data.getEndDate()))
+                .hours(data.getHours())
                 .courseNumber(data.getCourseNumber())
                 .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
                 .projectDescription(
                         "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
                 .picturePath("/static/images/certificate/validation/jedyni_banner.png").build();
-        if (!datesRepository.existsByDurationAndAndDate(dates.getDuration(), dates.getDate())) {
+        if (data.getType() == 3) {
+            dates.setDuration(decorator.formDates(data.getStartDate(), data.getEndDate()));
+            if (!datesRepository.existsByDurationAndAndDate(dates.getDuration(), dates.getDate())) {
+                return certificateDatesService.addCertificateDates(dates);
+            }
+            return certificateDatesService.getCertificateDatesByDurationAndDate(dates.getDuration(), dates.getDate());
+        }
+        if (!datesRepository.existsByDate(dates.getDate())) {
             return certificateDatesService.addCertificateDates(dates);
         }
-        return certificateDatesService.getCertificateDatesByDurationAndDate(dates.getDuration(), dates.getDate());
+        return certificateDatesService.getCertificateDatesByDate(dates.getDate());
     }
 
     private CertificateTemplate saveTemplate(Integer type) {
