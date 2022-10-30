@@ -27,12 +27,12 @@ public class CertificateDateDataMoverServiceImpl implements CertificateDateDataM
     public List<CertificateTemplate> moveData() {
         CertificateDates certificateDates = certificateDatesService.getCertificateDatesById(1);
         List<CertificateTemplate> certificateTemplateList = certificateTemplateRepository.findAll();
-        for (CertificateTemplate certificateTemplate : certificateTemplateList) {
-            certificateTemplate.setCourseDescription(certificateDates.getCourseDescription());
-            certificateTemplate.setPicturePath(certificateDates.getPicturePath());
-            certificateTemplate.setProjectDescription(certificateDates.getProjectDescription());
-            certificateTemplateRepository.save(certificateTemplate);
-        };
+//        for (CertificateTemplate certificateTemplate : certificateTemplateList) {
+//            certificateTemplate.setCourseDescription(certificateDates.getCourseDescription());
+//            certificateTemplate.setPicturePath(certificateDates.getPicturePath());
+//            certificateTemplate.setProjectDescription(certificateDates.getProjectDescription());
+//            certificateTemplateRepository.save(certificateTemplate);
+//        };
         return certificateTemplateList;
     }
 
