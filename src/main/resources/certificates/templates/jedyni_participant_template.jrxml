@@ -81,7 +81,7 @@
                     <font size="24" isBold="false"/>
                 </textElement>
 
-                <textFieldExpression><![CDATA[$F{studyHours}]]></textFieldExpression>
+                <textFieldExpression>"Тривалість навчання - " + <![CDATA[$F{studyHours}]]> + " годин."</textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="330" y="510" width="650" height="60" uuid="8d5ebb5d-34ad-40d2-a66f-8046c287bdcf"/>

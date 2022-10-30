@@ -17,7 +17,8 @@ public class CertificateContentDecorator {
     public final static String PATTERN_WITH_MONTH_AND_YEAR = " по d MMMM yyyy року";
 
     public String formHours(Integer hours) {
-        return "Тривалість навчання - " + hours + " годин.";
+        //return "Тривалість навчання - " + hours + " годин.";
+        return String.valueOf(hours);
     }
 
     public String formDates(LocalDate startDate, LocalDate endDate) {

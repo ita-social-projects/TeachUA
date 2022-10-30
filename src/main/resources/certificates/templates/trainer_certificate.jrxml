@@ -92,7 +92,7 @@
                 <textElement>
                     <font size="24" isBold="false"/>
                 </textElement>
-                <textFieldExpression>"Форма навчання - " + <![CDATA[$F{studyForm}]]> + "."</textFieldExpression>
+                    <textFieldExpression>"Форма навчання - " + <![CDATA[$F{studyForm}]]> + "."</textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="330" y="465" width="500" height="35" uuid="cc8ec782-950d-4f13-ba7c-cadf15587a3e"/>
@@ -138,7 +138,7 @@
             </staticText>
 
             <image>
-                <reportElement x="923" y="40" width="200" height="200" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
+                <reportElement x="923" y="25" width="200" height="200" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
                 <imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
             </image>
             <image>

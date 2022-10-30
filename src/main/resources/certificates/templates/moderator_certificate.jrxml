@@ -138,7 +138,7 @@
             </staticText>
 
             <image>
-                <reportElement x="923" y="60" width="200" height="200" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
+                <reportElement x="923" y="25" width="200" height="200" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
                 <imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
             </image>
             <image>
@@ -151,7 +151,7 @@
             </image>
             <image>
                 <reportElement x="730" y="715" width="160" height="65" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/moderator_certificate/speak_ukrainian.png")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/speak_ukrainian.png")]]></imageExpression>
             </image>
             <image>
                 <reportElement x="930" y="580" width="170" height="170" uuid="25ba7107-8c96-49d8-a127-46b6547b8d8c"/>
