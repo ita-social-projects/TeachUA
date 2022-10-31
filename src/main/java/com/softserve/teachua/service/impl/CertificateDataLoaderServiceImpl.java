@@ -97,10 +97,12 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             }
             return certificateDatesService.getCertificateDatesByDurationAndDate(dates.getDuration(), dates.getDate());
         }
-        if (!datesRepository.existsByDate(dates.getDate())) {
+        //if (!datesRepository.existsByDate(dates.getDate())) {
+        if (!datesRepository.existsByHoursAndDate(dates.getHours(), dates.getDate())) {
             return certificateDatesService.addCertificateDates(dates);
         }
-        return certificateDatesService.getCertificateDatesByDate(dates.getDate());
+        //return certificateDatesService.getCertificateDatesByDate(dates.getDate());
+        return certificateDatesService.getCertificateDatesByHoursAndDate(dates.getHours(), dates.getDate());
     }
 
     private CertificateTemplate saveTemplate(Integer type) {

@@ -60,4 +60,16 @@ public interface CertificateDatesService {
      * @return new {@code CertificateDates}
      */
     CertificateDates getCertificateDatesByDate(String date);
+
+    /**
+     * The method returns entity of {@code CertificateDates} found by duration and date
+     *
+     * @param hours
+     *            - put CertificateDates hours
+     * @param date
+     *            - put CertificateDates date
+     *
+     * @return new {@code CertificateDates}
+     */
+    CertificateDates getCertificateDatesByHoursAndDate(Integer hours, String date);
 }
