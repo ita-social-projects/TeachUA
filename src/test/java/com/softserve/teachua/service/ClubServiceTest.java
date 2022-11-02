@@ -1,6 +1,7 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
+import com.softserve.teachua.converter.ContactsStringConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
@@ -12,7 +13,6 @@ import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
-import com.softserve.teachua.model.archivable.CityArch;
 import com.softserve.teachua.model.archivable.ClubArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
@@ -66,6 +66,9 @@ class ClubServiceTest {
 
     @Mock
     private LocationService locationService;
+
+    @Mock
+    private ContactsStringConverter contactsStringConverter;
 
     @InjectMocks
     private ClubServiceImpl clubService;
@@ -163,13 +166,13 @@ class ClubServiceTest {
     void updateClubByExistingIdShouldReturnCorrectSuccessUpdatedClub() {
         when(clubRepository.findById(EXISTING_ID)).thenReturn(Optional.of(club));
         when(clubRepository.save(any())).thenReturn(club);
-        when(dtoConverter.convertToEntity(ClubResponse.builder().name(NEW_NAME).build(), club))
+        when(dtoConverter.convertToEntity(ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).build(), club))
                 .thenReturn(Club.builder().name(NEW_NAME).build());
         when(dtoConverter.convertToDto(club, SuccessUpdatedClub.class))
                 .thenReturn(SuccessUpdatedClub.builder().name(NEW_NAME).build());
         when(userService.getCurrentUser()).thenReturn(user);
 
-        SuccessUpdatedClub actual = clubService.updateClub(EXISTING_ID, ClubResponse.builder().name(NEW_NAME).build());
+        SuccessUpdatedClub actual = clubService.updateClub(EXISTING_ID, ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).build());
         assertEquals(clubProfile.getName(), actual.getName());
     }
 

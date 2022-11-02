@@ -151,7 +151,7 @@ public class NewsServiceTest {
     @Test
     public void createNewsShouldReturnSuccessCreatedNews() {
         when(dtoConverter.convertToEntity(newsProfile, new News())).thenReturn(news);
-        when(newsRepository.save(news)).thenReturn(news);
+        when(newsRepository.save(any(News.class))).thenReturn(news);
         when(dtoConverter.convertToDto(news, SuccessCreatedNews.class)).thenReturn(successCreatedNews);
         assertThat(newsService.addNews(newsProfile)).isEqualTo(successCreatedNews);
     }

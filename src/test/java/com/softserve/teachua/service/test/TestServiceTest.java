@@ -9,6 +9,7 @@ import com.softserve.teachua.repository.test.SubscriptionRepository;
 import com.softserve.teachua.repository.test.TestRepository;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.impl.TestServiceImpl;
+import com.softserve.teachua.utils.test.validation.service.TestValidationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,9 +20,7 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -48,6 +47,8 @@ public class TestServiceTest {
     private QuestionTypeService questionTypeService;
     @Mock
     private QuestionTestService questionTestService;
+    @Mock
+    private TestValidationService testValidationService;
 
     @InjectMocks
     private TestServiceImpl testService;
@@ -89,8 +90,6 @@ public class TestServiceTest {
         viewTest = mapper.map(createTest, ViewTest.class);
         successCreatedTest = mapper.map(createTest, SuccessCreatedTest.class);
         question = mapper.map(questionProfile, Question.class);
-        System.out.println(question);
-        System.out.println(questionProfile);
         setQuestionProfiles();
     }
 
@@ -271,6 +270,7 @@ public class TestServiceTest {
         String categoryTitle = questionProfile.getCategoryTitle();
         Topic topic = generateTopic(topicTitle);
         when(topicService.findByTitle(topicTitle)).thenReturn(topic);
+        doNothing().when(testValidationService).validateTest(createTest);
         when(questionCategoryService.findByTitle(categoryTitle))
                 .thenReturn(generateQuestionCategory(categoryTitle));
         when(questionService.save(question)).thenReturn(question);

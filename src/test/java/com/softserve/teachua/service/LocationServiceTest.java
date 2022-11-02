@@ -39,6 +39,15 @@ public class LocationServiceTest {
     @InjectMocks
     private LocationServiceImpl locationService;
 
+    @Mock
+    private CityService cityService;
+
+    @Mock
+    private DistrictService districtService;
+
+    @Mock
+    private StationService stationService;
+
     private Center correctCenter;
     private Club correctClub;
     private Location correctLocation;
@@ -83,9 +92,9 @@ public class LocationServiceTest {
     @Test
     public void updateCenterLocationByFilledSetShouldReturnLocationSet() {
         when(locationRepository.deleteAllByCenter(correctCenter)).thenReturn(locationSet);
-        when(dtoConverter.convertToEntity(correctLocationProfile, new Location().withCenter(correctCenter)))
+        when(dtoConverter.convertToEntity(correctLocationProfile, new Location()))
                 .thenReturn(correctLocation);
-        when(locationRepository.save(correctLocation)).thenReturn(correctLocation);
+        when(locationRepository.save(any(Location.class))).thenReturn(correctLocation);
         Set<Location> actual = locationService.updateCenterLocation(filledLocationProfileSet, correctCenter);
         assertThat(actual).isEqualTo(locationSet);
     }
@@ -100,9 +109,9 @@ public class LocationServiceTest {
     @Test
     public void updateLocationByFilledClubShouldReturnLocationSet() {
         when(locationRepository.deleteAllByClub(correctClub)).thenReturn(locationSet);
-        when(dtoConverter.convertToEntity(locationResponse, new Location().withClub(correctClub)))
+        when(dtoConverter.convertToEntity(locationResponse, new Location()))
                 .thenReturn(correctLocation);
-        when(locationRepository.save(correctLocation)).thenReturn(correctLocation);
+        when(locationRepository.save(any(Location.class))).thenReturn(correctLocation);
         Set<Location> actual = locationService.updateLocationByClub(locationResponses, correctClub);
         assertThat(actual).isEqualTo(locationSet);
     }
