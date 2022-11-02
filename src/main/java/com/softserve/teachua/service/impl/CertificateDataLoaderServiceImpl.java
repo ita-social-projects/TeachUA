@@ -1,26 +1,26 @@
 package com.softserve.teachua.service.impl;
 
-        import com.softserve.teachua.dto.certificate.CertificateDataRequest;
-        import com.softserve.teachua.dto.certificate.CertificateDatabaseResponse;
-        import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
-        import com.softserve.teachua.model.Certificate;
-        import com.softserve.teachua.model.CertificateDates;
-        import com.softserve.teachua.model.CertificateTemplate;
-        import com.softserve.teachua.repository.CertificateDatesRepository;
-        import com.softserve.teachua.repository.CertificateRepository;
-        import com.softserve.teachua.repository.CertificateTemplateRepository;
-        import com.softserve.teachua.service.CertificateDataLoaderService;
-        import com.softserve.teachua.service.CertificateDatesService;
-        import com.softserve.teachua.service.CertificateService;
-        import com.softserve.teachua.service.CertificateTemplateService;
-        import com.softserve.teachua.utils.CertificateContentDecorator;
-        import lombok.extern.slf4j.Slf4j;
-        import org.springframework.beans.factory.annotation.Autowired;
-        import org.springframework.stereotype.Service;
+import com.softserve.teachua.dto.certificate.CertificateDataRequest;
+import com.softserve.teachua.dto.certificate.CertificateDatabaseResponse;
+import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
+import com.softserve.teachua.model.Certificate;
+import com.softserve.teachua.model.CertificateDates;
+import com.softserve.teachua.model.CertificateTemplate;
+import com.softserve.teachua.repository.CertificateDatesRepository;
+import com.softserve.teachua.repository.CertificateRepository;
+import com.softserve.teachua.repository.CertificateTemplateRepository;
+import com.softserve.teachua.service.CertificateDataLoaderService;
+import com.softserve.teachua.service.CertificateDatesService;
+import com.softserve.teachua.service.CertificateService;
+import com.softserve.teachua.service.CertificateTemplateService;
+import com.softserve.teachua.utils.CertificateContentDecorator;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-        import java.time.format.DateTimeFormatter;
-        import java.util.ArrayList;
-        import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
