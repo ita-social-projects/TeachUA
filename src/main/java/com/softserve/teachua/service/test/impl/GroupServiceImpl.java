@@ -28,6 +28,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Transactional
 @Service
 public class GroupServiceImpl implements GroupService {
+    private static final String NOT_EXIST_GROUP_EXCEPTION = "Group with id %d not exists";
+
     private final GroupRepository groupRepository;
     private final ModelMapper modelMapper;
 
@@ -113,6 +115,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public UpdateGroup updateById(UpdateGroup updateGroup, Long groupId) {
         checkNull(updateGroup, "Group");
+        checkNull(groupId, "Group ID");
+        groupRepository.findById(groupId)
+            .orElseThrow(() -> new NotExistException(String.format(NOT_EXIST_GROUP_EXCEPTION, groupId)));
         Group group = modelMapper.map(updateGroup, Group.class);
         group.setId(groupId);
         groupRepository.save(group);
