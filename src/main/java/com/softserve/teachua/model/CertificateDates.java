@@ -29,4 +29,7 @@ public class CertificateDates {
     @Column(name = "course_number")
     private String courseNumber;
 
+    @Column(name = "study_form")
+    private String studyForm;
+
 }
