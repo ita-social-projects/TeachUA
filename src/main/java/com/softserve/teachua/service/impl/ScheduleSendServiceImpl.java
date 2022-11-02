@@ -42,18 +42,20 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
     @Scheduled(fixedRate = 180000) // 1 email / 3 min
     public void sendCertificateWithScheduler() {
         CertificateTransfer user = certificateService.getOneUnsentCertificate();
-        log.info("Generate Certificate for " + user.toString() + " id = " + user.getId());
-        //
-        if (previousId == 0) {
-            previousId = user.getId();
-        } else if (previousId == user.getId()) {
-            log.error("Error Generate Certificate for " + user.toString() + " id = " + user.getId());
-            certificateService.updateDateAndSendStatus(user.getId(), false);
-            previousId = 0;
+        if (user != null) {
+            log.info("Generate Certificate for " + user.toString() + " id = " + user.getId());
+            //
+            if (previousId == 0) {
+                previousId = user.getId();
+            } else if (previousId == user.getId()) {
+                log.error("Error Generate Certificate for " + user.toString() + " id = " + user.getId());
+                certificateService.updateDateAndSendStatus(user.getId(), false);
+                previousId = 0;
+            }
         }
         //
         if (user != null) {
-            emailService.sendMessageWithAttachmentAndGeneratedPdf(user.getSendToEmail(),
+            emailService.sendMessageWithAttachmentAndGeneratedPdf(user.getSendToEmail().trim(),
                     // "Certificate.",
                     // "Вітаю! В додатку ви можете знайти ваш сертифікат.",
                     "Сертифікат проєкту \"Єдині\"",
@@ -66,6 +68,7 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
         } else {
             postProcessor.destroy();
             log.info("Scheduled Certification Service. Done. New task not found.");
+            previousId = 0;
         }
     }
 
