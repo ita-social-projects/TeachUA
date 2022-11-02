@@ -29,12 +29,4 @@ public class CertificateDates {
     @Column(name = "course_number")
     private String courseNumber;
 
-    @Column(name = "course_description")
-    private String courseDescription;
-
-    @Column(name = "project_description")
-    private String projectDescription;
-
-    @Column(name = "picture_path")
-    private String picturePath;
 }

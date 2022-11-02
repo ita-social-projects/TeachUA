@@ -25,4 +25,13 @@ public class CertificateTemplate {
     @Column(nullable = false, name = "file_path")
     private String filePath;
 
+    @Column(name = "course_description")
+    private String courseDescription;
+
+    @Column(name = "project_description")
+    private String projectDescription;
+
+    @Column(name = "picture_path")
+    private String picturePath;
+
 }

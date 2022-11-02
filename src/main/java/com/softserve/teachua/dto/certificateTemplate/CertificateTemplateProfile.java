@@ -22,4 +22,10 @@ public class CertificateTemplateProfile implements Convertible {
     private String filePath;
 
     private Integer certificateType;
+
+    private String courseDescription;
+
+    private String projectDescription;
+
+    private String picturePath;
 }
