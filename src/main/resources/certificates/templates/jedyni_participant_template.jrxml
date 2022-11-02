@@ -36,23 +36,21 @@
                 <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/challenge_logo.jpg")]]></imageExpression>
             </image>
             <staticText>
-                <reportElement x="330" y="130" width="670" height="70" forecolor="#2572da" uuid="b5113369-3677-4e88-b9d9-e27152fda9ee"/>
+                <reportElement x="330" y="100" width="670" height="70" uuid="b5113369-3677-4e88-b9d9-e27152fda9ee"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
                     <font size="50" isBold="true"/>
                 </textElement>
                 <text>Сертифікат</text>
             </staticText>
-<!--            SERIAL NUMBER           -->
             <textField>
-                <reportElement x="330" y="205" width="670" height="35" forecolor="#020203" uuid="40bfc687-bc05-457c-9c6d-45d7b78a082f"/>
+                <reportElement x="330" y="175" width="670" height="35" uuid="40bfc687-bc05-457c-9c6d-45d7b78a082f"/>
                 <textElement textAlignment="Center">
                     <font size="24" isBold="false"/>
                 </textElement>
                 <textFieldExpression>"№"+<![CDATA[$F{serialNumber}]]></textFieldExpression>
             </textField>
- <!--            SERIAL NUMBER DONE           -->
             <staticText>
-                <reportElement x="330" y="260" width="670" height="35" forecolor="#020203" uuid="40bfc687-bc05-457c-9c6d-45d7b78a082f"/>
+                <reportElement x="330" y="214" width="670" height="35" uuid="40bfc687-bc05-457c-9c6d-45d7b78a082f"/>
                 <textElement textAlignment="Center">
                     <font size="24" isBold="false"/>
                 </textElement>
