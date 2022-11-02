@@ -32,7 +32,7 @@ public class CertificateDataMoverServiceImpl implements CertificateDataMoverServ
             certificateTemplate.setPicturePath(certificateDates.getPicturePath());
             certificateTemplate.setProjectDescription(certificateDates.getProjectDescription());
             certificateTemplateRepository.save(certificateTemplate);
-        };
+        }
         return certificateTemplateList;
     }
 
