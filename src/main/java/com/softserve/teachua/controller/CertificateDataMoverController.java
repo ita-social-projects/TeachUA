@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 public class CertificateDataMoverController implements Api {
 
-    private CertificateDataMoverService moverService;
+    private final CertificateDataMoverService moverService;
 
     @Autowired
     public CertificateDataMoverController(CertificateDataMoverService moverService) {
