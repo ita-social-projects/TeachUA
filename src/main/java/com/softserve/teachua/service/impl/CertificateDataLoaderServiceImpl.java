@@ -86,10 +86,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                 .date(data.getExcelList().get(index).getDateIssued().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
                 .hours(data.getHours())
                 .courseNumber(data.getCourseNumber())
-                .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
-                .projectDescription(
-                        "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
-                .picturePath("/static/images/certificate/validation/jedyni_banner.png").build();
+                .studyForm(data.getStudyType()).build();
         if (data.getType() == 3) {
             dates.setDuration(decorator.formDates(data.getStartDate(), data.getEndDate()));
             if (!datesRepository.existsByDurationAndAndDate(dates.getDuration(), dates.getDate())) {
@@ -108,19 +105,35 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     private CertificateTemplate saveTemplate(Integer type) {
         if (!templateRepository.existsBy()) {
             return templateService.addTemplate(CertificateTemplate.builder().name("Єдині учасник").certificateType(3)
-                    .filePath("/certificates/templates/jedyni_participant_template.jrxml").build());
+                    .filePath("/certificates/templates/jedyni_participant_template.jrxml")
+                    .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
+                    .projectDescription(
+                            "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
+                    .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
         }
         if (!templateRepository.existsCertificateTemplateByCertificateType(1)) { // Trainer
             templateService.addTemplate(CertificateTemplate.builder().name("Єдині тренер").certificateType(1)
-                    .filePath("/certificates/templates/trainer_certificate.jrxml").build());
+                    .filePath("/certificates/templates/trainer_certificate.jrxml")
+                    .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
+                    .projectDescription(
+                            "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
+                    .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
         }
         if (!templateRepository.existsCertificateTemplateByCertificateType(2)) { // Moderator
             templateService.addTemplate(CertificateTemplate.builder().name("Єдині модератор").certificateType(2)
-                    .filePath("/certificates/templates/moderator_certificate.jrxml").build());
+                    .filePath("/certificates/templates/moderator_certificate.jrxml")
+                    .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
+                    .projectDescription(
+                            "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
+                    .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
         }
         if (!templateRepository.existsCertificateTemplateByCertificateType(3)) {
             templateService.addTemplate(CertificateTemplate.builder().name("Єдині учасник").certificateType(3)
-                    .filePath("/certificates/templates/jedyni_participant_template.jrxml").build());
+                    .filePath("/certificates/templates/jedyni_participant_template.jrxml")
+                    .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
+                    .projectDescription(
+                            "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
+                    .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
         }
         return templateService.getTemplateByType(type);
     }

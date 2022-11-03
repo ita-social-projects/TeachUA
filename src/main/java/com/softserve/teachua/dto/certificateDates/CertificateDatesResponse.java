@@ -18,7 +18,4 @@ public class CertificateDatesResponse implements Convertible {
     private String duration;
     private String date;
     private String courseNumber;
-    private String courseDescription;
-    private String projectDescription;
-    private String picturePath;
 }

@@ -9,6 +9,11 @@ import java.util.List;
 public interface CertificateDateSqlService {
 
     /**
+     * This method move misplaced data("course_description", "picture_path", "project_description") from certificate_dates table to certificate_templates table.
+     */
+    void moveData() throws SQLException;
+
+    /**
      * This method drops unused columns from certificate_dates.
      * Returns true if drop was successful
      * {@code List<String>} of columns

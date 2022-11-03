@@ -3,7 +3,6 @@ package com.softserve.teachua.controller;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.model.CertificateTemplate;
-import com.softserve.teachua.service.CertificateDataMoverService;
 import com.softserve.teachua.service.CertificateDateSqlService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
@@ -19,21 +18,17 @@ import java.util.List;
 @Slf4j
 public class CertificateDataMoverController implements Api {
 
-    private final CertificateDataMoverService moverService;
-
     private final CertificateDateSqlService dateSqlService;
 
     @Autowired
-    public CertificateDataMoverController(CertificateDataMoverService moverService,
-                                          CertificateDateSqlService dateSqlService) {
-        this.moverService = moverService;
+    public CertificateDataMoverController(CertificateDateSqlService dateSqlService) {
         this.dateSqlService = dateSqlService;
     }
 
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/certificate/move-data")
-    public List<CertificateTemplate> moveData() {
-        return moverService.moveData();
+    public void moveData() throws SQLException {
+        dateSqlService.moveData();
     }
 
     @AllowedRoles(RoleData.ADMIN)
