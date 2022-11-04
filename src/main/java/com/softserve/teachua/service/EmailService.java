@@ -8,6 +8,7 @@ import com.softserve.teachua.model.CertificateDates;
  */
 
 public interface EmailService {
+
     /**
      * The method handle all additional methods and send email to proper user.
      *
