@@ -26,15 +26,17 @@ public class CertificateDataRequest {
     @Min(value = 1)
     Integer hours;
 
-    @NotNull
+//    @NotNull
     LocalDate startDate;
 
-    @NotNull
+//    @NotNull
     LocalDate endDate;
 
     @NotBlank
     @JsonDeserialize
     String courseNumber;
+
+    String studyType;
 
     @NotNull
     List<CertificateExcel> excelList;

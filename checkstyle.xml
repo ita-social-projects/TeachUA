@@ -29,6 +29,11 @@
         <property name="fileExtensions" value="groovy,java"/>
     </module>
 
+    <module name="SuppressionFilter">
+        <property name="file" value="checkstyle-suppressions.xml"/>
+        <property name="optional" value="true"/>
+    </module>
+
     <module name="TreeWalker">
         <module name="AbbreviationAsWordInName">
             <property name="ignoreFinal" value="false"/>

@@ -235,6 +235,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         content.setStudyHours(certificateContentDecorator.formHours(transfer.getDates().getHours()));
         content.setQrCode(qrCodeService.getCertificateQrCodeAsStream(content.getSerialNumber()));
 
+        content.setStudyForm("дистанційна"); // TODO *****
+
         try {
             JasperPrint jasperPrint = createJasperPrint(transfer.getTemplate().getFilePath(), content);
             JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);
@@ -251,9 +253,9 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
         CertificateVerificationResponse response = CertificateVerificationResponse.builder()
                 .certificateType(certificate.getTemplate().getCertificateType())
-                .courseDescription(certificate.getDates().getCourseDescription())
-                .picturePath(certificate.getDates().getPicturePath())
-                .projectDescription(certificate.getDates().getProjectDescription())
+                .courseDescription(certificate.getTemplate().getCourseDescription())
+                .picturePath(certificate.getTemplate().getPicturePath())
+                .projectDescription(certificate.getTemplate().getProjectDescription())
                 .serialNumber(certificate.getSerialNumber()).userName(certificate.getUserName()).build();
         log.debug("verified certificate {}", certificate);
 
