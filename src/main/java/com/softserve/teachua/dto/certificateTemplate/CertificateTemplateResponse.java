@@ -15,4 +15,7 @@ public class CertificateTemplateResponse implements Convertible {
     private String name;
     private String filePath;
     private Integer certificateType;
+    private String courseDescription;
+    private String projectDescription;
+    private String picturePath;
 }
