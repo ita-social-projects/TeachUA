@@ -1,9 +1,6 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.certificate.CertificateContent;
-import com.softserve.teachua.dto.certificate.CertificatePreview;
-import com.softserve.teachua.dto.certificate.CertificateTransfer;
-import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
+import com.softserve.teachua.dto.certificate.*;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import java.util.List;
@@ -28,6 +25,13 @@ public interface CertificateService {
      * @return new {@code List<CertificatePreview>}
      */
     List<CertificatePreview> getListOfCertificatesPreview();
+
+    /**
+     * This method returns list of dto {@code CertificateUserResponse} of certificates, found by email
+     *
+     * @return new {@code List<CertificateUserResponse>}
+     */
+    List<CertificateUserResponse> getListOfCertificatesByEmail(String email);
 
     /**
      * This method returns list of dto {@code CertificateTransfer} of all unsent certificates (certificates with send
@@ -171,6 +175,19 @@ public interface CertificateService {
      * @return filled {@code byte[]}
      */
     byte[] getPdfOutput(CertificateTransfer response);
+
+    /**
+     * This method gets the email and serial number, checks if user owns certificate and then generates one,
+     * returns it in form of {@code byte[]}
+     *
+     * @param userEmail
+     *            put authenticated user email
+     * @param serialNumber
+     *            put serial number of certificate
+     *
+     * @return filled {@code byte[]}
+     */
+    byte[] getPdfOutputForDownload(String userEmail, Long serialNumber);
 
     /**
      * This method gets the serial number, obtains certificate with specified serial number from DB, then if certificate
