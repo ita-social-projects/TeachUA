@@ -15,7 +15,7 @@ public class CertificateUserResponse {
 
     private String certificateType;
 
-    private String userName;
+    private String date;
 
     private String courseDescription;
 
