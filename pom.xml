@@ -36,21 +36,21 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.5.0</version>
+            <version>4.5.3</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-api</artifactId>
-            <version>4.5.0</version>
+            <version>4.5.3</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-support</artifactId>
-            <version>4.5.0</version>
+            <version>4.5.3</version>
             <scope>compile</scope>
         </dependency>
 
@@ -58,14 +58,14 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
-            <version>4.5.0</version>
+            <version>4.5.3</version>
         </dependency>
 
         <!-- Firefox driver -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-firefox-driver</artifactId>
-            <version>4.5.0</version>
+            <version>4.5.3</version>
         </dependency>
 
         <!-- Add needed webDriver version -->
@@ -123,7 +123,7 @@
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>6.1.4.Final</version>
+            <version>6.1.5.Final</version>
         </dependency>
 
         <!-- - - - - - Reports - - - - - -->

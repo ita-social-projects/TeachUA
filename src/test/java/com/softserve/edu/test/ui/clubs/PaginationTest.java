@@ -1,8 +1,8 @@
 package com.softserve.edu.test.ui.clubs;
 
-import com.softserve.edu.data.dataproviders.PaginationTestDataProvider;
-import com.softserve.edu.pages.guest.clubs.ClubsPage;
-import com.softserve.edu.pages.guest.home.HomePage;
+import com.softserve.edu.testcases.dataproviders.PaginationTestDataProvider;
+import com.softserve.edu.pages.common.clubs.ClubsPage;
+import com.softserve.edu.pages.common.home.HomePage;
 import com.softserve.edu.testcases.BaseTestSetup;
 import org.testng.Assert;
 import org.testng.annotations.Test;

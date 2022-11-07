@@ -1,11 +1,11 @@
 package com.softserve.edu.test.ui;
 
-import com.softserve.edu.pages.guest.aboutus.AboutUsPage;
-import com.softserve.edu.pages.guest.challenge.ChallengePage;
-import com.softserve.edu.pages.guest.clubs.ClubsPage;
-import com.softserve.edu.pages.guest.home.HomePage;
-import com.softserve.edu.pages.guest.news.NewsPage;
-import com.softserve.edu.pages.guest.servicesinukrainian.ServicesInUkrainianPage;
+import com.softserve.edu.pages.common.aboutus.AboutUsPage;
+import com.softserve.edu.pages.common.challenge.ChallengePage;
+import com.softserve.edu.pages.common.clubs.ClubsPage;
+import com.softserve.edu.pages.common.home.HomePage;
+import com.softserve.edu.pages.common.news.NewsPage;
+import com.softserve.edu.pages.common.servicesinukrainian.ServicesInUkrainianPage;
 import com.softserve.edu.testcases.BaseTestSetup;
 import org.testng.annotations.Test;
 

@@ -1,12 +1,12 @@
 package com.softserve.edu.pages;
 
-import com.softserve.edu.data.Locations;
-import com.softserve.edu.pages.guest.aboutus.AboutUsPage;
-import com.softserve.edu.pages.guest.challenge.ChallengePage;
-import com.softserve.edu.pages.guest.clubs.ClubsPage;
-import com.softserve.edu.pages.guest.home.HomePage;
-import com.softserve.edu.pages.guest.news.NewsPage;
-import com.softserve.edu.pages.guest.servicesinukrainian.ServicesInUkrainianPage;
+import com.softserve.edu.testcases.enums.Locations;
+import com.softserve.edu.pages.common.aboutus.AboutUsPage;
+import com.softserve.edu.pages.common.challenge.ChallengePage;
+import com.softserve.edu.pages.common.clubs.ClubsPage;
+import com.softserve.edu.pages.common.home.HomePage;
+import com.softserve.edu.pages.common.news.NewsPage;
+import com.softserve.edu.pages.common.servicesinukrainian.ServicesInUkrainianPage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public abstract class TopPart {
     private final String LIST_LOCATIONS_CSS_SELECTOR = ".ant-dropdown-menu-vertical>.ant-dropdown-menu-item";
     protected WebDriver driver;                                                     // WebDriver instance
     // this.getClass() means that logger will be created from the name of the class where it is used
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());       // logger
     protected final String OPTION_NULL_MESSAGE = "Option is null";                  // error message
     protected final String OPTION_NOT_FOUND_MESSAGE = "Option %s not found in %s";  // option not found error message
 

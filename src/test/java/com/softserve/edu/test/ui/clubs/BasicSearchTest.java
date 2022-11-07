@@ -1,10 +1,10 @@
 package com.softserve.edu.test.ui.clubs;
 
-import com.softserve.edu.data.Locations;
-import com.softserve.edu.data.club.Club;
-import com.softserve.edu.data.dataproviders.BasicSearchTestDataProvider;
-import com.softserve.edu.pages.guest.clubs.ClubsPage;
-import com.softserve.edu.pages.guest.home.HomePage;
+import com.softserve.edu.testcases.enums.Locations;
+import com.softserve.edu.testcases.repositories.club.Club;
+import com.softserve.edu.testcases.dataproviders.BasicSearchTestDataProvider;
+import com.softserve.edu.pages.common.clubs.ClubsPage;
+import com.softserve.edu.pages.common.home.HomePage;
 import com.softserve.edu.testcases.BaseTestSetup;
 import io.qameta.allure.*;
 import org.testng.Assert;
@@ -107,7 +107,7 @@ public class BasicSearchTest extends BaseTestSetup {
         clubsPage.clickEnterButton();
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
-        Assert.assertNotEquals(clubsPage.getAllClubTitles(), db.getList(clubsByCenter));     // remove NOT after bug fix
+        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(clubsByCenter));     // remove NOT after bug fix
 
         logger.info("Test if club will be found by center to which it belongs finished");
     }

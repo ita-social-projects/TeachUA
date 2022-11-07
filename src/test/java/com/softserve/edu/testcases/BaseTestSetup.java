@@ -1,7 +1,9 @@
 package com.softserve.edu.testcases;
 
-import com.softserve.edu.pages.guest.home.HomePage;
+import com.softserve.edu.pages.common.home.HomePage;
 import com.softserve.edu.services.database.Database;
+import com.softserve.edu.testcases.tools.browser.Browsers;
+import com.softserve.edu.testcases.tools.browser.DriverWrapper;
 import com.softserve.edu.utils.ConfigPropertiesReader;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Attachment;
@@ -24,13 +26,9 @@ import java.time.Duration;
 
 public abstract class BaseTestSetup {
 
-    private WebDriver driver;                                                           // WebDriver instance
-    private final Long IMPLICITLY_WAIT_SECONDS = 10L;                                   // time for implicit wait
     private final Long ONE_SECOND_DELAY = 1000L;                                        // one-second delay
-    private final String TIME_TEMPLATE = "yyyy-MM-dd_HH-mm-ss-S";                       // time format
     protected ConfigPropertiesReader config = new ConfigPropertiesReader();             // get test data
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());           // logger
-    protected SoftAssert softAssert = new SoftAssert();                                 // soft asserts
     protected Database db = new Database();                                             // database connection
 
     // Overload
@@ -47,24 +45,12 @@ public abstract class BaseTestSetup {
         }
     }
 
-//    private void takeScreenshot(String testName) {
-//        String currentTime = new SimpleDateFormat(TIME_TEMPLATE).
-//                format(new Date());                                                     // get current date and time
-//        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);     // take screenshot
-//        try {
-//            // Place taken screenshot into appropriate directory with the following name
-//            FileUtils.copyFile(scrFile, new File("./screenshots/" + currentTime + "_" + testName + ".png"));
-//        } catch (IOException e) {
-//            e.printStackTrace();                                                        // throw exception
-//        }
-//    }
-
     // Annotation add received image into allure report (type says allure to understand byte sequence as image, value = attachName)
     @Attachment(value = "{0}", type = "image/png")
     private byte[] saveImageAttachment(String attachName) {
 
         byte[] result = null;
-        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);     // take screenshot
+        File scrFile = ((TakesScreenshot) DriverWrapper.get().driver()).getScreenshotAs(OutputType.FILE); // take screenshot
         try{
             // Write taken screenshot as byte array
             result = Files.readAllBytes(scrFile.toPath());
@@ -79,35 +65,47 @@ public abstract class BaseTestSetup {
     // Type says allure to understand byte sequence as text
     @Attachment(value = "{0}", type = "text/plain")
     private byte[] saveHtmlAttachment(String attachName) {
-        // Transform and return page source as by sequence
-        return driver.getPageSource().getBytes();
+        return DriverWrapper.get().driver().getPageSource().getBytes();
     }
 
+//    @Attachment(value = "{0}", type = "video/mp4", fileExtension = ".mp4")
+//    public byte[] saveVideoAttachment(String attachName) {
+//        File video = new File(attachName);
+//        try {
+//            byte[] byteArr = IOUtils.toByteArray(Files.newInputStream(Paths.get("./video/" + attachName + ".mp4")));
+//            byte[] decode = Base64.getDecoder().decode(byteArr);
+//            FileUtils.writeByteArrayToFile(video, decode);
+//            return byteArr;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return new byte[0];
+//        }
+//    }
 
-    @BeforeSuite
-    public void beforeSuite() {
-        WebDriverManager.chromedriver().setup();                                        // get latest ChromeDriver
-    }
+//    @BeforeSuite
+//    public void beforeSuite() {
+//        WebDriverManager.chromedriver().setup();                                        // get latest ChromeDriver
+//    }
 
     @AfterClass(alwaysRun = true)
     public void afterClass() {
-        if (driver != null) {
-            driver.quit();                                                              // close driver
-        }
+        DriverWrapper.get().quit();                                                     // close driver
     }
 
     @BeforeClass
     public void beforeClass() {
-        // Initialize driver instance with Chrome driver
-        driver = new ChromeDriver();
-        // Set time for implicit wait
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(IMPLICITLY_WAIT_SECONDS));
-        driver.manage().window().maximize();                                            // maximize window
+//        // Initialize driver instance with Chrome driver
+//        driver = new ChromeDriver();
+//        // Set time for implicit wait
+//        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(IMPLICITLY_WAIT_SECONDS));
+//        driver.manage().window().maximize();                                            // maximize window
+        DriverWrapper.get().setDriverStrategy(Browsers.CHROME_BROWSER);                 // set browser
+        DriverWrapper.get().driver();                                                   // get and initialize driver
     }
 
     @BeforeMethod
     public void beforeMethod() {
-        driver.get(config.getBaseURL());                                                // navigate to URL
+        DriverWrapper.get().url(config.getBaseURL());                                   // navigate to URL
     }
 
     @AfterMethod
@@ -117,19 +115,18 @@ public abstract class BaseTestSetup {
             String testName = result.getName();
             logger.error("***TC error, name = " + testName + " ERROR");
             // Take screenshot and save it in allure report
-            // takeScreenshot(testName);
             saveImageAttachment(result.getName() + "_image");
             // Take sourceCode and save it in allure report
             saveHtmlAttachment(result.getName() + "_sourceCode");
-            // Clear cache; delete cookie; delete session;
-            driver.manage().deleteAllCookies();
+            // Clear cache, delete cookie, delete session
+            DriverWrapper.get().deleteCookies();
         }
     }
 
     @Step("Load application")
     protected HomePage loadApplication() {
         logger.info("Home page opened");                                                // information about current page
-        return new HomePage(driver);                                                    // load HomePage
+        return new HomePage(DriverWrapper.get().driver());                              // load HomePage
     }
 
 }
