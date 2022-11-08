@@ -4,18 +4,23 @@ import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.certificate.*;
 import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
+import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.service.CertificateDataLoaderService;
 import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -98,6 +103,36 @@ public class CertificateController implements Api {
     @GetMapping("/certificates")
     public List<CertificatePreview> getAllCertificates() {
         return certificateService.getListOfCertificatesPreview();
+    }
+
+    /**
+     * This endpoint is used to get all certificates of authenticated user.
+     *
+     * @return {@code List<CertificateUserResponse>}
+     */
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/certificates/my")
+    public List<CertificateUserResponse> getCertificatesOfAuthenticatedUser(Authentication authentication) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        return certificateService.getListOfCertificatesByEmail(userPrincipal.getEmail());
+    }
+
+    /**
+     * This endpoint is used to download certificate, requested by owner.
+     *
+     * @return {@code ResponseEntity<byte[]>}
+     */
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/certificates/download/{serialNumber}")
+    public ResponseEntity<byte[]> downloadCertificate(Authentication authentication,
+                                                      @PathVariable("serialNumber") Long serialNumber) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        byte[] bytes = certificateService.getPdfOutputForDownload(userPrincipal.getEmail(), serialNumber);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "certificate.pdf");
+        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
 
     @GetMapping("/certificate")

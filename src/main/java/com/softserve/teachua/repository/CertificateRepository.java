@@ -50,6 +50,8 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     List<Certificate> findAllByOrderByIdAsc();
 
+    List<Certificate> findAllBySendToEmailOrderById(String email);
+
     Optional<Certificate> findById(Long id);
 
     Optional<Certificate> findBySerialNumber(Long serialNumber);
