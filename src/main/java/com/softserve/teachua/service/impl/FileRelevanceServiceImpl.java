@@ -15,10 +15,6 @@ import java.util.stream.Collectors;
 @Service
 public class FileRelevanceServiceImpl implements FileRelevanceService {
 
-    private final static String ORPHANED_FILES_SEARCH_PATH = "upload";
-
-    private final static String[] ORPHANED_FILES_EXTENSIONS = {"png", "jpg"};
-
     private final AboutUsItemRepository aboutUsItemRepository;
 
     private final BannerItemRepository bannerItemRepository;

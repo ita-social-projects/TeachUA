@@ -2,7 +2,7 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.FileRelevanceService;
-import com.softserve.teachua.service.FileService;
+import com.softserve.teachua.service.FileOperationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -15,37 +15,37 @@ import java.util.Set;
 @RestController
 public class FileController implements Api {
 
-    private final FileService fileService;
+    private final FileOperationsService fileOperationsService;
 
     private final FileRelevanceService fileRelevanceService;
 
     @Autowired
-    public FileController(FileService fileService, FileRelevanceService fileRelevanceService) {
-        this.fileService = fileService;
+    public FileController(FileOperationsService fileOperationsService, FileRelevanceService fileRelevanceService) {
+        this.fileOperationsService = fileOperationsService;
         this.fileRelevanceService = fileRelevanceService;
     }
 
     @GetMapping("/files/list")
     public List<String> viewFilesWithPath(@RequestParam(required = false) Optional<String> path) {
         if (path.isPresent()) {
-            return fileService.listFiles(path.get());
+            return fileOperationsService.listFiles(path.get());
         }
-        return fileService.listFiles(".");
+        return fileOperationsService.listFiles(".");
     }
 
     @GetMapping("/files/read")
-    public String readFile(@RequestParam String name) {
-        return fileService.readFile(name);
+    public String readFile(@RequestParam String path) {
+        return fileOperationsService.readFile(path);
     }
 
     @GetMapping("/files/download")
-    public ResponseEntity<Resource> downloadFile(@RequestParam String name) {
-        return fileService.downloadFile(name);
+    public ResponseEntity<Resource> downloadFile(@RequestParam String path) {
+        return fileOperationsService.downloadFile(path);
     }
 
     @DeleteMapping("/files/delete")
-    public ResponseEntity<String> deleteFile(@RequestParam String name) {
-        return fileService.deleteFile(name);
+    public ResponseEntity<String> deleteFile(@RequestParam String path) {
+        return fileOperationsService.deleteFile(path);
     }
 
     @GetMapping("/files/mentioned-in-db")

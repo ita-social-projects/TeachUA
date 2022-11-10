@@ -1,6 +1,6 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.teachua.service.FileService;
+import com.softserve.teachua.service.FileOperationsService;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class FileServiceImpl implements FileService {
+public class FileOperationsServiceImpl implements FileOperationsService {
 
     @Override
     public List<String> listFiles(String path) {
@@ -33,37 +33,37 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public String readFile(String name) {
+    public String readFile(String path) {
         try {
-            return new String(Files.readAllBytes(Paths.get(name)));
+            return new String(Files.readAllBytes(Paths.get(path)));
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, name + ", " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, path + ", " + e.getMessage());
         }
     }
 
     @Override
-    public ResponseEntity<Resource> downloadFile(String name) {
+    public ResponseEntity<Resource> downloadFile(String path) {
         try {
-            InputStreamResource resource = new InputStreamResource(Files.newInputStream(Paths.get(name)));
+            InputStreamResource resource = new InputStreamResource(Files.newInputStream(Paths.get(path)));
             HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + name);
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + path);
             return ResponseEntity.ok()
                     .headers(headers)
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(resource);
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, name + ", " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, path + ", " + e.getMessage());
         }
     }
 
     @Override
-    public ResponseEntity<String> deleteFile(String name) {
+    public ResponseEntity<String> deleteFile(String path) {
         try {
-            Files.deleteIfExists(Paths.get(name));
+            Files.deleteIfExists(Paths.get(path));
             return ResponseEntity.noContent()
                     .build();
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, name + ", " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, path + ", " + e.getMessage());
         }
     }
 
