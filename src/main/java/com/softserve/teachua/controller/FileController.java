@@ -53,4 +53,9 @@ public class FileController implements Api {
         return fileRelevanceService.getAllMentionedFiles();
     }
 
+    @GetMapping("/files/orphaned-files")
+    public Set<String> getOrphanedFiles() {
+        return fileRelevanceService.getAllOrphanedFiles();
+    }
+
 }

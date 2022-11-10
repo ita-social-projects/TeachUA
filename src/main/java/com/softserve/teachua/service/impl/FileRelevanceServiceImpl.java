@@ -2,14 +2,22 @@ package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.repository.*;
 import com.softserve.teachua.service.FileRelevanceService;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class FileRelevanceServiceImpl implements FileRelevanceService {
+
+    private final static String ORPHANED_FILES_SEARCH_PATH = "upload";
+
+    private final static String[] ORPHANED_FILES_EXTENSIONS = {"png", "jpg"};
 
     private final AboutUsItemRepository aboutUsItemRepository;
 
@@ -69,6 +77,16 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
         userRepository.findAll().forEach(user -> files.add(user.getUrlLogo()));
 
         return files;
+    }
+
+    public Set<String> getAllOrphanedFiles() {
+        Collection<File> files = FileUtils.listFiles(
+                new File(ORPHANED_FILES_SEARCH_PATH), ORPHANED_FILES_EXTENSIONS, true);
+        Set<String> mentionedFiles = getAllMentionedFiles();
+        return files.stream()
+                .map(file -> "/" + file.getPath())
+                .filter(file -> !mentionedFiles.contains(file))
+                .collect(Collectors.toSet());
     }
 
 }

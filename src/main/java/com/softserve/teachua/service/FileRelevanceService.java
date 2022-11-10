@@ -9,4 +9,6 @@ public interface FileRelevanceService {
 
     Set<String> getAllMentionedFiles();
 
+    Set<String> getAllOrphanedFiles();
+
 }
