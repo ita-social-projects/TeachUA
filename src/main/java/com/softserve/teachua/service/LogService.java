@@ -13,7 +13,7 @@ public interface LogService {
     /**
      * The method returns list of logs {@code List<String>}.
      */
-    List<String> getAllLogs(String filter, String content);
+    List<String> getAllLogs();
 
     /**
      * The method returns list of logs {@code List<String>} by name.
@@ -29,12 +29,10 @@ public interface LogService {
      * The method delete logs by filter In case default filter delete all logs without "catalina" In case custom filter
      * delete all logs by custom parameter without "catalina"
      *
-     * @param filter
+     * @param 
      *            - user write in url
-     *
-     * @return {@code LogResponse}
      */
-    LogResponse deleteLogsByFilter(String filter);
+    void deleteLogByName(String name);
 
     /**
      * Use this method to get absolute path to log in dev or production
