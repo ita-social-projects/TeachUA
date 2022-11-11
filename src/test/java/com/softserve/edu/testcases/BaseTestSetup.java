@@ -106,8 +106,6 @@ public abstract class BaseTestSetup {
             saveImageAttachment(result.getName() + "_image");
             // Take sourceCode and save it in allure report
             saveHtmlAttachment(result.getName() + "_sourceCode");
-            // Record video and save it in allure report
-            // saveVideoAttachment(result.getName() + "_video");
             // Clear cache, delete cookie, delete session
             DriverWrapper.get().deleteCookies();
         }

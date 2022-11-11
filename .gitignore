@@ -5,6 +5,7 @@
 /target/
 /allure-results/
 /screenshots/
+/video/
 
 # Log file
 *.log
