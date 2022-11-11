@@ -12,10 +12,13 @@ import java.util.List;
 public class AdvancedSearchPart {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());             // logger
-
     // Locator to find needed club category
     private final String LIST_CATEGORIES_XPATH =
             "//div[@id='basic_categoriesName']//span[contains(@class,'ant-checkbox')]/following-sibling::span";
+    private final String VALUE_ATTRIBUTE = "value";                                     // value attribute
+    private final String CLEAR_PLACE_LOCATOR = "./..//span[@class='anticon anticon-close-circle']";
+    // Message that informs about selected value
+    private final String SELECT_MESSAGE = "The following value has been selected from dropdown: {}";
     // Locator to find needed city from dropdown
     protected final String LIST_CITIES_DROPDOWN_CSS_SELECTOR =
             "//div[@id='basic_cityName_list']/following-sibling::div//div[@class='ant-select-item-option-content']";
@@ -25,13 +28,11 @@ public class AdvancedSearchPart {
     // Locator to find metro station city from dropdown
     protected final String LIST_METRO_STATION_DROPDOWN_CSS_SELECTOR =
             "//div[@id='basic_stationName_list']/following-sibling::div//div[@class='ant-select-item-option-content']";
-    private final String VALUE_ATTRIBUTE = "value";                                     // value attribute
-    private final String CLEAR_PLACE_LOCATOR = "./..//span[@class='anticon anticon-close-circle']";
-    // Message that informs about selected value
-    private final String SELECT_MESSAGE = "The following value has been selected from dropdown: {}";
+    protected final int MINIMUM_AGE = 2;                                                // minimum child age
+    protected final int MAXIMUM_AGE = 18;                                               // maximum child age
 
 
-    protected WebDriver driver;                                                         // create driver instance
+    private WebDriver driver;                                                           // create driver instance
 
     private WebElement advancedSearch;                                                  // advanced search text
     private WebElement clearDropdownButton;                                             // clear dropdown button
@@ -186,7 +187,7 @@ public class AdvancedSearchPart {
         return this.cityDropdown;                                                       // get cityDropdown element
     }
 
-    private String getCityDropdownText() {
+    protected String getCityDropdownText() {
         return getCityDropdown().getText();                                             // get cityDropdown text
     }
 
@@ -218,7 +219,6 @@ public class AdvancedSearchPart {
 
     protected void clickDistrictDropdown() {
         getDistrictDropdown().click();                                                  // click districtDropdown
-        //executor.executeScript("arguments[0].click();", getDistrictDropdown());
     }
 
     // nearestMetroStation
@@ -312,11 +312,11 @@ public class AdvancedSearchPart {
     }
 
     // childAgeField
-    private WebElement getChildAgeField() {
+    protected WebElement getChildAgeField() {
         return this.childAgeField;                                                      // get childAgeField element
     }
 
-    private String getChildAgeFieldValue() {
+    protected String getChildAgeFieldValue() {
         return getChildAgeField().getAttribute(VALUE_ATTRIBUTE);                        // get childAgeField value
     }
 
@@ -343,20 +343,22 @@ public class AdvancedSearchPart {
 
     // alphabetSort
     private WebElement getAlphabetSort() {
-        return this.alphabetSort;                                                       // get alphabetSort element
+        return driver.findElement(By.xpath("//span[@class='anticon anticon-arrow-up control-sort-arrow']/../preceding-sibling::span[2]"));
+        //return this.alphabetSort;                                                       // get alphabetSort element
     }
 
     private String getAlphabetSortText() {
         return getAlphabetSort().getText();                                             // get alphabetSort text
     }
 
-    private void clickAlphabetSort() {
+    protected void clickAlphabetSort() {
         getAlphabetSort().click();                                                      // click alphabetSort
     }
 
     // rateSort
     private WebElement getRateSort() {
-        return this.rateSort;                                                           // get rateSort element
+        return driver.findElement(By.xpath("//div[@class='control-sort-arrows']/preceding-sibling::span[1]"));
+        //return this.rateSort;                                                           // get rateSort element
     }
 
     private String getRateSortText() {
@@ -364,6 +366,7 @@ public class AdvancedSearchPart {
     }
 
     protected void clickRateSort() {
+        //JsMethods.clickElement(getRateSort());
         getRateSort().click();                                                          // click rateSort
     }
 

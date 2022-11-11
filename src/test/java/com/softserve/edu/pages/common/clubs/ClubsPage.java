@@ -3,6 +3,7 @@ package com.softserve.edu.pages.common.clubs;
 import com.softserve.edu.testcases.enums.Locations;
 import com.softserve.edu.testcases.enums.Categories;
 import com.softserve.edu.pages.TopPart;
+import com.softserve.edu.utils.JsMethods;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -20,6 +21,7 @@ public class ClubsPage extends TopPart {
     // Abstract classes
     private ClubsContainer clubsContainer;                                          // clubsContainer abstract class
     private AdvancedSearchPart advancedSearchPart;                                  // advancedSearchPart abstract class
+    private CentersContainer centersContainer;                                       // centersContainer abstract class
 
     public ClubsPage(WebDriver driver) {
         super(driver);
@@ -68,8 +70,22 @@ public class ClubsPage extends TopPart {
     }
 
     private ClubsContainer createClubsContainer() {
-        clubsContainer = new ClubsContainer(driver);                                // create new object of Pagination type
+        clubsContainer = new ClubsContainer(driver);                                // create new object of ClubsContainer type
         return getClubsContainer();
+    }
+
+    // centersContainer
+    private CentersContainer getCentersContainer() {
+        if (centersContainer == null) {
+            // throw RuntimeException if centersContainer is null
+            throw new RuntimeException(OPTION_NULL_MESSAGE);
+        }
+        return centersContainer;
+    }
+
+    private CentersContainer createCentersContainer() {
+        centersContainer = new CentersContainer(driver);                            // create new object of CentersContainer type
+        return getCentersContainer();
     }
 
     // advancedSearchPart
@@ -163,11 +179,6 @@ public class ClubsPage extends TopPart {
         getAdvancedSearchPart().chooseCategories(categories);                       // choose categories to filter
     }
 
-    // Set child's age
-    public void setChildAge(int age) {
-        getAdvancedSearchPart().sendTextIntoChildAgeField(Integer.toString(age));   // set child's age
-    }
-
     // Click center radio button
     @Step("Click center radio button")
     public void selectCenters() {
@@ -175,8 +186,38 @@ public class ClubsPage extends TopPart {
     }
 
     // Display clubs as a list
+    @Step("Display clubs as list")
     public void displayClubsAsList() {
         getAdvancedSearchPart().clickListView();                                    // select list view
+    }
+
+    // Scroll to child age field
+    public void scrolltoChildAgeField() {
+        JsMethods.scrollToElement(getAdvancedSearchPart().getChildAgeField());      // scroll to element
+    }
+
+    // Get child age value
+    private String getChildAgeValue() {
+        return getAdvancedSearchPart().getChildAgeFieldValue();                     // get child age
+    }
+
+    // Check if child age is correct
+    public boolean isChildAgeCorrect() {
+        try {
+            // Check if entering child age field is empty
+            if(getChildAgeValue().isEmpty()) { return true; }
+            return Integer.parseInt(getChildAgeValue()) >= getAdvancedSearchPart().MINIMUM_AGE
+                        && Integer.parseInt(getChildAgeValue()) <= getAdvancedSearchPart().MAXIMUM_AGE;
+        } catch(NumberFormatException e) {
+            return false;
+        }
+    }
+
+    // Set child age
+    @Step("Child age is set to {0}")
+    public void setChildAge(String age) {
+        logger.info("Child age is set to {}", age);
+        getAdvancedSearchPart().sendTextIntoChildAgeField(age);                     // send text into child age field
     }
 
     // Check if mandatory fields are displayed
@@ -196,16 +237,29 @@ public class ClubsPage extends TopPart {
         return !getAdvancedSearchPart().extraFieldsNotExist();                      // check if extra fields present
     }
 
-    // Sort clubs by rate
-    @Step("Click sort by rate button")
-    public void sortByRate() {
-        getAdvancedSearchPart().clickRateSort();                                    // click sort by rate button
+    // Sort clubs by rating
+    @Step("Click sort by rating button")
+    public void sortByRating() {
+        getAdvancedSearchPart().clickRateSort();                                    // click sort by rating button
+        logger.info("Items have been sorted by rating");
+    }
+
+    // Sort clubs by title
+    @Step("Click alphabetic sort button")
+    public void alphabeticSort() {
+        getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort button
+        logger.info("Items have been sorted by alphabet");
     }
 
     // Descending club sort
     @Step("Click on the '↑' icon")
     public void descendingSort() {
         getAdvancedSearchPart().clickDescendingSort();                              // click descending sort
+    }
+
+    public String getCityName() {
+        logger.info("Default city is {}", getAdvancedSearchPart().getCityDropdownText());
+        return getAdvancedSearchPart().getCityDropdownText();                       // get city name
     }
 
     // Ascending club sort
@@ -230,6 +284,7 @@ public class ClubsPage extends TopPart {
         return result;                                                              // get actual number of pages
     }
 
+    // TODO Combine the following two methods into one
     // Get number of clubs on all pages on Clubs page
     public List<String> getAllClubTitles() {
         List<String> allClubTitles = new ArrayList<>();
@@ -251,6 +306,30 @@ public class ClubsPage extends TopPart {
         // Sort final list
         Collections.sort(allClubTitles);
         return allClubTitles;
+    }
+
+    // Get number of centers on all pages on Clubs page
+    public List<String> getAllCenterTitles() {
+        List<String> allCenterTitles = new ArrayList<>();
+        try{
+            presentationSleep(10);
+            allCenterTitles.addAll(createCentersContainer().getCenterComponentTitles());
+            // Check if pagination is present on the page
+            if(createPagination().isNextButtonPresent()) {
+                while(createPagination().isNextButtonEnabled()) {
+                    createPagination().clickNextButton();                           // click on next button
+                    presentationSleep(3);
+                    // Add all titles on the current page to the list with all titles
+                    allCenterTitles.addAll(createCentersContainer().getCenterComponentTitles());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // Sort final list
+        //Collections.sort(allCenterTitles);
+        logger.info(allCenterTitles.toString());
+        return allCenterTitles;
     }
 
     public int getTotalNumberOfPagesFromDatabase(String total) {

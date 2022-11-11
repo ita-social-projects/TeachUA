@@ -218,7 +218,8 @@ public class Database {
                     result.add(rs.getString(i).trim());
                 }
             }
-            Collections.sort(result);
+            //Collections.sort(result);
+            logger.info(result.toString());
         } catch (SQLException e) {
             logger.error("Message = " + e.getMessage());
             logger.error("printTrace \n");

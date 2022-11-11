@@ -11,6 +11,7 @@
 `get<ElementGroupName>Count` - get element group size  
 `print<ElementGroupName>` - print element group  
 `goto<PageName>Page` - go to a certain page  
+`scrollto<ElementName>` - scroll to element
 `is<ElementName>Enabled` - check if element is enabled  
 `is<ElementName>Exist` - check if element exists  
 
