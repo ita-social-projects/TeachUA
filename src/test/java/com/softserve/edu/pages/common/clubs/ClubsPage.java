@@ -304,7 +304,8 @@ public class ClubsPage extends TopPart {
             e.printStackTrace();
         }
         // Sort final list
-        Collections.sort(allClubTitles);
+        //Collections.sort(allClubTitles);
+        logger.info(allClubTitles.toString());
         return allClubTitles;
     }
 

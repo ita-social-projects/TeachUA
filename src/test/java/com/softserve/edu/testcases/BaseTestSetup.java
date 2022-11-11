@@ -5,24 +5,22 @@ import com.softserve.edu.services.database.Database;
 import com.softserve.edu.testcases.tools.browser.Browsers;
 import com.softserve.edu.testcases.tools.browser.DriverWrapper;
 import com.softserve.edu.utils.ConfigPropertiesReader;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
-import org.testng.asserts.SoftAssert;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.Duration;
+import java.nio.file.Paths;
+import java.util.Base64;
 
 public abstract class BaseTestSetup {
 
@@ -68,11 +66,11 @@ public abstract class BaseTestSetup {
         return DriverWrapper.get().driver().getPageSource().getBytes();
     }
 
-//    @Attachment(value = "{0}", type = "video/mp4", fileExtension = ".mp4")
+//    @Attachment(value = "{0}", type = "video/avi", fileExtension = ".avi")
 //    public byte[] saveVideoAttachment(String attachName) {
 //        File video = new File(attachName);
 //        try {
-//            byte[] byteArr = IOUtils.toByteArray(Files.newInputStream(Paths.get("./video/" + attachName + ".mp4")));
+//            byte[] byteArr = IOUtils.toByteArray(Files.newInputStream(Paths.get("./video/" + attachName + ".avi")));
 //            byte[] decode = Base64.getDecoder().decode(byteArr);
 //            FileUtils.writeByteArrayToFile(video, decode);
 //            return byteArr;
@@ -82,11 +80,6 @@ public abstract class BaseTestSetup {
 //        }
 //    }
 
-//    @BeforeSuite
-//    public void beforeSuite() {
-//        WebDriverManager.chromedriver().setup();                                        // get latest ChromeDriver
-//    }
-
     @AfterClass(alwaysRun = true)
     public void afterClass() {
         DriverWrapper.get().quit();                                                     // close driver
@@ -94,11 +87,6 @@ public abstract class BaseTestSetup {
 
     @BeforeClass
     public void beforeClass() {
-//        // Initialize driver instance with Chrome driver
-//        driver = new ChromeDriver();
-//        // Set time for implicit wait
-//        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(IMPLICITLY_WAIT_SECONDS));
-//        driver.manage().window().maximize();                                            // maximize window
         DriverWrapper.get().setDriverStrategy(Browsers.CHROME_BROWSER);                 // set browser
         DriverWrapper.get().driver();                                                   // get and initialize driver
     }
@@ -113,11 +101,13 @@ public abstract class BaseTestSetup {
         presentationSleep(); // For Presentation ONLY
         if (!result.isSuccess()) {
             String testName = result.getName();
-            logger.error("***TC error, name = " + testName + " ERROR");
+            logger.error("Test case error, name = " + testName + " ERROR");
             // Take screenshot and save it in allure report
             saveImageAttachment(result.getName() + "_image");
             // Take sourceCode and save it in allure report
             saveHtmlAttachment(result.getName() + "_sourceCode");
+            // Record video and save it in allure report
+            // saveVideoAttachment(result.getName() + "_video");
             // Clear cache, delete cookie, delete session
             DriverWrapper.get().deleteCookies();
         }

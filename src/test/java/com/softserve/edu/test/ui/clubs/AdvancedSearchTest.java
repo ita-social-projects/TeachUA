@@ -7,13 +7,17 @@ import com.softserve.edu.testcases.BaseTestSetup;
 import com.softserve.edu.testcases.enums.KyivDistricts;
 import com.softserve.edu.testcases.enums.KyivMetroStations;
 import com.softserve.edu.testcases.enums.Locations;
+import com.softserve.edu.testcases.listeners.TestListener;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.TmsLink;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+// Add Listeners annotation to add custom test listener class with video recorder
+@Listeners(TestListener.class)
 public class AdvancedSearchTest extends BaseTestSetup {
 
     @Description("[Розширений пошук] Verify that the clubs can be sorted by rating")
