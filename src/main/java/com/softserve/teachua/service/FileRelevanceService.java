@@ -7,14 +7,10 @@ import java.util.Set;
  */
 public interface FileRelevanceService {
 
-    String ORPHANED_FILES_SEARCH_PATH = "upload";
-
-    String[] ORPHANED_FILES_EXTENSIONS = {"png", "jpg"};
-
     /**
      * This method returns set of all file locations stored in db.
      * <br><br>
-     * It traverses about_us, banner_item, certificate_template, challenge, club, contact_type,
+     * It traverses about_us, banner_item, certificate_template, challenge, club, contact_type, gallery
      * news, task and user tables.
      * @return {@code Set<String>}
      */

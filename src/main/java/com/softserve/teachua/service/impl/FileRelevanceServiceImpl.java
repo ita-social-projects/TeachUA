@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
 @Service
 public class FileRelevanceServiceImpl implements FileRelevanceService {
 
+    private final String ORPHANED_FILES_SEARCH_PATH = "upload";
+
+    private final String[] ORPHANED_FILES_EXTENSIONS = {"png", "jpg"};
+
     private final AboutUsItemRepository aboutUsItemRepository;
 
     private final BannerItemRepository bannerItemRepository;
@@ -26,6 +30,8 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
     private final ClubRepository clubRepository;
 
     private final ContactTypeRepository contactTypeRepository;
+
+    private final GalleryRepository galleryRepository;
 
     private final NewsRepository newsRepository;
 
@@ -40,6 +46,7 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
                                     ChallengeRepository challengeRepository,
                                     ClubRepository clubRepository,
                                     ContactTypeRepository contactTypeRepository,
+                                    GalleryRepository galleryRepository,
                                     NewsRepository newsRepository,
                                     TaskRepository taskRepository,
                                     UserRepository userRepository) {
@@ -49,6 +56,7 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
         this.challengeRepository = challengeRepository;
         this.clubRepository = clubRepository;
         this.contactTypeRepository = contactTypeRepository;
+        this.galleryRepository = galleryRepository;
         this.newsRepository = newsRepository;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
@@ -68,6 +76,7 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
         challengeRepository.findAll().forEach(challenge -> files.add(challenge.getPicture()));
         clubRepository.findAll().forEach(club -> files.add(club.getUrlBackground()));
         contactTypeRepository.findAll().forEach(contactType -> files.add(contactType.getUrlLogo()));
+        galleryRepository.findAll().forEach(galleryPhoto -> files.add(galleryPhoto.getUrl()));
         newsRepository.findAll().forEach(news -> files.add(news.getUrlTitleLogo()));
         taskRepository.findAll().forEach(task -> files.add(task.getPicture()));
         userRepository.findAll().forEach(user -> files.add(user.getUrlLogo()));
@@ -76,8 +85,12 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
     }
 
     public Set<String> getAllOrphanedFiles() {
+        File directory = new File(ORPHANED_FILES_SEARCH_PATH);
+        if (!directory.isDirectory()) {
+            return new HashSet<>();
+        }
         Collection<File> files = FileUtils.listFiles(
-                new File(ORPHANED_FILES_SEARCH_PATH), ORPHANED_FILES_EXTENSIONS, true);
+                directory, ORPHANED_FILES_EXTENSIONS, true);
         Set<String> mentionedFiles = getAllMentionedFiles();
         return files.stream()
                 .map(file -> "/" + file.getPath())
