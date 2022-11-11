@@ -6,14 +6,14 @@ spring:
           google:
             clientId: ${OAUTH2_GOOGLE_CLIENT_ID}
             clientSecret: ${OAUTH2_GOOGLE_CLIENT_SECRET}
-            redirectUri: "${BASE_URL}/oauth2/callback/{registrationId}"
+            redirectUri: "${PROD_BASE_URL}/oauth2/callback/{registrationId}"
             scope:
               - email
               - profile
           facebook:
             clientId: ${OAUTH2_FACEBOOK_CLIENT_ID}
             clientSecret: ${OAUTH2_FACEBOOK_CLIENT_SECRET}
-            redirectUri: ${BASE_URL}"/oauth2/callback/{registrationId}"
+            redirectUri: "${PROD_BASE_URL}/oauth2/callback/{registrationId}"
             scope:
               - email
               - public_profile
@@ -22,3 +22,16 @@ spring:
             authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
             tokenUri: https://graph.facebook.com/v3.0/oauth/access_token
             userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,is_verified,picture.width(250).height(250)
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            redirectUri: "${BASE_URL}/oauth2/callback/{registrationId}"
+          facebook:
+            redirectUri: "${BASE_URL}/oauth2/callback/{registrationId}"

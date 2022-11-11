@@ -221,6 +221,7 @@ class GroupServiceTest {
     @Test
     void updateGroupWithExistingIdShouldReturnUpdateGroup() {
         when(groupRepository.findById(EXISTING_GROUP_ID)).thenReturn(Optional.of(group));
+        when(modelMapper.map(updateGroup, Group.class)).thenReturn(group);
 
         UpdateGroup actual = groupService.updateById(updateGroup, EXISTING_GROUP_ID);
         assertEquals(updateGroup, actual);

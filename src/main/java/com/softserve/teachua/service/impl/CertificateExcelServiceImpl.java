@@ -49,8 +49,13 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     private final static String SURNAME = "прізвище";
     private final static String DATE = "дата";
     private final static String EMAIL = "електронна";
-    private final static String DATE_FORMAT = "d.MM.yyyy";
-    private final static String WORD = "([А-ЯІЇЄ][а-яіїє']+[-–]?){1,2}";
+    private final static String DATE_FORMAT = "[d.MM.yyyy][MM/d/yy][MM/d/yyyy]";
+    private final static String WORD = "([А-ЯІЇЄ][а-яіїє']+[-–—]?){1,2}";
+
+    private static final String INVALID_CHARACTERS_PRESENT = "Присутні недопустимі літери";
+
+    private static final String INVALID_CHARS = "\\w";
+
     private int headerRowIndex = -1;
     private int[] indexes;
     private ExcelParsingResponse response;
@@ -130,6 +135,11 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
         String email = null;
         long rowIndex = (long) data.get(0).getRowIndex() + 1;
         if (indexes[0] != -1) {
+            Pattern pattern = Pattern.compile(INVALID_CHARS);
+            Matcher matcher = pattern.matcher(data.get(indexes[0]).toString());
+            if (matcher.find()) {
+                response.getParsingMistakes().add(new ExcelParsingMistake(INVALID_CHARACTERS_PRESENT, data.get(indexes[0]).toString(), rowIndex));
+            }
             name = formUserName(data.get(indexes[0]));
         }
         if (indexes[1] != -1) {

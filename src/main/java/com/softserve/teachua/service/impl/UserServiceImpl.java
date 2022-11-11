@@ -205,7 +205,11 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         if (userVerifyPassword.getPassword() == null) {
-            userVerifyPassword.setPassword(userRepository.findById(userVerifyPassword.getId()).get().getPassword());
+            userVerifyPassword.setPassword(
+                    userRepository.findById(userVerifyPassword.getId())
+                            .orElseThrow(NotVerifiedUserException::new)
+                            .getPassword()
+            );
             return userVerifyPassword;
         }
 
@@ -316,21 +320,18 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
                 + "Для підтвердження Вашої реєстрації, будь ласка, перейдіть за посиланням нижче: \n<br>"
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">Підтвердити реєстрацію</a></h3>" + "Дякуємо!<br>"
                 + "Ініціатива \"Навчай українською\"";
+        String verifyURL = baseUrl + "/verify?code=" + user.getVerificationCode();
+        // String verifyURL = "http://localhost:3000/dev/verify?code=" + user.getVerificationCode();
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-
         helper.setFrom(fromAddress, senderName);
         helper.setTo(toAddress);
         helper.setSubject(subject);
 
         content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
-
-        String verifyURL = baseUrl + "/verify?code=" + user.getVerificationCode();
-        // String verifyURL = "http://localhost:3000/dev/verify?code=" + user.getVerificationCode();
-
         content = content.replace("[[URL]]", verifyURL);
-        helper.setText(content, true);
+        message.setContent(content, "text/html; charset=UTF-8");
 
         javaMailSender.send(message);
         log.debug("Email has been sent\" {}", user.getEmail());
@@ -355,7 +356,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     public User getUserFromRequest(HttpServletRequest httpServletRequest) {
         return userRepository
                 .findById(jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest)))
-                .orElseThrow(() -> new WrongAuthenticationException());
+                .orElseThrow(WrongAuthenticationException::new);
     }
 
     @Override
@@ -390,7 +391,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     }
 
     @Override
-    public SuccessUserPasswordReset resetPassword(UserResetPassword userResetPassword) { // todo
+    public SuccessUserPasswordReset resetPassword(UserResetPassword userResetPassword) {
         User user = getUserByEmail(userResetPassword.getEmail());
         user.setVerificationCode(RandomString.make(64));
         try {
@@ -399,30 +400,25 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
             String senderName = "TeachUA";
             String subject = "Відновлення паролю";
             String content = "Шановний/а [[userFullName]]!<br>"
-                    + "Для відновлення Вашого паролю, будь ласка, перейдіть за посиланням нижче: \n<br>"
+                    + "Для відновлення Вашого паролю, будь ласка, перейдіть за посиланням нижче: \n<br> "
                     + "<h3><a href=\"[[URL]]\" target=\"_self\">Змінити пароль</a></h3>" + "Дякуємо!<br>"
                     + "Ініціатива \"Навчай українською\"";
+            String verifyURL = baseUrl + "/verifyreset?code=" + user.getVerificationCode();
+            // String verifyURL = "http://localhost:3000/dev/verifyreset?code=" + user.getVerificationCode();
 
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
-
             helper.setFrom(fromAddress, senderName);
             helper.setTo(toAddress);
             helper.setSubject(subject);
 
             content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
-
-            String verifyURL = baseUrl + "/verifyreset?code=" + user.getVerificationCode();
-            // String verifyURL = "http://localhost:3000/dev/verifyreset?code=" + user.getVerificationCode();
-
             content = content.replace("[[URL]]", verifyURL);
-            helper.setText(content, true);
+            message.setContent(content, "text/html; charset=UTF-8");
 
             javaMailSender.send(message);
             log.debug("Email has been sent\" {}", user.getEmail());
-        } catch (MessagingException e) {
-            log.error(e.getMessage());
-        } catch (UnsupportedEncodingException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             log.error(e.getMessage());
         }
 

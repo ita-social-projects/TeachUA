@@ -49,7 +49,7 @@
             <staticText>
                 <reportElement x="370" y="100" width="670" height="70" uuid="b5113369-3677-4e88-b9d9-e27152fda9ee"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
-                    <font size="50" isBold="true"/>
+                    <font size="50" isBold="false"/>
                 </textElement>
                 <text>Сертифікат</text>
             </staticText>
@@ -92,7 +92,7 @@
                 <textElement>
                     <font size="24" isBold="false"/>
                 </textElement>
-                <textFieldExpression>"Форма навчання - " + <![CDATA[$F{studyForm}]]> + "."</textFieldExpression>
+                    <textFieldExpression>"Форма навчання - " + <![CDATA[$F{studyForm}]]> + "."</textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="330" y="445" width="500" height="35" uuid="cc8ec782-950d-4f13-ba7c-cadf15587a3e"/>

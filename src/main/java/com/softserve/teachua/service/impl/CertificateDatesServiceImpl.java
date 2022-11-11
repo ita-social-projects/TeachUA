@@ -20,6 +20,7 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
     private static final String DATE_NOT_FOUND_BY_DURATION = "Certificate dates not found by duration: %s";
     private static final String DATE_NOT_FOUND_BY_DATE = "Certificate dates not found by date: %s";
     private static final String DATE_NOT_FOUND_BY_DURATION_AND_DATE = "Certificate dates not found by duration and date: %s, %s";
+    private static final String DATE_NOT_FOUND_BY_HOURS_AND_DATE = "Certificate dates not found by hours and date: %s, %s";
 
     private final CertificateDatesRepository certificateDatesRepository;
 
@@ -53,6 +54,11 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
     public CertificateDates getCertificateDatesByDate(String date) {
         return certificateDatesRepository.findByDate(date)
                 .orElseThrow(() -> new NotExistException(String.format(DATE_NOT_FOUND_BY_DATE, date)));
+    }
+
+    public CertificateDates getCertificateDatesByHoursAndDate(Integer hours, String date) {
+        return certificateDatesRepository.findByHoursAndDate(hours, date).orElseThrow(
+                () -> new NotExistException(String.format(DATE_NOT_FOUND_BY_HOURS_AND_DATE, hours, date)));
     }
 
     @Override

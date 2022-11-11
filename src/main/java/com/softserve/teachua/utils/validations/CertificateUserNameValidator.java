@@ -7,7 +7,7 @@ public class CertificateUserNameValidator implements ConstraintValidator<Certifi
 
     private static final String EMPTY_EXCEPTION = "Ім'я учасника не може бути порожнім";
     public static final String INCORRECT_NAME_FORMAT_ERROR = "Неможливо розпізнати ім'я та прізвище";
-    private final static String NAME_PATTERN = "(([А-ЯІЇЄ][а-яіїє']+[-–]?){1,2}\\s?){2}(\\(?([А-ЯІЇЄ][а-яіїє']+)\\)?)?";
+    private final static String NAME_PATTERN = "(([А-ЯІЇЄ][а-яіїє']+[-–—]?){1,2}\\s?){2}(\\(?([А-ЯІЇЄ][а-яіїє']+)\\)?)?";
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {

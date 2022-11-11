@@ -41,5 +41,5 @@ public class CertificateContent implements Convertible {
 
     private String templatePath;
 
-    private String studyForm = "дистанційна";
+    private String studyForm;
 }

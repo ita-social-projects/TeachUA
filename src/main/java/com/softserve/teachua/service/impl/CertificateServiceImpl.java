@@ -3,10 +3,7 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.certificate.CertificateContent;
-import com.softserve.teachua.dto.certificate.CertificatePreview;
-import com.softserve.teachua.dto.certificate.CertificateTransfer;
-import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
+import com.softserve.teachua.dto.certificate.*;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
@@ -20,6 +17,7 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +70,19 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     public List<CertificatePreview> getListOfCertificatesPreview() {
         return certificateRepository.findAllByOrderByIdAsc().stream().map(
                 certificate -> (CertificatePreview) dtoConverter.convertToDto(certificate, CertificatePreview.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CertificateUserResponse> getListOfCertificatesByEmail(String email) {
+        return certificateRepository.findAllBySendToEmailOrderById(email)
+                .stream()
+                .map(certificate -> CertificateUserResponse.builder()
+                                .serialNumber(certificate.getSerialNumber())
+                                .certificateType(certificate.getTemplate().getName())
+                                .date(certificate.getDates().getDate())
+                                .courseDescription(certificate.getTemplate().getCourseDescription())
+                                .build())
                 .collect(Collectors.toList());
     }
 
@@ -235,6 +246,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         content.setStudyHours(certificateContentDecorator.formHours(transfer.getDates().getHours()));
         content.setQrCode(qrCodeService.getCertificateQrCodeAsStream(content.getSerialNumber()));
 
+        content.setStudyForm("дистанційна"); // TODO *****
+
         try {
             JasperPrint jasperPrint = createJasperPrint(transfer.getTemplate().getFilePath(), content);
             JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);
@@ -246,14 +259,26 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
+    public byte[] getPdfOutputForDownload(String userEmail, Long serialNumber) {
+        Certificate certificate = getCertificateBySerialNumber(serialNumber);
+
+        if (!certificate.getSendToEmail().equals(userEmail)) {
+            throw new AccessDeniedException("Forbidden");
+        }
+
+        CertificateTransfer certificateTransfer = dtoConverter.convertToDto(certificate, CertificateTransfer.class);
+        return getPdfOutput(certificateTransfer);
+    }
+
+    @Override
     public CertificateVerificationResponse validateCertificate(Long serialNumber) {
         Certificate certificate = getCertificateBySerialNumber(serialNumber);
 
         CertificateVerificationResponse response = CertificateVerificationResponse.builder()
                 .certificateType(certificate.getTemplate().getCertificateType())
-                .courseDescription(certificate.getDates().getCourseDescription())
-                .picturePath(certificate.getDates().getPicturePath())
-                .projectDescription(certificate.getDates().getProjectDescription())
+                .courseDescription(certificate.getTemplate().getCourseDescription())
+                .picturePath(certificate.getTemplate().getPicturePath())
+                .projectDescription(certificate.getTemplate().getProjectDescription())
                 .serialNumber(certificate.getSerialNumber()).userName(certificate.getUserName()).build();
         log.debug("verified certificate {}", certificate);
 
