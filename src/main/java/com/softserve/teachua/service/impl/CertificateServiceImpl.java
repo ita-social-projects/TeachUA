@@ -78,6 +78,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         return certificateRepository.findAllBySendToEmailOrderById(email)
                 .stream()
                 .map(certificate -> CertificateUserResponse.builder()
+                                .id(certificate.getId())
                                 .serialNumber(certificate.getSerialNumber())
                                 .certificateType(certificate.getTemplate().getName())
                                 .date(certificate.getDates().getDate())
@@ -259,8 +260,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
-    public byte[] getPdfOutputForDownload(String userEmail, Long serialNumber) {
-        Certificate certificate = getCertificateBySerialNumber(serialNumber);
+    public byte[] getPdfOutputForDownload(String userEmail, Long id) {
+        Certificate certificate = getCertificateById(id);
 
         if (!certificate.getSendToEmail().equals(userEmail)) {
             throw new AccessDeniedException("Forbidden");
