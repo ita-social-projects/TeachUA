@@ -2,16 +2,8 @@ package com.softserve.edu.services.database;
 
 import com.softserve.edu.utils.ConfigPropertiesReader;
 import io.qameta.allure.Step;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import org.hibernate.Session;
-//import org.hibernate.SessionFactory;
-//import org.hibernate.cfg.Configuration;
 
 import java.sql.*;
 import java.util.*;
@@ -24,86 +16,6 @@ public class Database {
     private ResultSetMetaData rsmd = null;
     private static final ConfigPropertiesReader config = new ConfigPropertiesReader();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());           // logger
-//    private final String CONFIGURATION_FILE_NAME = "hibernate.cfg.xml"; // hibernate configuration file name
-//    private Session session = null;
-//
-//    // Configure and open session
-//    private Session openSession() {
-//        // Refer the hibernate.cfg.xml configuration file
-//        Configuration configuration = new Configuration().configure(CONFIGURATION_FILE_NAME);
-//        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
-//                .applySettings(configuration.getProperties());
-//
-//        // SessionFactory will contain all the database property details which are pulled from above hibernate.cfg.xml file
-//        // As application refers the database, it is required. It is a threadsafe object
-//        SessionFactory factory = configuration.buildSessionFactory(builder.build());
-//
-//        // Get a physical connection
-//        session = factory.openSession();
-//
-//        return session;
-//    }
-//
-//    // Clear and close session
-//    private void closeSession(Session session) {
-//        if (session != null) {
-//                if (session.isConnected()) {
-//                    session.clear();                                    // clear connection
-//                    session.close();                                    // close connection to the DB
-//                }
-//            }
-//    }
-//
-//    // Get single value
-//    private String getSingleValue(String query) {
-//        session = openSession();                                        // connect to DB
-//        Query result = session.createNativeQuery(query);                // execute query
-//        String value = String.valueOf(result.getSingleResult());        // get single value
-//        closeSession(session);                                          // clear and close session
-//        return value;
-//    }
-//
-//    // Get list of values
-//    private List<String> getList(String query) {
-//        session = openSession();                                        // connect to DB
-//        Query result = session.createNativeQuery(query);                // execute query
-//        List<String> resultList = result.list();                        // get result list
-//        closeSession(session);                                          // clear and close session
-//        return resultList;
-//    }
-//
-//    // Get values in HashMap
-//    public HashMap<String, String> getHashMap(String query) {
-//        session = openSession();                                        // connect to DB
-//        Query result = session.createNativeQuery(query);                // execute query
-//        result.getResultStream();
-//        HashMap<String, String> resultsHashMap = new HashMap<>();
-//        closeSession(session);                                          // clear and close session
-//        return resultsHashMap;
-//    }
-//
-//    // Print single value
-//    public void printStringValue(String value) {
-//        System.out.println("\n" + value);
-//    }
-//
-//    // Print list of values
-//    public void printList(List<String> values) {
-//        System.out.println();
-//        // Iterate list
-//        for(Object value : values){
-//            System.out.println(value);
-//        }
-//    }
-//
-//    // Print HashMap
-//    public void printHashMap(HashMap<String, String> values) {
-//        System.out.println();
-//        // Iterate HashMap
-//        for (Map.Entry<String, String> entry : values.entrySet()) {
-//            System.out.println("Key: " + entry.getKey() + "; Value: " + entry.getValue());
-//        }
-//    }
 
     //Connect to database using JDBC
     // Establish DB connection
@@ -218,8 +130,6 @@ public class Database {
                     result.add(rs.getString(i).trim());
                 }
             }
-            //Collections.sort(result);
-            logger.info(result.toString());
         } catch (SQLException e) {
             logger.error("Message = " + e.getMessage());
             logger.error("printTrace \n");

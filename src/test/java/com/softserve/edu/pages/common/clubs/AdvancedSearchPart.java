@@ -1,9 +1,7 @@
 package com.softserve.edu.pages.common.clubs;
 
-import com.softserve.edu.testcases.enums.Categories;
 import com.softserve.edu.utils.JsMethods;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,48 +119,9 @@ public class AdvancedSearchPart {
         getClearDropdownButton().click();                                               // click clearDropdownButton
     }
 
-    // advancedSearch
-    private WebElement getAdvancedSearch() {
-        return this.advancedSearch;                                                     // get advancedSearch element
-    }
-
-    private String getAdvancedSearchText() {
-        return getAdvancedSearch().getText();                                           // get advancedSearch text
-    }
-
-    private void clickAdvancedSearch() {
-        getAdvancedSearch().click();                                                    // click advancedSearch
-    }
-
-    // clubCenter
-    private WebElement getClubCenter() {
-        return this.clubCenter;                                                         // get clubCenter element
-    }
-
-    private String getClubCenterText() {
-        return getClubCenter().getText();                                               // get clubCenter text
-    }
-
-    // clubButton
-    private WebElement getClubButton() {
-        return this.clubButton;                                                         // get clubButton
-    }
-
-    private String getClubButtonText() {
-        return getClubButton().getText();                                               // get clubButton text
-    }
-
-    protected void clickClubButton() {
-        getClubButton().click();                                                        // click clubButton
-    }
-
     // centerButton
     private WebElement getCenterButton() {
         return this.centerButton;                                                       // get centerButton
-    }
-
-    private String getCenterButtonText() {
-        return getCenterButton().getText();                                             // get centerButton text
     }
 
     protected void clickCenterButton() {
@@ -172,10 +131,6 @@ public class AdvancedSearchPart {
     // city
     private WebElement getCity() {
         return this.city;                                                               // get city element
-    }
-
-    private String getCityText() {
-        return getCity().getText();                                                     // get city text
     }
 
     private boolean isCityPresent() {
@@ -200,10 +155,6 @@ public class AdvancedSearchPart {
         return this.district;                                                           // get district element
     }
 
-    private String getDistrictText() {
-        return getDistrict().getText();                                                 // get district text
-    }
-
     private boolean isDistrictPresent() {
         return getDistrict().isDisplayed();                                             // is city element present
     }
@@ -211,10 +162,6 @@ public class AdvancedSearchPart {
     // districtDropdown
     protected WebElement getDistrictDropdown() {
         return this.districtDropdown;                                                   // get districtDropdown element
-    }
-
-    protected String getDistrictDropdownText() {
-        return getDistrictDropdown().getText();                                         // get districtDropdown text
     }
 
     protected void clickDistrictDropdown() {
@@ -226,10 +173,6 @@ public class AdvancedSearchPart {
         return this.nearestMetroStation;                                                // get nearestMetroStation element
     }
 
-    private String getNearestMetroStationText() {
-        return getNearestMetroStation().getText();                                      // get nearestMetroStation text
-    }
-
     private boolean isNearestMetroStationPresent() {
         return getNearestMetroStation().isDisplayed();                                  // is city element present
     }
@@ -237,10 +180,6 @@ public class AdvancedSearchPart {
     // nearestMetroStationDropdown
     protected WebElement getNearestMetroStationDropdown() {
         return this.nearestMetroStationDropdown;                                        // get nearestMetroStationDropdown element
-    }
-
-    protected String getNearestMetroStationDropdownText() {
-        return getNearestMetroStationDropdown().getText();                              // get nearestMetroStationDropdown text
     }
 
     protected void clickNearestMetroStationDropdown() {
@@ -252,10 +191,6 @@ public class AdvancedSearchPart {
         return this.remote;                                                             // get remote element
     }
 
-    private String getRemoteText() {
-        return getRemote().getText();                                                   // get remote text
-    }
-
     private boolean isRemotePresent() {
         try {
             return getRemote().isDisplayed();                                           // is remote element present
@@ -264,26 +199,9 @@ public class AdvancedSearchPart {
         }
     }
 
-    // availableOnline
-    private WebElement getAvailableOnline() {
-        return this.availableOnline;                                                    // get availableOnline element
-    }
-
-    private String getAvailableOnlineText() {
-        return getAvailableOnline().getText();                                          // get availableOnline text
-    }
-
-    protected void clickAvailableOnline() {
-        getAvailableOnline().click();                                                   // click availableOnline checkbox
-    }
-
     // categories
     private WebElement getCategories() {
         return this.categories;                                                         // get categories element
-    }
-
-    private String getCategoriesText() {
-        return getCategories().getText();                                               // get categories text
     }
 
     private boolean isCategoriesPresent() {
@@ -297,10 +215,6 @@ public class AdvancedSearchPart {
     // childAge
     private WebElement getChildAge() {
         return this.childAge;                                                           // get childAge element
-    }
-
-    private String getChildAgeText() {
-        return getChildAge().getText();                                                 // get childAge text
     }
 
     private boolean isChildAgePresent() {
@@ -332,51 +246,24 @@ public class AdvancedSearchPart {
         getChildAgeField().sendKeys(age);                                               // send text into childAgeField
     }
 
-    // sort
-    private WebElement getSort() {
-        return this.sort;                                                               // get sort element
-    }
-
-    private String getSortText() {
-        return getSort().getText();                                                     // get sort text
-    }
-
     // alphabetSort
     private WebElement getAlphabetSort() {
+        // Get alphabetSort element
         return driver.findElement(By.xpath("//span[@class='anticon anticon-arrow-up control-sort-arrow']/../preceding-sibling::span[2]"));
-        //return this.alphabetSort;                                                       // get alphabetSort element
-    }
-
-    private String getAlphabetSortText() {
-        return getAlphabetSort().getText();                                             // get alphabetSort text
     }
 
     protected void clickAlphabetSort() {
         getAlphabetSort().click();                                                      // click alphabetSort
     }
 
-    // rateSort
-    private WebElement getRateSort() {
+    // ratingSort
+    private WebElement getRatingSort() {
+        // Get ratingSort element
         return driver.findElement(By.xpath("//div[@class='control-sort-arrows']/preceding-sibling::span[1]"));
-        //return this.rateSort;                                                           // get rateSort element
     }
 
-    private String getRateSortText() {
-        return getRateSort().getText();                                                 // get rateSort text
-    }
-
-    protected void clickRateSort() {
-        //JsMethods.clickElement(getRateSort());
-        getRateSort().click();                                                          // click rateSort
-    }
-
-    // ascendingSort
-    private WebElement getAscendingSort() {
-        return this.ascendingSort;                                                      // get ascendingSort element
-    }
-
-    protected void clickAscendingSort() {
-        getAscendingSort().click();                                                     // click ascendingSort
+    protected void clickRatingSort() {
+        getRatingSort().click();                                                        // click ratingSort
     }
 
     // descendingSort
@@ -398,15 +285,6 @@ public class AdvancedSearchPart {
         // TODO Investigate why the only possible way to click on element to change view to list is using JS or action class otherwise it throws exception
         JsMethods.clickElement(getListView());                                          // click listView element
         logger.info("Block view has been changed to the list view");
-    }
-
-    // blockView
-    private WebElement getBlockView() {
-        return this.blockView;                                                          // get blockView
-    }
-
-    private void clickBlockView() {
-        getBlockView().click();                                                         // click blockView
     }
 
     /*
@@ -444,21 +322,22 @@ public class AdvancedSearchPart {
         }
     }
 
-    protected void chooseCategories(Categories... categories) {
-        // Find and save all categories into the list
-        List<WebElement> categoriesList = driver.findElements(By.cssSelector(LIST_CATEGORIES_XPATH));
-        for(WebElement current : categoriesList) {
-            for(Categories category : categories) {
-                // Check if provided category matches one of the checkboxes
-                if(current.getText().toLowerCase().contains(category.toString().toLowerCase())) {
-                    // If match has been found, click on it to choose
-                    current.click();
-                    break;
-                }
-            }
-        }
-    }
+//    protected void chooseCategories(Categories... categories) {
+//        // Find and save all categories into the list
+//        List<WebElement> categoriesList = driver.findElements(By.cssSelector(LIST_CATEGORIES_XPATH));
+//        for(WebElement current : categoriesList) {
+//            for(Categories category : categories) {
+//                // Check if provided category matches one of the checkboxes
+//                if(current.getText().toLowerCase().contains(category.toString().toLowerCase())) {
+//                    // If match has been found, click on it to choose
+//                    current.click();
+//                    break;
+//                }
+//            }
+//        }
+//    }
 
+    // Type child age in the input field
     protected void sendTextIntoChildAgeField(String age) {
         clickChildAgeField();                                                           // click childAgeField
         clearChildAgeField();                                                           // clear childAgeField

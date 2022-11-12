@@ -45,24 +45,4 @@ public class ConfigPropertiesReader {
         return System.getenv().get("DB_PASSWORD");
     }
 
-    // Regular user username
-    public String getRegularUsername() {
-        return System.getenv().get("USER_LOGIN");
-    }
-
-    // Regular user password
-    public String getRegularPassword() {
-        return System.getenv().get("USER_PASSWORD");
-    }
-
-    // Admin user username
-    public String getAdminUsername() {
-        return System.getenv().get("ADMIN_LOGIN");
-    }
-
-    // Admin user password
-    public String geAdminPassword() {
-        return System.getenv().get("ADMIN_PASSWORD");
-    }
-
 }

@@ -10,7 +10,6 @@ public class JsMethods {
     private static JavascriptExecutor js = (JavascriptExecutor) DriverWrapper.get().driver();
     private static final String CLICK_SCRIPT = "arguments[0].click()";                  // click on element
     private static final String SCROLL_TO_ELEMENT = "arguments[0].scrollIntoView();";   // scroll to element
-    private static final String GET_TEXT = "return arguments[0].innerText;";            // scroll to element
 
     // Constructor is private to not have a possibility to create object of this class
     private JsMethods() {
@@ -24,11 +23,6 @@ public class JsMethods {
     // Scroll to element
     public static void scrollToElement(WebElement element) {
         js.executeScript(SCROLL_TO_ELEMENT, element);
-    }
-
-    // Get element text
-    public static String getElementText(WebElement element) {
-        return js.executeScript(GET_TEXT, element).toString();
     }
 
 }

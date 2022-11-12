@@ -4,7 +4,6 @@ import com.softserve.edu.testcases.enums.Locations;
 import com.softserve.edu.pages.common.aboutus.AboutUsPage;
 import com.softserve.edu.pages.common.challenge.ChallengePage;
 import com.softserve.edu.pages.common.clubs.ClubsPage;
-import com.softserve.edu.pages.common.home.HomePage;
 import com.softserve.edu.pages.common.news.NewsPage;
 import com.softserve.edu.pages.common.servicesinukrainian.ServicesInUkrainianPage;
 import io.qameta.allure.Step;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 public abstract class TopPart {
 
-    private static final String SCROLL_TO = "arguments[0].scrollIntoView(true);";   // scroll to element using JS
     private final Long ONE_SECOND_DELAY = 1000L;                                    // one-second delay
     // CSS locator to find each location on dropdown list of locations
     private final String LIST_LOCATIONS_CSS_SELECTOR = ".ant-dropdown-menu-vertical>.ant-dropdown-menu-item";
@@ -112,22 +110,9 @@ public abstract class TopPart {
      * Page Object
      */
 
-    // logo
-    private WebElement getLogo() {
-        return this.logo;                                                       // get logo element
-    }
-
-    private void clickLogo() {
-        getLogo().click();                                                      // click logo
-    }
-
     // clubs
     private WebElement getClubs() {
         return this.clubs;                                                      // get clubs element
-    }
-
-    private String getClubsText() {
-        return getClubs().getText();                                            // get clubs text
     }
 
     private void clickClubs() {
@@ -137,10 +122,6 @@ public abstract class TopPart {
     // challenges
     private WebElement getChallenges() {
         return this.challenges;                                                 // get challenges element
-    }
-
-    private String getChallengesText() {
-        return getChallenges().getText();                                       // get challenges text
     }
 
     private void clickChallenges() {
@@ -162,10 +143,6 @@ public abstract class TopPart {
         return this.news;                                                       // get news element
     }
 
-    private String getNewsText() {
-        return getNews().getText();                                             // get news text
-    }
-
     private void clickNews() {
         getNews().click();                                                      // click news
     }
@@ -173,10 +150,6 @@ public abstract class TopPart {
     // aboutUs
     private WebElement getAboutUs() {
         return this.aboutUs;                                                    // get aboutUs element
-    }
-
-    private String getAboutUsText() {
-        return getAboutUs().getText();                                          // get aboutUs text
     }
 
     private void clickAboutUs() {
@@ -188,10 +161,6 @@ public abstract class TopPart {
         return this.servicesInUkrainian;                                        // get servicesInUkrainian element
     }
 
-    private String getServicesInUkrainianText() {
-        return getServicesInUkrainian().getText();                              // get servicesInUkrainian text
-    }
-
     private void clickServicesInUkrainian() {
         getServicesInUkrainian().click();                                       // click servicesInUkrainian
     }
@@ -199,10 +168,6 @@ public abstract class TopPart {
     // searchTopField
     private WebElement getSearchTopField() {
         return this.searchTopField;                                             // get searchTopField element
-    }
-
-    private String getSearchTopFieldText() {
-        return getSearchTopField().getText();                                   // get searchTopField text
     }
 
     private void clickSearchTopField() {
@@ -253,171 +218,159 @@ public abstract class TopPart {
         getLocation().click();                                                  // click location
     }
 
-    // myProfile
-    private WebElement getMyProfile() {
-        return this.myProfile;                                                  // get myProfile element
-    }
-
-    private void clickMyProfile() {
-        getMyProfile().click();                                                 // click myProfile
-    }
-
-    // teachUALogo
-    private WebElement getTeachUALogo() {
-        return this.teachUALogo;                                                // get teachUALogo element
-    }
-
-    private void clickTeachUALogo() {
-        getTeachUALogo().click();                                               // click teachUALogo
-    }
-
-    // watchword
-    private WebElement getWatchword() {
-        return this.watchword;                                                  // get location element
-    }
-
-    private String getWatchwordText() {
-        return getWatchword().getText();                                        // get location text
-    }
-
-    // facebook
-    private WebElement getFacebook() {
-        return this.facebook;                                                   // get facebook element
-    }
-
-    private void clickFacebook() {
-        getFacebook().click();                                                  // click facebook
-    }
-
-    // youtube
-    private WebElement getYoutube() {
-        return this.youtube;                                                    // get youtube element
-    }
-
-    private void clickYoutube() {
-        getYoutube().click();                                                   // click youtube
-    }
-
-    // instagram
-    private WebElement getInstagram() {
-        return this.instagram;                                                  // get instagram element
-    }
-
-    private void clickInstagram() {
-        getInstagram().click();                                                 // click instagram
-    }
-
-    // designedBy
-    private WebElement getDesignedBy() {
-        return this.designedBy;                                                 // get designedBy element
-    }
-
-    private String getDesignedByText() {
-        return getDesignedBy().getText();                                       // get designedBy text
-    }
-
-    // outPartners
-    private WebElement getOutPartners() {
-        return this.outPartners;                                                // get outPartners element
-    }
-
-    private String getOutPartnersText() {
-        return getOutPartners().getText();                                      // get outPartners text
-    }
-
-    // softServe
-    private WebElement getSoftServe() {
-        return this.softServe;                                                  // get softServe element
-    }
-
-    private void clickSoftServe() {
-        getSoftServe().click();                                                 // click softServe
-    }
-
-    // languageUnites
-    private WebElement getLanguageUnites() {
-        return this.languageUnites;                                             // get languageUnites element
-    }
-
-    private void clickLanguageUnites() {
-        getLanguageUnites().click();                                            // click languageUnites
-    }
-
-    // edEra
-    private WebElement getEdEra() {
-        return this.edEra;                                                      // get edEra element
-    }
-
-    private void clickEdEra() {
-        getEdEra().click();                                                     // click edEra
-    }
-
-    // isLanguage
-    private WebElement getIsLanguage() {
-        return this.isLanguage;                                                 // get isLanguage element
-    }
-
-    private void clickIsLanguage() {
-        getIsLanguage().click();                                                // click isLanguage
-    }
-
-    // countryFm
-    private WebElement getCountryFm() {
-        return this.countryFm;                                                  // get countryFm element
-    }
-
-    private void clickCountryFm() {
-        getCountryFm().click();                                                 // click countryFm
-    }
-
-    // ucf
-    private WebElement getUcf() {
-        return this.ucf;                                                        // get ucf element
-    }
-
-    private void clickUcf() {
-        getUcf().click();                                                       // click ucf
-    }
-
-    // freedom
-    private WebElement getFreedom() {
-        return this.freedom;                                                    // get freedom element
-    }
-
-    private void clickFreedom() {
-        getFreedom().click();                                                   // click freedom
-    }
-
-    // howToHelpProject
-    private WebElement getHowToHelpProject() {
-        return this.howToHelpProject;                                           // get howToHelpProject element
-    }
-
-    private String getHowToHelpProjectText() {
-        return getHowToHelpProject().getText();                                 // get howToHelpProject text
-    }
-
-    // reason
-    private WebElement getReason() {
-        return this.reason;                                                     // get reason element
-    }
-
-    private String getReasonText() {
-        return getReason().getText();                                           // get reason text
-    }
-
-    // helpProjectButton
-    private WebElement getHelpProjectButton() {
-        return this.helpProjectButton;                                          // get helpProjectButton element
-    }
-
-    private String getHelpProjectButtonText() {
-        return getHelpProjectButton().getText();                                // get helpProjectButton text
-    }
-
-    private void clickHelpProjectButton() {
-        getHelpProjectButton().click();                                         // click helpProjectButton
-    }
+//    // myProfile
+//    private WebElement getMyProfile() {
+//        return this.myProfile;                                                  // get myProfile element
+//    }
+//
+//    // teachUALogo
+//    private WebElement getTeachUALogo() {
+//        return this.teachUALogo;                                                // get teachUALogo element
+//    }
+//
+//    // watchword
+//    private WebElement getWatchword() {
+//        return this.watchword;                                                  // get location element
+//    }
+//
+//    // facebook
+//    private WebElement getFacebook() {
+//        return this.facebook;                                                   // get facebook element
+//    }
+//
+//    private void clickFacebook() {
+//        getFacebook().click();                                                  // click facebook
+//    }
+//
+//    // youtube
+//    private WebElement getYoutube() {
+//        return this.youtube;                                                    // get youtube element
+//    }
+//
+//    private void clickYoutube() {
+//        getYoutube().click();                                                   // click youtube
+//    }
+//
+//    // instagram
+//    private WebElement getInstagram() {
+//        return this.instagram;                                                  // get instagram element
+//    }
+//
+//    private void clickInstagram() {
+//        getInstagram().click();                                                 // click instagram
+//    }
+//
+//    // designedBy
+//    private WebElement getDesignedBy() {
+//        return this.designedBy;                                                 // get designedBy element
+//    }
+//
+//    private String getDesignedByText() {
+//        return getDesignedBy().getText();                                       // get designedBy text
+//    }
+//
+//    // outPartners
+//    private WebElement getOutPartners() {
+//        return this.outPartners;                                                // get outPartners element
+//    }
+//
+//    private String getOutPartnersText() {
+//        return getOutPartners().getText();                                      // get outPartners text
+//    }
+//
+//    // softServe
+//    private WebElement getSoftServe() {
+//        return this.softServe;                                                  // get softServe element
+//    }
+//
+//    private void clickSoftServe() {
+//        getSoftServe().click();                                                 // click softServe
+//    }
+//
+//    // languageUnites
+//    private WebElement getLanguageUnites() {
+//        return this.languageUnites;                                             // get languageUnites element
+//    }
+//
+//    private void clickLanguageUnites() {
+//        getLanguageUnites().click();                                            // click languageUnites
+//    }
+//
+//    // edEra
+//    private WebElement getEdEra() {
+//        return this.edEra;                                                      // get edEra element
+//    }
+//
+//    private void clickEdEra() {
+//        getEdEra().click();                                                     // click edEra
+//    }
+//
+//    // isLanguage
+//    private WebElement getIsLanguage() {
+//        return this.isLanguage;                                                 // get isLanguage element
+//    }
+//
+//    private void clickIsLanguage() {
+//        getIsLanguage().click();                                                // click isLanguage
+//    }
+//
+//    // countryFm
+//    private WebElement getCountryFm() {
+//        return this.countryFm;                                                  // get countryFm element
+//    }
+//
+//    private void clickCountryFm() {
+//        getCountryFm().click();                                                 // click countryFm
+//    }
+//
+//    // ucf
+//    private WebElement getUcf() {
+//        return this.ucf;                                                        // get ucf element
+//    }
+//
+//    private void clickUcf() {
+//        getUcf().click();                                                       // click ucf
+//    }
+//
+//    // freedom
+//    private WebElement getFreedom() {
+//        return this.freedom;                                                    // get freedom element
+//    }
+//
+//    private void clickFreedom() {
+//        getFreedom().click();                                                   // click freedom
+//    }
+//
+//    // howToHelpProject
+//    private WebElement getHowToHelpProject() {
+//        return this.howToHelpProject;                                           // get howToHelpProject element
+//    }
+//
+//    private String getHowToHelpProjectText() {
+//        return getHowToHelpProject().getText();                                 // get howToHelpProject text
+//    }
+//
+//    // reason
+//    private WebElement getReason() {
+//        return this.reason;                                                     // get reason element
+//    }
+//
+//    private String getReasonText() {
+//        return getReason().getText();                                           // get reason text
+//    }
+//
+//    // helpProjectButton
+//    private WebElement getHelpProjectButton() {
+//        return this.helpProjectButton;                                          // get helpProjectButton element
+//    }
+//
+//    private String getHelpProjectButtonText() {
+//        return getHelpProjectButton().getText();                                // get helpProjectButton text
+//    }
+//
+//    private void clickHelpProjectButton() {
+//        getHelpProjectButton().click();                                         // click helpProjectButton
+//    }
 
     // pagination
     private Pagination getPagination() {
@@ -461,13 +414,6 @@ public abstract class TopPart {
         locationDropdownComponent = null;
     }
 
-    protected void closeLocationDropdownComponent() {
-        // Click on search top field to close LocationDropdownComponent
-        clickSearchTopField();
-        // Assign null to object to know that such element does not exist anymore
-        locationDropdownComponent = null;
-    }
-
     // linksCheck
     private LinksImagesCheck getLinksImagesCheck() {
         // Check if linksCheck object is created
@@ -499,11 +445,6 @@ public abstract class TopPart {
     protected void clickLocationByPartialName(Locations optionName) {           // void because we can be on any page
         openLocationDropdownComponent();                                        // open location dropdown component
         clickLocationDropdownComponentByPartialName(optionName.toString());     // click location by its partial name
-    }
-
-    // scrolltoElement
-    protected void scrolltoElement(WebElement element) {
-        ((JavascriptExecutor) driver).executeScript(SCROLL_TO, element);        // scroll to element using JS
     }
 
     // pagination
@@ -548,13 +489,6 @@ public abstract class TopPart {
     /*
      * Business Logic
      */
-
-    @Step("Go to Home page")
-    public HomePage gotoHomePage() {
-        clickLogo();                                                            // click logo
-        logger.info("Home page opened");                                        // information about current page
-        return new HomePage(driver);
-    }
 
     @Step("Go to Clubs page")
     public ClubsPage gotoClubsPage() {

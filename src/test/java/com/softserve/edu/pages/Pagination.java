@@ -10,18 +10,10 @@ public class Pagination {
     private final WebDriver driver;
     private final Long ONE_SECOND_DELAY = 1000L;                                // one-second delay
 
-    //private WebElement nextButton;                                              // next button element
-
     // Constructor
     public Pagination(WebDriver driver) {
         this.driver = driver;
-        //initElements();                                                         // initialize elements
     }
-
-//    // Check if elements present on the page
-//    private void initElements() {
-//        nextButton = driver.findElement(By.xpath("//span[contains(@class,'right')]/../..//button[@class='ant-pagination-item-link']"));
-//    }
 
     /*
      * Page Object

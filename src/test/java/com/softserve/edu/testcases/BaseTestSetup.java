@@ -8,7 +8,6 @@ import com.softserve.edu.utils.ConfigPropertiesReader;
 import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.slf4j.Logger;
@@ -19,8 +18,6 @@ import org.testng.annotations.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Base64;
 
 public abstract class BaseTestSetup {
 
@@ -65,20 +62,6 @@ public abstract class BaseTestSetup {
     private byte[] saveHtmlAttachment(String attachName) {
         return DriverWrapper.get().driver().getPageSource().getBytes();
     }
-
-//    @Attachment(value = "{0}", type = "video/avi", fileExtension = ".avi")
-//    public byte[] saveVideoAttachment(String attachName) {
-//        File video = new File(attachName);
-//        try {
-//            byte[] byteArr = IOUtils.toByteArray(Files.newInputStream(Paths.get("./video/" + attachName + ".avi")));
-//            byte[] decode = Base64.getDecoder().decode(byteArr);
-//            FileUtils.writeByteArrayToFile(video, decode);
-//            return byteArr;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return new byte[0];
-//        }
-//    }
 
     @AfterClass(alwaysRun = true)
     public void afterClass() {

@@ -49,11 +49,6 @@ public class DriverWrapper {
         driver().get(url);                                      // get URL
     }
 
-    // Accept alert
-    public void alert() {
-        driver().switchTo().alert().accept();                   // accept alert
-    }
-
     // Close driver
     public void quit() {
         if (driver() != null) {

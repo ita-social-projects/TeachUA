@@ -1,13 +1,12 @@
 package com.softserve.edu.pages.common.clubs;
 
-import com.softserve.edu.utils.JsMethods;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 public class CenterComponent {
 
-    // CSS selector to find location element
-    private final String LOCATION_CSS_SELECTOR = ".oneAddress";
+//    // CSS selector to find location element
+//    private final String LOCATION_CSS_SELECTOR = ".oneAddress";
 
     // Element that represents the whole component
     private WebElement centerLayout;
@@ -43,51 +42,51 @@ public class CenterComponent {
         return getTitle().getText();                                            // get title text
     }
 
-    protected void clickTitle() {
-        getTitle().click();                                                     // click title
-    }
-
-    // partialDescription
-    private WebElement getPartialDescription() {
-        return this.partialDescription;                                         // get partialDescription element
-    }
-
-    protected String getPartialDescriptionText() {
-        return getPartialDescription().getText();                               // get partialDescription text
-    }
-
-    protected void clickPartialDescription() {
-        getPartialDescription().click();                                        // click partialDescription
-    }
-
-    // location
-    private WebElement getLocation() {
-        // Presence of location element should be checked here to prevent test failure when there is no location
-        // selected in advanced search
-        location = centerLayout.findElement(By.cssSelector(LOCATION_CSS_SELECTOR));
-        return this.location;                                                   // get location element
-    }
-
-    protected String getLocationText() {
-        return getLocation().getText();                                         // get location text
-    }
-
-    protected void clickLocation() {
-        getLocation().click();                                                  // click location
-    }
-
-    // details
-    private WebElement getDetailsButton() {
-        return this.detailsButton;                                              // get details element
-    }
-
-    protected String getDetailsButtonText() {
-        return getDetailsButton().getText();                                    // get details text
-    }
-
-    protected void clickDetailsButton() {
-        getDetailsButton().click();                                             // click details
-    }
+//    protected void clickTitle() {
+//        getTitle().click();                                                     // click title
+//    }
+//
+//    // partialDescription
+//    private WebElement getPartialDescription() {
+//        return this.partialDescription;                                         // get partialDescription element
+//    }
+//
+//    protected String getPartialDescriptionText() {
+//        return getPartialDescription().getText();                               // get partialDescription text
+//    }
+//
+//    protected void clickPartialDescription() {
+//        getPartialDescription().click();                                        // click partialDescription
+//    }
+//
+//    // location
+//    private WebElement getLocation() {
+//        // Presence of location element should be checked here to prevent test failure when there is no location
+//        // selected in advanced search
+//        location = centerLayout.findElement(By.cssSelector(LOCATION_CSS_SELECTOR));
+//        return this.location;                                                   // get location element
+//    }
+//
+//    protected String getLocationText() {
+//        return getLocation().getText();                                         // get location text
+//    }
+//
+//    protected void clickLocation() {
+//        getLocation().click();                                                  // click location
+//    }
+//
+//    // details
+//    private WebElement getDetailsButton() {
+//        return this.detailsButton;                                              // get details element
+//    }
+//
+//    protected String getDetailsButtonText() {
+//        return getDetailsButton().getText();                                    // get details text
+//    }
+//
+//    protected void clickDetailsButton() {
+//        getDetailsButton().click();                                             // click details
+//    }
 
     /*
      * Functional

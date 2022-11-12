@@ -1,7 +1,6 @@
 package com.softserve.edu.pages.common.clubs;
 
 import com.softserve.edu.testcases.enums.Locations;
-import com.softserve.edu.testcases.enums.Categories;
 import com.softserve.edu.pages.TopPart;
 import com.softserve.edu.utils.JsMethods;
 import io.qameta.allure.Step;
@@ -10,7 +9,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ClubsPage extends TopPart {
@@ -37,28 +35,6 @@ public class ClubsPage extends TopPart {
     /*
      * Page Object
      */
-
-    // clubsInCity
-    private WebElement getClubsInCity() {
-        return clubsInCity;                                                        // get clubsInCity element
-    }
-
-    private String getClubsInCityText() {
-        return getClubsInCity().getText();                                         // get clubsInCity text
-    }
-
-    // showOnMapButton
-    private WebElement getShowOnMapButton() {
-        return showOnMapButton;                                                     // get showOnMapButton element
-    }
-
-    private String getShowOnMapButtonText() {
-        return getShowOnMapButton().getText();                                      // get showOnMapButton text
-    }
-
-    private void clickShowOnMapButton() {
-        getShowOnMapButton().click();                                               // click showOnMapButton
-    }
 
     // clubsContainer
     private ClubsContainer getClubsContainer() {
@@ -121,16 +97,6 @@ public class ClubsPage extends TopPart {
         getAdvancedSearchPart().clickClearDropdownButton();                         // click clear button inside of dropdown
     }
 
-    // Choose club radio button to show clubs
-    public void showClubs() {
-        getAdvancedSearchPart().clickClubButton();                                  // click club radio button
-    }
-
-    // Choose center radio button to show centers
-    public void showCenters() {
-        getAdvancedSearchPart().clickCenterButton();                                // click center radio button
-    }
-
     // Choose city (we need to provide enum location to avoid mistakes in writing city name)
     @Step("Choose city {0}")
     public void chooseCity(Locations location) {
@@ -141,6 +107,7 @@ public class ClubsPage extends TopPart {
         // Select city from dropdown by its locator and name
         getAdvancedSearchPart().selectPlace(location.toString(),
                 By.xpath(getAdvancedSearchPart().LIST_CITIES_DROPDOWN_CSS_SELECTOR));
+        getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
     // Choose district
@@ -154,6 +121,7 @@ public class ClubsPage extends TopPart {
         // Select district from dropdown by its locator and name
         getAdvancedSearchPart().selectPlace(district.toString(),
                 By.xpath(getAdvancedSearchPart().LIST_DISTRICTS_DROPDOWN_CSS_SELECTOR));
+        getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
     // Choose the nearest metro station
@@ -167,22 +135,24 @@ public class ClubsPage extends TopPart {
         // Select metro station from dropdown by its locator and name
         getAdvancedSearchPart().selectPlace(station.toString(),
                 By.xpath(getAdvancedSearchPart().LIST_METRO_STATION_DROPDOWN_CSS_SELECTOR));
+        getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
-    // Set available online to search clubs that are available online
-    public void searchOnlineClubs() {
-        getAdvancedSearchPart().clickAvailableOnline();                             // choose online clubs option
-    }
-
-    // Choose needed categories
-    public void setSearchCategories(Categories... categories) {
-        getAdvancedSearchPart().chooseCategories(categories);                       // choose categories to filter
-    }
+//    // Set available online to search clubs that are available online
+//    public void searchOnlineClubs() {
+//        getAdvancedSearchPart().clickAvailableOnline();                             // choose online clubs option
+//    }
+//
+//    // Choose needed categories
+//    public void setSearchCategories(Categories... categories) {
+//        getAdvancedSearchPart().chooseCategories(categories);                       // choose categories to filter
+//    }
 
     // Click center radio button
     @Step("Click center radio button")
     public void selectCenters() {
         getAdvancedSearchPart().clickCenterButton();                                // click center radio button
+        logger.info("Centers button have been clicked");
     }
 
     // Display clubs as a list
@@ -240,7 +210,7 @@ public class ClubsPage extends TopPart {
     // Sort clubs by rating
     @Step("Click sort by rating button")
     public void sortByRating() {
-        getAdvancedSearchPart().clickRateSort();                                    // click sort by rating button
+        getAdvancedSearchPart().clickRatingSort();                                  // click sort by rating button
         logger.info("Items have been sorted by rating");
     }
 
@@ -262,27 +232,22 @@ public class ClubsPage extends TopPart {
         return getAdvancedSearchPart().getCityDropdownText();                       // get city name
     }
 
-    // Ascending club sort
-    public void ascendingSort() {
-        getAdvancedSearchPart().clickAscendingSort();                               // click ascending sort
-    }
-
-    // Get number of clubs on all pages on Clubs page
-    public int getTotalNumberOfClubs() {
-        int result = 0;
-        try{
-            while(createPagination().isNextButtonEnabled()) {
-                // Add number of clubs on the current page to the total value
-                result += createClubsContainer().getClubComponentsCount();
-                createPagination().clickNextButton();                               // click on next button
-                presentationSleep(3);
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;                                                              // get actual number of pages
-    }
+//    // Get number of clubs on all pages on Clubs page
+//    public int getTotalNumberOfClubs() {
+//        int result = 0;
+//        try{
+//            while(createPagination().isNextButtonEnabled()) {
+//                // Add number of clubs on the current page to the total value
+//                result += createClubsContainer().getClubComponentsCount();
+//                createPagination().clickNextButton();                               // click on next button
+//                presentationSleep(3);
+//
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return result;                                                              // get actual number of pages
+//    }
 
     // TODO Combine the following two methods into one
     // Get number of clubs on all pages on Clubs page
@@ -303,8 +268,6 @@ public class ClubsPage extends TopPart {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // Sort final list
-        //Collections.sort(allClubTitles);
         logger.info(allClubTitles.toString());
         return allClubTitles;
     }
@@ -313,7 +276,7 @@ public class ClubsPage extends TopPart {
     public List<String> getAllCenterTitles() {
         List<String> allCenterTitles = new ArrayList<>();
         try{
-            presentationSleep(10);
+            presentationSleep(5);
             allCenterTitles.addAll(createCentersContainer().getCenterComponentTitles());
             // Check if pagination is present on the page
             if(createPagination().isNextButtonPresent()) {
@@ -327,9 +290,6 @@ public class ClubsPage extends TopPart {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // Sort final list
-        //Collections.sort(allCenterTitles);
-        logger.info(allCenterTitles.toString());
         return allCenterTitles;
     }
 
