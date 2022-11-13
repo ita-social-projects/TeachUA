@@ -1,7 +1,7 @@
 package com.softserve.teachua.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.marker.Archivable;
 
@@ -47,7 +47,8 @@ public interface ArchiveService {
      *
      * @return {@code Archive}.
      *
-     * @throws
+     * @throws RestoreArchiveException
+     *              if process failed
      */
     Archive restoreArchiveObject(Long id);
 
