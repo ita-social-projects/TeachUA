@@ -34,7 +34,7 @@ public class ServicesInUkrainianPage extends TopPart {
         instagram = driver.findElement(By.cssSelector(".social-info .anticon.anticon-instagram.icon"));
         mail = driver.findElement(By.cssSelector(".social-info .anticon.anticon-mail.icon"));
         helpProjectButton = driver.findElement(By.cssSelector(".help-button .ant-btn.ant-btn-default.flooded-button.donate-button span"));
-        educationServicesTitle = driver.findElement(By.cssSelector(".content-title"));
+        educationServicesTitle = driver.findElement(By.xpath("//div[@class='content-title']"));
         educationServicesDescription = driver.findElement(By.cssSelector(".content-text"));
         faqTitle = driver.findElement(By.cssSelector(".faq-title"));
         initiative = driver.findElement(By.cssSelector(".city-name-box>h2.city-name"));

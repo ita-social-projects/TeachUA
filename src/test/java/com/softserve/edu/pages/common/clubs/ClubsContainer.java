@@ -12,7 +12,7 @@ import java.util.List;
 public class ClubsContainer {
 
     // Message if there is no such component found
-    private final String CLUB_NOT_FOUND = "There is no сдги that matches the search criteria.";
+    private final String CLUB_NOT_FOUND = "There is no club that matches the search criteria.";
     // Selector to find the whole club container
     private final String CLUB_COMPONENT_CSS_SELECTOR = ".ant-card.ant-card-bordered.card";
     // Logger
@@ -125,7 +125,7 @@ public class ClubsContainer {
     public boolean isClubComponentPresent(String clubTitle) {
         boolean result = false;
         try {
-            Thread.sleep(7000);
+            //Thread.sleep(5000);
             for(ClubComponent component : getClubComponents()) {
                 // Compare provided club title with value from club components list to find needed one
                 if(component.getTitleText().contains(clubTitle)) {
@@ -135,7 +135,7 @@ public class ClubsContainer {
                 }
             }
             return result;
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.error(CLUB_NOT_FOUND);
             return false;

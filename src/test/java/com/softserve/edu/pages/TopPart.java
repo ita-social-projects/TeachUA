@@ -6,6 +6,7 @@ import com.softserve.edu.pages.common.challenge.ChallengePage;
 import com.softserve.edu.pages.common.clubs.ClubsPage;
 import com.softserve.edu.pages.common.news.NewsPage;
 import com.softserve.edu.pages.common.servicesinukrainian.ServicesInUkrainianPage;
+import com.softserve.edu.utils.JsMethods;
 import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.slf4j.Logger;
@@ -78,8 +79,8 @@ public abstract class TopPart {
     private void initElements() {
         logo = driver.findElement(By.cssSelector(".left-side-menu>a"));
         clubs = driver.findElement(By.xpath("//span[contains(@class,'anticon-apartment')]/parent::a"));
-        challenges = driver.findElement(By.cssSelector("#challenge_ONE>div"));
-        news = driver.findElement(By.xpath("//li[@id='challenge_ONE']//following-sibling::li[contains(@data-menu-id,'news')]/span"));
+        challenges = driver.findElement(By.xpath("//li[@id='challenge_ONE']"));
+        news = driver.findElement(By.xpath("//li[@id='challenge_ONE']//following-sibling::li[contains(@data-menu-id,'news')]"));
         aboutUs = driver.findElement(By.xpath("//span[@aria-label='container']/parent::a"));
         servicesInUkrainian = driver.findElement(By.xpath("//span[@aria-label='container']/../../..//following-sibling::li/span"));
         searchTopField = driver.findElement(By.cssSelector("input.ant-select-selection-search-input"));
@@ -130,8 +131,9 @@ public abstract class TopPart {
 
     // Open first challenge
     private WebElement getFirstChallenge() {
+        // TODO Refactor this method (temporary solution)
         // Get firstChallenge element
-        return driver.findElement(By.xpath("//a[contains(@href,'424')]"));
+        return driver.findElement(By.xpath("//li[contains(@data-menu-id,'424')]/span"));
     }
 
     private void clickFirstChallenge() {
@@ -504,7 +506,7 @@ public abstract class TopPart {
         logger.info("Challenges dropdown opened");                              // information about current page
         verifyPageLinksImages();                                                // verify links on opened dropdown
         clickFirstChallenge();                                                  // click first challenge
-        logger.info("Challenge page opened");                              // information about current page
+        logger.info("Challenge page opened");                                   // information about current page
         return new ChallengePage(driver);
     }
 

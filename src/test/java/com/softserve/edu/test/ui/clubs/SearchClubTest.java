@@ -5,6 +5,7 @@ import com.softserve.edu.testcases.dataproviders.SearchClubTestDataProvider;
 import com.softserve.edu.pages.common.clubs.ClubsPage;
 import com.softserve.edu.pages.common.home.HomePage;
 import com.softserve.edu.testcases.BaseTestSetup;
+import org.openqa.selenium.Keys;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -24,7 +25,7 @@ public class SearchClubTest extends BaseTestSetup {
         clubsPage.searchClub(club.getTitle());
 
         // Assert check if searched club is present on the page
-        Assert.assertTrue(clubsPage.isClubPresentOnThePage(club.getTitle()));   // Application crashes after 7 second wait
+        Assert.assertTrue(clubsPage.isClubPresentOnThePage(club.getTitle()));   // Finds completely different clubs
 
         logger.info("Test if club that is send to the search field in basic search will be found on the clubs page finished");
     }
@@ -46,7 +47,7 @@ public class SearchClubTest extends BaseTestSetup {
         clubsPage.searchClub(club.getTitle());
 
         // Assert check if searched club is present on the page
-        Assert.assertTrue(clubsPage.isClubPresentOnThePage(club.getTitle()));   // Application crashes after 7 second wait
+        Assert.assertTrue(clubsPage.isClubPresentOnThePage(club.getTitle()));   // Finds completely different clubs
 
         logger.info("Test if club that is send to the search field in advanced search will be found on the clubs page finished");
     }

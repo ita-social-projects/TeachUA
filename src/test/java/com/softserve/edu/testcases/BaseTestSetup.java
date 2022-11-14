@@ -12,41 +12,45 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Map;
 
 public abstract class BaseTestSetup {
 
-    private final Long ONE_SECOND_DELAY = 1000L;                                        // one-second delay
+    private Browsers browser = Browsers.CHROME_BROWSER;                                 // set default browser as Chrome
     protected ConfigPropertiesReader config = new ConfigPropertiesReader();             // get test data
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());           // logger
     protected Database db = new Database();                                             // database connection
 
-    // Overload
-    protected void presentationSleep() {
-        presentationSleep(1);
-    }
-
-    // Overload
-    protected void presentationSleep(int seconds) {
-        try {
-            Thread.sleep(seconds * ONE_SECOND_DELAY);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    // Set driver to 'chrome without UI' if 'mode' key and 'headless' value are present in xml file
+    private void checkXmlParameters(ITestContext context) {
+        // Defines a test context which contains all the information for a given test run
+        if(context != null) {
+            // Get all parameters from current xml file as set view of all entries containing key-value pairs
+            for(Map.Entry<String, String> entry : context.getCurrentXmlTest().getAllParameters().entrySet()) {
+                // Check if there is mode-headless pair present in xml
+                if (entry.getKey().contains("mode") && entry.getValue().contains("headless")) {
+                    // If yes, run browser on headless mode
+                    browser = Browsers.CHROME_WITHOUT_UI;
+                    break;
+                }
+            }
         }
     }
 
     // Annotation add received image into allure report (type says allure to understand byte sequence as image, value = attachName)
     @Attachment(value = "{0}", type = "image/png")
     private byte[] saveImageAttachment(String attachName) {
-
         byte[] result = null;
-        File scrFile = ((TakesScreenshot) DriverWrapper.get().driver()).getScreenshotAs(OutputType.FILE); // take screenshot
         try{
+            // Take screenshot and get output it as file
+            File scrFile = ((TakesScreenshot) DriverWrapper.get().driver()).getScreenshotAs(OutputType.FILE);
             // Write taken screenshot as byte array
             result = Files.readAllBytes(scrFile.toPath());
             // Place taken screenshot into appropriate directory with the following name
@@ -69,9 +73,10 @@ public abstract class BaseTestSetup {
     }
 
     @BeforeClass
-    public void beforeClass() {
-        DriverWrapper.get().setDriverStrategy(Browsers.CHROME_BROWSER);                 // set browser
-        DriverWrapper.get().driver();                                                   // get and initialize driver
+    public void beforeClass(ITestContext context) {
+        // Run browser in headless mode if such parameter is present in xml file
+        checkXmlParameters(context);
+        DriverWrapper.get().setDriverStrategy(browser);                                 // set up browser
     }
 
     @BeforeMethod
@@ -81,10 +86,7 @@ public abstract class BaseTestSetup {
 
     @AfterMethod
     public void afterMethod(ITestResult result) {
-        presentationSleep(); // For Presentation ONLY
         if (!result.isSuccess()) {
-            String testName = result.getName();
-            logger.error("Test case error, name = " + testName + " ERROR");
             // Take screenshot and save it in allure report
             saveImageAttachment(result.getName() + "_image");
             // Take sourceCode and save it in allure report

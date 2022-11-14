@@ -34,7 +34,7 @@ public class BaseTest extends BaseTestSetup {
         challengePage.verifyPageLinksImages();
 
         // Go to news page
-        NewsPage newsPage = clubsPage.gotoNewsPage();
+        NewsPage newsPage = challengePage.gotoNewsPage();
 
         // Check if all the links and images that are present on News page are not broken
         newsPage.verifyPageLinksImages();

@@ -22,7 +22,11 @@ class FirefoxWithoutUI implements Browser {
     public WebDriver getBrowser() {
         WebDriverManager.firefoxdriver().setup();       // download the latest webDriver
         FirefoxOptions options = new FirefoxOptions();  // initialize driver instance
-        options.addArguments("--headless");             // configure webDriver
+        options.addArguments("--window-size=1920,1080");// set window size
+        options.addArguments("--start-maximized");      // start maximized screen
+        options.addArguments("--headless");             // run in headless mode
+        options.addArguments("--no-proxy-server");      // cno proxy server
+        options.addArguments("--ignore-certificate-errors");    // ignore-certificate-errors
         return new FirefoxDriver(options);              // initialize driver instance with options to run browser w/o UI
     }
 }
@@ -38,9 +42,11 @@ class ChromeWithoutUI implements Browser {
     public WebDriver getBrowser() {
         WebDriverManager.chromedriver().setup();        // download the latest webDriver
         ChromeOptions options = new ChromeOptions();    // initialize driver instance
-        options.addArguments("--headless");             // configure webDriver
-        options.addArguments("--no-proxy-server");      // configure webDriver
-        options.addArguments("--ignore-certificate-errors");    // configure webDriver
+        options.addArguments("--window-size=1920,1080");// set window size
+        options.addArguments("--start-maximized");      // start maximized screen
+        options.addArguments("--headless");             // run in headless mode
+        options.addArguments("--no-proxy-server");      // cno proxy server
+        options.addArguments("--ignore-certificate-errors");    // ignore-certificate-errors
         return new ChromeDriver(options);               // initialize driver instance with options to run browser w/o UI
     }
 }

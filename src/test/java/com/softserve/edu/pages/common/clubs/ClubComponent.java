@@ -33,7 +33,7 @@ public class ClubComponent {
     }
 
     private void initElements() {
-        title = clubLayout.findElement(By.cssSelector(".title .name"));
+        title = clubLayout.findElement(By.xpath("//div[@class='title']//div[@class='name']"));
         category = clubLayout.findElement(By.cssSelector(".ant-tag.tag .name"));
         partialDescription = clubLayout.findElement(By.cssSelector(".ant-card-body .description"));
         rate = clubLayout.findElement(By.cssSelector("ul.ant-rate.ant-rate-disabled.rating"));

@@ -18,8 +18,8 @@ public class NewsPage extends TopPart {
 
     // Check if elements present on the page
     private void initElements() {
-        pageName = driver.findElement(By.cssSelector(".city-name-box-small-screen .city-name"));
-        clubsInCity = driver.findElement(By.cssSelector(".sider-header .city-name"));
+        pageName = driver.findElement(By.xpath("//div[@class='city-name-box-small-screen']//h2[@class='city-name']"));
+        clubsInCity = driver.findElement(By.cssSelector(".sider-header>h2.city-name"));
     }
 
     /*

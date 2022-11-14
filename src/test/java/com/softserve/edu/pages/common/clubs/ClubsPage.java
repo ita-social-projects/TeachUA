@@ -19,7 +19,7 @@ public class ClubsPage extends TopPart {
     // Abstract classes
     private ClubsContainer clubsContainer;                                          // clubsContainer abstract class
     private AdvancedSearchPart advancedSearchPart;                                  // advancedSearchPart abstract class
-    private CentersContainer centersContainer;                                       // centersContainer abstract class
+    private CentersContainer centersContainer;                                      // centersContainer abstract class
 
     public ClubsPage(WebDriver driver) {
         super(driver);
@@ -300,6 +300,7 @@ public class ClubsPage extends TopPart {
 
     // Check if club is present on the page
     public boolean isClubPresentOnThePage(String title) {
+        presentationSleep(1);
         return createClubsContainer().isClubComponentPresent(title);
     }
 
