@@ -181,6 +181,13 @@ public interface ClubService {
      */
     Page<ClubResponse> getAdvancedSearchClubs(AdvancedSearchClubProfile advancedSearchClubProfile, Pageable pageable);
 
+    /***
+     *  The method which returns clubs that doesn't have categories.
+     *
+     * @return {@code Page<ClubResponse>}
+     */
+    Page<ClubResponse> getBrokenClubs(Pageable pageable);
+
     /**
      * The method which return possible results of search by entered text.
      *

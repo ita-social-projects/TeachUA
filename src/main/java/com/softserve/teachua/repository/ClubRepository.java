@@ -34,7 +34,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     @Query("SELECT DISTINCT club from Club AS club " + "JOIN club.categories AS category "
             + "LEFT JOIN club.locations AS locations " + "LEFT JOIN locations.city AS city "
             + "LEFT JOIN locations.district AS district " + "LEFT JOIN locations.station AS station WHERE "
-            + "((:city NOT LIKE 'online' AND (:isOnline IS NULL OR club.isOnline = :isOnline) AND city.name = :city) OR"
+            + "((:city NOT LIKE 'online' AND (:isOnline IS NULL OR club.isOnline = :isOnline) AND city.name = :city) OR "
             + "(:city LIKE 'online' AND club.isOnline = true) OR " + "(:city IS NULL OR city.name = :city)) AND "
             + "(:isOnline is null or club.isOnline=:isOnline) AND "
             + "(:age IS NULL or club.ageFrom <= :age AND club.ageTo >= :age) AND "
@@ -105,4 +105,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     @Query(value = "SELECT * from clubs as c left join locations as l on l.club_id = c.id left join cities on cities.id = l.city_id where cities.name = :city order by c.rating desc limit :amount", nativeQuery = true)
     List<Club> findTopClubsByCity(@Param("city") String cityName, @Param("amount") int amount);
+
+    @Query(value = "SELECT * FROM clubs WHERE id NOT IN ( SELECT club_id from club_category)", nativeQuery = true)
+    Page<Club> findAllWithoutCategories(Pageable pageable);
 }

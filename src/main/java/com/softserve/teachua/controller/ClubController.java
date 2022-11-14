@@ -55,6 +55,12 @@ public class ClubController implements Api {
         return clubService.getClubProfileById(id);
     }
 
+    @AllowedRoles(RoleData.ADMIN)
+    @GetMapping("/club/broken-clubs")
+    public Page<ClubResponse> getBrokenClubs(@PageableDefault(value = CLUBS_PER_PAGE, sort = "id") Pageable pageable) {
+        return clubService.getBrokenClubs(pageable);
+    }
+
     /**
      * Use this endpoint to get club by name The controller returns {@code ClubResponse}.
      *

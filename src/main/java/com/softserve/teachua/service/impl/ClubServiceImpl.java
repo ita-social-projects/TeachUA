@@ -146,7 +146,9 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Transactional
     public SuccessUpdatedClub updateClub(Long id, ClubResponse clubResponse) {
         User user = userService.getCurrentUser();
+        System.out.println("Validating....");
         validateClubOwner(id, user);
+        System.out.println("VALIDATED");
         Club club = getClubById(id);
         Set<LocationResponse> locations = null;
 
@@ -190,6 +192,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         }
 
         log.debug("updating club by id {}", updatedClub);
+        System.out.println("updating club by id {}" + updatedClub);
         return dtoConverter.convertToDto(clubRepository.save(updatedClub), SuccessUpdatedClub.class);
     }
 
@@ -331,9 +334,25 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 advancedSearchClubProfile.getDistrictName(), advancedSearchClubProfile.getStationName(),
                 CategoryUtil.replaceSemicolonToComma(advancedSearchClubProfile.getCategoriesName()),
                 advancedSearchClubProfile.getIsOnline(), pageable);
+        System.out.println("DEBUG " + clubResponses.getTotalElements());
+        System.out.println("getAdvancedSearchClubs, advClubProf :" + advancedSearchClubProfile);
+        for (Club c: clubResponses
+             ) {
+            System.out.println(c.getId());
+        }
 
         return new PageImpl<>(
                 clubResponses.stream().map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
+                        .collect(Collectors.toList()),
+                clubResponses.getPageable(), clubResponses.getTotalElements());
+    }
+
+    @Override
+    public Page<ClubResponse> getBrokenClubs(Pageable pageable) {
+        Page<Club> clubResponses = clubRepository.findAllWithoutCategories(pageable);
+
+        return new PageImpl<>(
+                clubResponses.stream().map(club -> toClubResponseConverter.convertToClubResponse(club))
                         .collect(Collectors.toList()),
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
@@ -613,7 +632,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     public void validateClubOwner(Long id, User userFromRequest) {
         User userFromClub = getClubById(id).getUser();
 
-        if (!(userFromClub != null && userFromRequest != null && userFromRequest.equals(userFromClub))) {
+        if (!(userFromClub != null && userFromRequest != null && userFromRequest.equals(userFromClub))
+        && !userFromRequest.getRole().getName().equalsIgnoreCase("ROLE_ADMIN")) {
             throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);
         }
     }
