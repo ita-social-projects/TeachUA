@@ -32,58 +32,6 @@ public class LoggedDropdown {
      * Page Object
      */
 
-    // addClub
-    private WebElement getAddClub() {
-        return addClub;                                                         // get addClub element
-    }
-
-    private String getAddClubText() {
-        return getAddClub().getText();                                          // get addClub text
-    }
-
-    protected void clickAddClub() {
-        getAddClub().click();                                                   // click addClub
-    }
-
-    // addCenter
-    private WebElement getAddCenter() {
-        return addCenter;                                                       // get addCenter element
-    }
-
-    private String getAddCenterText() {
-        return getAddCenter().getText();                                        // get addCenter text
-    }
-
-    protected void clickAddCenter() {
-        getAddCenter().click();                                                 // click addCenter
-    }
-
-    // myProfile
-    private WebElement getMyProfile() {
-        return myProfile;                                                       // get myProfile element
-    }
-
-    private String getMyProfileText() {
-        return getMyProfile().getText();                                        // get myProfile text
-    }
-
-    protected void clickMyProfile() {
-        getMyProfile().click();                                                 // click myProfile
-    }
-
-    // exit
-    private WebElement getExit() {
-        return exit;                                                            // get exit element
-    }
-
-    private String getExitText() {
-        return getExit().getText();                                             // get exit text
-    }
-
-    protected void clickExit() {
-        getExit().click();                                                      // click exit
-    }
-
     /*
      * Functional
      */

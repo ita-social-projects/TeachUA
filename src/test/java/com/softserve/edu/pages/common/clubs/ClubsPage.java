@@ -138,16 +138,6 @@ public class ClubsPage extends TopPart {
         getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
-//    // Set available online to search clubs that are available online
-//    public void searchOnlineClubs() {
-//        getAdvancedSearchPart().clickAvailableOnline();                             // choose online clubs option
-//    }
-//
-//    // Choose needed categories
-//    public void setSearchCategories(Categories... categories) {
-//        getAdvancedSearchPart().chooseCategories(categories);                       // choose categories to filter
-//    }
-
     // Click center radio button
     @Step("Click center radio button")
     public void selectCenters() {
@@ -231,23 +221,6 @@ public class ClubsPage extends TopPart {
         logger.info("Default city is {}", getAdvancedSearchPart().getCityDropdownText());
         return getAdvancedSearchPart().getCityDropdownText();                       // get city name
     }
-
-//    // Get number of clubs on all pages on Clubs page
-//    public int getTotalNumberOfClubs() {
-//        int result = 0;
-//        try{
-//            while(createPagination().isNextButtonEnabled()) {
-//                // Add number of clubs on the current page to the total value
-//                result += createClubsContainer().getClubComponentsCount();
-//                createPagination().clickNextButton();                               // click on next button
-//                presentationSleep(3);
-//
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return result;                                                              // get actual number of pages
-//    }
 
     // TODO Combine the following two methods into one
     // Get number of clubs on all pages on Clubs page

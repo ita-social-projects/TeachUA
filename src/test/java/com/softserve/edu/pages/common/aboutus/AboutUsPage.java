@@ -24,15 +24,6 @@ public class AboutUsPage extends TopPart {
      * Page Object
      */
 
-    // initiative
-    private WebElement getInitiative() {
-        return this.initiative;                                                 // get initiative element
-    }
-
-    protected String getInitiativeText() {
-        return getInitiative().getText();                                       // get initiative text
-    }
-
     /*
      * Functional
      */

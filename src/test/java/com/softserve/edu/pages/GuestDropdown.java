@@ -28,32 +28,6 @@ public class GuestDropdown {
      * Page Object
      */
 
-    // register
-    private WebElement getRegister() {
-        return register;                                                        // get register element
-    }
-
-    private String getRegisterText() {
-        return getRegister().getText();                                         // get register text
-    }
-
-    protected void clickRegister() {
-        getRegister().click();                                                  // click register
-    }
-
-    // login
-    private WebElement getLogin() {
-        return login;                                                           // get login element
-    }
-
-    private String getLoginText() {
-        return getLogin().getText();                                            // get login text
-    }
-
-    protected void clickLogin() {
-        getLogin().click();                                                     // click login
-    }
-
     /*
      * Functional
      */

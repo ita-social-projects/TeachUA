@@ -10,9 +10,6 @@ import java.util.List;
 public class AdvancedSearchPart {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());             // logger
-    // Locator to find needed club category
-    private final String LIST_CATEGORIES_XPATH =
-            "//div[@id='basic_categoriesName']//span[contains(@class,'ant-checkbox')]/following-sibling::span";
     private final String VALUE_ATTRIBUTE = "value";                                     // value attribute
     private final String CLEAR_PLACE_LOCATOR = "./..//span[@class='anticon anticon-close-circle']";
     // Message that informs about selected value
@@ -297,9 +294,9 @@ public class AdvancedSearchPart {
             List<WebElement> places = driver.findElements(locator);
             // This delay is needed to select value from dropdown
             Thread.sleep(100);
-            for(WebElement current : places) {
+            for (WebElement current : places) {
                 // Check if provided place exists in dropdown
-                if(current.getText().equalsIgnoreCase(place.toLowerCase())) {
+                if (current.getText().equalsIgnoreCase(place.toLowerCase())) {
                     // If such place was found, click on it to select
                     current.click();
                     logger.info(SELECT_MESSAGE, current.getText());
@@ -314,28 +311,13 @@ public class AdvancedSearchPart {
     // TODO Make the following method looks better
     protected void isClearButtonPresent(WebElement element) {
         try {
-            if(element.findElements(By.xpath(CLEAR_PLACE_LOCATOR)).size() != 0) {
+            if (element.findElements(By.xpath(CLEAR_PLACE_LOCATOR)).size() != 0) {
                 element.findElement(By.xpath(CLEAR_PLACE_LOCATOR)).click();
             }
-        } catch(NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             e.printStackTrace();
         }
     }
-
-//    protected void chooseCategories(Categories... categories) {
-//        // Find and save all categories into the list
-//        List<WebElement> categoriesList = driver.findElements(By.cssSelector(LIST_CATEGORIES_XPATH));
-//        for(WebElement current : categoriesList) {
-//            for(Categories category : categories) {
-//                // Check if provided category matches one of the checkboxes
-//                if(current.getText().toLowerCase().contains(category.toString().toLowerCase())) {
-//                    // If match has been found, click on it to choose
-//                    current.click();
-//                    break;
-//                }
-//            }
-//        }
-//    }
 
     // Type child age in the input field
     protected void sendTextIntoChildAgeField(String age) {

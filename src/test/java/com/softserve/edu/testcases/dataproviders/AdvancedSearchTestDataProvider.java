@@ -81,7 +81,7 @@ public class AdvancedSearchTestDataProvider {
     @DataProvider(name = "stations")
     public static Object[][] getMetroStations() {
         return new Object[][] {
-                { Locations.KYIV.toString(),
+                { Locations.DEFAULT_LOCATION.toString(),
                         // Query to find centers by city and metro station in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM centers as c\n" +
@@ -104,7 +104,7 @@ public class AdvancedSearchTestDataProvider {
     @DataProvider(name = "district")
     public static Object[][] getDistricts() {
         return new Object[][] {
-                { Locations.KYIV.toString(),
+                { Locations.DEFAULT_LOCATION.toString(),
                   KyivDistricts.DESNYANSKYI.toString(),
                         // Query to find centers by city and district in the DB
                         "SELECT DISTINCT c.name\n" +
@@ -120,7 +120,7 @@ public class AdvancedSearchTestDataProvider {
     @DataProvider(name = "clubStations")
     public static Object[][] getClubMetroStations() {
         return new Object[][] {
-                { Locations.KYIV.toString(),
+                { Locations.DEFAULT_LOCATION.toString(),
                         // Query to find centers by city and metro station in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
@@ -143,7 +143,7 @@ public class AdvancedSearchTestDataProvider {
     @DataProvider(name = "clubDistricts")
     public static Object[][] getClubDistricts() {
         return new Object[][] {
-                { Locations.KYIV.toString(),
+                { Locations.DEFAULT_LOCATION.toString(),
                         // Query to find clubs by city and district in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
@@ -158,7 +158,7 @@ public class AdvancedSearchTestDataProvider {
     @DataProvider(name = "sortCentersByRating")
     public static Object[][] getCentersSortedByRating() {
         return new Object[][] {
-                { Locations.KYIV.toString(),
+                { Locations.DEFAULT_LOCATION.toString(),
                         // Query to find sorted centers by rating in ascending order in the DB
                         "SELECT c.name\n" +
                                 "FROM (\n" +
@@ -189,7 +189,7 @@ public class AdvancedSearchTestDataProvider {
     @DataProvider(name = "alphabeticCenterSort")
     public static Object[][] getCentersAlphabeticSort() {
         return new Object[][] {
-                { Locations.KYIV.toString(),
+                { Locations.DEFAULT_LOCATION.toString(),
                         // Query to sort centers by alphabet in ascending order in the DB
                         "SELECT c.name\n" +
                                 "FROM (\n" +
@@ -220,7 +220,7 @@ public class AdvancedSearchTestDataProvider {
     @DataProvider(name = "clubsByLocation")
     public static Object[][] getClubsByLocation() {
         return new Object[][] {
-                { Locations.KYIV.toString(),
+                { Locations.DEFAULT_LOCATION.toString(),
                         // Query to find search that belongs to a certain region in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +

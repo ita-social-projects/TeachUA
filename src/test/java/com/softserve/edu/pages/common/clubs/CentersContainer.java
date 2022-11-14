@@ -48,83 +48,9 @@ public class CentersContainer {
         return centerComponents;                                                    // get centerComponent list
     }
 
-//    public String getCenterComponentTitle(String centerTitle) {
-//        return getCenterComponentByTitle(centerTitle).getTitleText();               // get centerComponent title
-//    }
-//
-//    public void clickCenterComponentTitle(String centerTitle) {
-//        getCenterComponentByTitle(centerTitle).clickTitle();                        // click centerComponent title
-//    }
-//
-//    public String getCenterComponentPartialDescription(String centerTitle) {
-//        return getCenterComponentByTitle(centerTitle).getPartialDescriptionText();  // get centerComponent partialDescription
-//    }
-//
-//    public void clickCenterComponentPartialDescription(String centerTitle) {
-//        getCenterComponentByTitle(centerTitle).clickPartialDescription();           // click centerComponent partialDescription
-//    }
-//
-//    public int getCenterComponentsCount() {
-//        return getCenterComponents().size();                                        // get centerComponents size
-//    }
-//
-//    public String getCenterComponentLocation(String centerTitle) {
-//        return getCenterComponentByTitle(centerTitle).getLocationText();            // get centerComponent location
-//    }
-//
-//    public void clickCenterComponentLocation(String centerTitle) {
-//        getCenterComponentByTitle(centerTitle).clickLocation();                     // click centerComponent location
-//    }
-//
-//    public String getCenterComponentDetailsButtonText(String centerTitle) {
-//        return getCenterComponentByTitle(centerTitle).getDetailsButtonText();       // get centerComponent detailsButton text
-//    }
-//
-//    public void clickCenterComponentDetailsButton(String centerTitle) {
-//        getCenterComponentByTitle(centerTitle).clickDetailsButton();                // click centerComponent detailsButton
-//    }
-
     /*
      * Functional
      */
-
-//    // Get centerComponent by title
-//    public CenterComponent getCenterComponentByTitle(String centerTitle) {
-//        CenterComponent result = null;
-//        for(CenterComponent component : getCenterComponents()) {
-//            // Compare provided center title with value from center components list to find needed one
-//            if(component.getTitleText().equalsIgnoreCase(centerTitle)) {
-//                result = component;
-//                break;
-//            }
-//            if(!isCenterComponentPresent(centerTitle)) {
-//                // Throw exception once center with needed title has not been found
-//                throw new RuntimeException("Center " + centerTitle + " has not been found");
-//            }
-//        }
-//        return result;
-//    }
-//
-//    // Check is needed center is present on the page
-//    public boolean isCenterComponentPresent(String centerTitle) {
-//        boolean result = false;
-//        try {
-//            Thread.sleep(7000);
-//            for(CenterComponent component : getCenterComponents()) {
-//                // Compare provided center title with value from center components list to find needed one
-//                if(component.getTitleText().contains(centerTitle)) {
-//                    logger.info("Component with partial or the same title as " + centerTitle + " found on the page");
-//                    result = true;
-//                    break;
-//                }
-//            }
-//            return result;
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//            logger.error(CENTER_NOT_FOUND);
-//            return false;
-//        }
-//    }
 
     public List<String> getCenterComponentTitles() {
         List<String> centerComponentTitles = new ArrayList<>();

@@ -26,24 +26,6 @@ public class NewsPage extends TopPart {
      * Page Object
      */
 
-    // pageName
-    private WebElement getPageName() {
-        return this.pageName;                                                   // get pageName element
-    }
-
-    private String getPageNameText() {
-        return getPageName().getText();                                         // get pageName text
-    }
-
-    // clubsInCity
-    private WebElement getClubsInCity() {
-        return this.clubsInCity;                                                // get clubsInCity element
-    }
-
-    private String getClubsInCityText() {
-        return getClubsInCity().getText();                                      // get clubsInCity text
-    }
-
     /*
      * Functional
      */

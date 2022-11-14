@@ -1,6 +1,5 @@
 package com.softserve.edu.pages.common.home;
 
-import com.softserve.edu.testcases.enums.Locations;
 import com.softserve.edu.pages.TopPart;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -27,28 +26,6 @@ public class HomePage extends TopPart {
      * Page Object
      */
 
-    // addClubButton
-    private WebElement getAddClubButton() {
-        return this.addClubButton;                                                   // get addClubButton element
-    }
-
-    private String getAddClubButtonText() {
-        return getAddClubButton().getText();                                        // get addClubButton text
-    }
-
-    private void clickAddClubButton() {
-        getAddClubButton().click();                                                 // click addClubButton
-    }
-
-    // initiative
-    private WebElement getInitiative() {
-        return this.initiative;                                                     // get initiative element
-    }
-
-    protected String getInitiativeText() {
-        return getInitiative().getText();                                           // get initiative text
-    }
-
     /*
      * Functional
      */
@@ -56,10 +33,5 @@ public class HomePage extends TopPart {
     /*
      * Business Logic
      */
-
-    public HomePage chooseLocation(Locations location) {
-        clickLocationByPartialName(location);                                   // click on provided location
-        return new HomePage(driver);                                            // return HomePage
-    }
 
 }

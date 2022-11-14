@@ -1,27 +1,25 @@
 package com.softserve.edu.pages;
 
-import com.softserve.edu.testcases.enums.Locations;
 import com.softserve.edu.pages.common.aboutus.AboutUsPage;
 import com.softserve.edu.pages.common.challenge.ChallengePage;
 import com.softserve.edu.pages.common.clubs.ClubsPage;
 import com.softserve.edu.pages.common.news.NewsPage;
 import com.softserve.edu.pages.common.servicesinukrainian.ServicesInUkrainianPage;
-import com.softserve.edu.utils.JsMethods;
 import io.qameta.allure.Step;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class TopPart {
 
     private final Long ONE_SECOND_DELAY = 1000L;                                    // one-second delay
-    // CSS locator to find each location on dropdown list of locations
-    private final String LIST_LOCATIONS_CSS_SELECTOR = ".ant-dropdown-menu-vertical>.ant-dropdown-menu-item";
     protected WebDriver driver;                                                     // WebDriver instance
     // this.getClass() means that logger will be created from the name of the class where it is used
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());       // logger
     protected final String OPTION_NULL_MESSAGE = "Option is null";                  // error message
-    protected final String OPTION_NOT_FOUND_MESSAGE = "Option %s not found in %s";  // option not found error message
 
     /*
      * Header elements
@@ -66,7 +64,6 @@ public abstract class TopPart {
 
     // Abstract classes
     private Pagination pagination;                                              // pagination abstract class
-    private LocationDropdownComponent locationDropdownComponent;                // location dropdown abstract class
     private LinksImagesCheck linksImagesCheck;                                  // links and images check abstract class
 
     // Constructor
@@ -216,164 +213,6 @@ public abstract class TopPart {
         return getLocation().getText();                                         // get location text
     }
 
-    private void clickLocation() {
-        getLocation().click();                                                  // click location
-    }
-
-//    // myProfile
-//    private WebElement getMyProfile() {
-//        return this.myProfile;                                                  // get myProfile element
-//    }
-//
-//    // teachUALogo
-//    private WebElement getTeachUALogo() {
-//        return this.teachUALogo;                                                // get teachUALogo element
-//    }
-//
-//    // watchword
-//    private WebElement getWatchword() {
-//        return this.watchword;                                                  // get location element
-//    }
-//
-//    // facebook
-//    private WebElement getFacebook() {
-//        return this.facebook;                                                   // get facebook element
-//    }
-//
-//    private void clickFacebook() {
-//        getFacebook().click();                                                  // click facebook
-//    }
-//
-//    // youtube
-//    private WebElement getYoutube() {
-//        return this.youtube;                                                    // get youtube element
-//    }
-//
-//    private void clickYoutube() {
-//        getYoutube().click();                                                   // click youtube
-//    }
-//
-//    // instagram
-//    private WebElement getInstagram() {
-//        return this.instagram;                                                  // get instagram element
-//    }
-//
-//    private void clickInstagram() {
-//        getInstagram().click();                                                 // click instagram
-//    }
-//
-//    // designedBy
-//    private WebElement getDesignedBy() {
-//        return this.designedBy;                                                 // get designedBy element
-//    }
-//
-//    private String getDesignedByText() {
-//        return getDesignedBy().getText();                                       // get designedBy text
-//    }
-//
-//    // outPartners
-//    private WebElement getOutPartners() {
-//        return this.outPartners;                                                // get outPartners element
-//    }
-//
-//    private String getOutPartnersText() {
-//        return getOutPartners().getText();                                      // get outPartners text
-//    }
-//
-//    // softServe
-//    private WebElement getSoftServe() {
-//        return this.softServe;                                                  // get softServe element
-//    }
-//
-//    private void clickSoftServe() {
-//        getSoftServe().click();                                                 // click softServe
-//    }
-//
-//    // languageUnites
-//    private WebElement getLanguageUnites() {
-//        return this.languageUnites;                                             // get languageUnites element
-//    }
-//
-//    private void clickLanguageUnites() {
-//        getLanguageUnites().click();                                            // click languageUnites
-//    }
-//
-//    // edEra
-//    private WebElement getEdEra() {
-//        return this.edEra;                                                      // get edEra element
-//    }
-//
-//    private void clickEdEra() {
-//        getEdEra().click();                                                     // click edEra
-//    }
-//
-//    // isLanguage
-//    private WebElement getIsLanguage() {
-//        return this.isLanguage;                                                 // get isLanguage element
-//    }
-//
-//    private void clickIsLanguage() {
-//        getIsLanguage().click();                                                // click isLanguage
-//    }
-//
-//    // countryFm
-//    private WebElement getCountryFm() {
-//        return this.countryFm;                                                  // get countryFm element
-//    }
-//
-//    private void clickCountryFm() {
-//        getCountryFm().click();                                                 // click countryFm
-//    }
-//
-//    // ucf
-//    private WebElement getUcf() {
-//        return this.ucf;                                                        // get ucf element
-//    }
-//
-//    private void clickUcf() {
-//        getUcf().click();                                                       // click ucf
-//    }
-//
-//    // freedom
-//    private WebElement getFreedom() {
-//        return this.freedom;                                                    // get freedom element
-//    }
-//
-//    private void clickFreedom() {
-//        getFreedom().click();                                                   // click freedom
-//    }
-//
-//    // howToHelpProject
-//    private WebElement getHowToHelpProject() {
-//        return this.howToHelpProject;                                           // get howToHelpProject element
-//    }
-//
-//    private String getHowToHelpProjectText() {
-//        return getHowToHelpProject().getText();                                 // get howToHelpProject text
-//    }
-//
-//    // reason
-//    private WebElement getReason() {
-//        return this.reason;                                                     // get reason element
-//    }
-//
-//    private String getReasonText() {
-//        return getReason().getText();                                           // get reason text
-//    }
-//
-//    // helpProjectButton
-//    private WebElement getHelpProjectButton() {
-//        return this.helpProjectButton;                                          // get helpProjectButton element
-//    }
-//
-//    private String getHelpProjectButtonText() {
-//        return getHelpProjectButton().getText();                                // get helpProjectButton text
-//    }
-//
-//    private void clickHelpProjectButton() {
-//        getHelpProjectButton().click();                                         // click helpProjectButton
-//    }
-
     // pagination
     private Pagination getPagination() {
         // Check if pagination object is created
@@ -386,34 +225,6 @@ public abstract class TopPart {
     protected Pagination createPagination() {
         pagination = new Pagination(driver);                                    // create new object of Pagination type
         return getPagination();
-    }
-
-    // locationDropdownComponent
-    protected LocationDropdownComponent getLocationDropdownComponent() {
-        // Check if locationDropdownComponent object is created
-        if(locationDropdownComponent == null) {
-            throw new RuntimeException(OPTION_NULL_MESSAGE);                    // throw RuntimeException
-        }
-        return locationDropdownComponent;                                       // return locationDropdownComponent
-    }
-
-    private LocationDropdownComponent createLocationDropdownComponent(By searchLocator) {
-        // Create and initialize object of the class LocationDropdownComponent
-        locationDropdownComponent = new LocationDropdownComponent(driver, searchLocator);
-        return getLocationDropdownComponent();                                  // return locationDropdownComponent
-    }
-
-    private void clickLocationDropdownComponentByPartialName(String optionName) {
-        // Check if needed option exists in the list
-        if(!getLocationDropdownComponent().isDropdownOptionByPartialNameExist(optionName)) {
-            // Throw special exception if element does not exist
-            throw new RuntimeException(String.format(OPTION_NOT_FOUND_MESSAGE, optionName,
-                    getLocationDropdownComponent().getListOptionsText().toString()));
-        }
-        // Click on option with set partial name
-        getLocationDropdownComponent().clickDropdownOptionByPartialName(optionName);
-        // Assign null to object to know that such element does not exist anymore
-        locationDropdownComponent = null;
     }
 
     // linksCheck
@@ -433,21 +244,6 @@ public abstract class TopPart {
     /*
      * Functional
      */
-
-    // location
-    private void openLocationDropdownComponent() {
-        // clickSearchTopField is needed because it's unknown if location dropdown already opened or not
-        clickSearchTopField();                                                  // click search top field
-        clickLocation();                                                        // click location
-        // If we clicked on location component, we need to create it and provide css selector to find needed location
-        createLocationDropdownComponent(By.cssSelector(LIST_LOCATIONS_CSS_SELECTOR));
-    }
-
-    // optionName with type Locations we need to avoid mistakes in writing location name
-    protected void clickLocationByPartialName(Locations optionName) {           // void because we can be on any page
-        openLocationDropdownComponent();                                        // open location dropdown component
-        clickLocationDropdownComponentByPartialName(optionName.toString());     // click location by its partial name
-    }
 
     // pagination
     public int getActualNumberOfPages() {
