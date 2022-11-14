@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class CertificateUserResponse {
 
+    private Long id;
+
     private Long serialNumber;
 
     private String certificateType;

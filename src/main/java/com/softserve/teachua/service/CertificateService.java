@@ -182,12 +182,12 @@ public interface CertificateService {
      *
      * @param userEmail
      *            put authenticated user email
-     * @param serialNumber
-     *            put serial number of certificate
+     * @param id
+     *            put id of certificate
      *
      * @return filled {@code byte[]}
      */
-    byte[] getPdfOutputForDownload(String userEmail, Long serialNumber);
+    byte[] getPdfOutputForDownload(String userEmail, Long id);
 
     /**
      * This method gets the serial number, obtains certificate with specified serial number from DB, then if certificate
