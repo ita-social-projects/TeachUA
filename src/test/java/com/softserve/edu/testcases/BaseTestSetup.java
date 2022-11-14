@@ -67,13 +67,13 @@ public abstract class BaseTestSetup {
         return DriverWrapper.get().driver().getPageSource().getBytes();
     }
 
-    @AfterClass(alwaysRun = true)
-    public void afterClass() {
+    @AfterSuite(alwaysRun = true)
+    public void afterSuite() {
         DriverWrapper.get().quit();                                                     // close driver
     }
 
-    @BeforeClass
-    public void beforeClass(ITestContext context) {
+    @BeforeSuite
+    public void beforeSuite(ITestContext context) {
         // Run browser in headless mode if such parameter is present in xml file
         checkXmlParameters(context);
         DriverWrapper.get().setDriverStrategy(browser);                                 // set up browser

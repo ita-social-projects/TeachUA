@@ -7,10 +7,15 @@ import com.softserve.edu.pages.common.home.HomePage;
 import com.softserve.edu.pages.common.news.NewsPage;
 import com.softserve.edu.pages.common.servicesinukrainian.ServicesInUkrainianPage;
 import com.softserve.edu.testcases.BaseTestSetup;
+import io.qameta.allure.Description;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
 import org.testng.annotations.Test;
 
 public class BaseTest extends BaseTestSetup {
 
+    @Description("Check whether links and images on the pages are not broken")
+    @Severity(SeverityLevel.CRITICAL)
     @Test
     public void linksImagesTest() {
         logger.info("Test if links and images on the page are not broken started");
