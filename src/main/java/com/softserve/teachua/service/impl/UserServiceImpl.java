@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -79,8 +80,8 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     @Autowired
     public UserServiceImpl(UserRepository userRepository, EncoderService encodeService, RoleService roleService,
             DtoConverter dtoConverter, ArchiveService archiveService, JwtProvider jwtProvider,
-            AuthenticationManager authenticationManager, JavaMailSender javaMailSender, PasswordEncoder passwordEncoder,
-            ObjectMapper objectMapper) {
+            @Lazy AuthenticationManager authenticationManager, JavaMailSender javaMailSender,
+            @Lazy PasswordEncoder passwordEncoder, ObjectMapper objectMapper) {
         this.userRepository = userRepository;
         this.encodeService = encodeService;
         this.roleService = roleService;

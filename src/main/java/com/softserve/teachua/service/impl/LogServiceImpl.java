@@ -6,6 +6,11 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.service.LogService;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,26 +32,40 @@ public class LogServiceImpl implements LogService {
     @Value(value = "${logs.path}")
     private String path;
     private static final String CREATE_MESSAGE = "Created sub directory in logs with name: %s";
-    private DtoConverter dtoConverter;
+    private static final String FILE_NAME = "teachualogs";
 
     @Override
-    public List<String> getAllLogs(String filter, String content) {
-        log.info(filter + " " + content);
-        return FileUtils.listFiles(new File(path), null, false).stream().map(File::getName)
-                .filter(name -> name.contains(filter))
-                .filter(name -> getLogByName(name).stream().anyMatch(row -> row.contains(content)))
+    public List<String> getAllLogs() {
+        List<String> result = new ArrayList<>();
+
+        try (Stream<Path> walk = Files.walk(Paths.get(path))) {
+            result = walk
+                .filter(Files::isRegularFile)
+                .map(Path::getFileName)
+                .map(Path::toString)
+                .filter(f -> f.startsWith(FILE_NAME))
+                .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
+        } catch (IOException e) {
+            log.info("Error occurred while walking through log files in directory: {}", path, e);
+        }
+
+        return result;
     }
 
     @Override
-    public List<String> getLogByName(String name) {
+    public List<String> getLogByName(String fileName) {
         List<String> result = new ArrayList<>();
 
-        try {
-            result = FileUtils.readLines(new File(path + "/" + name), StandardCharsets.UTF_8);
-            for (String s : result) {
-                s += "\\n";
-            }
+        Path pathToFile = Paths.get(path, fileName);
+
+        if (!Files.exists(pathToFile)) {
+            log.info("Tried deleting file: {}, but it does not exist", fileName);
+            return result;
+        }
+
+        try (Stream<String> lines = Files.lines(pathToFile)) {
+            result = lines.collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,45 +74,18 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public LogResponse deleteLogsByFilter(String filter) {
-        AtomicBoolean correctFilter = new AtomicBoolean(false);
-        List<String> deletedLogs = new LinkedList<>();
-        List<String> notDeletedLogs = new LinkedList<>();
+    public void deleteLogByName(String fileName) {
+        Path pathToFile = Paths.get(path, fileName);
 
-        if (filter.equals("deleteAll")) {
-            FileUtils.listFiles(new File(path), null, false).forEach(file -> {
-                File pathFile = new File((path + file.getName()).replace(" ", ""));
-                if (!pathFile.getName().contains("catalina") && !pathFile.isDirectory()) {
-                    correctFilter.set(true);
-                    try {
-                        FileUtils.forceDelete(pathFile);
-                        deletedLogs.add("deleted: " + pathFile.getName());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        notDeletedLogs.add("NOT deleted: " + pathFile.getName());
-                    }
-                }
-            });
-        } else {
-            FileUtils.listFiles(new File(path), null, false).forEach(file -> {
-                File pathFile = new File((path + file.getName()).replace(" ", ""));
-                if (!file.getName().contains("catalina") && file.getName().contains(filter)
-                        && !pathFile.isDirectory()) {
-                    correctFilter.set(true);
-                    try {
-                        FileUtils.forceDelete(pathFile);
-                        deletedLogs.add(" deleted: " + pathFile.getName());
-                    } catch (IOException e) {
-                        notDeletedLogs.add("NOT deleted: " + pathFile.getName());
-                    }
-                }
-            });
+        if (!Files.exists(pathToFile)) {
+            log.info("File {} does not exist", fileName);
         }
-        if (!correctFilter.get()) {
-            throw new NotExistException("Not found file by this filter or directory is empty");
+
+        try {
+            Files.delete(Paths.get(path, fileName));
+        } catch (IOException e) {
+            log.error("Error occurred while deleting file: {}", fileName, e);
         }
-        log.debug("**/log delete");
-        return new LogResponse().withDeletedLogs(deletedLogs).withNotDeletedLogs(notDeletedLogs);
     }
 
     @Override

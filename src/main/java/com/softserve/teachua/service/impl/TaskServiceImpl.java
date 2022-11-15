@@ -14,6 +14,7 @@ import com.softserve.teachua.utils.HtmlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
 
     @Autowired
     public TaskServiceImpl(TaskRepository taskRepository, ArchiveService archiveService, DtoConverter dtoConverter,
-            ChallengeService challengeService, UserService userService, ObjectMapper objectMapper) {
+                           @Lazy ChallengeService challengeService, UserService userService, ObjectMapper objectMapper) {
         this.taskRepository = taskRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;

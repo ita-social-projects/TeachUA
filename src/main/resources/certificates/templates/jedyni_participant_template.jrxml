@@ -38,7 +38,7 @@
             <staticText>
                 <reportElement x="330" y="100" width="670" height="70" uuid="b5113369-3677-4e88-b9d9-e27152fda9ee"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
-                    <font size="50" isBold="true"/>
+                    <font size="50" isBold="false"/>
                 </textElement>
                 <text>Сертифікат</text>
             </staticText>
