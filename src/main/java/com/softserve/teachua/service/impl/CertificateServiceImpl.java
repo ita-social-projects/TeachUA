@@ -234,7 +234,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     public byte[] getPdfOutput(CertificateTransfer transfer) {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        if (transfer.getSerialNumber() == null) {
+        if (transfer.getSerialNumber() == null && transfer.getUpdateStatus() == null) {
             // UNCOMMENT TO MAKE SERIAL NUMBERS WORK
             transfer = updateCertificateWithSerialNumber(transfer.getId(), transfer);
             //transfer.setSerialNumber(null); // REMOVE WHEN WE NEED SERIAL NUMBERS
@@ -268,6 +268,9 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         }
 
         CertificateTransfer certificateTransfer = dtoConverter.convertToDto(certificate, CertificateTransfer.class);
+        if (!certificateTransfer.getSendStatus()) {
+            updateDateAndSendStatus(certificateTransfer.getId(), true);
+        }
         return getPdfOutput(certificateTransfer);
     }
 
