@@ -19,7 +19,7 @@ public interface LogService {
      * The method returns list of logs {@code List<String>} by name.
      *
      * @param name
-     *            - put log name.
+     *            put log name.
      *
      * @return new {@code List<String>}
      */
@@ -29,8 +29,8 @@ public interface LogService {
      * The method delete logs by filter In case default filter delete all logs without "catalina" In case custom filter
      * delete all logs by custom parameter without "catalina"
      *
-     * @param 
-     *            - user write in url
+     * @param name
+     *            user write in url
      */
     void deleteLogByName(String name);
 

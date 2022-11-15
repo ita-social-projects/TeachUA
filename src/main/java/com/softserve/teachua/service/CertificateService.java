@@ -27,7 +27,8 @@ public interface CertificateService {
     List<CertificatePreview> getListOfCertificatesPreview();
 
     /**
-     * This method returns list of dto {@code CertificateUserResponse} of certificates, found by email
+     * This method returns list of dto {@code CertificateUserResponse} of certificates, found by email,
+     * except certificates without serial numbers
      *
      * @return new {@code List<CertificateUserResponse>}
      */

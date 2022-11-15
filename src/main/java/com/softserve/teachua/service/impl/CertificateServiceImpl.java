@@ -17,9 +17,11 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -75,7 +77,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     @Override
     public List<CertificateUserResponse> getListOfCertificatesByEmail(String email) {
-        return certificateRepository.findAllBySendToEmailOrderById(email)
+        return certificateRepository.findAllBySendToEmailAndSerialNumberNotNull(email)
                 .stream()
                 .map(certificate -> CertificateUserResponse.builder()
                                 .id(certificate.getId())
@@ -265,6 +267,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
         if (!certificate.getSendToEmail().equals(userEmail)) {
             throw new AccessDeniedException("Forbidden");
+        } else if (certificate.getSerialNumber() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Requested certificate has no serial number");
         }
 
         CertificateTransfer certificateTransfer = dtoConverter.convertToDto(certificate, CertificateTransfer.class);
