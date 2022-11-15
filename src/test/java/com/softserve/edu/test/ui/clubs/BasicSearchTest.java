@@ -113,7 +113,7 @@ public class BasicSearchTest extends BaseTestSetup {
     }
 
     @Description("[Basic Search] Verify that user can perform basic search by name of a club")
-    @Severity(SeverityLevel.NORMAL)
+    @Severity(SeverityLevel.BLOCKER)
     @TmsLink(value = "TUA-226")
     @Test(dataProvider = "clubByTitle", dataProviderClass = BasicSearchTestDataProvider.class)
     public void searchClubByNameTest(Club club, String clubByTitle) {

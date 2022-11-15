@@ -241,7 +241,6 @@ public class ClubsPage extends TopPart {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        logger.info(allClubTitles.toString());
         return allClubTitles;
     }
 
@@ -273,7 +272,7 @@ public class ClubsPage extends TopPart {
 
     // Check if club is present on the page
     public boolean isClubPresentOnThePage(String title) {
-        presentationSleep(1);
+        presentationSleep(10);
         return createClubsContainer().isClubComponentPresent(title);
     }
 

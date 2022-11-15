@@ -36,21 +36,21 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.5.3</version>
+            <version>4.6.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-api</artifactId>
-            <version>4.5.3</version>
+            <version>4.6.0</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-support</artifactId>
-            <version>4.5.3</version>
+            <version>4.6.0</version>
             <scope>compile</scope>
         </dependency>
 
@@ -58,21 +58,21 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
-            <version>4.5.3</version>
+            <version>4.6.0</version>
         </dependency>
 
         <!-- Firefox driver -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-firefox-driver</artifactId>
-            <version>4.5.3</version>
+            <version>4.6.0</version>
         </dependency>
 
         <!-- Add needed webDriver version -->
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
-            <version>5.3.0</version>
+            <version>5.3.1</version>
         </dependency>
 
         <!-- - - - Logger - - - -->

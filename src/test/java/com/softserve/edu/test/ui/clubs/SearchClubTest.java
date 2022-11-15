@@ -14,8 +14,9 @@ import org.testng.annotations.Test;
 
 public class SearchClubTest extends BaseTestSetup {
 
+    // TODO Check below tests again once the following bug is fixed: https://github.com/ita-social-projects/TeachUA/issues/1540
     @Description("Find club by title using basic search functionality")
-    @Severity(SeverityLevel.CRITICAL)
+    @Severity(SeverityLevel.BLOCKER)
     @Test(dataProvider = "clubData", dataProviderClass = SearchClubTestDataProvider.class)
     public void basicClubSearchTest(Club club) {
         logger.info("Test if club title that is send to the search field in basic search will be found on the clubs page started");
@@ -36,7 +37,7 @@ public class SearchClubTest extends BaseTestSetup {
     }
 
     @Description("Find club by title using advanced search functionality")
-    @Severity(SeverityLevel.CRITICAL)
+    @Severity(SeverityLevel.BLOCKER)
     @Test(dataProvider = "clubData", dataProviderClass = SearchClubTestDataProvider.class)
     public void advancedClubSearchTest(Club club) {
         logger.info("Test if club that is send to the search field in advanced search will be found on the clubs page started");

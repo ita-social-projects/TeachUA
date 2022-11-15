@@ -21,7 +21,7 @@ import org.testng.annotations.Test;
 public class AdvancedSearchTest extends BaseTestSetup {
 
     @Description("[Розширений пошук] Verify that the clubs can be sorted by rating")
-    @Severity(SeverityLevel.NORMAL)
+    @Severity(SeverityLevel.MINOR)
     @TmsLink(value = "TUA-516")
     @Test(dataProvider = "rateAscendingSort", dataProviderClass = AdvancedSearchTestDataProvider.class)
     public void sortClubsByRatingTest(String rateSort, String rateAscendingSort) {
@@ -328,7 +328,7 @@ public class AdvancedSearchTest extends BaseTestSetup {
     }
 
     @Description("[Розширений пошук] Verify that the user can sort the search results by rating after clicking on the 'Центр' radio button")
-    @Severity(SeverityLevel.NORMAL)
+    @Severity(SeverityLevel.MINOR)
     @TmsLink(value = "TUA-449")
     @Test(dataProvider = "sortCentersByRating", dataProviderClass = AdvancedSearchTestDataProvider.class)
     public void findCenterSortedByRatingTest(String city, String ascRating, String descRating) {
@@ -365,7 +365,7 @@ public class AdvancedSearchTest extends BaseTestSetup {
     }
 
     @Description("[Розширений пошук] Verify that the user can sort the search results alphabetically after clicking on the 'Центр' radio button")
-    @Severity(SeverityLevel.NORMAL)
+    @Severity(SeverityLevel.MINOR)
     @TmsLink(value = "TUA-440")
     @Test(dataProvider = "alphabeticCenterSort", dataProviderClass = AdvancedSearchTestDataProvider.class)
     public void findCenterSortedByTitleTest(String city, String ascAlphabet, String descAlphabet) {

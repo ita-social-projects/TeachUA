@@ -15,7 +15,7 @@ import org.testng.annotations.Test;
 public class BaseTest extends BaseTestSetup {
 
     @Description("Check whether links and images on the pages are not broken")
-    @Severity(SeverityLevel.CRITICAL)
+    @Severity(SeverityLevel.BLOCKER)
     @Test
     public void linksImagesTest() {
         logger.info("Test if links and images on the page are not broken started");
