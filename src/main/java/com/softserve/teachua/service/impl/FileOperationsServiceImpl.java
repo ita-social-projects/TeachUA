@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class FileOperationsServiceImpl implements FileOperationsService {
+
+    private final static String allowedDeleteRoot = "upload";
 
     @Override
     public List<String> listFiles(String path) {
@@ -58,8 +61,12 @@ public class FileOperationsServiceImpl implements FileOperationsService {
 
     @Override
     public ResponseEntity<String> deleteFile(String path) {
+        Path filePath = Paths.get(path);
+        if (!filePath.startsWith(Paths.get(allowedDeleteRoot))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deletion is not allowed");
+        }
         try {
-            Files.deleteIfExists(Paths.get(path));
+            Files.deleteIfExists(filePath);
             return ResponseEntity.noContent()
                     .build();
         } catch (IOException e) {
