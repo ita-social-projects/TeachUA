@@ -56,9 +56,9 @@ public class ClubController implements Api {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/club/broken-clubs")
-    public Page<ClubResponse> getBrokenClubs(@PageableDefault(value = CLUBS_PER_PAGE, sort = "id") Pageable pageable) {
-        return clubService.getBrokenClubs(pageable);
+    @GetMapping("/club/clubs-without-categories")
+    public Page<ClubResponse> getClubsWithoutCategories(@PageableDefault(value = CLUBS_PER_PAGE, sort = "id") Pageable pageable) {
+        return clubService.getClubsWithoutCategories(pageable);
     }
 
     /**

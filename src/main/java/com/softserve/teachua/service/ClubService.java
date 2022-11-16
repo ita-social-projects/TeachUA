@@ -186,7 +186,7 @@ public interface ClubService {
      *
      * @return {@code Page<ClubResponse>}
      */
-    Page<ClubResponse> getBrokenClubs(Pageable pageable);
+    Page<ClubResponse> getClubsWithoutCategories(Pageable pageable);
 
     /**
      * The method which return possible results of search by entered text.

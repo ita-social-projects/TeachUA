@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.softserve.teachua.converter.*;
+import com.softserve.teachua.converter.ClubToClubResponseConverter;
+import com.softserve.teachua.converter.ContactsStringConverter;
+import com.softserve.teachua.converter.CoordinatesConverter;
+import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
@@ -146,9 +149,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Transactional
     public SuccessUpdatedClub updateClub(Long id, ClubResponse clubResponse) {
         User user = userService.getCurrentUser();
-        System.out.println("Validating....");
         validateClubOwner(id, user);
-        System.out.println("VALIDATED");
         Club club = getClubById(id);
         Set<LocationResponse> locations = null;
 
@@ -192,7 +193,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         }
 
         log.debug("updating club by id {}", updatedClub);
-        System.out.println("updating club by id {}" + updatedClub);
         return dtoConverter.convertToDto(clubRepository.save(updatedClub), SuccessUpdatedClub.class);
     }
 
@@ -334,12 +334,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 advancedSearchClubProfile.getDistrictName(), advancedSearchClubProfile.getStationName(),
                 CategoryUtil.replaceSemicolonToComma(advancedSearchClubProfile.getCategoriesName()),
                 advancedSearchClubProfile.getIsOnline(), pageable);
-        System.out.println("DEBUG " + clubResponses.getTotalElements());
-        System.out.println("getAdvancedSearchClubs, advClubProf :" + advancedSearchClubProfile);
-        for (Club c: clubResponses
-             ) {
-            System.out.println(c.getId());
-        }
 
         return new PageImpl<>(
                 clubResponses.stream().map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
@@ -348,7 +342,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     @Override
-    public Page<ClubResponse> getBrokenClubs(Pageable pageable) {
+    public Page<ClubResponse> getClubsWithoutCategories(Pageable pageable) {
         Page<Club> clubResponses = clubRepository.findAllWithoutCategories(pageable);
 
         return new PageImpl<>(
