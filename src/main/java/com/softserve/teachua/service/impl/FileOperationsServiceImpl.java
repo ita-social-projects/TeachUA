@@ -63,7 +63,7 @@ public class FileOperationsServiceImpl implements FileOperationsService {
     public ResponseEntity<String> deleteFile(String path) {
         Path filePath = Paths.get(path);
         if (!filePath.startsWith(Paths.get(allowedDeleteRoot))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deletion is not allowed");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Deletion is not allowed");
         }
         try {
             Files.deleteIfExists(filePath);
