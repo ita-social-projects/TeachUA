@@ -50,7 +50,12 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     List<Certificate> findAllByOrderByIdAsc();
 
-    List<Certificate> findAllBySendToEmailAndSerialNumberNotNull(String email);
+    @Query(value = "SELECT * " +
+            "FROM certificates " +
+            "WHERE user_email = :email " +
+            "AND NOT (serial_number IS NULL AND update_status IS NOT NULL)",
+    nativeQuery = true)
+    List<Certificate> findAllForDownload(@Param("email") String email);
 
     Optional<Certificate> findById(Long id);
 
