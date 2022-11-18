@@ -332,6 +332,9 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
             certificate.setSendToEmail(certificatePreview.getSendToEmail());
             certificate.setSendStatus(null);
         }
+        if(! certificatePreview.getUserName().equals(certificate.getUserName())){
+            certificate.setUserName(certificatePreview.getUserName());
+        }
         return dtoConverter.convertToDto(certificateRepository.save(certificate), CertificatePreview.class);
     }
 
