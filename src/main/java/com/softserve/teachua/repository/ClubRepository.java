@@ -106,6 +106,6 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
     @Query(value = "SELECT * from clubs as c left join locations as l on l.club_id = c.id left join cities on cities.id = l.city_id where cities.name = :city order by c.rating desc limit :amount", nativeQuery = true)
     List<Club> findTopClubsByCity(@Param("city") String cityName, @Param("amount") int amount);
 
-    @Query(value = "SELECT club from Club as club LEFT JOIN club.categories as categories WHERE categories.id is NULL ")
+    @Query(value = "SELECT club from Club as club LEFT JOIN club.categories as categories WHERE categories.id is NULL")
     Page<Club> findAllWithoutCategories(Pageable pageable);
 }
