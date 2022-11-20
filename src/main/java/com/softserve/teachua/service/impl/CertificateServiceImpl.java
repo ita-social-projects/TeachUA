@@ -17,9 +17,11 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -75,7 +77,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     @Override
     public List<CertificateUserResponse> getListOfCertificatesByEmail(String email) {
-        return certificateRepository.findAllBySendToEmailOrderById(email)
+        return certificateRepository.findAllBySendToEmailAndSerialNumberNotNull(email)
                 .stream()
                 .map(certificate -> CertificateUserResponse.builder()
                                 .id(certificate.getId())
@@ -234,7 +236,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     public byte[] getPdfOutput(CertificateTransfer transfer) {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        if (transfer.getSerialNumber() == null) {
+        if (transfer.getSerialNumber() == null && transfer.getUpdateStatus() == null) {
             // UNCOMMENT TO MAKE SERIAL NUMBERS WORK
             transfer = updateCertificateWithSerialNumber(transfer.getId(), transfer);
             //transfer.setSerialNumber(null); // REMOVE WHEN WE NEED SERIAL NUMBERS
@@ -265,9 +267,14 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
         if (!certificate.getSendToEmail().equals(userEmail)) {
             throw new AccessDeniedException("Forbidden");
+        } else if (certificate.getSerialNumber() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Requested certificate has no serial number");
         }
 
         CertificateTransfer certificateTransfer = dtoConverter.convertToDto(certificate, CertificateTransfer.class);
+        if (!certificateTransfer.getSendStatus()) {
+            updateDateAndSendStatus(certificateTransfer.getId(), true);
+        }
         return getPdfOutput(certificateTransfer);
     }
 
@@ -324,6 +331,9 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         } else {
             certificate.setSendToEmail(certificatePreview.getSendToEmail());
             certificate.setSendStatus(null);
+        }
+        if(! certificatePreview.getUserName().equals(certificate.getUserName())){
+            certificate.setUserName(certificatePreview.getUserName());
         }
         return dtoConverter.convertToDto(certificateRepository.save(certificate), CertificatePreview.class);
     }

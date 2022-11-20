@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.softserve.teachua.converter.*;
+import com.softserve.teachua.converter.ClubToClubResponseConverter;
+import com.softserve.teachua.converter.ContactsStringConverter;
+import com.softserve.teachua.converter.CoordinatesConverter;
+import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.*;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
@@ -339,6 +342,16 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     @Override
+    public Page<ClubResponse> getClubsWithoutCategories(Pageable pageable) {
+        Page<Club> clubResponses = clubRepository.findAllWithoutCategories(pageable);
+
+        return new PageImpl<>(
+                clubResponses.stream().map(club -> toClubResponseConverter.convertToClubResponse(club))
+                        .collect(Collectors.toList()),
+                clubResponses.getPageable(), clubResponses.getTotalElements());
+    }
+
+    @Override
     public Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable) {
         log.debug("getClubsBySearchParameters ===> ");
         log.debug(searchClubProfile.toString());
@@ -613,7 +626,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     public void validateClubOwner(Long id, User userFromRequest) {
         User userFromClub = getClubById(id).getUser();
 
-        if (!(userFromClub != null && userFromRequest != null && userFromRequest.equals(userFromClub))) {
+        if (!(userFromClub != null && userFromRequest != null && userFromRequest.equals(userFromClub))
+        && !userFromRequest.getRole().getName().equalsIgnoreCase("ROLE_ADMIN")) {
             throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);
         }
     }
