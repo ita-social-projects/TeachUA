@@ -2,13 +2,20 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.log.LogResponse;
 import com.softserve.teachua.service.LogService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -38,86 +45,43 @@ public class LogController implements Api {
     }
 
     /**
-     * Use this endpoint to get logs by name The controller returns {@code List<String>}.
+     * Use this endpoint to get a log by file name.
+     * The controller returns {@code List<String>}.
      *
-     * @param name
-     *            - put log name.
-     *
+     * @param fileName - put log name.
      * @return {@code List<String>}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/logs/{name}")
-    public List<String> getLogByName(@PathVariable String name) {
-        return logService.getLogByName(name);
+    @GetMapping("/logs/{fileName}")
+    public List<String> getLogByName(@PathVariable String fileName) {
+        return logService.getLogByName(fileName);
     }
 
     /**
-     * Use this endpoint to delete logs by filter Default filter - Delete all logs without "catalina" files Filter with
-     * string parameter - delete all logs where file contain string parameter in name except "catalina"
+     * Use this endpoint to get a log by file name as a Resource.
+     * The controller returns {@code ResponseEntity<Resource>}.
      *
-     * @param name
+     * @param fileName - put log name.
+     * @return {@code ResponseEntity<Resource>}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/logs/{name}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteLogByName(@PathVariable String name) {
-        logService.deleteLogByName(name);
+    @GetMapping("/logs/{fileName}/download")
+    public ResponseEntity<Resource> downloadLogByName(@PathVariable String fileName) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        headers.setContentDispositionFormData("attachment", fileName);
+        return new ResponseEntity<>(logService.loadLogAsResource(fileName), headers, HttpStatus.OK);
     }
-//
-//    /**
-//     * Use this endpoint to get Absolute path to logs from production or develop version
-//     *
-//     * @return {@code LogResponse}
-//     */
-//    @AllowedRoles(RoleData.ADMIN)
-//    @GetMapping("/getAbsolutePathToLogs")
-//    public List<String> getPathToLogs() {
-//        return logService.getAbsolutePathForLogs();
-//    }
-//
-//    /**
-//     * Use this endpoint to create subDirectory for logs Default parameter is "date - creating subdirectory by local
-//     * date Custom parameter create subdirectory by custom directory Name
-//     *
-//     * @param directoryName
-//     *
-//     * @return String with created subDirectory
-//     *
-//     * @throws IOException
-//     */
-//    @AllowedRoles(RoleData.ADMIN)
-//    @PostMapping()
-//    public String createSubDirectory(@RequestParam(required = false, defaultValue = "date") String directoryName)
-//            throws IOException {
-//        return logService.createSubDirectoryByName(directoryName);
-//    }
-//
-//    /**
-//     * Use this endpoint for move logs from \target\log to exist subdirectory
-//     *
-//     * @param subDirectory
-//     *
-//     * @return LogResponse
-//     */
-//    @AllowedRoles(RoleData.ADMIN)
-//    @PutMapping()
-//    public LogResponse moveLogsToSubDirectory(
-//            @RequestParam(required = false, defaultValue = "false") String subDirectory) {
-//        return logService.moveLogsToSubDirectoryByDirectoryName(subDirectory);
-//
-//    }
-//
-//    /**
-//     * Use this endpoint for delete empty logs The Controller returns list with deleted and not deleted logs
-//     *
-//     * @param deleteEmpty
-//     *
-//     * @return LogResponse
-//     */
-//    @AllowedRoles(RoleData.ADMIN)
-//    @DeleteMapping("deleteEmptyLogs")
-//    public LogResponse deleteEmptyLogs(@RequestParam(required = false, defaultValue = "false") Boolean deleteEmpty) {
-//        return logService.deleteEmptyLogs(deleteEmpty);
-//    }
 
+    /**
+     * Use this endpoint to delete a log by file name.
+     *
+     * @param fileName - put log name.
+     */
+    @AllowedRoles(RoleData.ADMIN)
+    @DeleteMapping("/logs/{fileName}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteLogByName(@PathVariable String fileName) {
+        logService.deleteLogByName(fileName);
+    }
 }
