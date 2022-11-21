@@ -1,7 +1,22 @@
 package com.softserve.teachua.exception.handler;
 
 import com.softserve.teachua.dto.exception.ExceptionResponse;
-import com.softserve.teachua.exception.*;
+import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.BadRequestException;
+import com.softserve.teachua.exception.CannotDeleteFileException;
+import com.softserve.teachua.exception.DatabaseRepositoryException;
+import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.teachua.exception.IncorrectInputException;
+import com.softserve.teachua.exception.JsonWriteException;
+import com.softserve.teachua.exception.LogNotFoundException;
+import com.softserve.teachua.exception.MatchingPasswordException;
+import com.softserve.teachua.exception.MethodNotSupportedException;
+import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.exception.NotVerifiedUserException;
+import com.softserve.teachua.exception.RestoreArchiveException;
+import com.softserve.teachua.exception.StreamCloseException;
+import com.softserve.teachua.exception.UpdatePasswordException;
+import com.softserve.teachua.exception.WrongAuthenticationException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -16,13 +31,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.validation.ConstraintViolationException;
-import java.time.format.DateTimeParseException;
-
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_GATEWAY;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 /**
  * Custom exception handler to handle own exceptions and handle Spring's exceptions(BadRequest, MethodNotSupported).
@@ -148,5 +166,15 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public final ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException exception) {
         return buildExceptionBody(exception, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(LogNotFoundException.class)
+    protected ResponseEntity<Object> handleLogNotFoundException(LogNotFoundException exception) {
+        return buildExceptionBody(exception, NOT_FOUND);
+    }
+
+    @ExceptionHandler(CannotDeleteFileException.class)
+    protected ResponseEntity<Object> handleCannotDeleteFileException(CannotDeleteFileException exception) {
+        return buildExceptionBody(exception, CONFLICT);
     }
 }

@@ -1,8 +1,7 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.log.LogResponse;
+import org.springframework.core.io.Resource;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -16,49 +15,25 @@ public interface LogService {
     List<String> getAllLogs();
 
     /**
-     * The method returns list of logs {@code List<String>} by name.
+     * The method returns list of lines {@code List<String>} of the log by name.
      *
-     * @param name
-     *            put log name.
-     *
+     * @param fileName - put log name.
      * @return new {@code List<String>}
      */
-    List<String> getLogByName(String name);
+    List<String> getLogByName(String fileName);
 
     /**
-     * The method delete logs by filter In case default filter delete all logs without "catalina" In case custom filter
-     * delete all logs by custom parameter without "catalina"
+     * The method returns log file as a resource {@code Resource} of the log by name.
      *
-     * @param name
-     *            user write in url
+     * @param fileName - put log name.
+     * @return resource {@code Resource}
      */
-    void deleteLogByName(String name);
+    Resource loadLogAsResource(String fileName);
 
     /**
-     * Use this method to get absolute path to log in dev or production
+     * Use this endpoint to delete a log by file name.
      *
-     * @return new {@code List<String>}
+     * @param fileName - put log name.
      */
-    List<String> getAbsolutePathForLogs();
-
-    String createSubDirectoryByName(String name) throws IOException;
-
-    /**
-     * Use this method for movingFile from logs to sub directory by name
-     *
-     * @param directoryName
-     *
-     * @return LogResponse
-     */
-    LogResponse moveLogsToSubDirectoryByDirectoryName(String directoryName);
-
-    /**
-     * Use this method for delete empty logs
-     *
-     * @param filter
-     *
-     * @return {@code LogResponse}
-     */
-    LogResponse deleteEmptyLogs(Boolean filter);
-
+    void deleteLogByName(String fileName);
 }
