@@ -270,12 +270,13 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         } else if (certificate.getSerialNumber() == null && certificate.getUpdateStatus() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Requested certificate has no serial number");
         }
-
         CertificateTransfer certificateTransfer = dtoConverter.convertToDto(certificate, CertificateTransfer.class);
-        if (!Optional.ofNullable(certificateTransfer.getSendStatus()).orElse(false)) {
-            updateDateAndSendStatus(certificateTransfer.getId(), true);
+        // first get pdf, then update status
+        byte[] pdfOutput = getPdfOutput(certificateTransfer);
+        if (!Optional.ofNullable(certificate.getSendStatus()).orElse(false)) {
+            updateDateAndSendStatus(certificate.getId(), true);
         }
-        return getPdfOutput(certificateTransfer);
+        return pdfOutput;
     }
 
     @Override
