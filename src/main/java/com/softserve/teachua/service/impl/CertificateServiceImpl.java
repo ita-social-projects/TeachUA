@@ -77,7 +77,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     @Override
     public List<CertificateUserResponse> getListOfCertificatesByEmail(String email) {
-        return certificateRepository.findAllBySendToEmailAndSerialNumberNotNull(email)
+        return certificateRepository.findAllForDownload(email)
                 .stream()
                 .map(certificate -> CertificateUserResponse.builder()
                                 .id(certificate.getId())
@@ -267,12 +267,12 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
         if (!certificate.getSendToEmail().equals(userEmail)) {
             throw new AccessDeniedException("Forbidden");
-        } else if (certificate.getSerialNumber() == null) {
+        } else if (certificate.getSerialNumber() == null && certificate.getUpdateStatus() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Requested certificate has no serial number");
         }
 
         CertificateTransfer certificateTransfer = dtoConverter.convertToDto(certificate, CertificateTransfer.class);
-        if (!certificateTransfer.getSendStatus()) {
+        if (!Optional.ofNullable(certificateTransfer.getSendStatus()).orElse(false)) {
             updateDateAndSendStatus(certificateTransfer.getId(), true);
         }
         return getPdfOutput(certificateTransfer);
