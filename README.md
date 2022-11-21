@@ -1,4 +1,4 @@
-<a href="https://softserve.academy/"><img src="https://github.com/ita-social-projects/TeachUA/blob/main/images/logo.png" title="SoftServe IT Academy" alt="SoftServe IT Academy"></a>
+![TeachUA](images/logo.png)
 
 # TeachUA BackEnd
 
