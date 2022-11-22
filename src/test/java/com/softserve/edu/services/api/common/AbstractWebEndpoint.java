@@ -33,7 +33,7 @@ public abstract class AbstractWebEndpoint {
         return jsonPath.get("jSessionId");                          // get jSessionId value
     }
 
-    // Get data from the system
+    // Get data
     public void getMethod(String page) {
         given()
                 .relaxedHTTPSValidation()
@@ -42,26 +42,37 @@ public abstract class AbstractWebEndpoint {
                 .get(page);                                     // get entity on the provided URL
     }
 
-    // Post data into the system
+    // Post data
     public void postMethod(LinkedHashMap<String, Object> body, String page) {
         // Provide cookie to be authorized to perform needed actions
         given()
                 .relaxedHTTPSValidation()
                 .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide Cookie header
-                .body(body)                                         // place contact data into body
+                .body(body)                                         // place data into body
                 .when()                                             // after when() we always write what we want to do
                 .post(page);                                        // post data from body() on the provided URL
     }
 
-    // Update/Create entity in the system
+    // Update/Create entity
     public void putMethod(LinkedHashMap<String, Object> body, String page) {
         // Provide cookie to be authorized to perform needed actions
         given()
                 .relaxedHTTPSValidation()
                 .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide Cookie header
-                .body(body)                                         // place contact data into body
+                .body(body)                                         // place data into body
                 .when()                                             // after when() we always write what we want to do
                 .put(page);                                         // put data from body() on the provided URL
+    }
+
+    // Partially modify entity
+    public void patchMethod(LinkedHashMap<String, Object> body, String page) {
+        // Provide cookie to be authorized to perform needed actions
+        given()
+                .relaxedHTTPSValidation()
+                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide Cookie header
+                .body(body)                                         // place data into body
+                .when()                                             // after when() we always write what we want to do
+                .patch(page);                                       // patch data on the provided URL
     }
 
     // Delete data from the system
