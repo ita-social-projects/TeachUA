@@ -8,6 +8,7 @@
     <suppress checks="AbbreviationAsWordInName" files="."/>
     <suppress checks="AtclauseOrder" files="."/>
     <suppress checks="AvoidEscapedUnicodeCharacters" files="."/>
+    <suppress checks="AvoidStarImport" files="."/>
     <suppress checks="CommentsIndentation" files="."/>
     <suppress checks="ConstantName" files="."/>
     <suppress checks="CustomImportOrder" files="."/>
@@ -28,6 +29,7 @@
     <suppress checks="ParenPad" files="."/>
     <suppress checks="RegexpMultiline" files="."/>
     <suppress checks="SummaryJavadoc" files="."/>
+    <suppress checks="UnusedImport" files="."/>
     <suppress checks="VariableDeclarationUsageDistance" files="."/>
     <suppress checks="WhitespaceAround" files="."/>
 </suppressions>
