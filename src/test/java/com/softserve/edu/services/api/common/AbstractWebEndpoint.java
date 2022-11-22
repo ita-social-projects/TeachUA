@@ -44,6 +44,15 @@ public abstract class AbstractWebEndpoint {
                 .post(page);                                        // post data from body() on the provided URL
     }
 
+    // Get data from the system
+    public void getMethod(String page) {
+        given()
+                .relaxedHTTPSValidation()
+                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide credentials
+                .when()                                         // after when() we always write what we want to do
+                .get(page);                                     // get entity on the provided URL
+    }
+
     // Delete data from the system
     public void deleteMethod(String page) {
         // Provide cookie to be authorized to perform needed actions
