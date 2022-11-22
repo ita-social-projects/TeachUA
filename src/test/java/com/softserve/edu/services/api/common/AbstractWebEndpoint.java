@@ -12,6 +12,8 @@ import static io.restassured.RestAssured.given;
 public abstract class AbstractWebEndpoint {
 
     private final ConfigPropertiesReader config = new ConfigPropertiesReader();
+    private final String COOKIE = "Cookie";
+    private final String SESSION_ID = "JSESSIONID=";
 
     // Encode credentials in Base64
     private String encode(String login, String password) {
@@ -36,10 +38,20 @@ public abstract class AbstractWebEndpoint {
         // Provide cookie to be authorized to perform needed actions
         given()
                 .relaxedHTTPSValidation()
-                .header("Cookie", "JSESSIONID=" + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide Cookie header
+                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide Cookie header
                 .body(body)                                         // place contact data into body
                 .when()                                             // after when() we always write what we want to do
                 .post(page);                                        // post data from body() on the provided URL
+    }
+
+    // Delete data from the system
+    public void deleteMethod(String page) {
+        // Provide cookie to be authorized to perform needed actions
+        given()
+                .relaxedHTTPSValidation()
+                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide Cookie header
+                .when()                                             // after when() we always write what we want to do
+                .delete(page);                                      // delete on the provided URL
     }
 
 }
