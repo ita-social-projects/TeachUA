@@ -37,7 +37,8 @@ jobs:
         run: 'sudo cp -r /su_frontend/* src/main/resources/frontend'
         
       - name: Build war
-        run: 'mvn package -DskipTests -Dcheckstyle.skip'
+        # run: 'mvn package -DskipTests -Dcheckstyle.skip'
+        run: 'mvn package'
 
       - name: Copy results to the remote host over SSH
         uses: appleboy/scp-action@master
