@@ -62,9 +62,9 @@ public abstract class TopPart {
     private WebElement reason;                                                  // reason element
     private WebElement helpProjectButton;                                       // help project button
 
-    // Abstract classes
-    private Pagination pagination;                                              // pagination abstract class
-    private LinksImagesCheck linksImagesCheck;                                  // links and images check abstract class
+    // Aggregation
+    private Pagination pagination;                                              // pagination class
+    private LinksImagesCheck linksImagesCheck;                                  // links and images check class
 
     // Constructor
     public TopPart(WebDriver driver) {

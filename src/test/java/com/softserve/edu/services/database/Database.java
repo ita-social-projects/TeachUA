@@ -17,7 +17,7 @@ public class Database {
     private static final ConfigPropertiesReader config = new ConfigPropertiesReader();
     private final Logger logger = LoggerFactory.getLogger(this.getClass());           // logger
 
-    //Connect to database using JDBC
+    // Connect to database using JDBC
     // Establish DB connection
     private Connection openConnection() {
         try {

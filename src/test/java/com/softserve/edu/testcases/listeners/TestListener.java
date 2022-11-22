@@ -22,7 +22,7 @@ public class TestListener implements ITestListener {
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
         // Print corresponding message about successful test run
-        logger.info("Test PASSED " + iTestResult.getClass().getSimpleName() + " - " + iTestResult.getMethod().getMethodName());
+        logger.info("Test PASSED " + iTestResult.getClass().getName() + " - " + iTestResult.getMethod().getMethodName());
         // Stop screen recording and remove recorded video file for a certain method
         VideoRecorderUtility.stopRecording(false);
     }
@@ -31,7 +31,7 @@ public class TestListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult iTestResult) {
         // Print corresponding message about failed test run
-        logger.info("Test FAILED " + iTestResult.getClass().getSimpleName() + " - " + iTestResult.getMethod().getMethodName());
+        logger.info("Test FAILED " + iTestResult.getClass().getName() + " - " + iTestResult.getMethod().getMethodName());
         // Stop screen recording and save recorded video file for a certain method
         VideoRecorderUtility.stopRecording(true);
     }
@@ -40,7 +40,7 @@ public class TestListener implements ITestListener {
     @Override
     public void onTestSkipped(ITestResult iTestResult) {
         // Print corresponding message about skipped test run
-        logger.info("Test SKIPPED " + iTestResult.getClass().getSimpleName() + " - " + iTestResult.getMethod().getMethodName());
+        logger.info("Test SKIPPED " + iTestResult.getClass().getName() + " - " + iTestResult.getMethod().getMethodName());
         // Stop screen recording and remove recorded video file for a certain method
         VideoRecorderUtility.stopRecording(false);
     }

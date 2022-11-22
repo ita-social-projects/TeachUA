@@ -16,10 +16,10 @@ public class ClubsPage extends TopPart {
     private WebElement clubsInCity;                                                 // clubs in city text
     private WebElement showOnMapButton;                                             // show on map button
 
-    // Abstract classes
-    private ClubsContainer clubsContainer;                                          // clubsContainer abstract class
-    private AdvancedSearchPart advancedSearchPart;                                  // advancedSearchPart abstract class
-    private CentersContainer centersContainer;                                      // centersContainer abstract class
+    // Aggregation
+    private ClubsContainer clubsContainer;                                          // clubsContainer class
+    private AdvancedSearchPart advancedSearchPart;                                  // advancedSearchPart class
+    private CentersContainer centersContainer;                                      // centersContainer class
 
     public ClubsPage(WebDriver driver) {
         super(driver);
@@ -272,7 +272,7 @@ public class ClubsPage extends TopPart {
 
     // Check if club is present on the page
     public boolean isClubPresentOnThePage(String title) {
-        presentationSleep(10);
+        presentationSleep(5);
         return createClubsContainer().isClubComponentPresent(title);
     }
 

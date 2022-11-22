@@ -107,7 +107,7 @@ public class BasicSearchTest extends BaseTestSetup {
         clubsPage.clickEnterButton();
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
-        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(clubsByCenter));     // remove NOT after bug fix
+        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(clubsByCenter));
 
         logger.info("Test if club will be found by center to which it belongs finished");
     }

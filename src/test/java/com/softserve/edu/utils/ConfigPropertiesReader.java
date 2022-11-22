@@ -18,8 +18,8 @@ public class ConfigPropertiesReader {
             return prop.getProperty("URL");
         } catch (IOException e) {
             System.out.println("Exception");
+            return null;
         }
-        return null;
     }
 
     // Link to database
@@ -31,8 +31,8 @@ public class ConfigPropertiesReader {
             return prop.getProperty("DB_URL");
         } catch (IOException e) {
             System.out.println("Exception");
+            return null;
         }
-        return null;
     }
 
     // Database username
@@ -43,6 +43,42 @@ public class ConfigPropertiesReader {
     // Database password
     public String getDBPassword() {
         return System.getenv().get("DB_PASSWORD");
+    }
+
+    // Regular user login
+    public String getUserLogin() {
+        return System.getenv("USER_LOGIN");
+    }
+
+    // Regular user password
+    public String getUserPassword() {
+        return System.getenv("USER_PASSWORD");
+    }
+
+    // API base link
+    public String getApiUrl() {
+        try {
+            FileReader readFile = new FileReader(TEST_DATA_PROP_PATH);
+            Properties prop = new Properties();
+            prop.load(readFile);
+            return prop.getProperty("API_URL");
+        } catch (IOException e) {
+            System.out.println("Exception");
+            return null;
+        }
+    }
+
+    // API base link
+    public String getLoginPage() {
+        try {
+            FileReader readFile = new FileReader(TEST_DATA_PROP_PATH);
+            Properties prop = new Properties();
+            prop.load(readFile);
+            return prop.getProperty("LOGIN");
+        } catch (IOException e) {
+            System.out.println("Exception");
+            return null;
+        }
     }
 
 }
