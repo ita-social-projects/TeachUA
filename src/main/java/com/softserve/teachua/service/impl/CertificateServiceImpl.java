@@ -249,7 +249,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         content.setStudyHours(certificateContentDecorator.formHours(transfer.getDates().getHours()));
         content.setQrCode(qrCodeService.getCertificateQrCodeAsStream(content.getSerialNumber()));
 
-        content.setStudyForm("дистанційна"); // TODO *****
+        content.setStudyForm(transfer.getDates().getStudyForm());
 
         try {
             JasperPrint jasperPrint = createJasperPrint(transfer.getTemplate().getFilePath(), content);
