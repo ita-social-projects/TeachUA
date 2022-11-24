@@ -1,15 +1,11 @@
 package com.softserve.edu.pages.common.clubs;
 
-import com.softserve.edu.testcases.tools.browser.DriverWrapper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +67,7 @@ public class ClubsContainer {
             for (ClubComponent component : getClubComponents()) {
                 // Compare provided club title with value from club components list to find needed one
                 if (component.getTitleText().contains(clubTitle)) {
-                    logger.info("Component with partial or the same title as " + clubTitle + " found on the page");
+                    logger.info("Component with partial or the same title as '" + clubTitle + "' found on the page");
                     result = true;
                     break;
                 }

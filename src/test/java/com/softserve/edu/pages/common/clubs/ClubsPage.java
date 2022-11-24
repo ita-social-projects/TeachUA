@@ -272,7 +272,9 @@ public class ClubsPage extends TopPart {
 
     // Check if club is present on the page
     public boolean isClubPresentOnThePage(String title) {
-        presentationSleep(5);
+        // TODO Implement Strategy pattern to search elements using explicit wait
+        // This delay is needed since in the system there are 2 seconds wait set to allow user enter title without starting finding it
+        presentationSleep(2);
         return createClubsContainer().isClubComponentPresent(title);
     }
 

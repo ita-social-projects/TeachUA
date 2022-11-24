@@ -14,7 +14,6 @@ import org.testng.annotations.Test;
 
 public class SearchClubTest extends BaseTestSetup {
 
-    // TODO Check below tests again once the following bug is fixed: https://github.com/ita-social-projects/TeachUA/issues/1540
     @Description("Find club by title using basic search functionality")
     @Severity(SeverityLevel.BLOCKER)
     @Test(dataProvider = "clubData", dataProviderClass = SearchClubTestDataProvider.class)
@@ -31,7 +30,7 @@ public class SearchClubTest extends BaseTestSetup {
         clubsPage.searchClub(club.getTitle());
 
         // Assert check if searched club is present on the page
-        Assert.assertTrue(clubsPage.isClubPresentOnThePage(club.getTitle()));   // Finds completely different clubs
+        Assert.assertTrue(clubsPage.isClubPresentOnThePage(club.getTitle()));
 
         logger.info("Test if club title that is send to the search field in basic search will be found on the clubs page finished");
     }
@@ -55,7 +54,7 @@ public class SearchClubTest extends BaseTestSetup {
         clubsPage.searchClub(club.getTitle());
 
         // Assert check if searched club is present on the page
-        Assert.assertTrue(clubsPage.isClubPresentOnThePage(club.getTitle()));   // Finds completely different clubs
+        Assert.assertTrue(clubsPage.isClubPresentOnThePage(club.getTitle()));
 
         logger.info("Test if club that is send to the search field in advanced search will be found on the clubs page finished");
     }

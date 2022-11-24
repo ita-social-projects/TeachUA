@@ -185,15 +185,6 @@ public abstract class TopPart {
         getSearchTopField().sendKeys(Keys.ENTER);                               // press enter
     }
 
-    // searchTopButton
-    private WebElement getSearchTopButton() {
-        return this.searchTopButton;                                            // get searchTopButton element
-    }
-
-    private void clickSearchTopButton() {
-        getSearchTopButton().click();                                           // click searchTopButton
-    }
-
     // advancedSearchButton
     private WebElement getAdvancedSearchButton() {
         return this.advancedSearchButton;                                       // get advancedSearchButton element
@@ -279,8 +270,6 @@ public abstract class TopPart {
     public void searchClub(String title) {
         logger.debug("Enter and searching club by its title started");
         sendTextIntoInputSearchField(title);                                    // send text into search top field
-        clickSearchTopButton();                                                 // click search top button to search club
-        logger.info("Button clicked");
         logger.debug("Enter and searching club by its title started");
     }
 
