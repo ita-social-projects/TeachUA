@@ -9,10 +9,8 @@ import com.softserve.teachua.model.test.Test;
 import com.softserve.teachua.repository.test.AnswerRepository;
 import com.softserve.teachua.repository.test.QuestionCategoryRepository;
 import com.softserve.teachua.repository.test.QuestionRepository;
-import com.softserve.teachua.repository.test.QuestionTypeRepository;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.AnswerService;
-import com.softserve.teachua.service.test.QuestionCategoryService;
 import com.softserve.teachua.service.test.QuestionService;
 import com.softserve.teachua.service.test.QuestionTypeService;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +37,6 @@ public class QuestionServiceImpl implements QuestionService {
     private final AnswerRepository answerRepository;
     private final QuestionCategoryRepository categoryRepository;
 
-    private final QuestionCategoryService categoryService;
     private final QuestionTypeService typeService;
     private final UserService userService;
     private final ModelMapper modelMapper;
@@ -90,7 +87,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void questionsImport(String formUri, Long creatorId) throws IOException {
         String token = getAccessToken();
-        String formId = formUri.replace("https://docs.google.com/forms/d/","").replace("/edit","");
+        String formId = formUri.replace("https://docs.google.com/forms/d/", "").replace("/edit", "");
         List<Item> itemList = readFormInfo(formId, token).getItems();
 
         QuestionCategory category = new QuestionCategory();
@@ -132,15 +129,14 @@ public class QuestionServiceImpl implements QuestionService {
                     for (CorrectAnswer correct : correctAnswers) {
                         answer.setCorrect(option.getValue().equals(correct.getValue()));
                     }
-                    log.info("**/Answer has been created.{}"+answer.toString());
+                    log.info("**/Answer has been created.{}" + answer.toString());
                     answer = answerRepository.save(answer);
                     question.addAnswer(answer);
                 }
-            }
-            else if (item.getQuestionItem().getQuestion().getTextQuestion().isEmpty()) {
+            } else if (item.getQuestionItem().getQuestion().getTextQuestion().isEmpty()) {
                 question.setQuestionType(typeService.findByTitle("TEXT"));
                 save(question);
-            } else if(item.getQuestionItem().getQuestion().getTextQuestion().getParagraph()) {
+            } else if (item.getQuestionItem().getQuestion().getTextQuestion().getParagraph()) {
                 question.setQuestionType(typeService.findByTitle("PARAGRAPH"));
                 save(question);
             }
@@ -150,8 +146,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     private List<QuestionResponse> mapToDtoList(List<Question> questions) {
         List<QuestionResponse> questionsResponses = questions.stream()
-                        .map(question -> modelMapper.map(question, QuestionResponse.class))
-                        .collect(Collectors.toList());
+                .map(question -> modelMapper.map(question, QuestionResponse.class))
+                .collect(Collectors.toList());
 
         for (int i = 0; i < questions.size(); i++) {
             List<Answer> answers = answerService.findByQuestionId(questions.get(i).getId());
