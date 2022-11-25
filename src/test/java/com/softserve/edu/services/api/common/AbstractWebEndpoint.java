@@ -1,11 +1,14 @@
 package com.softserve.edu.services.api.common;
 
 import com.softserve.edu.utils.ConfigPropertiesReader;
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
+import io.restassured.specification.RequestSpecification;
 
 import java.util.Base64;
-import java.util.LinkedHashMap;
 
 import static io.restassured.RestAssured.given;
 
@@ -14,6 +17,11 @@ public abstract class AbstractWebEndpoint {
     private final ConfigPropertiesReader config = new ConfigPropertiesReader();
     private final String COOKIE = "Cookie";
     private final String SESSION_ID = "JSESSIONID=";
+    protected RequestSpecification specification;
+
+    public AbstractWebEndpoint(RequestSpecification specification) {
+        this.specification = specification;
+    }
 
     // Encode credentials in Base64
     private String encode(String login, String password) {
@@ -33,56 +41,106 @@ public abstract class AbstractWebEndpoint {
         return jsonPath.get("jSessionId");                          // get jSessionId value
     }
 
-    // Get data
-    public void getMethod(String page) {
-        given()
+    public ValidatableResponse get(RequestSpecification requestSpecification, String path) {
+        RequestSpecBuilder specBuilder = new RequestSpecBuilder();
+        specBuilder.addRequestSpecification(requestSpecification);
+        return RestAssured.given()
+                .spec(specBuilder.build())
+                // Trust all hosts regardless if the SSL certificate is invalid
                 .relaxedHTTPSValidation()
                 .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide credentials
-                .when()                                         // after when() we always write what we want to do
-                .get(page);                                     // get entity on the provided URL
+                .when()
+                .get(path)                                          // get response on the provided URL
+                .then();
     }
 
-    // Post data
-    public void postMethod(LinkedHashMap<String, Object> body, String page) {
-        // Provide cookie to be authorized to perform needed actions
-        given()
+    // Overloading
+    public ValidatableResponse get(RequestSpecification requestSpecification, String path, Object... pathParams) {
+        RequestSpecBuilder specBuilder = new RequestSpecBuilder();
+        specBuilder.addRequestSpecification(requestSpecification);
+        return RestAssured.given()
+                .spec(specBuilder.build())
+                // Trust all hosts regardless if the SSL certificate is invalid
                 .relaxedHTTPSValidation()
-                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide Cookie header
-                .body(body)                                         // place data into body
-                .when()                                             // after when() we always write what we want to do
-                .post(page);                                        // post data from body() on the provided URL
+                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword()))
+                .when()
+                .get(path, pathParams)                          // get response on the provided URL
+                .then();
     }
 
-    // Update/Create entity
-    public void putMethod(LinkedHashMap<String, Object> body, String page) {
-        // Provide cookie to be authorized to perform needed actions
-        given()
+    public ValidatableResponse post(RequestSpecification requestSpecification, String path, Object bodyPayload, Object... pathParams) {
+        RequestSpecBuilder specBuilder = new RequestSpecBuilder();
+        specBuilder.addRequestSpecification(requestSpecification);
+        if(bodyPayload != null) {
+            specBuilder.setBody(bodyPayload);
+        }
+        return RestAssured.given()
+                .spec(specBuilder.build())
+                // Trust all hosts regardless if the SSL certificate is invalid
                 .relaxedHTTPSValidation()
-                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide Cookie header
-                .body(body)                                         // place data into body
-                .when()                                             // after when() we always write what we want to do
-                .put(page);                                         // put data from body() on the provided URL
+                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword()))
+                .when()
+                .post(path, pathParams)                         // post data from body() on the provided URL
+                .then();
     }
 
-    // Partially modify entity
-    public void patchMethod(LinkedHashMap<String, Object> body, String page) {
-        // Provide cookie to be authorized to perform needed actions
-        given()
+    public ValidatableResponse put(RequestSpecification requestSpecification, String path, Object bodyPayload, Object... pathParams) {
+        RequestSpecBuilder specBuilder = new RequestSpecBuilder();
+        specBuilder.addRequestSpecification(requestSpecification);
+        if(bodyPayload != null) {
+            specBuilder.setBody(bodyPayload);
+        }
+        return RestAssured.given()
+                .spec(specBuilder.build())
+                // Trust all hosts regardless if the SSL certificate is invalid
                 .relaxedHTTPSValidation()
-                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide Cookie header
-                .body(body)                                         // place data into body
-                .when()                                             // after when() we always write what we want to do
-                .patch(page);                                       // patch data on the provided URL
+                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword()))
+                .when()
+                .put(path, pathParams)                          // put data from body() on the provided URL
+                .then();
     }
 
-    // Delete data from the system
-    public void deleteMethod(String page) {
-        // Provide cookie to be authorized to perform needed actions
-        given()
+    public ValidatableResponse patch(RequestSpecification requestSpecification, String path, Object bodyPayload, Object... pathParams) {
+        RequestSpecBuilder specBuilder = new RequestSpecBuilder();
+        specBuilder.addRequestSpecification(requestSpecification);
+        if(bodyPayload != null) {
+            specBuilder.setBody(bodyPayload);
+        }
+        return RestAssured.given()
+                .spec(specBuilder.build())
+                // Trust all hosts regardless if the SSL certificate is invalid
                 .relaxedHTTPSValidation()
-                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide Cookie header
-                .when()                                             // after when() we always write what we want to do
-                .delete(page);                                      // delete on the provided URL
+                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword()))
+                .when()
+                .patch(path, pathParams)                        // patch data on the provided URL
+                .then();
+    }
+
+    public ValidatableResponse delete(RequestSpecification requestSpecification, String path) {
+        RequestSpecBuilder specBuilder = new RequestSpecBuilder();
+        specBuilder.addRequestSpecification(requestSpecification);
+        return RestAssured.given()
+                .spec(specBuilder.build())
+                // Trust all hosts regardless if the SSL certificate is invalid
+                .relaxedHTTPSValidation()
+                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide credentials
+                .when()
+                .delete(path)                                   // delete data on the provided URL
+                .then();
+    }
+
+    // Overloading
+    public ValidatableResponse delete(RequestSpecification requestSpecification, String path, Object... pathParams) {
+        RequestSpecBuilder specBuilder = new RequestSpecBuilder();
+        specBuilder.addRequestSpecification(requestSpecification);
+        return RestAssured.given()
+                .spec(specBuilder.build())
+                // Trust all hosts regardless if the SSL certificate is invalid
+                .relaxedHTTPSValidation()
+                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword()))
+                .when()
+                .delete(path, pathParams)                          // delete data on the provided URL
+                .then();
     }
 
 }

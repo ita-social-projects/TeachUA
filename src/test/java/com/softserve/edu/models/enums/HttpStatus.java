@@ -40,4 +40,8 @@ public enum HttpStatus {
         return this.desc;
     }
 
+    public int toInteger() {
+        return this.code;
+    }
+
 }
