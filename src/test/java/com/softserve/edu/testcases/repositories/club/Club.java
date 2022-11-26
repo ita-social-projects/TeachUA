@@ -17,7 +17,7 @@ interface IRate {
     ILocation setRate(int rate);                                // call setter, set rate and call ILocation interface
 }
 
-    interface ILocation {
+interface ILocation {
         IClubBuild setLocation(String location);                // call setter, set location and call IClubBuild interface
 }
 
@@ -73,7 +73,7 @@ public class Club implements ITitle, ICategory, IDescription, IRate, ILocation, 
     }
 
     public Club build() {
-        return this;                                            // method which returns device object to build all
+        return this;                                            // method which returns club object to build all
     }
 
     // Getters
