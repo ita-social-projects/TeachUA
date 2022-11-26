@@ -17,7 +17,7 @@ public class JsonPlaceHolderApi extends AbstractWebService {
     }
 
     public ClubEndpoint club() {
-        return new ClubEndpoint();
+        return new ClubEndpoint(requestSpecification);
     }
 
 }
