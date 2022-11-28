@@ -35,3 +35,11 @@ spring:
             redirectUri: "${BASE_URL}/oauth2/callback/{registrationId}"
           facebook:
             redirectUri: "${BASE_URL}/oauth2/callback/{registrationId}"
+---
+application:
+  api:
+    google:
+      credentials:
+        clientId: ${OAUTH2_GOOGLE_CLIENT_ID}
+        clientSecret: ${OAUTH2_GOOGLE_CLIENT_SECRET}
+        refreshToken: ${OAUTH2_GOOGLE_REFRESH_TOKEN}
