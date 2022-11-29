@@ -13,16 +13,18 @@ public class ContactDto extends BaseDto {
         return this.contactType;
     }
 
-    public void setContactType(ContactTypeDto contactType) {
+    public ContactDto setContactType(ContactTypeDto contactType) {
         this.contactType = contactType;
+        return this;
     }
 
     public String getContactData() {
         return this.contactData;
     }
 
-    public void setContactData(String contactData) {
+    public ContactDto setContactData(String contactData) {
         this.contactData = contactData;
+        return this;
     }
 
     @Override

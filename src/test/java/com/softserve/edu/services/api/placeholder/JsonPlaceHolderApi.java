@@ -1,6 +1,7 @@
 package com.softserve.edu.services.api.placeholder;
 
 import com.softserve.edu.services.api.common.AbstractWebService;
+import com.softserve.edu.services.api.placeholder.endpoints.CategoryEndpoint;
 import com.softserve.edu.services.api.placeholder.endpoints.ClubEndpoint;
 import io.restassured.specification.RequestSpecification;
 
@@ -18,6 +19,10 @@ public class JsonPlaceHolderApi extends AbstractWebService {
 
     public ClubEndpoint club() {
         return new ClubEndpoint(requestSpecification);
+    }
+
+    public CategoryEndpoint category() {
+        return new CategoryEndpoint(requestSpecification);
     }
 
 }

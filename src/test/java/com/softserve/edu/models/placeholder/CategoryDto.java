@@ -15,68 +15,83 @@ public class CategoryDto extends BaseDto {
     private String tagBackgroundColor;
     private String tagTextColor;
 
+    /*
+     * Method using for build new CategoryDto payload
+     */
+    public static CategoryDto.Builder newBuilder() {
+        return new CategoryDto().new Builder();
+    }
+
     public int getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public CategoryDto setId(int id) {
         this.id = id;
+        return this;
     }
 
-    public int getSortBy() {
+    public int getSortby() {
         return this.sortby;
     }
 
-    public void setSortBy(int sortby) {
+    public CategoryDto setSortby(int sortby) {
         this.sortby = sortby;
+        return this;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void setName(String name) {
+    public CategoryDto setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getDescription() {
         return this.description;
     }
 
-    public void setDescription(String description) {
+    public CategoryDto setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public String getUrlLogo() {
         return this.urlLogo;
     }
 
-    public void setUrlLogo(String urlLogo) {
+    public CategoryDto setUrlLogo(String urlLogo) {
         this.urlLogo = urlLogo;
+        return this;
     }
 
     public String getBackgroundColor() {
         return this.backgroundColor;
     }
 
-    public void setBackgroundColor(String backgroundColor) {
+    public CategoryDto setBackgroundColor(String backgroundColor) {
         this.backgroundColor = backgroundColor;
+        return this;
     }
 
     public String getTagBackgroundColor() {
         return this.tagBackgroundColor;
     }
 
-    public void setTagBackgroundColor(String tagBackgroundColor) {
+    public CategoryDto setTagBackgroundColor(String tagBackgroundColor) {
         this.tagBackgroundColor = tagBackgroundColor;
+        return this;
     }
 
     public String getTagTextColor() {
         return this.tagTextColor;
     }
 
-    public void setTagTextColor(String tagTextColor) {
+    public CategoryDto setTagTextColor(String tagTextColor) {
         this.tagTextColor = tagTextColor;
+        return this;
     }
 
     @Override
@@ -114,4 +129,55 @@ public class CategoryDto extends BaseDto {
                 .append(tagTextColor)
                 .toHashCode();
     }
+
+    public class Builder {
+        private Builder() {
+        }
+
+        public Builder withId(int id) {
+            CategoryDto.this.id = id;
+            return this;
+        }
+
+        public Builder withSortBy(int sortBy) {
+            CategoryDto.this.sortby = sortBy;
+            return this;
+        }
+
+        public Builder withName(String name) {
+            CategoryDto.this.name = name;
+            return this;
+        }
+
+        public Builder withDescription(String description) {
+            CategoryDto.this.description = description;
+            return this;
+        }
+
+        public Builder withUrlLogo(String urlLogo) {
+            CategoryDto.this.urlLogo = urlLogo;
+            return this;
+        }
+
+        public Builder withBackgroundColor(String backgroundColor) {
+            CategoryDto.this.backgroundColor = backgroundColor;
+            return this;
+        }
+
+        public Builder withTagBackgroundColor(String tagBackgroundColor) {
+            CategoryDto.this.tagBackgroundColor = tagBackgroundColor;
+            return this;
+        }
+
+        public Builder withTagTextColor(String tagTextColor) {
+            CategoryDto.this.tagTextColor = tagTextColor;
+            return this;
+        }
+
+        public CategoryDto build() {
+            return CategoryDto.this;
+        }
+
+    }
+
 }

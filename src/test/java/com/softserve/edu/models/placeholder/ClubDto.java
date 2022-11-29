@@ -6,88 +6,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 
-// These interfaces can only be accessible for classes inside the devices package
-interface IId {
-    IAgeFrom setId(int id);                                 // call setter, set id and call IAgeFrom interface
-}
-
-interface IAgeFrom {
-    IAgeTo setAgeFrom(int ageFrom);                         // call setter, set ageFrom and call IAgeTo interface
-}
-
-interface IAgeTo {
-    IName setAgeTo(int ageTo);                              // call setter, set ageTo and call IName interface
-}
-
-interface IName {
-    IDescription setName(String setName);                   // call setter, set name and call IDescription interface
-}
-
-interface IDescription {
-    IUrlWeb setDescription(String description);             // call setter, set description and call IUrlWeb interface
-}
-
-interface IUrlWeb {
-    IUrlLogo setUrlWeb(Object urlWeb);                      // call setter, set urlWeb and call IUrlLogo interface
-}
-
-interface IUrlLogo {
-    IUrlBackground setUrlLogo(String urlLogo);              // call setter, set urlLogo and call IUrlBackground interface
-}
-
-interface IUrlBackground {
-    IUrlGallery setUrlBackground(String UrlBackground);     // call setter, set UrlBackground and call IUrlGallery interface
-}
-
-interface IUrlGallery {
-    IWorkTime setUrlGallery(ArrayList<Object> urlGallery);  // call setter, set urlGallery and call IWorkTime interface
-}
-
-interface IWorkTime {
-    ICategories setWorkTime(Object workTime);               // call setter, set description and call ICategories interface
-}
-
-interface ICategories {
-    IUser setCategories(ArrayList<CategoryDto> categories); // call setter, set categories and call IUser interface
-}
-
-interface IUser {
-    ICenter setUser(Object user);                           // call setter, set user and call ICenter interface
-}
-
-interface ICenter {
-    IRating setCenter(Object center);                       // call setter, set center and call IRating interface
-}
-
-interface IRating {
-    ILocations setRating(int rating);                       // call setter, set rating and call ILocations interface
-}
-
-interface ILocations {
-    IIsApproved setLocations(ArrayList<LocationDto> locations); // call setter, set locations and call IIsApproved interface
-}
-
-interface IIsApproved {
-    IIsOnline setIsApproved(Object isApproved);             // call setter, set isApproved and call IIsOnline interface
-}
-
-interface IIsOnline {
-    IFeedbackCount setIsOnline(Object isOnline);            // call setter, set isOnline and call IFeedbackCount interface
-}
-
-interface IFeedbackCount {
-    IContacts setFeedbackCount(int feedbackCount);          // call setter, set feedbackCount and call IContacts interface
-}
-
-interface IContacts {
-    IClubDtoBuild setContacts(ArrayList<ContactDto> contacts);  // call setter, set contacts and call IFeedbackCount interface
-}
-
-interface IClubDtoBuild {
-    ClubDto build();                                        // call setter, build what have been set before
-}
-
-public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, IDescription, IUrlWeb, IUrlLogo, IUrlBackground, IUrlGallery, IWorkTime, ICategories, IUser, ICenter, IRating, ILocations, IIsApproved, IIsOnline, IFeedbackCount, IContacts, IClubDtoBuild  {
+public class ClubDto extends BaseDto {
 
     private int id;
     private int ageFrom;
@@ -109,25 +28,18 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
     private int feedbackCount;
     private ArrayList<ContactDto> contacts;
 
-    // Constructor (here we need to add only optional fields to initialize them because mandatory field will be
-    // initialized anyway)
-    private ClubDto() {
-    }
-
-    public static IId get() {
-        // Declaring that we will return base element But actually we return child
-        return new ClubDto();
-    }
-
-    public ClubDto build() {
-        return this;                                            // method which returns clubDto object to build all
+    /*
+     * Method using for build new ClubDto payload
+     */
+    public static Builder newBuilder() {
+        return new ClubDto().new Builder();
     }
 
     public int getId() {
         return this.id;
     }
 
-    public IAgeFrom setId(int id) {
+    public ClubDto setId(int id) {
         this.id = id;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -137,7 +49,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.ageFrom;
     }
 
-    public IAgeTo setAgeFrom(int ageFrom) {
+    public ClubDto setAgeFrom(int ageFrom) {
         this.ageFrom = ageFrom;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -147,7 +59,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.ageTo;
     }
 
-    public IName setAgeTo(int ageTo) {
+    public ClubDto setAgeTo(int ageTo) {
         this.ageTo = ageTo;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -157,7 +69,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.name;
     }
 
-    public IDescription setName(String name) {
+    public ClubDto setName(String name) {
         this.name = name;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -167,7 +79,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.description;
     }
 
-    public IUrlWeb setDescription(String description) {
+    public ClubDto setDescription(String description) {
         this.description = description;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -177,7 +89,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.urlWeb;
     }
 
-    public IUrlLogo setUrlWeb(Object urlWeb) {
+    public ClubDto setUrlWeb(Object urlWeb) {
         this.urlWeb = urlWeb;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -187,7 +99,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.urlLogo;
     }
 
-    public IUrlBackground setUrlLogo(String urlLogo) {
+    public ClubDto setUrlLogo(String urlLogo) {
         this.urlLogo = urlLogo;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -197,7 +109,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.urlBackground;
     }
 
-    public IUrlGallery setUrlBackground(String urlBackground) {
+    public ClubDto setUrlBackground(String urlBackground) {
         this.urlBackground = urlBackground;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -207,7 +119,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.urlGallery;
     }
 
-    public IWorkTime setUrlGallery(ArrayList<Object> urlGallery) {
+    public ClubDto setUrlGallery(ArrayList<Object> urlGallery) {
         this.urlGallery = urlGallery;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -217,7 +129,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.workTime;
     }
 
-    public ICategories setWorkTime(Object workTime) {
+    public ClubDto setWorkTime(Object workTime) {
         this.workTime = workTime;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -227,7 +139,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.categories;
     }
 
-    public IUser setCategories(ArrayList<CategoryDto> categories) {
+    public ClubDto setCategories(ArrayList<CategoryDto> categories) {
         this.categories = categories;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -237,7 +149,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.user;
     }
 
-    public ICenter setUser(Object user) {
+    public ClubDto setUser(Object user) {
         this.user = user;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -247,7 +159,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.center;
     }
 
-    public IRating setCenter(Object center) {
+    public ClubDto setCenter(Object center) {
         this.center = center;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -257,7 +169,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.rating;
     }
 
-    public ILocations setRating(int rating) {
+    public ClubDto setRating(int rating) {
         this.rating = rating;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -267,7 +179,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.locations;
     }
 
-    public IIsApproved setLocations(ArrayList<LocationDto> locations) {
+    public ClubDto setLocations(ArrayList<LocationDto> locations) {
         this.locations = locations;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -277,7 +189,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.isApproved;
     }
 
-    public IIsOnline setIsApproved(Object isApproved) {
+    public ClubDto setIsApproved(Object isApproved) {
         this.isApproved = isApproved;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -287,7 +199,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.isOnline;
     }
 
-    public IFeedbackCount setIsOnline(Object isOnline) {
+    public ClubDto setIsOnline(Object isOnline) {
         this.isOnline = isOnline;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -297,7 +209,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.feedbackCount;
     }
 
-    public IContacts setFeedbackCount(int feedbackCount) {
+    public ClubDto setFeedbackCount(int feedbackCount) {
         this.feedbackCount = feedbackCount;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -307,7 +219,7 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
         return this.contacts;
     }
 
-    public IClubDtoBuild setContacts(ArrayList<ContactDto> contacts) {
+    public ClubDto setContacts(ArrayList<ContactDto> contacts) {
         this.contacts = contacts;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -394,4 +306,113 @@ public class ClubDto extends BaseDto implements  IId, IAgeFrom, IAgeTo, IName, I
                 ", contacts=" + contacts +
                 '}';
     }
+
+    public class Builder {
+
+        // Constructor (here we need to add only optional fields to initialize them because mandatory field will be
+        // initialized anyway)
+        private Builder() {
+        }
+
+        public Builder withId(int id) {
+            ClubDto.this.id = id;
+            return this;
+        }
+
+        public Builder withAgeFrom(int ageFrom) {
+            ClubDto.this.ageFrom = ageFrom;
+            return this;
+        }
+
+        public Builder withAgeTo(int ageTo) {
+            ClubDto.this.ageTo = ageTo;
+            return this;
+        }
+
+        public Builder withName(String name) {
+            ClubDto.this.name = name;
+            return this;
+        }
+
+        public Builder withDescription(String description) {
+            ClubDto.this.description = description;
+            return this;
+        }
+
+        public Builder withUrlWeb(Object urlWeb) {
+            ClubDto.this.urlWeb = urlWeb;
+            return this;
+        }
+
+        public Builder withUrlLogo(String urlLogo) {
+            ClubDto.this.urlLogo = urlLogo;
+            return this;
+        }
+
+        public Builder withUrlBackground(String urlBackground) {
+            ClubDto.this.urlBackground = urlBackground;
+            return this;
+        }
+
+        public Builder withUrlGallery(ArrayList<Object> urlGallery) {
+            ClubDto.this.urlGallery = urlGallery;
+            return this;
+        }
+
+        public Builder withWorkTime(Object workTime) {
+            ClubDto.this.workTime = workTime;
+            return this;
+        }
+
+        public Builder withCategories(ArrayList<CategoryDto> categories) {
+            ClubDto.this.categories = categories;
+            return this;
+        }
+
+        public Builder withUser(Object user) {
+            ClubDto.this.user = user;
+            return this;
+        }
+
+        public Builder withCenter(Object center) {
+            ClubDto.this.center = center;
+            return this;
+        }
+
+        public Builder withRating(int rating) {
+            ClubDto.this.rating = rating;
+            return this;
+        }
+
+        public Builder withLocations(ArrayList<LocationDto> locations) {
+            ClubDto.this.locations = locations;
+            return this;
+        }
+
+        public Builder withIsApproved(Object isApproved) {
+            ClubDto.this.isApproved = isApproved;
+            return this;
+        }
+
+        public Builder withIsOnline(Object isOnline) {
+            ClubDto.this.isOnline = isOnline;
+            return this;
+        }
+
+        public Builder withFeedbackCount(int feedbackCount) {
+            ClubDto.this.feedbackCount = feedbackCount;
+            return this;
+        }
+
+        public Builder withContacts(ArrayList<ContactDto> contacts) {
+            ClubDto.this.contacts = contacts;
+            return this;
+        }
+
+        public ClubDto build() {
+            return ClubDto.this;
+        }
+
+    }
+
 }

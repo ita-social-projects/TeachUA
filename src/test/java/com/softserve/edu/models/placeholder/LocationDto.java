@@ -28,120 +28,135 @@ public class LocationDto extends BaseDto {
         return this.id;
     }
 
-    public void setId(int id) {
+    public LocationDto setId(int id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void setName(String name) {
+    public LocationDto setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getAddress() {
         return this.address;
     }
 
-    public void setAddress(String address) {
+    public LocationDto setAddress(String address) {
         this.address = address;
+        return this;
     }
 
     public String getCityName() {
         return this.cityName;
     }
 
-    public void setCityName(String cityName) {
+    public LocationDto setCityName(String cityName) {
         this.cityName = cityName;
+        return this;
     }
 
     public String getDistrictName() {
         return this.districtName;
     }
 
-    public void setDistrictName(String districtName) {
+    public LocationDto setDistrictName(String districtName) {
         this.districtName = districtName;
+        return this;
     }
 
     public Object getStationName() {
         return this.stationName;
     }
 
-    public void setStationName(Object stationName) {
+    public LocationDto setStationName(Object stationName) {
         this.stationName = stationName;
+        return this;
     }
 
     public LocationCityDto getLocationCity() {
         return this.locationCity;
     }
 
-    public void setLocationCity(LocationCityDto locationCity) {
+    public LocationDto setLocationCity(LocationCityDto locationCity) {
         this.locationCity = locationCity;
+        return this;
     }
 
     public int getCityId() {
         return this.cityId;
     }
 
-    public void setCityId(int cityId) {
+    public LocationDto setCityId(int cityId) {
         this.cityId = cityId;
+        return this;
     }
 
     public int getDistrictId() {
         return this.districtId;
     }
 
-    public void setDistrictId(int districtId) {
+    public LocationDto setDistrictId(int districtId) {
         this.districtId = districtId;
+        return this;
     }
 
     public Object getStationId() {
         return this.stationId;
     }
 
-    public void setStationId(Object stationId) {
+    public LocationDto setStationId(Object stationId) {
         this.stationId = stationId;
+        return this;
     }
 
     public int getClubId() {
         return this.clubId;
     }
 
-    public void setClubId(int clubId) {
+    public LocationDto setClubId(int clubId) {
         this.clubId = clubId;
+        return this;
     }
 
     public Object getCoordinates() {
         return this.coordinates;
     }
 
-    public void setCoordinates(Object coordinates) {
+    public LocationDto setCoordinates(Object coordinates) {
         this.coordinates = coordinates;
+        return this;
     }
 
     public double getLongitude() {
         return this.longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public LocationDto setLongitude(double longitude) {
         this.longitude = longitude;
+        return this;
     }
 
     public double getLatitude() {
         return this.latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public LocationDto setLatitude(double latitude) {
         this.latitude = latitude;
+        return this;
     }
 
     public Object getPhone() {
         return this.phone;
     }
 
-    public void setPhone(Object phone) {
+    public LocationDto setPhone(Object phone) {
         this.phone = phone;
+        return this;
     }
 
     @Override

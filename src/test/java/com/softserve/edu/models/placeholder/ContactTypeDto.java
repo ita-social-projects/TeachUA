@@ -4,8 +4,6 @@ import com.softserve.edu.models.BaseDto;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.Objects;
-
 public class ContactTypeDto extends BaseDto {
 
     private int id;
@@ -16,24 +14,27 @@ public class ContactTypeDto extends BaseDto {
         return this.id;
     }
 
-    public void setId(int id) {
+    public ContactTypeDto setId(int id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void setName(String name) {
+    public ContactTypeDto setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getUrlLogo() {
         return this.urlLogo;
     }
 
-    public void setUrlLogo(String urlLogo) {
+    public ContactTypeDto setUrlLogo(String urlLogo) {
         this.urlLogo = urlLogo;
+        return this;
     }
 
     @Override

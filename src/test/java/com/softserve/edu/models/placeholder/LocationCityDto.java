@@ -4,8 +4,6 @@ import com.softserve.edu.models.BaseDto;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.Objects;
-
 public class LocationCityDto extends BaseDto {
 
     private int id;
@@ -17,32 +15,36 @@ public class LocationCityDto extends BaseDto {
         return this.id;
     }
 
-    public void setId(int id) {
+    public LocationCityDto setId(int id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void setName(String name) {
+    public LocationCityDto setName(String name) {
         this.name = name;
+        return this;
     }
 
     public double getLatitude() {
         return this.latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public LocationCityDto setLatitude(double latitude) {
         this.latitude = latitude;
+        return this;
     }
 
     public double getLongitude() {
         return this.longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public LocationCityDto setLongitude(double longitude) {
         this.longitude = longitude;
+        return this;
     }
 
     @Override

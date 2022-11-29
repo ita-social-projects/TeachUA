@@ -47,8 +47,8 @@ public abstract class AbstractWebEndpoint {
         return RestAssured.given()
                 .spec(specBuilder.build())
                 // Trust all hosts regardless if the SSL certificate is invalid
-                .relaxedHTTPSValidation()
-                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide credentials
+                //.relaxedHTTPSValidation()
+                //.header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword())) // provide credentials
                 .when()
                 .get(path)                                          // get response on the provided URL
                 .then();
@@ -61,8 +61,8 @@ public abstract class AbstractWebEndpoint {
         return RestAssured.given()
                 .spec(specBuilder.build())
                 // Trust all hosts regardless if the SSL certificate is invalid
-                .relaxedHTTPSValidation()
-                .header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword()))
+                //.relaxedHTTPSValidation()
+                //.header(COOKIE, SESSION_ID + getSessionID(config.getUserLogin(), config.getUserPassword()))
                 .when()
                 .get(path, pathParams)                          // get response on the provided URL
                 .then();
