@@ -12,7 +12,6 @@ public class ClubCrudTest extends BaseTestSetup {
     @Test
     public void testGettingClubById() {
         ClubDto clubDto = ApiTestData.clubTestData().randomClub();
-//        ClubDto getClubResponse = Services.placeHolderApi().club().getClubById(clubDto);
         int clubId = ApiTestData.clubTestData().randomClub().getId();
         ClubDto club = Services.placeHolderApi().club().getClubById(clubId);
 

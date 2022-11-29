@@ -1,5 +1,6 @@
 package com.softserve.edu.pages.common.clubs;
 
+import com.softserve.edu.testcases.enums.Categories;
 import com.softserve.edu.testcases.enums.Locations;
 import com.softserve.edu.pages.TopPart;
 import com.softserve.edu.utils.JsMethods;
@@ -16,10 +17,10 @@ public class ClubsPage extends TopPart {
     private WebElement clubsInCity;                                                 // clubs in city text
     private WebElement showOnMapButton;                                             // show on map button
 
-    // Aggregation
-    private ClubsContainer clubsContainer;                                          // clubsContainer class
-    private AdvancedSearchPart advancedSearchPart;                                  // advancedSearchPart class
-    private CentersContainer centersContainer;                                      // centersContainer class
+    // Abstract classes
+    private ClubsContainer clubsContainer;                                          // clubsContainer abstract class
+    private AdvancedSearchPart advancedSearchPart;                                  // advancedSearchPart abstract class
+    private CentersContainer centersContainer;                                      // centersContainer abstract class
 
     public ClubsPage(WebDriver driver) {
         super(driver);
@@ -138,11 +139,23 @@ public class ClubsPage extends TopPart {
         getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
+    // Set available online to search clubs that are available online
+    @Step("Select Remote option")
+    public void checkRemoteOption() {
+        getAdvancedSearchPart().clickAvailableOnline();                             // choose online clubs option
+    }
+
+    // Choose needed categories
+    @Step("Select categories")
+    public void selectCategories(Categories... categories) {
+        getAdvancedSearchPart().chooseCategories(categories);                       // choose categories to filter
+    }
+
     // Click center radio button
     @Step("Click center radio button")
     public void selectCenters() {
         getAdvancedSearchPart().clickCenterButton();                                // click center radio button
-        logger.info("Centers button have been clicked");
+        logger.info("Centers button has been clicked");
     }
 
     // Display clubs as a list
@@ -207,6 +220,7 @@ public class ClubsPage extends TopPart {
     // Sort clubs by title
     @Step("Click alphabetic sort button")
     public void alphabeticSort() {
+        presentationSleep(3);
         getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort button
         logger.info("Items have been sorted by alphabet");
     }
@@ -214,7 +228,8 @@ public class ClubsPage extends TopPart {
     // Descending club sort
     @Step("Click on the '↑' icon")
     public void descendingSort() {
-        getAdvancedSearchPart().clickDescendingSort();                              // click descending sort
+        getAdvancedSearchPart().clickDescendingSort();                               // click descending sort
+        logger.info("Items have been sorted in descending order");
     }
 
     public String getCityName() {
@@ -222,18 +237,36 @@ public class ClubsPage extends TopPart {
         return getAdvancedSearchPart().getCityDropdownText();                       // get city name
     }
 
+    // Get number of clubs on all pages on Clubs page
+    public int getTotalNumberOfClubs() {
+        int result = 0;
+        try{
+            while(createPagination().isNextButtonEnabled()) {
+                // Add number of clubs on the current page to the total value
+                result += createClubsContainer().getClubComponentsCount();
+                createPagination().clickNextButton();                               // click on next button
+                presentationSleep(3);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;                                                              // get actual number of pages
+    }
+
     // TODO Combine the following two methods into one
     // Get number of clubs on all pages on Clubs page
     public List<String> getAllClubTitles() {
         List<String> allClubTitles = new ArrayList<>();
         try{
-            presentationSleep(20);
+            gotoFirstPage();
             allClubTitles.addAll(createClubsContainer().getClubComponentTitles());
             // Check if pagination is present on the page
             if(createPagination().isNextButtonPresent()) {
                 while(createPagination().isNextButtonEnabled()) {
                     createPagination().clickNextButton();                           // click on next button
-                    presentationSleep(3);
+                    // TODO Implement Strategy for searching elements
+                    presentationSleep(4);
                     // Add all titles on the current page to the list with all titles
                     allClubTitles.addAll(createClubsContainer().getClubComponentTitles());
                 }
@@ -241,14 +274,21 @@ public class ClubsPage extends TopPart {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        logger.info("Received club titles from UI: {}", allClubTitles);
         return allClubTitles;
+    }
+
+    private void gotoFirstPage() {
+        presentationSleep(5);
+        createPagination().clickFirstPageButton();
+        presentationSleep(2);
     }
 
     // Get number of centers on all pages on Clubs page
     public List<String> getAllCenterTitles() {
         List<String> allCenterTitles = new ArrayList<>();
         try{
-            presentationSleep(5);
+            gotoFirstPage();
             allCenterTitles.addAll(createCentersContainer().getCenterComponentTitles());
             // Check if pagination is present on the page
             if(createPagination().isNextButtonPresent()) {
@@ -262,6 +302,7 @@ public class ClubsPage extends TopPart {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        logger.info("Received centers titles from UI: {}", allCenterTitles);
         return allCenterTitles;
     }
 
@@ -272,9 +313,7 @@ public class ClubsPage extends TopPart {
 
     // Check if club is present on the page
     public boolean isClubPresentOnThePage(String title) {
-        // TODO Implement Strategy pattern to search elements using explicit wait
-        // This delay is needed since in the system there are 2 seconds wait set to allow user enter title without starting finding it
-        presentationSleep(2);
+        presentationSleep(1);
         return createClubsContainer().isClubComponentPresent(title);
     }
 

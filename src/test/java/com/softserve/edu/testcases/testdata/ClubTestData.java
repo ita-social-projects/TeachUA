@@ -131,7 +131,7 @@ public class ClubTestData {
                                 .setName("Contact")
                                 .setUrlLogo("/static/images/contacts/website-link-icon.svg"))
                         .setContactData("http://art-school-12.com/"))))
-                .build();
+                .build(); //
     }
 
 }

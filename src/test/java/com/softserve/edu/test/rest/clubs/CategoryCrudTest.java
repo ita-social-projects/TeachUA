@@ -11,7 +11,6 @@ public class CategoryCrudTest {
     @Test
     public void testGettingCategoryById() {
         CategoryDto categoryDto = ApiTestData.categoryTestData().randomCategory();
-//        ClubDto getClubResponse = Services.placeHolderApi().club().getClubById(clubDto);
         int categoryId = categoryDto.getId();
         CategoryDto category = Services.placeHolderApi().category().getCategoryById(categoryId);
 

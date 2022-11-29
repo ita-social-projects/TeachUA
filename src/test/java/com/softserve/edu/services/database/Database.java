@@ -137,6 +137,7 @@ public class Database {
         } finally {
             closeConnection(connection, statement, rs);         // close connection
         }
+        logger.info("Received club titles from DB: {}", result);
         return result;
     }
 

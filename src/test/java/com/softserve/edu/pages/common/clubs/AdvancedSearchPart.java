@@ -1,5 +1,6 @@
 package com.softserve.edu.pages.common.clubs;
 
+import com.softserve.edu.testcases.enums.Categories;
 import com.softserve.edu.utils.JsMethods;
 import org.openqa.selenium.*;
 import org.slf4j.Logger;
@@ -10,6 +11,9 @@ import java.util.List;
 public class AdvancedSearchPart {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());             // logger
+    // Locator to find needed club category
+    private final String LIST_CATEGORIES_XPATH =
+            "//div[@id='basic_categoriesName']//span[contains(@class,'ant-checkbox')]/following-sibling::span";
     private final String VALUE_ATTRIBUTE = "value";                                     // value attribute
     private final String CLEAR_PLACE_LOCATOR = "./..//span[@class='anticon anticon-close-circle']";
     // Message that informs about selected value
@@ -98,7 +102,7 @@ public class AdvancedSearchPart {
         alphabetSort = driver.findElement(By.xpath("//span[@class='anticon anticon-arrow-up control-sort-arrow']/../preceding-sibling::span[2]"));
         rateSort = driver.findElement(By.xpath("//div[@class='control-sort-arrows']/preceding-sibling::span[1]"));
         ascendingSort = driver.findElement(By.cssSelector(".anticon.anticon-arrow-down.control-sort-arrow"));
-        descendingSort = driver.findElement(By.cssSelector(".anticon.anticon-arrow-up.control-sort-arrow"));
+        descendingSort = driver.findElement(By.xpath("//span[contains(@class,'anticon anticon-arrow-up control-sort-arrow') and contains(@aria-label,'arrow-up')]"));
         listView = driver.findElement(By.xpath("//input[@value='LIST']/../../span[contains(@class,'ant-radio-button')]"));
         blockView = driver.findElement(By.xpath("//input[@value='BLOCK']/../../span[contains(@class,'ant-radio-button')]"));
     }
@@ -196,6 +200,15 @@ public class AdvancedSearchPart {
         }
     }
 
+    // availableOnline
+    private WebElement getAvailableOnline() {
+        return this.availableOnline;                                                    // get availableOnline element
+    }
+
+    protected void clickAvailableOnline() {
+        getAvailableOnline().click();                                                   // click availableOnline
+    }
+
     // categories
     private WebElement getCategories() {
         return this.categories;                                                         // get categories element
@@ -265,11 +278,21 @@ public class AdvancedSearchPart {
 
     // descendingSort
     private WebElement getDescendingSort() {
-        return this.descendingSort;                                                     // get descendingSort element
+        return driver.findElement(By.xpath("//span[contains(@class,'anticon anticon-arrow-up control-sort-arrow') and contains(@aria-label,'arrow-up')]"));
+        //return this.descendingSort;                                                     // get descendingSort element
     }
 
     protected void clickDescendingSort() {
         getDescendingSort().click();                                                    // click descendingSort
+    }
+
+    // ascendingSort
+    private WebElement getAscendingSort() {
+        return this.ascendingSort;                                                      // get descendingSort element
+    }
+
+    protected void clickAscendingSort() {
+        getAscendingSort().click();                                                     // click descendingSort
     }
 
     // listView
@@ -294,9 +317,9 @@ public class AdvancedSearchPart {
             List<WebElement> places = driver.findElements(locator);
             // This delay is needed to select value from dropdown
             Thread.sleep(100);
-            for (WebElement current : places) {
+            for(WebElement current : places) {
                 // Check if provided place exists in dropdown
-                if (current.getText().equalsIgnoreCase(place.toLowerCase())) {
+                if(current.getText().equalsIgnoreCase(place.toLowerCase())) {
                     // If such place was found, click on it to select
                     current.click();
                     logger.info(SELECT_MESSAGE, current.getText());
@@ -311,11 +334,26 @@ public class AdvancedSearchPart {
     // TODO Make the following method looks better
     protected void isClearButtonPresent(WebElement element) {
         try {
-            if (element.findElements(By.xpath(CLEAR_PLACE_LOCATOR)).size() != 0) {
+            if(element.findElements(By.xpath(CLEAR_PLACE_LOCATOR)).size() != 0) {
                 element.findElement(By.xpath(CLEAR_PLACE_LOCATOR)).click();
             }
-        } catch (NoSuchElementException e) {
+        } catch(NoSuchElementException e){
             e.printStackTrace();
+        }
+    }
+
+    protected void chooseCategories(Categories... categories) {
+        // Find and save all categories into the list
+        List<WebElement> categoriesList = driver.findElements(By.xpath(LIST_CATEGORIES_XPATH));
+        for(WebElement current : categoriesList) {
+            for(Categories category : categories) {
+                // Check if provided category matches one of the checkboxes
+                if(current.getText().toLowerCase().contains(category.toString().toLowerCase())) {
+                    // If match has been found, click on it to choose
+                    current.click();
+                    break;
+                }
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.softserve.edu.pages;
 
+import com.softserve.edu.utils.JsMethods;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,6 +32,15 @@ public class Pagination {
 
     public void clickNextButton() {
         getNextButton().click();                                                // click nextButton
+    }
+
+    // firstPageButton
+    private WebElement getFirstPageButton() {
+        return driver.findElement(By.xpath("//li[contains(@class,'ant-pagination-item ant-pagination-item-1')]//a"));
+    }
+
+    public void clickFirstPageButton() {
+        getFirstPageButton().click();                                           // click first page button
     }
 
     /*

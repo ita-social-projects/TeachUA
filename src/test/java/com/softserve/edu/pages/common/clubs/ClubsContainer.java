@@ -35,7 +35,7 @@ public class ClubsContainer {
         // Create object of the class ArrayList
         clubComponents = new ArrayList<>();
         // Find elements that match criteria and add them into clubComponents list
-        for (WebElement element : driver.findElements(By.cssSelector(CLUB_COMPONENT_CSS_SELECTOR))) {
+        for(WebElement element : driver.findElements(By.cssSelector(CLUB_COMPONENT_CSS_SELECTOR))) {
             clubComponents.add(new ClubComponent(element));
         }
     }
@@ -46,7 +46,7 @@ public class ClubsContainer {
     // clubComponents
     private List<ClubComponent> getClubComponents() {
         // Check if clubComponent list contains some values
-        if (clubComponents == null) {
+        if(clubComponents == null) {
             throw new RuntimeException(CLUB_NOT_FOUND);
         }
         return clubComponents;                                                  // get clubComponent list
@@ -64,10 +64,11 @@ public class ClubsContainer {
     public boolean isClubComponentPresent(String clubTitle) {
         boolean result = false;
         try {
-            for (ClubComponent component : getClubComponents()) {
+            //Thread.sleep(5000);
+            for(ClubComponent component : getClubComponents()) {
                 // Compare provided club title with value from club components list to find needed one
-                if (component.getTitleText().contains(clubTitle)) {
-                    logger.info("Component with partial or the same title as '" + clubTitle + "' found on the page");
+                if(component.getTitleText().contains(clubTitle)) {
+                    logger.info("Component with partial or the same title as " + clubTitle + " found on the page");
                     result = true;
                     break;
                 }
@@ -82,7 +83,7 @@ public class ClubsContainer {
 
     public List<String> getClubComponentTitles() {
         List<String> clubComponentTitles = new ArrayList<>();
-        for (ClubComponent component : getClubComponents()) {
+        for(ClubComponent component : getClubComponents()) {
             // Remove all spaces at the beginning and at the end of the title and add clubComponentTitles to the list
             clubComponentTitles.add(component.getTitleText().trim());
         }

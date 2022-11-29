@@ -4,6 +4,7 @@ import com.softserve.edu.testcases.dataproviders.AdvancedSearchTestDataProvider;
 import com.softserve.edu.pages.common.clubs.ClubsPage;
 import com.softserve.edu.pages.common.home.HomePage;
 import com.softserve.edu.testcases.BaseTestSetup;
+import com.softserve.edu.testcases.enums.Categories;
 import com.softserve.edu.testcases.enums.KyivDistricts;
 import com.softserve.edu.testcases.enums.KyivMetroStations;
 import com.softserve.edu.testcases.enums.Locations;
@@ -95,8 +96,8 @@ public class AdvancedSearchTest extends BaseTestSetup {
     @Severity(SeverityLevel.NORMAL)
     @TmsLink(value = "TUA-510")
     @Test
-    public void deactivateExtraParametersTest() {
-        logger.info("Test if all mandatory fields are present and extra are disabled after clicking 'Центр' radio button started");
+    public void deactivateExtraCenterParametersTest() {
+        logger.info("Test if all center mandatory fields are present and extra are disabled after clicking 'Центр' radio button started");
 
         // Follow the link and load application
         HomePage homePage = loadApplication();
@@ -116,15 +117,15 @@ public class AdvancedSearchTest extends BaseTestSetup {
         // Assert check if all extra fields are disabled after clicking Center radio button
         Assert.assertTrue(clubsPage.extraFieldsNotPresent());
 
-        logger.info("Test if all mandatory fields are present and extra are disabled after clicking 'Центр' radio button finished");
+        logger.info("Test if all center mandatory fields are present and extra are disabled after clicking 'Центр' radio button finished");
     }
 
     @Description("[Розширений пошук] Verify that all parameters are activated with the selected 'Гурток' radio button")
     @Severity(SeverityLevel.NORMAL)
     @TmsLink(value = "TUA-509")
     @Test
-    public void allParametersPresenceTest() {
-        logger.info("Test if all mandatory and extra fields are present after opening advanced search started");
+    public void allClubParametersPresenceTest() {
+        logger.info("Test if all club mandatory and extra fields are present after opening advanced search started");
 
         // Follow the link and load application
         HomePage homePage = loadApplication();
@@ -141,7 +142,7 @@ public class AdvancedSearchTest extends BaseTestSetup {
         // Assert check if all extra fields are present after opening advanced search
         Assert.assertTrue(clubsPage.areExtraFieldsDisplayed());
 
-        logger.info("Test if all mandatory and extra fields are present after opening advanced search finished");
+        logger.info("Test if all club mandatory and extra fields are present after opening advanced search finished");
     }
 
     @Description("[Розширений пошук] Verify that the centers in the results of advanced search can be displayed as a list")
@@ -353,7 +354,7 @@ public class AdvancedSearchTest extends BaseTestSetup {
         clubsPage.sortByRating();
 
         // Assert check that the search results on UI and DB are the same
-        Assert.assertEquals(clubsPage.getAllCenterTitles(), db.getList(ascRating)); // Fails due to incorrect sort logic
+        Assert.assertEquals(clubsPage.getAllCenterTitles(), db.getList(ascRating));
 
         // Sort clubs by rates in descending order
         clubsPage.descendingSort();
@@ -390,7 +391,7 @@ public class AdvancedSearchTest extends BaseTestSetup {
         clubsPage.alphabeticSort();
 
         // Assert check that the search results on UI and DB are the same
-        Assert.assertEquals(clubsPage.getAllCenterTitles(), db.getList(ascAlphabet)); // Fails due to long content update
+        Assert.assertEquals(clubsPage.getAllCenterTitles(), db.getList(ascAlphabet));
 
         // Sort clubs by rates in descending order
         clubsPage.descendingSort();
@@ -430,6 +431,118 @@ public class AdvancedSearchTest extends BaseTestSetup {
         Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(kharkivLocation));
 
         logger.info("Test if clubs that belongs to a certain location will be found correctly finished");
+    }
+
+    @Description("Verify that user can find club using 'Категорії' check box")
+    @Severity(SeverityLevel.NORMAL)
+    @TmsLink(value = "TUA-294")
+    @Test(dataProvider = "clubsByCategories", dataProviderClass = AdvancedSearchTestDataProvider.class)
+    public void findClubsUsingCategoriesCheckbox(String city, String programmingCategory, Categories... category) {
+        logger.info("Test if clubs with selected category will be found started");
+
+        // Follow the link and load application
+        HomePage homePage = loadApplication();
+
+        // Go to clubs page
+        ClubsPage clubsPage = homePage.gotoClubsPage();
+
+        // Open advanced search
+        clubsPage.openAdvancedSearchPart();
+
+        // Assert check if default city is set as Kyiv
+        Assert.assertEquals(clubsPage.getCityName(), city);
+
+        // Select category
+        clubsPage.selectCategories(category);
+
+        // Assert check that the search results on UI and DB are the same
+        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(programmingCategory));
+
+        logger.info("Test if clubs with selected category will be found finished");
+    }
+
+    @Description("[Розширений пошук] Verify that the user can find a clubs that are available remotely")
+    @Severity(SeverityLevel.NORMAL)
+    @Test(dataProvider = "remoteClubs", dataProviderClass = AdvancedSearchTestDataProvider.class)
+    public void findRemoteClubs(String city, String remoteOption) {
+        logger.info("Test if all clubs with Remote option will be found started");
+
+        // Follow the link and load application
+        HomePage homePage = loadApplication();
+
+        // Go to clubs page
+        ClubsPage clubsPage = homePage.gotoClubsPage();
+
+        // Open advanced search
+        clubsPage.openAdvancedSearchPart();
+
+        // Assert check if default city is set as Kyiv
+        Assert.assertEquals(clubsPage.getCityName(), city);
+
+        // Select category
+        clubsPage.checkRemoteOption();
+
+        // Assert check that the search results on UI and DB are the same
+        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(remoteOption));
+
+        logger.info("Test if all clubs with Remote option will be found finished");
+    }
+
+    @Description("[Розширений пошук] Verify that the user can select 'Центр' option to see all the centers")
+    @Severity(SeverityLevel.BLOCKER)
+    @Test(dataProvider = "centersInCity", dataProviderClass = AdvancedSearchTestDataProvider.class)
+    public void findCentersInCityTest(String city, String centers) {
+        logger.info("Test if there is the same number of centers on UI and DB started");
+
+        // Follow the link and load application
+        HomePage homePage = loadApplication();
+
+        // Go to clubs page
+        ClubsPage clubsPage = homePage.gotoClubsPage();
+
+        // Open advanced search
+        clubsPage.openAdvancedSearchPart();
+
+        // Select Center radio button
+        clubsPage.selectCenters();
+
+        // Assert check if default city is set as Kyiv
+        Assert.assertEquals(clubsPage.getCityName(), city);
+
+        // Assert check that the search results on UI and DB are the same
+        Assert.assertEquals(clubsPage.getAllCenterTitles(), db.getList(centers));
+
+        logger.info("Test if there is the same number of centers on UI and DB finished");
+    }
+
+    @Description("[Розширений пошук] Verify that when user type valid child age the system show clubs in that age range")
+    @Severity(SeverityLevel.NORMAL)
+    @Test(dataProvider = "validChildAge", dataProviderClass = AdvancedSearchTestDataProvider.class)
+    public void validDataForChildAgeTest(String city, String age, String checkAge) {
+        logger.info("Test if the system finds clubs with valid child age data started");
+
+        // Follow the link and load application
+        HomePage homePage = loadApplication();
+
+        // Go to clubs page
+        ClubsPage clubsPage = homePage.gotoClubsPage();
+
+        // Open advanced search
+        clubsPage.openAdvancedSearchPart();
+
+        // Assert check if default city is set as Kyiv
+        Assert.assertEquals(clubsPage.getCityName(), city);
+
+        // Set child's age
+        clubsPage.setChildAge(age);
+
+        // Assert check that child's age was entered correctly
+        Assert.assertTrue(clubsPage.isChildAgeCorrect());
+
+        // Assert check that the search results on UI and DB are the same
+        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(checkAge));
+
+        logger.info("Test if the system finds clubs with valid child age data finished");
     }
 
 }

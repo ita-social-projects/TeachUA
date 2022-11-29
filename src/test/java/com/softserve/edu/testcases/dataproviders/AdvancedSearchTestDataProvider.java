@@ -1,5 +1,6 @@
 package com.softserve.edu.testcases.dataproviders;
 
+import com.softserve.edu.testcases.enums.Categories;
 import com.softserve.edu.testcases.enums.KyivDistricts;
 import com.softserve.edu.testcases.enums.KyivMetroStations;
 import com.softserve.edu.testcases.enums.Locations;
@@ -235,6 +236,108 @@ public class AdvancedSearchTestDataProvider {
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                                 "WHERE ct.name = '" + Locations.KHARKIV + "'\n" +
                                 "ORDER BY c.name;" }
+        };
+    }
+
+    @DataProvider(name = "clubsByCategories")
+    public static Object[][] getClubsByCategories() {
+        String CITY = Locations.DEFAULT_LOCATION.toString();
+        Categories CATEGORY = Categories.PROGRAMMING;
+        return new Object[][] {
+                { CITY,
+                        // Query to find search that belongs to a certain region in the DB
+                        "SELECT DISTINCT c.name\n" +
+                                "FROM clubs as c\n" +
+                                "INNER JOIN locations as l ON c.id=l.club_id\n" +
+                                "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                                "INNER JOIN club_category as cc ON c.id=cc.club_id\n" +
+                                "INNER JOIN categories as cs ON cc.category_id=cs.id\n" +
+                                "WHERE ct.name = '" + CITY + "'\n" +
+                                "AND cs.name = '" + Categories.PROGRAMMING + "';",
+                        CATEGORY }
+        };
+    }
+
+    @DataProvider(name = "remoteClubs")
+    public static Object[][] getRemoteClubs() {
+        // TODO Make CITY constant global
+        final String CITY = Locations.DEFAULT_LOCATION.toString();
+        return new Object[][] {
+                { CITY,
+                        // Query to find search that belongs to a certain region in the DB
+                        "SELECT DISTINCT c.name\n" +
+                                "FROM clubs as c\n" +
+                                "INNER JOIN locations as l ON c.id=l.club_id\n" +
+                                "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                                "WHERE ct.name = '" + CITY + "'\n" +
+                                "AND c.is_online = true;" }
+        };
+    }
+
+    @DataProvider(name = "centersInCity")
+    public static Object[][] getCentersInCity() {
+        return new Object[][] {
+                { Locations.DEFAULT_LOCATION.toString(),
+                        // Query to find centers in specific city in the DB
+                        "SELECT c.name\n" +
+                                "FROM (\n" +
+                                "\tSELECT name, id\n" +
+                                "\tFROM centers\n" +
+                                ") AS c\n" +
+                                "INNER JOIN locations as l ON c.id=l.center_id\n" +
+                                "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "GROUP BY c.name, c.id\n" +
+                                "ORDER BY c.id;" }
+        };
+    }
+
+    @DataProvider(name = "validChildAge")
+    public static Object[][] getValidChildAge() {
+        final String MINIMUM_AGE = "2";
+        final String ALMOST_MINIMUM_AGE = "3";
+        final String ALMOST_MAXIMUM_AGE = "17";
+        final String MAXIMUM_AGE = "18";
+        // TODO Make CITY constant global
+        final String CITY = Locations.DEFAULT_LOCATION.toString();
+        return new Object[][] {
+                // Queries to sort clubs by child age in the DB
+                { CITY,
+                        MINIMUM_AGE,
+                        // Query to find centers in specific city in the DB
+                        "SELECT DISTINCT c.name\n" +
+                                "FROM clubs as c\n" +
+                                "INNER JOIN locations as l ON c.id=l.club_id\n" +
+                                "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "AND c.age_from <= " + MINIMUM_AGE + " AND c.age_to >= " + MINIMUM_AGE + ";" },
+                { CITY,
+                        ALMOST_MINIMUM_AGE,
+                        // Query to find centers in specific city in the DB
+                        "SELECT DISTINCT c.name\n" +
+                                "FROM clubs as c\n" +
+                                "INNER JOIN locations as l ON c.id=l.club_id\n" +
+                                "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "AND c.age_from <= " + ALMOST_MINIMUM_AGE + " AND c.age_to >= " + ALMOST_MINIMUM_AGE + ";" },
+                { CITY,
+                        ALMOST_MAXIMUM_AGE,
+                        // Query to find centers in specific city in the DB
+                        "SELECT DISTINCT c.name\n" +
+                                "FROM clubs as c\n" +
+                                "INNER JOIN locations as l ON c.id=l.club_id\n" +
+                                "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "AND c.age_from <= " + ALMOST_MAXIMUM_AGE + " AND c.age_to >= " + ALMOST_MAXIMUM_AGE + ";" },
+                { CITY,
+                        MAXIMUM_AGE,
+                        // Query to find centers in specific city in the DB
+                        "SELECT DISTINCT c.name\n" +
+                                "FROM clubs as c\n" +
+                                "INNER JOIN locations as l ON c.id=l.club_id\n" +
+                                "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "AND c.age_from <= " + MAXIMUM_AGE + " AND c.age_to >= " + MAXIMUM_AGE + ";" }
         };
     }
 

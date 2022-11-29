@@ -23,7 +23,7 @@ import java.util.Map;
 
 public abstract class BaseTestSetup {
 
-    private Browsers browser = Browsers.CHROME_WITHOUT_UI;                              // set default browser as Chrome
+    private Browsers browser = Browsers.CHROME_BROWSER;                                 // set default browser as Chrome
     protected ConfigPropertiesReader config = new ConfigPropertiesReader();             // get test data
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());           // logger
     protected Database db = new Database();                                             // database connection
@@ -41,6 +41,15 @@ public abstract class BaseTestSetup {
                     break;
                 }
             }
+        }
+    }
+
+    // Only for presentation
+    protected void presentationSleep(int seconds) {
+        try {
+            Thread.sleep(seconds);                                                      // set seconds to sleep
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
