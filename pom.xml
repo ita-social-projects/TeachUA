@@ -268,6 +268,23 @@
 			<artifactId>flyway-core</artifactId>
 		</dependency>
 
+		<!-- iText  -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>kernel</artifactId>
+			<version>7.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>forms</artifactId>
+			<version>7.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>layout</artifactId>
+			<version>7.2.4</version>
+		</dependency>
+
 	</dependencies>
 
 
