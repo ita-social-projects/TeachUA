@@ -201,15 +201,33 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     @Override
     public CenterProfile updateCenter(Long id, CenterProfile centerProfile) {
         Center center = getCenterById(id);
-        if (isCenterExistByName(centerProfile.getName())) {
-            throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
-        }
+        System.out.println("CENTER DB = " + center);
+        System.out.println("CENTER NEW = " + centerProfile);
+//        if (isCenterExistByName(centerProfile.getName())) {
+//            throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
+//        }
 
         Set<LocationProfile> locations = setLocationToCenter(centerProfile.getLocations(), id);
-        Center newCenter = dtoConverter.convertToEntity(centerProfile, center).withId(id)
+        Center newCenter = dtoConverter.convertToEntity(centerProfile, center)
+                .withId(id)
+                .withContacts(centerProfile.getContacts())
+                //.withClubs(centerProfile.getClubsId())
+                .withName(centerProfile.getName())
+                .withDescription(centerProfile.getDescription())
                 .withLocations(locationService.updateCenterLocation(locations, center));
 
+        List<Long> clubsId = centerProfile.getClubsId();
+
+        if (clubsId != null && !clubsId.isEmpty()) {
+            for (Long clubId : clubsId) {
+                log.debug("ID - " + clubId);
+                Club club = clubService.getClubById(clubId);
+                club.setCenter(center);
+                clubRepository.save(club);
+            }
+        }
         log.debug("**/updating center by id = " + newCenter);
+        System.out.println("updating center by id = " + newCenter);
         return dtoConverter.convertToDto(centerRepository.save(newCenter), CenterProfile.class);
     }
 
