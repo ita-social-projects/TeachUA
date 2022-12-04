@@ -1,5 +1,7 @@
 package com.softserve.teachua.service.test;
 
+import com.softserve.teachua.dto.test.question.QuestionPreview;
+import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.dto.test.question.QuestionResponse;
 import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.model.test.Test;
@@ -60,4 +62,6 @@ public interface QuestionService {
      * @throws IOException - throws IOException .
      */
     void questionsImport(String formId,Long creatorId) throws IOException;
+
+    List<QuestionPreview> getAllQuestions();
 }

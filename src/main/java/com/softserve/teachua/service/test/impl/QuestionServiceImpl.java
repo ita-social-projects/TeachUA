@@ -1,6 +1,12 @@
 package com.softserve.teachua.service.test.impl;
 
-import com.google.api.services.forms.v1.model.*;
+import com.google.api.services.forms.v1.model.ChoiceQuestion;
+import com.google.api.services.forms.v1.model.CorrectAnswer;
+import com.google.api.services.forms.v1.model.Grading;
+import com.google.api.services.forms.v1.model.Item;
+import com.google.api.services.forms.v1.model.Option;
+import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.test.question.QuestionPreview;
 import com.softserve.teachua.dto.test.question.QuestionResponse;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;
@@ -13,15 +19,15 @@ import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.AnswerService;
 import com.softserve.teachua.service.test.QuestionService;
 import com.softserve.teachua.service.test.QuestionTypeService;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.softserve.teachua.config.GoogleFormConfig.getAccessToken;
 import static com.softserve.teachua.config.GoogleFormConfig.readFormInfo;
@@ -32,7 +38,6 @@ import static com.softserve.teachua.utils.test.validation.NullValidator.checkNul
 @Transactional
 @Service("testQuestionService")
 public class QuestionServiceImpl implements QuestionService {
-    private static Long count = 1L;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final QuestionCategoryRepository categoryRepository;
@@ -87,11 +92,15 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void questionsImport(String formUri, Long creatorId) throws IOException {
         String token = getAccessToken();
-        String formId = formUri.replace("https://docs.google.com/forms/d/", "").replace("/edit", "");
+
+        String formId = formUri.replace("https://docs.google.com/forms/d/", "")
+            .replace("/edit", "");
+
+        String formName = readFormInfo(formId, token).getInfo().getTitle();
         List<Item> itemList = readFormInfo(formId, token).getItems();
 
         QuestionCategory category = new QuestionCategory();
-        category.setTitle("New From(" + count++ + ") from Google");
+        category.setTitle("New From (" + formName + ") from Google");
         category = categoryRepository.save(category);
 
         for (Item item : itemList) {
@@ -144,16 +153,32 @@ public class QuestionServiceImpl implements QuestionService {
         }
     }
 
+    @Override
+    public List<QuestionPreview> getAllQuestions() {
+        List<QuestionPreview> previews = new ArrayList<>();
+        List<Question> questions = questionRepository.findAll();
+
+        questions.forEach(question -> previews.add(
+            new QuestionPreview(
+                question.getId(),
+                question.getTitle(),
+                question.getDescription(),
+                question.getQuestionCategory().getTitle())));
+
+        return previews;
+
+    }
+
     private List<QuestionResponse> mapToDtoList(List<Question> questions) {
         List<QuestionResponse> questionsResponses = questions.stream()
-                .map(question -> modelMapper.map(question, QuestionResponse.class))
-                .collect(Collectors.toList());
+            .map(question -> modelMapper.map(question, QuestionResponse.class))
+            .collect(Collectors.toList());
 
         for (int i = 0; i < questions.size(); i++) {
             List<Answer> answers = answerService.findByQuestionId(questions.get(i).getId());
             List<String> answerTitles = answers.stream()
-                    .map(Answer::getText)
-                    .collect(Collectors.toList());
+                .map(Answer::getText)
+                .collect(Collectors.toList());
             questionsResponses.get(i).setAnswerTitles(answerTitles);
         }
         return questionsResponses;
