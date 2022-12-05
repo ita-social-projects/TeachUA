@@ -82,7 +82,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
                 .map(certificate -> CertificateUserResponse.builder()
                                 .id(certificate.getId())
                                 .serialNumber(certificate.getSerialNumber())
-                                .certificateType(certificate.getTemplate().getName())
+                                .certificateType(certificate.getTemplate().getCertificateType())
                                 .date(certificate.getDates().getDate())
                                 .courseDescription(certificate.getTemplate().getCourseDescription())
                                 .build())
