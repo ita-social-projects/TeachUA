@@ -15,8 +15,5 @@ import javax.validation.constraints.NotBlank;
 public class ImportProfile extends RepresentationModel<ImportProfile> {
     @NonNull
     @NotBlank
-    private String formUri;
-    @NonNull
-    @NotBlank
-    private Long creatorId;
+    private String formId;
 }
