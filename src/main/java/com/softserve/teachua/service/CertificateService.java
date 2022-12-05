@@ -1,8 +1,11 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.certificate.*;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -189,6 +192,19 @@ public interface CertificateService {
      * @return filled {@code byte[]}
      */
     byte[] getPdfOutputForDownload(String userEmail, Long id);
+
+    /**
+     * This method gets receiver's email address and send date of undelivered email,
+     * and changes send status of its certificate to false
+     *
+     * @param sendEmail
+     *            put receiver's address of failed email
+     * @param sendDate
+     *            put sending date of failed email
+     * @throws NotExistException
+     *            if certificate with such sendToEmail does not exist.
+     */
+    void updateSendStatusOfFailedSendCertificate(String sendEmail, LocalDate sendDate);
 
     /**
      * This method gets the serial number, obtains certificate with specified serial number from DB, then if certificate

@@ -280,6 +280,13 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
+    public void updateSendStatusOfFailedSendCertificate(String sendToEmail, LocalDate sendDate) {
+        Certificate certificate = certificateRepository.findFirstBySendToEmailAndUpdateStatus(sendToEmail, sendDate)
+            .orElseThrow(NotExistException::new);
+//3
+    }
+
+    @Override
     public CertificateVerificationResponse validateCertificate(Long serialNumber) {
         Certificate certificate = getCertificateBySerialNumber(serialNumber);
 
