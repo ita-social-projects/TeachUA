@@ -1,21 +1,36 @@
 package com.softserve.teachua.service.test.impl;
 
+import com.google.api.services.forms.v1.model.ChoiceQuestion;
+import com.google.api.services.forms.v1.model.CorrectAnswer;
+import com.google.api.services.forms.v1.model.Grading;
+import com.google.api.services.forms.v1.model.Item;
+import com.google.api.services.forms.v1.model.Option;
+import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.test.question.QuestionPreview;
 import com.softserve.teachua.dto.test.question.QuestionResponse;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;
+import com.softserve.teachua.model.test.QuestionCategory;
 import com.softserve.teachua.model.test.Test;
+import com.softserve.teachua.repository.test.AnswerRepository;
+import com.softserve.teachua.repository.test.QuestionCategoryRepository;
 import com.softserve.teachua.repository.test.QuestionRepository;
+import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.AnswerService;
 import com.softserve.teachua.service.test.QuestionService;
+import com.softserve.teachua.service.test.QuestionTypeService;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import static com.softserve.teachua.config.GoogleFormConfig.getAccessToken;
+import static com.softserve.teachua.config.GoogleFormConfig.readFormInfo;
 import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
 
 @RequiredArgsConstructor
@@ -24,6 +39,11 @@ import static com.softserve.teachua.utils.test.validation.NullValidator.checkNul
 @Service("testQuestionService")
 public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
+    private final QuestionCategoryRepository categoryRepository;
+
+    private final QuestionTypeService typeService;
+    private final UserService userService;
     private final ModelMapper modelMapper;
     private final AnswerService answerService;
 
@@ -69,16 +89,96 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.save(question);
     }
 
+    @Override
+    public void questionsImport(String formUri, Long creatorId) throws IOException {
+        String token = getAccessToken();
+
+        String formId = formUri.replace("https://docs.google.com/forms/d/", "")
+            .replace("/edit", "");
+
+        String formName = readFormInfo(formId, token).getInfo().getTitle();
+        List<Item> itemList = readFormInfo(formId, token).getItems();
+
+        QuestionCategory category = new QuestionCategory();
+        category.setTitle("New From (" + formName + ") from Google");
+        category = categoryRepository.save(category);
+
+        for (Item item : itemList) {
+
+            Question question = new Question();
+
+            question.setCreator(userService.getUserById(creatorId));
+            question.setTitle(item.getTitle());
+            question.setQuestionCategory(category);
+
+
+            if (item.getDescription() != null) {
+                question.setDescription(item.getDescription());
+            } else {
+                question.setDescription("");
+            }
+
+
+            Grading grading = item.getQuestionItem().getQuestion().getGrading();
+            ChoiceQuestion choice = item.getQuestionItem().getQuestion().getChoiceQuestion();
+            if (choice != null && grading != null) {
+                List<Option> options = item.getQuestionItem().getQuestion().getChoiceQuestion().getOptions();
+                List<CorrectAnswer> correctAnswers = grading.getCorrectAnswers().getAnswers();
+
+
+                question.setQuestionType(typeService.findByTitle(choice.getType()));
+                question = save(question);
+
+                for (Option option : options) {
+                    Answer answer = new Answer();
+                    answer.setText(option.getValue());
+                    answer.setValue(grading.getPointValue());
+                    answer.setQuestion(question);
+
+                    for (CorrectAnswer correct : correctAnswers) {
+                        answer.setCorrect(option.getValue().equals(correct.getValue()));
+                    }
+                    log.info("**/Answer has been created.{}" + answer.toString());
+                    answer = answerRepository.save(answer);
+                    question.addAnswer(answer);
+                }
+            } else if (item.getQuestionItem().getQuestion().getTextQuestion().isEmpty()) {
+                question.setQuestionType(typeService.findByTitle("TEXT"));
+                save(question);
+            } else if (item.getQuestionItem().getQuestion().getTextQuestion().getParagraph()) {
+                question.setQuestionType(typeService.findByTitle("PARAGRAPH"));
+                save(question);
+            }
+
+        }
+    }
+
+    @Override
+    public List<QuestionPreview> getAllQuestions() {
+        List<QuestionPreview> previews = new ArrayList<>();
+        List<Question> questions = questionRepository.findAll();
+
+        questions.forEach(question -> previews.add(
+            new QuestionPreview(
+                question.getId(),
+                question.getTitle(),
+                question.getDescription(),
+                question.getQuestionCategory().getTitle())));
+
+        return previews;
+
+    }
+
     private List<QuestionResponse> mapToDtoList(List<Question> questions) {
         List<QuestionResponse> questionsResponses = questions.stream()
-                        .map(question -> modelMapper.map(question, QuestionResponse.class))
-                        .collect(Collectors.toList());
+            .map(question -> modelMapper.map(question, QuestionResponse.class))
+            .collect(Collectors.toList());
 
         for (int i = 0; i < questions.size(); i++) {
             List<Answer> answers = answerService.findByQuestionId(questions.get(i).getId());
             List<String> answerTitles = answers.stream()
-                    .map(Answer::getText)
-                    .collect(Collectors.toList());
+                .map(Answer::getText)
+                .collect(Collectors.toList());
             questionsResponses.get(i).setAnswerTitles(answerTitles);
         }
         return questionsResponses;

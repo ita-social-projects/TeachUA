@@ -36,6 +36,7 @@ public class CertificateDataRequest {
     @JsonDeserialize
     String courseNumber;
 
+    @NotBlank
     String studyType;
 
     @NotNull
