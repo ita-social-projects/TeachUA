@@ -4,7 +4,6 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.ListMessagesResponse;
 import com.google.api.services.gmail.model.Message;
 import com.softserve.teachua.controller.marker.Api;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +15,7 @@ public class GmailController implements Api {
 
     private final Gmail gmailService;
 
-    public GmailController(@Lazy Gmail gmailService) {
+    public GmailController(Gmail gmailService) {
         this.gmailService = gmailService;
     }
 
