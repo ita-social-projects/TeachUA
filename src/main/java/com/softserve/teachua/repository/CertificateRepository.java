@@ -58,7 +58,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     nativeQuery = true)
     List<Certificate> findAllForDownload(@Param("email") String email);
 
-    Optional<Certificate> findFirstBySendToEmailAndUpdateStatus(String sendToEmail, LocalDate updateDate);
+    List<Certificate> findAllBySendToEmailAndUpdateStatusAndSendStatusTrue(String sendToEmail, LocalDate updateDate);
 
     Optional<Certificate> findById(Long id);
 

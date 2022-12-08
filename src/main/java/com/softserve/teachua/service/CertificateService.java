@@ -1,7 +1,6 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.certificate.*;
-import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 
@@ -33,9 +32,19 @@ public interface CertificateService {
      * This method returns list of dto {@code CertificateUserResponse} of certificates, found by email,
      * except certificates without serial numbers
      *
+     * @param sendToEmail user's email
      * @return new {@code List<CertificateUserResponse>}
      */
-    List<CertificateUserResponse> getListOfCertificatesByEmail(String email);
+    List<CertificateUserResponse> getListOfCertificatesByEmail(String sendToEmail);
+
+    /**
+     * This method returns list of {@code Certificate}, found by sendToEmail and updateStatus with sendStatus true
+     *
+     * @param sendToEmail user's email
+     * @param updateStatus date of sending
+     * @return {@code List<Certificate>}
+     */
+    List<Certificate> getSentCertificatesByEmailAndUpdateStatus(String sendToEmail, LocalDate updateStatus);
 
     /**
      * This method returns list of dto {@code CertificateTransfer} of all unsent certificates (certificates with send
@@ -194,26 +203,13 @@ public interface CertificateService {
     byte[] getPdfOutputForDownload(String userEmail, Long id);
 
     /**
-     * This method gets receiver's email address and send date of undelivered email,
-     * and changes send status of its certificate to false
-     *
-     * @param sendEmail
-     *            put receiver's address of failed email
-     * @param sendDate
-     *            put sending date of failed email
-     * @throws NotExistException
-     *            if certificate with such sendToEmail does not exist.
-     */
-    void updateSendStatusOfFailedSendCertificate(String sendEmail, LocalDate sendDate);
-
-    /**
      * This method gets the serial number, obtains certificate with specified serial number from DB, then if certificate
      * exists, returns filled dto with info, in other case returns empty dto
      *
      * @param serialNumber
      *            put serial number to verify
      *
-     * @return filled {@code CertificateVerificationResponse}
+     * @return filled
      */
     CertificateVerificationResponse validateCertificate(Long serialNumber);
 
