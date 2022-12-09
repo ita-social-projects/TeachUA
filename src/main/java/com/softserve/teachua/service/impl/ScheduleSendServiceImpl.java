@@ -4,17 +4,13 @@ import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.dto.schedule.TaskSchedule;
 import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.service.EmailService;
+import com.softserve.teachua.service.GmailService;
 import com.softserve.teachua.service.ScheduleSendService;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
-import org.springframework.scheduling.config.ScheduledTask;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -23,53 +19,44 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
 
     private final EmailService emailService;
 
+    private final GmailService gmailService;
+
     private final ScheduledAnnotationBeanPostProcessor postProcessor;
 
     private final CertificateService certificateService;
 
-    private long previousId;
-
     @Autowired
-    public ScheduleSendServiceImpl(EmailService emailService, ScheduledAnnotationBeanPostProcessor postProcessor,
-            CertificateService certificateService) {
+    public ScheduleSendServiceImpl(EmailService emailService, GmailService gmailService, ScheduledAnnotationBeanPostProcessor postProcessor,
+                                   CertificateService certificateService) {
         this.emailService = emailService;
+        this.gmailService = gmailService;
         this.postProcessor = postProcessor;
         this.certificateService = certificateService;
-        previousId = 0;
     }
 
-    // @Scheduled(fixedRate = 10000)
     @Scheduled(fixedRate = 180000) // 1 email / 3 min
     public void sendCertificateWithScheduler() {
-        CertificateTransfer user = certificateService.getOneUnsentCertificate();
-        if (user != null) {
-            log.info("Generate Certificate for " + user.toString() + " id = " + user.getId());
-            //
-            if (previousId == 0) {
-                previousId = user.getId();
-            } else if (previousId == user.getId()) {
-                log.error("Error Generate Certificate for " + user.toString() + " id = " + user.getId());
-                certificateService.updateDateAndSendStatus(user.getId(), false);
-                previousId = 0;
-            }
-        }
-        //
-        if (user != null) {
-            emailService.sendMessageWithAttachmentAndGeneratedPdf(user.getSendToEmail().trim(),
-                    // "Certificate.",
-                    // "Вітаю! В додатку ви можете знайти ваш сертифікат.",
+        CertificateTransfer certificate = certificateService.getOneUnsentCertificate();
+
+        if (certificate != null) {
+            log.info("Preparing message for {}, id={}", certificate, certificate.getId());
+            try {
+                emailService.sendMessageWithAttachmentAndGeneratedPdf(certificate.getSendToEmail().trim(),
                     "Сертифікат проєкту \"Єдині\"",
                     "Вітаємо! Дякуємо Вам, що долучилися до проєкту \"Єдині\". Дякуємо за спільну роботу задля великої мети."
-                            + "\n\nВаш сертифікат додано у вкладенні до цього листа.",
-                    user);
-            certificateService.updateDateAndSendStatus(user.getId(), true);
-            //
-            previousId = 0;
+                        + "\n\nВаш сертифікат додано у вкладенні до цього листа.",
+                    certificate);
+                certificateService.updateDateAndSendStatus(certificate.getId(), true);
+            } catch (Exception e) {
+                log.error("Error send certificate {} {}", e.getClass(), e.getMessage());
+                certificateService.updateDateAndSendStatus(certificate.getId(), false);
+            }
         } else {
             postProcessor.destroy();
             log.info("Scheduled Certification Service. Done. New task not found.");
-            previousId = 0;
         }
+
+        gmailService.detectFailedSendCertificates();
     }
 
     public void startSchedule() {
