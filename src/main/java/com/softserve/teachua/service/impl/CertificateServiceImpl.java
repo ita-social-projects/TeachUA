@@ -75,15 +75,15 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     @Override
     public List<CertificateUserResponse> getListOfCertificatesByEmail(String email) {
         return certificateRepository.findAllForDownload(email)
-            .stream()
-            .map(certificate -> CertificateUserResponse.builder()
-                .id(certificate.getId())
-                .serialNumber(certificate.getSerialNumber())
-                .certificateType(certificate.getTemplate().getName())
-                .date(certificate.getDates().getDate())
-                .courseDescription(certificate.getTemplate().getCourseDescription())
-                .build())
-            .collect(Collectors.toList());
+                .stream()
+                .map(certificate -> CertificateUserResponse.builder()
+                                .id(certificate.getId())
+                                .serialNumber(certificate.getSerialNumber())
+                                .certificateType(certificate.getTemplate().getCertificateType())
+                                .date(certificate.getDates().getDate())
+                                .courseDescription(certificate.getTemplate().getCourseDescription())
+                                .build())
+                .collect(Collectors.toList());
     }
 
     @Override
