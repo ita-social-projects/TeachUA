@@ -8,6 +8,12 @@ import org.testng.annotations.DataProvider;
 
 public class AdvancedSearchTestDataProvider {
 
+    private static final String KYIV_CITY = Locations.DEFAULT_LOCATION.toString();
+    private static final String ARSENALNA_METRO_STATION = KyivMetroStations.ARSENALNA.toString();
+    private static final String VYRLITSA_METRO_STATION = KyivMetroStations.VYRLITSA.toString();
+    private static final String SVYATOSHINSKY_DISTRICT = KyivDistricts.SVYATOSHINSKY.toString();
+    private static final String DESNYANSKYI_DISTRICT = KyivDistricts.DESNYANSKYI.toString();
+
     // DataProvider method is static because it's used in foreign class(in test class from another package)
     @DataProvider(name = "rateAscendingSort")
     public static Object[][] getRateAscendingSort() {
@@ -40,7 +46,7 @@ public class AdvancedSearchTestDataProvider {
                         "FROM clubs as c\n" +
                         "INNER JOIN locations as l ON c.id=l.club_id\n" +
                         "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                        "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                        "WHERE ct.name = '" + KYIV_CITY + "'\n" +
                         "ORDER BY c.name ASC;",
                 // Queries to sort clubs by city and district in the DB
                 "SELECT DISTINCT c.name\n" +
@@ -49,7 +55,7 @@ public class AdvancedSearchTestDataProvider {
                         "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                         "INNER JOIN districts as ds ON l.district_id=ds.id\n" +
                         "WHERE ct.name = 'Київ'\n" +
-                        "AND ds.name = '" + KyivDistricts.SVYATOSHINSKY + "'\n" +
+                        "AND ds.name = '" + SVYATOSHINSKY_DISTRICT + "'\n" +
                         "ORDER BY c.name ASC;",
                         // Queries to sort clubs by city and district in the DB
                 "SELECT DISTINCT c.name\n" +
@@ -58,7 +64,7 @@ public class AdvancedSearchTestDataProvider {
                         "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                         "INNER JOIN districts as ds ON l.district_id=ds.id\n" +
                         "WHERE ct.name = 'Київ'\n" +
-                        "AND ds.name = '" + KyivDistricts.DESNYANSKYI + "'\n" +
+                        "AND ds.name = '" + DESNYANSKYI_DISTRICT + "'\n" +
                         "ORDER BY c.name ASC;" }
         };
     }
@@ -82,84 +88,84 @@ public class AdvancedSearchTestDataProvider {
     @DataProvider(name = "stations")
     public static Object[][] getMetroStations() {
         return new Object[][] {
-                { Locations.DEFAULT_LOCATION.toString(),
+                {KYIV_CITY,
                         // Query to find centers by city and metro station in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM centers as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.center_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                                 "INNER JOIN stations as st ON l.station_id=st.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
-                                "AND st.name = '" + KyivMetroStations.ARSENALNA + "';",
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
+                                "AND st.name = '" + ARSENALNA_METRO_STATION + "';",
                         // Query to find centers by city and another metro station in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM centers as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.center_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                                 "INNER JOIN stations as st ON l.station_id=st.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
-                                "AND st.name = '" + KyivMetroStations.VYRLITSA + "';" }
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
+                                "AND st.name = '" + VYRLITSA_METRO_STATION + "';" }
         };
     }
 
     @DataProvider(name = "district")
     public static Object[][] getDistricts() {
         return new Object[][] {
-                { Locations.DEFAULT_LOCATION.toString(),
-                  KyivDistricts.DESNYANSKYI.toString(),
+                {KYIV_CITY,
+                        DESNYANSKYI_DISTRICT,
                         // Query to find centers by city and district in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM centers as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.center_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                                 "INNER JOIN districts as ds ON l.district_id=ds.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
-                                "AND ds.name = '" + KyivDistricts.DESNYANSKYI + "';" }
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
+                                "AND ds.name = '" + DESNYANSKYI_DISTRICT + "';" }
         };
     }
 
     @DataProvider(name = "clubStations")
     public static Object[][] getClubMetroStations() {
         return new Object[][] {
-                { Locations.DEFAULT_LOCATION.toString(),
+                {KYIV_CITY,
                         // Query to find centers by city and metro station in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.club_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                                 "INNER JOIN stations as st ON l.station_id=st.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
-                                "AND st.name = '" + KyivMetroStations.ARSENALNA + "';",
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
+                                "AND st.name = '" + ARSENALNA_METRO_STATION + "';",
                         // Query to find centers by city and another metro station in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.club_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                                 "INNER JOIN stations as st ON l.station_id=st.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
-                                "AND st.name = '" + KyivMetroStations.VYRLITSA + "';" }
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
+                                "AND st.name = '" + VYRLITSA_METRO_STATION + "';" }
         };
     }
 
     @DataProvider(name = "clubDistricts")
     public static Object[][] getClubDistricts() {
         return new Object[][] {
-                { Locations.DEFAULT_LOCATION.toString(),
+                {KYIV_CITY,
                         // Query to find clubs by city and district in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.club_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                                 "INNER JOIN districts as ds ON l.district_id=ds.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
-                                "AND ds.name = '" + KyivDistricts.DESNYANSKYI + "';" }
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
+                                "AND ds.name = '" + DESNYANSKYI_DISTRICT + "';" }
         };
     }
 
     @DataProvider(name = "sortCentersByRating")
     public static Object[][] getCentersSortedByRating() {
         return new Object[][] {
-                { Locations.DEFAULT_LOCATION.toString(),
+                {KYIV_CITY,
                         // Query to find sorted centers by rating in ascending order in the DB
                         "SELECT c.name\n" +
                                 "FROM (\n" +
@@ -169,7 +175,7 @@ public class AdvancedSearchTestDataProvider {
                                 ") AS c\n" +
                                 "INNER JOIN locations as l ON c.id=l.center_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
                                 "GROUP BY c.name, rating\n" +
                                 "ORDER BY rating;",
                         // Query to find sorted centers by rating in descending order in the DB
@@ -181,7 +187,7 @@ public class AdvancedSearchTestDataProvider {
                                 ") AS c\n" +
                                 "INNER JOIN locations as l ON c.id=l.center_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
                                 "GROUP BY c.name, rating\n" +
                                 "ORDER BY rating DESC;" }
         };
@@ -190,7 +196,7 @@ public class AdvancedSearchTestDataProvider {
     @DataProvider(name = "alphabeticCenterSort")
     public static Object[][] getCentersAlphabeticSort() {
         return new Object[][] {
-                { Locations.DEFAULT_LOCATION.toString(),
+                {KYIV_CITY,
                         // Query to sort centers by alphabet in ascending order in the DB
                         "SELECT c.name\n" +
                                 "FROM (\n" +
@@ -200,7 +206,7 @@ public class AdvancedSearchTestDataProvider {
                                 ") AS c\n" +
                                 "INNER JOIN locations as l ON c.id=l.center_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
                                 "GROUP BY c.name\n" +
                                 "ORDER BY c.name;",
                         // Query to sort centers by alphabet in descending order in the DB
@@ -212,7 +218,7 @@ public class AdvancedSearchTestDataProvider {
                                 ") AS c\n" +
                                 "INNER JOIN locations as l ON c.id=l.center_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
                                 "GROUP BY c.name\n" +
                                 "ORDER BY c.name DESC;" }
         };
@@ -220,31 +226,31 @@ public class AdvancedSearchTestDataProvider {
 
     @DataProvider(name = "clubsByLocation")
     public static Object[][] getClubsByLocation() {
+        final String KHARKIV_CITY = Locations.KHARKIV.toString();
         return new Object[][] {
-                { Locations.DEFAULT_LOCATION.toString(),
+                {KYIV_CITY,
                         // Query to find search that belongs to a certain region in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.club_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
                                 "ORDER BY c.name;",
                         // Query to find search that belongs to another region in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.club_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                                "WHERE ct.name = '" + Locations.KHARKIV + "'\n" +
+                                "WHERE ct.name = '" + KHARKIV_CITY + "'\n" +
                                 "ORDER BY c.name;" }
         };
     }
 
     @DataProvider(name = "clubsByCategories")
     public static Object[][] getClubsByCategories() {
-        String CITY = Locations.DEFAULT_LOCATION.toString();
-        Categories CATEGORY = Categories.PROGRAMMING;
+        final Categories CATEGORY = Categories.PROGRAMMING;
         return new Object[][] {
-                { CITY,
+                {KYIV_CITY,
                         // Query to find search that belongs to a certain region in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
@@ -252,24 +258,22 @@ public class AdvancedSearchTestDataProvider {
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                                 "INNER JOIN club_category as cc ON c.id=cc.club_id\n" +
                                 "INNER JOIN categories as cs ON cc.category_id=cs.id\n" +
-                                "WHERE ct.name = '" + CITY + "'\n" +
-                                "AND cs.name = '" + Categories.PROGRAMMING + "';",
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
+                                "AND cs.name = '" + CATEGORY + "';",
                         CATEGORY }
         };
     }
 
     @DataProvider(name = "remoteClubs")
     public static Object[][] getRemoteClubs() {
-        // TODO Make CITY constant global
-        final String CITY = Locations.DEFAULT_LOCATION.toString();
         return new Object[][] {
-                { CITY,
+                {KYIV_CITY,
                         // Query to find search that belongs to a certain region in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.club_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                                "WHERE ct.name = '" + CITY + "'\n" +
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
                                 "AND c.is_online = true;" }
         };
     }
@@ -277,7 +281,7 @@ public class AdvancedSearchTestDataProvider {
     @DataProvider(name = "centersInCity")
     public static Object[][] getCentersInCity() {
         return new Object[][] {
-                { Locations.DEFAULT_LOCATION.toString(),
+                {KYIV_CITY,
                         // Query to find centers in specific city in the DB
                         "SELECT c.name\n" +
                                 "FROM (\n" +
@@ -286,7 +290,7 @@ public class AdvancedSearchTestDataProvider {
                                 ") AS c\n" +
                                 "INNER JOIN locations as l ON c.id=l.center_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
                                 "GROUP BY c.name, c.id\n" +
                                 "ORDER BY c.id;" }
         };
@@ -298,45 +302,43 @@ public class AdvancedSearchTestDataProvider {
         final String ALMOST_MINIMUM_AGE = "3";
         final String ALMOST_MAXIMUM_AGE = "17";
         final String MAXIMUM_AGE = "18";
-        // TODO Make CITY constant global
-        final String CITY = Locations.DEFAULT_LOCATION.toString();
         return new Object[][] {
                 // Queries to sort clubs by child age in the DB
-                { CITY,
+                {KYIV_CITY,
                         MINIMUM_AGE,
                         // Query to find centers in specific city in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.club_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
                                 "AND c.age_from <= " + MINIMUM_AGE + " AND c.age_to >= " + MINIMUM_AGE + ";" },
-                { CITY,
+                {KYIV_CITY,
                         ALMOST_MINIMUM_AGE,
                         // Query to find centers in specific city in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.club_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
                                 "AND c.age_from <= " + ALMOST_MINIMUM_AGE + " AND c.age_to >= " + ALMOST_MINIMUM_AGE + ";" },
-                { CITY,
+                {KYIV_CITY,
                         ALMOST_MAXIMUM_AGE,
                         // Query to find centers in specific city in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.club_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
                                 "AND c.age_from <= " + ALMOST_MAXIMUM_AGE + " AND c.age_to >= " + ALMOST_MAXIMUM_AGE + ";" },
-                { CITY,
+                {KYIV_CITY,
                         MAXIMUM_AGE,
                         // Query to find centers in specific city in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.club_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
-                                "WHERE ct.name = '" + Locations.KYIV + "'\n" +
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
                                 "AND c.age_from <= " + MAXIMUM_AGE + " AND c.age_to >= " + MAXIMUM_AGE + ";" }
         };
     }

@@ -10,7 +10,7 @@ import io.restassured.specification.RequestSpecification;
 
 public abstract class AbstractWebService {
 
-    private final ConfigPropertiesReader config = new ConfigPropertiesReader();        // configuration file
+    private ConfigPropertiesReader config = new ConfigPropertiesReader();        // configuration file
 
     protected AbstractWebService() {
     }

@@ -12,23 +12,23 @@ public class AdvancedSearchPart {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());             // logger
     // Locator to find needed club category
-    private final String LIST_CATEGORIES_XPATH =
+    private static final String LIST_CATEGORIES_XPATH =
             "//div[@id='basic_categoriesName']//span[contains(@class,'ant-checkbox')]/following-sibling::span";
-    private final String VALUE_ATTRIBUTE = "value";                                     // value attribute
-    private final String CLEAR_PLACE_LOCATOR = "./..//span[@class='anticon anticon-close-circle']";
+    private static final String VALUE_ATTRIBUTE = "value";                                     // value attribute
+    private static final String CLEAR_PLACE_LOCATOR = "./..//span[@class='anticon anticon-close-circle']";
     // Message that informs about selected value
-    private final String SELECT_MESSAGE = "The following value has been selected from dropdown: {}";
+    private static final String SELECT_MESSAGE = "The following value has been selected from dropdown: {}";
     // Locator to find needed city from dropdown
-    protected final String LIST_CITIES_DROPDOWN_CSS_SELECTOR =
+    protected static final String LIST_CITIES_DROPDOWN_CSS_SELECTOR =
             "//div[@id='basic_cityName_list']/following-sibling::div//div[@class='ant-select-item-option-content']";
     // Locator to find needed neighborhood from dropdown
-    protected final String LIST_DISTRICTS_DROPDOWN_CSS_SELECTOR =
+    protected static final String LIST_DISTRICTS_DROPDOWN_CSS_SELECTOR =
             "//div[@id='basic_districtName_list']/following-sibling::div//div[@class='ant-select-item-option-content']";
     // Locator to find metro station city from dropdown
-    protected final String LIST_METRO_STATION_DROPDOWN_CSS_SELECTOR =
+    protected static final String LIST_METRO_STATION_DROPDOWN_CSS_SELECTOR =
             "//div[@id='basic_stationName_list']/following-sibling::div//div[@class='ant-select-item-option-content']";
-    protected final int MINIMUM_AGE = 2;                                                // minimum child age
-    protected final int MAXIMUM_AGE = 18;                                               // maximum child age
+    protected static final int MINIMUM_AGE = 2;                                                // minimum child age
+    protected static final int MAXIMUM_AGE = 18;                                               // maximum child age
 
 
     private WebDriver driver;                                                           // create driver instance

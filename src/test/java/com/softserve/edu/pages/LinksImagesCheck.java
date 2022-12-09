@@ -14,22 +14,22 @@ import java.util.List;
 public class LinksImagesCheck {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());         // logger
-    private final String LINK_TAG = "a";                                            // tag to find links on a page
-    private final String IMAGE_TAGE = "img";                                        // tag to find images on a page
-    private final String HREF_ATTRIBUTE = "href";                                   // href attribute
-    private final String SRC_ATTRIBUTE = "src";                                     // src attribute
+    private static final String LINK_TAG = "a";                                            // tag to find links on a page
+    private static final String IMAGE_TAGE = "img";                                        // tag to find images on a page
+    private static final String HREF_ATTRIBUTE = "href";                                   // href attribute
+    private static final String SRC_ATTRIBUTE = "src";                                     // src attribute
     // Script that checks if image is displayed
-    private final String IMAGE_DISPLAYED =
+    private static final String IMAGE_DISPLAYED =
             "return (typeof arguments[0].naturalWidth !=\"undefined\" && arguments[0].naturalWidth > 0);";
     // Message if there are no links on the page
-    private final String LINKS_NOT_FOUND = "There are no links on the page";
+    private static final String LINKS_NOT_FOUND = "There are no links on the page";
     // Message if there are no images on the page
-    private final String IMAGES_NOT_FOUND = "There are no images on the page";
+    private static final String IMAGES_NOT_FOUND = "There are no images on the page";
     // Error message if href/src attribute is empty
-    private final String EMPTY_URL = "Provided URL is empty. Please check href/src attributes in the DOM!";
-    private final String REQUEST_METHOD = "HEAD";                                   // request method
-    private final int HTTP_BAD_REQUEST = 400;                                       // bad request status code
-    private final int CONNECTION_TIMEOUT = 5000;                                    // connection timeout
+    private static final String EMPTY_URL = "Provided URL is empty. Please check href/src attributes in the DOM!";
+    private static final String REQUEST_METHOD = "HEAD";                                   // request method
+    private static final int HTTP_BAD_REQUEST = 400;                                       // bad request status code
+    private static final int CONNECTION_TIMEOUT = 5000;                                    // connection timeout
 
 
     private final WebDriver driver;                                                 // create WebDriver instance

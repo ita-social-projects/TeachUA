@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class TopPart {
 
-    private final Long ONE_SECOND_DELAY = 1000L;                                    // one-second delay
+    private static final Long ONE_SECOND_DELAY = 1000L;                                    // one-second delay
     protected WebDriver driver;                                                     // WebDriver instance
     // this.getClass() means that logger will be created from the name of the class where it is used
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());       // logger

@@ -14,9 +14,9 @@ import static io.restassured.RestAssured.given;
 
 public abstract class AbstractWebEndpoint {
 
-    private final ConfigPropertiesReader config = new ConfigPropertiesReader();
-    private final String COOKIE = "Cookie";
-    private final String SESSION_ID = "JSESSIONID=";
+    private ConfigPropertiesReader config = new ConfigPropertiesReader();
+    private static final String COOKIE = "Cookie";
+    private static final String SESSION_ID = "JSESSIONID=";
     protected RequestSpecification specification;
 
     public AbstractWebEndpoint(RequestSpecification specification) {

@@ -12,9 +12,9 @@ import java.util.List;
 public class ClubsContainer {
 
     // Message if there is no such component found
-    private final String CLUB_NOT_FOUND = "There is no club that matches the search criteria.";
+    private static final String CLUB_NOT_FOUND = "There is no club that matches the search criteria.";
     // Selector to find the whole club container
-    private final String CLUB_COMPONENT_CSS_SELECTOR = ".ant-card.ant-card-bordered.card";
+    private static final String CLUB_COMPONENT_CSS_SELECTOR = ".ant-card.ant-card-bordered.card";
     // Logger
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

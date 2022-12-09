@@ -7,7 +7,7 @@ import java.util.Properties;
 public class ConfigPropertiesReader {
 
     //Path to the properties file
-    private final String TEST_DATA_PROP_PATH = "./src/test/resources/links.properties";
+    private static final String TEST_DATA_PROP_PATH = "./src/test/resources/links.properties";
 
     // Link to the application
     public String getBaseURL() {

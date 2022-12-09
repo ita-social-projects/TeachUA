@@ -16,10 +16,10 @@ import static org.monte.media.VideoFormatKeys.*;
 
 public class VideoRecorderUtility extends ScreenRecorder {
 
-    private final String TIME_TEMPLATE = "yyyy-MM-dd_HH-mm-ss-S";
+    private static final String TIME_TEMPLATE = "yyyy-MM-dd_HH-mm-ss-S";
 
     private static ScreenRecorder screenRecorder;
-    private String name;
+    private final String name;
     private static File file;
 
     // Constructor

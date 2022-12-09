@@ -10,9 +10,9 @@ import java.util.List;
 public class CentersContainer {
 
     // Message if there is no such component found
-    private final String CENTER_NOT_FOUND = "There is no center that matches the search criteria.";
+    private static final String CENTER_NOT_FOUND = "There is no center that matches the search criteria.";
     // Selector to find the whole center container
-    private final String CENTER_COMPONENT_CSS_SELECTOR = ".ant-card.ant-card-bordered.card";
+    private static final String CENTER_COMPONENT_CSS_SELECTOR = ".ant-card.ant-card-bordered.card";
 
     protected WebDriver driver;                                                     // create driver instance
 

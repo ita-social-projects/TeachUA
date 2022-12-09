@@ -9,7 +9,7 @@ public class Pagination {
 
     // Create WebDriver instance
     private final WebDriver driver;
-    private final Long ONE_SECOND_DELAY = 1000L;                                // one-second delay
+    private static final Long ONE_SECOND_DELAY = 1000L;                                // one-second delay
 
     // Constructor
     public Pagination(WebDriver driver) {
