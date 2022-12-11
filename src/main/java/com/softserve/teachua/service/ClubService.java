@@ -132,6 +132,13 @@ public interface ClubService {
     List<ClubResponse> getListOfClubs();
 
     /**
+     * The method returns list of dto {@code List<ClubResponse>} of all clubs that belong to given Center ( center id).
+     *
+     * @return new {@code List<ClubResponse>}.
+     */
+    List<ClubResponse> getListOfClubsByCenterId(long centerId);
+
+    /**
      * The method returns list of dto {@code List<ClubResponse>} of clubs by user id.
      *
      * @param id

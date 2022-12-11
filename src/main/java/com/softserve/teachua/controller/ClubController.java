@@ -85,6 +85,16 @@ public class ClubController implements Api {
     }
 
     /**
+     * Use this endpoint to get all clubs by center id. The controller returns {@code List <ClubResponse>}.
+     *
+     * @return {@code List <ClubResponse>}.
+     */
+    @GetMapping("/clubsByCenterId/{id}")
+    public List<ClubResponse> getClubsByCenterId(@PathVariable Long id) {
+        return clubService.getListOfClubsByCenterId(id);
+    }
+
+    /**
      * Use this endpoint to create club. The controller returns dto {@code SuccessCreatedClub} of created club.
      *
      * @param clubProfile

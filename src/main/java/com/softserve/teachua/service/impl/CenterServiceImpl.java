@@ -211,9 +211,10 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         Center newCenter = dtoConverter.convertToEntity(centerProfile, center)
                 .withId(id)
                 .withContacts(centerProfile.getContacts())
-                //.withClubs(centerProfile.getClubsId())
                 .withName(centerProfile.getName())
                 .withDescription(centerProfile.getDescription())
+                //.withUrlLogo(centerProfile.getUrlLogo())
+                .withUrlBackgroundPicture(centerProfile.getUrlBackgroundPicture())
                 .withLocations(locationService.updateCenterLocation(locations, center));
 
         List<Long> clubsId = centerProfile.getClubsId();

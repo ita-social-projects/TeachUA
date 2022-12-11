@@ -302,6 +302,15 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     @Override
+    public List<ClubResponse> getListOfClubsByCenterId(long centerId){
+        List<ClubResponse> clubResponses = clubRepository.findClubsByCenterId(centerId).stream()
+                .map(club -> toClubResponseConverter.convertToClubResponse(club))
+                .collect(Collectors.toList());
+        log.debug("getting list of clubs {}", clubResponses);
+        return clubResponses;
+    }
+
+    @Override
     public List<ClubResponse> getListClubsByUserId(Long id) {
         List<ClubResponse> clubResponses = clubRepository.findAllByUserId(id).stream()
                 .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
