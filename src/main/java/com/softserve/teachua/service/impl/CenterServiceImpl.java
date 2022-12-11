@@ -124,7 +124,6 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
     @Override
     public SuccessCreatedCenter addCenter(CenterProfile centerProfile) {
-        System.out.println(centerProfile);
         log.debug("centerName = " + centerProfile.getName());
         if (isCenterExistByName(centerProfile.getName())) {
             throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
@@ -201,8 +200,6 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     @Override
     public CenterProfile updateCenter(Long id, CenterProfile centerProfile) {
         Center center = getCenterById(id);
-        System.out.println("CENTER DB = " + center);
-        System.out.println("CENTER NEW = " + centerProfile);
 //        if (isCenterExistByName(centerProfile.getName())) {
 //            throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
 //        }
@@ -228,7 +225,6 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
             }
         }
         log.debug("**/updating center by id = " + newCenter);
-        System.out.println("updating center by id = " + newCenter);
         return dtoConverter.convertToDto(centerRepository.save(newCenter), CenterProfile.class);
     }
 

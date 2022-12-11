@@ -89,7 +89,6 @@ public class CenterController implements Api {
     @AllowedRoles({ RoleData.ADMIN, RoleData.MANAGER })
     @PutMapping("/center/{id}")
     public CenterProfile updateCenter(@PathVariable Long id, @Valid @RequestBody CenterProfile centerProfile) {
-        System.out.println("ENTERED PUT MAPPING");
         return centerService.updateCenter(id, centerProfile);
     }
 
