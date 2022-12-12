@@ -1,18 +1,25 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.club.*;
+import com.softserve.teachua.dto.club.ClubOwnerProfile;
+import com.softserve.teachua.dto.club.ClubProfile;
+import com.softserve.teachua.dto.club.ClubResponse;
+import com.softserve.teachua.dto.club.SuccessCreatedClub;
+import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
-import com.softserve.teachua.dto.search.*;
+import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
+import com.softserve.teachua.dto.search.SearchClubProfile;
+import com.softserve.teachua.dto.search.SearchPossibleResponse;
+import com.softserve.teachua.dto.search.SimilarClubProfile;
+import com.softserve.teachua.dto.search.TopClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 /**
  * This interface contains all needed methods to manage clubs.
