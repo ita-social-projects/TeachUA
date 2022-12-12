@@ -273,11 +273,6 @@
 		</dependency>
         <dependency>
             <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-gmail</artifactId>
-            <version>v1-rev20220404-2.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-forms</artifactId>
             <version>v1-rev20220908-2.0.0</version>
         </dependency>
@@ -296,7 +291,14 @@
             <artifactId>google-auth-library-oauth2-http</artifactId>
             <version>1.12.1</version>
         </dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>gimap</artifactId>
+            <!--do not update this version because of jakarta-->
+            <version>1.6.5</version>
+        </dependency>
+
+    </dependencies>
 
 
 	<build>

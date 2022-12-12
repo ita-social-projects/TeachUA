@@ -8,10 +8,8 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.forms.v1.Forms;
 import com.google.api.services.forms.v1.FormsScopes;
-import com.google.api.services.gmail.Gmail;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.auth.oauth2.UserCredentials;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,15 +27,6 @@ import java.security.GeneralSecurityException;
 @PropertySource(value = "classpath:application.yaml")
 public class GoogleApiConfig {
 
-    @Value("${application.api.credentials.gmail.clientId}")
-    private String googleApiClientId;
-
-    @Value("${application.api.credentials.gmail.clientSecret}")
-    private String googleApiClientSecret;
-
-    @Value("${application.api.credentials.gmail.refreshToken}")
-    private String googleApiRefreshToken;
-
     @Value("${application.api.credentials.service-account.clientEmail}")
     private String serviceAccountEmail;
 
@@ -45,15 +34,6 @@ public class GoogleApiConfig {
     private String serviceAccountPrivateKey;
 
     private final String APPLICATION_NAME = "TeachUA ";
-
-    @Bean
-    public UserCredentials gmailCredentials() {
-        return UserCredentials.newBuilder()
-            .setClientId(googleApiClientId)
-            .setClientSecret(googleApiClientSecret)
-            .setRefreshToken(googleApiRefreshToken)
-            .build();
-    }
 
     @Bean
     public ServiceAccountCredentials serviceAccountCredentials() {
@@ -85,13 +65,6 @@ public class GoogleApiConfig {
     @Bean
     public JsonFactory jsonFactory() {
         return GsonFactory.getDefaultInstance();
-    }
-
-    @Bean
-    public Gmail gmail(HttpTransport httpTransport, JsonFactory jsonFactory, UserCredentials credentials) {
-        return new Gmail.Builder(httpTransport, jsonFactory, new HttpCredentialsAdapter(credentials))
-            .setApplicationName(APPLICATION_NAME + "Gmail")
-            .build();
     }
 
     @Bean
