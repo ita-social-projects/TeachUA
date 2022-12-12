@@ -39,10 +39,6 @@ spring:
 application:
   api:
     credentials:
-      gmail:
-          clientId: ${OAUTH2_GOOGLE_CLIENT_ID}
-          clientSecret: ${OAUTH2_GOOGLE_CLIENT_SECRET}
-          refreshToken: ${OAUTH2_GOOGLE_REFRESH_TOKEN}
       service-account:
         clientEmail: ${SERVICE_ACCOUNT_CLIENT_EMAIL}
         privateKey: ${SERVICE_ACCOUNT_PRIVATE_KEY}
