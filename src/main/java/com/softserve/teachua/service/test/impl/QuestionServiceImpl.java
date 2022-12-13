@@ -1,11 +1,7 @@
 package com.softserve.teachua.service.test.impl;
 
-import com.google.api.services.forms.v1.model.ChoiceQuestion;
-import com.google.api.services.forms.v1.model.CorrectAnswer;
-import com.google.api.services.forms.v1.model.Grading;
-import com.google.api.services.forms.v1.model.Item;
-import com.google.api.services.forms.v1.model.Option;
-import com.softserve.teachua.converter.DtoConverter;
+import com.google.api.services.forms.v1.Forms;
+import com.google.api.services.forms.v1.model.*;
 import com.softserve.teachua.dto.test.question.QuestionPreview;
 import com.softserve.teachua.dto.test.question.QuestionResponse;
 import com.softserve.teachua.model.test.Answer;
@@ -19,18 +15,18 @@ import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.AnswerService;
 import com.softserve.teachua.service.test.QuestionService;
 import com.softserve.teachua.service.test.QuestionTypeService;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.softserve.teachua.config.GoogleFormConfig.getAccessToken;
-import static com.softserve.teachua.config.GoogleFormConfig.readFormInfo;
 import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
 
 @RequiredArgsConstructor
@@ -38,10 +34,11 @@ import static com.softserve.teachua.utils.test.validation.NullValidator.checkNul
 @Transactional
 @Service("testQuestionService")
 public class QuestionServiceImpl implements QuestionService {
+
+    private final Forms formsService;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final QuestionCategoryRepository categoryRepository;
-
     private final QuestionTypeService typeService;
     private final UserService userService;
     private final ModelMapper modelMapper;
@@ -89,35 +86,34 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.save(question);
     }
 
+    public Form readFormInfo(String formId) throws IOException {
+        return formsService.forms().get(formId).execute();
+    }
+
     @Override
     public void questionsImport(String formUri, Long creatorId) throws IOException {
-        String token = getAccessToken();
-
         String formId = formUri.replace("https://docs.google.com/forms/d/", "")
             .replace("/edit", "");
 
-        String formName = readFormInfo(formId, token).getInfo().getTitle();
-        List<Item> itemList = readFormInfo(formId, token).getItems();
+        String formName = readFormInfo(formId).getInfo().getTitle();
+        List<Item> itemList = readFormInfo(formId).getItems();
 
         QuestionCategory category = new QuestionCategory();
         category.setTitle("New From (" + formName + ") from Google");
         category = categoryRepository.save(category);
 
         for (Item item : itemList) {
-
             Question question = new Question();
 
             question.setCreator(userService.getUserById(creatorId));
             question.setTitle(item.getTitle());
             question.setQuestionCategory(category);
 
-
             if (item.getDescription() != null) {
                 question.setDescription(item.getDescription());
             } else {
                 question.setDescription("");
             }
-
 
             Grading grading = item.getQuestionItem().getQuestion().getGrading();
             ChoiceQuestion choice = item.getQuestionItem().getQuestion().getChoiceQuestion();
@@ -149,7 +145,6 @@ public class QuestionServiceImpl implements QuestionService {
                 question.setQuestionType(typeService.findByTitle("PARAGRAPH"));
                 save(question);
             }
-
         }
     }
 
@@ -166,7 +161,6 @@ public class QuestionServiceImpl implements QuestionService {
                 question.getQuestionCategory().getTitle())));
 
         return previews;
-
     }
 
     private List<QuestionResponse> mapToDtoList(List<Question> questions) {

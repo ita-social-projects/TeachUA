@@ -3,6 +3,8 @@ package com.softserve.teachua.service;
 import com.softserve.teachua.dto.certificate.*;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -30,9 +32,19 @@ public interface CertificateService {
      * This method returns list of dto {@code CertificateUserResponse} of certificates, found by email,
      * except certificates without serial numbers
      *
+     * @param sendToEmail user's email
      * @return new {@code List<CertificateUserResponse>}
      */
-    List<CertificateUserResponse> getListOfCertificatesByEmail(String email);
+    List<CertificateUserResponse> getListOfCertificatesByEmail(String sendToEmail);
+
+    /**
+     * This method returns list of {@code Certificate}, found by sendToEmail and updateStatus with sendStatus true
+     *
+     * @param sendToEmail user's email
+     * @param updateStatus date of sending
+     * @return {@code List<Certificate>}
+     */
+    List<Certificate> getSentCertificatesByEmailAndUpdateStatus(String sendToEmail, LocalDate updateStatus);
 
     /**
      * This method returns list of dto {@code CertificateTransfer} of all unsent certificates (certificates with send
@@ -197,7 +209,7 @@ public interface CertificateService {
      * @param serialNumber
      *            put serial number to verify
      *
-     * @return filled {@code CertificateVerificationResponse}
+     * @return filled
      */
     CertificateVerificationResponse validateCertificate(Long serialNumber);
 
