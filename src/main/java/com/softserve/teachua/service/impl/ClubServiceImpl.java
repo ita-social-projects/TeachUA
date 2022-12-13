@@ -10,18 +10,58 @@ import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.ContactsStringConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.club.*;
+import com.softserve.teachua.dto.club.ClubOwnerProfile;
+import com.softserve.teachua.dto.club.ClubProfile;
+import com.softserve.teachua.dto.club.ClubResponse;
+import com.softserve.teachua.dto.club.SuccessCreatedClub;
+import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.location.LocationResponse;
-import com.softserve.teachua.dto.search.*;
-import com.softserve.teachua.exception.*;
-import com.softserve.teachua.model.*;
+import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
+import com.softserve.teachua.dto.search.SearchClubProfile;
+import com.softserve.teachua.dto.search.SearchPossibleResponse;
+import com.softserve.teachua.dto.search.SimilarClubProfile;
+import com.softserve.teachua.dto.search.TopClubProfile;
+import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.DatabaseRepositoryException;
+import com.softserve.teachua.exception.IncorrectInputException;
+import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.exception.NotVerifiedUserException;
+import com.softserve.teachua.model.Category;
+import com.softserve.teachua.model.Center;
+import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.Feedback;
+import com.softserve.teachua.model.GalleryPhoto;
+import com.softserve.teachua.model.Location;
+import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.ClubArch;
-import com.softserve.teachua.repository.*;
-import com.softserve.teachua.service.*;
+import com.softserve.teachua.repository.CenterRepository;
+import com.softserve.teachua.repository.ClubRepository;
+import com.softserve.teachua.repository.FeedbackRepository;
+import com.softserve.teachua.repository.GalleryRepository;
+import com.softserve.teachua.repository.LocationRepository;
+import com.softserve.teachua.service.ArchiveMark;
+import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.CategoryService;
+import com.softserve.teachua.service.CenterService;
+import com.softserve.teachua.service.CityService;
+import com.softserve.teachua.service.ClubService;
+import com.softserve.teachua.service.DistrictService;
+import com.softserve.teachua.service.FeedbackService;
+import com.softserve.teachua.service.FileUploadService;
+import com.softserve.teachua.service.LocationService;
+import com.softserve.teachua.service.StationService;
+import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.utils.CategoryUtil;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -32,14 +72,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.ValidationException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS)
@@ -297,6 +329,15 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                 .collect(Collectors.toList());
 
+        log.debug("getting list of clubs {}", clubResponses);
+        return clubResponses;
+    }
+
+    @Override
+    public List<ClubResponse> getListOfClubsByCenterId(long centerId) {
+        List<ClubResponse> clubResponses = clubRepository.findClubsByCenterId(centerId).stream()
+            .map(club -> toClubResponseConverter.convertToClubResponse(club))
+            .collect(Collectors.toList());
         log.debug("getting list of clubs {}", clubResponses);
         return clubResponses;
     }
