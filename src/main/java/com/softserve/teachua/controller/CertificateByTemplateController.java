@@ -82,14 +82,15 @@ public class CertificateByTemplateController implements Api {
 
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/certificate-by-template/load-to-db")
-    public List<CertificateDatabaseResponse> saveExcel(@RequestBody CertificateByTemplateTransfer data) {
+    public void saveExcel(@RequestBody CertificateByTemplateTransfer data) throws IOException {
 //        log.info("Save excel " + data);
+        pdfTemplateService.sendSingleCertificate(data);
         System.out.println(data);
-        return null;
+
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/certificate-by-template/load-last-modified-date")
+    @PostMapping("/certificate-by-template/load-template-metadata")
     public String saveLastTemplateModifiedDate(@RequestBody CertificateTemplateMetadataTransfer data)
         throws IOException {
         Path source = Paths.get("templates/" + data.getTemplateName());

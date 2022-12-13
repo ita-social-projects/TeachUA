@@ -1,5 +1,6 @@
 package com.softserve.teachua.model;
 
+import com.softserve.teachua.dto.marker.Convertible;
 import lombok.*;
 import javax.persistence.*;
 
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @With
 @Builder
-public class CertificateTemplate {
+public class CertificateTemplate implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -33,5 +34,8 @@ public class CertificateTemplate {
 
     @Column(name = "picture_path")
     private String picturePath;
+
+    @Column(name = "properties")
+    private String properties;
 
 }
