@@ -9,32 +9,60 @@ import org.testng.annotations.DataProvider;
 public class AdvancedSearchTestDataProvider {
 
     private static final String KYIV_CITY = Locations.DEFAULT_LOCATION.toString();
-    private static final String ARSENALNA_METRO_STATION = KyivMetroStations.ARSENALNA.toString();
+    private static final String BORYSPILSKA_METRO_STATION = KyivMetroStations.BORYSPILSKA.toString();
+    private static final String BERESTEYSKA_METRO_STATION = KyivMetroStations.BERESTEYSKA.toString();
     private static final String VYRLITSA_METRO_STATION = KyivMetroStations.VYRLITSA.toString();
     private static final String SVYATOSHINSKY_DISTRICT = KyivDistricts.SVYATOSHINSKY.toString();
     private static final String DESNYANSKYI_DISTRICT = KyivDistricts.DESNYANSKYI.toString();
 
     // DataProvider method is static because it's used in foreign class(in test class from another package)
-    @DataProvider(name = "rateAscendingSort")
-    public static Object[][] getRateAscendingSort() {
+    @DataProvider(name = "sortClubByRate")
+    public static Object[][] getClubSortedByRate() {
         // Query to sort clubs by rates in the DB
         return new Object[][] {
-                { "SELECT name\n" +
+                { "SELECT c.name\n" +
                         "FROM (\n" +
-                        "\tSELECT DISTINCT name, rating, id\n" +
+                        "\tSELECT name, rating, id\n" +
                         "\t FROM clubs\n" +
                         "\t GROUP BY rating, id, name\n" +
                         ") AS c\n" +
-                        "WHERE name IS NOT NULL\n" +
-                        "ORDER BY rating ASC, id;",
-                  // Query to sort clubs by rates and in ascending order in the DB
-                "SELECT name\n" +
+                        "INNER JOIN locations as l ON c.id=l.club_id\n" +
+                        "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                        "WHERE ct.name = '" + KYIV_CITY + "'\n" +
+                        "GROUP BY c.name, c.rating, c.id\n" +
+                        "ORDER BY c.rating ASC, c.id;",
+                  // Query to sort clubs by rates and in descending order in the DB
+                "SELECT c.name\n" +
                         "FROM (\n" +
-                        "\tSELECT DISTINCT name, rating, id\n" +
+                        "\tSELECT name, rating, id\n" +
                         "\t FROM clubs\n" +
                         "\t GROUP BY rating, id, name\n" +
                         ") AS c\n" +
-                        "ORDER BY rating DESC, id;" }
+                        "INNER JOIN locations as l ON c.id=l.club_id\n" +
+                        "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                        "WHERE ct.name = '" + KYIV_CITY + "'\n" +
+                        "GROUP BY c.name, c.rating, c.id\n" +
+                        "ORDER BY c.rating DESC, c.id;" }
+        };
+    }
+
+    @DataProvider(name = "sortClubAlphabetically")
+    public static Object[][] getClubSortedAlphabetically() {
+        return new Object[][] {
+                // Query to sort clubs alphabetically in ascending order in the DB
+                { "SELECT DISTINCT c.name\n" +
+                        "FROM clubs as c\n" +
+                        "INNER JOIN locations as l ON c.id=l.club_id\n" +
+                        "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                        "WHERE ct.name = '" + KYIV_CITY + "'\n" +
+                        "ORDER BY c.name;",
+                        // Query to sort clubs alphabetically in descending order in the DB
+                        "SELECT DISTINCT c.name\n" +
+                        "FROM clubs as c\n" +
+                        "INNER JOIN locations as l ON c.id=l.club_id\n" +
+                        "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                        "WHERE ct.name = '" + KYIV_CITY + "'\n" +
+                        "ORDER BY c.name DESC;"}
         };
     }
 
@@ -96,7 +124,7 @@ public class AdvancedSearchTestDataProvider {
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                                 "INNER JOIN stations as st ON l.station_id=st.id\n" +
                                 "WHERE ct.name = '" + KYIV_CITY + "'\n" +
-                                "AND st.name = '" + ARSENALNA_METRO_STATION + "';",
+                                "AND st.name = '" + BERESTEYSKA_METRO_STATION + "';",
                         // Query to find centers by city and another metro station in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM centers as c\n" +
@@ -135,7 +163,7 @@ public class AdvancedSearchTestDataProvider {
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                                 "INNER JOIN stations as st ON l.station_id=st.id\n" +
                                 "WHERE ct.name = '" + KYIV_CITY + "'\n" +
-                                "AND st.name = '" + ARSENALNA_METRO_STATION + "';",
+                                "AND st.name = '" + BORYSPILSKA_METRO_STATION + "';",
                         // Query to find centers by city and another metro station in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
@@ -239,6 +267,28 @@ public class AdvancedSearchTestDataProvider {
                         // Query to find search that belongs to another region in the DB
                         "SELECT DISTINCT c.name\n" +
                                 "FROM clubs as c\n" +
+                                "INNER JOIN locations as l ON c.id=l.club_id\n" +
+                                "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                                "WHERE ct.name = '" + KHARKIV_CITY + "'\n" +
+                                "ORDER BY c.name;" }
+        };
+    }
+
+    @DataProvider(name = "centersByLocation")
+    public static Object[][] getCentersByLocation() {
+        final String KHARKIV_CITY = Locations.KHARKIV.toString();
+        return new Object[][] {
+                {KYIV_CITY,
+                        // Query to find search that belongs to a certain region in the DB
+                        "SELECT DISTINCT c.name\n" +
+                                "FROM centers as c\n" +
+                                "INNER JOIN locations as l ON c.id=l.club_id\n" +
+                                "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
+                                "WHERE ct.name = '" + KYIV_CITY + "'\n" +
+                                "ORDER BY c.name;",
+                        // Query to find search that belongs to another region in the DB
+                        "SELECT DISTINCT c.name\n" +
+                                "FROM centers as c\n" +
                                 "INNER JOIN locations as l ON c.id=l.club_id\n" +
                                 "INNER JOIN cities as ct ON l.city_id=ct.id\n" +
                                 "WHERE ct.name = '" + KHARKIV_CITY + "'\n" +

@@ -106,8 +106,8 @@ public class ClubsPage extends TopPart {
         // Click city dropdown to open it
         getAdvancedSearchPart().clickCityDropdown();
         // Select city from dropdown by its locator and name
-        getAdvancedSearchPart().selectPlace(location.toString(),
-                By.xpath(getAdvancedSearchPart().LIST_CITIES_DROPDOWN_CSS_SELECTOR));
+        getAdvancedSearchPart();
+        getAdvancedSearchPart().selectPlace(location.toString(), By.xpath(AdvancedSearchPart.LIST_CITIES_DROPDOWN_CSS_SELECTOR));
         getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
@@ -120,8 +120,8 @@ public class ClubsPage extends TopPart {
         getAdvancedSearchPart().clickDistrictDropdown();
         // Object type is used in parameters to accept different enum types and because it is basic class for each type
         // Select district from dropdown by its locator and name
-        getAdvancedSearchPart().selectPlace(district.toString(),
-                By.xpath(getAdvancedSearchPart().LIST_DISTRICTS_DROPDOWN_CSS_SELECTOR));
+        getAdvancedSearchPart();
+        getAdvancedSearchPart().selectPlace(district.toString(), By.xpath(AdvancedSearchPart.LIST_DISTRICTS_DROPDOWN_CSS_SELECTOR));
         getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
@@ -134,8 +134,8 @@ public class ClubsPage extends TopPart {
         getAdvancedSearchPart().clickNearestMetroStationDropdown();
         // Generic methods don't need to be cast, and we get compilation error when do something wrong
         // Select metro station from dropdown by its locator and name
-        getAdvancedSearchPart().selectPlace(station.toString(),
-                By.xpath(getAdvancedSearchPart().LIST_METRO_STATION_DROPDOWN_CSS_SELECTOR));
+        getAdvancedSearchPart();
+        getAdvancedSearchPart().selectPlace(station.toString(), By.xpath(AdvancedSearchPart.LIST_METRO_STATION_DROPDOWN_CSS_SELECTOR));
         getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
@@ -160,7 +160,7 @@ public class ClubsPage extends TopPart {
 
     // Display clubs as a list
     @Step("Display clubs as list")
-    public void displayClubsAsList() {
+    public void displayComponentsAsList() {
         getAdvancedSearchPart().clickListView();                                    // select list view
     }
 
@@ -179,8 +179,10 @@ public class ClubsPage extends TopPart {
         try {
             // Check if entering child age field is empty
             if(getChildAgeValue().isEmpty()) { return true; }
-            return Integer.parseInt(getChildAgeValue()) >= getAdvancedSearchPart().MINIMUM_AGE
-                        && Integer.parseInt(getChildAgeValue()) <= getAdvancedSearchPart().MAXIMUM_AGE;
+            getAdvancedSearchPart();
+            getAdvancedSearchPart();
+            return Integer.parseInt(getChildAgeValue()) >= AdvancedSearchPart.MINIMUM_AGE
+                        && Integer.parseInt(getChildAgeValue()) <= AdvancedSearchPart.MAXIMUM_AGE;
         } catch(NumberFormatException e) {
             return false;
         }
@@ -222,19 +224,31 @@ public class ClubsPage extends TopPart {
     public void alphabeticSort() {
         presentationSleep(3);
         getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort button
-        logger.info("Items have been sorted by alphabet");
+        logger.info("Items have been sorted alphabetically");
     }
 
     // Descending club sort
     @Step("Click on the '↑' icon")
     public void descendingSort() {
-        getAdvancedSearchPart().clickDescendingSort();                               // click descending sort
+        getAdvancedSearchPart().clickDescendingSort();                              // click descending sort
+        gotoFirstPage();                                                            // go to first page in pagination
         logger.info("Items have been sorted in descending order");
     }
 
+    // Get default city name
     public String getCityName() {
         logger.info("Default city is {}", getAdvancedSearchPart().getCityDropdownText());
         return getAdvancedSearchPart().getCityDropdownText();                       // get city name
+    }
+
+    // Check if all clubs fields are present after switching to list view
+    public boolean areAllClubFieldsPresentInListView() {
+        return createClubsContainer().areAllClubFieldsPresentInListView();
+    }
+
+    // Check if all centers fields are present after switching to list view
+    public boolean areAllCenterFieldsPresentInListView() {
+        return createCentersContainer().areAllCenterFieldsPresentInListView();
     }
 
     // Get number of clubs on all pages on Clubs page
@@ -259,7 +273,7 @@ public class ClubsPage extends TopPart {
     public List<String> getAllClubTitles() {
         List<String> allClubTitles = new ArrayList<>();
         try{
-            gotoFirstPage();
+            presentationSleep(5);
             allClubTitles.addAll(createClubsContainer().getClubComponentTitles());
             // Check if pagination is present on the page
             if(createPagination().isNextButtonPresent()) {
@@ -279,16 +293,17 @@ public class ClubsPage extends TopPart {
     }
 
     private void gotoFirstPage() {
-        presentationSleep(5);
-        createPagination().clickFirstPageButton();
-        presentationSleep(2);
+        if(createPagination().isNextButtonPresent()) {
+            createPagination().clickFirstPageButton();
+            presentationSleep(2);
+        }
     }
 
     // Get number of centers on all pages on Clubs page
     public List<String> getAllCenterTitles() {
         List<String> allCenterTitles = new ArrayList<>();
         try{
-            gotoFirstPage();
+            presentationSleep(5);
             allCenterTitles.addAll(createCentersContainer().getCenterComponentTitles());
             // Check if pagination is present on the page
             if(createPagination().isNextButtonPresent()) {

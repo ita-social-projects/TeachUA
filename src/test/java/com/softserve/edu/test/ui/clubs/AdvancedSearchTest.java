@@ -24,8 +24,8 @@ public class AdvancedSearchTest extends BaseTestSetup {
     @Description("[Розширений пошук] Verify that the clubs can be sorted by rating")
     @Severity(SeverityLevel.MINOR)
     @TmsLink(value = "TUA-516")
-    @Test(dataProvider = "rateAscendingSort", dataProviderClass = AdvancedSearchTestDataProvider.class)
-    public void sortClubsByRatingTest(String rateSort, String rateAscendingSort) {
+    @Test(dataProvider = "sortClubByRate", dataProviderClass = AdvancedSearchTestDataProvider.class)
+    public void sortClubsByRatingTest(String rateSort, String rateDescendingSort) {
         logger.info("Test if clubs can be sorted by their rating started");
 
         // Follow the link and load application
@@ -37,9 +37,6 @@ public class AdvancedSearchTest extends BaseTestSetup {
         // Open advanced search
         clubsPage.openAdvancedSearchPart();
 
-        // Clear city dropdown
-        clubsPage.clearDropdown();
-
         // Sort clubs by their rate
         clubsPage.sortByRating();
 
@@ -50,15 +47,45 @@ public class AdvancedSearchTest extends BaseTestSetup {
         clubsPage.descendingSort();
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
-        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(rateAscendingSort));
+        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(rateDescendingSort));
 
         logger.info("Test if clubs can be sorted by their rating finished");
+    }
+
+    @Description("[Розширений пошук] Verify that the clubs can be sorted alphabetically")
+    @Severity(SeverityLevel.MINOR)
+    @Test(dataProvider = "sortClubAlphabetically", dataProviderClass = AdvancedSearchTestDataProvider.class)
+    public void sortClubsAlphabeticallyTest(String ascSort, String descSort) {
+        logger.info("Test if clubs can be sorted alphabetically started");
+
+        // Follow the link and load application
+        HomePage homePage = loadApplication();
+
+        // Go to clubs page
+        ClubsPage clubsPage = homePage.gotoClubsPage();
+
+        // Open advanced search
+        clubsPage.openAdvancedSearchPart();
+
+        // Sort clubs by their rate
+        clubsPage.alphabeticSort();
+
+        // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
+        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(ascSort));
+
+        // Sort clubs by rates and in descending order
+        clubsPage.descendingSort();
+
+        // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
+        Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(descSort));
+
+        logger.info("Test if clubs can be sorted alphabetically finished");
     }
 
     @Description("[Розширений пошук] Verify that the search results are updated after changing the search parameters")
     @Severity(SeverityLevel.NORMAL)
     @TmsLink(value = "TUA-515")
-    @Test(dataProvider = "places", dataProviderClass = AdvancedSearchTestDataProvider.class)
+    @Test(dataProvider = "places", dataProviderClass = AdvancedSearchTestDataProvider.class, enabled = false)
     public void findClubAfterChangingSearchParametersTest(String citySort, String districtSvSort, String districtDesSort) {
         logger.info("Test if the search results are updated after changing the search parameters started");
 
@@ -145,12 +172,13 @@ public class AdvancedSearchTest extends BaseTestSetup {
         logger.info("Test if all club mandatory and extra fields are present after opening advanced search finished");
     }
 
+    // TODO Double-check once the following bug is fixed: https://github.com/ita-social-projects/TeachUA/issues/1562
     @Description("[Розширений пошук] Verify that the centers in the results of advanced search can be displayed as a list")
-    @Severity(SeverityLevel.NORMAL)
+    @Severity(SeverityLevel.MINOR)
     @TmsLink(value = "TUA-513")
     @Test
-    public void displayClubsAsListTest() {
-        logger.info("Test if the search results are updated after changing the search parameters started");
+    public void displayCentersAsListTest() {
+        logger.info("Test if center component view was changed after selecting list view started");
 
         // Follow the link and load application
         HomePage homePage = loadApplication();
@@ -165,15 +193,42 @@ public class AdvancedSearchTest extends BaseTestSetup {
         clubsPage.selectCenters();
 
         // Display clubs as a list
-        clubsPage.displayClubsAsList();
+        clubsPage.displayComponentsAsList();
 
-        logger.info("Test if the search results are updated after changing the search parameters finished");
+        // Assert check if all component fields are present after switching to the list view
+        Assert.assertTrue(clubsPage.areAllCenterFieldsPresentInListView());
+
+        logger.info("Test if center component view was changed after selecting list view finished");
+    }
+
+    @Description("[Розширений пошук] Verify that the clubs in the results of advanced search can be displayed as a list")
+    @Severity(SeverityLevel.MINOR)
+    @Test
+    public void displayClubsAsListTest() {
+        logger.info("Test if club component view was changed after selecting list view started");
+
+        // Follow the link and load application
+        HomePage homePage = loadApplication();
+
+        // Go to clubs page
+        ClubsPage clubsPage = homePage.gotoClubsPage();
+
+        // Open advanced search
+        clubsPage.openAdvancedSearchPart();
+
+        // Display clubs as a list
+        clubsPage.displayComponentsAsList();
+
+        // Assert check if all component fields are present after switching to the list view
+        Assert.assertTrue(clubsPage.areAllClubFieldsPresentInListView());
+
+        logger.info("Test if club component view was changed after selecting list view finished");
     }
 
     @Description("[Розширений пошук] Verify that the system doesn't accept invalid data in the text field of the 'Вік дитини' parameter")
     @Severity(SeverityLevel.NORMAL)
     @TmsLink(value = "TUA-495")
-    @Test(dataProvider = "childAge", dataProviderClass = AdvancedSearchTestDataProvider.class)
+    @Test(dataProvider = "childAge", dataProviderClass = AdvancedSearchTestDataProvider.class, enabled = false)
     public void invalidDataForChildAgeTest(String age) {
         logger.info("Test if the system accepts invalid data entered into child age field or not started");
 
@@ -221,7 +276,7 @@ public class AdvancedSearchTest extends BaseTestSetup {
         Assert.assertEquals(clubsPage.getCityName(), city);
 
         // Choose metro station
-        clubsPage.chooseMetroStation(KyivMetroStations.ARSENALNA);
+        clubsPage.chooseMetroStation(KyivMetroStations.BERESTEYSKA);
 
         // Assert check that the search results on UI and DB are the same
         Assert.assertEquals(clubsPage.getAllCenterTitles(), db.getList(stationSv));
@@ -286,7 +341,7 @@ public class AdvancedSearchTest extends BaseTestSetup {
         Assert.assertEquals(clubsPage.getCityName(), city);
 
         // Choose metro station
-        clubsPage.chooseMetroStation(KyivMetroStations.ARSENALNA);
+        clubsPage.chooseMetroStation(KyivMetroStations.BORYSPILSKA);
 
         // Assert check that the search results on UI and DB are the same
         Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(stationSv)); // Not equal clubs number on UI and DB
@@ -328,6 +383,41 @@ public class AdvancedSearchTest extends BaseTestSetup {
         logger.info("Test if the search results are updated after adding district finished");
     }
 
+    // TODO Double-check once the following bug is fixed: https://github.com/ita-social-projects/TeachUA/issues/1562
+    @Description("[Розширений пошук] Verify that the user can find a center in a certain location using the 'Місто' parameter")
+    @Severity(SeverityLevel.NORMAL)
+    @Test(dataProvider = "centersByLocation", dataProviderClass = AdvancedSearchTestDataProvider.class)
+    public void findCentersByLocationTest(String city, String kyivLocation, String kharkivLocation) {
+        logger.info("Test if centers that belongs to a certain location will be found correctly started");
+
+        // Follow the link and load application
+        HomePage homePage = loadApplication();
+
+        // Go to clubs page
+        ClubsPage clubsPage = homePage.gotoClubsPage();
+
+        // Open advanced search
+        clubsPage.openAdvancedSearchPart();
+
+        // Select Center radio button
+        clubsPage.selectCenters();
+
+        // Assert check if default city is set as Kyiv
+        Assert.assertEquals(clubsPage.getCityName(), city);
+
+        // Assert check that the search results on UI and DB are the same
+        Assert.assertEquals(clubsPage.getAllCenterTitles(), db.getList(kyivLocation)); // Not equal clubs number on UI and DB
+
+        // Choose another metro station
+        clubsPage.chooseCity(Locations.KHARKIV);
+
+        // Assert check that the search results on UI and DB are the same
+        Assert.assertEquals(clubsPage.getAllCenterTitles(), db.getList(kharkivLocation));
+
+        logger.info("Test if centers that belongs to a certain location will be found correctly finished");
+    }
+
+    // TODO Double-check once the following bug is fixed: https://github.com/ita-social-projects/TeachUA/issues/1569
     @Description("[Розширений пошук] Verify that the user can sort the search results by rating after clicking on the 'Центр' radio button")
     @Severity(SeverityLevel.MINOR)
     @TmsLink(value = "TUA-449")
@@ -365,11 +455,12 @@ public class AdvancedSearchTest extends BaseTestSetup {
         logger.info("Test if sort by rating functionality works properly finished");
     }
 
+    // TODO Double-check once the following bug is fixed: https://github.com/ita-social-projects/TeachUA/issues/1562
     @Description("[Розширений пошук] Verify that the user can sort the search results alphabetically after clicking on the 'Центр' radio button")
     @Severity(SeverityLevel.MINOR)
     @TmsLink(value = "TUA-440")
     @Test(dataProvider = "alphabeticCenterSort", dataProviderClass = AdvancedSearchTestDataProvider.class)
-    public void findCenterSortedByTitleTest(String city, String ascAlphabet, String descAlphabet) {
+    public void findCenterSortedAlphabeticallyTest(String city, String ascAlphabet, String descAlphabet) {
         logger.info("Test if alphabetic center sort functionality works properly started");
 
         // Follow the link and load application

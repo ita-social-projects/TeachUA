@@ -11,7 +11,6 @@ public class CenterComponent {
     // Parts of the components
     private WebElement title;                                                   // center title
     private WebElement partialDescription;                                      // center partial description
-    private WebElement location;                                                // center location
     private WebElement detailsButton;                                           // center details button
 
     // Constructor
@@ -31,12 +30,17 @@ public class CenterComponent {
      * Page Object
      */
     // title
-    private WebElement getTitle() {
+    protected WebElement getTitle() {
         return this.title;                                                      // get title element
     }
 
     protected String getTitleText() {
         return getTitle().getText();                                            // get title text
+    }
+
+    // detailsButton
+    protected WebElement getDetailsButton() {
+        return this.detailsButton;                                              // get detailsButton element
     }
 
     /*

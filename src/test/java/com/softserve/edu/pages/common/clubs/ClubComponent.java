@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 public class ClubComponent {
 
     // Element that represents the whole component
-    private WebElement clubLayout;
+    private final WebElement clubLayout;
 
     // Parts of the components
     private WebElement title;                                                   // club title
@@ -26,7 +26,6 @@ public class ClubComponent {
     private void initElements() {
         title = clubLayout.findElement(By.cssSelector(".title .name"));
         category = clubLayout.findElement(By.cssSelector(".ant-tag.tag .name"));
-        partialDescription = clubLayout.findElement(By.cssSelector(".ant-card-body .description"));
         rate = clubLayout.findElement(By.cssSelector("ul.ant-rate.ant-rate-disabled.rating"));
         detailsButton = clubLayout.findElement(By.cssSelector(".ant-btn.ant-btn-default.outlined-button.details-button a"));
     }
@@ -35,12 +34,27 @@ public class ClubComponent {
      * Page Object
      */
     // title
-    private WebElement getTitle() {
+    protected WebElement getTitle() {
         return this.title;                                                      // get title element
     }
 
     protected String getTitleText() {
         return getTitle().getText();                                            // get title text
+    }
+
+    // category
+    protected WebElement getCategory() {
+        return this.category;                                                   // get category element
+    }
+
+    // rate
+    protected WebElement getRate() {
+        return this.rate;                                                       // get rate element
+    }
+
+    // detailsButton
+    protected WebElement getDetailsButton() {
+        return this.detailsButton;                                              // get detailsButton element
     }
 
     /*

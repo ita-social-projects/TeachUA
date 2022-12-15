@@ -64,7 +64,6 @@ public class ClubsContainer {
     public boolean isClubComponentPresent(String clubTitle) {
         boolean result = false;
         try {
-            //Thread.sleep(5000);
             for(ClubComponent component : getClubComponents()) {
                 // Compare provided club title with value from club components list to find needed one
                 if(component.getTitleText().contains(clubTitle)) {
@@ -88,6 +87,18 @@ public class ClubsContainer {
             clubComponentTitles.add(component.getTitleText().trim());
         }
         return clubComponentTitles;                                             // get the list with all clubComponentTitles
+    }
+
+    public boolean areAllClubFieldsPresentInListView() {
+        List<String> clubComponentFields = new ArrayList<>();
+        for(ClubComponent component : getClubComponents()) {
+            if(!(component.getTitle().isDisplayed() && component.getCategory().isDisplayed()
+                    && component.getRate().isDisplayed() && component.getDetailsButton().isDisplayed())) {
+                clubComponentFields.add(component.getTitleText().trim());
+                logger.info("Club component with title {} has missing field(-s)", component.getTitleText());
+            }
+        }
+        return clubComponentFields.isEmpty();
     }
 
     /*

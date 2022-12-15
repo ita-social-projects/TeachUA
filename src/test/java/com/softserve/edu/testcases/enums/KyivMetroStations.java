@@ -3,7 +3,9 @@ package com.softserve.edu.testcases.enums;
 public enum KyivMetroStations {
     DEFAULT_LOCATION("Арсенальна"),
     ARSENALNA("Арсенальна"),
-    VYRLITSA("Вирлиця");
+    VYRLITSA("Вирлиця"),
+    BORYSPILSKA("Бориспільська"),
+    BERESTEYSKA("Берестейська");
 
     private final String station;
 
