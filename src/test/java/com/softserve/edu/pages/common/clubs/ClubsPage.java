@@ -68,7 +68,7 @@ public class ClubsPage extends TopPart {
     }
 
     // advancedSearchPart
-    protected AdvancedSearchPart getAdvancedSearchPart() {
+    private AdvancedSearchPart getAdvancedSearchPart() {
         // Check if locationDropdownComponent object is created
         if (advancedSearchPart == null) {
             throw new RuntimeException(OPTION_NULL_MESSAGE);                        // throw RuntimeException
@@ -270,13 +270,13 @@ public class ClubsPage extends TopPart {
         int result = 0;
         createPagination();                                                         // create pagination object and initialize it
         createClubsContainer();                                                     // create centers container object and initialize it
-            while (getPagination().isNextButtonEnabled()) {
-                // Add number of clubs on the current page to the total value
-                result += getClubsContainer().getClubComponentsCount();
-                getPagination().clickNextButton();                               // click on next button
-                presentationSleep(3);
+        while (getPagination().isNextButtonEnabled()) {
+            // Add number of clubs on the current page to the total value
+            result += getClubsContainer().getClubComponentsCount();
+            getPagination().clickNextButton();                               // click on next button
+            presentationSleep(3);
 
-            }
+        }
         return result;                                                              // get actual number of pages
     }
 

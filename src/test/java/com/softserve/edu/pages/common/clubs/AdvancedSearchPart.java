@@ -27,11 +27,11 @@ public class AdvancedSearchPart {
     // Locator to find metro station city from dropdown
     protected static final String LIST_METRO_STATION_DROPDOWN_CSS_SELECTOR =
             "//div[@id='basic_stationName_list']/following-sibling::div//div[@class='ant-select-item-option-content']";
-    protected static final int MINIMUM_AGE = 2;                                                // minimum child age
-    protected static final int MAXIMUM_AGE = 18;                                               // maximum child age
+    protected static final int MINIMUM_AGE = 2;                                         // minimum child age
+    protected static final int MAXIMUM_AGE = 18;                                        // maximum child age
 
 
-    private WebDriver driver;                                                           // create driver instance
+    private final WebDriver driver;                                                     // create driver instance
 
     private WebElement advancedSearch;                                                  // advanced search text
     private WebElement clearDropdownButton;                                             // clear dropdown button

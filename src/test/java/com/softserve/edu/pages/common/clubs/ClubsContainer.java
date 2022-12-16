@@ -3,8 +3,6 @@ package com.softserve.edu.pages.common.clubs;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +13,6 @@ public class ClubsContainer {
     protected static final String CLUB_NOT_FOUND = "There is no club that matches the search criteria.";
     // Selector to find the whole club container
     private static final String CLUB_COMPONENT_CSS_SELECTOR = ".ant-card.ant-card-bordered.card";
-    // Logger
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     protected WebDriver driver;
 
