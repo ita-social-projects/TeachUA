@@ -2,9 +2,9 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.Atemplate.CreateCertificateTemplate;
-import com.softserve.teachua.dto.Atemplate.SuccessCreatedCertificateTemplate;
-import com.softserve.teachua.dto.Atemplate.CertificateTemplatePreview;
+import com.softserve.teachua.dto.template.CreateCertificateTemplate;
+import com.softserve.teachua.dto.template.SuccessCreatedCertificateTemplate;
+import com.softserve.teachua.dto.template.CertificateTemplatePreview;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.repository.CertificateTemplateRepository;
@@ -74,7 +74,14 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
         List<CertificateTemplatePreview> resultList = new LinkedList<>();
         List<CertificateTemplate> list;
         list = certificateTemplateRepository.findByIdGreaterThanOrderByIdDesc(3);
-        list.forEach((challenge -> resultList.add(dtoConverter.convertToDto(challenge, CertificateTemplatePreview.class))));
+        list.forEach(
+            (challenge -> resultList.add(dtoConverter.convertToDto(challenge, CertificateTemplatePreview.class))));
         return resultList;
     }
+
+    @Override
+    public CertificateTemplate getTemplateByFilePath(String filePath) {
+        return certificateTemplateRepository.getCertificateTemplateByFilePath(filePath);
+    }
+
 }

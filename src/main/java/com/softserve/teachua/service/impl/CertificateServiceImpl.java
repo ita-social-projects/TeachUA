@@ -9,9 +9,12 @@ import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.service.ArchiveMark;
+import com.softserve.teachua.service.CertificateByTemplateService;
 import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.utils.CertificateContentDecorator;
 import com.softserve.teachua.utils.QRCodeService;
+import java.io.*;
+import java.nio.file.Files;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -21,10 +24,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -38,22 +37,28 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     private static final String CERTIFICATE_NOT_FOUND_BY_ID = "Certificate not found by id %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_SERIAL_NUMBER = "Certificate not found by serial number %s";
-    private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME_AND_DATES = "Certificate not found by username and dates: %s, %s";
+    private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME_AND_DATES =
+        "Certificate not found by username and dates: %s, %s";
 
     private final DtoConverter dtoConverter;
     private final ObjectMapper objectMapper;
     private final QRCodeService qrCodeService;
     private final CertificateRepository certificateRepository;
     private final CertificateContentDecorator certificateContentDecorator;
+    private final CertificateByTemplateService certificateByTemplateService;
 
     @Autowired
     public CertificateServiceImpl(DtoConverter dtoConverter, ObjectMapper objectMapper, QRCodeService qrCodeService,
-            CertificateRepository certificateRepository, CertificateContentDecorator certificateContentDecorator) {
+                                  CertificateRepository certificateRepository,
+                                  CertificateContentDecorator certificateContentDecorator,
+                                  CertificateByTemplateService certificateByTemplateService
+    ) {
         this.dtoConverter = dtoConverter;
         this.objectMapper = objectMapper;
         this.qrCodeService = qrCodeService;
         this.certificateRepository = certificateRepository;
         this.certificateContentDecorator = certificateContentDecorator;
+        this.certificateByTemplateService = certificateByTemplateService;
     }
 
     @Override
@@ -238,22 +243,30 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
             transfer = updateCertificateWithSerialNumber(transfer.getId(), transfer);
             //transfer.setSerialNumber(null); // REMOVE WHEN WE NEED SERIAL NUMBERS
         }
-
-        CertificateContent content = CertificateContent.builder().id(transfer.getId())
+        if (transfer.getTemplate().getId() <= 3) {
+            CertificateContent content = CertificateContent.builder().id(transfer.getId())
                 .serialNumber(transfer.getSerialNumber()).issuanceDate(transfer.getDates().getDate())
                 .userName(transfer.getUserName()).studyDuration(transfer.getDates().getDuration()).build();
 
-        content.setStudyHours(certificateContentDecorator.formHours(transfer.getDates().getHours()));
-        content.setQrCode(qrCodeService.getCertificateQrCodeAsStream(content.getSerialNumber()));
+            content.setStudyHours(certificateContentDecorator.formHours(transfer.getDates().getHours()));
+            content.setQrCode(qrCodeService.getCertificateQrCodeAsStream(content.getSerialNumber()));
 
-        content.setStudyForm("дистанційна"); // TODO *****
+            content.setStudyForm("дистанційна"); // TODO *****
 
-        try {
-            JasperPrint jasperPrint = createJasperPrint(transfer.getTemplate().getFilePath(), content);
-            JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);
-            return byteArrayOutputStream.toByteArray();
-        } catch (IOException | JRException e) {
-            e.printStackTrace();
+            try {
+                JasperPrint jasperPrint = createJasperPrint(transfer.getTemplate().getFilePath(), content);
+                JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);
+                return byteArrayOutputStream.toByteArray();
+            } catch (IOException | JRException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                File file = new File(certificateByTemplateService.createCertificateByTemplate(transfer));
+                return Files.readAllBytes(file.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return new byte[0];
     }

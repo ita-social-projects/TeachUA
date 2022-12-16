@@ -1,8 +1,8 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.Atemplate.CreateCertificateTemplate;
-import com.softserve.teachua.dto.Atemplate.SuccessCreatedCertificateTemplate;
-import com.softserve.teachua.dto.Atemplate.CertificateTemplatePreview;
+import com.softserve.teachua.dto.template.CreateCertificateTemplate;
+import com.softserve.teachua.dto.template.SuccessCreatedCertificateTemplate;
+import com.softserve.teachua.dto.template.CertificateTemplatePreview;
 import com.softserve.teachua.model.CertificateTemplate;
 import java.util.List;
 
@@ -43,5 +43,6 @@ public interface CertificateTemplateService {
     CertificateTemplate addTemplate(CertificateTemplate certificateTemplate);
     SuccessCreatedCertificateTemplate addTemplate(CreateCertificateTemplate certificateTemplate);
     List<CertificateTemplatePreview> getAllTemplates();
+    CertificateTemplate getTemplateByFilePath(String filePath);
 
 }

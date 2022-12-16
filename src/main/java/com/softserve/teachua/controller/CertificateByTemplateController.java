@@ -1,22 +1,25 @@
 package com.softserve.teachua.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.certificate.*;
+import com.softserve.teachua.dto.template.CertificateTemplatePreview;
 import com.softserve.teachua.dto.certificateByTemplate.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificateByTemplate.CertificateTemplateMetadataTransfer;
-import com.softserve.teachua.dto.certificateByTemplate.CertificateTemplateUploadResponse;
+import com.softserve.teachua.model.CertificateTemplate;
+import com.softserve.teachua.service.CertificateDataLoaderService;
 import com.softserve.teachua.service.CertificateExcelService;
-import com.softserve.teachua.utils.PdfTemplateService;
+import com.softserve.teachua.service.CertificateTemplateService;
+import com.softserve.teachua.service.impl.CertificateByTemplateServiceImpl;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
-import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,13 +35,49 @@ import java.util.List;
 @Slf4j
 public class CertificateByTemplateController implements Api {
     private final CertificateExcelService excelService;
-    private final PdfTemplateService pdfTemplateService;
+    private final CertificateByTemplateServiceImpl certificateByTemplateServiceImpl;
+    private final CertificateTemplateService certificateTemplateService;
+    private final CertificateDataLoaderService loaderService;
 
     @Autowired
     public CertificateByTemplateController(CertificateExcelService excelService,
-                                           PdfTemplateService pdfTemplateService) {
+                                           CertificateByTemplateServiceImpl certificateByTemplateServiceImpl,
+                                           CertificateTemplateService certificateTemplateService,
+                                           CertificateDataLoaderService loaderService) {
         this.excelService = excelService;
-        this.pdfTemplateService = pdfTemplateService;
+        this.certificateByTemplateServiceImpl = certificateByTemplateServiceImpl;
+        this.certificateTemplateService = certificateTemplateService;
+        this.loaderService = loaderService;
+    }
+
+    @AllowedRoles(RoleData.ADMIN)
+    @PostMapping("/certificate-by-template/pdf")
+    public CertificateByTemplateTransfer uploadPdf(@RequestBody CertificateTemplatePreview template) throws JsonProcessingException {
+
+        CertificateTemplate certificateTemplate = certificateTemplateService.getTemplateByFilePath(
+            template.getFilePath());
+        HashMap<String, String> templateProperties =
+            new ObjectMapper().readValue(certificateTemplate.getProperties(), HashMap.class);
+
+        List<String> fieldsList = new ArrayList<>();
+        for(Map.Entry<String, String> entry : templateProperties.entrySet()){
+            switch (entry.getValue()) {
+                case "qrCode":
+                    break;
+                case "serial_number":
+                    if (!templateProperties.containsValue("course_number")) {
+                        fieldsList.add("Номер курсу");
+                    }
+                    break;
+                default:
+                    fieldsList.add(entry.getKey());
+            }
+        }
+        fieldsList.add("Електронна пошта");
+        CertificateByTemplateTransfer result = new CertificateByTemplateTransfer();
+        result.setTemplateName(template.getFilePath());
+        result.setFieldsList(fieldsList);
+        return result;
     }
 
     /**
@@ -61,31 +100,13 @@ public class CertificateByTemplateController implements Api {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/certificate-by-template/pdf")
-    public CertificateTemplateUploadResponse uploadPdf(@RequestParam("pdf-file") MultipartFile multipartFile)
-        throws IOException {
-        //only ONCE
-        File directory = new File("templates");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-
-        String templateName = Instant.now().toEpochMilli() + ".pdf";
-        File file = new File("templates/" + templateName);
-
-        try (OutputStream os = Files.newOutputStream(file.toPath())) {
-            os.write(multipartFile.getBytes());
-        }
-        return new CertificateTemplateUploadResponse(pdfTemplateService.getTemplateFields(file.getPath()),
-            templateName);
     }
 
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/certificate-by-template/load-to-db")
-    public void saveExcel(@RequestBody CertificateByTemplateTransfer data) throws IOException {
-//        log.info("Save excel " + data);
-        pdfTemplateService.sendSingleCertificate(data);
-        System.out.println(data);
+    public void saveCertificate(@RequestBody CertificateByTemplateTransfer data) throws IOException {
+        log.info("Save certificate " + data);
+        loaderService.saveCertificate(data);
 
     }
 

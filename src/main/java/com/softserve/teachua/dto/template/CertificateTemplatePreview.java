@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.Atemplate;
+package com.softserve.teachua.dto.template;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.marker.Convertible;
@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class CertificateTemplatePreview implements Convertible {
     private Long id;
     private String name;
+    private String filePath;
     private String courseDescription;
     private String projectDescription;
 }

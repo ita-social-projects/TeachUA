@@ -1,7 +1,6 @@
-package com.softserve.teachua.dto.Atemplate;
+package com.softserve.teachua.dto.template;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.nimbusds.jose.shaded.json.JSONObject;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,5 +20,5 @@ public class SuccessCreatedCertificateTemplate implements Convertible {
     private String courseDescription;
     private String projectDescription;
     private String picturePath;
-    private JSONObject properties;
+    private String properties;
 }

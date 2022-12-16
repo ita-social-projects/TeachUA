@@ -1,7 +1,10 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.dto.certificate.CertificateDataRequest;
 import com.softserve.teachua.dto.certificate.CertificateDatabaseResponse;
+import com.softserve.teachua.dto.certificateByTemplate.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
@@ -14,6 +17,8 @@ import com.softserve.teachua.service.CertificateDatesService;
 import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.utils.CertificateContentDecorator;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -135,6 +140,67 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                             "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
                     .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
         }
-        return templateService.getTemplateByType(type);
+        //TODO
+        switch (type) {
+            case 1:
+                return templateService.getTemplateByType(3);
+            case 2:
+                return templateService.getTemplateById(2);
+            default:
+                return templateService.getTemplateById(1);
+        }
+    }
+
+    @Override
+    public CertificateDatabaseResponse saveCertificate(CertificateByTemplateTransfer data)
+        throws JsonProcessingException {
+        CertificateTemplate certificateTemplate =
+            templateService.getTemplateByFilePath(data.getTemplateName());
+        CertificateDates certificateDates = new CertificateDates();
+        Certificate certificate = new Certificate();
+
+        HashMap<String, String> templateProperties =
+            new ObjectMapper().readValue(certificateTemplate.getProperties(), HashMap.class);
+        HashMap<String, String> values =
+            new ObjectMapper().readValue(data.getValues(), HashMap.class);
+
+
+        for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
+            switch (entry.getValue()) {
+                case "serial_number":
+                    if (!templateProperties.containsValue("course_number")) {
+                        certificateDates.setCourseNumber(values.get("Номер курсу"));
+                    }
+                    break;
+                case "course_number":
+                    certificateDates.setCourseNumber(values.get(entry.getKey()));
+                    break;
+                case "user_name":
+                    certificate.setUserName(values.get(entry.getKey()));
+                    break;
+                case "date":
+                    certificateDates.setDate(values.get(entry.getKey()));
+                    break;
+                case "duration":
+                    certificateDates.setDuration(values.get(entry.getKey()));
+                    break;
+                case "hours":
+                    certificateDates.setHours(Integer.valueOf(values.get(entry.getKey())));
+                    break;
+                case "study_form":
+                    certificateDates.setStudyForm(values.get(entry.getKey()));
+                    break;
+            }
+        }
+        certificateDatesService.addCertificateDates(certificateDates);
+
+        certificate.setValues(data.getValues());
+        certificate.setSendToEmail(values.get("Електронна пошта"));
+        certificate.setTemplate(certificateTemplate);
+        certificate.setDates(certificateDates);
+
+        certificateService.addCertificate(certificate);
+
+        return null;
     }
 }

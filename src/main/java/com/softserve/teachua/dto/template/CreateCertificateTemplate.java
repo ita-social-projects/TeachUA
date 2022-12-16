@@ -1,15 +1,11 @@
-package com.softserve.teachua.dto.Atemplate;
+package com.softserve.teachua.dto.template;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.nimbusds.jose.shaded.json.JSONObject;
 import com.softserve.teachua.utils.deserializers.TrimDeserialize;
 import com.softserve.teachua.utils.validations.CheckForeignLanguage;
 import javax.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,5 +37,5 @@ public class CreateCertificateTemplate {
     //    @NotBlank
 //    @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.pdf")
 //    private String pdfFile;
-    private JSONObject properties;
+    private String properties;
 }

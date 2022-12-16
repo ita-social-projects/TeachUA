@@ -25,4 +25,6 @@ public interface CertificateTemplateRepository extends JpaRepository<Certificate
     boolean existsBy();
 
     boolean existsCertificateTemplateByCertificateType(Integer certificateType);
+
+    CertificateTemplate getCertificateTemplateByFilePath(String filePath);
 }
