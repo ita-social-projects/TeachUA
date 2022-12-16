@@ -44,7 +44,7 @@ public class CentersContainer {
      * Page Object
      */
     // centerComponents
-    private List<CenterComponent> getCenterComponents() {
+    protected List<CenterComponent> getCenterComponents() {
         // Check if centerComponent list contains some values
         if(centerComponents == null) {
             throw new RuntimeException(CENTER_NOT_FOUND);
@@ -63,17 +63,6 @@ public class CentersContainer {
             centerComponentTitles.add(component.getTitleText().trim());
         }
         return centerComponentTitles;                                               // get the list with all centerComponentTitles
-    }
-
-    public boolean areAllCenterFieldsPresentInListView() {
-        List<String> centerComponentFields = new ArrayList<>();
-        for(CenterComponent component : getCenterComponents()) {
-            if(!(component.getTitle().isDisplayed() && component.getDetailsButton().isDisplayed())) {
-                centerComponentFields.add(component.getTitleText().trim());
-                logger.info("Center component with title {} has missing field", component.getTitleText());
-            }
-        }
-        return centerComponentFields.isEmpty();
     }
 
     /*

@@ -253,6 +253,7 @@ public class AdvancedSearchTest extends BaseTestSetup {
         logger.info("Test if the system accepts invalid data entered into child age field or not finished");
     }
 
+    // TODO Check once the following bug is fixed: https://github.com/ita-social-projects/TeachUA/issues/1569
     @Description("[Розширений пошук] Verify that the user can find a center in a certain location using the 'Найближча станція метро' parameter")
     @Severity(SeverityLevel.NORMAL)
     @TmsLink(value = "TUA-456")

@@ -29,7 +29,6 @@
             </class>
         </classes>
     </test>
-
     <test name="Find centers by city" enabled="true">
         <classes>
             <class name="com.softserve.edu.test.ui.clubs.AdvancedSearchTest">

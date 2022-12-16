@@ -205,7 +205,7 @@ public abstract class TopPart {
     }
 
     // pagination
-    private Pagination getPagination() {
+    protected Pagination getPagination() {
         // Check if pagination object is created
         if (pagination == null) {
             throw new RuntimeException(OPTION_NULL_MESSAGE);                    // throw RuntimeException

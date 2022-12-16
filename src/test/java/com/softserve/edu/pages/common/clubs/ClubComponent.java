@@ -11,9 +11,7 @@ public class ClubComponent {
     // Parts of the components
     private WebElement title;                                                   // club title
     private WebElement category;                                                // club category
-    private WebElement partialDescription;                                      // club partial description
     private WebElement rate;                                                    // club rate
-    private WebElement location;                                                // club location
     private WebElement detailsButton;                                           // club details button
 
     // Constructor

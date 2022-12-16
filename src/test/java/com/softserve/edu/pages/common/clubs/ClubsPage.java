@@ -17,10 +17,12 @@ public class ClubsPage extends TopPart {
     private WebElement clubsInCity;                                                 // clubs in city text
     private WebElement showOnMapButton;                                             // show on map button
 
-    // Abstract classes
+    // Aggregation
     private ClubsContainer clubsContainer;                                          // clubsContainer abstract class
     private AdvancedSearchPart advancedSearchPart;                                  // advancedSearchPart abstract class
     private CentersContainer centersContainer;                                      // centersContainer abstract class
+
+    List<String> componentFields = new ArrayList<>();
 
     public ClubsPage(WebDriver driver) {
         super(driver);
@@ -68,7 +70,7 @@ public class ClubsPage extends TopPart {
     // advancedSearchPart
     protected AdvancedSearchPart getAdvancedSearchPart() {
         // Check if locationDropdownComponent object is created
-        if(advancedSearchPart == null) {
+        if (advancedSearchPart == null) {
             throw new RuntimeException(OPTION_NULL_MESSAGE);                        // throw RuntimeException
         }
         return advancedSearchPart;                                                  // return advancedSearchPart
@@ -106,9 +108,8 @@ public class ClubsPage extends TopPart {
         // Click city dropdown to open it
         getAdvancedSearchPart().clickCityDropdown();
         // Select city from dropdown by its locator and name
-        getAdvancedSearchPart();
         getAdvancedSearchPart().selectPlace(location.toString(), By.xpath(AdvancedSearchPart.LIST_CITIES_DROPDOWN_CSS_SELECTOR));
-        getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
+        //getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
     // Choose district
@@ -120,9 +121,8 @@ public class ClubsPage extends TopPart {
         getAdvancedSearchPart().clickDistrictDropdown();
         // Object type is used in parameters to accept different enum types and because it is basic class for each type
         // Select district from dropdown by its locator and name
-        getAdvancedSearchPart();
         getAdvancedSearchPart().selectPlace(district.toString(), By.xpath(AdvancedSearchPart.LIST_DISTRICTS_DROPDOWN_CSS_SELECTOR));
-        getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
+        //getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
     // Choose the nearest metro station
@@ -134,9 +134,8 @@ public class ClubsPage extends TopPart {
         getAdvancedSearchPart().clickNearestMetroStationDropdown();
         // Generic methods don't need to be cast, and we get compilation error when do something wrong
         // Select metro station from dropdown by its locator and name
-        getAdvancedSearchPart();
         getAdvancedSearchPart().selectPlace(station.toString(), By.xpath(AdvancedSearchPart.LIST_METRO_STATION_DROPDOWN_CSS_SELECTOR));
-        getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
+        //getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
     // Set available online to search clubs that are available online
@@ -178,12 +177,12 @@ public class ClubsPage extends TopPart {
     public boolean isChildAgeCorrect() {
         try {
             // Check if entering child age field is empty
-            if(getChildAgeValue().isEmpty()) { return true; }
-            getAdvancedSearchPart();
-            getAdvancedSearchPart();
+            if (getChildAgeValue().isEmpty()) {
+                return true;
+            }
             return Integer.parseInt(getChildAgeValue()) >= AdvancedSearchPart.MINIMUM_AGE
-                        && Integer.parseInt(getChildAgeValue()) <= AdvancedSearchPart.MAXIMUM_AGE;
-        } catch(NumberFormatException e) {
+                    && Integer.parseInt(getChildAgeValue()) <= AdvancedSearchPart.MAXIMUM_AGE;
+        } catch (NumberFormatException e) {
             return false;
         }
     }
@@ -243,93 +242,117 @@ public class ClubsPage extends TopPart {
 
     // Check if all clubs fields are present after switching to list view
     public boolean areAllClubFieldsPresentInListView() {
-        return createClubsContainer().areAllClubFieldsPresentInListView();
+        createClubsContainer();                                                     // create clubs container object and initialize it
+        for (ClubComponent component : getClubsContainer().getClubComponents()) {
+            if (!(component.getTitle().isDisplayed() && component.getCategory().isDisplayed()
+                    && component.getRate().isDisplayed() && component.getDetailsButton().isDisplayed())) {
+                componentFields.add(component.getTitleText().trim());
+                logger.info("Club component with title {} has missing field(-s)", component.getTitleText());
+            }
+        }
+        return componentFields.isEmpty();
     }
 
     // Check if all centers fields are present after switching to list view
     public boolean areAllCenterFieldsPresentInListView() {
-        return createCentersContainer().areAllCenterFieldsPresentInListView();
+        createCentersContainer();                                                   // create centers container object and initialize it
+        for (CenterComponent component : getCentersContainer().getCenterComponents()) {
+            if (!(component.getTitle().isDisplayed() && component.getDetailsButton().isDisplayed())) {
+                componentFields.add(component.getTitleText().trim());
+                logger.info("Center component with title {} has missing field", component.getTitleText());
+            }
+        }
+        return componentFields.isEmpty();
     }
 
     // Get number of clubs on all pages on Clubs page
     public int getTotalNumberOfClubs() {
         int result = 0;
-        try{
-            while(createPagination().isNextButtonEnabled()) {
+        createPagination();                                                         // create pagination object and initialize it
+        createClubsContainer();                                                     // create centers container object and initialize it
+            while (getPagination().isNextButtonEnabled()) {
                 // Add number of clubs on the current page to the total value
-                result += createClubsContainer().getClubComponentsCount();
-                createPagination().clickNextButton();                               // click on next button
+                result += getClubsContainer().getClubComponentsCount();
+                getPagination().clickNextButton();                               // click on next button
                 presentationSleep(3);
 
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return result;                                                              // get actual number of pages
     }
 
     // TODO Combine the following two methods into one
     // Get number of clubs on all pages on Clubs page
     public List<String> getAllClubTitles() {
-        List<String> allClubTitles = new ArrayList<>();
-        try{
-            presentationSleep(5);
-            allClubTitles.addAll(createClubsContainer().getClubComponentTitles());
-            // Check if pagination is present on the page
-            if(createPagination().isNextButtonPresent()) {
-                while(createPagination().isNextButtonEnabled()) {
-                    createPagination().clickNextButton();                           // click on next button
-                    // TODO Implement Strategy for searching elements
-                    presentationSleep(4);
-                    // Add all titles on the current page to the list with all titles
-                    allClubTitles.addAll(createClubsContainer().getClubComponentTitles());
-                }
+        createPagination();                                                         // create pagination object and initialize it
+        createClubsContainer();                                                     // create centers container object and initialize it
+        presentationSleep(5);
+        componentFields.addAll(getClubsContainer().getClubComponentTitles());
+        // Check if pagination is present on the page
+        if (getPagination().isNextButtonPresent()) {
+            while (getPagination().isNextButtonEnabled()) {
+                getPagination().clickNextButton();                              // click on next button
+                // TODO Implement Strategy for searching elements
+                presentationSleep(4);
+                // Add all titles on the current page to the list with all titles
+                componentFields.addAll(getClubsContainer().getClubComponentTitles());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        logger.info("Received club titles from UI: {}", allClubTitles);
-        return allClubTitles;
-    }
-
-    private void gotoFirstPage() {
-        if(createPagination().isNextButtonPresent()) {
-            createPagination().clickFirstPageButton();
-            presentationSleep(2);
-        }
+        logger.info("Received club titles from UI: {}", componentFields);
+        return componentFields;
     }
 
     // Get number of centers on all pages on Clubs page
     public List<String> getAllCenterTitles() {
-        List<String> allCenterTitles = new ArrayList<>();
-        try{
-            presentationSleep(5);
-            allCenterTitles.addAll(createCentersContainer().getCenterComponentTitles());
-            // Check if pagination is present on the page
-            if(createPagination().isNextButtonPresent()) {
-                while(createPagination().isNextButtonEnabled()) {
-                    createPagination().clickNextButton();                           // click on next button
-                    presentationSleep(3);
-                    // Add all titles on the current page to the list with all titles
-                    allCenterTitles.addAll(createCentersContainer().getCenterComponentTitles());
-                }
+        createPagination();                                                         // create pagination object and initialize it
+        createCentersContainer();                                                   // create centers container object and initialize it
+        presentationSleep(5);
+        componentFields.addAll(getCentersContainer().getCenterComponentTitles());
+        // Check if pagination is present on the page
+        if (getPagination().isNextButtonPresent()) {
+            while (getPagination().isNextButtonEnabled()) {
+                getPagination().clickNextButton();                           // click on next button
+                presentationSleep(3);
+                // Add all titles on the current page to the list with all titles
+                componentFields.addAll(getCentersContainer().getCenterComponentTitles());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        logger.info("Received centers titles from UI: {}", allCenterTitles);
-        return allCenterTitles;
+        logger.info("Received centers titles from UI: {}", componentFields);
+        return componentFields;
+    }
+
+    private void gotoFirstPage() {
+        createPagination();                                                         // create pagination object and initialize it
+        if (getPagination().isNextButtonPresent()) {
+            getPagination().clickFirstPageButton();
+            presentationSleep(2);
+        }
     }
 
     public int getTotalNumberOfPagesFromDatabase(String total) {
         // Number of pages needed to place all the components
-        return (int)Math.ceil((Double.parseDouble(total) / (double)createClubsContainer().getClubComponentsCount()));
+        return (int) Math.ceil((Double.parseDouble(total) / (double) createClubsContainer().getClubComponentsCount()));
     }
 
     // Check if club is present on the page
     public boolean isClubPresentOnThePage(String title) {
         presentationSleep(1);
-        return createClubsContainer().isClubComponentPresent(title);
+        boolean result = false;
+        createClubsContainer();                                                     // create clubs container object and initialize it
+        try {
+            for(ClubComponent component : getClubsContainer().getClubComponents()) {
+                // Compare provided club title with value from club components list to find needed one
+                if(component.getTitleText().contains(title)) {
+                    logger.info("Component with partial or the same title as " + title + " found on the page");
+                    result = true;
+                    break;
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(ClubsContainer.CLUB_NOT_FOUND);
+            return false;
+        }
     }
 
     /*

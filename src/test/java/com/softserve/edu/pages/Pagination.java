@@ -73,7 +73,7 @@ public class Pagination {
     }
 
     public boolean isNextButtonPresent() {
-        // Check if nextButton exists
+        // Check if nextButton is displayed
         return driver.findElements(By.xpath("//span[contains(@class,'right')]/../..//button[@class='ant-pagination-item-link']")).size() != 0;
     }
 

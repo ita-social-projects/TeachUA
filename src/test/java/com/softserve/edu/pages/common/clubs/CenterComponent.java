@@ -10,7 +10,7 @@ public class CenterComponent {
 
     // Parts of the components
     private WebElement title;                                                   // center title
-    private WebElement partialDescription;                                      // center partial description
+    //private WebElement partialDescription;                                      // center partial description
     private WebElement detailsButton;                                           // center details button
 
     // Constructor
@@ -22,7 +22,7 @@ public class CenterComponent {
 
     private void initElements() {
         title = centerLayout.findElement(By.cssSelector(".center-title .center-name"));
-        partialDescription = centerLayout.findElement(By.cssSelector(".center-description-in-block"));
+        //partialDescription = centerLayout.findElement(By.cssSelector(".center-description-in-block"));
         detailsButton = centerLayout.findElement(By.cssSelector(".ant-btn.ant-btn-default.outlined-button.details-button a"));
     }
 
