@@ -52,7 +52,13 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
 
     @Override
     public CertificateTemplate getTemplateByType(Integer type) {
-        return certificateTemplateRepository.findByCertificateType(type)
+        Integer targetId = 3;
+        if (type == 1) {
+            targetId = 2;
+        } else if (type == 3) {
+            targetId = 1;
+        }
+        return certificateTemplateRepository.findById(targetId)
                 .orElseThrow(() -> new NotExistException(String.format(TEMPLATE_NOT_FOUND_BY_TYPE, type)));
     }
 

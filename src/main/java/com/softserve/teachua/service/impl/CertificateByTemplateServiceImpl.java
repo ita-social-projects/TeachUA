@@ -57,8 +57,6 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
 
             PdfFont halvarBlk = PdfFontFactory.createFont(HALVAR_BLK_PATH, PdfEncodings.IDENTITY_H);
             PdfFont halvarMd = PdfFontFactory.createFont(HALVAR_MD_PATH, PdfEncodings.IDENTITY_H);
-            System.out.println(transfer.getTemplate().getFilePath());
-            System.out.println(targetFileName);
 
             HashMap<String, String> templateProperties =
                 new ObjectMapper().readValue(transfer.getTemplate().getProperties(), HashMap.class);
