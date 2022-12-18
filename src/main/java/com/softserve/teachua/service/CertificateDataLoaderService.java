@@ -23,5 +23,5 @@ public interface CertificateDataLoaderService {
      */
     List<CertificateDatabaseResponse> saveToDatabase(CertificateDataRequest data);
 
-    CertificateDatabaseResponse saveCertificate(CertificateByTemplateTransfer data) throws JsonProcessingException;
+    boolean saveCertificate(CertificateByTemplateTransfer data) throws JsonProcessingException;
 }

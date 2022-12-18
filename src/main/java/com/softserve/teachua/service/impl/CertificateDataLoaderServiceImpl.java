@@ -152,55 +152,85 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     }
 
     @Override
-    public CertificateDatabaseResponse saveCertificate(CertificateByTemplateTransfer data)
+    public boolean saveCertificate(CertificateByTemplateTransfer data)
         throws JsonProcessingException {
         CertificateTemplate certificateTemplate =
             templateService.getTemplateByFilePath(data.getTemplateName());
-        CertificateDates certificateDates = new CertificateDates();
-        Certificate certificate = new Certificate();
 
         HashMap<String, String> templateProperties =
             new ObjectMapper().readValue(certificateTemplate.getProperties(), HashMap.class);
-        HashMap<String, String> values =
+        HashMap<String, String> mainValues =
             new ObjectMapper().readValue(data.getValues(), HashMap.class);
 
+        for (List<String> excelValues: data.getExcelContent()) {
+            HashMap<String, String> values = new HashMap<>(mainValues);
+            CertificateDates certificateDates = new CertificateDates();
+            Certificate certificate = new Certificate();
 
-        for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
-            switch (entry.getValue()) {
-                case "serial_number":
-                    if (!templateProperties.containsValue("course_number")) {
-                        certificateDates.setCourseNumber(values.get("Номер курсу"));
-                    }
-                    break;
-                case "course_number":
-                    certificateDates.setCourseNumber(values.get(entry.getKey()));
-                    break;
-                case "user_name":
-                    certificate.setUserName(values.get(entry.getKey()));
-                    break;
-                case "date":
-                    certificateDates.setDate(values.get(entry.getKey()));
-                    break;
-                case "duration":
-                    certificateDates.setDuration(values.get(entry.getKey()));
-                    break;
-                case "hours":
-                    certificateDates.setHours(Integer.valueOf(values.get(entry.getKey())));
-                    break;
-                case "study_form":
-                    certificateDates.setStudyForm(values.get(entry.getKey()));
-                    break;
+            for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
+                switch (entry.getValue()) {
+                    case "serial_number":
+                        if (!templateProperties.containsValue("course_number")) {
+                            certificateDates.setCourseNumber(
+                                getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                    data.getExcelColumnsOrder(), excelValues, "Номер курсу"));
+                        }
+                        break;
+                    case "course_number":
+                        certificateDates.setCourseNumber(
+                            getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                        break;
+                    case "user_name":
+                        certificate.setUserName(getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                            data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                        break;
+                    case "date":
+                        certificateDates.setDate(getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                            data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                        break;
+                    case "duration":
+                        certificateDates.setDuration(
+                            getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                        break;
+                    case "hours":
+                        certificateDates.setHours(
+                            Integer.valueOf(getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                data.getExcelColumnsOrder(), excelValues, entry.getKey())));
+                        break;
+                    case "study_form":
+                        certificateDates.setStudyForm(
+                            getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                        break;
+                }
             }
+            certificateDatesService.addCertificateDates(certificateDates);
+
+            certificate.setValues(new ObjectMapper().writeValueAsString(values));
+            certificate.setSendToEmail(
+                getValue(values, data.getFieldsList(), data.getColumnHeadersList(), data.getExcelColumnsOrder(),
+                    excelValues, "Електронна пошта"));
+            certificate.setTemplate(certificateTemplate);
+            certificate.setDates(certificateDates);
+
+            certificateService.addCertificate(certificate);
         }
-        certificateDatesService.addCertificateDates(certificateDates);
-
-        certificate.setValues(data.getValues());
-        certificate.setSendToEmail(values.get("Електронна пошта"));
-        certificate.setTemplate(certificateTemplate);
-        certificate.setDates(certificateDates);
-
-        certificateService.addCertificate(certificate);
-
-        return null;
+        return true;
     }
+
+    private String getValue(Map<String, String> values, List<String> fieldsList, List<String> columnHeadersList,
+                            List<String> excelColumnsOrder, List<String> excelValues, String propertyName) {
+        String result = values.get(propertyName);
+        if (!result.trim().isEmpty()) {
+            return result;
+        } else {
+            String value =
+                excelValues.get(columnHeadersList.indexOf(excelColumnsOrder.get(fieldsList.indexOf(propertyName))));
+            values.put(propertyName, value);
+            return value;
+        }
+    }
+
 }

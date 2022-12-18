@@ -11,5 +11,6 @@ public class CertificateByTemplateTransfer {
     private String values;
     private List<String> columnHeadersList;
     private List<List<String>> excelContent;
+    private List<String> excelColumnsOrder;
 
 }

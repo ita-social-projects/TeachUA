@@ -13,7 +13,6 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
-import com.softserve.teachua.dto.certificateByTemplate.CertificateByTemplateTransfer;
 import com.softserve.teachua.service.CertificateByTemplateService;
 import com.softserve.teachua.utils.QRCodeService;
 import java.io.IOException;
@@ -74,8 +73,8 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
                         break;
                     case "qrCode":
                         List<Float> position = Arrays.stream(
-                                form.getField(entry.getKey()).getWidgets().get(0).getRectangle().toString().
-                                    replace("[", "").replace("]", "").split(" "))
+                                form.getField(entry.getKey()).getWidgets().get(0).getRectangle().toString()
+                                    .replace("[", "").replace("]", "").split(" "))
                             .map(Float::valueOf).collect(Collectors.toList());
 
                         float width = position.get(2) - position.get(0);

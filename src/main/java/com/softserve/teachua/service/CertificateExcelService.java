@@ -1,6 +1,10 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.dto.certificateExcel.CertificateByTemplateExcelParsingResponse;
 import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
+import java.io.InputStream;
+import java.util.List;
+import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -17,4 +21,6 @@ public interface CertificateExcelService {
      * @return new {@code ExcelParsingResponse}.
      */
     ExcelParsingResponse parseExcel(MultipartFile multipartFile);
+
+    CertificateByTemplateExcelParsingResponse parseFlexibleExcel(MultipartFile multipartFile);
 }

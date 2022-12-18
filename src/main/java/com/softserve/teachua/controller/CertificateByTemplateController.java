@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.certificateExcel.CertificateByTemplateExcelParsingResponse;
 import com.softserve.teachua.dto.template.CertificateTemplatePreview;
 import com.softserve.teachua.dto.certificateByTemplate.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificateByTemplate.CertificateTemplateMetadataTransfer;
@@ -52,7 +53,8 @@ public class CertificateByTemplateController implements Api {
 
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/certificate-by-template/pdf")
-    public CertificateByTemplateTransfer uploadPdf(@RequestBody CertificateTemplatePreview template) throws JsonProcessingException {
+    public CertificateByTemplateTransfer uploadPdf(@RequestBody CertificateTemplatePreview template)
+        throws JsonProcessingException {
 
         CertificateTemplate certificateTemplate = certificateTemplateService.getTemplateByFilePath(
             template.getFilePath());
@@ -60,7 +62,7 @@ public class CertificateByTemplateController implements Api {
             new ObjectMapper().readValue(certificateTemplate.getProperties(), HashMap.class);
 
         List<String> fieldsList = new ArrayList<>();
-        for(Map.Entry<String, String> entry : templateProperties.entrySet()){
+        for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
             switch (entry.getValue()) {
                 case "qrCode":
                     break;
@@ -88,18 +90,8 @@ public class CertificateByTemplateController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/certificate-by-template/excel")
-    public List uploadExcel(@RequestParam("excel-file") MultipartFile multipartFile) {
-        List<String> stringList = new ArrayList<>();
-        stringList.add("name");
-        stringList.add("email");
-        stringList.add("date");
-        List list = new ArrayList();
-        list.add(excelService.parseExcel(multipartFile));
-        list.add(stringList);
-        return list;
-    }
-
-    @AllowedRoles(RoleData.ADMIN)
+    public CertificateByTemplateExcelParsingResponse uploadExcel(@RequestParam("excel-file") MultipartFile multipartFile) {
+        return excelService.parseFlexibleExcel(multipartFile);
     }
 
     @AllowedRoles(RoleData.ADMIN)
@@ -107,7 +99,6 @@ public class CertificateByTemplateController implements Api {
     public void saveCertificate(@RequestBody CertificateByTemplateTransfer data) throws IOException {
         log.info("Save certificate " + data);
         loaderService.saveCertificate(data);
-
     }
 
     @AllowedRoles(RoleData.ADMIN)
