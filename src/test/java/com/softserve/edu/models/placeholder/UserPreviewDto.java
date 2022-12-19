@@ -4,37 +4,43 @@ import com.softserve.edu.models.BaseDto;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class ContactTypeDto extends BaseDto {
+public class UserPreviewDto extends BaseDto {
 
     private Integer id;
-    private String name;
+    private String firstName;
+    private String lastName;
     private String urlLogo;
 
     public Integer getId() {
         return this.id;
     }
 
-    public ContactTypeDto setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
-        return this;
     }
 
-    public String getName() {
-        return this.name;
+    public String getFirstName() {
+        return this.firstName;
     }
 
-    public ContactTypeDto setName(String name) {
-        this.name = name;
-        return this;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getUrlLogo() {
         return this.urlLogo;
     }
 
-    public ContactTypeDto setUrlLogo(String urlLogo) {
+    public void setUrlLogo(String urlLogo) {
         this.urlLogo = urlLogo;
-        return this;
     }
 
     @Override
@@ -45,11 +51,13 @@ public class ContactTypeDto extends BaseDto {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ContactTypeDto contactTypeDto = (ContactTypeDto) o;
+        UserPreviewDto userPreviewDto = (UserPreviewDto) o;
+
         return new EqualsBuilder()
-                .append(id, contactTypeDto.id)
-                .append(name, contactTypeDto.name)
-                .append(urlLogo, contactTypeDto.urlLogo)
+                .append(id, userPreviewDto.id)
+                .append(firstName, userPreviewDto.firstName)
+                .append(lastName, userPreviewDto.lastName)
+                .append(urlLogo, userPreviewDto.urlLogo)
                 .isEquals();
     }
 
@@ -57,8 +65,10 @@ public class ContactTypeDto extends BaseDto {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(id)
-                .append(name)
+                .append(firstName)
+                .append(lastName)
                 .append(urlLogo)
                 .toHashCode();
     }
+
 }

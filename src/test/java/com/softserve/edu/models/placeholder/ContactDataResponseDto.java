@@ -4,7 +4,7 @@ import com.softserve.edu.models.BaseDto;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class ContactDto extends BaseDto {
+public class ContactDataResponseDto extends BaseDto {
 
     private ContactTypeDto contactType;
     private String contactData;
@@ -13,7 +13,7 @@ public class ContactDto extends BaseDto {
         return this.contactType;
     }
 
-    public ContactDto setContactType(ContactTypeDto contactType) {
+    public ContactDataResponseDto setContactType(ContactTypeDto contactType) {
         this.contactType = contactType;
         return this;
     }
@@ -22,7 +22,7 @@ public class ContactDto extends BaseDto {
         return this.contactData;
     }
 
-    public ContactDto setContactData(String contactData) {
+    public ContactDataResponseDto setContactData(String contactData) {
         this.contactData = contactData;
         return this;
     }
@@ -35,11 +35,11 @@ public class ContactDto extends BaseDto {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ContactDto contactDto = (ContactDto) o;
+        ContactDataResponseDto contactDataResponseDto = (ContactDataResponseDto) o;
 
         return new EqualsBuilder()
-                .append(contactType, contactDto.contactType)
-                .append(contactData, contactDto.contactData)
+                .append(contactType, contactDataResponseDto.contactType)
+                .append(contactData, contactDataResponseDto.contactData)
                 .isEquals();
     }
 

@@ -4,31 +4,29 @@ import com.softserve.edu.models.BaseDto;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.Objects;
+public class LocationResponseDto extends BaseDto {
 
-public class LocationDto extends BaseDto {
-
-    private int id;
+    private Integer id;
     private String name;
     private String address;
     private String cityName;
     private String districtName;
-    private Object stationName;
-    private LocationCityDto locationCity;
-    private int cityId;
-    private int districtId;
-    private Object stationId;
-    private int clubId;
-    private Object coordinates;
-    private double longitude;
-    private double latitude;
-    private Object phone;
+    private String stationName;
+    private CityResponseDto locationCity;
+    private Integer cityId;
+    private Integer districtId;
+    private Integer stationId;
+    private Integer clubId;
+    private String coordinates;
+    private Double longitude;
+    private Double latitude;
+    private String phone;
 
     public int getId() {
         return this.id;
     }
 
-    public LocationDto setId(int id) {
+    public LocationResponseDto setId(Integer id) {
         this.id = id;
         return this;
     }
@@ -37,7 +35,7 @@ public class LocationDto extends BaseDto {
         return this.name;
     }
 
-    public LocationDto setName(String name) {
+    public LocationResponseDto setName(String name) {
         this.name = name;
         return this;
     }
@@ -46,7 +44,7 @@ public class LocationDto extends BaseDto {
         return this.address;
     }
 
-    public LocationDto setAddress(String address) {
+    public LocationResponseDto setAddress(String address) {
         this.address = address;
         return this;
     }
@@ -55,7 +53,7 @@ public class LocationDto extends BaseDto {
         return this.cityName;
     }
 
-    public LocationDto setCityName(String cityName) {
+    public LocationResponseDto setCityName(String cityName) {
         this.cityName = cityName;
         return this;
     }
@@ -64,7 +62,7 @@ public class LocationDto extends BaseDto {
         return this.districtName;
     }
 
-    public LocationDto setDistrictName(String districtName) {
+    public LocationResponseDto setDistrictName(String districtName) {
         this.districtName = districtName;
         return this;
     }
@@ -73,16 +71,16 @@ public class LocationDto extends BaseDto {
         return this.stationName;
     }
 
-    public LocationDto setStationName(Object stationName) {
+    public LocationResponseDto setStationName(String stationName) {
         this.stationName = stationName;
         return this;
     }
 
-    public LocationCityDto getLocationCity() {
+    public CityResponseDto getLocationCity() {
         return this.locationCity;
     }
 
-    public LocationDto setLocationCity(LocationCityDto locationCity) {
+    public LocationResponseDto setLocationCity(CityResponseDto locationCity) {
         this.locationCity = locationCity;
         return this;
     }
@@ -91,7 +89,7 @@ public class LocationDto extends BaseDto {
         return this.cityId;
     }
 
-    public LocationDto setCityId(int cityId) {
+    public LocationResponseDto setCityId(Integer cityId) {
         this.cityId = cityId;
         return this;
     }
@@ -100,7 +98,7 @@ public class LocationDto extends BaseDto {
         return this.districtId;
     }
 
-    public LocationDto setDistrictId(int districtId) {
+    public LocationResponseDto setDistrictId(Integer districtId) {
         this.districtId = districtId;
         return this;
     }
@@ -109,7 +107,7 @@ public class LocationDto extends BaseDto {
         return this.stationId;
     }
 
-    public LocationDto setStationId(Object stationId) {
+    public LocationResponseDto setStationId(Integer stationId) {
         this.stationId = stationId;
         return this;
     }
@@ -118,7 +116,7 @@ public class LocationDto extends BaseDto {
         return this.clubId;
     }
 
-    public LocationDto setClubId(int clubId) {
+    public LocationResponseDto setClubId(Integer clubId) {
         this.clubId = clubId;
         return this;
     }
@@ -127,7 +125,7 @@ public class LocationDto extends BaseDto {
         return this.coordinates;
     }
 
-    public LocationDto setCoordinates(Object coordinates) {
+    public LocationResponseDto setCoordinates(String coordinates) {
         this.coordinates = coordinates;
         return this;
     }
@@ -136,7 +134,7 @@ public class LocationDto extends BaseDto {
         return this.longitude;
     }
 
-    public LocationDto setLongitude(double longitude) {
+    public LocationResponseDto setLongitude(Double longitude) {
         this.longitude = longitude;
         return this;
     }
@@ -145,7 +143,7 @@ public class LocationDto extends BaseDto {
         return this.latitude;
     }
 
-    public LocationDto setLatitude(double latitude) {
+    public LocationResponseDto setLatitude(Double latitude) {
         this.latitude = latitude;
         return this;
     }
@@ -154,7 +152,7 @@ public class LocationDto extends BaseDto {
         return this.phone;
     }
 
-    public LocationDto setPhone(Object phone) {
+    public LocationResponseDto setPhone(String phone) {
         this.phone = phone;
         return this;
     }
@@ -167,23 +165,23 @@ public class LocationDto extends BaseDto {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LocationDto locationDto = (LocationDto) o;
+        LocationResponseDto locationResponseDto = (LocationResponseDto) o;
         return new EqualsBuilder()
-                .append(id, locationDto.id)
-                .append(name, locationDto.name)
-                .append(address, locationDto.address)
-                .append(cityName, locationDto.cityName)
-                .append(districtName, locationDto.districtName)
-                .append(stationName, locationDto.stationName)
-                .append(locationCity, locationDto.locationCity)
-                .append(cityId, locationDto.cityId)
-                .append(districtId, locationDto.districtId)
-                .append(stationId, locationDto.stationId)
-                .append(clubId, locationDto.clubId)
-                .append(coordinates, locationDto.coordinates)
-                .append(longitude, locationDto.longitude)
-                .append(latitude, locationDto.latitude)
-                .append(phone, locationDto.phone)
+                .append(id, locationResponseDto.id)
+                .append(name, locationResponseDto.name)
+                .append(address, locationResponseDto.address)
+                .append(cityName, locationResponseDto.cityName)
+                .append(districtName, locationResponseDto.districtName)
+                .append(stationName, locationResponseDto.stationName)
+                .append(locationCity, locationResponseDto.locationCity)
+                .append(cityId, locationResponseDto.cityId)
+                .append(districtId, locationResponseDto.districtId)
+                .append(stationId, locationResponseDto.stationId)
+                .append(clubId, locationResponseDto.clubId)
+                .append(coordinates, locationResponseDto.coordinates)
+                .append(longitude, locationResponseDto.longitude)
+                .append(latitude, locationResponseDto.latitude)
+                .append(phone, locationResponseDto.phone)
                 .isEquals();
     }
 

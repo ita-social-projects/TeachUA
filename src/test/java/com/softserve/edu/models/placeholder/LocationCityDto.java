@@ -6,16 +6,16 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class LocationCityDto extends BaseDto {
 
-    private int id;
+    private Integer id;
     private String name;
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
 
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
 
-    public LocationCityDto setId(int id) {
+    public LocationCityDto setId(Integer id) {
         this.id = id;
         return this;
     }
@@ -29,20 +29,20 @@ public class LocationCityDto extends BaseDto {
         return this;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return this.latitude;
     }
 
-    public LocationCityDto setLatitude(double latitude) {
+    public LocationCityDto setLatitude(Double latitude) {
         this.latitude = latitude;
         return this;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return this.longitude;
     }
 
-    public LocationCityDto setLongitude(double longitude) {
+    public LocationCityDto setLongitude(Double longitude) {
         this.longitude = longitude;
         return this;
     }

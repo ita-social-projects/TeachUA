@@ -4,17 +4,19 @@ import com.softserve.edu.models.BaseDto;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class ContactTypeDto extends BaseDto {
+
+public class CityResponseDto extends BaseDto {
 
     private Integer id;
     private String name;
-    private String urlLogo;
+    private Double latitude;
+    private Double longitude;
 
     public Integer getId() {
         return this.id;
     }
 
-    public ContactTypeDto setId(Integer id) {
+    public CityResponseDto setId(Integer id) {
         this.id = id;
         return this;
     }
@@ -23,17 +25,26 @@ public class ContactTypeDto extends BaseDto {
         return this.name;
     }
 
-    public ContactTypeDto setName(String name) {
+    public CityResponseDto setName(String name) {
         this.name = name;
         return this;
     }
 
-    public String getUrlLogo() {
-        return this.urlLogo;
+    public Double getLatitude() {
+        return this.latitude;
     }
 
-    public ContactTypeDto setUrlLogo(String urlLogo) {
-        this.urlLogo = urlLogo;
+    public CityResponseDto setLatitude(Double latitude) {
+        this.latitude = latitude;
+        return this;
+    }
+
+    public Double getLongitude() {
+        return this.longitude;
+    }
+
+    public CityResponseDto setLongitude(Double longitude) {
+        this.longitude = longitude;
         return this;
     }
 
@@ -45,11 +56,12 @@ public class ContactTypeDto extends BaseDto {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ContactTypeDto contactTypeDto = (ContactTypeDto) o;
+        CityResponseDto cityResponseDto = (CityResponseDto) o;
         return new EqualsBuilder()
-                .append(id, contactTypeDto.id)
-                .append(name, contactTypeDto.name)
-                .append(urlLogo, contactTypeDto.urlLogo)
+                .append(id, cityResponseDto.id)
+                .append(name, cityResponseDto.name)
+                .append(latitude, cityResponseDto.latitude)
+                .append(longitude, cityResponseDto.longitude)
                 .isEquals();
     }
 
@@ -58,7 +70,8 @@ public class ContactTypeDto extends BaseDto {
         return new HashCodeBuilder(17, 37)
                 .append(id)
                 .append(name)
-                .append(urlLogo)
+                .append(latitude)
+                .append(longitude)
                 .toHashCode();
     }
 }

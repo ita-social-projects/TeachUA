@@ -6,8 +6,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class CategoryDto extends BaseDto {
 
-    private int id;
-    private int sortby;
+    private Integer id;
+    private Integer sortby;
     private String name;
     private String description;
     private String urlLogo;
@@ -22,20 +22,20 @@ public class CategoryDto extends BaseDto {
         return new CategoryDto().new Builder();
     }
 
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
 
-    public CategoryDto setId(int id) {
+    public CategoryDto setId(Integer id) {
         this.id = id;
         return this;
     }
 
-    public int getSortby() {
+    public Integer getSortby() {
         return this.sortby;
     }
 
-    public CategoryDto setSortby(int sortby) {
+    public CategoryDto setSortby(Integer sortby) {
         this.sortby = sortby;
         return this;
     }
@@ -134,12 +134,12 @@ public class CategoryDto extends BaseDto {
         private Builder() {
         }
 
-        public Builder withId(int id) {
+        public Builder withId(Integer id) {
             CategoryDto.this.id = id;
             return this;
         }
 
-        public Builder withSortBy(int sortBy) {
+        public Builder withSortBy(Integer sortBy) {
             CategoryDto.this.sortby = sortBy;
             return this;
         }
