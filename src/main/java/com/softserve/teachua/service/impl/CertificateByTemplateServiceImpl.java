@@ -15,12 +15,14 @@ import com.itextpdf.layout.element.Image;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.service.CertificateByTemplateService;
 import com.softserve.teachua.utils.QRCodeService;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -34,6 +36,7 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
     @Autowired
     private QRCodeService qrCodeService;
 
+    @Override
     public List<String> getTemplateFields(String templatePath) throws IOException {
 
         PdfReader reader = new PdfReader(templatePath);
@@ -48,8 +51,16 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
     @Override
     public String createCertificateByTemplate(CertificateTransfer transfer) throws IOException {
         String targetFileName = ThreadLocalRandom.current().nextInt() + ".pdf";
-        PdfReader reader = new PdfReader("templates/" + transfer.getTemplate().getFilePath());
-        PdfWriter writer = new PdfWriter("temp/" + targetFileName);
+        PdfReader reader = new PdfReader(
+            new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" + transfer.getTemplate().getFilePath());
+
+        File directory =
+            new File(new ClassPathResource("/").getFile().getPath() + "/" + "temp");
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+
+        PdfWriter writer = new PdfWriter(new ClassPathResource("/").getFile().getPath() + "/" + "temp/" + targetFileName);
         PdfDocument pdfDoc = new PdfDocument(reader, writer);
 
         try (Document document = new Document(pdfDoc)) {
@@ -89,8 +100,11 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
                 }
             }
             form.flattenFields();
+        } catch (IOException e) {
+            log.error("Error processing pdf template");
+            throw e;
         }
-        return "temp/" + targetFileName;
+        return new ClassPathResource("/").getFile().getPath() + "/" + "temp/" + targetFileName;
     }
 
     private void setValue(PdfFormField field, String value, PdfFont firstFont, PdfFont secondFont) {

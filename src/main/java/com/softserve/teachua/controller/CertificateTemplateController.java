@@ -13,13 +13,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * This controller is responsible for managing templates
+ */
 @RestController
 @Slf4j
 public class CertificateTemplateController implements Api {
@@ -32,6 +37,14 @@ public class CertificateTemplateController implements Api {
         this.certificateByTemplateService = certificateByTemplateServiceImpl;
     }
 
+    /**
+     * The method saves template to database.
+     *
+     * @param createCertificateTemplate
+     *            - {@code CreateCertificateTemplate} read from form.
+     *
+     * @return new {@code SuccessCreatedCertificateTemplate}
+     */
     @PostMapping("/template")
     @AllowedRoles(RoleData.ADMIN)
     public SuccessCreatedCertificateTemplate createTemplate(
@@ -39,26 +52,38 @@ public class CertificateTemplateController implements Api {
         return certificateTemplateService.addTemplate(createCertificateTemplate);
     }
 
+    /**
+     * This endpoint is used to get all templates.
+     *
+     * @return {@code List<CertificateTemplatePreview>}
+     */
     @GetMapping("/templates")
     @AllowedRoles(RoleData.ADMIN)
     public List<CertificateTemplatePreview> getAllTemplates() {
         return certificateTemplateService.getAllTemplates();
     }
 
+    /**
+     * The method uploads pdf template file and returns {@code CertificateTemplateUploadResponse}.
+     *
+     * @param multipartFile - pdf template file.
+     * @return new {@code }.
+     */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/template/pdf")
     public CertificateTemplateUploadResponse uploadPdf(@RequestParam("pdf-file") MultipartFile multipartFile)
         throws IOException {
-        //only ONCE
-        File directory = new File("templates");
+        File directory =
+            new File(new ClassPathResource("certificates/templates/").getFile().getPath() + "/pdf-templates");
         if (!directory.exists()) {
             directory.mkdir();
         }
-
         String templateName = Instant.now().toEpochMilli() + ".pdf";
-        File file = new File("templates/" + templateName);
+        File file =
+            new File(new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" + templateName);
 
-        try (OutputStream os = Files.newOutputStream(file.toPath())) {
+        try (OutputStream os = Files.newOutputStream(
+            Paths.get(new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" + templateName))) {
             os.write(multipartFile.getBytes());
         }
         return new CertificateTemplateUploadResponse(certificateByTemplateService.getTemplateFields(file.getPath()),

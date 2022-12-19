@@ -88,10 +88,10 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
 
     private CertificateDates saveDates(CertificateDataRequest data, Integer index) {
         CertificateDates dates = CertificateDates.builder()
-                .date(data.getExcelList().get(index).getDateIssued().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
-                .hours(data.getHours())
-                .courseNumber(data.getCourseNumber())
-                .studyForm(data.getStudyType()).build();
+            .date(data.getExcelList().get(index).getDateIssued().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
+            .hours(data.getHours())
+            .courseNumber(data.getCourseNumber())
+            .studyForm(data.getStudyType()).build();
         if (data.getType() == 3) {
             dates.setDuration(decorator.formDates(data.getStartDate(), data.getEndDate()));
             if (!datesRepository.existsByDurationAndAndDate(dates.getDuration(), dates.getDate())) {
@@ -134,25 +134,17 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
         }
         if (!templateRepository.existsCertificateTemplateByCertificateType(3)) {
             templateService.addTemplate(CertificateTemplate.builder().name("Єдині учасник").certificateType(3)
-                    .filePath("/certificates/templates/jedyni_participant_template.jrxml")
-                    .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
-                    .projectDescription(
-                            "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
-                    .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
+                .filePath("/certificates/templates/jedyni_participant_template.jrxml")
+                .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
+                .projectDescription(
+                    "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
+                .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
         }
-        //TODO
-        switch (type) {
-            case 1:
-                return templateService.getTemplateByType(3);
-            case 2:
-                return templateService.getTemplateById(2);
-            default:
-                return templateService.getTemplateById(1);
-        }
+        return templateService.getTemplateByType(type);
     }
 
     @Override
-    public boolean saveCertificate(CertificateByTemplateTransfer data)
+    public void saveCertificate(CertificateByTemplateTransfer data)
         throws JsonProcessingException {
         CertificateTemplate certificateTemplate =
             templateService.getTemplateByFilePath(data.getTemplateName());
@@ -161,12 +153,21 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             new ObjectMapper().readValue(certificateTemplate.getProperties(), HashMap.class);
         HashMap<String, String> mainValues =
             new ObjectMapper().readValue(data.getValues(), HashMap.class);
-
-        for (List<String> excelValues: data.getExcelContent()) {
+        boolean excelProcessing = false;
+        int i = 1;
+        if (!data.getExcelContent().isEmpty()) {
+            i = data.getExcelContent().size();
+            excelProcessing = true;
+        }
+        for (int j = 0; j < i; j++) {
             HashMap<String, String> values = new HashMap<>(mainValues);
             CertificateDates certificateDates = new CertificateDates();
             Certificate certificate = new Certificate();
 
+            List<String> excelValues = null;
+            if (excelProcessing) {
+                excelValues = data.getExcelContent().get(j);
+            }
             for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
                 switch (entry.getValue()) {
                     case "serial_number":
@@ -217,7 +218,6 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
 
             certificateService.addCertificate(certificate);
         }
-        return true;
     }
 
     private String getValue(Map<String, String> values, List<String> fieldsList, List<String> columnHeadersList,

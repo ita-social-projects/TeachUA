@@ -263,8 +263,12 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         } else {
             try {
                 File file = new File(certificateByTemplateService.createCertificateByTemplate(transfer));
-                return Files.readAllBytes(file.toPath());
+                Path filePath = file.toPath();
+                byte[] bytes = Files.readAllBytes(filePath);
+                Files.delete(filePath);
+                return bytes;
             } catch (IOException e) {
+                log.error("Error creating certificate by template");
                 e.printStackTrace();
             }
         }

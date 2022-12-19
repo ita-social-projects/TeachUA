@@ -60,4 +60,5 @@ public class Certificate implements Convertible {
 
     @Column(name = "values")
     private String values;
+
 }

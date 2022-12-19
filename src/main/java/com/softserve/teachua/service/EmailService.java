@@ -2,7 +2,6 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.model.CertificateDates;
-import java.io.IOException;
 
 /**
  * This interface contains methods to work with emails.
