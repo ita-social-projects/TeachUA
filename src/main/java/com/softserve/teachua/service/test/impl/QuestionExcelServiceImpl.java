@@ -296,21 +296,21 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
                     (long) headerRowIndex));
         }
 
-//        if (indexes[4] == -1) {
-//            response.getQuestionParsingMistakes()
-//                .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_ANSWER_ERROR, row.toString(),
-//                    (long) headerRowIndex));
-//        }
-//        if (indexes[5] == -1) {
-//            response.getQuestionParsingMistakes()
-//                .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_CORRECT_ERROR, row.toString(),
-//                    (long) headerRowIndex));
-//        }
-//        if (indexes[6] == -1) {
-//            response.getQuestionParsingMistakes()
-//                .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_VALUES_ERROR, row.toString(),
-//                    (long) headerRowIndex));
-//        }
+        if (indexes[4] == -1) {
+            response.getQuestionParsingMistakes()
+                .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_ANSWER_ERROR, row.toString(),
+                    (long) headerRowIndex));
+        }
+        if (indexes[5] == -1) {
+            response.getQuestionParsingMistakes()
+                .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_CORRECT_ERROR, row.toString(),
+                    (long) headerRowIndex));
+        }
+        if (indexes[6] == -1) {
+            response.getQuestionParsingMistakes()
+                .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_VALUES_ERROR, row.toString(),
+                    (long) headerRowIndex));
+        }
 
     }
 
