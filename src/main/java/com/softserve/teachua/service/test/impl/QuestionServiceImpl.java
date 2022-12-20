@@ -1,26 +1,31 @@
 package com.softserve.teachua.service.test.impl;
 
 import com.google.api.services.forms.v1.Forms;
-import com.google.api.services.forms.v1.model.*;
+import com.google.api.services.forms.v1.model.ChoiceQuestion;
+import com.google.api.services.forms.v1.model.CorrectAnswer;
+import com.google.api.services.forms.v1.model.Form;
+import com.google.api.services.forms.v1.model.Grading;
+import com.google.api.services.forms.v1.model.Item;
+import com.google.api.services.forms.v1.model.Option;
 import com.softserve.teachua.dto.test.question.QuestionPreview;
 import com.softserve.teachua.dto.test.question.QuestionResponse;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.model.test.QuestionCategory;
+import com.softserve.teachua.model.test.QuestionType;
 import com.softserve.teachua.model.test.Test;
 import com.softserve.teachua.repository.test.AnswerRepository;
 import com.softserve.teachua.repository.test.QuestionCategoryRepository;
 import com.softserve.teachua.repository.test.QuestionRepository;
+import com.softserve.teachua.repository.test.QuestionTypeRepository;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.AnswerService;
 import com.softserve.teachua.service.test.QuestionService;
 import com.softserve.teachua.service.test.QuestionTypeService;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -39,6 +44,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final QuestionCategoryRepository categoryRepository;
+    private final QuestionTypeRepository typeRepository;
     private final QuestionTypeService typeService;
     private final UserService userService;
     private final ModelMapper modelMapper;
@@ -98,16 +104,15 @@ public class QuestionServiceImpl implements QuestionService {
         String formName = readFormInfo(formId).getInfo().getTitle();
         List<Item> itemList = readFormInfo(formId).getItems();
 
-        QuestionCategory category = new QuestionCategory();
-        category.setTitle("New From (" + formName + ") from Google");
-        category = categoryRepository.save(category);
-
+        if (!categoryRepository.findByTitle("New From (" + formName + ") from Google").isPresent()) {
+            categoryRepository.save(QuestionCategory.builder().title("New From (" + formName + ") from Google").build());
+        }
         for (Item item : itemList) {
             Question question = new Question();
 
             question.setCreator(userService.getUserById(creatorId));
             question.setTitle(item.getTitle());
-            question.setQuestionCategory(category);
+            question.setQuestionCategory(categoryRepository.findByTitle("New From (" + formName + ") from Google").get());
 
             if (item.getDescription() != null) {
                 question.setDescription(item.getDescription());
@@ -121,6 +126,10 @@ public class QuestionServiceImpl implements QuestionService {
                 List<Option> options = item.getQuestionItem().getQuestion().getChoiceQuestion().getOptions();
                 List<CorrectAnswer> correctAnswers = grading.getCorrectAnswers().getAnswers();
 
+                if (!typeRepository.findByTitle(choice.getType()).isPresent()) {
+                    QuestionType type = QuestionType.builder().title(choice.getType()).build();
+                    typeRepository.save(type);
+                }
 
                 question.setQuestionType(typeService.findByTitle(choice.getType()));
                 question = save(question);
@@ -139,9 +148,17 @@ public class QuestionServiceImpl implements QuestionService {
                     question.addAnswer(answer);
                 }
             } else if (item.getQuestionItem().getQuestion().getTextQuestion().isEmpty()) {
+                if (!typeRepository.findByTitle("TEXT").isPresent()) {
+                    QuestionType type = QuestionType.builder().title("TEXT").build();
+                    typeRepository.save(type);
+                }
                 question.setQuestionType(typeService.findByTitle("TEXT"));
                 save(question);
             } else if (item.getQuestionItem().getQuestion().getTextQuestion().getParagraph()) {
+                if (!typeRepository.findByTitle("PARAGRAPH").isPresent()) {
+                    QuestionType type = QuestionType.builder().title("PARAGRAPH").build();
+                    typeRepository.save(type);
+                }
                 question.setQuestionType(typeService.findByTitle("PARAGRAPH"));
                 save(question);
             }
