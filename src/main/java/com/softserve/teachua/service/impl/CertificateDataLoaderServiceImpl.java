@@ -205,6 +205,8 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                             getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
                                 data.getExcelColumnsOrder(), excelValues, entry.getKey()));
                         break;
+                    default:
+                        break;
                 }
             }
             certificateDatesService.addCertificateDates(certificateDates);
