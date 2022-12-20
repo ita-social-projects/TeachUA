@@ -18,7 +18,6 @@ import java.util.Date;
 public class JwtProvider {
     private static final int TOKEN_LIFE_HOURS = 1;
 
-    //@Value("$(jwt.secret)")
     @Value("${application.jwt.secret}")
     private String jwtSecret;
 
@@ -28,7 +27,6 @@ public class JwtProvider {
      * @return jwt
      */
     public String generateToken(Authentication authentication) {
-        log.info("jwtSecret = " + jwtSecret);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         Calendar calendar = Calendar.getInstance();
@@ -43,7 +41,6 @@ public class JwtProvider {
      * @return id
      */
     public Long getUserIdFromToken(String token) {
-        //log.info("\t\t\tTOKEN  " + token);
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
@@ -51,7 +48,6 @@ public class JwtProvider {
         String claimsId = claims.getId();
         claimsId = claimsId == null ? "0" : claimsId;
         log.debug("claims.getId() = " + claimsId);
-        // return Long.parseLong(claims.getId());
         return Long.parseLong(claimsId);
     }
 
@@ -93,7 +89,7 @@ public class JwtProvider {
     public String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
+            return bearerToken.substring(7);
         }
         return null;
     }
