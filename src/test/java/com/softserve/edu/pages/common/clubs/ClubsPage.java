@@ -22,8 +22,6 @@ public class ClubsPage extends TopPart {
     private AdvancedSearchPart advancedSearchPart;                                  // advancedSearchPart abstract class
     private CentersContainer centersContainer;                                      // centersContainer abstract class
 
-    List<String> componentFields = new ArrayList<>();
-
     public ClubsPage(WebDriver driver) {
         super(driver);
         initElements();                                                             // initialize elements on the page
@@ -229,8 +227,8 @@ public class ClubsPage extends TopPart {
     // Descending club sort
     @Step("Click on the '↑' icon")
     public void descendingSort() {
+        createPagination().clickFirstPageButton();                                  // go to first page in pagination
         getAdvancedSearchPart().clickDescendingSort();                              // click descending sort
-        gotoFirstPage();                                                            // go to first page in pagination
         logger.info("Items have been sorted in descending order");
     }
 
@@ -242,8 +240,8 @@ public class ClubsPage extends TopPart {
 
     // Check if all clubs fields are present after switching to list view
     public boolean areAllClubFieldsPresentInListView() {
-        createClubsContainer();                                                     // create clubs container object and initialize it
-        for (ClubComponent component : getClubsContainer().getClubComponents()) {
+        List<String> componentFields = new ArrayList<>();
+        for (ClubComponent component : createClubsContainer().getClubComponents()) {
             if (!(component.getTitle().isDisplayed() && component.getCategory().isDisplayed()
                     && component.getRate().isDisplayed() && component.getDetailsButton().isDisplayed())) {
                 componentFields.add(component.getTitleText().trim());
@@ -255,8 +253,8 @@ public class ClubsPage extends TopPart {
 
     // Check if all centers fields are present after switching to list view
     public boolean areAllCenterFieldsPresentInListView() {
-        createCentersContainer();                                                   // create centers container object and initialize it
-        for (CenterComponent component : getCentersContainer().getCenterComponents()) {
+        List<String> componentFields = new ArrayList<>();
+        for (CenterComponent component : createCentersContainer().getCenterComponents()) {
             if (!(component.getTitle().isDisplayed() && component.getDetailsButton().isDisplayed())) {
                 componentFields.add(component.getTitleText().trim());
                 logger.info("Center component with title {} has missing field", component.getTitleText());
@@ -268,14 +266,11 @@ public class ClubsPage extends TopPart {
     // Get number of clubs on all pages on Clubs page
     public int getTotalNumberOfClubs() {
         int result = 0;
-        createPagination();                                                         // create pagination object and initialize it
-        createClubsContainer();                                                     // create centers container object and initialize it
-        while (getPagination().isNextButtonEnabled()) {
+        while (createPagination().isNextButtonEnabled()) {
             // Add number of clubs on the current page to the total value
-            result += getClubsContainer().getClubComponentsCount();
+            result += createClubsContainer().getClubComponentsCount();
             getPagination().clickNextButton();                               // click on next button
             presentationSleep(3);
-
         }
         return result;                                                              // get actual number of pages
     }
@@ -283,18 +278,16 @@ public class ClubsPage extends TopPart {
     // TODO Combine the following two methods into one
     // Get number of clubs on all pages on Clubs page
     public List<String> getAllClubTitles() {
-        createPagination();                                                         // create pagination object and initialize it
-        createClubsContainer();                                                     // create centers container object and initialize it
-        presentationSleep(5);
-        componentFields.addAll(getClubsContainer().getClubComponentTitles());
+        presentationSleep(4);
+        List<String> componentFields = new ArrayList<>(createClubsContainer().getClubComponentTitles());
         // Check if pagination is present on the page
-        if (getPagination().isNextButtonPresent()) {
+        if (createPagination().isNextButtonPresent()) {
             while (getPagination().isNextButtonEnabled()) {
                 getPagination().clickNextButton();                              // click on next button
                 // TODO Implement Strategy for searching elements
                 presentationSleep(4);
                 // Add all titles on the current page to the list with all titles
-                componentFields.addAll(getClubsContainer().getClubComponentTitles());
+                componentFields.addAll(createClubsContainer().getClubComponentTitles());
             }
         }
         logger.info("Received club titles from UI: {}", componentFields);
@@ -303,29 +296,19 @@ public class ClubsPage extends TopPart {
 
     // Get number of centers on all pages on Clubs page
     public List<String> getAllCenterTitles() {
-        createPagination();                                                         // create pagination object and initialize it
-        createCentersContainer();                                                   // create centers container object and initialize it
         presentationSleep(5);
-        componentFields.addAll(getCentersContainer().getCenterComponentTitles());
+        List<String> componentFields = new ArrayList<>(createCentersContainer().getCenterComponentTitles());
         // Check if pagination is present on the page
-        if (getPagination().isNextButtonPresent()) {
+        if (createPagination().isNextButtonPresent()) {
             while (getPagination().isNextButtonEnabled()) {
                 getPagination().clickNextButton();                           // click on next button
                 presentationSleep(3);
                 // Add all titles on the current page to the list with all titles
-                componentFields.addAll(getCentersContainer().getCenterComponentTitles());
+                componentFields.addAll(createCentersContainer().getCenterComponentTitles());
             }
         }
         logger.info("Received centers titles from UI: {}", componentFields);
         return componentFields;
-    }
-
-    private void gotoFirstPage() {
-        createPagination();                                                         // create pagination object and initialize it
-        if (getPagination().isNextButtonPresent()) {
-            getPagination().clickFirstPageButton();
-            presentationSleep(2);
-        }
     }
 
     public int getTotalNumberOfPagesFromDatabase(String total) {
@@ -337,9 +320,8 @@ public class ClubsPage extends TopPart {
     public boolean isClubPresentOnThePage(String title) {
         presentationSleep(1);
         boolean result = false;
-        createClubsContainer();                                                     // create clubs container object and initialize it
         try {
-            for(ClubComponent component : getClubsContainer().getClubComponents()) {
+            for(ClubComponent component : createClubsContainer().getClubComponents()) {
                 // Compare provided club title with value from club components list to find needed one
                 if(component.getTitleText().contains(title)) {
                     logger.info("Component with partial or the same title as " + title + " found on the page");
