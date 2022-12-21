@@ -49,7 +49,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     @Autowired
     public CertificateServiceImpl(DtoConverter dtoConverter, QRCodeService qrCodeService,
-                                  CertificateRepository certificateRepository, CertificateContentDecorator certificateContentDecorator) {
+                                  CertificateRepository certificateRepository, CertificateContentDecorator certificateContentDecorator,
+                                  CertificateByTemplateService certificateByTemplateService) {
         this.dtoConverter = dtoConverter;
         this.qrCodeService = qrCodeService;
         this.certificateRepository = certificateRepository;
