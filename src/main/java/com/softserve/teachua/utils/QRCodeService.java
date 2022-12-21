@@ -90,17 +90,22 @@ public class QRCodeService {
     }
 
     public ByteArrayInputStream getCertificateQrCodeAsStream(Long serialNumber) {
-        MatrixToImageConfig qrStyleConfig;
+        return new ByteArrayInputStream(
+            getQrCodeImageBytes(formContentUrl(serialNumber), WIDTH, HEIGHT, getColorConfig(serialNumber)));
+    }
 
+    public byte[] getCertificateQrCodeAsStream(Long serialNumber, float width, float height) {
+        return getQrCodeImageBytes(formContentUrl(serialNumber), (int) width, (int) height,
+            getColorConfig(serialNumber));
+    }
+
+    private MatrixToImageConfig getColorConfig(Long serialNumber) {
         switch (Long.toString(serialNumber).charAt(0)) {
             case '1':   // trainer id
             case '2':   // moderator id
-                qrStyleConfig = new MatrixToImageConfig(new Color(255, 255, 255).getRGB(), new Color(0, 0, 0, 0).getRGB());
-                break;
+                return new MatrixToImageConfig(new Color(255, 255, 255).getRGB(), new Color(0, 0, 0, 0).getRGB());
             default:
-                qrStyleConfig = new MatrixToImageConfig(new Color(0, 0, 0).getRGB(), new Color(0, 0, 0, 0).getRGB());
+                return new MatrixToImageConfig(new Color(0, 0, 0).getRGB(), new Color(0, 0, 0, 0).getRGB());
         }
-
-        return new ByteArrayInputStream(getQrCodeImageBytes(formContentUrl(serialNumber), WIDTH, HEIGHT, qrStyleConfig));
     }
 }

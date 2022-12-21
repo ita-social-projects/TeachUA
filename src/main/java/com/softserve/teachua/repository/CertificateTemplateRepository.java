@@ -18,9 +18,13 @@ public interface CertificateTemplateRepository extends JpaRepository<Certificate
 
     List<CertificateTemplate> findAll();
 
+    List<CertificateTemplate> findByIdGreaterThanOrderByIdDesc(Integer value);
+
     Optional<CertificateTemplate> findByCertificateType(Integer type);
 
     boolean existsBy();
 
     boolean existsCertificateTemplateByCertificateType(Integer certificateType);
+
+    CertificateTemplate getCertificateTemplateByFilePath(String filePath);
 }

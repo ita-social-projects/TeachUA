@@ -1,7 +1,10 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.dto.certificate.CertificateDataRequest;
 import com.softserve.teachua.dto.certificate.CertificateDatabaseResponse;
+import com.softserve.teachua.dto.certificateByTemplate.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
@@ -14,6 +17,8 @@ import com.softserve.teachua.service.CertificateDatesService;
 import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.utils.CertificateContentDecorator;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,10 +88,10 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
 
     private CertificateDates saveDates(CertificateDataRequest data, Integer index) {
         CertificateDates dates = CertificateDates.builder()
-                .date(data.getExcelList().get(index).getDateIssued().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
-                .hours(data.getHours())
-                .courseNumber(data.getCourseNumber())
-                .studyForm(data.getStudyType()).build();
+            .date(data.getExcelList().get(index).getDateIssued().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
+            .hours(data.getHours())
+            .courseNumber(data.getCourseNumber())
+            .studyForm(data.getStudyType()).build();
         if (data.getType() == 3) {
             dates.setDuration(decorator.formDates(data.getStartDate(), data.getEndDate()));
             if (!datesRepository.existsByDurationAndAndDate(dates.getDuration(), dates.getDate())) {
@@ -129,12 +134,105 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
         }
         if (!templateRepository.existsCertificateTemplateByCertificateType(3)) {
             templateService.addTemplate(CertificateTemplate.builder().name("Єдині учасник").certificateType(3)
-                    .filePath("/certificates/templates/jedyni_participant_template.jrxml")
-                    .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
-                    .projectDescription(
-                            "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
-                    .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
+                .filePath("/certificates/templates/jedyni_participant_template.jrxml")
+                .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
+                .projectDescription(
+                    "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
+                .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
         }
         return templateService.getTemplateByType(type);
     }
+
+    @Override
+    public void saveCertificate(CertificateByTemplateTransfer data)
+        throws JsonProcessingException {
+        CertificateTemplate certificateTemplate =
+            templateService.getTemplateByFilePath(data.getTemplateName());
+
+        HashMap<String, String> templateProperties =
+            new ObjectMapper().readValue(certificateTemplate.getProperties(), HashMap.class);
+        HashMap<String, String> mainValues =
+            new ObjectMapper().readValue(data.getValues(), HashMap.class);
+        boolean excelProcessing = false;
+        int i = 1;
+        if (!data.getExcelContent().isEmpty()) {
+            i = data.getExcelContent().size();
+            excelProcessing = true;
+        }
+        for (int j = 0; j < i; j++) {
+            HashMap<String, String> values = new HashMap<>(mainValues);
+            CertificateDates certificateDates = new CertificateDates();
+            Certificate certificate = new Certificate();
+
+            List<String> excelValues = null;
+            if (excelProcessing) {
+                excelValues = data.getExcelContent().get(j);
+            }
+            for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
+                switch (entry.getValue()) {
+                    case "serial_number":
+                        if (!templateProperties.containsValue("course_number")) {
+                            certificateDates.setCourseNumber(
+                                getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                    data.getExcelColumnsOrder(), excelValues, "Номер курсу"));
+                        }
+                        break;
+                    case "course_number":
+                        certificateDates.setCourseNumber(
+                            getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                        break;
+                    case "user_name":
+                        certificate.setUserName(getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                            data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                        break;
+                    case "date":
+                        certificateDates.setDate(getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                            data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                        break;
+                    case "duration":
+                        certificateDates.setDuration(
+                            getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                        break;
+                    case "hours":
+                        certificateDates.setHours(
+                            Integer.valueOf(getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                data.getExcelColumnsOrder(), excelValues, entry.getKey())));
+                        break;
+                    case "study_form":
+                        certificateDates.setStudyForm(
+                            getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                        break;
+                    default:
+                        break;
+                }
+            }
+            certificateDatesService.addCertificateDates(certificateDates);
+
+            certificate.setValues(new ObjectMapper().writeValueAsString(values));
+            certificate.setSendToEmail(
+                getValue(values, data.getFieldsList(), data.getColumnHeadersList(), data.getExcelColumnsOrder(),
+                    excelValues, "Електронна пошта"));
+            certificate.setTemplate(certificateTemplate);
+            certificate.setDates(certificateDates);
+
+            certificateService.addCertificate(certificate);
+        }
+    }
+
+    private String getValue(Map<String, String> values, List<String> fieldsList, List<String> columnHeadersList,
+                            List<String> excelColumnsOrder, List<String> excelValues, String propertyName) {
+        String result = values.get(propertyName);
+        if (!result.trim().isEmpty()) {
+            return result;
+        } else {
+            String value =
+                excelValues.get(columnHeadersList.indexOf(excelColumnsOrder.get(fieldsList.indexOf(propertyName))));
+            values.put(propertyName, value);
+            return value;
+        }
+    }
+
 }

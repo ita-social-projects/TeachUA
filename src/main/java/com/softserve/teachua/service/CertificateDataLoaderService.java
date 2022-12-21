@@ -1,8 +1,10 @@
 package com.softserve.teachua.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.dto.certificate.CertificateDataRequest;
 import com.softserve.teachua.dto.certificate.CertificateDatabaseResponse;
 
+import com.softserve.teachua.dto.certificateByTemplate.CertificateByTemplateTransfer;
 import java.util.List;
 
 /**
@@ -20,4 +22,6 @@ public interface CertificateDataLoaderService {
      * @return new {@code List<CertificateDatabaseResponse>}
      */
     List<CertificateDatabaseResponse> saveToDatabase(CertificateDataRequest data);
+
+    void saveCertificate(CertificateByTemplateTransfer data) throws JsonProcessingException;
 }

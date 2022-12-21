@@ -1,6 +1,10 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.dto.template.CreateCertificateTemplate;
+import com.softserve.teachua.dto.template.SuccessCreatedCertificateTemplate;
+import com.softserve.teachua.dto.template.CertificateTemplatePreview;
 import com.softserve.teachua.model.CertificateTemplate;
+import java.util.List;
 
 /**
  * This interface contains all needed methods to manage certificate templates.
@@ -37,4 +41,8 @@ public interface CertificateTemplateService {
      * @return new {@code CertificateTemplate}
      */
     CertificateTemplate addTemplate(CertificateTemplate certificateTemplate);
+    SuccessCreatedCertificateTemplate addTemplate(CreateCertificateTemplate certificateTemplate);
+    List<CertificateTemplatePreview> getAllTemplates();
+    CertificateTemplate getTemplateByFilePath(String filePath);
+
 }
