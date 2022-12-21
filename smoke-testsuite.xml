@@ -2,7 +2,7 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Test suite of basic functionality">
     <parameter name="mode" value="headless"/>
-    <test name="Links and images validation" enabled="true">
+    <test name="Links and images validation">
         <classes>
             <class name="com.softserve.edu.test.ui.BaseTest">
                 <methods>
@@ -11,22 +11,9 @@
             </class>
         </classes>
     </test>
-    <test name="Basic club search" enabled="true">
+    <test name="Basic and advanced club search">
         <classes>
-            <class name="com.softserve.edu.test.ui.clubs.SearchClubTest">
-                <methods>
-                    <include name="basicClubSearchTest" />
-                </methods>
-            </class>
-        </classes>
-    </test>
-    <test name="Advanced club search" enabled="true">
-        <classes>
-            <class name="com.softserve.edu.test.ui.clubs.SearchClubTest">
-                <methods>
-                    <include name="advancedClubSearchTest" />
-                </methods>
-            </class>
+            <class name="com.softserve.edu.test.ui.clubs.SearchClubTest" />
         </classes>
     </test>
 </suite>

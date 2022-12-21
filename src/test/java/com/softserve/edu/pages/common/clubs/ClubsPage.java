@@ -318,7 +318,7 @@ public class ClubsPage extends TopPart {
 
     // Check if club is present on the page
     public boolean isClubPresentOnThePage(String title) {
-        presentationSleep(1);
+        presentationSleep(2);
         boolean result = false;
         try {
             for(ClubComponent component : createClubsContainer().getClubComponents()) {
