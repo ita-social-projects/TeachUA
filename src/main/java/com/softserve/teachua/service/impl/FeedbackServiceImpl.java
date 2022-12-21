@@ -19,6 +19,7 @@ import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,8 +48,8 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
 
     @Autowired
     public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter,
-            ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository,
-            UserService userService, ClubService clubService, ObjectMapper objectMapper) {
+                               ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository,
+                               UserService userService, @Lazy ClubService clubService, ObjectMapper objectMapper) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
@@ -166,7 +167,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
             return;
         }
 
-        if (!(userFromFeedback != null && userFromRequest != null && userFromRequest.equals(userFromFeedback))) {
+        if (!(userFromRequest != null && userFromRequest.equals(userFromFeedback))) {
             throw new NotVerifiedUserException(ACCESS_TO_FEEDBACK_DENIED);
         }
     }

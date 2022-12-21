@@ -2,7 +2,6 @@ package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.config.ConfigureSMTPProperties;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
-import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.service.EmailService;
 import com.sun.mail.smtp.SMTPAddressFailedException;
@@ -52,7 +51,7 @@ public class EmailServiceImpl implements EmailService {
             pdfBodyPart.setDataHandler(new DataHandler(dataSource));
             pdfBodyPart.setFileName("certificate.pdf");
         } catch (MessagingException exception) {
-            log.info("Problem with creation pdf certificate. Pdf body part.");
+            log.warn("Problem with creation pdf certificate. Pdf body part.");
             exception.printStackTrace();
         }
 
@@ -64,9 +63,9 @@ public class EmailServiceImpl implements EmailService {
             helper.setText(text);
             helper.getMimeMultipart().addBodyPart(pdfBodyPart);
         } catch (SMTPAddressFailedException exception) {
-            log.info("Problem with email or attached file.");
+            log.warn("Problem with email or attached file. {}", exception.getMessage());
         } catch (MailSendException | MessagingException exception) {
-            log.info("Problems with sending email");
+            log.warn("Problems with sending email. {}", exception.getMessage());
         }
 
         emailSender.getJavaMailSender().send(message);

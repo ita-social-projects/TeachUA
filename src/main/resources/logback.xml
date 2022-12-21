@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+
+    <variable name="CONSOLE_PATTERN" value="[%p] %d{h:mm:ss aa zzz E} %m%n"/>
+    <variable name="FILE_PATTERN" value="teachualogs-%d{yyyy-MM-dd}.%i.log"/>
+    <variable name="ENCODER_PATTERN"
+              value="[%p] time: %d{yyyy-MM-dd HH:mm:ss,SSS} file: %F class: %c method: %M line: %L thread: %t - %m%n"/>
+
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>
-                [%p] %d{h:mm:ss aa zzz E} %m%n
-            </Pattern>
+            <Pattern>${CONSOLE_PATTERN}</Pattern>
         </layout>
     </appender>
 
     <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>
-                [%p] time: %d{yyyy-MM-dd HH:mm:ss,SSS} file: %F class: %c method: %M line: %L thread: %t - %m%n
-            </Pattern>
+        <encoder>
+            <pattern>${ENCODER_PATTERN}</pattern>
         </encoder>
 
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>
-                ${URL_LOGS}/teachualogs-%d{yyyy-MM-dd}.%i.log
-            </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>
-                    1MB
-                </maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>${URL_LOGS}/${FILE_PATTERN}</fileNamePattern>
+            <!-- each file should be at most 1MB, keep 30 days worth of history, but at most 1GB -->
+            <maxFileSize>1MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
     </appender>
+
     <root level="info">
         <appender-ref ref="RollingFile"/>
         <appender-ref ref="Console"/>

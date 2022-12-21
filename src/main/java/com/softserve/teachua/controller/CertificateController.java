@@ -123,11 +123,11 @@ public class CertificateController implements Api {
      * @return {@code ResponseEntity<byte[]>}
      */
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/certificates/download/{serialNumber}")
+    @GetMapping("/certificates/download/{id}")
     public ResponseEntity<byte[]> downloadCertificate(Authentication authentication,
-                                                      @PathVariable("serialNumber") Long serialNumber) {
+                                                      @PathVariable("id") Long id) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        byte[] bytes = certificateService.getPdfOutputForDownload(userPrincipal.getEmail(), serialNumber);
+        byte[] bytes = certificateService.getPdfOutputForDownload(userPrincipal.getEmail(), id);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);

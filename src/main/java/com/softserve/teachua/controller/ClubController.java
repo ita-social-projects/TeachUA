@@ -2,7 +2,11 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.club.*;
+import com.softserve.teachua.dto.club.ClubOwnerProfile;
+import com.softserve.teachua.dto.club.ClubProfile;
+import com.softserve.teachua.dto.club.ClubResponse;
+import com.softserve.teachua.dto.club.SuccessCreatedClub;
+import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
@@ -12,15 +16,21 @@ import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing the clubs.
@@ -55,6 +65,12 @@ public class ClubController implements Api {
         return clubService.getClubProfileById(id);
     }
 
+    @AllowedRoles(RoleData.ADMIN)
+    @GetMapping("/club/clubs-without-categories")
+    public Page<ClubResponse> getClubsWithoutCategories(@PageableDefault(value = CLUBS_PER_PAGE, sort = "id") Pageable pageable) {
+        return clubService.getClubsWithoutCategories(pageable);
+    }
+
     /**
      * Use this endpoint to get club by name The controller returns {@code ClubResponse}.
      *
@@ -76,6 +92,16 @@ public class ClubController implements Api {
     @GetMapping("/clubs")
     public List<ClubResponse> getClubs() {
         return clubService.getListOfClubs();
+    }
+
+    /**
+     * Use this endpoint to get all clubs by center id. The controller returns {@code List <ClubResponse>}.
+     *
+     * @return {@code List <ClubResponse>}.
+     */
+    @GetMapping("/clubsByCenterId/{id}")
+    public List<ClubResponse> getClubsByCenterId(@PathVariable Long id) {
+        return clubService.getListOfClubsByCenterId(id);
     }
 
     /**

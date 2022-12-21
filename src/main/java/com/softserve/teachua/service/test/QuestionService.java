@@ -1,9 +1,12 @@
 package com.softserve.teachua.service.test;
 
+import com.softserve.teachua.dto.test.question.QuestionPreview;
+import com.softserve.teachua.dto.test.question.QuestionProfile;
 import com.softserve.teachua.dto.test.question.QuestionResponse;
 import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.model.test.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -51,4 +54,14 @@ public interface QuestionService {
      * @return new {@code Question}.
      */
     Question save(Question question);
+
+    /**
+     * This method returns TRUE if it was successfully import from Google Form.
+     * @param formId - put form's ID.
+     * @param creatorId - put creator's ID.
+     * @throws IOException - throws IOException .
+     */
+    void questionsImport(String formId,Long creatorId) throws IOException;
+
+    List<QuestionPreview> getAllQuestions();
 }

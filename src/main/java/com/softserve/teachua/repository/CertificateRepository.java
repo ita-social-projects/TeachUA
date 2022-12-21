@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -50,7 +51,14 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     List<Certificate> findAllByOrderByIdAsc();
 
-    List<Certificate> findAllBySendToEmailOrderById(String email);
+    @Query(value = "SELECT * " +
+            "FROM certificates " +
+            "WHERE user_email = :email " +
+            "AND NOT (serial_number IS NULL AND update_status IS NOT NULL)",
+    nativeQuery = true)
+    List<Certificate> findAllForDownload(@Param("email") String email);
+
+    List<Certificate> findAllBySendToEmailAndUpdateStatusAndSendStatusTrue(String sendToEmail, LocalDate updateDate);
 
     Optional<Certificate> findById(Long id);
 

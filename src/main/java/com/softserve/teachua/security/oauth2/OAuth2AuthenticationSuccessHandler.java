@@ -30,7 +30,7 @@ import static com.softserve.teachua.security.oauth2.HttpCookieOAuth2Authorizatio
 @Slf4j
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private JwtProvider tokenProvider;
+    private final JwtProvider tokenProvider;
 
     @Autowired
     UserService userService;
@@ -41,7 +41,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Value("#{'${authorizedRedirectUris}'.split(',')}")
     private List<String> authorizedRedirectUris;
 
-    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Autowired
     OAuth2AuthenticationSuccessHandler(JwtProvider tokenProvider,
@@ -52,8 +52,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     /**
      * The method handle OAuth2 authentication process.
-     *
-     * @return OAuth2AuthorizationRequest
      */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -95,14 +93,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         userService.updateUser(user);
 
         String token = tokenProvider.generateToken(authentication);
-        return UriComponentsBuilder.fromUriString(targetUrl).queryParam("token", token).queryParam("id", user.getId())
+        return UriComponentsBuilder.fromUriString(targetUrl)
+                .queryParam("token", token)
+                .queryParam("id", user.getId())
+                .queryParam("role", user.getRole().getName())
                 .build().toUriString();
     }
 
     /**
      * The method clear cookie from HttpServletRequest.
-     *
-     * @return OAuth2AuthorizationRequest
      */
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
