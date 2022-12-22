@@ -9,6 +9,13 @@ import java.util.List;
  * This interface contains all methods needed to manage categories of questions.
  */
 public interface QuestionCategoryService {
+
+    /**
+     * Returns a list of all question categories
+     * @return {@code List<QuestionCategory>}
+     */
+    List<QuestionCategory> findAll();
+
     /**
      * This method returns QuestionCategory entity found by id.
      * @param id - put question category id.

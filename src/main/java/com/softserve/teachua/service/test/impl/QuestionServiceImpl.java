@@ -20,17 +20,23 @@ import com.softserve.teachua.repository.test.QuestionRepository;
 import com.softserve.teachua.repository.test.QuestionTypeRepository;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.AnswerService;
+import com.softserve.teachua.service.test.QuestionCategoryService;
 import com.softserve.teachua.service.test.QuestionService;
 import com.softserve.teachua.service.test.QuestionTypeService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
 
@@ -43,12 +49,65 @@ public class QuestionServiceImpl implements QuestionService {
     private final Forms formsService;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final QuestionCategoryService categoryService;
     private final QuestionCategoryRepository categoryRepository;
     private final QuestionTypeRepository typeRepository;
     private final QuestionTypeService typeService;
     private final UserService userService;
     private final ModelMapper modelMapper;
-    private final AnswerService answerService;
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<QuestionResponse> findAllQuestionsPageable(Pageable pageable) {
+        return mapToDtoPage(questionRepository.findAll(pageable));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<QuestionResponse> searchAllQuestionsPageable(
+        Pageable pageable, String query, String type, String category) {
+        if (!Objects.equals(type, "") && !Objects.equals(category, "")) {
+            return mapToDtoPage(
+                questionRepository.findByTitleContainingIgnoreCaseAndQuestionTypeAndQuestionCategory(
+                    pageable,
+                    query,
+                    typeService.findByTitle(type),
+                    categoryService.findByTitle(category)
+                ));
+        }
+        if (!Objects.equals(type, "")) {
+            return mapToDtoPage(
+                questionRepository.findByTitleContainingIgnoreCaseAndQuestionType(
+                    pageable,
+                    query,
+                    typeService.findByTitle(type)
+                ));
+        }
+        if (!Objects.equals(category, "")) {
+            return mapToDtoPage(questionRepository.findByTitleContainingIgnoreCaseAndQuestionCategory(
+                pageable,
+                query,
+                categoryService.findByTitle(category)
+            ));
+        }
+        return mapToDtoPage(questionRepository.findByTitleContainingIgnoreCase(pageable, query));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public QuestionResponse findQuestionById(Long id) {
+        return mapToDto(getQuestionById(id));
+    }
+
+    @Override
+    @Transactional
+    public Question getQuestionById(Long id) {
+        return questionRepository
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Question not found for id=" + id)
+            );
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -86,10 +145,33 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    @Transactional
     public Question save(Question question) {
         checkNull(question, "Question");
         log.info("**/Question has been created. {}", question.toString());
         return questionRepository.save(question);
+    }
+
+    @Override
+    @Transactional
+    public Question save(QuestionResponse questionResponse) {
+        return save(mapToModel(questionResponse));
+    }
+
+    @Override
+    @Transactional
+    public Question update(QuestionResponse questionResponse) {
+        if (!questionRepository.existsById(questionResponse.getId())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Question not found for id=" + questionResponse.getId());
+        }
+        return save(mapToModel(questionResponse));
+    }
+
+    @Override
+    @Transactional
+    public void delete(long id) {
+        questionRepository.delete(getQuestionById(id));
     }
 
     public Form readFormInfo(String formId) throws IOException {
@@ -168,7 +250,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<QuestionPreview> getAllQuestions() {
         List<QuestionPreview> previews = new ArrayList<>();
-        List<Question> questions = questionRepository.findAll();
+        List<Question> questions = (List<Question>) questionRepository.findAll();
 
         questions.forEach(question -> previews.add(
             new QuestionPreview(
@@ -180,18 +262,39 @@ public class QuestionServiceImpl implements QuestionService {
         return previews;
     }
 
-    private List<QuestionResponse> mapToDtoList(List<Question> questions) {
-        List<QuestionResponse> questionsResponses = questions.stream()
-            .map(question -> modelMapper.map(question, QuestionResponse.class))
-            .collect(Collectors.toList());
+    private QuestionResponse mapToDto(Question question) {
+        QuestionResponse questionResponse = modelMapper.map(question, QuestionResponse.class);
+        questionResponse.setAnswerTitles(question.getAnswers()
+            .stream()
+            .map(Answer::getText)
+            .collect(Collectors.toList()));
+        return questionResponse;
+    }
 
-        for (int i = 0; i < questions.size(); i++) {
-            List<Answer> answers = answerService.findByQuestionId(questions.get(i).getId());
-            List<String> answerTitles = answers.stream()
-                .map(Answer::getText)
-                .collect(Collectors.toList());
-            questionsResponses.get(i).setAnswerTitles(answerTitles);
-        }
-        return questionsResponses;
+    private Question mapToModel(QuestionResponse questionResponse) {
+        Question question = Question.builder()
+            .id(questionResponse.getId())
+            .title(questionResponse.getTitle())
+            .description(questionResponse.getDescription())
+            .questionType(typeService.findByTitle(questionResponse.getQuestionTypeTitle()))
+            .questionCategory(categoryService.findByTitle(questionResponse.getQuestionCategoryTitle()))
+            .answers(questionResponse
+                .getAnswers()
+                .stream()
+                .map(answer -> modelMapper.map(answer, Answer.class))
+                .collect(Collectors.toSet()))
+            .build();
+        question.getAnswers().stream().forEach(answer -> answer.setQuestion(question));
+        return question;
+    }
+
+    private List<QuestionResponse> mapToDtoList(List<Question> questions) {
+        return questions.stream()
+            .map(this::mapToDto)
+            .collect(Collectors.toList());
+    }
+
+    private Page<QuestionResponse> mapToDtoPage(Page<Question> questions) {
+        return questions.map(this::mapToDto);
     }
 }
