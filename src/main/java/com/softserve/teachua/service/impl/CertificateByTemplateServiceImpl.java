@@ -1,6 +1,7 @@
 package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.forms.fields.PdfFormField;
 import com.itextpdf.io.font.PdfEncodings;
@@ -15,9 +16,11 @@ import com.itextpdf.layout.element.Image;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.service.CertificateByTemplateService;
 import com.softserve.teachua.utils.QRCodeService;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +55,8 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
     public String createCertificateByTemplate(CertificateTransfer transfer) throws IOException {
         String targetFileName = ThreadLocalRandom.current().nextInt() + ".pdf";
         PdfReader reader = new PdfReader(
-            new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" + transfer.getTemplate().getFilePath());
+            new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" +
+                transfer.getTemplate().getFilePath());
 
         File directory =
             new File(new ClassPathResource("/").getFile().getPath() + "/" + "temp");
@@ -60,7 +64,8 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
             directory.mkdir();
         }
 
-        PdfWriter writer = new PdfWriter(new ClassPathResource("/").getFile().getPath() + "/" + "temp/" + targetFileName);
+        PdfWriter writer =
+            new PdfWriter(new ClassPathResource("/").getFile().getPath() + "/" + "temp/" + targetFileName);
         PdfDocument pdfDoc = new PdfDocument(reader, writer);
 
         try (Document document = new Document(pdfDoc)) {
@@ -80,7 +85,8 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
                         setValue(form.getField(entry.getKey()), transfer.getSerialNumber().toString(), halvarBlk,
                             halvarMd);
                         break;
-                    case "qrCode":
+                    case "qrCode_white":
+                    case "qrCode_black":
                         List<Float> position = Arrays.stream(
                                 form.getField(entry.getKey()).getWidgets().get(0).getRectangle().toString()
                                     .replace("[", "").replace("]", "").split(" "))
@@ -88,9 +94,7 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
 
                         float width = position.get(2) - position.get(0);
                         float height = position.get(3) - position.get(1);
-                        Image image = new Image(ImageDataFactory.create(
-                            qrCodeService.getCertificateQrCodeAsStream(transfer.getSerialNumber(), width, height),
-                            false));
+                        Image image = getQrCodeImage(transfer.getSerialNumber(), width, height, entry.getValue());
                         image.setFixedPosition(position.get(0), position.get(1));
 
                         document.add(image);
@@ -115,6 +119,18 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
         }
 
         field.setValue(value);
+    }
+
+    private Image getQrCodeImage(Long serialNumber, float width, float height, String parameter) {
+        MatrixToImageConfig colorConfig;
+        int transparent = new Color(0, 0, 0, 0).getRGB();
+        if ("qrCode_black".equals(parameter)) {
+            colorConfig = new MatrixToImageConfig(new Color(0, 0, 0).getRGB(), transparent);
+        } else {
+            colorConfig = new MatrixToImageConfig(new Color(255, 255, 255).getRGB(), transparent);
+        }
+        return new Image(ImageDataFactory.create(
+            qrCodeService.getCertificateQrCodeAsStream(serialNumber, width, height, colorConfig), false));
     }
 
 }

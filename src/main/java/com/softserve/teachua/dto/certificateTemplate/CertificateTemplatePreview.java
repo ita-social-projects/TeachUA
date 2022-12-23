@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.template;
+package com.softserve.teachua.dto.certificateTemplate;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.marker.Convertible;

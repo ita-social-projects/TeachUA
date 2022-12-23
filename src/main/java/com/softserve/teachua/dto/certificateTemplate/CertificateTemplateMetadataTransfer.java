@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.certificateByTemplate;
+package com.softserve.teachua.dto.certificateTemplate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

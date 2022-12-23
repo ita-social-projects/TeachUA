@@ -5,24 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.certificateExcel.CertificateByTemplateExcelParsingResponse;
-import com.softserve.teachua.dto.template.CertificateTemplatePreview;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplatePreview;
 import com.softserve.teachua.dto.certificateByTemplate.CertificateByTemplateTransfer;
-import com.softserve.teachua.dto.certificateByTemplate.CertificateTemplateMetadataTransfer;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.service.CertificateDataLoaderService;
 import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -67,7 +61,8 @@ public class CertificateByTemplateController implements Api {
         List<String> fieldsList = new ArrayList<>();
         for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
             switch (entry.getValue()) {
-                case "qrCode":
+                case "qrCode_white":
+                case "qrCode_black":
                     break;
                 case "serial_number":
                     if (!templateProperties.containsValue("course_number")) {
@@ -110,26 +105,4 @@ public class CertificateByTemplateController implements Api {
         loaderService.saveCertificate(data);
     }
 
-    /**
-     * This endpoint is used to save last modification date for the template uploaded earlier.
-     *
-     * @return {@code String}
-     */
-    @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/certificate-by-template/load-template-metadata")
-    public String saveLastTemplateModifiedDate(@RequestBody CertificateTemplateMetadataTransfer data)
-        throws IOException {
-        Path source = Paths.get(
-            new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" + data.getTemplateName());
-        String targetName = data.getTemplateLastModifiedDate() + ".pdf";
-
-        if (!(new File(
-            new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" + targetName).exists())) {
-            Files.move(source, source.resolveSibling(targetName));
-        } else {
-            Files.delete(source);
-        }
-
-        return targetName;
-    }
 }
