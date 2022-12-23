@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/* *
  * This controller is responsible for managing certificates created by template
  */
 @RestController
@@ -48,7 +48,7 @@ public class CertificateByTemplateController implements Api {
         this.loaderService = loaderService;
     }
 
-    /**
+    /* *
      * The method processing template and returns {@code CertificateByTemplateTransfer} fields that have to be inputted.
      *
      * @param template - {@code CertificateTemplatePreview} template dto.
@@ -85,7 +85,7 @@ public class CertificateByTemplateController implements Api {
             .build();
     }
 
-    /**
+    /* *
      * The method uploads excel file and returns {@code CertificateByTemplateExcelParsingResponse}.
      *
      * @param multipartFile - excel file.
@@ -98,7 +98,7 @@ public class CertificateByTemplateController implements Api {
         return excelService.parseFlexibleExcel(multipartFile);
     }
 
-    /**
+    /* *
      * The method saves data to database.
      *
      * @param data - {@code CertificateByTemplateTransfer} read from form.
@@ -110,7 +110,7 @@ public class CertificateByTemplateController implements Api {
         loaderService.saveCertificate(data);
     }
 
-    /**
+    /* *
      * This endpoint is used to save last modification date for the template uploaded earlier.
      *
      * @return {@code String}
