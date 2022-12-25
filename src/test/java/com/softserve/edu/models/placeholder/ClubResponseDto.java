@@ -5,9 +5,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class ClubDto extends BaseDto {
+public class ClubResponseDto extends BaseDto {
 
     private Integer id;
     private Integer ageFrom;
@@ -20,8 +19,8 @@ public class ClubDto extends BaseDto {
     private ArrayList<GalleryPhotoDto> urlGallery;
     private String workTime;
     private ArrayList<CategoryDto> categories;
-    private UserPreviewDto[] user;
-    private CenterForClubDto[] center;
+    private UserPreviewDto user;
+    private CenterForClubDto center;
     private Double rating;
     private ArrayList<LocationResponseDto> locations;
     private Boolean isApproved;
@@ -33,14 +32,14 @@ public class ClubDto extends BaseDto {
      * Method using for build new ClubDto payload
      */
     public static Builder newBuilder() {
-        return new ClubDto().new Builder();
+        return new ClubResponseDto().new Builder();
     }
 
     public Integer getId() {
         return this.id;
     }
 
-    public ClubDto setId(Integer id) {
+    public ClubResponseDto setId(Integer id) {
         this.id = id;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -50,7 +49,7 @@ public class ClubDto extends BaseDto {
         return this.ageFrom;
     }
 
-    public ClubDto setAgeFrom(Integer ageFrom) {
+    public ClubResponseDto setAgeFrom(Integer ageFrom) {
         this.ageFrom = ageFrom;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -60,7 +59,7 @@ public class ClubDto extends BaseDto {
         return this.ageTo;
     }
 
-    public ClubDto setAgeTo(Integer ageTo) {
+    public ClubResponseDto setAgeTo(Integer ageTo) {
         this.ageTo = ageTo;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -70,7 +69,7 @@ public class ClubDto extends BaseDto {
         return this.name;
     }
 
-    public ClubDto setName(String name) {
+    public ClubResponseDto setName(String name) {
         this.name = name;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -80,7 +79,7 @@ public class ClubDto extends BaseDto {
         return this.description;
     }
 
-    public ClubDto setDescription(String description) {
+    public ClubResponseDto setDescription(String description) {
         this.description = description;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -90,7 +89,7 @@ public class ClubDto extends BaseDto {
         return this.urlWeb;
     }
 
-    public ClubDto setUrlWeb(String urlWeb) {
+    public ClubResponseDto setUrlWeb(String urlWeb) {
         this.urlWeb = urlWeb;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -100,7 +99,7 @@ public class ClubDto extends BaseDto {
         return this.urlLogo;
     }
 
-    public ClubDto setUrlLogo(String urlLogo) {
+    public ClubResponseDto setUrlLogo(String urlLogo) {
         this.urlLogo = urlLogo;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -110,7 +109,7 @@ public class ClubDto extends BaseDto {
         return this.urlBackground;
     }
 
-    public ClubDto setUrlBackground(String urlBackground) {
+    public ClubResponseDto setUrlBackground(String urlBackground) {
         this.urlBackground = urlBackground;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -120,7 +119,7 @@ public class ClubDto extends BaseDto {
         return this.urlGallery;
     }
 
-    public ClubDto setUrlGallery(ArrayList<GalleryPhotoDto> urlGallery) {
+    public ClubResponseDto setUrlGallery(ArrayList<GalleryPhotoDto> urlGallery) {
         this.urlGallery = urlGallery;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -130,7 +129,7 @@ public class ClubDto extends BaseDto {
         return this.workTime;
     }
 
-    public ClubDto setWorkTime(String workTime) {
+    public ClubResponseDto setWorkTime(String workTime) {
         this.workTime = workTime;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -140,7 +139,7 @@ public class ClubDto extends BaseDto {
         return this.categories;
     }
 
-    public ClubDto setCategories(ArrayList<CategoryDto> categories) {
+    public ClubResponseDto setCategories(ArrayList<CategoryDto> categories) {
         this.categories = categories;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -150,7 +149,7 @@ public class ClubDto extends BaseDto {
         return this.user;
     }
 
-    public ClubDto setUser(UserPreviewDto[] user) {
+    public ClubResponseDto setUser(UserPreviewDto user) {
         this.user = user;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -160,8 +159,8 @@ public class ClubDto extends BaseDto {
         return this.center;
     }
 
-    public ClubDto setCenter(
-            CenterForClubDto[] center) {
+    public ClubResponseDto setCenter(
+            CenterForClubDto center) {
         this.center = center;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -171,7 +170,7 @@ public class ClubDto extends BaseDto {
         return this.rating;
     }
 
-    public ClubDto setRating(Double rating) {
+    public ClubResponseDto setRating(Double rating) {
         this.rating = rating;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -181,7 +180,7 @@ public class ClubDto extends BaseDto {
         return this.locations;
     }
 
-    public ClubDto setLocations(ArrayList<LocationResponseDto> locations) {
+    public ClubResponseDto setLocations(ArrayList<LocationResponseDto> locations) {
         this.locations = locations;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -191,7 +190,7 @@ public class ClubDto extends BaseDto {
         return this.isApproved;
     }
 
-    public ClubDto setIsApproved(Boolean isApproved) {
+    public ClubResponseDto setIsApproved(Boolean isApproved) {
         this.isApproved = isApproved;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -201,7 +200,7 @@ public class ClubDto extends BaseDto {
         return this.isOnline;
     }
 
-    public ClubDto setIsOnline(Boolean isOnline) {
+    public ClubResponseDto setIsOnline(Boolean isOnline) {
         this.isOnline = isOnline;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -211,7 +210,7 @@ public class ClubDto extends BaseDto {
         return this.feedbackCount;
     }
 
-    public ClubDto setFeedbackCount(Integer feedbackCount) {
+    public ClubResponseDto setFeedbackCount(Integer feedbackCount) {
         this.feedbackCount = feedbackCount;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -221,7 +220,7 @@ public class ClubDto extends BaseDto {
         return this.contacts;
     }
 
-    public ClubDto setContacts(ArrayList<ContactDataResponseDto> contacts) {
+    public ClubResponseDto setContacts(ArrayList<ContactDataResponseDto> contacts) {
         this.contacts = contacts;
         // Methods are invoked on objects, this refers to the object on which the current method is called
         return this;
@@ -235,27 +234,27 @@ public class ClubDto extends BaseDto {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ClubDto clubDto = (ClubDto) o;
+        ClubResponseDto clubResponseDto = (ClubResponseDto) o;
         return new EqualsBuilder()
-                .append(id, clubDto.id)
-                .append(ageFrom, clubDto.ageFrom)
-                .append(ageTo, clubDto.ageTo)
-                .append(name, clubDto.name)
-                .append(description, clubDto.description)
-                .append(urlWeb, clubDto.urlWeb)
-                .append(urlLogo, clubDto.urlLogo)
-                .append(urlBackground, clubDto.urlBackground)
-                .append(urlGallery, clubDto.urlGallery)
-                .append(workTime, clubDto.workTime)
-                .append(categories, clubDto.categories)
-                .append(user, clubDto.user)
-                .append(center, clubDto.center)
-                .append(rating, clubDto.rating)
-                .append(locations, clubDto.locations)
-                .append(isApproved, clubDto.isApproved)
-                .append(isOnline, clubDto.isOnline)
-                .append(feedbackCount, clubDto.feedbackCount)
-                .append(contacts, clubDto.contacts)
+                .append(id, clubResponseDto.id)
+                .append(ageFrom, clubResponseDto.ageFrom)
+                .append(ageTo, clubResponseDto.ageTo)
+                .append(name, clubResponseDto.name)
+                .append(description, clubResponseDto.description)
+                .append(urlWeb, clubResponseDto.urlWeb)
+                .append(urlLogo, clubResponseDto.urlLogo)
+                .append(urlBackground, clubResponseDto.urlBackground)
+                .append(urlGallery, clubResponseDto.urlGallery)
+                .append(workTime, clubResponseDto.workTime)
+                .append(categories, clubResponseDto.categories)
+                .append(user, clubResponseDto.user)
+                .append(center, clubResponseDto.center)
+                .append(rating, clubResponseDto.rating)
+                .append(locations, clubResponseDto.locations)
+                .append(isApproved, clubResponseDto.isApproved)
+                .append(isOnline, clubResponseDto.isOnline)
+                .append(feedbackCount, clubResponseDto.feedbackCount)
+                .append(contacts, clubResponseDto.contacts)
                 .isEquals();
     }
 
@@ -298,8 +297,8 @@ public class ClubDto extends BaseDto {
                 ", urlGallery=" + urlGallery +
                 ", workTime=" + workTime +
                 ", categories=" + categories +
-                ", user=" + Arrays.toString(user) +
-                ", center=" + Arrays.toString(center) +
+                ", user=" + user +
+                ", center=" + center +
                 ", rating=" + rating +
                 ", locations=" + locations +
                 ", isApproved=" + isApproved +
@@ -317,102 +316,102 @@ public class ClubDto extends BaseDto {
         }
 
         public Builder withId(Integer id) {
-            ClubDto.this.id = id;
+            ClubResponseDto.this.id = id;
             return this;
         }
 
         public Builder withAgeFrom(Integer ageFrom) {
-            ClubDto.this.ageFrom = ageFrom;
+            ClubResponseDto.this.ageFrom = ageFrom;
             return this;
         }
 
             public Builder withAgeTo(Integer ageTo) {
-            ClubDto.this.ageTo = ageTo;
+            ClubResponseDto.this.ageTo = ageTo;
             return this;
         }
 
         public Builder withName(String name) {
-            ClubDto.this.name = name;
+            ClubResponseDto.this.name = name;
             return this;
         }
 
         public Builder withDescription(String description) {
-            ClubDto.this.description = description;
+            ClubResponseDto.this.description = description;
             return this;
         }
 
         public Builder withUrlWeb(String urlWeb) {
-            ClubDto.this.urlWeb = urlWeb;
+            ClubResponseDto.this.urlWeb = urlWeb;
             return this;
         }
 
         public Builder withUrlLogo(String urlLogo) {
-            ClubDto.this.urlLogo = urlLogo;
+            ClubResponseDto.this.urlLogo = urlLogo;
             return this;
         }
 
         public Builder withUrlBackground(String urlBackground) {
-            ClubDto.this.urlBackground = urlBackground;
+            ClubResponseDto.this.urlBackground = urlBackground;
             return this;
         }
 
         public Builder withUrlGallery(ArrayList<GalleryPhotoDto> urlGallery) {
-            ClubDto.this.urlGallery = urlGallery;
+            ClubResponseDto.this.urlGallery = urlGallery;
             return this;
         }
 
         public Builder withWorkTime(String workTime) {
-            ClubDto.this.workTime = workTime;
+            ClubResponseDto.this.workTime = workTime;
             return this;
         }
 
         public Builder withCategories(ArrayList<CategoryDto> categories) {
-            ClubDto.this.categories = categories;
+            ClubResponseDto.this.categories = categories;
             return this;
         }
 
-        public Builder withUser(UserPreviewDto[] user) {
-            ClubDto.this.user = user;
+        public Builder withUser(UserPreviewDto user) {
+            ClubResponseDto.this.user = user;
             return this;
         }
 
-        public Builder withCenter(CenterForClubDto[] center) {
-            ClubDto.this.center = center;
+        public Builder withCenter(CenterForClubDto center) {
+            ClubResponseDto.this.center = center;
             return this;
         }
 
         public Builder withRating(Double rating) {
-            ClubDto.this.rating = rating;
+            ClubResponseDto.this.rating = rating;
             return this;
         }
 
         public Builder withLocations(ArrayList<LocationResponseDto> locations) {
-            ClubDto.this.locations = locations;
+            ClubResponseDto.this.locations = locations;
             return this;
         }
 
         public Builder withIsApproved(Boolean isApproved) {
-            ClubDto.this.isApproved = isApproved;
+            ClubResponseDto.this.isApproved = isApproved;
             return this;
         }
 
         public Builder withIsOnline(Boolean isOnline) {
-            ClubDto.this.isOnline = isOnline;
+            ClubResponseDto.this.isOnline = isOnline;
             return this;
         }
 
         public Builder withFeedbackCount(Integer feedbackCount) {
-            ClubDto.this.feedbackCount = feedbackCount;
+            ClubResponseDto.this.feedbackCount = feedbackCount;
             return this;
         }
 
         public Builder withContacts(ArrayList<ContactDataResponseDto> contacts) {
-            ClubDto.this.contacts = contacts;
+            ClubResponseDto.this.contacts = contacts;
             return this;
         }
 
-        public ClubDto build() {
-            return ClubDto.this;
+        public ClubResponseDto build() {
+            return ClubResponseDto.this;
         }
 
     }

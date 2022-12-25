@@ -2,7 +2,6 @@ package com.softserve.edu.services.api.placeholder.endpoints;
 
 import com.softserve.edu.models.enums.HttpStatus;
 import com.softserve.edu.models.placeholder.CategoryDto;
-import com.softserve.edu.models.placeholder.ClubDto;
 import com.softserve.edu.services.api.common.AbstractWebEndpoint;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;

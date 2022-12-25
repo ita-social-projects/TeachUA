@@ -17,104 +17,116 @@ public class CenterForClubDto extends BaseDto {
     private String urlWeb;
     private String urlLogo;
     private String socialLinks;
-    private UserPreviewDto[] user;
+    private UserPreviewDto user;
     private ArrayList<LocationResponseDto> locations;
     private ArrayList<ContactDataResponseDto> contacts;
 
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    public CenterForClubDto setId(Integer id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void setName(String name) {
+    public CenterForClubDto setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getUrlBackgroundPicture() {
         return this.urlBackgroundPicture;
     }
 
-    public void setUrlBackgroundPicture(String urlBackgroundPicture) {
+    public CenterForClubDto setUrlBackgroundPicture(String urlBackgroundPicture) {
         this.urlBackgroundPicture = urlBackgroundPicture;
+        return this;
     }
 
     public String getEmail() {
         return this.email;
     }
 
-    public void setEmail(String email) {
+    public CenterForClubDto setEmail(String email) {
         this.email = email;
+        return this;
     }
 
     public String getPhones() {
         return this.phones;
     }
 
-    public void setPhones(String phones) {
+    public CenterForClubDto setPhones(String phones) {
         this.phones = phones;
+        return this;
     }
 
     public String getDescription() {
         return this.description;
     }
 
-    public void setDescription(String description) {
+    public CenterForClubDto setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public String getUrlWeb() {
         return this.urlWeb;
     }
 
-    public void setUrlWeb(String urlWeb) {
+    public CenterForClubDto setUrlWeb(String urlWeb) {
         this.urlWeb = urlWeb;
+        return this;
     }
 
     public String getUrlLogo() {
         return this.urlLogo;
     }
 
-    public void setUrlLogo(String urlLogo) {
+    public CenterForClubDto setUrlLogo(String urlLogo) {
         this.urlLogo = urlLogo;
+        return this;
     }
 
     public String getSocialLinks() {
         return this.socialLinks;
     }
 
-    public void setSocialLinks(String socialLinks) {
+    public CenterForClubDto setSocialLinks(String socialLinks) {
         this.socialLinks = socialLinks;
+        return this;
     }
 
-    public UserPreviewDto[] getUser() {
+    public UserPreviewDto getUser() {
         return this.user;
     }
 
-    public void setUser(UserPreviewDto[] user) {
+    public CenterForClubDto setUser(UserPreviewDto user) {
         this.user = user;
+        return this;
     }
 
     public ArrayList<LocationResponseDto> getLocations() {
         return this.locations;
     }
 
-    public void setLocations(ArrayList<LocationResponseDto> locations) {
+    public CenterForClubDto setLocations(ArrayList<LocationResponseDto> locations) {
         this.locations = locations;
+        return this;
     }
 
     public ArrayList<ContactDataResponseDto> getContacts() {
         return this.contacts;
     }
 
-    public void setContacts(ArrayList<ContactDataResponseDto> contacts) {
+    public CenterForClubDto setContacts(ArrayList<ContactDataResponseDto> contacts) {
         this.contacts = contacts;
+        return this;
     }
 
     @Override

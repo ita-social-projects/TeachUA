@@ -138,6 +138,7 @@ public class Database {
             closeConnection(connection, statement, rs);         // close connection
         }
         logger.info("Received club titles from DB: {}", result);
+        result.size();
         return result;
     }
 

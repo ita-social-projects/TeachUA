@@ -8,7 +8,7 @@ public class GalleryPhotoDto extends BaseDto {
 
     private Integer id;
     private String url;
-    private ClubDto[] club;
+    private ClubResponseDto[] club;
 
     public int getId() {
         return this.id;
@@ -26,11 +26,11 @@ public class GalleryPhotoDto extends BaseDto {
         this.url = url;
     }
 
-    public ClubDto[] getClub() {
+    public ClubResponseDto[] getClub() {
         return this.club;
     }
 
-    public void setClub(ClubDto[] club) {
+    public void setClub(ClubResponseDto[] club) {
         this.club = club;
     }
 
