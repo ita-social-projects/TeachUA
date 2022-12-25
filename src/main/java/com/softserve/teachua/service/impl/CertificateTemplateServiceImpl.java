@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,16 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
     public CertificateTemplate getTemplateById(Integer id) {
         return certificateTemplateRepository.findById(id)
             .orElseThrow(() -> new NotExistException(String.format(TEMPLATE_NOT_FOUND_BY_ID, id)));
+    }
+
+    @Override
+    public CertificateTemplateProfile getTemplateProfileById(Integer id) {
+        CertificateTemplate template = certificateTemplateRepository.findById(id)
+            .orElseThrow(() -> new NotExistException(String.format(TEMPLATE_NOT_FOUND_BY_ID, id)));
+        CertificateTemplateProfile templateProfile = new CertificateTemplateProfile();
+        BeanUtils.copyProperties(template, templateProfile);
+        templateProfile.setUsed(certificateRepository.existsByTemplateId(id));
+        return templateProfile;
     }
 
     @Override
@@ -126,9 +137,7 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
             return CertificateTemplateUpdationResponse.builder().isUpdated(false).messages(messagesList).build();
         }
 
-        template.setName(updatedTemplate.getName());
-        template.setCourseDescription(updatedTemplate.getCourseDescription());
-        template.setProjectDescription(updatedTemplate.getProjectDescription());
+        BeanUtils.copyProperties(updatedTemplate, template);
 
         return CertificateTemplateUpdationResponse.builder()
             .isUpdated(true)

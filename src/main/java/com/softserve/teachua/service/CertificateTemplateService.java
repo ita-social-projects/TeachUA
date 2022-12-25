@@ -73,4 +73,7 @@ public interface CertificateTemplateService {
      * @return {@code boolean}
      */
     boolean deleteTemplateById(Integer id);
+
+    CertificateTemplateProfile getTemplateProfileById(Integer id);
+
 }

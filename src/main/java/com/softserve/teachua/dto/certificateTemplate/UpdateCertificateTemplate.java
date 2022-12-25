@@ -14,12 +14,16 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateCertificateTemplate {
 
+    private Integer id;
     @Size(max = 250, message = "(Назва шаблону) містить занадто велике значення!")
     private String name;
     private String filePath;
+    private Integer certificateType;
     @Size(max = 1020, message = "(Опис курсу) містить занадто великий опис!")
     private String courseDescription;
     @Size(max = 1020, message = "(Опис проекту) містить занадто великий опис!")
     private String projectDescription;
+    private String picturePath;
+    private String properties;
 
 }

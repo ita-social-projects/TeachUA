@@ -6,13 +6,26 @@ import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateMetadata
 import com.softserve.teachua.dto.certificateTemplate.*;
 import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUploadResponse;
 import com.softserve.teachua.model.CertificateTemplate;
+import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.service.CertificateByTemplateService;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.PdfTemplateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -86,12 +99,12 @@ public class CertificateTemplateController implements Api {
      * This endpoint is used to get certificate template using id.
      *
      * @param id - put template id here.
-     * @return {@code CertificateTemplate}
+     * @return {@code CertificateTemplateProfile}
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/template/{id}")
-    public CertificateTemplate getCertificateTemplate(@PathVariable Long id) {
-        return certificateTemplateService.getTemplateById(Math.toIntExact(id));
+    public CertificateTemplateProfile getCertificateTemplate(@PathVariable Integer id) {
+        return certificateTemplateService.getTemplateProfileById(id);
     }
 
     /**
@@ -100,7 +113,7 @@ public class CertificateTemplateController implements Api {
      *
      * @param id              - put template id here.
      * @param updatedTemplate - put new parameters here.
-     * @return {@code CertificateTemplate} - shows result of updating challenge.
+     * @return {@code CertificateTemplate} - shows result of updating template.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/template/{id}")
@@ -111,15 +124,15 @@ public class CertificateTemplateController implements Api {
     }
 
     /**
-     * Use this endpoint to archive challenge and its tasks. The controller returns {@code ChallengeDeleteResponse}.
+     * Use this endpoint to delete template. The controller returns {@code boolean}.
      * This feature available only for admins.
      *
-     * @param id - put challenge id here.
-     * @return {@code ChallengeDeleteResponse} - shows which challenge and tasks was removed.
+     * @param id - put template id here.
+     * @return {@code boolean}
      */
     @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/template/{id}")
-    public boolean deleteChallenge(@PathVariable Integer id) {
+    public boolean deleteTemplate(@PathVariable Integer id) {
         return certificateTemplateService.deleteTemplateById(id);
     }
 
