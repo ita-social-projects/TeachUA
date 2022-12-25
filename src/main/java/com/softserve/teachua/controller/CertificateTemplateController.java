@@ -47,7 +47,7 @@ public class CertificateTemplateController implements Api {
         this.pdfTemplateService = pdfTemplateService;
     }
 
-    /**
+    /* *
      * The method saves template to database.
      *
      * @param createCertificateTemplate - {@code CreateCertificateTemplate} read from form.
@@ -60,7 +60,7 @@ public class CertificateTemplateController implements Api {
         return certificateTemplateService.addTemplate(createCertificateTemplate);
     }
 
-    /**
+    /* *
      * This endpoint is used to get all templates.
      *
      * @return {@code List<CertificateTemplatePreview>}
@@ -71,7 +71,7 @@ public class CertificateTemplateController implements Api {
         return certificateTemplateService.getAllTemplates();
     }
 
-    /**
+    /* *
      * The method uploads pdf template file and returns {@code CertificateTemplateUploadResponse}.
      *
      * @param multipartFile - pdf template file.
