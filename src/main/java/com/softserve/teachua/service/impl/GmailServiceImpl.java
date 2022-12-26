@@ -58,7 +58,6 @@ public class GmailServiceImpl implements GmailService {
             store.close();
         } catch (MessagingException e) {
             log.error("Exception while process gmail inbox {}", e.getMessage());
-            e.printStackTrace();
         }
     }
 

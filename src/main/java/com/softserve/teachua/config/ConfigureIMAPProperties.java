@@ -29,6 +29,7 @@ public class ConfigureIMAPProperties {
         properties.setProperty("mail.host", "imap.gmail.com");
         return Session.getInstance(properties,
             new Authenticator() {
+                @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(username, password);
                 }
