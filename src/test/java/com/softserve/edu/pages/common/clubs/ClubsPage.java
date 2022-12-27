@@ -14,6 +14,10 @@ import java.util.List;
 
 public class ClubsPage extends TopPart {
 
+    // Locator to find needed club category
+    private static final String LIST_CATEGORIES_XPATH =
+            "//div[@id='basic_categoriesName']//span[contains(@class,'ant-checkbox')]/following-sibling::span";
+
     private WebElement clubsInCity;                                                 // clubs in city text
     private WebElement showOnMapButton;                                             // show on map button
 
@@ -92,12 +96,6 @@ public class ClubsPage extends TopPart {
         createAdvancedSearchPart();                                                 // create advancedSearchPart object and initialize it
     }
 
-    // Clear dropdown content
-    @Step("Clear dropdown content")
-    public void clearDropdown() {
-        getAdvancedSearchPart().clickClearDropdownButton();                         // click clear button inside of dropdown
-    }
-
     // Choose city (we need to provide enum location to avoid mistakes in writing city name)
     @Step("Choose city {0}")
     public void chooseCity(Locations location) {
@@ -107,7 +105,6 @@ public class ClubsPage extends TopPart {
         getAdvancedSearchPart().clickCityDropdown();
         // Select city from dropdown by its locator and name
         getAdvancedSearchPart().selectPlace(location.toString(), By.xpath(AdvancedSearchPart.LIST_CITIES_DROPDOWN_CSS_SELECTOR));
-        //getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
     // Choose district
@@ -120,7 +117,6 @@ public class ClubsPage extends TopPart {
         // Object type is used in parameters to accept different enum types and because it is basic class for each type
         // Select district from dropdown by its locator and name
         getAdvancedSearchPart().selectPlace(district.toString(), By.xpath(AdvancedSearchPart.LIST_DISTRICTS_DROPDOWN_CSS_SELECTOR));
-        //getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
     // Choose the nearest metro station
@@ -133,7 +129,6 @@ public class ClubsPage extends TopPart {
         // Generic methods don't need to be cast, and we get compilation error when do something wrong
         // Select metro station from dropdown by its locator and name
         getAdvancedSearchPart().selectPlace(station.toString(), By.xpath(AdvancedSearchPart.LIST_METRO_STATION_DROPDOWN_CSS_SELECTOR));
-        //getAdvancedSearchPart().clickAlphabetSort();                                // click alphabetic sort
     }
 
     // Set available online to search clubs that are available online
@@ -145,7 +140,18 @@ public class ClubsPage extends TopPart {
     // Choose needed categories
     @Step("Select categories")
     public void selectCategories(Categories... categories) {
-        getAdvancedSearchPart().chooseCategories(categories);                       // choose categories to filter
+        // Find and save all categories into the list
+        List<WebElement> categoriesList = driver.findElements(By.xpath(LIST_CATEGORIES_XPATH));
+        for(WebElement current : categoriesList) {
+            for(Categories category : categories) {
+                // Check if provided category matches one of the checkboxes
+                if(current.getText().toLowerCase().contains(category.toString().toLowerCase())) {
+                    // If match has been found, click on it to choose
+                    current.click();
+                    break;
+                }
+            }
+        }
     }
 
     // Click center radio button
@@ -159,6 +165,7 @@ public class ClubsPage extends TopPart {
     @Step("Display clubs as list")
     public void displayComponentsAsList() {
         getAdvancedSearchPart().clickListView();                                    // select list view
+        logger.info("Block view has been changed to the list view");
     }
 
     // Scroll to child age field
@@ -166,47 +173,65 @@ public class ClubsPage extends TopPart {
         JsMethods.scrollToElement(getAdvancedSearchPart().getChildAgeField());      // scroll to element
     }
 
-    // Get child age value
-    private String getChildAgeValue() {
-        return getAdvancedSearchPart().getChildAgeFieldValue();                     // get child age
-    }
-
     // Check if child age is correct
     public boolean isChildAgeCorrect() {
-        try {
-            // Check if entering child age field is empty
-            if (getChildAgeValue().isEmpty()) {
-                return true;
-            }
-            return Integer.parseInt(getChildAgeValue()) >= AdvancedSearchPart.MINIMUM_AGE
-                    && Integer.parseInt(getChildAgeValue()) <= AdvancedSearchPart.MAXIMUM_AGE;
-        } catch (NumberFormatException e) {
+        final boolean isChildAgeHigherEqualThanMinimumAge = getAdvancedSearchPart().getChildAgeFieldValue() >= AdvancedSearchPart.MINIMUM_AGE;
+        final boolean isChildAgeLowerEqualThanMaximumAge = getAdvancedSearchPart().getChildAgeFieldValue() <= AdvancedSearchPart.MAXIMUM_AGE;
+        // Check if entering child age field is empty
+        if (getAdvancedSearchPart().getChildAgeFieldValue() == null) {
+            logger.error("There is no child age value provided");
             return false;
         }
+        return isChildAgeHigherEqualThanMinimumAge && isChildAgeLowerEqualThanMaximumAge;
     }
 
-    // Set child age
+    // Type child age in the input field
     @Step("Child age is set to {0}")
     public void setChildAge(String age) {
+        getAdvancedSearchPart().clickChildAgeField();                               // click childAgeField
+        getAdvancedSearchPart().clearChildAgeField();                               // clear childAgeField
+        getAdvancedSearchPart().sendChildAgeFieldText(age);                         // send text into childAgeField
         logger.info("Child age is set to {}", age);
-        getAdvancedSearchPart().sendTextIntoChildAgeField(age);                     // send text into child age field
     }
 
-    // Check if mandatory fields are displayed
     @Step("Are mandatory fields displayed?")
     public boolean areMandatoryFieldsDisplayed() {
-        return getAdvancedSearchPart().areMandatoryFieldsShowed();                  // check if extra fields present
+        // Check if mandatory fields are displayed
+        boolean areDisplayed = getAdvancedSearchPart().isCityPresent()
+                && getAdvancedSearchPart().isDistrictPresent() && getAdvancedSearchPart().isNearestMetroStationPresent();
+        if (areDisplayed) {
+            logger.info("Mandatory parameters such as 'Місто', 'Район міста', 'Найближча станція метро' are displayed");
+        } else {
+            logger.info("Mandatory parameters such as 'Місто', 'Район міста', 'Найближча станція метро' are disabled");
+        }
+        return areDisplayed;
     }
 
-    // Check if extra fields are deactivated
     @Step("Are extra fields disabled?")
-    public boolean extraFieldsNotPresent() {
-        return getAdvancedSearchPart().extraFieldsNotExist();                       // check if extra fields not present
+    public boolean areExtraFieldsNotPresent() {
+        // Check if extra fields are deactivated
+        boolean fieldsPresent = getAdvancedSearchPart().isRemotePresent() || getAdvancedSearchPart().isCategoriesPresent()
+                || getAdvancedSearchPart().isChildAgePresent();
+        printMessage(fieldsPresent);
+        return !fieldsPresent;
     }
 
     @Step("Are extra fields displayed?")
     public boolean areExtraFieldsDisplayed() {
-        return !getAdvancedSearchPart().extraFieldsNotExist();                      // check if extra fields present
+        // Check if extra fields are deactivated
+        boolean fieldsPresent = getAdvancedSearchPart().isRemotePresent() && getAdvancedSearchPart().isCategoriesPresent()
+                && getAdvancedSearchPart().isChildAgePresent();
+        printMessage(fieldsPresent);
+        return fieldsPresent;
+    }
+
+    // Print message if extra fields are present
+    private void printMessage(boolean fieldsPresent) {
+        if (fieldsPresent) {
+            logger.info("Extra parameters such as 'Доступний онлайн', 'Категорії', 'Вік дитини' are displayed");
+        } else {
+            logger.info("Some of the extra parameters such as 'Доступний онлайн', 'Категорії', 'Вік дитини' are disabled");
+        }
     }
 
     // Sort clubs by rating
@@ -257,22 +282,10 @@ public class ClubsPage extends TopPart {
         for (CenterComponent component : createCentersContainer().getCenterComponents()) {
             if (!(component.getTitle().isDisplayed() && component.getDetailsButton().isDisplayed())) {
                 componentFields.add(component.getTitleText().trim());
-                logger.info("Center component with title {} has missing field", component.getTitleText());
+                logger.info("Center component with title {} has missing field(-s)", component.getTitleText());
             }
         }
         return componentFields.isEmpty();
-    }
-
-    // Get number of clubs on all pages on Clubs page
-    public int getTotalNumberOfClubs() {
-        int result = 0;
-        while (createPagination().isNextButtonEnabled()) {
-            // Add number of clubs on the current page to the total value
-            result += createClubsContainer().getClubComponentsCount();
-            getPagination().clickNextButton();                               // click on next button
-            presentationSleep(3);
-        }
-        return result;                                                              // get actual number of pages
     }
 
     // TODO Combine the following two methods into one
@@ -319,22 +332,15 @@ public class ClubsPage extends TopPart {
     // Check if club is present on the page
     public boolean isClubPresentOnThePage(String title) {
         presentationSleep(2);
-        boolean result = false;
-        try {
-            for(ClubComponent component : createClubsContainer().getClubComponents()) {
-                // Compare provided club title with value from club components list to find needed one
-                if(component.getTitleText().contains(title)) {
-                    logger.info("Component with partial or the same title as " + title + " found on the page");
-                    result = true;
-                    break;
-                }
+        for(ClubComponent component : createClubsContainer().getClubComponents()) {
+            // Compare provided club title with value from club components list to find needed one
+            if(component.getTitleText().contains(title)) {
+                logger.info("Component with partial or the same title as " + title + " found on the page");
+                return true;
             }
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(ClubsContainer.CLUB_NOT_FOUND);
-            return false;
         }
+        logger.error(ClubsContainer.CLUB_NOT_FOUND);
+        return false;
     }
 
     /*

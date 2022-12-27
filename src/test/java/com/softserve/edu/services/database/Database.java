@@ -78,11 +78,8 @@ public class Database {
 
     // Get single value
     public String getSingleValue(String query) {
-
-        String value = null;
-
+        String result = null;
         try {
-
             // Open connection
             connection = openConnection();                      // connect to DB
             statement = connection.createStatement();           // function creates an SQL statement for execution
@@ -91,7 +88,7 @@ public class Database {
 
             // Get String value
             while(rs.next()) {
-                value = rs.getString(1);
+                result = rs.getString(1);
             }
 
         } catch (SQLException e) {
@@ -101,17 +98,15 @@ public class Database {
         } finally {
             closeConnection(connection, statement, rs);         // close connection
         }
-        return value;
+        logger.info("Value from DB: {}", result);
+        return result;
     }
 
     // Get list of values
     @Step("Get result from DB as list")
     public List<String> getList(String query) {
-
         List<String> result = new ArrayList<>();
-
         try {
-
             // Open connection
             connection = openConnection();                      // connect to DB
             Statement statement = connection.createStatement(); // function creates an SQL statement for execution
@@ -137,8 +132,7 @@ public class Database {
         } finally {
             closeConnection(connection, statement, rs);         // close connection
         }
-        logger.info("Received club titles from DB: {}", result);
-        result.size();
+        logger.info("List of values from DB: {}", result);
         return result;
     }
 

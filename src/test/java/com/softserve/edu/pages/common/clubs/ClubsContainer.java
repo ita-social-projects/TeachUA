@@ -10,7 +10,7 @@ import java.util.List;
 public class ClubsContainer {
 
     // Message if there is no such component found
-    protected static final String CLUB_NOT_FOUND = "There is no club that matches the search criteria.";
+    protected static final String CLUB_NOT_FOUND = "There is no club that matches the search criteria";
     // Selector to find the whole club container
     private static final String CLUB_COMPONENT_CSS_SELECTOR = ".ant-card.ant-card-bordered.card";
 

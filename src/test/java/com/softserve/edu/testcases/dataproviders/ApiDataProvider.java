@@ -22,7 +22,7 @@ public class ApiDataProvider {
         // Query to sort clubs by rates in the DB
         return new Object[][] {
                 // Query to get all the clubs with their id from the DB
-                { "SELECT id\n" +
+                { "SELECT name\n" +
                         "FROM clubs\n" +
                         "WHERE center_id = " + CENTER_ID +";" }
         };

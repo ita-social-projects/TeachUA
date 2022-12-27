@@ -16,7 +16,7 @@ public enum Categories {
     DEVELOPMENT_CENTER("Центр розвитку"),
     OTHER("Інше");
 
-    private String category;
+    private final String category;
 
     // Constructor in enum always should be private (if we do not write anything, by default it's private)
     Categories(String category) {

@@ -1,6 +1,5 @@
 package com.softserve.edu.pages.common.clubs;
 
-import com.softserve.edu.testcases.enums.Categories;
 import com.softserve.edu.utils.JsMethods;
 import org.openqa.selenium.*;
 import org.slf4j.Logger;
@@ -11,10 +10,7 @@ import java.util.List;
 public class AdvancedSearchPart {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());             // logger
-    // Locator to find needed club category
-    private static final String LIST_CATEGORIES_XPATH =
-            "//div[@id='basic_categoriesName']//span[contains(@class,'ant-checkbox')]/following-sibling::span";
-    private static final String VALUE_ATTRIBUTE = "value";                                     // value attribute
+    private static final String VALUE_ATTRIBUTE = "value";                              // value attribute
     private static final String CLEAR_PLACE_LOCATOR = "./..//span[@class='anticon anticon-close-circle']";
     // Message that informs about selected value
     private static final String SELECT_MESSAGE = "The following value has been selected from dropdown: {}";
@@ -111,15 +107,6 @@ public class AdvancedSearchPart {
      * Page Object
      */
 
-    // clearDropdownButton
-    private WebElement getClearDropdownButton() {
-        return this.clearDropdownButton;                                                // get clearDropdownButton element
-    }
-
-    protected void clickClearDropdownButton() {
-        getClearDropdownButton().click();                                               // click clearDropdownButton
-    }
-
     // centerButton
     private WebElement getCenterButton() {
         return this.centerButton;                                                       // get centerButton
@@ -134,7 +121,7 @@ public class AdvancedSearchPart {
         return this.city;                                                               // get city element
     }
 
-    private boolean isCityPresent() {
+    protected boolean isCityPresent() {
         return getCity().isDisplayed();                                                 // is city element present
     }
 
@@ -156,7 +143,7 @@ public class AdvancedSearchPart {
         return this.district;                                                           // get district element
     }
 
-    private boolean isDistrictPresent() {
+    protected boolean isDistrictPresent() {
         return getDistrict().isDisplayed();                                             // is city element present
     }
 
@@ -174,7 +161,7 @@ public class AdvancedSearchPart {
         return this.nearestMetroStation;                                                // get nearestMetroStation element
     }
 
-    private boolean isNearestMetroStationPresent() {
+    protected boolean isNearestMetroStationPresent() {
         return getNearestMetroStation().isDisplayed();                                  // is city element present
     }
 
@@ -192,7 +179,7 @@ public class AdvancedSearchPart {
         return this.remote;                                                             // get remote element
     }
 
-    private boolean isRemotePresent() {
+    protected boolean isRemotePresent() {
         try {
             return getRemote().isDisplayed();                                           // is remote element present
         } catch (StaleElementReferenceException e) {
@@ -214,7 +201,7 @@ public class AdvancedSearchPart {
         return this.categories;                                                         // get categories element
     }
 
-    private boolean isCategoriesPresent() {
+    protected boolean isCategoriesPresent() {
         try {
             return getCategories().isDisplayed();                                       // is categories element present
         } catch (StaleElementReferenceException e) {
@@ -227,7 +214,7 @@ public class AdvancedSearchPart {
         return this.childAge;                                                           // get childAge element
     }
 
-    private boolean isChildAgePresent() {
+    protected boolean isChildAgePresent() {
         try {
             return getChildAge().isDisplayed();                                         // is child age element present
         } catch (StaleElementReferenceException e) {
@@ -240,19 +227,19 @@ public class AdvancedSearchPart {
         return this.childAgeField;                                                      // get childAgeField element
     }
 
-    protected String getChildAgeFieldValue() {
-        return getChildAgeField().getAttribute(VALUE_ATTRIBUTE);                        // get childAgeField value
+    protected Integer getChildAgeFieldValue() {
+        return Integer.parseInt(getChildAgeField().getAttribute(VALUE_ATTRIBUTE));      // get childAgeField value
     }
 
-    private void clickChildAgeField() {
+    protected void clickChildAgeField() {
         getChildAgeField().click();                                                     // click childAgeField
     }
 
-    private void clearChildAgeField() {
+    protected void clearChildAgeField() {
         getChildAgeField().clear();                                                     // clear childAgeField
     }
 
-    private void sendChildAgeFieldText(String age) {
+    protected void sendChildAgeFieldText(String age) {
         getChildAgeField().sendKeys(age);                                               // send text into childAgeField
     }
 
@@ -279,20 +266,10 @@ public class AdvancedSearchPart {
     // descendingSort
     private WebElement getDescendingSort() {
         return driver.findElement(By.xpath("//span[contains(@class,'anticon anticon-arrow-up control-sort-arrow') and contains(@aria-label,'arrow-up')]"));
-        //return this.descendingSort;                                                     // get descendingSort element
     }
 
     protected void clickDescendingSort() {
         getDescendingSort().click();                                                    // click descendingSort
-    }
-
-    // ascendingSort
-    private WebElement getAscendingSort() {
-        return this.ascendingSort;                                                      // get descendingSort element
-    }
-
-    protected void clickAscendingSort() {
-        getAscendingSort().click();                                                     // click descendingSort
     }
 
     // listView
@@ -304,7 +281,6 @@ public class AdvancedSearchPart {
     protected void clickListView() {
         // TODO Investigate why the only possible way to click on element to change view to list is using JS or action class otherwise it throws exception
         JsMethods.clickElement(getListView());                                          // click listView element
-        logger.info("Block view has been changed to the list view");
     }
 
     /*
@@ -340,50 +316,6 @@ public class AdvancedSearchPart {
         } catch(NoSuchElementException e){
             e.printStackTrace();
         }
-    }
-
-    protected void chooseCategories(Categories... categories) {
-        // Find and save all categories into the list
-        List<WebElement> categoriesList = driver.findElements(By.xpath(LIST_CATEGORIES_XPATH));
-        for(WebElement current : categoriesList) {
-            for(Categories category : categories) {
-                // Check if provided category matches one of the checkboxes
-                if(current.getText().toLowerCase().contains(category.toString().toLowerCase())) {
-                    // If match has been found, click on it to choose
-                    current.click();
-                    break;
-                }
-            }
-        }
-    }
-
-    // Type child age in the input field
-    protected void sendTextIntoChildAgeField(String age) {
-        clickChildAgeField();                                                           // click childAgeField
-        clearChildAgeField();                                                           // clear childAgeField
-        sendChildAgeFieldText(age);                                                     // send text into childAgeField
-    }
-
-    // Check if mandatory fields are displayed
-    protected boolean areMandatoryFieldsShowed() {
-        boolean displayed = (isCityPresent() && isDistrictPresent() && isNearestMetroStationPresent());
-        if (displayed) {
-            logger.info("Mandatory parameters such as 'Місто', 'Район міста', 'Найближча станція метро' are displayed");
-        } else {
-            logger.info("Mandatory parameters such as 'Місто', 'Район міста', 'Найближча станція метро' are disabled");
-        }
-        return displayed;
-    }
-
-    // Check if extra fields are disabled
-    protected boolean extraFieldsNotExist() {
-        boolean exist = (isRemotePresent() || isCategoriesPresent() || isChildAgePresent());
-        if (exist) {
-            logger.info("Extra parameters such as 'Доступний онлайн', 'Категорії', 'Вік дитини' are displayed");
-        } else {
-            logger.info("Extra parameters such as 'Доступний онлайн', 'Категорії', 'Вік дитини' parameters are disabled");
-        }
-        return !exist;
     }
 
     /*

@@ -26,7 +26,7 @@ public class SearchClubTest extends BaseTestSetup {
         ClubsPage clubsPage = homePage.gotoClubsPage();
 
         // Send text into search top field and press search button
-        clubsPage.searchClub(club.getTitle());
+        clubsPage.typeClubTitle(club.getTitle());
 
         // Assert check if searched club is present on the page
         Assert.assertTrue(clubsPage.isClubPresentOnThePage(club.getTitle()));
@@ -50,7 +50,7 @@ public class SearchClubTest extends BaseTestSetup {
         clubsPage.openAdvancedSearchPart();
 
         // Send text into search top field and press search button
-        clubsPage.searchClub(club.getTitle());
+        clubsPage.typeClubTitle(club.getTitle());
 
         // Assert check if searched club is present on the page
         Assert.assertTrue(clubsPage.isClubPresentOnThePage(club.getTitle()));

@@ -26,10 +26,7 @@ public class BasicSearchTest extends BaseTestSetup {
         ClubsPage clubsPage = homePage.gotoClubsPage();
 
         // Send club title with special characters into search top field
-        clubsPage.sendTextIntoInputSearchField(specialCharacters);
-
-        // Press ENTER button
-        clubsPage.clickEnterButton();
+        clubsPage.typeClubTitle(specialCharacters);
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
         Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(specialCharactersTitle));
@@ -51,10 +48,7 @@ public class BasicSearchTest extends BaseTestSetup {
         ClubsPage clubsPage = homePage.gotoClubsPage();
 
         // Send club title with numbers into search top field
-        clubsPage.sendTextIntoInputSearchField(numbers);
-
-        // Press ENTER button
-        clubsPage.clickEnterButton();
+        clubsPage.typeClubTitle(numbers);
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
         Assert.assertNotEquals(clubsPage.getAllClubTitles(), db.getList(numberTitle));          // remove NOT after bug fix
@@ -76,10 +70,7 @@ public class BasicSearchTest extends BaseTestSetup {
         ClubsPage clubsPage = homePage.gotoClubsPage();
 
         // Send category name into search top field
-        clubsPage.sendTextIntoInputSearchField(club.getCategory());
-
-        // Press ENTER button
-        clubsPage.clickEnterButton();
+        clubsPage.typeClubTitle(club.getCategory());
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
         Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(clubsByCategory));
@@ -101,10 +92,7 @@ public class BasicSearchTest extends BaseTestSetup {
         ClubsPage clubsPage = homePage.gotoClubsPage();
 
         // Send center name into search top field
-        clubsPage.sendTextIntoInputSearchField(centerName);
-
-        // Press ENTER button
-        clubsPage.clickEnterButton();
+        clubsPage.typeClubTitle(centerName);
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
         Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(clubsByCenter));
@@ -129,10 +117,7 @@ public class BasicSearchTest extends BaseTestSetup {
         Assert.assertEquals(clubsPage.getLocationText(), Locations.KYIV.toString());
 
         // Send center name into search top field
-        clubsPage.sendTextIntoInputSearchField(club.getTitle());
-
-        // Press ENTER button
-        clubsPage.clickEnterButton();
+        clubsPage.typeClubTitle(club.getTitle());
 
         // Assert get club titles on the page, save as list and run SQL query, save result as list and compare two lists
         Assert.assertEquals(clubsPage.getAllClubTitles(), db.getList(clubByTitle));

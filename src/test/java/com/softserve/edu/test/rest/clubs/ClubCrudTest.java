@@ -35,9 +35,9 @@ public class ClubCrudTest extends BaseTestSetup {
 
         // Verification
         Assertions.assertThat(clubs)
+                .extracting("name")
                 .usingRecursiveComparison()
                 .ignoringAllOverriddenEquals()
-                .comparingOnlyFields("name")
                 .isEqualTo(db.getList(allClubNames));
     }
 
@@ -50,10 +50,11 @@ public class ClubCrudTest extends BaseTestSetup {
 
         // Verification
         Assertions.assertThat(club)
+                .extracting("name")
                 .usingRecursiveComparison()
                 .ignoringAllOverriddenEquals()
-                .comparingOnlyFields("id")
                 .isEqualTo(db.getList(clubByCenterId));
+
     }
 
 }

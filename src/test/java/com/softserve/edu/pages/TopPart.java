@@ -7,7 +7,6 @@ import com.softserve.edu.pages.common.news.NewsPage;
 import com.softserve.edu.pages.common.servicesinukrainian.ServicesInUkrainianPage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
@@ -181,10 +180,6 @@ public abstract class TopPart {
         getSearchTopField().sendKeys(text);                                     // send text into searchTopField
     }
 
-    public void clickEnterButton() {
-        getSearchTopField().sendKeys(Keys.ENTER);                               // press enter
-    }
-
     // advancedSearchButton
     private WebElement getAdvancedSearchButton() {
         return this.advancedSearchButton;                                       // get advancedSearchButton element
@@ -237,8 +232,21 @@ public abstract class TopPart {
      */
 
     // pagination
+
+    // Count number of pages
     public int getActualNumberOfPages() {
-        return createPagination().countNumberOfPages();                         // get actual number of pages
+        int counter = 1;
+        try {
+            // Traversing through the table until the last button and adding names to the list defined above
+            while(createPagination().isNextButtonEnabled()) {
+                createPagination().clickNextButton();                           // click next button
+                counter++;                                                      // increase page count
+                presentationSleep(3);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return counter;
     }
 
     // linksImagesCheck
@@ -258,19 +266,12 @@ public abstract class TopPart {
     }
 
     @Step("Enter club title")
-    public void sendTextIntoInputSearchField(String text) {
+    public void typeClubTitle(String text) {
         logger.debug("Enter club title started");
         clickSearchTopField();                                                  // click search top field
         clearSearchTopField();                                                  // clear search top field
         sendSearchTopFieldText(text);                                           // send text into search top field
         logger.debug("Enter club title started");
-    }
-
-    @Step("Press ENTER button")
-    public void searchClub(String title) {
-        logger.debug("Enter and searching club by its title started");
-        sendTextIntoInputSearchField(title);                                    // send text into search top field
-        logger.debug("Enter and searching club by its title started");
     }
 
     /*

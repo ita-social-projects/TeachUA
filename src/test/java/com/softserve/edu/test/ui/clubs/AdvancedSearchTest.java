@@ -143,7 +143,7 @@ public class AdvancedSearchTest extends BaseTestSetup {
         Assert.assertTrue(clubsPage.areMandatoryFieldsDisplayed());
 
         // Assert check if all extra fields are disabled after clicking Center radio button
-        Assert.assertTrue(clubsPage.extraFieldsNotPresent());
+        Assert.assertTrue(clubsPage.areExtraFieldsNotPresent());
 
         logger.info("Test if all center mandatory fields are present and extra are disabled after clicking 'Центр' radio button finished");
     }
