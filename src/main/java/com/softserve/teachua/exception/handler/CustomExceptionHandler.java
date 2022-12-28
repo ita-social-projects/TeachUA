@@ -43,6 +43,7 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 /**
  * Custom exception handler to handle own exceptions and handle Spring's exceptions(BadRequest, MethodNotSupported).
@@ -72,7 +73,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AlreadyExistException.class)
     public final ResponseEntity<Object> handleAlreadyExistException(AlreadyExistException exception) {
-        return buildExceptionBody(exception, FORBIDDEN);
+        return buildExceptionBody(exception, CONFLICT);
     }
 
     @ExceptionHandler(UpdatePasswordException.class)
@@ -97,7 +98,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(FileUploadException.class)
     public final ResponseEntity<Object> handleFileUploadException(JsonWriteException exception) {
-        return buildExceptionBody(exception, FORBIDDEN);
+        return buildExceptionBody(exception, UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(MatchingPasswordException.class)
