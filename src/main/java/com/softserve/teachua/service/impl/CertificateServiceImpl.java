@@ -38,6 +38,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     private static final String CERTIFICATE_NOT_FOUND_BY_ID = "Certificate not found by id %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_SERIAL_NUMBER = "Certificate not found by serial number %s";
+    private static final Integer LAST_JRXML_TEMPLATE_ID = 3;
     private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME_AND_DATES =
         "Certificate not found by username and dates: %s, %s";
 
@@ -244,7 +245,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         if (transfer.getSerialNumber() == null && transfer.getUpdateStatus() == null) {
             transfer = updateCertificateWithSerialNumber(transfer.getId(), transfer);
         }
-        if (transfer.getTemplate().getId() <= 3) {
+        if (transfer.getTemplate().getId() <= LAST_JRXML_TEMPLATE_ID) {
             CertificateContent content = CertificateContent.builder().id(transfer.getId())
                     .serialNumber(transfer.getSerialNumber()).issuanceDate(transfer.getDates().getDate())
                     .userName(transfer.getUserName()).studyDuration(transfer.getDates().getDuration()).build();

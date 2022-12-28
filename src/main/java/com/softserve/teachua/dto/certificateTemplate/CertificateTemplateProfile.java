@@ -6,26 +6,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
 public class CertificateTemplateProfile implements Convertible {
+
     private Integer id;
-
-    @NotBlank
+    private boolean isUsed;
     private String name;
-
-    @NotBlank
     private String filePath;
-
     private Integer certificateType;
-
     private String courseDescription;
-
     private String projectDescription;
-
     private String picturePath;
+    private String properties;
+
 }

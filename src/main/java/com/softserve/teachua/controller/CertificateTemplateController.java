@@ -2,23 +2,30 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.template.CertificateTemplatePreview;
-import com.softserve.teachua.dto.template.CreateCertificateTemplate;
-import com.softserve.teachua.dto.template.SuccessCreatedCertificateTemplate;
-import com.softserve.teachua.dto.certificateByTemplate.CertificateTemplateUploadResponse;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateMetadataTransfer;
+import com.softserve.teachua.dto.certificateTemplate.*;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUploadResponse;
+import com.softserve.teachua.model.CertificateTemplate;
+import com.softserve.teachua.security.UserPrincipal;
+import com.softserve.teachua.service.CertificateByTemplateService;
 import com.softserve.teachua.service.CertificateTemplateService;
-import com.softserve.teachua.service.impl.CertificateByTemplateServiceImpl;
+import com.softserve.teachua.service.PdfTemplateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.Instant;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,30 +36,31 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class CertificateTemplateController implements Api {
     private final CertificateTemplateService certificateTemplateService;
-    private final CertificateByTemplateServiceImpl certificateByTemplateService;
+    private final CertificateByTemplateService certificateByTemplateService;
+    private final PdfTemplateService pdfTemplateService;
 
     public CertificateTemplateController(CertificateTemplateService certificateTemplateService,
-                                         CertificateByTemplateServiceImpl certificateByTemplateServiceImpl) {
+                                         CertificateByTemplateService certificateByTemplateServiceImpl,
+                                         PdfTemplateService pdfTemplateService) {
         this.certificateTemplateService = certificateTemplateService;
         this.certificateByTemplateService = certificateByTemplateServiceImpl;
+        this.pdfTemplateService = pdfTemplateService;
     }
 
-    /* *
+    /**
      * The method saves template to database.
      *
-     * @param createCertificateTemplate
-     *            - {@code CreateCertificateTemplate} read from form.
-     *
+     * @param createCertificateTemplate - {@code CreateCertificateTemplate} read from form.
      * @return new {@code SuccessCreatedCertificateTemplate}
      */
     @PostMapping("/template")
     @AllowedRoles(RoleData.ADMIN)
-    public SuccessCreatedCertificateTemplate createTemplate(
+    public CertificateTemplateCreationResponse createTemplate(
         @Valid @RequestBody CreateCertificateTemplate createCertificateTemplate) {
         return certificateTemplateService.addTemplate(createCertificateTemplate);
     }
 
-    /* *
+    /**
      * This endpoint is used to get all templates.
      *
      * @return {@code List<CertificateTemplatePreview>}
@@ -63,30 +71,69 @@ public class CertificateTemplateController implements Api {
         return certificateTemplateService.getAllTemplates();
     }
 
-    /* *
+    /**
      * The method uploads pdf template file and returns {@code CertificateTemplateUploadResponse}.
      *
      * @param multipartFile - pdf template file.
-     * @return new {@code }.
+     * @return new {@code CertificateTemplateUploadResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/template/pdf")
-    public CertificateTemplateUploadResponse uploadPdf(@RequestParam("pdf-file") MultipartFile multipartFile)
-        throws IOException {
-        File directory =
-            new File(new ClassPathResource("certificates/templates/").getFile().getPath() + "/pdf-templates");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-        String templateName = Instant.now().toEpochMilli() + ".pdf";
-        File file =
-            new File(new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" + templateName);
-
-        try (OutputStream os = Files.newOutputStream(
-            Paths.get(new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" + templateName))) {
-            os.write(multipartFile.getBytes());
-        }
-        return new CertificateTemplateUploadResponse(certificateByTemplateService.getTemplateFields(file.getPath()),
-            templateName);
+    public CertificateTemplateUploadResponse savePdf(@RequestParam("pdf-file") MultipartFile multipartFile) {
+        return pdfTemplateService.savePdf(multipartFile);
     }
+
+    /**
+     * This endpoint is used to save last modification date for the template uploaded earlier.
+     *
+     * @return {@code String}
+     */
+    @AllowedRoles(RoleData.ADMIN)
+    @PostMapping("/template/load-metadata")
+    public CertificateTemplateLastModificationDateSavingResponse saveLastModifiedDateOfPdf(
+        @RequestBody CertificateTemplateMetadataTransfer data) {
+        return pdfTemplateService.saveLastModifiedDateOfPdf(data);
+    }
+
+    /**
+     * This endpoint is used to get certificate template using id.
+     *
+     * @param id - put template id here.
+     * @return {@code CertificateTemplateProfile}
+     */
+    @AllowedRoles(RoleData.ADMIN)
+    @GetMapping("/template/{id}")
+    public CertificateTemplateProfile getCertificateTemplate(@PathVariable Integer id) {
+        return certificateTemplateService.getTemplateProfileById(id);
+    }
+
+    /**
+     * Use this endpoint to update some values of template. The controller returns {@code CertificateTemplate}.
+     * This feature available only for admins.
+     *
+     * @param id              - put template id here.
+     * @param updatedTemplate - put new parameters here.
+     * @return {@code CertificateTemplate} - shows result of updating template.
+     */
+    @AllowedRoles(RoleData.ADMIN)
+    @PutMapping("/template/{id}")
+    public CertificateTemplateUpdationResponse updateTemplate(@PathVariable Integer id,
+                                                              @Valid @RequestBody
+                                                              UpdateCertificateTemplate updatedTemplate) {
+        return certificateTemplateService.updateTemplate(id, updatedTemplate);
+    }
+
+    /**
+     * Use this endpoint to delete template. The controller returns {@code boolean}.
+     * This feature available only for admins.
+     *
+     * @param id - put template id here.
+     * @return {@code boolean}
+     */
+    @AllowedRoles(RoleData.ADMIN)
+    @DeleteMapping("/template/{id}")
+    public boolean deleteTemplate(@PathVariable Integer id) {
+        return certificateTemplateService.deleteTemplateById(id);
+    }
+
 }
