@@ -72,9 +72,11 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
 
     @Override
     public CertificateTemplate getTemplateByType(Integer type) {
-        int targetId = 3;
+        int targetId = type;
         if (type == 1) {
             targetId = 2;
+        } else if (type == 2) {
+            targetId = 3;
         } else if (type == 3) {
             targetId = 1;
         }

@@ -140,6 +140,14 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                     "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
                 .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
         }
+        if (!templateRepository.existsCertificateTemplateByCertificateType(4)) {
+            templateService.addTemplate(CertificateTemplate.builder().name("Учасник базового рівня").certificateType(4)
+                .filePath("/certificates/templates/jedyni_basic_participant_template.jrxml")
+                .courseDescription("Вивчення української мови базового рівня.")
+                .projectDescription(
+                    "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
+                .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
+        }
         return templateService.getTemplateByType(type);
     }
 

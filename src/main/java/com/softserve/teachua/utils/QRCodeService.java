@@ -98,6 +98,7 @@ public class QRCodeService {
         switch (Long.toString(serialNumber).charAt(0)) {
             case '1':   // trainer id
             case '2':   // moderator id
+            case '4':   // basic participant
                 return new MatrixToImageConfig(new Color(255, 255, 255).getRGB(), new Color(0, 0, 0, 0).getRGB());
             default:
                 return new MatrixToImageConfig(new Color(0, 0, 0).getRGB(), new Color(0, 0, 0, 0).getRGB());
