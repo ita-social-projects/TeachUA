@@ -19,7 +19,6 @@ import com.softserve.teachua.repository.test.QuestionCategoryRepository;
 import com.softserve.teachua.repository.test.QuestionRepository;
 import com.softserve.teachua.repository.test.QuestionTypeRepository;
 import com.softserve.teachua.service.UserService;
-import com.softserve.teachua.service.test.AnswerService;
 import com.softserve.teachua.service.test.QuestionCategoryService;
 import com.softserve.teachua.service.test.QuestionService;
 import com.softserve.teachua.service.test.QuestionTypeService;
@@ -39,6 +38,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
+import static org.apache.commons.lang3.StringUtils.isAllBlank;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -66,7 +67,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional(readOnly = true)
     public Page<QuestionResponse> searchAllQuestionsPageable(
         Pageable pageable, String query, String type, String category) {
-        if (!Objects.equals(type, "") && !Objects.equals(category, "")) {
+        if (!isEmpty(type) && !isEmpty(category)) {
             return mapToDtoPage(
                 questionRepository.findByTitleContainingIgnoreCaseAndQuestionTypeAndQuestionCategory(
                     pageable,
@@ -75,7 +76,7 @@ public class QuestionServiceImpl implements QuestionService {
                     categoryService.findByTitle(category)
                 ));
         }
-        if (!Objects.equals(type, "")) {
+        if (!isEmpty(type)) {
             return mapToDtoPage(
                 questionRepository.findByTitleContainingIgnoreCaseAndQuestionType(
                     pageable,
@@ -83,7 +84,7 @@ public class QuestionServiceImpl implements QuestionService {
                     typeService.findByTitle(type)
                 ));
         }
-        if (!Objects.equals(category, "")) {
+        if (!isEmpty(category)) {
             return mapToDtoPage(questionRepository.findByTitleContainingIgnoreCaseAndQuestionCategory(
                 pageable,
                 query,
