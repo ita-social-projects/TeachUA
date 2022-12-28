@@ -66,6 +66,8 @@ public class CenterServiceTest {
     @Mock
     private UserService userService;
     @Mock
+    private LocationService locationService;
+    @Mock
     private CoordinatesConverter coordinatesConverter;
     @InjectMocks
     private CenterServiceImpl centerService;
@@ -135,6 +137,20 @@ public class CenterServiceTest {
         when(userService.getCurrentUser()).thenReturn(user);
     }
 
+    private void setUpdateCenterMocks(){
+        LocationProfile locationProfile = LocationProfile.builder().build();
+        Location location = Location.builder().id(1L).center(createCenter).build();
+        Set<Location> locations = new HashSet<>();
+        locations.add(location);
+        centerProfile.setLocations(Collections.singletonList(locationProfile));
+
+        when(centerRepository.save(any(Center.class))).thenReturn(createCenter);
+        when(dtoConverter.convertToEntity(any(CenterProfile.class), any(Center.class))).thenReturn(new Center());
+        when(clubService.getClubById(club.getId())).thenReturn(club);
+        when(centerRepository.findById(CORRECT_CENTER_ID)).thenReturn(Optional.of(correctCenter));
+        when(dtoConverter.convertToDto(createCenter, CenterProfile.class)).thenReturn(centerProfile);
+    }
+
     @Test
     public void addCenterShouldReturnSuccessCreatedCenterWithUserAndWithoutLocations() {
         setAddCenterMocks();
@@ -176,12 +192,18 @@ public class CenterServiceTest {
         assertThat(centerService.deleteCenterById(CORRECT_CENTER_ID)).isEqualTo(correctCenterResponse);
     }
 
-//    @Test
-//    public void updateCenterShouldThrowAlreadyExistException() {
-//        when(centerRepository.existsByName(centerProfile.getName())).thenReturn(true);
-//        when(centerRepository.findById(CORRECT_CENTER_ID)).thenReturn(Optional.of(correctCenter));
-//        AlreadyExistException exception = assertThrows(AlreadyExistException.class,
-//                () -> centerService.updateCenter(1L, centerProfile));
-//        assertThat(exception.getMessage()).contains(centerProfile.getName());
-//    }
+    @Test
+    public void updateCenterShouldReturnCenterProfile() {
+        setUpdateCenterMocks();
+
+        assertThat(centerService.updateCenter(CORRECT_CENTER_ID,centerProfile)).isEqualTo(centerProfile);
+    }
+
+    @Test
+    public void updateCenterByWrongIdShouldThrowNotExistException() {
+        when(centerRepository.findById(WRONG_CENTER_ID)).thenReturn(Optional.empty());
+        NotExistException exception = assertThrows(NotExistException.class,
+            () -> centerService.updateCenter(WRONG_CENTER_ID,centerProfile));
+        assertTrue(exception.getMessage().contains(WRONG_CENTER_ID.toString()));
+    }
 }
