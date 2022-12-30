@@ -30,6 +30,11 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
     private final ModelMapper modelMapper;
 
     @Override
+    public List<QuestionCategory> findAll() {
+        return questionCategoryRepository.findAll();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public QuestionCategory findById(Long id) {
         checkNull(id, "Question category id");

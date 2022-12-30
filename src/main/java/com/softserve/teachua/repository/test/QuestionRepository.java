@@ -1,8 +1,12 @@
 package com.softserve.teachua.repository.test;
 
 import com.softserve.teachua.model.test.Question;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.softserve.teachua.model.test.QuestionCategory;
+import com.softserve.teachua.model.test.QuestionType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +18,31 @@ import java.util.Optional;
  */
 
 @Repository("testQuestionRepository")
-public interface QuestionRepository extends JpaRepository<Question, Long> {
+public interface QuestionRepository extends PagingAndSortingRepository<Question, Long> {
+
+    Optional<Question> findById(Long id);
+
+    Page<Question> findByTitleContainingIgnoreCase(Pageable pageable, String query);
+
+    Page<Question> findByTitleContainingIgnoreCaseAndQuestionType(
+        Pageable pageable,
+        String query,
+        QuestionType type
+    );
+
+    Page<Question> findByTitleContainingIgnoreCaseAndQuestionCategory(
+        Pageable pageable,
+        String query,
+        QuestionCategory category
+    );
+
+    Page<Question> findByTitleContainingIgnoreCaseAndQuestionTypeAndQuestionCategory(
+        Pageable pageable,
+        String query,
+        QuestionType type,
+        QuestionCategory category
+    );
+
     Optional<Question> findByTitle(String title);
 
     @Query("SELECT qt.question FROM QuestionTest qt WHERE qt.test.id = :id")

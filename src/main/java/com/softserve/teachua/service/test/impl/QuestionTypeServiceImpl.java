@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.softserve.teachua.utils.test.validation.NullValidator.*;
 import static com.softserve.teachua.utils.test.Messages.*;
 
@@ -28,4 +30,11 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
                 .orElseThrow(() -> new NotExistException(
                         String.format(NO_TITLE_MESSAGE, "question type", title)));
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<QuestionType> findAll() {
+        return questionTypeRepository.findAll();
+    }
+
 }
