@@ -58,7 +58,7 @@ public class Certificate implements Convertible {
     @ToString.Exclude
     private CertificateDates dates;
 
-    @Column(name = "values")
+    @Column(name = "`values`")
     private String values;
 
 }
