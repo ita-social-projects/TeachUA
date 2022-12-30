@@ -45,6 +45,8 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     boolean existsByUserName(String name);
 
+    boolean existsByTemplateId(Integer id);
+
     boolean existsByUserNameAndDates(String name, CertificateDates dates);
 
     List<Certificate> findAll();

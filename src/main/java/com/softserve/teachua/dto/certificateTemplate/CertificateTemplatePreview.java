@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.certificateTemplate;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,12 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class CertificateTemplateResponse implements Convertible {
-    private Integer id;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class CertificateTemplatePreview implements Convertible {
+
+    private Long id;
     private String name;
     private String filePath;
-    private Integer certificateType;
     private String courseDescription;
     private String projectDescription;
-    private String picturePath;
+
 }

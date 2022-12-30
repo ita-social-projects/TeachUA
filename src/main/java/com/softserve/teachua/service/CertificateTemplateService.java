@@ -1,6 +1,8 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.dto.certificateTemplate.*;
 import com.softserve.teachua.model.CertificateTemplate;
+import java.util.List;
 
 /**
  * This interface contains all needed methods to manage certificate templates.
@@ -11,9 +13,7 @@ public interface CertificateTemplateService {
     /**
      * This method returns entity of {@code CertificateTemplate} found by id
      *
-     * @param id
-     *            - put CertificateTemplate id
-     *
+     * @param id - put CertificateTemplate id
      * @return new {@code CertificateTemplate}
      */
     CertificateTemplate getTemplateById(Integer id);
@@ -21,9 +21,7 @@ public interface CertificateTemplateService {
     /**
      * This method returns entity of {@code CertificateTemplate} found by type
      *
-     * @param type
-     *            - put CertificateTemplate type
-     *
+     * @param type - put CertificateTemplate type
      * @return new {@code CertificateTemplate}
      */
     CertificateTemplate getTemplateByType(Integer type);
@@ -31,10 +29,51 @@ public interface CertificateTemplateService {
     /**
      * This method returns entity of {@code CertificateTemplate} if template successfully added
      *
-     * @param certificateTemplate
-     *            - put body of {@code CertificateTemplate}
-     *
+     * @param certificateTemplate - put body of {@code CertificateTemplate}
      * @return new {@code CertificateTemplate}
      */
     CertificateTemplate addTemplate(CertificateTemplate certificateTemplate);
+
+    /**
+     * This method returns {@code CertificateTemplateCreationResponse} if template successfully added
+     *
+     * @param certificateTemplate - put body of {@code CreateCertificateTemplate}
+     * @return new {@code CertificateTemplateCreationResponse}
+     */
+    CertificateTemplateCreationResponse addTemplate(CreateCertificateTemplate certificateTemplate);
+
+    /**
+     * This method returns List of {@code CertificateTemplatePreview} - all templates
+     *
+     * @return new {@code List<CertificateTemplatePreview>}
+     */
+    List<CertificateTemplatePreview> getAllTemplates();
+
+    /**
+     * This method returns entity of {@code CertificateTemplate} found by file path
+     *
+     * @param filePath put file path
+     * @return new {@code CertificateTemplate}
+     */
+    CertificateTemplate getTemplateByFilePath(String filePath);
+
+    /**
+     * This method updates {@code CertificateTemplate} found by id
+     *
+     * @param id              put CertificateTemplate id
+     * @param updatedTemplate put new data in this dto
+     * @return new {@code CertificateTemplateUpdationResponse}
+     */
+    CertificateTemplateUpdationResponse updateTemplate(Integer id, UpdateCertificateTemplate updatedTemplate);
+
+    /**
+     * This method deletes {@code CertificateTemplate} found by id
+     *
+     * @param id put CertificateTemplate id
+     * @return {@code boolean}
+     */
+    boolean deleteTemplateById(Integer id);
+
+    CertificateTemplateProfile getTemplateProfileById(Integer id);
+
 }

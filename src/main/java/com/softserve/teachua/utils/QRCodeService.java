@@ -31,22 +31,16 @@ public class QRCodeService {
     private String BASE_URL;
 
     /**
-     *
-     * @param content
-     *            content to be put into image
-     * @param width
-     *            width of QR code
-     * @param height
-     *            height of QR code
-     * @param hints
-     *            settings of the QR code
-     * @param qrColorsConfig
-     *            colors configuration for QR code image
-     *            if null, the method will use a black-and-white style
-     *
+     * @param content        content to be put into image
+     * @param width          width of QR code
+     * @param height         height of QR code
+     * @param hints          settings of the QR code
+     * @param qrColorsConfig colors configuration for QR code image
+     *                       if null, the method will use a black-and-white style
      * @return returns a generated QR code image as {@code BufferedImage}
      */
-    private BufferedImage getQrCodeImage(String content, int width, int height, Hashtable hints, MatrixToImageConfig qrColorsConfig) {
+    private BufferedImage getQrCodeImage(String content, int width, int height, Hashtable hints,
+                                         MatrixToImageConfig qrColorsConfig) {
         QRCodeWriter writer = new QRCodeWriter();
         if (hints == null) {
             hints = new Hashtable();
@@ -60,10 +54,11 @@ public class QRCodeService {
             log.debug("Error occured while making image");
         }
 
-        if (qrColorsConfig != null)
+        if (qrColorsConfig != null) {
             return MatrixToImageWriter.toBufferedImage(matrix, qrColorsConfig);
-        else
+        } else {
             return MatrixToImageWriter.toBufferedImage(matrix);
+        }
     }
 
     private byte[] getQrCodeImageBytes(String content, int width, int height, MatrixToImageConfig qrColorsConfig) {
@@ -90,17 +85,22 @@ public class QRCodeService {
     }
 
     public ByteArrayInputStream getCertificateQrCodeAsStream(Long serialNumber) {
-        MatrixToImageConfig qrStyleConfig;
+        return new ByteArrayInputStream(
+            getQrCodeImageBytes(formContentUrl(serialNumber), WIDTH, HEIGHT, getColorConfig(serialNumber)));
+    }
 
+    public byte[] getCertificateQrCodeAsStream(Long serialNumber, float width, float height,
+                                               MatrixToImageConfig colorConfig) {
+        return getQrCodeImageBytes(formContentUrl(serialNumber), (int) width, (int) height, colorConfig);
+    }
+
+    private MatrixToImageConfig getColorConfig(Long serialNumber) {
         switch (Long.toString(serialNumber).charAt(0)) {
             case '1':   // trainer id
             case '2':   // moderator id
-                qrStyleConfig = new MatrixToImageConfig(new Color(255, 255, 255).getRGB(), new Color(0, 0, 0, 0).getRGB());
-                break;
+                return new MatrixToImageConfig(new Color(255, 255, 255).getRGB(), new Color(0, 0, 0, 0).getRGB());
             default:
-                qrStyleConfig = new MatrixToImageConfig(new Color(0, 0, 0).getRGB(), new Color(0, 0, 0, 0).getRGB());
+                return new MatrixToImageConfig(new Color(0, 0, 0).getRGB(), new Color(0, 0, 0, 0).getRGB());
         }
-
-        return new ByteArrayInputStream(getQrCodeImageBytes(formContentUrl(serialNumber), WIDTH, HEIGHT, qrStyleConfig));
     }
 }

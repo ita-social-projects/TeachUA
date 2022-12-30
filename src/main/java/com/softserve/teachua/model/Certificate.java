@@ -57,4 +57,8 @@ public class Certificate implements Convertible {
     @JoinColumn(name = "dates_id", referencedColumnName = "id")
     @ToString.Exclude
     private CertificateDates dates;
+
+    @Column(name = "`values`")
+    private String values;
+
 }
