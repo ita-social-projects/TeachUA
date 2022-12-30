@@ -82,13 +82,13 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     public List<Message> getMessagesByUserId(Long id, boolean isSender) {
         List<Message> messages;
         if (isSender) {
-            messages = messageRepository.findAllBySenderId(id).orElseThrow(() -> {
+            messages = messageRepository.findAllBySenderIdOrderByDateDesc(id).orElseThrow(() -> {
                 log.warn("Messages with sender id - {} doesn't exist", id);
                 return new NotExistException(String.format("Messages with sender id - %s doesn't exist", id));
             });
             log.debug("get messages by sender id - {}", id);
         } else {
-            messages = messageRepository.findAllByRecipientId(id).orElseThrow(() -> {
+            messages = messageRepository.findAllByRecipientIdOrderByDateDesc(id).orElseThrow(() -> {
                 log.warn("Messages with recipient id - {} doesn't exist", id);
                 return new NotExistException(String.format("Messages with recipient id - %s doesn't exist", id));
             });

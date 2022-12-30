@@ -56,7 +56,8 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     @Query(value = "SELECT * " +
             "FROM certificates " +
             "WHERE user_email = :email " +
-            "AND NOT (serial_number IS NULL AND update_status IS NOT NULL)",
+            "AND NOT (serial_number IS NULL AND update_status IS NOT NULL) " +
+            "ORDER BY update_status DESC",
     nativeQuery = true)
     List<Certificate> findAllForDownload(@Param("email") String email);
 

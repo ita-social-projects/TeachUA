@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
-    Optional<List<Message>> findAllBySenderId(Long id);
+    Optional<List<Message>> findAllBySenderIdOrderByDateDesc(Long id);
 
-    Optional<List<Message>> findAllByRecipientId(Long id);
+    Optional<List<Message>> findAllByRecipientIdOrderByDateDesc(Long id);
 }
