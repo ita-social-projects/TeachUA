@@ -44,15 +44,6 @@ public abstract class BaseTestSetup {
         }
     }
 
-    // Only for presentation
-    protected void presentationSleep(int seconds) {
-        try {
-            Thread.sleep(seconds);                                                      // set seconds to sleep
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     // Annotation add received image into allure report (type says allure to understand byte sequence as image, value = attachName)
     @Attachment(value = "{0}", type = "image/png")
     private byte[] saveImageAttachment(String attachName) {
@@ -65,7 +56,7 @@ public abstract class BaseTestSetup {
             // Place taken screenshot into appropriate directory with the following name
             FileUtils.copyFile(scrFile, new File("./screenshots/" + attachName + ".png"));
         } catch (IOException e) {
-            e.printStackTrace();                                                        // throw exception
+            e.printStackTrace();
         }
         return result;
     }

@@ -20,7 +20,7 @@
         <!-- - - - - - Tests - - - - - -->
         <test.directory>./src/test/java/com/softserve/edu/test</test.directory>
         <!-- - - - - - Resources - - - - -->
-        <aspectj.version>1.9.9.1</aspectj.version>
+        <aspectj.version>1.9.19</aspectj.version>
         <!-- - - - - - Default xml file to run - - - - -->
         <xml.file>smoke-testsuite.xml</xml.file>
     </properties>
@@ -34,7 +34,7 @@
             <version>7.7.0</version>
         </dependency>
 
-        <!-- Provides extensions to emulate user interaction with browsers -->
+        <!-- Provides extensions to emulate user interaction with browsers (allows using WebDriver) -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>

@@ -6,7 +6,7 @@ import java.time.Duration;
 
 public class DriverWrapper {
 
-    private static final Long IMPLICITLY_WAIT_SECONDS = 10L;           // time for implicit wait
+    private static final Long IMPLICITLY_WAIT_SECONDS = 10L;    // time for implicit wait
     private static DriverWrapper instance = null;               // create instance of this class DriverWrapper
     private WebDriver driver;                                   // create WebDriver instance
     private Browsers browser = null;                            // create instance
