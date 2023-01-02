@@ -18,10 +18,13 @@ import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -116,6 +119,20 @@ public class QuestionsController implements Api {
         log.info("Save excel " + data);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         return loaderService.saveToDatabase(data, userPrincipal.getId());
+    }
+
+    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
+    @GetMapping("/questions/export")
+    public ResponseEntity<ByteArrayResource> downloadQuestions() {
+
+        byte[] bytes = questionExcelService.exportToExcel();
+        ByteArrayResource resource = new ByteArrayResource(bytes);
+
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=questions_export.xlsx");
+
+        return ResponseEntity.ok().headers(header).contentLength(bytes.length)
+            .contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
     }
 
     @AllowedRoles(RoleData.ADMIN)

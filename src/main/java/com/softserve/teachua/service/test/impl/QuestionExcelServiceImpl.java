@@ -5,7 +5,12 @@ import com.softserve.teachua.dto.test.question.questionExcel.ExcelQuestionParsin
 import com.softserve.teachua.dto.test.question.questionExcel.ExcelQuestionParsingResponse;
 import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
 import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.teachua.model.test.Answer;
+import com.softserve.teachua.model.test.Question;
+import com.softserve.teachua.repository.test.AnswerRepository;
+import com.softserve.teachua.repository.test.QuestionRepository;
 import com.softserve.teachua.service.test.QuestionExcelService;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +19,9 @@ import java.util.Iterator;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -59,10 +66,21 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
     private final static String CORRECT = "правильна";
     private final static String VALUE = "оцінка";
 
+    private final AnswerRepository answerRepository;
+    private final QuestionRepository questionRepository;
+
     private final DataFormatter dataFormatter = new DataFormatter();
     private int headerRowIndex = -1;
     private int[] indexes;
+    private int count = 0;
     private ExcelQuestionParsingResponse response;
+
+    public QuestionExcelServiceImpl(AnswerRepository answerRepository,
+                                    QuestionRepository questionRepository) {
+
+        this.answerRepository = answerRepository;
+        this.questionRepository = questionRepository;
+    }
 
     @Override
     public ExcelQuestionParsingResponse parseExcel(MultipartFile multipartFile) {
@@ -78,6 +96,116 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
         }
 
         return response;
+    }
+
+    private List<Cell> createCells(Row row) {
+        List<Cell> rowCells = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            Cell cell = row.createCell(i);
+            rowCells.add(cell);
+        }
+        return rowCells;
+    }
+
+    private void setColumnsWidth(Sheet sheet) {
+        sheet.setColumnWidth(0, 1000);
+        sheet.setColumnWidth(1, 6000);
+        sheet.setColumnWidth(2, 6000);
+        sheet.setColumnWidth(3, 3000);
+        sheet.setColumnWidth(4, 4000);
+        sheet.setColumnWidth(5, 6000);
+        sheet.setColumnWidth(6, 6000);
+    }
+
+    @Override
+    public byte[] exportToExcel() {
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        int rowNumber = 0;
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet();
+        setColumnsWidth(sheet);
+
+        Row row = sheet.createRow(rowNumber);
+        String[] header =
+            {"з/п", "Назва", "Опис", "Тип", "Категорія", "Варіанти відповідей", "Правильна відповідь", "Оцінка"};
+
+        CellStyle style = workbook.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+
+        for (int i = 0; i < header.length; i++) {
+            Cell cell = row.createCell(i);
+            cell.setCellValue(header[i]);
+            cell.setCellStyle(style);
+            count++;
+        }
+        List<Question> questions = questionRepository.findAllQuestions();
+
+        rowNumber++;
+        for (int i = 0; i < questions.size(); i++) {
+            row = sheet.createRow(rowNumber);
+            List<Cell> cells = createCells(row);
+            List<Answer> answers = answerRepository.findAllByQuestionId(questions.get(i).getId());
+            Answer answer = answers.get(0);
+
+            for (Cell cell : cells) {
+                if (cell.getColumnIndex() == 0) {
+                    cell.setCellStyle(style);
+                    cell.setCellValue(i + 1);
+                }
+                if (cell.getColumnIndex() == 1) {
+                    cell.setCellValue(questions.get(i).getTitle());
+                }
+                if (cell.getColumnIndex() == 2) {
+                    cell.setCellValue(questions.get(i).getDescription());
+                }
+                if (cell.getColumnIndex() == 3) {
+                    cell.setCellStyle(style);
+                    cell.setCellValue(questions.get(i).getQuestionType().getTitle());
+                }
+                if (cell.getColumnIndex() == 4) {
+                    cell.setCellValue(questions.get(i).getQuestionCategory().getTitle());
+                }
+                if (cell.getColumnIndex() == 5) {
+                    cell.setCellValue(answer.getText());
+                }
+                if (cell.getColumnIndex() == 6) {
+                    cell.setCellValue(answer.isCorrect());
+                }
+                if (cell.getColumnIndex() == 7) {
+                    cell.setCellStyle(style);
+                    cell.setCellValue(answer.getValue());
+                }
+            }
+            answers.remove(answer);
+            rowNumber++;
+            for (Answer a : answers) {
+                row = sheet.createRow(rowNumber);
+                cells = createCells(row);
+
+                for (Cell cell : cells) {
+                    if (cell.getColumnIndex() == 5) {
+                        cell.setCellValue(a.getText());
+                    }
+                    if (cell.getColumnIndex() == 6) {
+                        cell.setCellValue(a.isCorrect());
+                    }
+                    if (cell.getColumnIndex() == 7) {
+                        cell.setCellStyle(style);
+                        cell.setCellValue(a.getValue());
+                    }
+                }
+                rowNumber++;
+            }
+            rowNumber++;
+        }
+
+        try {
+            workbook.write(byteArrayOutputStream);
+            workbook.close();
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<List<Cell>> excelToList(InputStream inputStream) {

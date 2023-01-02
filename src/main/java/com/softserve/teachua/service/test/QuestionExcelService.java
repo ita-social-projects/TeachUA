@@ -17,4 +17,6 @@ public interface QuestionExcelService {
      * @return new {@code ExcelQuestionParsingResponse}.
      */
     ExcelQuestionParsingResponse parseExcel(MultipartFile multipartFile);
+
+    byte[] exportToExcel();
 }
