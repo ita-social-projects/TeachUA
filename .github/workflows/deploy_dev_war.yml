@@ -16,7 +16,10 @@ jobs:
       
       - name: Fix env vars
         run: echo "PUBLIC_URL=/dev" >> .env.production  
-          
+      
+      - name: Node version
+        run: node --version
+        
       - name: Install dependencies
         run: "npm install --legacy-peer-deps"
         continue-on-error: true
