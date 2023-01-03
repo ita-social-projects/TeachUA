@@ -3,6 +3,7 @@ package com.softserve.edu.services.api.placeholder;
 import com.softserve.edu.services.api.common.AbstractWebService;
 import com.softserve.edu.services.api.placeholder.endpoints.CategoryEndpoint;
 import com.softserve.edu.services.api.placeholder.endpoints.ClubEndpoint;
+import com.softserve.edu.services.api.placeholder.endpoints.LoginEndpoint;
 import io.restassured.specification.RequestSpecification;
 
 public class JsonPlaceHolderApi extends AbstractWebService {
@@ -23,6 +24,10 @@ public class JsonPlaceHolderApi extends AbstractWebService {
 
     public CategoryEndpoint category() {
         return new CategoryEndpoint(requestSpecification);
+    }
+
+    public LoginEndpoint login() {
+        return new LoginEndpoint(requestSpecification);
     }
 
 }

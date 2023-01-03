@@ -12,8 +12,9 @@ import java.util.List;
 
 public class ClubEndpoint extends AbstractWebEndpoint {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClubEndpoint.class);           // logger
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClubEndpoint.class);
     private static final String CLUBS_END = "clubs";
+    private static final String CLUB_END = "club";
     private static final String CLUB_RESOURCE_END = "club/{id}";
     private static final String CLUBS_BY_CENTER_RESOURCE_END = "clubsByCenterId/{id}";
 
@@ -22,13 +23,57 @@ public class ClubEndpoint extends AbstractWebEndpoint {
         super(specification);
     }
 
-    public ClubResponseDto getClubById(int id) {
-        return getClubById(id, HttpStatus.OK)
+    public ClubResponseDto create(ClubResponseDto clubResponseDto) {
+        return create(clubResponseDto, HttpStatus.CREATED)
+                .extract().as(ClubResponseDto.class);
+    }
+
+    public ValidatableResponse create(ClubResponseDto clubResponseDto, HttpStatus status) {
+        LOGGER.info("Create new Club");
+        return post(
+                this.specification,
+                CLUB_END,
+                clubResponseDto)
+                .statusCode(status.getCode());
+    }
+
+    public ClubResponseDto updateAllFields(int id, ClubResponseDto clubResponseDto) {
+        return updateAllFields(clubResponseDto, id, HttpStatus.OK)
+                .extract().as(ClubResponseDto.class);
+    }
+
+    public ValidatableResponse updateAllFields(ClubResponseDto clubResponseDto, int id, HttpStatus status) {
+        LOGGER.info("Update Club with id [{}]", id);
+        return put(
+                this.specification,
+                CLUB_RESOURCE_END,
+                clubResponseDto,
+                id)
+                .statusCode(status.getCode());
+    }
+
+    public ClubResponseDto updateSomeFields(int id, ClubResponseDto clubResponseDto) {
+        return updateSomeFields(clubResponseDto, id, HttpStatus.OK)
+                .extract().as(ClubResponseDto.class);
+    }
+
+    public ValidatableResponse updateSomeFields(ClubResponseDto clubResponseDto, int id, HttpStatus status) {
+        LOGGER.info("Partially update Club with id [{}]", id);
+        return patch(
+                this.specification,
+                CLUB_RESOURCE_END,
+                clubResponseDto,
+                id)
+                .statusCode(status.getCode());
+    }
+
+    public ClubResponseDto getById(int id) {
+        return getById(id, HttpStatus.OK)
                 .extract().as(ClubResponseDto.class);
     }
 
     // Get club by a certain id
-    public ValidatableResponse getClubById(int id, HttpStatus status) {
+    public ValidatableResponse getById(int id, HttpStatus status) {
         LOGGER.info("Get Club by id [{}]", id);
         return get(
                 this.specification,
@@ -37,11 +82,11 @@ public class ClubEndpoint extends AbstractWebEndpoint {
                 .statusCode(status.getCode());
     }
 
-    public List<ClubResponseDto> getAllClubs() {
-        return List.of(getAllClubs(HttpStatus.OK).extract().as(ClubResponseDto[].class));
+    public List<ClubResponseDto> getAll() {
+        return List.of(getAll(HttpStatus.OK).extract().as(ClubResponseDto[].class));
     }
 
-    public ValidatableResponse getAllClubs(HttpStatus status) {
+    public ValidatableResponse getAll(HttpStatus status) {
         LOGGER.info("Get all Clubs");
         ValidatableResponse response = get(this.specification, CLUBS_END);
         response.statusCode(status.getCode());
@@ -57,6 +102,21 @@ public class ClubEndpoint extends AbstractWebEndpoint {
         return get(
                 this.specification,
                 CLUBS_BY_CENTER_RESOURCE_END,
+                id)
+                .statusCode(status.getCode());
+    }
+
+    public ClubResponseDto deleteById(int id) {
+        return deleteById(id, HttpStatus.OK)
+                .extract().as(ClubResponseDto.class);
+    }
+
+    // Get club by a certain id
+    public ValidatableResponse deleteById(int id, HttpStatus status) {
+        LOGGER.info("Delete Club by id [{}]", id);
+        return delete(
+                this.specification,
+                CLUB_RESOURCE_END,
                 id)
                 .statusCode(status.getCode());
     }

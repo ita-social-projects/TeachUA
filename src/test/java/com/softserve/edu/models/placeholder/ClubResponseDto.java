@@ -29,7 +29,7 @@ public class ClubResponseDto extends BaseDto {
     private ArrayList<ContactDataResponseDto> contacts;
 
     /*
-     * Method using for build new ClubDto payload
+     * Method using for build new ClubResponseDto payload
      */
     public static Builder newBuilder() {
         return new ClubResponseDto().new Builder();
