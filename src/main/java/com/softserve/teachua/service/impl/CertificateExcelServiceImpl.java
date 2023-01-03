@@ -312,7 +312,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
                     (!values.get(data.getFieldsList().get(j)).isEmpty() ? " Рядок " + (i + 2) + ". " : "") +
                         "Значення \"" + value + "\".";
 
-                if (value.isEmpty()) {
+                if (value.trim().isEmpty()) {
                     resultList.add(new String[] {"Рядок " + (j + 2) + ". " + "Пуста клітинка.", "2"});
                     continue;
                 }
@@ -352,7 +352,14 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
                         break;
                     case "user_name":
                         if (!value.matches(USER_NAME_FORMAT)) {
-                            resultList.add(new String[] {USER_NAME_ERROR + messageDescription, "1"});
+                            StringBuilder stringBuilder = new StringBuilder();
+                            if (value.contains("  ")) {
+                                stringBuilder.append(" Подвійний пробіл!");
+                            }
+                            if (value.trim().length() < value.length()) {
+                                stringBuilder.append(" ПІБ починається/закінчується пробілом!");
+                            }
+                            resultList.add(new String[] {USER_NAME_ERROR + messageDescription + stringBuilder, "1"});
                         }
                         break;
                     case "date":
