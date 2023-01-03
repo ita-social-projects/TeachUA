@@ -43,9 +43,12 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
 
     @Autowired
     public CertificateDataLoaderServiceImpl(CertificateService certificateService,
-                                            CertificateDatesService certificateDatesService, CertificateTemplateService templateService,
-                                            CertificateRepository certificateRepository, CertificateDatesRepository datesRepository,
-                                            CertificateTemplateRepository templateRepository, CertificateContentDecorator decorator) {
+                                            CertificateDatesService certificateDatesService,
+                                            CertificateTemplateService templateService,
+                                            CertificateRepository certificateRepository,
+                                            CertificateDatesRepository datesRepository,
+                                            CertificateTemplateRepository templateRepository,
+                                            CertificateContentDecorator decorator) {
         this.certificateService = certificateService;
         this.certificateDatesService = certificateDatesService;
         this.templateService = templateService;
@@ -110,27 +113,27 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     private CertificateTemplate saveTemplate(Integer type) {
         if (!templateRepository.existsBy()) {
             return templateService.addTemplate(CertificateTemplate.builder().name("Єдині учасник").certificateType(3)
-                    .filePath("/certificates/templates/jedyni_participant_template.jrxml")
-                    .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
-                    .projectDescription(
-                            "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
-                    .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
+                .filePath("/certificates/templates/jedyni_participant_template.jrxml")
+                .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
+                .projectDescription(
+                    "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
+                .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
         }
         if (!templateRepository.existsCertificateTemplateByCertificateType(1)) { // Trainer
             templateService.addTemplate(CertificateTemplate.builder().name("Єдині тренер").certificateType(1)
-                    .filePath("/certificates/templates/trainer_certificate.jrxml")
-                    .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
-                    .projectDescription(
-                            "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
-                    .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
+                .filePath("/certificates/templates/trainer_certificate.jrxml")
+                .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
+                .projectDescription(
+                    "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
+                .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
         }
         if (!templateRepository.existsCertificateTemplateByCertificateType(2)) { // Moderator
             templateService.addTemplate(CertificateTemplate.builder().name("Єдині модератор").certificateType(2)
-                    .filePath("/certificates/templates/moderator_certificate.jrxml")
-                    .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
-                    .projectDescription(
-                            "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
-                    .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
+                .filePath("/certificates/templates/moderator_certificate.jrxml")
+                .courseDescription("Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”")
+                .projectDescription(
+                    "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.")
+                .picturePath("/static/images/certificate/validation/jedyni_banner.png").build());
         }
         if (!templateRepository.existsCertificateTemplateByCertificateType(3)) {
             templateService.addTemplate(CertificateTemplate.builder().name("Єдині учасник").certificateType(3)
@@ -152,15 +155,12 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     }
 
     @Override
-    public void saveCertificate(CertificateByTemplateTransfer data)
-        throws JsonProcessingException {
-        CertificateTemplate certificateTemplate =
-            templateService.getTemplateByFilePath(data.getTemplateName());
+    public void saveCertificate(CertificateByTemplateTransfer data) throws JsonProcessingException {
+        CertificateTemplate certificateTemplate = templateService.getTemplateByFilePath(data.getTemplateName());
 
         HashMap<String, String> templateProperties =
             new ObjectMapper().readValue(certificateTemplate.getProperties(), HashMap.class);
-        HashMap<String, String> mainValues =
-            new ObjectMapper().readValue(data.getValues(), HashMap.class);
+        HashMap<String, String> mainValues = new ObjectMapper().readValue(data.getValues(), HashMap.class);
         boolean excelProcessing = false;
         int i = 1;
         if (!data.getExcelContent().isEmpty()) {
@@ -181,36 +181,38 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                     case "serial_number":
                         if (!templateProperties.containsValue("course_number")) {
                             certificateDates.setCourseNumber(
-                                getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
                                     data.getExcelColumnsOrder(), excelValues, "Номер курсу"));
                         }
                         break;
                     case "course_number":
                         certificateDates.setCourseNumber(
-                            getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                            getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
                                 data.getExcelColumnsOrder(), excelValues, entry.getKey()));
                         break;
                     case "user_name":
-                        certificate.setUserName(getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
-                            data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                        certificate.setUserName(
+                            getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                data.getExcelColumnsOrder(), excelValues, entry.getKey()));
                         break;
                     case "date":
-                        certificateDates.setDate(getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
-                            data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                        certificateDates.setDate(
+                            getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                                data.getExcelColumnsOrder(), excelValues, entry.getKey()));
                         break;
                     case "duration":
                         certificateDates.setDuration(
-                            getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                            getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
                                 data.getExcelColumnsOrder(), excelValues, entry.getKey()));
                         break;
                     case "hours":
-                        certificateDates.setHours(
-                            Integer.valueOf(getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                        certificateDates.setHours(Integer.valueOf(
+                            getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
                                 data.getExcelColumnsOrder(), excelValues, entry.getKey())));
                         break;
                     case "study_form":
                         certificateDates.setStudyForm(
-                            getValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                            getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
                                 data.getExcelColumnsOrder(), excelValues, entry.getKey()));
                         break;
                     default:
@@ -221,8 +223,8 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
 
             certificate.setValues(new ObjectMapper().writeValueAsString(values));
             certificate.setSendToEmail(
-                getValue(values, data.getFieldsList(), data.getColumnHeadersList(), data.getExcelColumnsOrder(),
-                    excelValues, "Електронна пошта"));
+                getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
+                    data.getExcelColumnsOrder(), excelValues, "Електронна пошта"));
             certificate.setTemplate(certificateTemplate);
             certificate.setDates(certificateDates);
 
@@ -230,17 +232,17 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
         }
     }
 
-    private String getValue(Map<String, String> values, List<String> fieldsList, List<String> columnHeadersList,
-                            List<String> excelColumnsOrder, List<String> excelValues, String propertyName) {
+    @Override
+    public String getCertificateByTemplateValue(Map<String, String> values, List<String> fieldsList,
+                                                List<String> columnHeadersList, List<String> excelColumnsOrder,
+                                                List<String> excelValues, String propertyName) {
         String result = values.get(propertyName);
-        if (!result.trim().isEmpty()) {
-            return result;
-        } else {
-            String value =
+        if (result.trim().isEmpty()) {
+            result =
                 excelValues.get(columnHeadersList.indexOf(excelColumnsOrder.get(fieldsList.indexOf(propertyName))));
-            values.put(propertyName, value);
-            return value;
+            values.put(propertyName, result);
         }
+        return result;
     }
 
 }

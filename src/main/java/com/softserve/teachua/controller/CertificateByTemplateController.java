@@ -59,24 +59,38 @@ public class CertificateByTemplateController implements Api {
             new ObjectMapper().readValue(certificateTemplate.getProperties(), HashMap.class);
 
         List<String> fieldsList = new ArrayList<>();
+        List<String> fieldPropertiesList = new ArrayList<>();
         for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
             switch (entry.getValue()) {
+                case "date":
+                    fieldsList.add(entry.getKey());
+                    fieldPropertiesList.add("date");
+                    break;
+                case "hours":
+                case "course_number":
+                    fieldsList.add(entry.getKey());
+                    fieldPropertiesList.add("int");
+                    break;
                 case "qrCode_white":
                 case "qrCode_black":
                     break;
                 case "serial_number":
                     if (!templateProperties.containsValue("course_number")) {
                         fieldsList.add("Номер курсу");
+                        fieldPropertiesList.add("int");
                     }
                     break;
                 default:
                     fieldsList.add(entry.getKey());
+                    fieldPropertiesList.add("String");
             }
         }
         fieldsList.add("Електронна пошта");
+        fieldPropertiesList.add("String");
         return CertificateByTemplateTransfer.builder()
             .templateName(template.getFilePath())
             .fieldsList(fieldsList)
+            .fieldPropertiesList(fieldPropertiesList)
             .build();
     }
 
@@ -103,6 +117,22 @@ public class CertificateByTemplateController implements Api {
     public void saveCertificate(@RequestBody CertificateByTemplateTransfer data) throws IOException {
         log.info("Save certificate/certificates by template " + data);
         loaderService.saveCertificate(data);
+    }
+    /**
+     * The method validates excel file and returns
+     * <p>{@code List<String[]>}, in which one bucket contains two {@code String} classes</p>
+     *      <p>first String - message;</p>
+     *      <p>second String - message code(1 - warning; 2 - error; 3 - success);</p>
+     *
+     * @param data template dto.
+     * @return new {@code List<String[]>}.
+     */
+    @AllowedRoles(RoleData.ADMIN)
+    @PostMapping("/certificate-by-template/validate")
+    public List<String[]> validateCertificateExcelData(@RequestBody CertificateByTemplateTransfer data)
+        throws JsonProcessingException {
+        log.info("Validate certificate/certificates by template " + data);
+        return excelService.validateCertificateByTemplateExcel(data);
     }
 
 }
