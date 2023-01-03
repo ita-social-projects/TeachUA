@@ -5,7 +5,6 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateMetadataTransfer;
 import com.softserve.teachua.dto.certificateTemplate.*;
 import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUploadResponse;
-import com.softserve.teachua.service.CertificateByTemplateService;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.PdfTemplateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
@@ -22,14 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class CertificateTemplateController implements Api {
     private final CertificateTemplateService certificateTemplateService;
-    private final CertificateByTemplateService certificateByTemplateService;
     private final PdfTemplateService pdfTemplateService;
 
     public CertificateTemplateController(CertificateTemplateService certificateTemplateService,
-                                         CertificateByTemplateService certificateByTemplateServiceImpl,
                                          PdfTemplateService pdfTemplateService) {
         this.certificateTemplateService = certificateTemplateService;
-        this.certificateByTemplateService = certificateByTemplateServiceImpl;
         this.pdfTemplateService = pdfTemplateService;
     }
 

@@ -24,6 +24,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.softserve.teachua.service.CertificateService.LAST_JRXML_TEMPLATE_ID;
+
 @Service
 @Transactional
 @Slf4j
@@ -117,7 +119,7 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
     public List<CertificateTemplatePreview> getAllTemplates() {
         List<CertificateTemplatePreview> resultList = new LinkedList<>();
         List<CertificateTemplate> list;
-        list = certificateTemplateRepository.findByIdGreaterThanOrderByIdDesc(3);
+        list = certificateTemplateRepository.findByIdGreaterThanOrderByIdDesc(LAST_JRXML_TEMPLATE_ID);
         list.forEach(
             (challenge -> resultList.add(dtoConverter.convertToDto(challenge, CertificateTemplatePreview.class))));
         return resultList;

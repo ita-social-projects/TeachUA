@@ -13,6 +13,10 @@ import java.util.Map;
  */
 
 public interface CertificateService {
+    /**
+     * This const means the last database id of the certificate's template, which generates using Jasper .xml file
+     */
+    Integer LAST_JRXML_TEMPLATE_ID = 4;
 
     /**
      * This method returns list of dto {@code CertificateTransfer} of all certificates

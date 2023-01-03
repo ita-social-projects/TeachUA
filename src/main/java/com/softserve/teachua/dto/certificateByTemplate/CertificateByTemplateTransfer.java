@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class CertificateByTemplateTransfer {
 
     private List<String> fieldsList;
+    private List<String> fieldPropertiesList;
     private String templateName;
     private String values;
     private List<String> columnHeadersList;

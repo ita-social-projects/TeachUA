@@ -38,7 +38,6 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     private static final String CERTIFICATE_NOT_FOUND_BY_ID = "Certificate not found by id %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_SERIAL_NUMBER = "Certificate not found by serial number %s";
-    private static final Integer LAST_JRXML_TEMPLATE_ID = 4;
     private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME_AND_DATES =
         "Certificate not found by username and dates: %s, %s";
 
