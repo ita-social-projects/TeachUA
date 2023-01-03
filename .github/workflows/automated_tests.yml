@@ -22,7 +22,7 @@ jobs:
           ${{ runner.os }}-maven-
     - name: Install Google Chrome
       run: |
-        chmod +x ./scripts/install_chrome.sh
-                    ./scripts/install_chrome.sh
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt-get install ./google-chrome-stable_current_amd64.deb -y
     - name: Run automated tests with Maven
       run: mvn -B package --file pom.xml
