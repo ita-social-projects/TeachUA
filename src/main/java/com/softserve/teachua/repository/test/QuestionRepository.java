@@ -53,4 +53,9 @@ public interface QuestionRepository extends PagingAndSortingRepository<Question,
             "JOIN FETCH qt.question.answers " +
             "WHERE qt.test.id = :id")
     List<Question> findAllQuestionsByTestIdFetch(@Param("id") Long testId);
+
+
+
+    @Query("SELECT q from testQuestion q")
+    List<Question> findAllQuestions();
 }
