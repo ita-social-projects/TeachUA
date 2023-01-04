@@ -223,7 +223,7 @@ public class ClubController implements Api {
      *
      * @return new {@code ClubProfile}.
      */
-    @AllowedRoles({ RoleData.ADMIN, RoleData.USER })
+    @AllowedRoles({ RoleData.ADMIN, RoleData.MANAGER })
     @PatchMapping("/club/change-owner/{id}")
     public ClubResponse changeClubOwner(@PathVariable Long id, @Valid @RequestBody ClubOwnerProfile clubOwnerProfile) {
         return clubService.changeClubOwner(id, clubOwnerProfile);
@@ -239,7 +239,7 @@ public class ClubController implements Api {
      *
      * @return new {@code SuccessUpdatedClub}.
      */
-    @AllowedRoles({ RoleData.ADMIN, RoleData.USER })
+    @AllowedRoles({ RoleData.ADMIN, RoleData.MANAGER })
     @PatchMapping("/club/{id}")
     public SuccessUpdatedClub patchClub(@PathVariable Long id, @Valid @RequestBody ClubResponse clubProfile) {
         return clubService.updateClub(id, clubProfile);
