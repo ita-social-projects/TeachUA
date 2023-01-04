@@ -177,11 +177,6 @@ public interface UserService {
     SuccessVerification verify(String verificationCode);
 
     /**
-     * The method checks if user is valid by user id.
-     */
-    void validateUserId(Long id, HttpServletRequest httpServletRequest);
-
-    /**
      * The method returns dto {@code UserVerifyPassword} if user successfully logged.
      *
      * @param userVerifyPassword
