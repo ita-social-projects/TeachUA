@@ -214,19 +214,35 @@ public class ClubController implements Api {
     }
 
     /**
-     * Use this endpoint to update some values of club by id. The controller returns {@code ClubResponse}.
+     * Use this endpoint to change owner of club by id. The controller returns {@code ClubResponse}.
      *
      * @param id
      *            - put club id here.
      * @param clubOwnerProfile
-     *            - Place dto with all parameters for updating existing club.
+     *            - New owner profile.
      *
      * @return new {@code ClubProfile}.
      */
     @AllowedRoles({ RoleData.ADMIN, RoleData.USER })
-    @PatchMapping("/club/{id}")
+    @PatchMapping("/club/change-owner/{id}")
     public ClubResponse changeClubOwner(@PathVariable Long id, @Valid @RequestBody ClubOwnerProfile clubOwnerProfile) {
         return clubService.changeClubOwner(id, clubOwnerProfile);
+    }
+
+    /**
+     * Use this endpoint to update some values of club by id. The controller returns {@code SuccessUpdatedClub}.
+     *
+     * @param id
+     *            - put club id here.
+     * @param clubProfile
+     *            - Place dto with all parameters for updating existing club.
+     *
+     * @return new {@code SuccessUpdatedClub}.
+     */
+    @AllowedRoles({ RoleData.ADMIN, RoleData.USER })
+    @PatchMapping("/club/{id}")
+    public SuccessUpdatedClub patchClub(@PathVariable Long id, @Valid @RequestBody ClubResponse clubProfile) {
+        return clubService.updateClub(id, clubProfile);
     }
 
     /**
