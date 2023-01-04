@@ -10,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.modelmapper.ModelMapper;
 
 import java.util.Collections;
@@ -128,7 +130,6 @@ class QuestionServiceTest {
         when(questionRepository.findQuestionsByTestId(EXISTING_TEST_ID))
                 .thenReturn(Collections.singletonList(question));
         when(modelMapper.map(question, QuestionResponse.class)).thenReturn(questionResponse);
-        when(answerService.findByQuestionId(question.getId())).thenReturn(Collections.emptyList());
 
         List<QuestionResponse> actual = questionService.findQuestionResponsesByTestId(EXISTING_TEST_ID);
         assertEquals(questionResponse, actual.get(0));
@@ -156,7 +157,6 @@ class QuestionServiceTest {
         when(questionRepository.findQuestionsByTestId(EXISTING_TEST_ID))
                 .thenReturn(Collections.singletonList(question));
         when(modelMapper.map(question, QuestionResponse.class)).thenReturn(questionResponse);
-        when(answerService.findByQuestionId(question.getId())).thenReturn(Collections.emptyList());
 
         List<QuestionResponse> actual = questionService.findQuestionResponsesByTest(test);
         assertEquals(questionResponse, actual.get(0));
@@ -177,7 +177,7 @@ class QuestionServiceTest {
 
     @Test
     void saveNullQuestionShouldThrowIllegalArgException() {
-        assertThatThrownBy(() -> questionService.save(null))
+        assertThatThrownBy(() -> questionService.save((Question) null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

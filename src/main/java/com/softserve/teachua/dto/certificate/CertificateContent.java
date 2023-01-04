@@ -42,4 +42,6 @@ public class CertificateContent implements Convertible {
     private String templatePath;
 
     private String studyForm;
+
+    private String credits;
 }

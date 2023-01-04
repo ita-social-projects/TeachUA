@@ -38,7 +38,6 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     private static final String CERTIFICATE_NOT_FOUND_BY_ID = "Certificate not found by id %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_SERIAL_NUMBER = "Certificate not found by serial number %s";
-    private static final Integer LAST_JRXML_TEMPLATE_ID = 3;
     private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME_AND_DATES =
         "Certificate not found by username and dates: %s, %s";
 
@@ -252,6 +251,12 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
             content.setStudyHours(certificateContentDecorator.formHours(transfer.getDates().getHours()));
             content.setQrCode(qrCodeService.getCertificateQrCodeAsStream(content.getSerialNumber()));
             content.setStudyForm(transfer.getDates().getStudyForm());
+            int hours = transfer.getDates().getHours();
+            if (hours % 30 == 0) {
+                content.setCredits(String.valueOf(hours / 30));
+            } else {
+                content.setCredits(String.valueOf(Math.round(hours/30.*10)/10.));
+            }
             try {
                 JasperPrint jasperPrint = createJasperPrint(transfer.getTemplate().getFilePath(), content);
                 JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);

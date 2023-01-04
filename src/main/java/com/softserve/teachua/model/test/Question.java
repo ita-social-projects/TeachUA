@@ -43,7 +43,8 @@ public class Question implements Convertible {
 
     @Setter(AccessLevel.PRIVATE)
     @OneToMany(mappedBy = "question",
-               cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+        orphanRemoval = true,
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Answer> answers = new HashSet<>();
 
     public Set<Answer> getAnswers() {

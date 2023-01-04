@@ -5,27 +5,12 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateMetadataTransfer;
 import com.softserve.teachua.dto.certificateTemplate.*;
 import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUploadResponse;
-import com.softserve.teachua.model.CertificateTemplate;
-import com.softserve.teachua.security.UserPrincipal;
-import com.softserve.teachua.service.CertificateByTemplateService;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.PdfTemplateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,14 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class CertificateTemplateController implements Api {
     private final CertificateTemplateService certificateTemplateService;
-    private final CertificateByTemplateService certificateByTemplateService;
     private final PdfTemplateService pdfTemplateService;
 
     public CertificateTemplateController(CertificateTemplateService certificateTemplateService,
-                                         CertificateByTemplateService certificateByTemplateServiceImpl,
                                          PdfTemplateService pdfTemplateService) {
         this.certificateTemplateService = certificateTemplateService;
-        this.certificateByTemplateService = certificateByTemplateServiceImpl;
         this.pdfTemplateService = pdfTemplateService;
     }
 

@@ -16,7 +16,6 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<!-- <java.version>11</java.version> -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.slf4j.version>1.7.30</org.slf4j.version>
 		<skipTests>false</skipTests>
@@ -284,44 +283,43 @@
 			<version>7.2.4</version>
 		</dependency>
 
-    <!--    GOOGLE CLIENT AND API -->
-    <dependency>
-      <groupId>com.google.api-client</groupId>
-      <artifactId>google-api-client</artifactId>
-      <version>2.1.0</version>
-    </dependency>
+        <!--    GOOGLE CLIENT AND API -->
+        <dependency>
+          <groupId>com.google.api-client</groupId>
+          <artifactId>google-api-client</artifactId>
+          <version>2.1.0</version>
+        </dependency>
 
-    <dependency>
-        <groupId>com.google.apis</groupId>
-        <artifactId>google-api-services-forms</artifactId>
-        <version>v1-rev20220908-2.0.0</version>
-    </dependency>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-forms</artifactId>
+            <version>v1-rev20220908-2.0.0</version>
+        </dependency>
 
-    <dependency>
-        <groupId>com.google.apis</groupId>
-        <artifactId>google-api-services-drive</artifactId>
-        <version>v3-rev20221023-2.0.0</version>
-    </dependency>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-drive</artifactId>
+            <version>v3-rev20221023-2.0.0</version>
+        </dependency>
 
-    <dependency>
-        <groupId>com.google.oauth-client</groupId>
-        <artifactId>google-oauth-client-jetty</artifactId>
-        <version>1.34.1</version>
-    </dependency>
+        <dependency>
+            <groupId>com.google.oauth-client</groupId>
+            <artifactId>google-oauth-client-jetty</artifactId>
+            <version>1.34.1</version>
+        </dependency>
 
-    <dependency>
-        <groupId>com.google.auth</groupId>
-        <artifactId>google-auth-library-oauth2-http</artifactId>
-        <version>1.12.1</version>
-    </dependency>
+        <dependency>
+            <groupId>com.google.auth</groupId>
+            <artifactId>google-auth-library-oauth2-http</artifactId>
+            <version>1.12.1</version>
+        </dependency>
 
-    <dependency>
-        <groupId>com.sun.mail</groupId>
-        <artifactId>gimap</artifactId>
-        <!--do not update this version because of jakarta-->
-        <version>1.6.5</version>
-    </dependency>
-
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>gimap</artifactId>
+            <!--do not update this version because of jakarta-->
+            <version>1.6.5</version>
+        </dependency>
   </dependencies>
 
 
@@ -395,6 +393,13 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/config/*</exclude>
+                        <exclude>**/exception/*</exclude>
+                        <exclude>**/model/*</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -411,37 +416,11 @@
                 </executions>
             </plugin>
 
-<!--			<plugin>-->
-<!--				<groupId>org.apache.maven.plugins</groupId>-->
-<!--				<artifactId>maven-compiler-plugin</artifactId>-->
-<!--				<configuration>-->
-<!--					<source>8</source>-->
-<!--					<target>8</target>-->
-<!--				</configuration>-->
-<!--			</plugin>-->
-
 			<plugin>
 				<groupId>net.revelc.code.formatter</groupId>
 				<artifactId>formatter-maven-plugin</artifactId>
 				<version>2.19.0</version>
 			</plugin>
-
-<!--             <plugin> -->
-<!--                 <groupId>org.apache.maven.plugins</groupId> -->
-<!--                <artifactId>maven-compiler-plugin</artifactId> -->
-<!--                <configuration> -->
-<!--                     <source>11</source> -->
-<!--                     <target>11</target> -->
-<!--                 </configuration> -->
-<!--             </plugin> -->
-            <!-- <plugin> -->
-			<!-- <groupId>org.apache.maven.plugins</groupId> -->
-			<!-- <artifactId>maven-compiler-plugin</artifactId> -->
-			<!-- <configuration> -->
-			<!-- <source>10</source> -->
-			<!-- <target>10</target> -->
-			<!-- </configuration> -->
-			<!-- </plugin> -->
 
 		</plugins>
 	</build>
