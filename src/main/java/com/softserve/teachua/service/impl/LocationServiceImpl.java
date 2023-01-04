@@ -96,11 +96,11 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
 
     @Override
     public Set<Location> updateLocationByClub(Set<LocationResponse> locations, Club club) {
+        locationRepository.deleteAllByClub(club);
+
         if (locations == null || locations.isEmpty()) {
             return null;
         }
-
-        locationRepository.deleteAllByClub(club);
 
         return locations.stream()
                 .map(locationResponse -> locationRepository
