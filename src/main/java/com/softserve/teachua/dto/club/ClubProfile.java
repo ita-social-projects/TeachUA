@@ -18,24 +18,27 @@ import java.util.List;
 @Data
 @With
 @JsonIgnoreProperties(ignoreUnknown = true)
-
 public class ClubProfile implements Convertible {
+    
     private Long id;
 
-    private List<String> categoriesName;
-
-    @Valid
-    private List<LocationProfile> locations;
+    @NotEmpty
+    @Size(min = 5, max = 100, message = "Довжина назви має бути від 5 до 100 символів")
+    @CheckRussian
+    private String name;
 
     @CheckRussian
     @ClubDescription
     @Size(min = 40, max = 1500, message = "Description should be between 40 and 1500 chars")
     public String description;
 
+    private Long centerId;
+
     @NotEmpty
-    @Size(min = 5, max = 100, message = "Довжина назви має бути від 5 до 100 символів")
-    @CheckRussian
-    private String name;
+    private List<String> categoriesName;
+
+    @Valid
+    private List<LocationProfile> locations;
 
     @Min(2)
     @Max(17)
@@ -60,8 +63,6 @@ public class ClubProfile implements Convertible {
     private Boolean isApproved;
 
     private Long userId;
-
-    private Long centerId;
 
     private Long clubExternalId;
 

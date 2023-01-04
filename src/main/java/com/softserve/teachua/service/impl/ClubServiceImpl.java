@@ -239,10 +239,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }
 
-        if (clubProfile.getCategoriesName() == null) {
-            throw new IncorrectInputException("categoriesName should not be null");
-        }
-
         Center center = null;
         if (clubProfile.getCenterId() != null) {
             center = centerService.getCenterById(clubProfile.getCenterId());
