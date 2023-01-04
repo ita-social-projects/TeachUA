@@ -2,38 +2,38 @@ package com.softserve.teachua.converter;
 
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.location.LocationResponse;
-import com.softserve.teachua.service.impl.LocationServiceImpl;
+import com.softserve.teachua.exception.IncorrectInputException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @NoArgsConstructor
 @Slf4j
 @Component
 public class CoordinatesConverter {
-    private LocationServiceImpl locationService;
-
-    @Autowired
-    public CoordinatesConverter(LocationServiceImpl locationService) {
-        this.locationService = locationService;
-    }
 
     public void locationProfileConverterToDb(LocationProfile location) {
         if (location != null && location.getCoordinates() != null) {
-            String coordinates = location.getCoordinates();
-            String[] latAndLng = coordinates.replaceAll(" ", "").split(",");
-            location.setLatitude(Double.valueOf(latAndLng[0]));
-            location.setLongitude(Double.valueOf(latAndLng[1]));
+            double[] latitudeAndLongitude = parseLatitudeAndLongitude(location.getCoordinates());
+            location.setLatitude(latitudeAndLongitude[0]);
+            location.setLongitude(latitudeAndLongitude[1]);
         }
     }
 
     public void locationResponseConverterToDb(LocationResponse location) {
         if (location != null && location.getCoordinates() != null) {
-            String coordinates = location.getCoordinates();
+            double[] latitudeAndLongitude = parseLatitudeAndLongitude(location.getCoordinates());
+            location.setLatitude(latitudeAndLongitude[0]);
+            location.setLongitude(latitudeAndLongitude[1]);
+        }
+    }
+
+    private double[] parseLatitudeAndLongitude(String coordinates) {
+        try {
             String[] latAndLng = coordinates.replaceAll(" ", "").split(",");
-            location.setLatitude(Double.valueOf(latAndLng[0]));
-            location.setLongitude(Double.valueOf(latAndLng[1]));
+            return new double[]{Double.parseDouble(latAndLng[0]), Double.parseDouble(latAndLng[1])};
+        } catch (Exception e) {
+            throw new IncorrectInputException("Parsing error. Wrong coordinates format.");
         }
     }
 }
