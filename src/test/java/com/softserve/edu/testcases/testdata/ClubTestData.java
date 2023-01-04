@@ -150,32 +150,6 @@ public class ClubTestData {
                 .setContacts(null);
     }
 
-    public ClubResponseDto clubMandatoryFields() {
-        return ClubResponseDto.newBuilder()
-                .withId(11)
-                .withAgeFrom(6)
-                .withAgeTo(16)
-                .withName("Художнє відділення")
-                .withDescription("{\"blocks\":[{\"key\":\"etag9\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"8lltb\",\"text\":\" \",\"type\":\"atomic\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[{\"offset\":0,\"length\":1,\"key\":0}],\"data\":{}},{\"key\":\"98dtl\",\"text\":\"\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"9q9dc\",\"text\":\"Художнє відділення. Рисунок, живопис, композиція, скульптура, декоративно - прикладне мистецтво  \",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{\"0\":{\"type\":\"image\",\"mutability\":\"IMMUTABLE\",\"data\":{\"src\":\"https://linguapedia.info/wp-content/uploads/2015/05/history-of-ukrainian.jpg\",\"className\":\"edited-image edited-image-center\"}}}}")
-                .withCategories(new ArrayList<>(Collections.singletonList(new CategoryDto()
-                        .setId(12)
-                        .setSortby(33)
-                        .setName("Вчіться, діти")
-                        .setDescription("description aaa bbb")
-                        .setUrlLogo("/static/images/categories/tv.svg")
-                        .setBackgroundColor("#13C2C2")
-                        .setTagBackgroundColor("#a34d4d")
-                        .setTagTextColor("#fff"))))
-                .withCenter(certainCenter())
-                .withContacts(new ArrayList<>(Collections.singletonList(new ContactDataResponseDto()
-                        .setContactType(new ContactTypeDto()
-                                .setId(1)
-                                .setName("Телефон")
-                                .setUrlLogo("/static/images/contacts/phone.svg"))
-                        .setContactData("3.80974404988E11"))))
-                .build();
-    }
-
     public ClubResponseDto newClub() {
         return ClubResponseDto.newBuilder()
                 .withAgeFrom(4)

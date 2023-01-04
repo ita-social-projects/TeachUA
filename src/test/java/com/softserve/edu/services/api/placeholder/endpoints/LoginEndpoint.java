@@ -27,7 +27,6 @@ public class LoginEndpoint extends AbstractWebEndpoint {
                 .extract().as(LoginResponseDto.class);
     }
 
-    // TODO Investigate and fix why after using post method from AbstractWebEndpoint class it goes to dead loop and throws error
     public ValidatableResponse create(UserLoginDto userLoginDto, HttpStatus status) {
         LOGGER.info("Sign in");
         RequestSpecBuilder specBuilder = new RequestSpecBuilder();
@@ -40,11 +39,6 @@ public class LoginEndpoint extends AbstractWebEndpoint {
                 .when()
                 .post(LOGIN_END)                         // post data from body() on the provided URL
                 .then().statusCode(status.getCode());
-//        return post(
-//                this.specification,
-//                LOGIN_END,
-//                userLoginDto)
-//                .statusCode(status.getCode());
     }
 
 }
