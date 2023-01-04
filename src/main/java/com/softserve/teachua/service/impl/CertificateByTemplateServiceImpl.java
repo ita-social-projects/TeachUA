@@ -117,8 +117,7 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
         } else {
             field.setFont(secondFont);
         }
-
-        field.setValue(value);
+        field.setValue(field.getValueAsString() + value);
     }
 
     private Image getQrCodeImage(Long serialNumber, float width, float height, String parameter) {
