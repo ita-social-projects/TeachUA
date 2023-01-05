@@ -23,6 +23,10 @@
 		<skipIntegrationTests>${skipTests}</skipIntegrationTests>
 		<sonar.organization>ita-social-projects</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.exclusions>**/config/*</sonar.exclusions>
+        <sonar.coverage.exclusions>
+            **/constants/*,**/dto/**,**/exception/**,**/model/**
+        </sonar.coverage.exclusions>
 	</properties>
 
 	<parent>
@@ -362,7 +366,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<!-- <version>2.22.2</version> -->
 				<configuration>
 					<skipTests>${skipUnitTests}</skipTests>
 					<includes>
@@ -396,11 +399,9 @@
                 <configuration>
                     <excludes>
                         <exclude>**/config/*</exclude>
-                        <exclude>**/exception/*</exclude>
-                        <exclude>**/model/*</exclude>
-                        <exclude>**/service/*</exclude>
-                        <exclude>**/controller/*</exclude>
-                        <exclude>**/archivable/*</exclude>
+                        <exclude>**/exception/**</exclude>
+                        <exclude>**/model/**</exclude>
+                        <exclude>**/constants/*</exclude>
                         <exclude>**/dto/**</exclude>
                     </excludes>
                 </configuration>
