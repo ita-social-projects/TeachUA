@@ -1,9 +1,13 @@
 package com.softserve.teachua.service.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.CertificateDates;
+import com.softserve.teachua.model.archivable.CertificateDatesArch;
 import com.softserve.teachua.repository.CertificateDatesRepository;
+import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.impl.CertificateDatesServiceImpl;
 import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -36,18 +40,34 @@ class CertificateDatesServiceImplTest {
 
     private static final String CERTIFICATE_DATES_STUDY_FORM = "Study form sample";
 
+    private static final String ARCHIVE_OBJECT = "archiveObject";
+
     @InjectMocks
     private CertificateDatesServiceImpl certificateDatesService;
     @Mock
     private CertificateDatesRepository certificateDatesRepository;
+    @Mock
+    private DtoConverter dtoConverter;
+    @Mock
+    private ArchiveService archiveService;
+    @Mock
+    private ObjectMapper objectMapper;
 
     private CertificateDates certificateDates;
+    private CertificateDatesArch certificateDatesArch;
 
     @BeforeEach
     void setUp() {
         certificateDates = CertificateDates.builder()
             .id(CERTIFICATE_DATES_ID)
             .date(CERTIFICATE_DATES_DATE)
+            .studyForm(CERTIFICATE_DATES_STUDY_FORM)
+            .courseNumber(CERTIFICATE_DATES_COURSE_NUMBER)
+            .duration(CERTIFICATE_DATES_DURATION)
+            .hours(CERTIFICATE_DATES_HOURS)
+            .build();
+        certificateDatesArch = CertificateDatesArch.builder()
+            .dates(CERTIFICATE_DATES_DATE)
             .studyForm(CERTIFICATE_DATES_STUDY_FORM)
             .courseNumber(CERTIFICATE_DATES_COURSE_NUMBER)
             .duration(CERTIFICATE_DATES_DURATION)
@@ -152,17 +172,13 @@ class CertificateDatesServiceImplTest {
 
     @Test
     void archiveModel() {
-        // when this method will be implemented in Service, you should properly test it
+        when(dtoConverter.convertToDto(certificateDates, CertificateDatesArch.class)).thenReturn(certificateDatesArch);
         certificateDatesService.archiveModel(certificateDates);
     }
 
     @Test
-    void restoreModel() {
-        // when this method will be implemented in Service, you should properly test it
-        try {
-            certificateDatesService.restoreModel("STRING");
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    void restoreModel() throws JsonProcessingException {
+        when(objectMapper.readValue(ARCHIVE_OBJECT, CertificateDatesArch.class)).thenReturn(certificateDatesArch);
+        certificateDatesService.restoreModel(ARCHIVE_OBJECT);
     }
 }
