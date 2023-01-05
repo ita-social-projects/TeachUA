@@ -33,8 +33,8 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public CertificateDatesServiceImpl(CertificateDatesRepository certificateDatesRepository, DtoConverter dtoConverter
-        , ArchiveService archiveService, ObjectMapper objectMapper) {
+    public CertificateDatesServiceImpl(CertificateDatesRepository certificateDatesRepository, DtoConverter dtoConverter,
+                                       ArchiveService archiveService, ObjectMapper objectMapper) {
         this.certificateDatesRepository = certificateDatesRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
