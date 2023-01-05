@@ -398,6 +398,10 @@
                         <exclude>**/config/*</exclude>
                         <exclude>**/exception/*</exclude>
                         <exclude>**/model/*</exclude>
+                        <exclude>**/service/*</exclude>
+                        <exclude>**/controller/*</exclude>
+                        <exclude>**/archivable/*</exclude>
+                        <exclude>**/dto/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
