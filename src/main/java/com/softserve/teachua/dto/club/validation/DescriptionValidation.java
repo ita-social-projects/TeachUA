@@ -37,7 +37,7 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
         try {
             Description descriptionClub = objectMapper.readValue(s, Description.class);
 
-            StringBuilder text = new StringBuilder("");
+            StringBuilder text = new StringBuilder();
 
             for (Block block : descriptionClub.blocks) {
                 text.append(block.text);
@@ -63,8 +63,7 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
 
             return true;
         } catch (JsonProcessingException e) {
-            log.error("An exception occurred.");
+            throw new IncorrectInputException("Помилка під час парсингу опису. Неправильний JSON формат");
         }
-        return false;
     }
 }

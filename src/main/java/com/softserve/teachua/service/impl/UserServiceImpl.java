@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
     private static final String EMAIL_UPDATING_ERROR = "Email can`t be updated";
-    private static final String ROLE_UPDATING_ERROR = "Role can`t be changed to Admin";
     private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
     private static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email %s";
     private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
@@ -61,8 +60,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private static final String NOT_VERIFIED = "User is not verified: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
-    private static final String WRONG_ID = "Wrong id";
-    private static final String INACCESSIBLE_ADMIN_PROFILE = "No one have access to admin profile";
     private static final String ONLY_ADMIN_CONTENT = "Only the admin have permit to view this content";
     private final UserRepository userRepository;
     private final EncoderService encodeService;
@@ -336,21 +333,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
 
         javaMailSender.send(message);
         log.debug("Email has been sent\" {}", user.getEmail());
-    }
-
-    @Override
-    public void validateUserId(Long id, HttpServletRequest httpServletRequest) {
-        User userFromRequest = getUserFromRequest(httpServletRequest);
-        User updUser = getUserById(id);
-
-        if (!userFromRequest.getId().equals(id)) {
-            if (updUser.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
-                throw new IncorrectInputException(INACCESSIBLE_ADMIN_PROFILE);
-            }
-            if (!userFromRequest.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
-                throw new IncorrectInputException(WRONG_ID);
-            }
-        }
     }
 
     @Override

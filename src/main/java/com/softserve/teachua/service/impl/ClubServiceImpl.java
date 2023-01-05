@@ -235,6 +235,15 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
     @Override
     public SuccessCreatedClub addClub(ClubProfile clubProfile) {
+        if (isClubExistByName(clubProfile.getName())) {
+            throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
+        }
+
+        Center center = null;
+        if (clubProfile.getCenterId() != null) {
+            center = centerService.getCenterById(clubProfile.getCenterId());
+        }
+
         List<LocationProfile> locations = clubProfile.getLocations();
 
         if (locations != null && !locations.isEmpty()) {
@@ -252,19 +261,9 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             }
         }
 
-        if (isClubExistByName(clubProfile.getName())) {
-            throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
-        }
-
         User user = userService.getCurrentUser();
         clubProfile.setUserId(user.getId());
 
-        Center center = null;
-        if (clubProfile.getCenterId() != null) {
-            center = centerService.getCenterById(clubProfile.getCenterId());
-        }
-
-        log.debug("==clubService=?  clubProfile.centerID" + clubProfile.getCenterId());
         Club club = clubRepository.save(dtoConverter
                 .convertToEntity(clubProfile, new Club()).withCategories(clubProfile.getCategoriesName().stream()
                         .map(categoryService::getCategoryByName).collect(Collectors.toSet()))
