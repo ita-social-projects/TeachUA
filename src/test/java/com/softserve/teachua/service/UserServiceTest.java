@@ -2,7 +2,12 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.security.UserEntity;
-import com.softserve.teachua.dto.user.*;
+import com.softserve.teachua.dto.user.SuccessLogin;
+import com.softserve.teachua.dto.user.SuccessUpdatedUser;
+import com.softserve.teachua.dto.user.UserLogin;
+import com.softserve.teachua.dto.user.UserProfile;
+import com.softserve.teachua.dto.user.UserResponse;
+import com.softserve.teachua.dto.user.UserUpdateProfile;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.model.Archive;
@@ -13,25 +18,25 @@ import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.security.service.EncoderService;
 import com.softserve.teachua.service.impl.UserServiceImpl;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-
     @Mock
     private UserRepository userRepository;
 
@@ -65,29 +70,41 @@ class UserServiceTest {
     private UserProfile userProfile;
     private Role role;
     private UserArch userArch;
+    private List<User> userList;
+    private List<UserResponse> userListResponse;
 
-    private final long EXISTING_ID = 3L;
-    private final long NOT_EXISTING_ID = 500L;
-    private final boolean IS_STATUS = true;
+    private static final long EXISTING_ID = 3L;
+    private static final long NOT_EXISTING_ID = 500L;
+    private static final boolean IS_STATUS = true;
 
-    private final Integer ROLE_ID = 72;
-    private final String ROLE_NAME = "ADMIN";
-    private final String EXISTING_EMAIL = "someuser@mail.com";
-    private final String NOT_EXISTING_EMAIL = "notexisting@mail.com";
-    private final String NEW_EMAIL = "newuser@mail.com";
-    private final String PASSWORD = "12345";
-    private final String TOKEN = "osfljlksdflkfjlsdfkldsfsdf";
+    private static final Integer ROLE_ID = 72;
+    private static final String ROLE_NAME = "ADMIN";
+    private static final String EXISTING_EMAIL = "someuser@mail.com";
+    private static final String NOT_EXISTING_EMAIL = "notexisting@mail.com";
+    private static final String NEW_EMAIL = "newuser@mail.com";
+    private static final String PASSWORD = "12345";
+    private static final String TOKEN = "osfljlksdflkfjlsdfkldsfsdf";
+    private static final String USERS_NOT_FOUND_BY_ROLE_NAME = "User not found by role name - %s";
+    private static final String FIRST_NAME = "username";
 
     @BeforeEach
     void init() {
         role = Role.builder().id(ROLE_ID).name(ROLE_NAME).build();
         user = User.builder().id(EXISTING_ID).email(EXISTING_EMAIL).status(IS_STATUS).password(PASSWORD).role(role)
-                .build();
+            .build();
         userProfile = UserProfile.builder().email(NEW_EMAIL).password(PASSWORD).roleName(ROLE_NAME)
-                .firstName("username").build();
-        updUser = User.builder().id(EXISTING_ID).email(EXISTING_EMAIL).password(PASSWORD).firstName("username").build();
-        userArch = UserArch.builder().email(EXISTING_EMAIL).password(PASSWORD).firstName("username").build();
+            .firstName(FIRST_NAME).build();
+        updUser = User.builder().id(EXISTING_ID).email(EXISTING_EMAIL).password(PASSWORD).firstName(FIRST_NAME).build();
+        userArch = UserArch.builder().email(EXISTING_EMAIL).password(PASSWORD).firstName(FIRST_NAME).build();
         userUpdateProfile = UserUpdateProfile.builder().email(EXISTING_EMAIL).roleName(ROLE_NAME).build();
+        userList = Arrays.asList(
+            User.builder().id(1L).email("kbeech0@networkadvertising.org").firstName("Kitty").lastName("Beech").build(),
+            User.builder().id(2L).email("wkuhnt2@state.tx.us").firstName("Will").lastName("Kuhnt").build(),
+            User.builder().id(3L).email("kwilkenson4@skype.com").firstName("Kendall").lastName("Wilkenson").build());
+        userListResponse = Arrays.asList(
+            UserResponse.builder().id(1L).email("kbeech0@networkadvertising.org").firstName("Kitty").lastName("Beech").build(),
+            UserResponse.builder().id(2L).email("wkuhnt2@state.tx.us").firstName("Will").lastName("Kuhnt").build(),
+            UserResponse.builder().id(3L).email("kwilkenson4@skype.com").firstName("Kendall").lastName("Wilkenson").build());
     }
 
     @Test
@@ -96,6 +113,58 @@ class UserServiceTest {
 
         User actual = userService.getUserById(EXISTING_ID);
         assertEquals(actual, user);
+    }
+
+    @Test
+    void givenUserId_whenGetUserProfileById_thenReturnUserEntity() {
+        when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
+        when(dtoConverter.convertToDto(user, UserResponse.class))
+            .thenReturn(UserResponse.builder().id(EXISTING_ID).email(EXISTING_EMAIL).firstName(FIRST_NAME).build());
+
+        UserResponse actual = userService.getUserProfileById(EXISTING_ID);
+        assertThat(actual).isNotNull().hasFieldOrPropertyWithValue("Id", user.getId());
+    }
+
+    @Test
+    void givenUserRoleName_whenGetUserResponsesByRole_thenListUserResponse() {
+        when(userRepository.findByRoleName(anyString())).thenReturn(Optional.of(userList));
+
+        List<UserResponse> actual = userService.getUserResponsesByRole(anyString());
+        assertThat(actual).isNotNull().hasSize(userList.size());
+    }
+
+    @Test
+    void givenNonexistentRole_whenGetUserResponsesByRole_thenThrowNotExistException() {
+        when(userRepository.findByRoleName(anyString())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userService.getUserResponsesByRole(ROLE_NAME))
+            .isInstanceOf(NotExistException.class)
+            .hasMessage(String.format(USERS_NOT_FOUND_BY_ROLE_NAME, ROLE_NAME));
+    }
+
+    @Test
+    void givenVerificationCode_whenGetUserByVerificationCode_thenReturnUser() {
+        when(userRepository.findByVerificationCode(anyString())).thenReturn(Optional.of(user));
+
+        User actual = userService.getUserByVerificationCode(anyString());
+        assertThat(actual).isNotNull().isEqualTo(user);
+    }
+
+    @Test
+    void givenVerificationCode_whenUserByVerificationCode_thenThrowNotExistException() {
+        when(userRepository.findByVerificationCode(anyString())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userService.getUserByVerificationCode(TOKEN))
+            .isInstanceOf(NotExistException.class)
+            .hasMessage("User not found or invalid link");
+    }
+
+    @Test
+    void whenGetListOfUsers_thenReturnListUserResponse() {
+        when(userRepository.findAll()).thenReturn(userList);
+
+        List<UserResponse> actual = userService.getListOfUsers();
+        assertThat(actual).isNotNull().hasSize(userList.size());
     }
 
     @Test
@@ -152,17 +221,17 @@ class UserServiceTest {
         User newUser = User.builder().email(NEW_EMAIL).password(PASSWORD).status(IS_STATUS).build();
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
         when(dtoConverter.convertToDto(newUser, UserEntity.class))
-                .thenReturn(UserEntity.builder().email(NEW_EMAIL).password(PASSWORD).build());
+            .thenReturn(UserEntity.builder().email(NEW_EMAIL).password(PASSWORD).build());
         UserEntity userEntity = userService.getUserEntity(NEW_EMAIL);
 
         when(encodeService.isValidPassword(userLogin, userEntity)).thenReturn(true);
         when(dtoConverter.convertFromDtoToDto(userEntity, new SuccessLogin()))
-                .thenReturn(SuccessLogin.builder().email(NEW_EMAIL).build());
+            .thenReturn(SuccessLogin.builder().email(NEW_EMAIL).build());
         when(encodeService.isValidStatus(userEntity)).thenReturn(true);
 
         when(authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword())))
-                .thenReturn(authentication);
+            .authenticate(new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword())))
+            .thenReturn(authentication);
 
         when(jwtProvider.generateToken(authentication)).thenReturn(TOKEN);
 
@@ -171,13 +240,13 @@ class UserServiceTest {
     }
 
     @Test
-    public void validateUserWithInvalidPasswordTest() {
+    void validateUserWithInvalidPasswordTest() {
         String invalidPassword = "invalid password";
         UserLogin userLogin = new UserLogin(NEW_EMAIL, invalidPassword);
         User newUser = User.builder().email(NEW_EMAIL).password(invalidPassword).build();
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
         when(dtoConverter.convertToDto(newUser, UserEntity.class))
-                .thenReturn(UserEntity.builder().email(NEW_EMAIL).password(invalidPassword).build());
+            .thenReturn(UserEntity.builder().email(NEW_EMAIL).password(invalidPassword).build());
 
         UserEntity userEntity = userService.getUserEntity(NEW_EMAIL);
         when(encodeService.isValidStatus(userEntity)).thenReturn(true);
@@ -189,19 +258,19 @@ class UserServiceTest {
     }
 
     @Test
-    public void updateUserTest() {
+    void updateUserTest() {
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
         when(dtoConverter.convertToEntity(userUpdateProfile, user)).thenReturn(updUser);
         when(userRepository.save(any())).thenReturn(user);
         when(dtoConverter.convertToDto(user, SuccessUpdatedUser.class))
-                .thenReturn(SuccessUpdatedUser.builder().email(EXISTING_EMAIL).build());
+            .thenReturn(SuccessUpdatedUser.builder().email(EXISTING_EMAIL).build());
 
         SuccessUpdatedUser updatedUser = userService.updateUser(EXISTING_ID, userUpdateProfile);
         assertEquals(updatedUser.getEmail(), userUpdateProfile.getEmail());
     }
 
     @Test
-    public void updateUserWithWrongIdTest() {
+    void updateUserWithWrongIdTest() {
         when(userRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
@@ -210,13 +279,13 @@ class UserServiceTest {
     }
 
     @Test
-    public void deleteUserByIdTest() {
+    void deleteUserByIdTest() {
         when(userRepository.findById(EXISTING_ID)).thenReturn(Optional.of(user));
         // when(archiveService.saveModel(user)).thenReturn(user);
         doNothing().when(userRepository).deleteById(EXISTING_ID);
         doNothing().when(userRepository).flush();
         when(dtoConverter.convertToDto(user, UserResponse.class)).thenReturn(
-                UserResponse.builder().id(user.getId()).email(user.getEmail()).firstName(user.getFirstName()).build());
+            UserResponse.builder().id(user.getId()).email(user.getEmail()).firstName(user.getFirstName()).build());
         when(dtoConverter.convertToDto(user, UserArch.class)).thenReturn(userArch);
         when(archiveService.saveModel(userArch)).thenReturn(Archive.builder().build());
         UserResponse userResponse = userService.deleteUserById(EXISTING_ID);
@@ -224,12 +293,11 @@ class UserServiceTest {
     }
 
     @Test
-    public void deleteNotExistingUserTest() {
+    void deleteNotExistingUserTest() {
         when(userRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
             userService.deleteUserById(NOT_EXISTING_ID);
         }).isInstanceOf(NotExistException.class);
     }
-
 }
