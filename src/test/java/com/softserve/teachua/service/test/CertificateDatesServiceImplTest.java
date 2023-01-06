@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -173,12 +174,28 @@ class CertificateDatesServiceImplTest {
     @Test
     void archiveModel() {
         when(dtoConverter.convertToDto(certificateDates, CertificateDatesArch.class)).thenReturn(certificateDatesArch);
+
         certificateDatesService.archiveModel(certificateDates);
+        verify(archiveService).saveModel(certificateDatesArch);
     }
 
     @Test
     void restoreModel() throws JsonProcessingException {
         when(objectMapper.readValue(ARCHIVE_OBJECT, CertificateDatesArch.class)).thenReturn(certificateDatesArch);
+        when(dtoConverter.convertToEntity(certificateDatesArch, CertificateDates.builder().build())).thenReturn(
+            certificateDates);
+        when(certificateDatesRepository.save(certificateDates)).thenReturn(certificateDates);
+
         certificateDatesService.restoreModel(ARCHIVE_OBJECT);
+        verify(certificateDatesRepository).save(certificateDates);
+    }
+
+    @Test
+    void restoreModelException() throws JsonProcessingException {
+        when(objectMapper.readValue(ARCHIVE_OBJECT, CertificateDatesArch.class)).thenThrow(
+            JsonProcessingException.class);
+
+        assertThatThrownBy(() -> certificateDatesService.restoreModel(ARCHIVE_OBJECT))
+            .isInstanceOf(JsonProcessingException.class);
     }
 }
