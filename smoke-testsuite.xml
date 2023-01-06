@@ -4,11 +4,7 @@
     <parameter name="mode" value="headless"/>
     <test name="Links and images validation">
         <classes>
-            <class name="com.softserve.edu.test.ui.BaseTest">
-                <methods>
-                    <include name="linksImagesTest" />
-                </methods>
-            </class>
+            <class name="com.softserve.edu.test.ui.BaseTest" />
         </classes>
     </test>
     <test name="Basic and advanced club search">
