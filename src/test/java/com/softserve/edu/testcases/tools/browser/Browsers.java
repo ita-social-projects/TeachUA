@@ -59,7 +59,7 @@ public enum Browsers {
     CHROME_BROWSER(new ChromeBrowser()),                // ChromeBrowser class
     CHROME_WITHOUT_UI(new ChromeWithoutUI());           // ChromeWithoutUI class
 
-    private Browser browser;
+    private final Browser browser;
 
     // Constructor in enum always should be private (if we do not write anything, by default it's private)
     Browsers(Browser browser) {
