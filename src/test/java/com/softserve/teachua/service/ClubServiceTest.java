@@ -15,9 +15,15 @@ import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.ClubArch;
 import com.softserve.teachua.repository.ClubRepository;
+import com.softserve.teachua.repository.ComplaintRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.impl.ClubServiceImpl;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,8 +32,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.internal.util.collections.Sets;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -69,7 +73,8 @@ class ClubServiceTest {
 
     @Mock
     private ContactsStringConverter contactsStringConverter;
-
+    @Mock
+    private ComplaintRepository complaintRepository;
     @InjectMocks
     private ClubServiceImpl clubService;
 
@@ -90,7 +95,7 @@ class ClubServiceTest {
     private final String DESCRIPTION = "Description Text";
     private final List<String> CATEGORIES = Arrays.asList("Category1", "Category2");
     private final Set<Category> CATEGORIES_SET = Sets.newSet(Category.builder().name("Category1").build(),
-            Category.builder().name("Category2").build());
+        Category.builder().name("Category2").build());
 
     private final Long USER_EXISTING_ID = 1L;
     private final Long USER_NOT_EXISTING_ID = 100L;
@@ -100,11 +105,11 @@ class ClubServiceTest {
     @BeforeEach
     public void setUp() {
         user = User.builder().id(USER_EXISTING_ID).firstName(USER_EXISTING_NAME).lastName(USER_EXISTING_LASTNAME)
-                .build();
+            .build();
         club = Club.builder().id(EXISTING_ID).name(NEW_NAME).user(user).categories(CATEGORIES_SET)
-                .feedbacks(Sets.newSet()).locations(Sets.newSet()).urlGallery(Lists.list()).build();
+            .feedbacks(Sets.newSet()).locations(Sets.newSet()).urlGallery(Lists.list()).build();
         clubProfile = ClubProfile.builder().name(NEW_NAME).description(DESCRIPTION).contacts(CONTACTS)
-                .categoriesName(CATEGORIES).build();
+            .categoriesName(CATEGORIES).build();
         clubResponse = ClubResponse.builder().id(EXISTING_ID).name(NEW_NAME).build();
         clubArch = ClubArch.builder().id(EXISTING_ID).name(NEW_NAME).build();
     }
@@ -166,13 +171,15 @@ class ClubServiceTest {
     void updateClubByExistingIdShouldReturnCorrectSuccessUpdatedClub() {
         when(clubRepository.findById(EXISTING_ID)).thenReturn(Optional.of(club));
         when(clubRepository.save(any())).thenReturn(club);
-        when(dtoConverter.convertToEntity(ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).build(), club))
-                .thenReturn(Club.builder().name(NEW_NAME).build());
+        when(dtoConverter.convertToEntity(
+            ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).build(), club))
+            .thenReturn(Club.builder().name(NEW_NAME).build());
         when(dtoConverter.convertToDto(club, SuccessUpdatedClub.class))
-                .thenReturn(SuccessUpdatedClub.builder().name(NEW_NAME).build());
+            .thenReturn(SuccessUpdatedClub.builder().name(NEW_NAME).build());
         when(userService.getCurrentUser()).thenReturn(user);
 
-        SuccessUpdatedClub actual = clubService.updateClub(EXISTING_ID, ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).build());
+        SuccessUpdatedClub actual = clubService.updateClub(EXISTING_ID,
+            ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).build());
         assertEquals(clubProfile.getName(), actual.getName());
     }
 
@@ -207,7 +214,7 @@ class ClubServiceTest {
     void deleteClubByExistingIdShouldReturnCorrectClubResponse() {
         when(clubRepository.findById(EXISTING_ID)).thenReturn(Optional.of(club));
         doNothing().when(clubRepository).deleteById(EXISTING_ID);
-        doNothing().when(clubRepository).flush();
+        when(complaintRepository.getAllByClubId(EXISTING_ID)).thenReturn(Collections.emptyList());
         when(clubToClubResponseConverter.convertToClubResponse(club)).thenReturn(clubResponse);
         when(userService.getCurrentUser()).thenReturn(user);
         when(dtoConverter.convertToDto(club, ClubArch.class)).thenReturn(clubArch);
@@ -233,7 +240,7 @@ class ClubServiceTest {
         when(dtoConverter.convertToEntity(clubProfile, new Club())).thenReturn(newClub);
         when(clubRepository.save(any())).thenReturn(newClub);
         when(dtoConverter.convertToDto(newClub, SuccessCreatedClub.class))
-                .thenReturn(SuccessCreatedClub.builder().name(NEW_NAME).build());
+            .thenReturn(SuccessCreatedClub.builder().name(NEW_NAME).build());
         when(userService.getCurrentUser()).thenReturn(user);
 
         SuccessCreatedClub actual = clubService.addClub(clubProfile);
