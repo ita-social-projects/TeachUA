@@ -39,6 +39,8 @@ import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.ClubArch;
 import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
+import com.softserve.teachua.repository.ComplaintRepository;
+import com.softserve.teachua.repository.ContactTypeRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.repository.GalleryRepository;
 import com.softserve.teachua.repository.LocationRepository;
@@ -77,6 +79,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.SUPPORTS)
 @Slf4j
 public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
+    private final ContactTypeRepository contactTypeRepository;
+    private final ComplaintRepository complaintRepository;
     private static final String CLUB_ALREADY_EXIST = "Club already exist with name: %s";
     private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
@@ -116,7 +120,9 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                            FileUploadService fileUploadService, CoordinatesConverter coordinatesConverter,
                            GalleryRepository galleryRepository, CenterService centerService,
                            FeedbackRepository feedbackRepository,
-                           ObjectMapper objectMapper, ContactsStringConverter contactsStringConverter) {
+                           ObjectMapper objectMapper, ContactsStringConverter contactsStringConverter,
+                           ComplaintRepository complaintRepository,
+                           ContactTypeRepository contactTypeRepository) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -136,6 +142,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         this.feedbackRepository = feedbackRepository;
         this.objectMapper = objectMapper;
         this.contactsStringConverter = contactsStringConverter;
+        this.complaintRepository = complaintRepository;
+        this.contactTypeRepository = contactTypeRepository;
     }
 
     @Autowired
@@ -638,6 +646,11 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                     galleryRepository.deleteById(galleryPhoto.get().getId());
                 }
             });
+
+            complaintRepository.getAllByClubId(club.getId()).forEach(complaint -> {
+                complaintRepository.deleteById(complaint.getId());
+            });
+
 
             // fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground(), club.getUrlGallery());
 
