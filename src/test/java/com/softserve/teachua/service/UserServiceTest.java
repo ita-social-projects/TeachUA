@@ -81,6 +81,8 @@ class UserServiceTest {
     private Authentication authentication;
     @Mock
     private JwtProvider jwtProvider;
+    @Mock
+    private RoleService roleService;
     @InjectMocks
     private UserServiceImpl userService;
     private UserUpdateProfile userUpdateProfile;
@@ -100,7 +102,8 @@ class UserServiceTest {
         userProfile =
             UserProfile.builder().email(NEW_EMAIL).password(PASSWORD).roleName(ROLE_NAME).firstName(FIRST_NAME).build();
         updUser = User.builder().id(EXISTING_ID).email(EXISTING_EMAIL).password(PASSWORD).firstName(FIRST_NAME).build();
-        userArch = UserArch.builder().email(EXISTING_EMAIL).password(PASSWORD).firstName(FIRST_NAME).build();
+        userArch = UserArch.builder().email(EXISTING_EMAIL).password(PASSWORD)
+            .firstName(FIRST_NAME).roleId(ROLE_ID).build();
         userUpdateProfile = UserUpdateProfile.builder().email(EXISTING_EMAIL).roleName(ROLE_NAME).build();
         userList = Arrays.asList(
             User.builder().id(1L).email("kbeech0@networkadvertising.org").firstName("Kitty").lastName("Beech").build(),
@@ -358,6 +361,7 @@ class UserServiceTest {
         when(objectMapper.readValue(TOKEN, UserArch.class)).thenReturn(userArch);
         when(dtoConverter.convertToEntity(userArch, User.builder().build())).thenReturn(user);
         when(userRepository.save(any(User.class))).thenReturn(user);
+        when(roleService.getRoleById(anyInt())).thenReturn(role);
 
         userService.restoreModel(TOKEN);
         verify(userRepository, times(1)).save(any(User.class));
