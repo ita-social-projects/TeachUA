@@ -325,7 +325,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
         // some centers have rating or ClubCount = null, so we set default value to them
         if (center.getClubCount() == null) {
-            center.setClubCount(0L);
+            center.setClubCount((long) center.getClubs().size());
         }
         if (center.getRating() == null) {
             center.setRating(0.0);
