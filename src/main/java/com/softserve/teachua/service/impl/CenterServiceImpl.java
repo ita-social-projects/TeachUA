@@ -146,7 +146,10 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
             log.debug("CenterServiceImpl=> centerProfile.userId == null");
         }
 
-        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center()).withUser(user));
+        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
+            .withUser(user)
+            .withClubCount((long) centerProfile.getClubsId().size())
+            .withRating(0.0));
 
         List<LocationProfile> locations = centerProfile.getLocations();
         if (locations != null && !locations.isEmpty()) {
