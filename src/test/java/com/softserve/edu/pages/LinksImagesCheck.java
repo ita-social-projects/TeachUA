@@ -130,8 +130,8 @@ public class LinksImagesCheck {
                     // Print error message if broken link was found
                     logger.error(linkUrl + " is a broken link with HTTP status code " + httpURLConnection.getResponseCode());
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ignored) {
+
             }
         }
     }
