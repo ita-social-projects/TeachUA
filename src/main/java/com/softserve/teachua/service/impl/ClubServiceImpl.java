@@ -691,9 +691,12 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     public SuccessUpdatedClub updateRatingNewFeedback(FeedbackResponse feedbackResponse) {
         Club club = getClubById(feedbackResponse.getClub().getId());
 
-        // sometimes clubs have FeedBacks field NULL, we set it to the default value
+        // sometimes clubs have FeedBacks and Rating fields = NULL, we set it to the default value
         if (club.getFeedbackCount() == null) {
             club.setFeedbackCount(0L);
+        }
+        if (club.getRating() == null) {
+            club.setRating(0.0);
         }
 
         Long newFeedbackCount = club.getFeedbackCount() + 1;
