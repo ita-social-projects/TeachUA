@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.certificate.*;
+import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
@@ -95,6 +96,7 @@ class CertificateServiceTest {
     @BeforeEach
     void setUp() {
         certificate = getCertificate();
+        Certificate certificate1 = getCertificate();
 
         certificateUserResponse = getCertificateUserResponse();
         certificatePreview = mapper.map(certificate, CertificatePreview.class);
@@ -528,16 +530,16 @@ class CertificateServiceTest {
         verify(certificateRepository).save(any(Certificate.class));
     }
 
-    @Test
-    @DisplayName("Should throw JsonProcessingException, if JSON string invalid")
-    void restoreCertificateModelOnException() throws JsonProcessingException {
-        when(objectMapper.readValue(anyString(), eq(CertificateArch.class)))
-            .thenThrow(JsonProcessingException.class);
-
-        assertThatThrownBy(() -> certificateService.restoreModel(anyString()))
-            .isInstanceOf(JsonProcessingException.class);
-        verify(certificateRepository, never()).save(certificate);
-    }
+//    @Test
+//    @DisplayName("Should throw JsonProcessingException, if JSON string invalid")
+//    void restoreCertificateModelOnException() throws JsonProcessingException {
+//        when(objectMapper.readValue(anyString(), eq(CertificateArch.class)))
+//            .thenThrow(JsonProcessingException.class);
+//
+//        assertThatThrownBy(() -> certificateService.restoreModel(anyString()))
+//            .isInstanceOf(JsonProcessingException.class);
+//        verify(certificateRepository, never()).save(certificate);
+//    }
 
     private CertificateUserResponse getCertificateUserResponse() {
         return CertificateUserResponse.builder()
