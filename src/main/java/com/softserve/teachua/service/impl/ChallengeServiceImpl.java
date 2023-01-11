@@ -29,6 +29,17 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import java.util.Optional;
+import java.util.stream.Stream;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
+
 
 @Service
 @Slf4j
@@ -63,6 +74,9 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     public List<ChallengePreview> getAllChallenges(Boolean active) {
         List<ChallengePreview> resultList = new LinkedList<>();
         List<Challenge> list;
+        List<Challenge> list1;
+        List<Challenge> list2;
+        List<Challenge> list3;
         list = active != null ? challengeRepository.getByIsActiveOrderBySortNumberDesc(active)
                 : challengeRepository.findAll(Sort.by(Sort.Direction.DESC, "sortNumber"));
         list.forEach((challenge -> resultList.add(dtoConverter.convertToDto(challenge, ChallengePreview.class))));
