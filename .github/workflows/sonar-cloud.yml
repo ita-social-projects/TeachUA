@@ -6,6 +6,7 @@ on:
       - rest
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 permissions:
   pull-requests: read
