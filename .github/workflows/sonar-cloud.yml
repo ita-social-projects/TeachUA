@@ -39,4 +39,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify sonar:sonar -Dsonar.pullrequest.github.summary_comment=true
+        run: mvn -B verify sonar:sonar -Dsonar.pullrequest.github.summary_comment=true -Dsonar.pullrequest.provider=GitHub -Dsonar.pullrequest.base=rest
