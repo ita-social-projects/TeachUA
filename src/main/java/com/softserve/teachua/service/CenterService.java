@@ -8,10 +8,9 @@ import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 /**
  * This interface contains all needed methods to manage centers.
@@ -132,6 +131,16 @@ public interface CenterService {
      * @return new {@code Page<ClubResponse>}.
      */
     Page<CenterResponse> getCentersByUserId(Long id, Pageable pageable);
+
+    /**
+     * The method returns list of dto {@code Page<ClubResponse>} of all centers by center id.
+     *
+     * @param id
+     *            - put center id.
+     *
+     * @return new {@code Page<ClubResponse>}.
+     */
+    Page<ClubResponse> getCenterClubsByCenterId(Long id, Pageable pageable);
 
     /**
      * The method returns page of dto {@code Page<CenterResponse>} of all centers by advancedSearchCenterProfile.
