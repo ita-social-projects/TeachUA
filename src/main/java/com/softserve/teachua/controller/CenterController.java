@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -79,7 +80,8 @@ public class CenterController implements Api {
      */
     @GetMapping("centers/clubs/{id}")
     public Page<ClubResponse> getCenterClubsByCenterId(@PathVariable Long id,
-                                                       @PageableDefault(value = CLUBS_PER_CENTER_PAGE, sort = "id")
+                                                       @RequestParam int size, // size of pagination
+                                                       @PageableDefault(sort = "id")
                                                        Pageable pageable) {
         return centerService.getCenterClubsByCenterId(id, pageable);
     }
