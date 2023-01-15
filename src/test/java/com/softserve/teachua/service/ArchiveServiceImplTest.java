@@ -9,17 +9,16 @@ import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.repository.ArchiveRepository;
 import com.softserve.teachua.service.impl.ArchiveServiceImpl;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -30,6 +29,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,7 +46,7 @@ public class ArchiveServiceImplTest {
 
     private static final long WRONG_ID = 10;
 
-    @Autowired
+    @Mock
     private ApplicationContext context;
 
     @InjectMocks
@@ -64,9 +65,11 @@ public class ArchiveServiceImplTest {
 
     private List<Archive> singletonArchiveList;
 
+    @Mock
     private Archivable archivable;
 
-    private ArchiveMark archiveMark;
+    @Mock
+    private ArchiveMark<Object> archiveMark;
 
     @BeforeEach
     void setUp() {
@@ -75,22 +78,21 @@ public class ArchiveServiceImplTest {
             .data(ARCHIVE_DATA)
             .className(RIGHT_ARCHIVE_CLASS_NAME)
             .build();
-
         singletonArchiveList = Collections.singletonList(archive);
 
-        archivable = new Archivable() {
-
-            private String field = "value";
-
-            public String getField() {
-                return field;
-            }
-
-            @Override
-            public Class getServiceClass() {
-                return Object.class;
-            }
-        };
+//        archivable = new Archivable() {
+//
+//            private String field = "value";
+//
+//            public String getField() {
+//                return field;
+//            }
+//
+//            @Override
+//            public Class getServiceClass() {
+//                return Object.class;
+//            }
+//        };
 
 //        archiveMark = new ArchiveMark<Archivable>() {
 //            @Override
@@ -103,8 +105,7 @@ public class ArchiveServiceImplTest {
 //                return;
 //            }
 //        };
-        archiveMark = Mockito.mock(ArchiveMark.class);
-
+//        archiveMark = Mockito.mock(ArchiveMark.class);
     }
 
     @Test
@@ -114,7 +115,7 @@ public class ArchiveServiceImplTest {
     }
 
     @Test
-    @DisplayName("Getting archive by id returns correct archive")
+    @DisplayName("Getting archive by correct id returns correct archive")
     void getArchiveObjectByCorrectId() {
         when(archiveRepository.findById(CORRECT_ID)).thenReturn(Optional.of(archive));
         assertThat(archiveService.getArchiveObjectById(CORRECT_ID)).isEqualTo(archive);
@@ -146,6 +147,7 @@ public class ArchiveServiceImplTest {
     @DisplayName("Saving a model returns correct result")
     void saveCorrect() throws JsonProcessingException {
         archive.setId(null);
+        when(archivable.getServiceClass()).thenReturn(Object.class);
         when(archiveRepository.save(archive)).thenReturn(archive);
         when(objectMapper.writeValueAsString(archivable)).thenReturn(ARCHIVE_DATA);
         assertThat(archiveService.saveModel(archivable)).isEqualTo(archive);
@@ -155,6 +157,7 @@ public class ArchiveServiceImplTest {
     @DisplayName("Saving not serializable model throws RestoreArchiveException")
     void saveWrong() throws JsonProcessingException {
         archive.setId(null);
+        when(archivable.getServiceClass()).thenReturn(Object.class);
         when(objectMapper.writeValueAsString(archivable)).thenThrow(JsonProcessingException.class);
         assertThatThrownBy(() -> archiveService.saveModel(archivable))
             .isInstanceOf(RestoreArchiveException.class);
@@ -162,9 +165,10 @@ public class ArchiveServiceImplTest {
 
     @Test
     @DisplayName("Restoring object by correct id returns correct archive")
-    void restoreCorrectId() throws ClassNotFoundException {
-        Object bean = context.getBean(Class.forName(archive.getClassName()));
-        when(context.getBean("ArchiveMark", Class.forName(archive.getClassName()))).thenReturn(archiveMark);
+    void restoreCorrectId() throws ClassNotFoundException, JsonProcessingException {
+//        when(context.getBean(Class.forName(archive.getClassName()))).thenReturn((Object) archiveMark);
+//        when(archiveMark.restoreModel(ARCHIVE_DATA)).thenCallRealMethod();
+        doNothing().when(archiveMark).restoreModel(ARCHIVE_DATA);
         when(archiveRepository.findById(CORRECT_ID)).thenReturn(Optional.of(archive));
         assertThat(archiveService.restoreArchiveObject(CORRECT_ID)).isEqualTo(archive);
     }
