@@ -3,7 +3,15 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.challenge.*;
+import com.softserve.teachua.dto.challenge.ChallengeDeleteResponse;
+import com.softserve.teachua.dto.challenge.ChallengePreview;
+import com.softserve.teachua.dto.challenge.ChallengeProfile;
+import com.softserve.teachua.dto.challenge.CreateChallenge;
+import com.softserve.teachua.dto.challenge.SuccessCreatedChallenge;
+import com.softserve.teachua.dto.challenge.SuccessUpdateChallengePreview;
+import com.softserve.teachua.dto.challenge.SuccessUpdatedChallenge;
+import com.softserve.teachua.dto.challenge.UpdateChallenge;
+import com.softserve.teachua.dto.challenge.UpdateChallengeDate;
 import com.softserve.teachua.dto.task.SuccessUpdatedTask;
 import com.softserve.teachua.dto.task.TaskPreview;
 import com.softserve.teachua.dto.task.UpdateTask;
@@ -13,20 +21,27 @@ import com.softserve.teachua.model.Task;
 import com.softserve.teachua.model.archivable.ChallengeArch;
 import com.softserve.teachua.repository.ChallengeRepository;
 import com.softserve.teachua.repository.TaskRepository;
-import com.softserve.teachua.service.*;
+import com.softserve.teachua.service.ArchiveMark;
+import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.ChallengeService;
+import com.softserve.teachua.service.TaskService;
+import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.utils.ChallengeUtil;
 import com.softserve.teachua.utils.HtmlUtils;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -39,19 +54,20 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     private final UserService userService;
     private final ArchiveService archiveService;
     private final TaskRepository taskRepository;
-    private TaskService taskService;
     private final ObjectMapper objectMapper;
+    private TaskService taskService;
 
     @Autowired
     public ChallengeServiceImpl(ChallengeRepository challengeRepository, DtoConverter dtoConverter,
-            UserService userService, ArchiveService archiveService, TaskRepository taskRepository,
-            ObjectMapper objectMapper) {
+                                UserService userService, ArchiveService archiveService, TaskRepository taskRepository,
+                                ObjectMapper objectMapper,TaskService taskService) {
         this.challengeRepository = challengeRepository;
         this.dtoConverter = dtoConverter;
         this.userService = userService;
         this.archiveService = archiveService;
         this.taskRepository = taskRepository;
         this.objectMapper = objectMapper;
+        this.taskService = taskService;
     }
 
     @Autowired
