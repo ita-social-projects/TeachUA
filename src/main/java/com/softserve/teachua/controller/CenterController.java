@@ -76,6 +76,8 @@ public class CenterController implements Api {
      * {@code List<ClubResponse>} about center clubs by id of center.
      *
      * @param id - put user id.
+     * @param size - put size of clubs in one page.
+     *
      * @return new {@code Page<ClubResponse>}.
      */
     @GetMapping("centers/clubs/{id}")
