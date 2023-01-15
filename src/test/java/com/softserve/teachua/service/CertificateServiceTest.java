@@ -8,6 +8,7 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
+import com.softserve.teachua.model.CertificateType;
 import com.softserve.teachua.model.archivable.CertificateArch;
 import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.service.impl.CertificateServiceImpl;
@@ -87,7 +88,9 @@ class CertificateServiceTest {
     private static final String COURSE_DESCRIPTION = "Опис курсу";
     private static final String PROJECT_DESCRIPTION = "Опис проєкту";
     private static final String PICTURE_PATH = "/static/images/certificate/validation/jedyni_banner.png";
-    private static final Integer CERTIFICATE_TYPE = 3;
+
+    private static final Integer CERTIFICATE_TYPE_CODE_NUMBER = 3;
+    private static final String CERTIFICATE_TYPE_NAME = "Учасник";
 
     private static final String UPDATED_EMAIL = "updated@gmail.com";
     private static final String UPDATED_NAME = "Новий Власник";
@@ -319,15 +322,16 @@ class CertificateServiceTest {
     @ParameterizedTest
     @MethodSource("serialNumberSource")
     @DisplayName("Should generate expected serial number for certificate, if it is null")
-    void generateSerialNumber(Integer certificateType, String courseNumber,
-                                                     Long maxSerialNumber, Long expectedSerialNumber) {
+    void generateSerialNumber(Integer certificateType, String courseNumber, Long maxSerialNumber,
+                              Long expectedSerialNumber) {
         certificateTransfer.setSerialNumber(null);
         certificateTransfer.getDates().setCourseNumber(courseNumber);
-        certificateTransfer.getTemplate().setCertificateType(certificateType);
+        certificateTransfer.getTemplate()
+            .setCertificateType(CertificateType.builder().codeNumber(certificateType).build());
 
         when(certificateRepository.findMaxSerialNumber(
-            certificateTransfer.getTemplate().getCertificateType().toString()
-        )).thenReturn(maxSerialNumber);
+            certificateTransfer.getTemplate().getCertificateType().getCodeNumber().toString())).thenReturn(
+            maxSerialNumber);
 
         CertificateTransfer actual = certificateService.generateSerialNumber(certificateTransfer);
         assertEquals(expectedSerialNumber, actual.getSerialNumber());
@@ -543,7 +547,7 @@ class CertificateServiceTest {
         return CertificateUserResponse.builder()
             .id(certificate.getId())
             .serialNumber(certificate.getSerialNumber())
-            .certificateType(certificate.getTemplate().getCertificateType())
+            .certificateTypeName(certificate.getTemplate().getCertificateType().getName())
             .date(certificate.getDates().getDate())
             .courseDescription(certificate.getTemplate().getCourseDescription())
             .build();
@@ -577,7 +581,7 @@ class CertificateServiceTest {
         return CertificateTemplate.builder()
             .id(CERTIFICATE_TEMPLATE_ID)
             .name(CERTIFICATE_TEMPLATE_NAME)
-            .certificateType(CERTIFICATE_TYPE)
+            .certificateType(getCertificateType())
             .filePath(FILE_PATH)
             .courseDescription(COURSE_DESCRIPTION)
             .projectDescription(PROJECT_DESCRIPTION)
@@ -586,10 +590,17 @@ class CertificateServiceTest {
             .build();
     }
 
+    private CertificateType getCertificateType() {
+        return CertificateType.builder()
+            .codeNumber(CERTIFICATE_TYPE_CODE_NUMBER)
+            .name(CERTIFICATE_TYPE_NAME)
+            .build();
+    }
+
     private CertificateVerificationResponse getCertificateVerificationResponse() {
         Certificate certificate = getCertificate();
         return CertificateVerificationResponse.builder()
-            .certificateType(certificate.getTemplate().getCertificateType())
+            .certificateTypeName(certificate.getTemplate().getCertificateType().getName())
             .courseDescription(certificate.getTemplate().getCourseDescription())
             .picturePath(certificate.getTemplate().getPicturePath())
             .projectDescription(certificate.getTemplate().getProjectDescription())
