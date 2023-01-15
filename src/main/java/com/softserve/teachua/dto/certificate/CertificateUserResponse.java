@@ -15,7 +15,7 @@ public class CertificateUserResponse {
 
     private Long serialNumber;
 
-    private Integer certificateType;
+    private String certificateTypeName;
 
     private String date;
 

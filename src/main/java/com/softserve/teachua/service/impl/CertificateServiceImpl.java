@@ -82,7 +82,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
                 .map(certificate -> CertificateUserResponse.builder()
                                 .id(certificate.getId())
                                 .serialNumber(certificate.getSerialNumber())
-                                .certificateType(certificate.getTemplate().getCertificateType())
+                                .certificateTypeName(certificate.getTemplate().getCertificateType().getName())
                                 .date(certificate.getDates().getDate())
                                 .courseDescription(certificate.getTemplate().getCourseDescription())
                                 .build())
@@ -185,7 +185,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         if (largestSerialNumber == null) {
             String initialNumber;
 
-            switch (response.getTemplate().getCertificateType()) {
+            switch (response.getTemplate().getCertificateType().getCodeNumber()) {
                 case 1:
                     initialNumber = "0000017";
                     break;
@@ -200,11 +200,11 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
                     break;
             }
             response.setSerialNumber(Long
-                .valueOf(response.getTemplate().getCertificateType().toString() + courseNumber + initialNumber));
+                .valueOf(response.getTemplate().getCertificateType().getCodeNumber() + courseNumber + initialNumber));
         } else {
             String certificateNumber = String.format("%07d", largestSerialNumber + 1);
             response.setSerialNumber(Long.valueOf(
-                response.getTemplate().getCertificateType().toString() + courseNumber + certificateNumber));
+                response.getTemplate().getCertificateType().getCodeNumber() + courseNumber + certificateNumber));
         }
 
         return response;
@@ -303,7 +303,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         Certificate certificate = getCertificateBySerialNumber(serialNumber);
 
         CertificateVerificationResponse response = CertificateVerificationResponse.builder()
-            .certificateType(certificate.getTemplate().getCertificateType())
+            .certificateTypeName(certificate.getTemplate().getCertificateType().getName())
             .courseDescription(certificate.getTemplate().getCourseDescription())
             .picturePath(certificate.getTemplate().getPicturePath())
             .projectDescription(certificate.getTemplate().getProjectDescription())

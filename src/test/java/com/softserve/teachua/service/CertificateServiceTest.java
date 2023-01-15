@@ -70,7 +70,7 @@ class CertificateServiceTest {
     @BeforeEach
     void setUp() {
         certificateTemplate = CertificateTemplate.builder()
-            .certificateType(CERTIFICATE_TYPE)
+            .certificateType(CertificateType.builder().codeNumber(CERTIFICATE_TYPE).build())
             .courseDescription(COURSE_DESCRIPTION)
             .build();
 
@@ -90,7 +90,7 @@ class CertificateServiceTest {
         certificateUserResponse = CertificateUserResponse.builder()
             .id(certificate.getId())
             .serialNumber(certificate.getSerialNumber())
-            .certificateType(certificate.getTemplate().getCertificateType())
+            .certificateTypeName(certificate.getTemplate().getCertificateType().getName())
             .courseDescription(certificate.getTemplate().getCourseDescription())
             .date(certificate.getDates().getDate())
             .build();

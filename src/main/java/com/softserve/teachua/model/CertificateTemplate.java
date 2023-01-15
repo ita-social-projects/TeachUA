@@ -20,8 +20,9 @@ public class CertificateTemplate implements Convertible {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "certificate_type")
-    private Integer certificateType;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "certificate_type", referencedColumnName = "id")
+    private CertificateType certificateType;
 
     @Column(nullable = false, name = "file_path")
     private String filePath;

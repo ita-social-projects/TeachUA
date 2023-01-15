@@ -9,6 +9,7 @@ import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.repository.CertificateTemplateRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.CertificateTemplateService;
+import com.softserve.teachua.service.CertificateTypeService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,14 +37,17 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
 
     private final CertificateTemplateRepository certificateTemplateRepository;
     private final CertificateRepository certificateRepository;
+    private final CertificateTypeService certificateTypeService;
 
     @Autowired
     public CertificateTemplateServiceImpl(DtoConverter dtoConverter,
                                           CertificateTemplateRepository certificateTemplateRepository,
-                                          CertificateRepository certificateRepository) {
+                                          CertificateRepository certificateRepository,
+                                          CertificateTypeService certificateTypeService) {
         this.dtoConverter = dtoConverter;
         this.certificateTemplateRepository = certificateTemplateRepository;
         this.certificateRepository = certificateRepository;
+        this.certificateTypeService = certificateTypeService;
     }
 
     @Override
@@ -74,15 +78,7 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
 
     @Override
     public CertificateTemplate getTemplateByType(Integer type) {
-        int targetId = type;
-        if (type == 1) {
-            targetId = 2;
-        } else if (type == 2) {
-            targetId = 3;
-        } else if (type == 3) {
-            targetId = 1;
-        }
-        return certificateTemplateRepository.findById(targetId)
+        return certificateTemplateRepository.findByCertificateTypeCodeNumber(type)
             .orElseThrow(() -> new NotExistException(String.format(TEMPLATE_NOT_FOUND_BY_TYPE, type)));
     }
 
@@ -108,6 +104,9 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
         }
         CertificateTemplate certificateTemplate =
             dtoConverter.convertToEntity(createCertificateTemplate, new CertificateTemplate());
+        certificateTemplate.setCertificateType(certificateTypeService.getCertificateTypeByCodeNumber(
+            Integer.valueOf(createCertificateTemplate.getCertificateType())
+        ));
         return CertificateTemplateCreationResponse.builder()
             .isValid(true)
             .template(dtoConverter.convertToDto(certificateTemplateRepository.save(certificateTemplate),
@@ -142,7 +141,8 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
         }
 
         BeanUtils.copyProperties(updatedTemplate, template);
-
+        template.setCertificateType(
+            certificateTypeService.getCertificateTypeByCodeNumber(updatedTemplate.getCertificateType()));
         return CertificateTemplateUpdationResponse.builder()
             .isUpdated(true)
             .template(certificateTemplateRepository.save(template))
