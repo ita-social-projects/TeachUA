@@ -1,6 +1,10 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.certificate.*;
+import com.softserve.teachua.dto.certificate.CertificateContent;
+import com.softserve.teachua.dto.certificate.CertificatePreview;
+import com.softserve.teachua.dto.certificate.CertificateTransfer;
+import com.softserve.teachua.dto.certificate.CertificateUserResponse;
+import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 
@@ -106,16 +110,6 @@ public interface CertificateService {
      * @return new {@code Certificate}
      */
     Certificate getByUserNameAndDates(String username, CertificateDates dates);
-
-    /**
-     * Method finds {@link CertificateTransfer}
-     *
-     * @param id
-     *            put Certificate id
-     *
-     * @return new {@code CertificateTransfer}
-     */
-    CertificateTransfer getCertificateProfileById(Long id);
 
     /**
      * Method generates serial number and puts it into the dto {@code CertificateTransfer}

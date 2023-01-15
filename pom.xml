@@ -22,6 +22,7 @@
 		<skipUnitTests>${skipTests}</skipUnitTests>
 		<skipIntegrationTests>${skipTests}</skipIntegrationTests>
 		<sonar.organization>ita-social-projects</sonar.organization>
+        <sonar.projectKey>ita-social-projects_TeachUA</sonar.projectKey>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.exclusions>**/config/*</sonar.exclusions>
         <sonar.coverage.exclusions>
@@ -323,6 +324,12 @@
             <artifactId>gimap</artifactId>
             <!--do not update this version because of jakarta-->
             <version>1.6.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>3.9.1.2184</version>
         </dependency>
   </dependencies>
 
