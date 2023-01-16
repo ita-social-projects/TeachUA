@@ -3,6 +3,7 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.CenterToCenterResponseConverter;
+import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
@@ -68,6 +69,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     private final UserRepository userRepository;
     private final UserService userService;
     private final CenterToCenterResponseConverter centerToCenterResponseConverter;
+    private final ClubToClubResponseConverter toClubResponseConverter;
     private final CoordinatesConverter coordinatesConverter;
     private final ObjectMapper objectMapper;
     private ClubService clubService;
@@ -79,6 +81,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
                              CityService cityService, DistrictService districtService, StationService stationService,
                              ClubRepository clubRepository, UserRepository userRepository, UserService userService,
                              CenterToCenterResponseConverter centerToCenterResponseConverter,
+                             ClubToClubResponseConverter toClubResponseConverter,
                              CoordinatesConverter coordinatesConverter,
                              ObjectMapper objectMapper) {
         this.locationService = locationService;
@@ -93,6 +96,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         this.userRepository = userRepository;
         this.userService = userService;
         this.centerToCenterResponseConverter = centerToCenterResponseConverter;
+        this.toClubResponseConverter = toClubResponseConverter;
         this.coordinatesConverter = coordinatesConverter;
         this.objectMapper = objectMapper;
     }
@@ -265,6 +269,16 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
                 .map(centerToCenterResponseConverter::convertToCenterResponse)
                 .collect(Collectors.toList()),
             centerResponses.getPageable(), centerResponses.getTotalElements());
+    }
+
+    @Override
+    public Page<ClubResponse> getCenterClubsByCenterId(Long id, Pageable pageable) {
+        Page<Club> clubsResponses = clubRepository.findAllByCenterId(id, pageable);
+        return new PageImpl<>(
+            clubRepository.saveAll(clubsResponses)
+                .stream().map(toClubResponseConverter::convertToClubResponse)
+                .collect(Collectors.toList()), clubsResponses.getPageable(), clubsResponses.getTotalElements()
+        );
     }
 
     @Override
