@@ -275,7 +275,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     public Page<ClubResponse> getCenterClubsByCenterId(Long id, Pageable pageable) {
         Page<Club> clubsResponses = clubRepository.findAllByCenterId(id, pageable);
         return new PageImpl<>(
-            clubRepository.saveAll(clubsResponses)
+            clubsResponses
                 .stream().map(toClubResponseConverter::convertToClubResponse)
                 .collect(Collectors.toList()), clubsResponses.getPageable(), clubsResponses.getTotalElements()
         );
