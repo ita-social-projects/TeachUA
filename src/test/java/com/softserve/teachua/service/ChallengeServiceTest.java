@@ -49,7 +49,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class ChallengeServiceTest {
+class ChallengeServiceTest {
 
     private static final Integer ROLE_ID = 72;
     private static final String ROLE_NAME = "ADMIN";
