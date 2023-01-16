@@ -14,6 +14,7 @@ import com.softserve.teachua.dto.challenge.UpdateChallenge;
 import com.softserve.teachua.dto.challenge.UpdateChallengeDate;
 import com.softserve.teachua.dto.task.SuccessUpdatedTask;
 import com.softserve.teachua.dto.task.UpdateTask;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.Task;
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -40,6 +42,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -50,23 +54,34 @@ public class ChallengeServiceTest {
     private static final Integer ROLE_ID = 72;
     private static final String ROLE_NAME = "ADMIN";
 
-    private static final String EXISTING_EMAIL = "someuser@mail.com";
-    private static final long EXISTING_ID = 3L;
+    private static final String USER_EMAIL = "someuser@mail.com";
+    private static final long USER_ID = 3L;
     private static final boolean IS_STATUS = true;
     private static final String PASSWORD = "12345";
 
 
     private static final Long CHALLENGE_ID = 2L;
+    private static final Long CHALLENGE_WRONG_ID = 100L;
+
     private static final String CHALLENGE_NAME = "Назва Челенджу";
+    private static final String UPDATED_NAME = "Зміненна Назва Челеджу";
+    private static final String CHALLENGE_WRONG_NAME = "Помилкова назва Челенджу";
+
     private static final String CHALLENGE_TITLE = "Назва Челенджу";
+    private static final String UPDATED_TITLE = "Змінений заголовок Челенджу";
+
     private static final String CHALLENGE_DESCRIPTION = "Опис Челенджу";
+    private static final String UPDATED_DESCRIPTION = "Змінений опис Челенджу";
+
     private static final String CHALLENGE_PICTURE_PATH = "/upload/challenges/IMG_20221102_003151_584.jpg";
     private static final Long CHALLENGE_SORT_NUMBER = 12334L;
     private static final Boolean CHALLENGE_IS_ACTIVE = Boolean.TRUE;
 
     private static final Long CORRECT_TASK_ID = 1L;
-    private static final String CORRECT_TASK_NAME = "MyTask";
+    private static final String CORRECT_TASK_NAME = "Завдання до Челенджу";
+
     private final ModelMapper mapper = new ModelMapper();
+
     @Mock
     private ChallengeRepository challengeRepository;
     @Mock
@@ -89,7 +104,7 @@ public class ChallengeServiceTest {
     private Task task;
     private Role role;
     private User user;
-    private Set<Task> tasks;
+    private final Set<Task> tasks = new HashSet<>();
     private ChallengePreview challengePreview;
     private ChallengeProfile challengeProfile;
     private ChallengeArch challengeArch;
@@ -102,22 +117,19 @@ public class ChallengeServiceTest {
     private UpdateChallenge updateChallenge;
     private UpdateChallengeDate updateChallengeDate;
     private UpdateTask updateTask;
-
     private SuccessUpdateChallengePreview challengeUpdatePreview;
 
     @BeforeEach
     void setMocks() {
         challenge = getChallenge();
-        task = Task.builder().id(CORRECT_TASK_ID).name(CORRECT_TASK_NAME).challenge(challenge)
-            .startDate(LocalDate.now()).build();
+        task = getTestTask();
 
-        role = Role.builder().id(ROLE_ID).name(ROLE_NAME).build();
-        user = User.builder().id(EXISTING_ID).email(EXISTING_EMAIL).status(IS_STATUS).password(PASSWORD).role(role)
+        role = getTestRole();
+        user = User.builder().id(USER_ID).email(USER_EMAIL).status(IS_STATUS).password(PASSWORD).role(role)
             .build();
 
         challenge.setUser(user);
 
-        tasks = new HashSet<>();
         tasks.add(task);
 
         challenge.setTasks(tasks);
@@ -172,7 +184,6 @@ public class ChallengeServiceTest {
             .isEqualTo(Collections.singletonList(challengePreview));
     }
 
-
     @Test
     @DisplayName("Should save Challenge in database and return SuccessCreatedChallenge")
     void addChallenge() {
@@ -195,6 +206,15 @@ public class ChallengeServiceTest {
     }
 
     @Test
+    @DisplayName("getChallengeByWrongId should throw NotExistException")
+    void getChallengeByWrongId() {
+        assertThatThrownBy(()->{
+           challengeService.getChallengeById(CHALLENGE_WRONG_ID);
+       }).isInstanceOf(NotExistException.class);
+       verify(challengeRepository).findById(CHALLENGE_WRONG_ID);
+    }
+
+    @Test
     @DisplayName("getChallengeByName should return Challenge")
     void getChallengeByName() {
         when(challengeRepository.findByName(challenge.getName()))
@@ -206,12 +226,41 @@ public class ChallengeServiceTest {
     }
 
     @Test
+    @DisplayName("getChallengeByWrongName should throw NotExistException")
+    void getChallengeByWrongName() {
+        assertThatThrownBy(()->{
+            challengeService.getChallengeByName(CHALLENGE_WRONG_NAME);
+        }).isInstanceOf(NotExistException.class);
+        verify(challengeRepository).findByName(CHALLENGE_WRONG_NAME);
+    }
+
+    @Test
     @DisplayName("getChallengeTest should return ChallengeProfile")
-    void getChallengeTest() {
+    void getChallengeProfile() {
         when(challengeRepository.findById(challenge.getId())).thenReturn(Optional.of(challenge));
         when(dtoConverter.convertToDto(challenge, ChallengeProfile.class)).thenReturn(challengeProfile);
 
         assertThat(challengeService.getChallenge(challenge.getId())).isEqualTo(challengeProfile);
+    }
+
+    @Test
+    @DisplayName("getChallengeProfileByNonActive should return ChallengeProfile by Challenge with isActive = false")
+    void getChallengeProfileByNonActive() {
+        challenge.setIsActive(false);
+
+        when(challengeRepository.findById(challenge.getId())).thenReturn(Optional.of(challenge));
+        when(dtoConverter.convertToDto(challenge, ChallengeProfile.class)).thenReturn(challengeProfile);
+
+        assertThat(challengeService.getChallenge(challenge.getId())).isEqualTo(challengeProfile);
+    }
+
+    @Test
+    @DisplayName("getChallengeProfileByWrongId should throw NotExistException")
+    void getChallengeProfileByWrongId() {
+        assertThatThrownBy(()->{
+            challengeService.getChallenge(CHALLENGE_WRONG_ID);
+        }).isInstanceOf(NotExistException.class);
+        verify(challengeService).getChallenge(CHALLENGE_WRONG_ID);
     }
 
     @Test
@@ -232,6 +281,28 @@ public class ChallengeServiceTest {
     }
 
     @Test
+    @DisplayName("updateChallengeWithNewNameAndDescriptionAndTitle should save Challenge with updated Name, Title and Description")
+    void updateChallengeWithNewNameAndDescriptionAndTitle() {
+        when(challengeRepository.findById(challenge.getId()))
+            .thenReturn(Optional.of(challenge));
+
+        updateChallenge.setDescription(UPDATED_DESCRIPTION);
+        updateChallenge.setName(UPDATED_NAME);
+        updateChallenge.setTitle(UPDATED_TITLE);
+
+        challengeService.updateChallenge(challenge.getId(),updateChallenge);
+
+        ArgumentCaptor<Challenge> savedChallengeCaptor = ArgumentCaptor.forClass(Challenge.class);
+        verify(challengeRepository,times(1)).save(savedChallengeCaptor.capture());
+        Challenge savedChallenge = savedChallengeCaptor.getValue();
+
+        assertEquals(UPDATED_TITLE,savedChallenge.getTitle());
+        assertEquals(UPDATED_NAME,savedChallenge.getName());
+        assertEquals(UPDATED_DESCRIPTION,savedChallenge.getDescription());
+
+    }
+
+    @Test
     @DisplayName("cloneChallenge should return lost of SuccessUpdatedTask")
     void cloneChallenge() {
         when(challengeRepository.findById(challenge.getId()))
@@ -245,7 +316,6 @@ public class ChallengeServiceTest {
             .isEqualTo(Collections.singletonList(successUpdatedTask));
 
     }
-
 
     @Test
     @DisplayName("updateChallengePreview should return SuccessUpdateChallengePreview")
@@ -265,15 +335,34 @@ public class ChallengeServiceTest {
     }
 
     @Test
+    @DisplayName("updateChallengePreviewWithNewTitleAndName should save ChallengePreview with updated Name and Title")
+    void updateChallengePreviewWithNewTitleAndName() {
+        successUpdateChallengePreview.setName(UPDATED_NAME);
+        successUpdateChallengePreview.setTitle(UPDATED_TITLE);
+
+        when(challengeRepository.findById(challenge.getId()))
+            .thenReturn(Optional.of(challenge));
+
+        challengeService.updateChallengePreview(challenge.getId(),successUpdateChallengePreview);
+
+        ArgumentCaptor<Challenge> savedChallengeCaptor = ArgumentCaptor.forClass(Challenge.class);
+        verify(challengeRepository,times(1)).save(savedChallengeCaptor.capture());
+
+        Challenge savedChallenge = savedChallengeCaptor.getValue();
+        assertEquals(UPDATED_NAME,savedChallenge.getName());
+        assertEquals(UPDATED_TITLE,savedChallenge.getTitle());
+    }
+
+    @Test
     @DisplayName("deleteChallenge should return ChallengeDeleteResponse")
     void deleteChallenge() {
         when(challengeRepository.findById(challenge.getId()))
             .thenReturn(Optional.of(challenge));
+
         when(dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class))
             .thenReturn(challengeDeleteResponse);
         when(dtoConverter.convertToDto(challenge, ChallengeArch.class))
             .thenReturn(challengeArch);
-
 
         doNothing().when(challengeRepository).deleteById(anyLong());
         doNothing().when(challengeRepository).flush();
@@ -283,23 +372,11 @@ public class ChallengeServiceTest {
     }
 
     @Test
-    @DisplayName("Should save ChallengeArch in database")
-    void archiveChallengeModel() {
-        when(dtoConverter.convertToDto(challenge, ChallengeArch.class))
-            .thenReturn(challengeArch);
-
-        challengeService.archiveModel(challenge);
-        verify(archiveService).saveModel(challengeArch);
-    }
-
-    @Test
     @DisplayName("Should set TaskService in Challenge")
     void setTaskService() {
-
         challengeService.setTaskService(taskService);
         verify(challengeService).setTaskService(taskService);
     }
-
 
     @Test
     @DisplayName("Should read ChallengeArch from JSON string, convert it to Challenge and save in database")
@@ -319,7 +396,6 @@ public class ChallengeServiceTest {
         verify(challengeRepository).save(any(Challenge.class));
     }
 
-
     private Challenge getChallenge() {
         return Challenge.builder()
             .id(CHALLENGE_ID)
@@ -332,9 +408,20 @@ public class ChallengeServiceTest {
             .build();
     }
 
-    private ChallengeDeleteResponse getChallengeDeleteResponse() {
-        return ChallengeDeleteResponse.builder().id(challenge.getId()).name(challenge.getName()).build();
+    private Task getTestTask(){
+        return Task.builder()
+            .id(CORRECT_TASK_ID)
+            .name(CORRECT_TASK_NAME)
+            .challenge(challenge)
+            .startDate(LocalDate.now())
+            .build();
     }
 
+    private Role getTestRole(){
+        return Role.builder()
+            .id(ROLE_ID)
+            .name(ROLE_NAME)
+            .build();
+    }
 
 }
