@@ -1,0 +1,75 @@
+package com.softserve.teachua.controller;
+
+import com.softserve.teachua.constants.RoleData;
+import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.certificateType.CertificateTypeProfile;
+import com.softserve.teachua.dto.certificateType.CertificateTypeProcessingResponse;
+import com.softserve.teachua.model.CertificateType;
+import com.softserve.teachua.service.CertificateTypeService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
+import java.util.List;
+import javax.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * This controller is responsible for managing certificate types
+ */
+@RestController
+@Slf4j
+public class CertificateTypeController implements Api {
+    private final CertificateTypeService certificateTypeService;
+
+    public CertificateTypeController(CertificateTypeService certificateTypeService) {
+        this.certificateTypeService = certificateTypeService;
+    }
+
+    /**
+     * This endpoint is used to get all certificate types.
+     *
+     * @return {@code List<CertificateType>}
+     */
+    @GetMapping("/certificate-types")
+    @AllowedRoles(RoleData.ADMIN)
+    public List<CertificateType> getAllCertificateTypes() {
+        return certificateTypeService.getListOfCertificateTypes();
+    }
+
+    /**
+     * The method saves certificate type to database.
+     *
+     * @param certificateTypeProfile {@code CertificateTypeProfile} read from form.
+     * @return {@code CertificateTypeProcessingResponse}
+     */
+    @PostMapping("/certificate-type")
+    public CertificateTypeProcessingResponse createCertificateType(@Valid @RequestBody
+                                                                 CertificateTypeProfile certificateTypeProfile) {
+        return certificateTypeService.addCertificateType(certificateTypeProfile);
+    }
+
+    /**
+     * Use this endpoint to update certificate type. The controller returns {@code CertificateTypeProcessingResponse}.
+     * This feature available only for admins.
+     *
+     * @param id              put template id here.
+     * @param certificateTypeProfile put updated object here.
+     * @return {@code CertificateTypeProcessingResponse} shows result of updating template.
+     */
+    @PutMapping("/certificate-type/{id}")
+    public CertificateTypeProcessingResponse updateCertificateType(@PathVariable Integer id,
+                                                                   @Valid @RequestBody
+                                                                 CertificateTypeProfile certificateTypeProfile) {
+        return certificateTypeService.updateCertificateType(id, certificateTypeProfile);
+    }
+
+    /**
+     * Use this endpoint to delete certificate type.
+     * This feature available only for admins.
+     *
+     * @param id put certificate type id here.
+     */
+    @DeleteMapping("/certificate-type/{id}")
+    public void deleteCertificateType(@PathVariable Integer id) {
+        certificateTypeService.deleteCertificateType(id);
+    }
+}

@@ -12,22 +12,14 @@ import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.service.*;
 import com.softserve.teachua.utils.CertificateContentDecorator;
 import com.softserve.teachua.utils.QRCodeService;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
-
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,15 +27,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -103,15 +86,15 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     @Override
     public List<CertificateUserResponse> getListOfCertificatesByEmail(String email) {
         return certificateRepository.findAllForDownload(email)
-            .stream()
-            .map(certificate -> CertificateUserResponse.builder()
-                .id(certificate.getId())
-                .serialNumber(certificate.getSerialNumber())
-                .certificateType(certificate.getTemplate().getCertificateType())
-                .date(certificate.getDates().getDate())
-                .courseDescription(certificate.getTemplate().getCourseDescription())
-                .build())
-            .collect(Collectors.toList());
+                .stream()
+                .map(certificate -> CertificateUserResponse.builder()
+                                .id(certificate.getId())
+                                .serialNumber(certificate.getSerialNumber())
+                                .certificateTypeName(certificate.getTemplate().getCertificateType().getName())
+                                .date(certificate.getDates().getDate())
+                                .courseDescription(certificate.getTemplate().getCourseDescription())
+                                .build())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -199,12 +182,11 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         String courseNumber = String.format("%02d", Integer.valueOf(response.getDates().getCourseNumber()));
 
         Long largestSerialNumber = certificateRepository
-            .findMaxSerialNumber(response.getTemplate().getCertificateType().toString());
-
+            .findMaxSerialNumber(response.getTemplate().getCertificateType().getCodeNumber().toString());
         if (largestSerialNumber == null) {
             String initialNumber;
 
-            switch (response.getTemplate().getCertificateType()) {
+            switch (response.getTemplate().getCertificateType().getCodeNumber()) {
                 case 1:
                     initialNumber = "0000017";
                     break;
@@ -215,12 +197,12 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
                     initialNumber = "0000001";
                     break;
             }
-            response.setSerialNumber(Long.valueOf(
-                response.getTemplate().getCertificateType().toString() + courseNumber + initialNumber));
+            response.setSerialNumber(Long
+                .valueOf(response.getTemplate().getCertificateType().getCodeNumber() + courseNumber + initialNumber));
         } else {
             String certificateNumber = String.format("%07d", largestSerialNumber + 1);
             response.setSerialNumber(Long.valueOf(
-                response.getTemplate().getCertificateType().toString() + courseNumber + certificateNumber));
+                response.getTemplate().getCertificateType().getCodeNumber() + courseNumber + certificateNumber));
         }
 
         return response;
@@ -319,7 +301,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         Certificate certificate = getCertificateBySerialNumber(serialNumber);
 
         CertificateVerificationResponse response = CertificateVerificationResponse.builder()
-            .certificateType(certificate.getTemplate().getCertificateType())
+            .certificateTypeName(certificate.getTemplate().getCertificateType().getName())
             .courseDescription(certificate.getTemplate().getCourseDescription())
             .picturePath(certificate.getTemplate().getPicturePath())
             .projectDescription(certificate.getTemplate().getProjectDescription())

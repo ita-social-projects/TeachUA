@@ -13,7 +13,7 @@ public class CertificateVerificationResponse implements Convertible {
 
     private Long serialNumber;
 
-    private Integer certificateType;
+    private String certificateTypeName;
 
     private String userName;
 

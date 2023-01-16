@@ -1,6 +1,7 @@
 package com.softserve.teachua.repository;
 
 import com.softserve.teachua.model.CertificateTemplate;
+import com.softserve.teachua.model.CertificateType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,11 +21,11 @@ public interface CertificateTemplateRepository extends JpaRepository<Certificate
 
     List<CertificateTemplate> findByIdGreaterThanOrderByIdDesc(Integer value);
 
-    Optional<CertificateTemplate> findByCertificateType(Integer type);
+    Optional<CertificateTemplate> findByCertificateTypeCodeNumber(Integer codeNumber);
 
     boolean existsBy();
 
-    boolean existsCertificateTemplateByCertificateType(Integer certificateType);
+    boolean existsCertificateTemplateByCertificateType(CertificateType certificateType);
 
     boolean existsByFilePath(String filePath);
 

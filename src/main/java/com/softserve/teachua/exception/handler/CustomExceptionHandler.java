@@ -2,22 +2,11 @@ package com.softserve.teachua.exception.handler;
 
 import com.google.api.client.http.HttpResponseException;
 import com.softserve.teachua.dto.exception.ExceptionResponse;
-import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.BadRequestException;
-import com.softserve.teachua.exception.CannotDeleteFileException;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.teachua.exception.FileUploadException;
-import com.softserve.teachua.exception.IncorrectInputException;
-import com.softserve.teachua.exception.JsonWriteException;
-import com.softserve.teachua.exception.LogNotFoundException;
-import com.softserve.teachua.exception.MatchingPasswordException;
-import com.softserve.teachua.exception.MethodNotSupportedException;
-import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.exception.NotVerifiedUserException;
-import com.softserve.teachua.exception.RestoreArchiveException;
-import com.softserve.teachua.exception.StreamCloseException;
-import com.softserve.teachua.exception.UpdatePasswordException;
-import com.softserve.teachua.exception.WrongAuthenticationException;
+import com.softserve.teachua.exception.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import javax.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -32,18 +21,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolationException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.springframework.http.HttpStatus.BAD_GATEWAY;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+import static org.springframework.http.HttpStatus.*;
 
 /**
  * Custom exception handler to handle own exceptions and handle Spring's exceptions(BadRequest, MethodNotSupported).
@@ -123,7 +101,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
-            HttpHeaders headers, HttpStatus status, WebRequest request) {
+                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  WebRequest request) {
         Map<String, String> mapMessage = new HashMap<>();
         mapMessage.put("startDate Invalid future date", "Дата не може бути у минулому");
 
@@ -141,27 +120,28 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception,
-            HttpHeaders headers, HttpStatus status, WebRequest request) {
+                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  WebRequest request) {
         return buildExceptionBody(new BadRequestException(exception.getMessage()), status);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
-            HttpRequestMethodNotSupportedException exception, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+        HttpRequestMethodNotSupportedException exception, HttpHeaders headers, HttpStatus status,
+        WebRequest request) {
         return buildExceptionBody(new MethodNotSupportedException(exception.getMessage()), status);
     }
 
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
-            MissingServletRequestParameterException exception, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+        MissingServletRequestParameterException exception, HttpHeaders headers, HttpStatus status,
+        WebRequest request) {
         return buildExceptionBody(new BadRequestException(exception.getMessage()), status);
     }
 
     private ResponseEntity<Object> buildExceptionBody(Exception exception, HttpStatus httpStatus) {
         ExceptionResponse exceptionResponse = ExceptionResponse.builder().status(httpStatus.value())
-                .message(exception.getMessage()).build();
+            .message(exception.getMessage()).build();
         log.debug(exception.getMessage());
         return ResponseEntity.status(httpStatus).body(exceptionResponse);
     }
@@ -187,5 +167,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatus.resolve(exception.getStatusCode())
         ).orElse(BAD_REQUEST);
         return buildExceptionBody(exception, httpStatus);
+    }
+
+    @ExceptionHandler(EntityIsUsedException.class)
+    public ResponseEntity<Object> handleEntityInUseException(EntityIsUsedException exception) {
+        return buildExceptionBody(exception, CONFLICT);
     }
 }
