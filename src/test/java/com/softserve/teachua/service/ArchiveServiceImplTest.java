@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -37,13 +38,9 @@ import static org.mockito.Mockito.when;
 public class ArchiveServiceImplTest {
 
     private static final long CORRECT_ID = 1;
-
     private static final String ARCHIVE_DATA = "{\"field\":\"value\"}";
-
     private static final String RIGHT_ARCHIVE_CLASS_NAME = "java.lang.Object";
-
     private static final String WRONG_ARCHIVE_CLASS_NAME = "wrong class";
-
     private static final long WRONG_ID = 10;
 
     @Mock
@@ -56,20 +53,16 @@ public class ArchiveServiceImplTest {
     private ArchiveRepository archiveRepository;
 
     @Mock
-    private DtoConverter dtoConverter;
-
-    @Mock
     private ObjectMapper objectMapper;
-
-    private Archive archive;
-
-    private List<Archive> singletonArchiveList;
 
     @Mock
     private Archivable archivable;
 
     @Mock
     private ArchiveMark<Object> archiveMark;
+
+    private Archive archive;
+    private List<Archive> singletonArchiveList;
 
     @BeforeEach
     void setUp() {
@@ -79,33 +72,6 @@ public class ArchiveServiceImplTest {
             .className(RIGHT_ARCHIVE_CLASS_NAME)
             .build();
         singletonArchiveList = Collections.singletonList(archive);
-
-//        archivable = new Archivable() {
-//
-//            private String field = "value";
-//
-//            public String getField() {
-//                return field;
-//            }
-//
-//            @Override
-//            public Class getServiceClass() {
-//                return Object.class;
-//            }
-//        };
-
-//        archiveMark = new ArchiveMark<Archivable>() {
-//            @Override
-//            public void archiveModel(Archivable archivable) {
-//                return;
-//            }
-//
-//            @Override
-//            public void restoreModel(String archiveObject) throws JsonProcessingException {
-//                return;
-//            }
-//        };
-//        archiveMark = Mockito.mock(ArchiveMark.class);
     }
 
     @Test
@@ -166,8 +132,7 @@ public class ArchiveServiceImplTest {
     @Test
     @DisplayName("Restoring object by correct id returns correct archive")
     void restoreCorrectId() throws ClassNotFoundException, JsonProcessingException {
-//        when(context.getBean(Class.forName(archive.getClassName()))).thenReturn((Object) archiveMark);
-//        when(archiveMark.restoreModel(ARCHIVE_DATA)).thenCallRealMethod();
+        when(context.getBean(any(Class.class))).thenReturn(archiveMark);
         doNothing().when(archiveMark).restoreModel(ARCHIVE_DATA);
         when(archiveRepository.findById(CORRECT_ID)).thenReturn(Optional.of(archive));
         assertThat(archiveService.restoreArchiveObject(CORRECT_ID)).isEqualTo(archive);
@@ -175,7 +140,7 @@ public class ArchiveServiceImplTest {
 
     @Test
     void restoreWrongId() {
-
+        assertThatThrownBy(() -> archiveService.restoreArchiveObject(WRONG_ID)).isInstanceOf(NotExistException.class);
     }
 
 }
