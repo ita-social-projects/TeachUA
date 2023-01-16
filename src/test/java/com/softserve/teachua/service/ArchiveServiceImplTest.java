@@ -22,8 +22,7 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ArchiveServiceImplTest {
@@ -113,7 +112,6 @@ public class ArchiveServiceImplTest {
     @Test
     @DisplayName("Saving not serializable model throws RestoreArchiveException")
     void saveWrong() throws JsonProcessingException {
-        archive.setId(null);
         when(archivable.getServiceClass()).thenReturn(Object.class);
         when(objectMapper.writeValueAsString(archivable)).thenThrow(JsonProcessingException.class);
         assertThatThrownBy(() -> archiveService.saveModel(archivable))
@@ -130,8 +128,19 @@ public class ArchiveServiceImplTest {
     }
 
     @Test
+    @DisplayName("Restoring object by wrong id throws NotExistException")
     void restoreWrongId() {
         assertThatThrownBy(() -> archiveService.restoreArchiveObject(WRONG_ID)).isInstanceOf(NotExistException.class);
+    }
+
+    @Test
+    @DisplayName("Restoring not serializable object throws RestoreArchiveException")
+    void restoreNotSerializable() throws JsonProcessingException {
+        when(context.getBean(any(Class.class))).thenReturn(archiveMark);
+        when(archiveRepository.findById(CORRECT_ID)).thenReturn(Optional.of(archive));
+        doThrow(JsonProcessingException.class).when(archiveMark).restoreModel(ARCHIVE_DATA);
+        assertThatThrownBy(() -> archiveService.restoreArchiveObject(CORRECT_ID))
+            .isInstanceOf(RestoreArchiveException.class);
     }
 
 }
