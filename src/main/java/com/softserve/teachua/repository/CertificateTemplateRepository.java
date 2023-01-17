@@ -21,7 +21,7 @@ public interface CertificateTemplateRepository extends JpaRepository<Certificate
 
     List<CertificateTemplate> findByIdGreaterThanOrderByIdDesc(Integer value);
 
-    Optional<CertificateTemplate> findByCertificateTypeCodeNumber(Integer codeNumber);
+    Optional<CertificateTemplate> findFirstByCertificateTypeId(Integer id);
 
     boolean existsBy();
 
