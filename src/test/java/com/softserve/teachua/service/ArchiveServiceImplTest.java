@@ -120,10 +120,10 @@ public class ArchiveServiceImplTest {
 
     @Test
     @DisplayName("Restoring object by correct id returns correct archive")
-    void restoreCorrectId() throws ClassNotFoundException, JsonProcessingException {
+    void restoreCorrectId() throws JsonProcessingException {
+        when(archiveRepository.findById(CORRECT_ID)).thenReturn(Optional.of(archive));
         when(context.getBean(any(Class.class))).thenReturn(archiveMark);
         doNothing().when(archiveMark).restoreModel(ARCHIVE_DATA);
-        when(archiveRepository.findById(CORRECT_ID)).thenReturn(Optional.of(archive));
         assertThat(archiveService.restoreArchiveObject(CORRECT_ID)).isEqualTo(archive);
     }
 
@@ -134,10 +134,19 @@ public class ArchiveServiceImplTest {
     }
 
     @Test
+    @DisplayName("Restoring an object with service class that does not exist throws RestoreArchiveException")
+    void restoreWrongServiceClass() {
+        archive.setClassName(WRONG_ARCHIVE_CLASS_NAME);
+        when(archiveRepository.findById(CORRECT_ID)).thenReturn(Optional.of(archive));
+        assertThatThrownBy(() -> archiveService.restoreArchiveObject(CORRECT_ID))
+            .isInstanceOf(RestoreArchiveException.class);
+    }
+
+    @Test
     @DisplayName("Restoring not serializable object throws RestoreArchiveException")
     void restoreNotSerializable() throws JsonProcessingException {
-        when(context.getBean(any(Class.class))).thenReturn(archiveMark);
         when(archiveRepository.findById(CORRECT_ID)).thenReturn(Optional.of(archive));
+        when(context.getBean(any(Class.class))).thenReturn(archiveMark);
         doThrow(JsonProcessingException.class).when(archiveMark).restoreModel(ARCHIVE_DATA);
         assertThatThrownBy(() -> archiveService.restoreArchiveObject(CORRECT_ID))
             .isInstanceOf(RestoreArchiveException.class);
