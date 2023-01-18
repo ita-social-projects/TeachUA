@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ArchiveServiceImplTest {
+class ArchiveServiceImplTest {
 
     private static final long CORRECT_ID = 1;
     private static final String ARCHIVE_DATA = "{\"field\":\"value\"}";
