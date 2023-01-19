@@ -44,8 +44,6 @@ public class CreateTest {
     @NotBlank
     private String topicTitle;
     @ToString.Exclude
-    // @NotEmpty(message = "Тест повинен містити запитання.")
-    // @Size(min = 3, message = "Мінімальна допустима кількість запитань в тесті - 3.")
     private List<QuestionProfile> questions;
 
     public void addQuestion(QuestionProfile question) {

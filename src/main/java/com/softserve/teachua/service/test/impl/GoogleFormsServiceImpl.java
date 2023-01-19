@@ -104,33 +104,37 @@ public class GoogleFormsServiceImpl implements GoogleFormsService {
         Test test = foundedTest.orElseThrow(
             () -> new IllegalArgumentException("GoogleFormsWrapper does not contain Test title."));
 
-        for (GoogleFormsQuizResults r : results.getQuizResults()) {
+        for (GoogleFormsQuizResults quizResults : results.getQuizResults()) {
             Result toSave = new Result();
-            Optional<User> existedUser = userRepository.findByEmail(r.getRespondentEmail());
+            Optional<User> existedUser = userRepository.findByEmail(quizResults.getRespondentEmail());
             if (existedUser.isPresent()) {
                 toSave.setUser(existedUser.get());
             } else {
-                Optional<UserFromGoogleForms> foundedGoogleFormsUser =
-                    userFromGoogleFormsRepository.findByEmail(r.getRespondentEmail());
-                if (foundedGoogleFormsUser.isPresent()) {
-                    toSave.setUserFromGoogleForms(foundedGoogleFormsUser.get());
-                } else {
-                    UserFromGoogleForms toSaveUser = UserFromGoogleForms.builder()
-                        .email(r.getRespondentEmail()).build();
-                    UserFromGoogleForms savedUser = userFromGoogleFormsRepository.save(toSaveUser);
-                    toSave.setUserFromGoogleForms(savedUser);
-                }
+                addNewUser(quizResults, toSave);
             }
             toSave.setTest(test);
             toSave.setTestFinishTime(
-                LocalDateTime.parse(r.getLastSubmittedTime().substring(0, 19)));
-            if (r.getTotalScore() == null) {
+                LocalDateTime.parse(quizResults.getLastSubmittedTime().substring(0, 19)));
+            if (quizResults.getTotalScore() == null) {
                 toSave.setGrade(0);
             } else {
-                toSave.setGrade(r.getTotalScore().intValue());
+                toSave.setGrade(quizResults.getTotalScore().intValue());
             }
 
             resultRepository.save(toSave);
+        }
+    }
+
+    private void addNewUser(GoogleFormsQuizResults quizResults, Result toSave) {
+        Optional<UserFromGoogleForms> foundedGoogleFormsUser =
+            userFromGoogleFormsRepository.findByEmail(quizResults.getRespondentEmail());
+        if (foundedGoogleFormsUser.isPresent()) {
+            toSave.setUserFromGoogleForms(foundedGoogleFormsUser.get());
+        } else {
+            UserFromGoogleForms toSaveUser = UserFromGoogleForms.builder()
+                .email(quizResults.getRespondentEmail()).build();
+            UserFromGoogleForms savedUser = userFromGoogleFormsRepository.save(toSaveUser);
+            toSave.setUserFromGoogleForms(savedUser);
         }
     }
 }
