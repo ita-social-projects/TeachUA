@@ -21,13 +21,14 @@
 		<skipTests>false</skipTests>
 		<skipUnitTests>${skipTests}</skipUnitTests>
 		<skipIntegrationTests>${skipTests}</skipIntegrationTests>
-		<sonar.organization>ita-social-projects</sonar.organization>
-        <sonar.projectKey>ita-social-projects_TeachUA</sonar.projectKey>
+		<sonar.organization>dvavoly-personal-repo</sonar.organization>
+        <sonar.projectKey>dvavoly_TeachUA</sonar.projectKey>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.exclusions>**/config/*</sonar.exclusions>
         <sonar.coverage.exclusions>
             **/constants/*,**/dto/**,**/exception/**,**/model/**
         </sonar.coverage.exclusions>
+        <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
 	</properties>
 
 	<parent>
