@@ -35,10 +35,10 @@
                   value="^package.*|^import.*|a href|href|http://|https://|ftp://|public static final"/>
     </module>
 
-    <module name="SuppressionFilter">
+<!--     <module name="SuppressionFilter">
         <property name="file" value="checkstyle-suppressions.xml"/>
         <property name="optional" value="true"/>
-    </module>
+    </module> -->
 
     <module name="TreeWalker">
         <module name="AbbreviationAsWordInName">
