@@ -28,7 +28,6 @@
         <sonar.coverage.exclusions>
             **/constants/*,**/dto/**,**/exception/**,**/model/**
         </sonar.coverage.exclusions>
-        <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
 	</properties>
 
 	<parent>
