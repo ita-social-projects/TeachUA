@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -17,14 +16,14 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     List<Category> findAll();
 
+    Page<Category> findAll(Pageable pageable);
+
     void deleteById(Long id);
 
     Optional<Category> findByName(String name);
 
     @Query("from Category c order by c.sortby")
     List<Category> findInSortedOrder();
-
-    Page<Category> findAll(Pageable pageable);
 
     @Query(value = "SELECT *  FROM categories AS c " + "WHERE LOWER(c.name) LIKE LOWER('%' || :text || '%')"
             + " ORDER BY RANDOM() LIMIT 3", nativeQuery = true)

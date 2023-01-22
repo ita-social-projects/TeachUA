@@ -21,15 +21,12 @@
     <suppress checks="LocalVariableName" files="."/>
     <suppress checks="MemberName" files="."/>
     <suppress checks="ModifierOrder" files="."/>
-    <suppress checks="NeedBraces" files="."/>
     <suppress checks="NonEmptyAtclauseDescription" files="."/>
     <suppress checks="OperatorWrap" files="."/>
-    <suppress checks="OverloadMethodsDeclarationOrder" files="."/>
     <suppress checks="ParameterName" files="."/>
     <suppress checks="ParenPad" files="."/>
     <suppress checks="RegexpMultiline" files="."/>
     <suppress checks="SummaryJavadoc" files="."/>
     <suppress checks="UnusedImport" files="."/>
-    <suppress checks="VariableDeclarationUsageDistance" files="."/>
     <suppress checks="WhitespaceAround" files="."/>
 </suppressions>

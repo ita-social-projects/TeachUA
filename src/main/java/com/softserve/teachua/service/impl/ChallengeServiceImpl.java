@@ -42,7 +42,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
@@ -112,7 +111,6 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     @Override
     public ChallengeDeleteResponse deleteChallenge(Long id) {
         Challenge challenge = getChallengeById(id);
-        ChallengeDeleteResponse challengeResponse = dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class);
         challenge.getTasks().forEach((task) -> {
             task.setChallenge(null);
             taskRepository.save(task);
@@ -120,6 +118,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         challengeRepository.deleteById(id);
         challengeRepository.flush();
         archiveModel(challenge);
+        ChallengeDeleteResponse challengeResponse = dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class);
         return challengeResponse;
     }
 
