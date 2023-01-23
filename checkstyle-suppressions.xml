@@ -5,12 +5,11 @@
         "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
 <suppressions>
-    <suppress checks="AbbreviationAsWordInName" files="."/>
+    <!--
     <suppress checks="AtclauseOrder" files="."/>
     <suppress checks="AvoidEscapedUnicodeCharacters" files="."/>
     <suppress checks="AvoidStarImport" files="."/>
     <suppress checks="CommentsIndentation" files="."/>
-    <suppress checks="ConstantName" files="."/>
     <suppress checks="CustomImportOrder" files="."/>
     <suppress checks="EmptyLineSeparator" files="."/>
     <suppress checks="Indentation" files="."/>
@@ -18,15 +17,13 @@
     <suppress checks="JavadocParagraph" files="."/>
     <suppress checks="JavadocType" files="."/>
     <suppress checks="LineLength" files="."/>
-    <suppress checks="LocalVariableName" files="."/>
-    <suppress checks="MemberName" files="."/>
     <suppress checks="ModifierOrder" files="."/>
     <suppress checks="NonEmptyAtclauseDescription" files="."/>
     <suppress checks="OperatorWrap" files="."/>
-    <suppress checks="ParameterName" files="."/>
     <suppress checks="ParenPad" files="."/>
     <suppress checks="RegexpMultiline" files="."/>
     <suppress checks="SummaryJavadoc" files="."/>
     <suppress checks="UnusedImport" files="."/>
     <suppress checks="WhitespaceAround" files="."/>
+-->
 </suppressions>

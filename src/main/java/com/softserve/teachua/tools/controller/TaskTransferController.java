@@ -4,15 +4,17 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.task.SuccessCreatedTask;
 import com.softserve.teachua.tools.service.TaskTransferService;
 import com.softserve.teachua.utils.annotation.DevPermit;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TaskTransferController implements Api {
-    private final String ALTER_WELL = "Alter, well done";
+    private static final String ALTER_WELL = "Alter, well done";
     private final TaskTransferService taskTransferService;
 
     @Autowired
@@ -24,9 +26,7 @@ public class TaskTransferController implements Api {
      * Use this endpoint to create task from file. The controller returns list of dto {@code List<SuccessCreatedTask>}
      * of created tasks.
      *
-     * @param filePath
-     *            - path to file with jsons of tasks.
-     *
+     * @param filePath - path to file with jsons of tasks.
      * @return new {@code List<SuccessCreatedTask>}.
      */
     @DevPermit
@@ -67,5 +67,4 @@ public class TaskTransferController implements Api {
         taskTransferService.dropRedundantTable();
         return ResponseEntity.ok(ALTER_WELL);
     }
-
 }

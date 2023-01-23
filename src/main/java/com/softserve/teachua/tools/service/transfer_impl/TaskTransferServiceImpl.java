@@ -10,15 +10,14 @@ import com.softserve.teachua.tools.FileUtils;
 import com.softserve.teachua.tools.dao.TaskDao;
 import com.softserve.teachua.tools.repository.TaskInfoRepository;
 import com.softserve.teachua.tools.service.TaskTransferService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -33,13 +32,13 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     private final String languageChallenge = "Мовомаратон"; // id=2
     private String uaTeachChallengeImage = "data_for_db/task_images/challengeUA.jpg";
     private String languageChallengeImage = "data_for_db/task_images/marathon_log.png";
-    private static final String targetPackage = "tasks";
-    private static final String targetPackageForData = "tasks/taskData";
+    private static final String TARGET_PACKAGE = "tasks";
+    private static final String TARGET_PACKAGE_FOR_DATA = "tasks/taskData";
     private final Map imageMap;
 
     @Autowired
     public TaskTransferServiceImpl(FileUtils fileReader, DtoConverter dtoConverter, TaskRepository taskRepository,
-            ChallengeService challengeService, TaskDao taskDao) {
+                                   ChallengeService challengeService, TaskDao taskDao) {
         this.fileUtils = fileReader;
         this.dtoConverter = dtoConverter;
         this.taskRepository = taskRepository;
@@ -65,8 +64,8 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     }
 
     private void moveImages() {
-        uaTeachChallengeImage = fileUtils.moveImage(uaTeachChallengeImage, targetPackage);
-        languageChallengeImage = fileUtils.moveImage(languageChallengeImage, targetPackage);
+        uaTeachChallengeImage = fileUtils.moveImage(uaTeachChallengeImage, TARGET_PACKAGE);
+        languageChallengeImage = fileUtils.moveImage(languageChallengeImage, TARGET_PACKAGE);
     }
 
     private List<SuccessCreatedTask> createTasks(List<TaskProfile> tasks) {
@@ -86,7 +85,7 @@ public class TaskTransferServiceImpl implements TaskTransferService {
             if (imageMap.containsKey(taskProfile.getName())) {
                 ((List<String>) imageMap.get(taskProfile.getName())).stream()
                         .forEach(url -> taskProfile.setDescription(taskProfile.getDescription().replace(url,
-                                System.getenv("BASE_URL") + fileUtils.moveImage(url, targetPackageForData))));
+                                System.getenv("BASE_URL") + fileUtils.moveImage(url, TARGET_PACKAGE_FOR_DATA))));
             }
 
             log.info("add task: " + taskProfile);
@@ -111,5 +110,4 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     public void dropConstrain() {
         taskDao.alterTaskConstrain();
     }
-
 }
