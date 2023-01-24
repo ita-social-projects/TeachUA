@@ -1,10 +1,9 @@
 package com.softserve.teachua.dto.search;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.lang.Nullable;
-
-import java.util.List;
 
 @AllArgsConstructor
 @Data

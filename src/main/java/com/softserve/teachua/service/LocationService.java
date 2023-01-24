@@ -6,7 +6,6 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;
-
 import java.util.List;
 import java.util.Set;
 

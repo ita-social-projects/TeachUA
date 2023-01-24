@@ -2,7 +2,10 @@ package com.softserve.teachua.dto.contact_data;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.ContactType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @AllArgsConstructor

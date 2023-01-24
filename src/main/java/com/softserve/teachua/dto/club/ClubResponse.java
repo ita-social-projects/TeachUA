@@ -3,17 +3,23 @@ package com.softserve.teachua.dto.club;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.center.CenterForClub;
-import com.softserve.teachua.utils.validations.CheckRussian;
 import com.softserve.teachua.dto.contact_data.ContactDataResponse;
 import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.dto.user.UserPreview;
-import com.softserve.teachua.model.*;
-import lombok.*;
-
-import javax.validation.constraints.*;
+import com.softserve.teachua.model.GalleryPhoto;
+import com.softserve.teachua.utils.validations.CheckRussian;
 import java.util.List;
 import java.util.Set;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor

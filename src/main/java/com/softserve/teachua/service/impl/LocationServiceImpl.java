@@ -7,21 +7,28 @@ import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.model.*;
+import com.softserve.teachua.model.Center;
+import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.Location;
 import com.softserve.teachua.model.archivable.LocationArch;
 import com.softserve.teachua.repository.LocationRepository;
-import com.softserve.teachua.service.*;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import com.softserve.teachua.service.ArchiveMark;
+import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.CenterService;
+import com.softserve.teachua.service.CityService;
+import com.softserve.teachua.service.ClubService;
+import com.softserve.teachua.service.DistrictService;
+import com.softserve.teachua.service.LocationService;
+import com.softserve.teachua.service.StationService;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j

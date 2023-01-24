@@ -5,11 +5,10 @@ import com.softserve.teachua.dto.banner_item.SuccessCreatedBannerItem;
 import com.softserve.teachua.tools.service.BannerItemTransferService;
 import com.softserve.teachua.tools.service.transfer_impl.BannerItemTransferServiceImpl;
 import com.softserve.teachua.utils.annotation.DevPermit;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 public class BannerTransferController implements Api {

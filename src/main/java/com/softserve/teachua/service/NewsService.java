@@ -6,10 +6,9 @@ import com.softserve.teachua.dto.news.SimmilarNewsProfile;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.News;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 /**
  * This interface contains all needed methods to manage news.

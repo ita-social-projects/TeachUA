@@ -3,13 +3,11 @@ package com.softserve.teachua.dto.complaint;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.sql.Timestamp;
-import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor

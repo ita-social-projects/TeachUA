@@ -1,13 +1,12 @@
 package com.softserve.teachua.utils.validations;
 
 import com.softserve.teachua.exception.IncorrectInputException;
-import lombok.extern.slf4j.Slf4j;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ValidationException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PhoneValidation implements ConstraintValidator<Phone, String> {

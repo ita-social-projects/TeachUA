@@ -2,8 +2,6 @@ package com.softserve.teachua.exception;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-
 /**
  * The custom exception which say about problem with closing stream
  */

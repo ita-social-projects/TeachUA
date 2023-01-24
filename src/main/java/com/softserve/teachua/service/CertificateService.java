@@ -7,7 +7,6 @@ import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;

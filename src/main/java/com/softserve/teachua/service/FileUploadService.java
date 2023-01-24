@@ -1,9 +1,8 @@
 package com.softserve.teachua.service;
 
 import com.softserve.teachua.model.GalleryPhoto;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * This interface contains all needed methods to manage file uploader.

@@ -1,6 +1,10 @@
 package com.softserve.teachua.tools.transmodel;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 @AllArgsConstructor
 @NoArgsConstructor

@@ -2,6 +2,10 @@ package com.softserve.teachua.utils.annotation;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.exception.WrongAuthenticationException;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -10,12 +14,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import java.nio.file.AccessDeniedException;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Aspect
 @Component

@@ -4,9 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.dto.certificateByTemplate.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificateExcel.CertificateByTemplateExcelParsingResponse;
 import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * This interface contains all needed methods to manage exel parser.

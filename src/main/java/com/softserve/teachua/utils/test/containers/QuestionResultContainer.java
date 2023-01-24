@@ -1,11 +1,11 @@
 package com.softserve.teachua.utils.test.containers;
 
 import com.softserve.teachua.dto.test.question.QuestionResult;
-import lombok.Getter;
-
+import static com.softserve.teachua.utils.test.Messages.CORRECT_MESSAGE;
+import static com.softserve.teachua.utils.test.Messages.INCORRECT_MESSAGE;
+import static com.softserve.teachua.utils.test.Messages.PARTIALLY_CORRECT_MESSAGE;
 import java.util.Set;
-
-import static com.softserve.teachua.utils.test.Messages.*;
+import lombok.Getter;
 
 @Getter
 public class QuestionResultContainer {

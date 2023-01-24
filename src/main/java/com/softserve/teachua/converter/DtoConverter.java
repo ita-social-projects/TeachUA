@@ -1,13 +1,10 @@
 package com.softserve.teachua.converter;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.dto.test.test.CreateTest;
-import com.softserve.teachua.model.test.Test;
+import java.lang.reflect.Type;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Type;
 
 /**
  * Class that helps to convert from DTO to Entity, from Entity to DTO and from DTO to DTO.

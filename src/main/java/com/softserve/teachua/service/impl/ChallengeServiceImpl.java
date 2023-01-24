@@ -29,6 +29,7 @@ import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.utils.ChallengeUtil;
 import com.softserve.teachua.utils.HtmlUtils;
 import java.time.LocalDate;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -42,7 +43,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Slf4j

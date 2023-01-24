@@ -1,11 +1,10 @@
 package com.softserve.teachua.utils.validations;
 
 import com.softserve.teachua.exception.IncorrectInputException;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
 
 @Slf4j
 public class NameValidator implements ConstraintValidator<Name, String> {

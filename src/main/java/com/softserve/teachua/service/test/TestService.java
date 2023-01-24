@@ -1,8 +1,11 @@
 package com.softserve.teachua.service.test;
 
-import com.softserve.teachua.dto.test.test.*;
+import com.softserve.teachua.dto.test.test.CreateTest;
+import com.softserve.teachua.dto.test.test.PassTest;
+import com.softserve.teachua.dto.test.test.SuccessCreatedTest;
+import com.softserve.teachua.dto.test.test.TestProfile;
+import com.softserve.teachua.dto.test.test.ViewTest;
 import com.softserve.teachua.model.test.Test;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 

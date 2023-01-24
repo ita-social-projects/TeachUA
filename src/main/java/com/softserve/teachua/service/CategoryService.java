@@ -8,10 +8,9 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Category;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 /**
  * This interface contains all needed methods to manage about us items using AboutUsItemRepository.

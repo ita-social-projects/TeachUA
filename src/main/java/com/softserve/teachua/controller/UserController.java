@@ -8,10 +8,8 @@ import com.softserve.teachua.dto.user.UserUpdateProfile;
 import com.softserve.teachua.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import java.util.List;
 import javax.validation.Valid;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

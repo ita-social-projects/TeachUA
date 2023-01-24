@@ -6,7 +6,6 @@ import com.softserve.teachua.dto.test.result.UserResult;
 import com.softserve.teachua.dto.test.test.ResultTest;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Result;
-
 import java.util.List;
 
 /**

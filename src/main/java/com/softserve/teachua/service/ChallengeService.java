@@ -1,11 +1,17 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.challenge.*;
+import com.softserve.teachua.dto.challenge.ChallengeDeleteResponse;
+import com.softserve.teachua.dto.challenge.ChallengePreview;
+import com.softserve.teachua.dto.challenge.ChallengeProfile;
+import com.softserve.teachua.dto.challenge.CreateChallenge;
+import com.softserve.teachua.dto.challenge.SuccessCreatedChallenge;
+import com.softserve.teachua.dto.challenge.SuccessUpdateChallengePreview;
+import com.softserve.teachua.dto.challenge.SuccessUpdatedChallenge;
+import com.softserve.teachua.dto.challenge.UpdateChallenge;
+import com.softserve.teachua.dto.challenge.UpdateChallengeDate;
 import com.softserve.teachua.dto.task.SuccessUpdatedTask;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
-
-import java.time.LocalDate;
 import java.util.List;
 
 /**
