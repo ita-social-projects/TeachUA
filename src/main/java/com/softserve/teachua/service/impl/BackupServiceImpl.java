@@ -78,9 +78,10 @@ public class BackupServiceImpl implements BackupService {
     private final ChallengeRepository challengeRepository;
 
     public BackupServiceImpl(AboutUsItemRepository aboutUsItemRepository, BannerItemRepository bannerItemRepository,
-                             CategoryRepository categoryRepository, CenterRepository centerRepository, ClubRepository clubRepository,
-                             ContactTypeRepository contactTypeRepository, GalleryRepository galleryRepository,
-                             NewsRepository newsRepository, TaskRepository taskRepository, UserRepository userRepository,
+                             CategoryRepository categoryRepository, CenterRepository centerRepository,
+                             ClubRepository clubRepository, ContactTypeRepository contactTypeRepository,
+                             GalleryRepository galleryRepository, NewsRepository newsRepository,
+                             TaskRepository taskRepository, UserRepository userRepository,
                              ChallengeRepository challengeRepository) {
         this.aboutUsItemRepository = aboutUsItemRepository;
         this.bannerItemRepository = bannerItemRepository;
@@ -97,7 +98,6 @@ public class BackupServiceImpl implements BackupService {
 
     @Override
     public List<String> getAllBackupFiles(String fileName) {
-
         List<List<String>> filePathForBackup = new LinkedList<>();
         filePathForBackup.add(
                 aboutUsItemRepository.findAll().stream().map(AboutUsItem::getPicture).collect(Collectors.toList()));
@@ -143,7 +143,6 @@ public class BackupServiceImpl implements BackupService {
         }
 
         for (String file : getAllBackupFiles(ALL_FILES)) {
-
             if (!(new File(file).exists())) {
                 throw new NotExistException(String.format(NOT_FOUND_FILE_EXCEPTION, file));
             }

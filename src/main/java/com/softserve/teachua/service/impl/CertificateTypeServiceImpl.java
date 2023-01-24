@@ -71,8 +71,10 @@ public class CertificateTypeServiceImpl implements CertificateTypeService {
             return CertificateTypeProcessingResponse.builder().messages(messagesList).build();
         }
 
-        return CertificateTypeProcessingResponse.builder().messages(messagesList).certificateType(
-                        certificateTypeRepository.save(dtoConverter.convertToEntity(certificateTypeProfile, new CertificateType())))
+        return CertificateTypeProcessingResponse.builder()
+                .messages(messagesList)
+                .certificateType(certificateTypeRepository.save(
+                        dtoConverter.convertToEntity(certificateTypeProfile, new CertificateType())))
                 .build();
     }
 

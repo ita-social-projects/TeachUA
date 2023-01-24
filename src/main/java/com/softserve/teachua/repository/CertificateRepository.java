@@ -15,7 +15,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CertificateRepository extends JpaRepository<Certificate, Long> {
-
     List<Certificate> findCertificatesByUser(User user);
 
     List<Certificate> findCertificatesByTemplate(CertificateTemplate template);
@@ -73,6 +72,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
             + "WHERE CONCAT(t.serialNumber, '') " + "LIKE CONCAT(:type, '%') ")
     Long findMaxSerialNumber(@Param("type") String type);
 
-    @Query(value = "SELECT certificates from Certificate AS certificates where LOWER(certificates.userName) LIKE LOWER(CONCAT('%', :username, '%')) ORDER BY certificates.id ASC")
+    @Query(value = "SELECT certificates from Certificate AS certificates "
+            + "where LOWER(certificates.userName) LIKE LOWER(CONCAT('%', :username, '%')) ORDER BY certificates.id ASC")
     List<Certificate> findSimilarByUserName(@Param("username") String userName);
 }

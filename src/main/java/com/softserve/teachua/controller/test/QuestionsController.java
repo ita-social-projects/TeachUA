@@ -11,7 +11,11 @@ import com.softserve.teachua.dto.test.question.questionExcel.QuestionDataRequest
 import com.softserve.teachua.model.test.QuestionCategory;
 import com.softserve.teachua.model.test.QuestionType;
 import com.softserve.teachua.security.UserPrincipal;
-import com.softserve.teachua.service.test.*;
+import com.softserve.teachua.service.test.QuestionCategoryService;
+import com.softserve.teachua.service.test.QuestionDataLoaderService;
+import com.softserve.teachua.service.test.QuestionExcelService;
+import com.softserve.teachua.service.test.QuestionService;
+import com.softserve.teachua.service.test.QuestionTypeService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import java.io.IOException;
 import java.util.List;
@@ -27,18 +31,24 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * This controller is responsible for managing questions
+ * This controller is responsible for managing questions.
  */
 
 @RequiredArgsConstructor
 @RestController
 @Slf4j
 public class QuestionsController implements Api {
-
     private final QuestionService questionService;
 
     private final QuestionTypeService questionTypeService;
@@ -50,10 +60,10 @@ public class QuestionsController implements Api {
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/questions/search")
     public Page<QuestionResponse> searchQuestionsPageable(
-        @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
-        @RequestParam String query,
-        @RequestParam(required = false) String type,
-        @RequestParam(required = false) String category
+            @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestParam String query,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String category
     ) {
         return questionService.searchAllQuestionsPageable(pageable, query, type, category);
     }
@@ -79,7 +89,7 @@ public class QuestionsController implements Api {
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/questions-import")
     public void importQuestions(@RequestBody ImportProfile importProfile, Authentication authentication)
-        throws IOException {
+            throws IOException {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         questionService.questionsImport(importProfile.getFormId(), userPrincipal.getId());
     }
@@ -115,7 +125,8 @@ public class QuestionsController implements Api {
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @PostMapping("/questions/load-to-db")
-    public List<QuestionDatabaseResponse> saveExcel(@Valid @RequestBody QuestionDataRequest data, Authentication authentication) {
+    public List<QuestionDatabaseResponse> saveExcel(@Valid @RequestBody QuestionDataRequest data,
+                                                    Authentication authentication) {
         log.info("Save excel " + data);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         return loaderService.saveToDatabase(data, userPrincipal.getId());
@@ -124,7 +135,6 @@ public class QuestionsController implements Api {
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @GetMapping("/questions/export")
     public ResponseEntity<ByteArrayResource> downloadQuestions() {
-
         byte[] bytes = questionExcelService.exportToExcel();
         ByteArrayResource resource = new ByteArrayResource(bytes);
 
@@ -132,15 +142,15 @@ public class QuestionsController implements Api {
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=questions_export.xlsx");
 
         return ResponseEntity.ok().headers(header).contentLength(bytes.length)
-            .contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
+                .contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
     }
 
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/questions/new")
     public ResponseEntity<Long> createQuestion(@Valid @RequestBody QuestionResponse questionResponse) {
         long id = questionService
-            .save(questionResponse)
-            .getId();
+                .save(questionResponse)
+                .getId();
         return ResponseEntity.ok(id);
     }
 
@@ -151,8 +161,8 @@ public class QuestionsController implements Api {
         questionResponse.setId(id);
         questionService.update(questionResponse);
         return ResponseEntity
-            .noContent()
-            .build();
+                .noContent()
+                .build();
     }
 
     @AllowedRoles(RoleData.ADMIN)
@@ -160,8 +170,7 @@ public class QuestionsController implements Api {
     public ResponseEntity<String> deleteQuestion(@PathVariable long id) {
         questionService.delete(id);
         return ResponseEntity
-            .noContent()
-            .build();
+                .noContent()
+                .build();
     }
-
 }

@@ -3,25 +3,33 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.task.*;
+import com.softserve.teachua.dto.task.CreateTask;
+import com.softserve.teachua.dto.task.SuccessCreatedTask;
+import com.softserve.teachua.dto.task.SuccessUpdatedTask;
+import com.softserve.teachua.dto.task.TaskPreview;
+import com.softserve.teachua.dto.task.TaskProfile;
+import com.softserve.teachua.dto.task.UpdateTask;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.model.archivable.TaskArch;
 import com.softserve.teachua.repository.TaskRepository;
-import com.softserve.teachua.service.*;
+import com.softserve.teachua.service.ArchiveMark;
+import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.ChallengeService;
+import com.softserve.teachua.service.TaskService;
+import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.utils.HtmlUtils;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -36,7 +44,8 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
 
     @Autowired
     public TaskServiceImpl(TaskRepository taskRepository, ArchiveService archiveService, DtoConverter dtoConverter,
-                           @Lazy ChallengeService challengeService, UserService userService, ObjectMapper objectMapper) {
+                           @Lazy ChallengeService challengeService, UserService userService,
+                           ObjectMapper objectMapper) {
         this.taskRepository = taskRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;

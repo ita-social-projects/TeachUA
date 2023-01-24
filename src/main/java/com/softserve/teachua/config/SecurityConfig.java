@@ -62,21 +62,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.httpBasic()
-            .disable().csrf().disable().cors()
-            .and()
+                .disable().csrf().disable().cors()
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+                .and()
                 .exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint())
-            .and()
+                .and()
                 .authorizeRequests()
                 .antMatchers("/", "/main").permitAll()
                 .antMatchers(
-                    "/v3/api-docs/**",
-                    "/swagger-ui.html",
-                    "/swagger-ui/**",
-                    "/swagger",
-                    "/swagger-resources/**",
-                    "/swagger-resources").permitAll()
+                        "/v3/api-docs/**",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/swagger",
+                        "/swagger-resources/**",
+                        "/swagger-resources").permitAll()
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/manifest.json").permitAll()
                 .antMatchers("/favicon**").permitAll()
@@ -87,10 +87,10 @@ public class SecurityConfig {
                 .permitAll()
                 .antMatchers("/api/**").permitAll()
                 .antMatchers(
-                    HttpMethod.GET,
-                    "/challengeUA",
-                    "/challengeUA/registration",
-                    "/challengeUA/task/*").permitAll()
+                        HttpMethod.GET,
+                        "/challengeUA",
+                        "/challengeUA/registration",
+                        "/challengeUA/task/*").permitAll()
                 .antMatchers(HttpMethod.GET, "/user/*").permitAll()
                 .antMatchers(HttpMethod.PUT, "/api/user/**").hasAnyRole(USER, ADMIN, MANAGER)
                 .antMatchers("/verify", "/verifyreset").permitAll()
@@ -98,13 +98,14 @@ public class SecurityConfig {
                 .antMatchers("/index").permitAll()
                 .antMatchers("/oauth2/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/logs").permitAll().antMatchers(HttpMethod.DELETE, "/logs").permitAll()
-            .and() // oauth2
+                .and() // oauth2
                 .oauth2Login().authorizationEndpoint().baseUri("/oauth2/authorize")
                 .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
                 .and().redirectionEndpoint().baseUri("/oauth2/callback/*")
                 .and().userInfoEndpoint().userService(customOAuth2UserService)
-                .and().successHandler(oAuth2AuthenticationSuccessHandler).failureHandler(oAuth2AuthenticationFailureHandler)
-            .and() // jwtFilter and logout
+                .and().successHandler(oAuth2AuthenticationSuccessHandler)
+                .failureHandler(oAuth2AuthenticationFailureHandler)
+                .and() // jwtFilter and logout
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/signout")).logoutSuccessUrl("/signin");

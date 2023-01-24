@@ -26,7 +26,8 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
     private final CertificateService certificateService;
 
     @Autowired
-    public ScheduleSendServiceImpl(EmailService emailService, GmailService gmailService, ScheduledAnnotationBeanPostProcessor postProcessor,
+    public ScheduleSendServiceImpl(EmailService emailService, GmailService gmailService,
+                                   ScheduledAnnotationBeanPostProcessor postProcessor,
                                    CertificateService certificateService) {
         this.emailService = emailService;
         this.gmailService = gmailService;
@@ -42,10 +43,11 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
             log.info("Preparing message for {}, id={}", certificate, certificate.getId());
             try {
                 emailService.sendMessageWithAttachmentAndGeneratedPdf(certificate.getSendToEmail().trim(),
-                    "Сертифікат проєкту \"Єдині\"",
-                    "Вітаємо! Дякуємо Вам, що долучилися до проєкту \"Єдині\". Дякуємо за спільну роботу задля великої мети."
-                        + "\n\nВаш сертифікат додано у вкладенні до цього листа.",
-                    certificate);
+                        "Сертифікат проєкту \"Єдині\"",
+                        "Вітаємо! Дякуємо Вам, що долучилися до проєкту \"Єдині\"."
+                                + " Дякуємо за спільну роботу задля великої мети."
+                                + "\n\nВаш сертифікат додано у вкладенні до цього листа.",
+                        certificate);
                 certificateService.updateDateAndSendStatus(certificate.getId(), true);
             } catch (Exception e) {
                 log.error("Error send certificate {} {}", e.getClass(), e.getMessage());

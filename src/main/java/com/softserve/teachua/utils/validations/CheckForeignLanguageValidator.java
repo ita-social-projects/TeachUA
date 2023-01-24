@@ -1,9 +1,8 @@
 package com.softserve.teachua.utils.validations;
 
-import lombok.extern.slf4j.Slf4j;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CheckForeignLanguageValidator implements ConstraintValidator<CheckForeignLanguage, String> {
@@ -18,7 +17,8 @@ public class CheckForeignLanguageValidator implements ConstraintValidator<CheckF
             return true;
         }
         return text.matches(
-                "^[А-ЩЬЮЯҐЄІЇа-щьюяґєіїa-zA-Z0-9 \\n?><,:;—–“”«»\"\\./{}\\(\\)\\-_+=!\\?@#$%&*|'’‘`~№\\[\\]\uD83C\uDDFA\uD83C\uDDE6\uD83E\uDDD0\\^]*$");
+                "^[А-ЩЬЮЯҐЄІЇа-щьюяґєіїa-zA-Z0-9 \\n?><,:;—–“”«»\"\\./{}\\(\\)\\-_+=!\\?@#$%&*|'’‘`~№\\[\\]"
+                        + "\uD83C\uDDFA\uD83C\uDDE6\uD83E\uDDD0\\^]*$");
         // return text.matches("[^ёЁъЪэЭыЫ]+");
     }
 }

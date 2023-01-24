@@ -5,8 +5,11 @@
         "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
 <suppressions>
+    <!--
+<suppress checks="LineLength" files="."/>
+-->
+
     <suppress checks="AtclauseOrder" files="."/>
-    <suppress checks="LineLength" files="."/>
     <suppress checks="AvoidEscapedUnicodeCharacters" files="."/>
     <suppress checks="AvoidStarImport" files="."/>
     <suppress checks="CommentsIndentation" files="."/>
@@ -19,4 +22,5 @@
     <suppress checks="RegexpMultiline" files="."/>
     <suppress checks="SummaryJavadoc" files="."/>
     <suppress checks="UnusedImport" files="."/>
+
 </suppressions>
