@@ -1,4 +1,5 @@
 package com.softserve.teachua.exception;
+
 /**
  * This class is a custom exception for entity that is already used in Database or other data storage. The constructor
  * accepts message for Exception
@@ -18,5 +19,4 @@ public class EntityIsUsedException extends IllegalStateException {
     public EntityIsUsedException() {
         super(ENTITY_IS_USED_EXCEPTION);
     }
-
 }

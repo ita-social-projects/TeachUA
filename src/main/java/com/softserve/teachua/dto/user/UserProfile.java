@@ -2,12 +2,13 @@ package com.softserve.teachua.dto.user;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.utils.validations.Name;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,9 +33,12 @@ public class UserProfile implements Convertible {
 
     @NotBlank
     @Size(min = 8, max = 20)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).*$", message = "must contain at least one uppercase and lowercase letter")
-    @Pattern(regexp = "^(?=.*\\d)(?=.*[~`!@#$%^&()_=+{}\\[\\]/|:;,\"<>?]).*$", message = "must contain at least one number and special symbol")
-    @Pattern(regexp = "^[^А-Яа-яЇїІіЄєҐґЁёЪъЫыЭэ]+$", message = "must contain only latin letters")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).*$",
+            message = "must contain at least one uppercase and lowercase letter")
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[~`!@#$%^&()_=+{}\\[\\]/|:;,\"<>?]).*$",
+            message = "must contain at least one number and special symbol")
+    @Pattern(regexp = "^[^А-Яа-яЇїІіЄєҐґЁёЪъЫыЭэ]+$",
+            message = "must contain only latin letters")
     private String password;
 
     @NotBlank

@@ -1,8 +1,8 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateLastModificationDateSavingResponse;
 import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateMetadataTransfer;
 import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUploadResponse;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateLastModificationDateSavingResponse;
 import com.softserve.teachua.repository.CertificateTemplateRepository;
 import com.softserve.teachua.service.CertificateByTemplateService;
 import com.softserve.teachua.service.PdfTemplateService;
@@ -38,28 +38,26 @@ public class PdfTemplateServiceImpl implements PdfTemplateService {
     public CertificateTemplateUploadResponse savePdf(MultipartFile multipartFile) {
         try {
             File directory =
-                new File(new ClassPathResource("certificates/templates/").getFile().getPath() + "/pdf-templates");
+                    new File(new ClassPathResource("certificates/templates/").getFile().getPath() + "/pdf-templates");
 
             if (!directory.exists()) {
                 directory.mkdir();
             }
 
             String templateName = Instant.now().toEpochMilli() + ".pdf";
-            File file =
-                new File(
-                    new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" +
-                        templateName);
+            File file = new File(
+                    new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/"
+                            + templateName);
 
             try (OutputStream os = Files.newOutputStream(
-                Paths.get(new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" +
-                    templateName))) {
+                    Paths.get(new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/"
+                            + templateName))) {
                 os.write(multipartFile.getBytes());
             }
             return CertificateTemplateUploadResponse.builder()
-                .fieldsList(certificateByTemplateService.getTemplateFields(file.getPath()))
-                .templateName(templateName)
-                .build();
-
+                    .fieldsList(certificateByTemplateService.getTemplateFields(file.getPath()))
+                    .templateName(templateName)
+                    .build();
         } catch (IOException e) {
             log.error("Error uploading pdf of template");
             e.printStackTrace();
@@ -70,17 +68,17 @@ public class PdfTemplateServiceImpl implements PdfTemplateService {
 
     @Override
     public CertificateTemplateLastModificationDateSavingResponse saveLastModifiedDateOfPdf(
-        CertificateTemplateMetadataTransfer data) {
+            CertificateTemplateMetadataTransfer data) {
         try {
             List<String> messagesList = new ArrayList<>();
             Path source = Paths.get(
-                new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" +
-                    data.getTemplateName());
+                    new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/"
+                            + data.getTemplateName());
             String targetName = data.getTemplateLastModifiedDate() + ".pdf";
 
             if (!(new File(
-                new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" +
-                    targetName).exists())) {
+                    new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/"
+                            + targetName).exists())) {
                 Files.move(source, source.resolveSibling(targetName));
             } else {
                 Files.delete(source);
@@ -91,10 +89,9 @@ public class PdfTemplateServiceImpl implements PdfTemplateService {
             }
 
             return CertificateTemplateLastModificationDateSavingResponse.builder()
-                .messages(messagesList)
-                .filePath(targetName)
-                .build();
-
+                    .messages(messagesList)
+                    .filePath(targetName)
+                    .build();
         } catch (IOException e) {
             log.error("Error saving pdf of template");
             e.printStackTrace();
@@ -102,5 +99,4 @@ public class PdfTemplateServiceImpl implements PdfTemplateService {
 
         return null;
     }
-
 }
