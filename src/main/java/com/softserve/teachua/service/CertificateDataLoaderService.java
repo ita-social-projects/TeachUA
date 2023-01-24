@@ -3,7 +3,6 @@ package com.softserve.teachua.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.dto.certificate.CertificateDataRequest;
 import com.softserve.teachua.dto.certificate.CertificateDatabaseResponse;
-
 import com.softserve.teachua.dto.certificateByTemplate.CertificateByTemplateTransfer;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,6 @@ import java.util.Map;
  * This interface contains all needed methods to manage certificate data loader.
  */
 public interface CertificateDataLoaderService {
-
     /**
      * This method saves dto {@code CertificateDatabaseResponse} to database, returns list of dto
      * {@code List<CertificateDatabaseResponse>} of messages

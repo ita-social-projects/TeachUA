@@ -3,9 +3,12 @@ package com.softserve.teachua.model.archivable;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.service.impl.CenterServiceImpl;
-import lombok.*;
-
 import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,7 +16,6 @@ import java.util.Set;
 @With
 @Builder
 public class CenterArch implements Convertible, Archivable {
-
     private String name;
     private String contacts;
     private String urlBackgroundPicture;

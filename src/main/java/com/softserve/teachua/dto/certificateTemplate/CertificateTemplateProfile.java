@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class CertificateTemplateProfile implements Convertible {
-
     private Integer id;
     private boolean isUsed;
     private String name;
@@ -22,5 +21,4 @@ public class CertificateTemplateProfile implements Convertible {
     private String projectDescription;
     private String picturePath;
     private String properties;
-
 }

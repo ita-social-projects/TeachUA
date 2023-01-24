@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SuccessCreatedCertificateTemplate implements Convertible {
-
     private Integer id;
     private String name;
     private CertificateType certificateType;
@@ -23,5 +22,4 @@ public class SuccessCreatedCertificateTemplate implements Convertible {
     private String projectDescription;
     private String picturePath;
     private String properties;
-
 }

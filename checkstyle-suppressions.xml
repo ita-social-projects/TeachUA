@@ -13,7 +13,6 @@
     <suppress checks="JavadocParagraph" files="."/>
     <suppress checks="JavadocType" files="."/>
     <suppress checks="NonEmptyAtclauseDescription" files="."/>
-    <suppress checks="RegexpMultiline" files="."/>
     <suppress checks="SummaryJavadoc" files="."/>
     <suppress checks="UnusedImport" files="."/>
 </suppressions>

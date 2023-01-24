@@ -4,7 +4,6 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.marker.Archivable;
-
 import java.util.List;
 
 /**
@@ -15,9 +14,7 @@ public interface ArchiveService {
     /**
      * The method returns list of entities {@code List<Archive>} of all existing archives found by id.
      *
-     * @param className
-     *            - put Archive name.
-     *
+     * @param className - put Archive name.
      * @return new {@code List<Archive>}.
      */
     List<Archive> findArchivesByClassName(String className);
@@ -32,9 +29,7 @@ public interface ArchiveService {
     /**
      * The method saves model into archive and returns this archive.
      *
-     * @param archiveModel
-     *            - place body of entity {@code Archivable}.
-     *
+     * @param archiveModel - place body of entity {@code Archivable}.
      * @return {@code Archive}.
      */
     Archive saveModel(Archivable archiveModel);
@@ -42,27 +37,18 @@ public interface ArchiveService {
     /**
      * The method restore model from archive and returns archive.
      *
-     * @param id
-     *            - put archive id
-     *
+     * @param id - put archive id
      * @return {@code Archive}.
-     *
-     * @throws RestoreArchiveException
-     *              if process failed
+     * @throws RestoreArchiveException if process failed
      */
     Archive restoreArchiveObject(Long id);
 
     /**
      * The method returns entity {@code Archive} of archive by id.
      *
-     * @param id
-     *            - put archive id.
-     *
+     * @param id - put archive id.
      * @return new {@code Archive}.
-     *
-     * @throws NotExistException
-     *             if archive not exists.
+     * @throws NotExistException if archive not exists.
      */
     Archive getArchiveObjectById(Long id);
-
 }

@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class CertificateDataRequest {
-
     @NotNull
     Integer type;
 

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository("testQuestionRepository")
 public interface QuestionRepository extends PagingAndSortingRepository<Question, Long> {
-
     Optional<Question> findById(Long id);
 
     Page<Question> findByTitleContainingIgnoreCase(Pageable pageable, String query);

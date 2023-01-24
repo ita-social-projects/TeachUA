@@ -6,22 +6,21 @@ import com.softserve.teachua.model.Location;
 import com.softserve.teachua.repository.CityRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.service.AddressService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @Transactional
 public class AddressServiceImpl implements AddressService {
-
+    public static final String UKRAINIAN_ALPHABET = "[^а-яА-ЯіІїЇєЄ]+).*";
     private final LocationRepository locationRepository;
     private final CityRepository cityRepository;
 
@@ -33,11 +32,9 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<AddressProfile> getNotRelativeAddress() {
-
         List<Location> locationList = locationRepository.findAll().stream()
                 .filter(location -> (hasAddressOtherCity(location.getAddress()))
-                        && !location.getAddress().matches(".*(" + location.getCity().getName() + "[^а-яА-ЯіІїЇєЄ]+).*")
-
+                        && !location.getAddress().matches(".*(" + location.getCity().getName() + UKRAINIAN_ALPHABET)
                 ).collect(Collectors.toList());
 
         List<AddressProfile> addressProfileList = new LinkedList<>();
@@ -51,11 +48,10 @@ public class AddressServiceImpl implements AddressService {
     }
 
     public List<AddressProfile> replaceAllIncorrectCity(List<AddressProfile> addressProfileList) {
-
         List<City> cities = cityRepository.findAll();
 
         addressProfileList.forEach(address -> cities.forEach(city -> {
-            if (address.getAddressText().matches(".*(" + city.getName() + "[^а-яА-ЯіІїЇєЄ]+).*")
+            if (address.getAddressText().matches(".*(" + city.getName() + UKRAINIAN_ALPHABET)
                     || address.getAddressText().matches("^" + city.getName() + "$")) {
                 Location location = locationRepository.getOne(address.getId()).withCity(city);
                 address.setRealCity(locationRepository.save(location).getCity().getName());
@@ -65,14 +61,12 @@ public class AddressServiceImpl implements AddressService {
     }
 
     public boolean hasAddressOtherCity(String address) {
-
         AtomicBoolean hasCity = new AtomicBoolean(false);
 
         cityRepository.findAll().forEach(city -> {
-
             if ((city != null && !city.getName().isEmpty())
                     && (address != null && address.contains(city.getName())
-                            && (address.matches(".*(" + city.getName() + "[^а-яА-ЯіІїЇєЄ]+).*")))
+                    && (address.matches(".*(" + city.getName() + UKRAINIAN_ALPHABET)))
                     || Objects.requireNonNull(address).matches("^" + city.getName() + "$")) {
                 hasCity.set(true);
             }
@@ -80,5 +74,4 @@ public class AddressServiceImpl implements AddressService {
 
         return hasCity.get();
     }
-
 }

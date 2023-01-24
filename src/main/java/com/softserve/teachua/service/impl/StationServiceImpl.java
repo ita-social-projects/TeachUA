@@ -12,16 +12,19 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Station;
 import com.softserve.teachua.model.archivable.StationArch;
 import com.softserve.teachua.repository.StationRepository;
-import com.softserve.teachua.service.*;
+import com.softserve.teachua.service.ArchiveMark;
+import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.CityService;
+import com.softserve.teachua.service.DistrictService;
+import com.softserve.teachua.service.StationService;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-
-import javax.validation.ValidationException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -39,8 +42,9 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public StationServiceImpl(DtoConverter dtoConverter, StationRepository stationRepository, CityService cityService,
-            DistrictService districtService, ArchiveService archiveService, ObjectMapper objectMapper) {
+    public StationServiceImpl(DtoConverter dtoConverter, StationRepository stationRepository,
+                              CityService cityService, DistrictService districtService,
+                              ArchiveService archiveService, ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.stationRepository = stationRepository;
         this.cityService = cityService;
@@ -81,7 +85,6 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
 
     @Override
     public List<StationResponse> getAllByDistrictNameAndCityName(StationProfile stationProfile) {
-
         List<StationResponse> stationList = stationRepository
                 .findAllByDistrictNameAndCityName(stationProfile.getDistrictName(), stationProfile.getCityName())
                 .stream().map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))

@@ -6,11 +6,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CertificateTypeRepository extends JpaRepository<CertificateType, Integer> {
-
     boolean existsByCodeNumber(Integer codeNumber);
 
     boolean existsByNameIgnoreCase(String name);
 
     CertificateType findCertificateTypeByCodeNumber(Integer codeNumber);
-
 }

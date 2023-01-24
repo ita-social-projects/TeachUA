@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EncoderServiceImpl implements EncoderService {
-
     private PasswordEncoder passwordEncoder;
 
     @Autowired

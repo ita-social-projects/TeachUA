@@ -6,12 +6,12 @@ import java.util.Set;
  * This service contains methods to manage files saved in db
  */
 public interface FileRelevanceService {
-
     /**
      * This method returns set of all file locations stored in db.
      * <br><br>
      * It traverses about_us, banner_item, certificate_template, challenge, club, contact_type, gallery
      * news, task and user tables.
+     *
      * @return {@code Set<String>}
      */
     Set<String> getAllMentionedFiles();
@@ -26,5 +26,4 @@ public interface FileRelevanceService {
      * @return {@code Set<String>}
      */
     Set<String> getAllOrphanedFiles();
-
 }

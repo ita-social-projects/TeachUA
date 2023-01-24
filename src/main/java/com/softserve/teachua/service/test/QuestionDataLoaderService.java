@@ -16,5 +16,4 @@ public interface QuestionDataLoaderService {
      * @return new {@code List<QuestionDatabaseResponse>}
      */
     List<QuestionDatabaseResponse> saveToDatabase(QuestionDataRequest data, Long creatorI);
-
 }

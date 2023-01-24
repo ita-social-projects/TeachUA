@@ -19,16 +19,15 @@ import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.service.MessageService;
 import com.softserve.teachua.service.UserService;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.ValidationException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -46,7 +45,6 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
 
     @Override
     public MessageResponseDto addMessage(MessageProfile messageProfile) {
-
         if (!clubRepository.existsById(messageProfile.getClubId())) {
             log.warn("Message not added because club with id - {} doesn't exists", messageProfile.getClubId());
             throw new NotExistException(String.format("Club with id - %s doesn't exists", messageProfile.getClubId()));

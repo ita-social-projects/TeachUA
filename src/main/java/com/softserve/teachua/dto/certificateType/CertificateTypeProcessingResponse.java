@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CertificateTypeProcessingResponse {
-
     List<String[]> messages;
     CertificateType certificateType;
-
 }

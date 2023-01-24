@@ -2,13 +2,7 @@ package com.softserve.teachua.documentreport.impl;
 
 import com.softserve.teachua.documentreport.ReportGenerationService;
 import com.softserve.teachua.dto.club.ClubResponse;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +22,6 @@ import java.util.Map;
 
 @Service
 public class ResultSearchReportGenerationServiceImpl implements ReportGenerationService<Page<ClubResponse>> {
-
     private static final Logger LOGGER = LoggerFactory
             .getLogger(ResultSearchReportGenerationServiceImpl.class.getName());
     private static final String TEMPLATE_PATH = "/pdf-reports/template/ResultSearchPdfReportTemplate.jrxml";

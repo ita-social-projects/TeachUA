@@ -4,14 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.dto.certificateByTemplate.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificateExcel.CertificateByTemplateExcelParsingResponse;
 import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
-import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * This interface contains all needed methods to manage exel parser.
  */
 public interface CertificateExcelService {
-
     /**
      * This method parses excel-file and returns {@code ExcelParsingResponse} of mistakes and created dto
      *
@@ -23,5 +23,5 @@ public interface CertificateExcelService {
     CertificateByTemplateExcelParsingResponse parseFlexibleExcel(MultipartFile multipartFile);
 
     List<String[]> validateCertificateByTemplateExcel(CertificateByTemplateTransfer data)
-        throws JsonProcessingException;
+            throws JsonProcessingException;
 }

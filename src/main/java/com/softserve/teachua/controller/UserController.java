@@ -8,13 +8,20 @@ import com.softserve.teachua.dto.user.UserUpdateProfile;
 import com.softserve.teachua.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.util.List;
+import javax.validation.Valid;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing the users.
@@ -24,7 +31,6 @@ import java.util.List;
 @Tag(name = "user", description = "the User API")
 @SecurityRequirement(name = "api")
 public class UserController implements Api {
-
     private final UserService userService;
 
     @Autowired
@@ -35,9 +41,7 @@ public class UserController implements Api {
     /**
      * Use this endpoint to get user by id. Only accessible for ADMIN or profile owner.
      *
-     * @param id
-     *            - put user id.
-     *
+     * @param id - put user id.
      * @return {@code UserResponse}.
      */
     @PreAuthorize("hasRole('ADMIN') or (isAuthenticated() and authentication.principal.id == #id)")
@@ -49,9 +53,7 @@ public class UserController implements Api {
     /**
      * Use this endpoint to get users by roleName. Only accessible for ADMIN.
      *
-     * @param roleName
-     *            - put role name.
-     *
+     * @param roleName - put role name.
      * @return {@code List<UserResponse>}.
      */
     @PreAuthorize("hasRole('ADMIN')")
@@ -74,11 +76,8 @@ public class UserController implements Api {
     /**
      * Use this endpoint to update user by id. Only accessible for ADMIN or profile owner.
      *
-     * @param id
-     *            - put user id.
-     * @param userProfile
-     *            - Place dto with all parameters for update existed user.
-     *
+     * @param id          - put user id.
+     * @param userProfile - Place dto with all parameters for update existed user.
      * @return {@code SuccessUpdatedUser}.
      */
     @PreAuthorize("hasRole('ADMIN') or (isAuthenticated() and authentication.principal.id == #id)")
@@ -99,10 +98,8 @@ public class UserController implements Api {
     /**
      * Use this endpoint to change user password. Only accessible for ADMIN or profile owner.
      *
-     * @param passwordUpdate
-     *            - password
-     * @param id
-     *            - id
+     * @param passwordUpdate - password
+     * @param id             - id
      */
     @PreAuthorize("hasRole('ADMIN') or (isAuthenticated() and authentication.principal.id == #id)")
     @PatchMapping("/user/{id}")

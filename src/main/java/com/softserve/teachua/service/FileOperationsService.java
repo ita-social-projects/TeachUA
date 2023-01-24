@@ -1,15 +1,13 @@
 package com.softserve.teachua.service;
 
+import java.util.List;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 /**
  * This service contains methods to manage files
  */
 public interface FileOperationsService {
-
     /**
      * This method returns list of all files and directories located at {@code path}.
      * Directories are marked with a "/" at the end.
@@ -38,5 +36,4 @@ public interface FileOperationsService {
      * @return {@code String}
      */
     ResponseEntity<String> deleteFile(String path);
-
 }

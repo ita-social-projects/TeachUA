@@ -4,7 +4,6 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class CertificateUserNameValidator implements ConstraintValidator<CertificateUserName, String> {
-
     private static final String EMPTY_EXCEPTION = "Ім'я учасника не може бути порожнім";
     public static final String INCORRECT_NAME_FORMAT_ERROR = "Неможливо розпізнати ім'я та прізвище";
     public static final String NAME_PATTERN = "(([А-ЯІЇЄ][а-яіїє']+[-–—]?){1,2}\\s?){2}(\\(?([А-ЯІЇЄ][а-яіїє']+)\\)?)?";

@@ -1,6 +1,11 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.certificateTemplate.*;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateCreationResponse;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplatePreview;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateProfile;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUpdationResponse;
+import com.softserve.teachua.dto.certificateTemplate.CreateCertificateTemplate;
+import com.softserve.teachua.dto.certificateTemplate.UpdateCertificateTemplate;
 import com.softserve.teachua.model.CertificateTemplate;
 import java.util.List;
 
@@ -9,7 +14,6 @@ import java.util.List;
  */
 
 public interface CertificateTemplateService {
-
     /**
      * This method returns entity of {@code CertificateTemplate} found by id
      *
@@ -75,5 +79,4 @@ public interface CertificateTemplateService {
     boolean deleteTemplateById(Integer id);
 
     CertificateTemplateProfile getTemplateProfileById(Integer id);
-
 }

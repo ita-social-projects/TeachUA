@@ -54,7 +54,6 @@ public class CertificateByTemplateController implements Api {
     @PostMapping("/certificate-by-template/pdf")
     public CertificateByTemplateTransfer uploadPdf(@RequestBody CertificateTemplatePreview template)
             throws JsonProcessingException {
-
         CertificateTemplate certificateTemplate = certificateTemplateService.getTemplateByFilePath(
                 template.getFilePath());
         HashMap<String, String> templateProperties =

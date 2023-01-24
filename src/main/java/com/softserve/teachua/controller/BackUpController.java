@@ -4,19 +4,18 @@ import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.BackupService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class BackUpController implements Api {
-
     private final BackupService backupService;
 
     @Autowired
@@ -28,7 +27,6 @@ public class BackUpController implements Api {
      * Use this endpoint to see files for backup
      *
      * @param fileName
-     *
      * @return
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -42,7 +40,6 @@ public class BackUpController implements Api {
      * Use this endpoint to download .zip file with backup resources
      *
      * @param response
-     *
      * @throws IOException
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -52,13 +49,10 @@ public class BackUpController implements Api {
     }
 
     /**
-     *
      * Use this endpoint to upload backup archive(.zip(downloaded from /backup/download)) to project
      *
      * @param file
-     *
      * @return
-     *
      * @throws IOException
      */
     @AllowedRoles(RoleData.ADMIN)

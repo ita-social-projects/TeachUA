@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CertificateTemplateUploadResponse {
-
     private List<String> fieldsList;
     private String templateName;
-
 }

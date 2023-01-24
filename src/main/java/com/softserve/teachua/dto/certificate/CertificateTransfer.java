@@ -20,7 +20,6 @@ import java.time.LocalDate;
 @With
 @ToString
 public class CertificateTransfer implements Convertible {
-
     private Long id;
     private Long serialNumber;
     private User user;

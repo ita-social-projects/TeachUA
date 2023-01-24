@@ -7,11 +7,8 @@ import lombok.Data;
 
 @Data
 public class ExcelQuestionParsingResponse {
-
     private List<ExcelQuestionParsingMistake> questionParsingMistakes = new ArrayList<>();
     private List<QuestionExcel> questionsInfo = new ArrayList<>();
 
     private List<AnswerExcel> answersInfo = new ArrayList<>();
-
-
 }

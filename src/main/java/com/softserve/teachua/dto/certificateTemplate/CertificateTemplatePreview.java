@@ -13,11 +13,9 @@ import lombok.NoArgsConstructor;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CertificateTemplatePreview implements Convertible {
-
     private Long id;
     private String name;
     private String filePath;
     private String courseDescription;
     private String projectDescription;
-
 }

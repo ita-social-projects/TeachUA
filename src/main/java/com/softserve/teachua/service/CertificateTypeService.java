@@ -6,7 +6,6 @@ import com.softserve.teachua.model.CertificateType;
 import java.util.List;
 
 public interface CertificateTypeService {
-
     CertificateType getCertificateTypeById(Integer id);
 
     CertificateType getCertificateTypeByCodeNumber(Integer id);
@@ -20,5 +19,4 @@ public interface CertificateTypeService {
     CertificateTypeProcessingResponse updateCertificateType(Integer id, CertificateTypeProfile certificateTypeProfile);
 
     void deleteCertificateType(Integer id);
-
 }

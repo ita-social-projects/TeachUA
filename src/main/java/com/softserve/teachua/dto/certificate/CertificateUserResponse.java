@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class CertificateUserResponse {
-
     private Long id;
 
     private Long serialNumber;
@@ -20,5 +19,4 @@ public class CertificateUserResponse {
     private String date;
 
     private String courseDescription;
-
 }

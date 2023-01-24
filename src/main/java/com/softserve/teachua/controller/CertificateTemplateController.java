@@ -2,16 +2,29 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateCreationResponse;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateLastModificationDateSavingResponse;
 import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateMetadataTransfer;
-import com.softserve.teachua.dto.certificateTemplate.*;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplatePreview;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateProfile;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUpdationResponse;
 import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUploadResponse;
+import com.softserve.teachua.dto.certificateTemplate.CreateCertificateTemplate;
+import com.softserve.teachua.dto.certificateTemplate.UpdateCertificateTemplate;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.PdfTemplateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -38,7 +51,7 @@ public class CertificateTemplateController implements Api {
     @PostMapping("/template")
     @AllowedRoles(RoleData.ADMIN)
     public CertificateTemplateCreationResponse createTemplate(
-        @Valid @RequestBody CreateCertificateTemplate createCertificateTemplate) {
+            @Valid @RequestBody CreateCertificateTemplate createCertificateTemplate) {
         return certificateTemplateService.addTemplate(createCertificateTemplate);
     }
 
@@ -73,7 +86,7 @@ public class CertificateTemplateController implements Api {
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/template/load-metadata")
     public CertificateTemplateLastModificationDateSavingResponse saveLastModifiedDateOfPdf(
-        @RequestBody CertificateTemplateMetadataTransfer data) {
+            @RequestBody CertificateTemplateMetadataTransfer data) {
         return pdfTemplateService.saveLastModifiedDateOfPdf(data);
     }
 
@@ -117,5 +130,4 @@ public class CertificateTemplateController implements Api {
     public boolean deleteTemplate(@PathVariable Integer id) {
         return certificateTemplateService.deleteTemplateById(id);
     }
-
 }
