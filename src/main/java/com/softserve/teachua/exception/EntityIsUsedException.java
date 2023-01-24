@@ -3,8 +3,8 @@ package com.softserve.teachua.exception;
 /**
  * This class is a custom exception for entity that is already used in Database or other data storage. The constructor
  * accepts message for Exception
- * <p>
- * Use {@code throw new EntityIsUsedException("Entity in use")}
+ *
+ * <p>Use {@code throw new EntityIsUsedException("Entity in use")}
  *
  * @author BNazar002
  */

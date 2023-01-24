@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * This class is custom exception for impossibility of converting model to json The constructor accepts message for
  * Exception
- * <p>
- * Use @code throw new JsonWriteException("son can't be written")
+ *
+ * <p>Use @code throw new JsonWriteException("son can't be written")
  */
 @Slf4j
 public class JsonWriteException extends RuntimeException {

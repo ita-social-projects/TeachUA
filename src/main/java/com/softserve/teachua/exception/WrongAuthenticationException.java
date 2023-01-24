@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * This class is custom exception for problem with authentication. (Invalid password, invalid email etc.) The
  * constructor accepts message for Exception
- * <p>
- * Use @code throw new WrongAuthenticationException("Authentication exception")
+ *
+ * <p>Use @code throw new WrongAuthenticationException("Authentication exception")
  *
  * @author Denis Burko
  */
