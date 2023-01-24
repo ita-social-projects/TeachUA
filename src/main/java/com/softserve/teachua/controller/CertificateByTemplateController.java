@@ -63,29 +63,31 @@ public class CertificateByTemplateController implements Api {
         List<String> fieldsList = new ArrayList<>();
         List<String> fieldPropertiesList = new ArrayList<>();
         for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
+            // @formatter:off
             switch (entry.getValue()) {
-                case "date":
-                    fieldsList.add(entry.getKey());
-                    fieldPropertiesList.add("date");
-                    break;
-                case "hours":
-                case "course_number":
-                    fieldsList.add(entry.getKey());
-                    fieldPropertiesList.add("int");
-                    break;
-                case "qrCode_white":
-                case "qrCode_black":
-                    break;
-                case "serial_number":
-                    if (!templateProperties.containsValue("course_number")) {
-                        fieldsList.add("Номер курсу");
-                        fieldPropertiesList.add("int");
-                    }
-                    break;
-                default:
-                    fieldsList.add(entry.getKey());
-                    fieldPropertiesList.add("String");
+              case "date":
+                  fieldsList.add(entry.getKey());
+                  fieldPropertiesList.add("date");
+                  break;
+              case "hours":
+              case "course_number":
+                  fieldsList.add(entry.getKey());
+                  fieldPropertiesList.add("int");
+                  break;
+              case "qrCode_white":
+              case "qrCode_black":
+                  break;
+              case "serial_number":
+                  if (!templateProperties.containsValue("course_number")) {
+                      fieldsList.add("Номер курсу");
+                      fieldPropertiesList.add("int");
+                  }
+                  break;
+              default:
+                  fieldsList.add(entry.getKey());
+                  fieldPropertiesList.add("String");
             }
+            // @formatter:on
         }
         fieldsList.add("Електронна пошта");
         fieldPropertiesList.add("String");

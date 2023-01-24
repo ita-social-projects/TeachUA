@@ -16,7 +16,7 @@ import com.itextpdf.layout.element.Image;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.service.CertificateByTemplateService;
 import com.softserve.teachua.utils.QRCodeService;
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,7 +44,6 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
 
     @Override
     public List<String> getTemplateFields(String templatePath) throws IOException {
-
         PdfReader reader = new PdfReader(templatePath);
         try (PdfDocument pdfDoc = new PdfDocument(reader)) {
             PdfAcroForm acroForm = PdfAcroForm.getAcroForm(pdfDoc, false);
@@ -83,28 +82,30 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
                     new ObjectMapper().readValue(transfer.getValues(), HashMap.class);
 
             for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
+                // @formatter:off
                 switch (entry.getValue()) {
-                    case "serial_number":
-                        setValue(form.getField(entry.getKey()), transfer.getSerialNumber().toString(), halvarBlk,
-                                halvarMd);
-                        break;
-                    case "qrCode_white":
-                    case "qrCode_black":
-                        List<Float> position = Arrays.stream(
-                                        form.getField(entry.getKey()).getWidgets().get(0).getRectangle().toString()
-                                                .replace("[", "").replace("]", "").split(" "))
-                                .map(Float::valueOf).collect(Collectors.toList());
+                  case "serial_number":
+                      setValue(form.getField(entry.getKey()), transfer.getSerialNumber().toString(), halvarBlk,
+                              halvarMd);
+                      break;
+                  case "qrCode_white":
+                  case "qrCode_black":
+                      List<Float> position = Arrays.stream(
+                                      form.getField(entry.getKey()).getWidgets().get(0).getRectangle().toString()
+                                              .replace("[", "").replace("]", "").split(" "))
+                              .map(Float::valueOf).collect(Collectors.toList());
 
-                        float width = position.get(2) - position.get(0);
-                        float height = position.get(3) - position.get(1);
-                        Image image = getQrCodeImage(transfer.getSerialNumber(), width, height, entry.getValue());
-                        image.setFixedPosition(position.get(0), position.get(1));
+                      float width = position.get(2) - position.get(0);
+                      float height = position.get(3) - position.get(1);
+                      Image image = getQrCodeImage(transfer.getSerialNumber(), width, height, entry.getValue());
+                      image.setFixedPosition(position.get(0), position.get(1));
 
-                        document.add(image);
-                        break;
-                    default:
-                        setValue(form.getField(entry.getKey()), values.get(entry.getKey()), halvarBlk, halvarMd);
+                      document.add(image);
+                      break;
+                  default:
+                      setValue(form.getField(entry.getKey()), values.get(entry.getKey()), halvarBlk, halvarMd);
                 }
+                // @formatter:on
             }
             form.flattenFields();
         } catch (IOException e) {
