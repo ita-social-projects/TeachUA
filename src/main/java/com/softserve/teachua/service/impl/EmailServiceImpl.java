@@ -5,6 +5,12 @@ import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.service.EmailService;
 import com.sun.mail.smtp.SMTPAddressFailedException;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.util.ByteArrayDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,19 +18,11 @@ import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.ByteArrayDataSource;
-
 @Service
 @Slf4j
 public class EmailServiceImpl implements EmailService {
-
     @Value(value = "${spring.mail.username}")
-    private String SEND_FROM_ADDRESS;
+    private String sendFromAddress;
 
     private final ConfigureSMTPProperties emailSender;
 
@@ -40,7 +38,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendMessageWithAttachmentAndGeneratedPdf(String to, String subject, String text,
-            CertificateTransfer certificateTransfer) {
+                                                         CertificateTransfer certificateTransfer) {
         MimeMessage message = emailSender.getJavaMailSender().createMimeMessage();
 
         byte[] bytes = certificateService.getPdfOutput(certificateTransfer);
@@ -57,7 +55,7 @@ public class EmailServiceImpl implements EmailService {
 
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom(SEND_FROM_ADDRESS);
+            helper.setFrom(sendFromAddress);
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(text);

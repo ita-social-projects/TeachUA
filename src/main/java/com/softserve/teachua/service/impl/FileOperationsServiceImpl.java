@@ -1,6 +1,14 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.service.FileOperationsService;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -10,19 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class FileOperationsServiceImpl implements FileOperationsService {
-
-    private final static String allowedDeleteRoot = "upload";
+    private static final String ALLOWED_DELETE_ROOT = "upload";
 
     @Override
     public List<String> listFiles(String path) {
@@ -62,7 +60,7 @@ public class FileOperationsServiceImpl implements FileOperationsService {
     @Override
     public ResponseEntity<String> deleteFile(String path) {
         Path filePath = Paths.get(path);
-        if (!filePath.startsWith(Paths.get(allowedDeleteRoot))) {
+        if (!filePath.startsWith(Paths.get(ALLOWED_DELETE_ROOT))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Deletion is not allowed");
         }
         try {
@@ -73,6 +71,4 @@ public class FileOperationsServiceImpl implements FileOperationsService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, path + ", " + e.getMessage());
         }
     }
-
-
 }

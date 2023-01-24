@@ -9,16 +9,15 @@ import com.softserve.teachua.tools.dao.ChallengeDao;
 import com.softserve.teachua.tools.repository.ChallengeInfoRepository;
 import com.softserve.teachua.tools.service.ChallengeTransferService;
 import com.softserve.teachua.tools.transmodel.ChallengeTransfer;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ChallengeTransferServiceImpl implements ChallengeTransferService {
-    private final String ALTER_DESCRIPTION = "Challenges description was altered successfully,"
+    private static final String ALTER_DESCRIPTION = "Challenges description was altered successfully,"
             + " now description is varchar(30 000)";
-    private final String RENAME_DESCRIPTION = "Table сhallenges was renamed to challenges "
+    private static final String RENAME_DESCRIPTION = "Table сhallenges was renamed to challenges "
             + "(before renaming 'c' - was ukraine letter)";
     private final FileUtils fileUtils;
     private final DtoConverter dtoConverter;
@@ -26,7 +25,7 @@ public class ChallengeTransferServiceImpl implements ChallengeTransferService {
     private final ChallengeDao challengeDao;
 
     public ChallengeTransferServiceImpl(FileUtils fileUtils, DtoConverter dtoConverter,
-            ChallengeRepository challengeRepository, ChallengeDao challengeDao) {
+                                        ChallengeRepository challengeRepository, ChallengeDao challengeDao) {
         this.fileUtils = fileUtils;
         this.dtoConverter = dtoConverter;
         this.challengeRepository = challengeRepository;

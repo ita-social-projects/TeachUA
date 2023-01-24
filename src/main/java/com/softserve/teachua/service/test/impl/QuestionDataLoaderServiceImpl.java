@@ -25,11 +25,9 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService {
-
-    private final static String QUESTION_ALREADY_EXISTS = "Запитання %s вже було згенеровано";
-
-    private final static String ANSWERS_ALREADY_EXISTS =
-        "Варіант відповіді \"%s\" для запитання \"%s\" вже було додано";
+    private static final String QUESTION_ALREADY_EXISTS = "Запитання %s вже було згенеровано";
+    private static final String ANSWERS_ALREADY_EXISTS =
+            "Варіант відповіді \"%s\" для запитання \"%s\" вже було додано";
     private final QuestionService questionService;
     private final UserService userService;
 
@@ -37,7 +35,6 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
     private final QuestionCategoryRepository categoryRepository;
     private final AnswerRepository answerRepository;
     private final QuestionTypeRepository typeRepository;
-
 
     @Autowired
     public QuestionDataLoaderServiceImpl(QuestionService questionService,
@@ -53,7 +50,6 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
         this.typeRepository = typeRepository;
         this.userService = userService;
         this.answerRepository = answerRepository;
-
     }
 
     @Override
@@ -61,9 +57,9 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
         List<QuestionDatabaseResponse> responses = new ArrayList<>();
         for (QuestionExcel questionExcel : data.getQuestionsExcelList()) {
             Question question = Question.builder()
-                .title(questionExcel.getTitle())
-                .description(questionExcel.getDescription())
-                .creator(userService.getUserById(creatorId)).build();
+                    .title(questionExcel.getTitle())
+                    .description(questionExcel.getDescription())
+                    .creator(userService.getUserById(creatorId)).build();
 
             if (!categoryRepository.findByTitle(questionExcel.getCategory()).isPresent()) {
                 categoryRepository.save(QuestionCategory.builder().title(questionExcel.getCategory()).build());
@@ -83,19 +79,16 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
                     questionService.save(question);
                 }
             } else {
-
                 questionService.save(question);
             }
         }
 
-
         for (AnswerExcel answerExcel : data.getAnswersExcelList()) {
             Answer answer = Answer.builder()
-                .text(answerExcel.getText())
-                .correct(Boolean.parseBoolean(answerExcel.getIsCorrect().toLowerCase()))
-                .value(answerExcel.getValue())
-                .build();
-
+                    .text(answerExcel.getText())
+                    .correct(Boolean.parseBoolean(answerExcel.getIsCorrect().toLowerCase()))
+                    .value(answerExcel.getValue())
+                    .build();
 
             Optional<Question> question = questionRepository.findByTitle(answerExcel.getQuestionTitle().trim());
             question.ifPresent(answer::setQuestion);
@@ -103,8 +96,8 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
             List<Answer> answerList = answerRepository.findAllByQuestionId(question.get().getId());
             if (answerList.contains(answer)) {
                 responses.add(
-                    new QuestionDatabaseResponse(
-                        String.format(ANSWERS_ALREADY_EXISTS, answer.getText(), question.get().getTitle())));
+                        new QuestionDatabaseResponse(
+                                String.format(ANSWERS_ALREADY_EXISTS, answer.getText(), question.get().getTitle())));
             } else {
                 answerRepository.save(answer);
             }
