@@ -11,6 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 /**
+ * User this class for pars Excel data.
  * @author Vitalii Hapon
  */
 @Slf4j

@@ -5,11 +5,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 
 /**
- * This service contains methods to manage files
+ * This service contains methods to manage files.
  */
 public interface FileOperationsService {
     /**
-     * This method returns list of all files and directories located at {@code path}.
+     * Get a list of all files and directories located at {@code path}.
      * Directories are marked with a "/" at the end.
      *
      * @return {@code List<String>}
@@ -24,7 +24,7 @@ public interface FileOperationsService {
     String readFile(String path);
 
     /**
-     * This method returns a downloadable resource for a file located at {@code path}.
+     * Get a downloadable resource for a file located at {@code path}.
      *
      * @return {@code String}
      */

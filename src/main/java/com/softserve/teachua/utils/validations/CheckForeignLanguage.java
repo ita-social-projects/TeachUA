@@ -8,7 +8,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * Use this annotation to field that can't contain foreign language symbols
+ * Use this annotation to field that can't contain foreign language symbols.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

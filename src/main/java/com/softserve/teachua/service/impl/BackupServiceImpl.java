@@ -28,7 +28,6 @@ import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.BackupService;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -134,7 +133,7 @@ public class BackupServiceImpl implements BackupService {
     }
 
     @Override
-    public void downloadBackup(HttpServletResponse response) throws IOException {
+    public void downloadBackup(HttpServletResponse response) {
         ZipOutputStream zipStream = null;
         try {
             zipStream = new ZipOutputStream(response.getOutputStream());
@@ -196,11 +195,11 @@ public class BackupServiceImpl implements BackupService {
             throw new FileUploadException(String.format(CANT_TRANSFER_FILE, BACKUP_DIRECTORY));
         }
 
-        ZipInputStream zipInputStream = null;
-        ZipEntry zipEntry = null;
+        ZipEntry zipEntry;
         byte[] buffer = new byte[1024];
-        zipInputStream = new ZipInputStream(new FileInputStream(BACKUP_DIRECTORY + file.getOriginalFilename()));
-        try {
+
+        try (ZipInputStream zipInputStream = new ZipInputStream(
+                Files.newInputStream(Paths.get(BACKUP_DIRECTORY + file.getOriginalFilename())))) {
             zipEntry = zipInputStream.getNextEntry();
 
             while (zipEntry != null) {
@@ -229,10 +228,8 @@ public class BackupServiceImpl implements BackupService {
             }
         } catch (IOException e) {
             throw new FileUploadException(FILE_READ_EXCEPTION);
-        } finally {
-            zipInputStream.closeEntry();
-            zipInputStream.close();
         }
+
         if (!(new File(BACKUP_DIRECTORY).delete())) {
             throw new MethodNotSupportedException(String.format(CANT_DELETE_DIRECTORY, BACKUP_DIRECTORY));
         }

@@ -56,7 +56,7 @@ public interface LocationService {
      * @param club
      *            - put club.
      *
-     * @return
+     * @return a set of locations
      */
     Set<Location> updateLocationByClub(Set<LocationResponse> locations, Club club);
 

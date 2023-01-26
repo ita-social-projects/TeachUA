@@ -8,17 +8,17 @@ import java.util.List;
  */
 public interface QuestionTypeService {
     /**
-     * Returns a list of all question types
+     * Returns a list of all question types.
      *
      * @return {@code List<QuestionType>}
      */
     List<QuestionType> findAll();
 
     /**
-     * This method returns a QuestionType entity found by title.
+     * Find a QuestionType entity by title.
      *
-     * @param title - put QuestionType title.
-     * @return new {@code QuestionType}.
+     * @param title QuestionType title
+     * @return a QuestionType entity found by title
      */
     QuestionType findByTitle(String title);
 }

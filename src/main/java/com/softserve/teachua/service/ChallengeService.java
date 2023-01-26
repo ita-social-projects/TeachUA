@@ -101,7 +101,7 @@ public interface ChallengeService {
     SuccessUpdateChallengePreview updateChallengePreview(Long id, SuccessUpdateChallengePreview updateChallengePreview);
 
     /**
-     * The method returns entity {@code Challenge}
+     * The method returns entity {@code Challenge}.
      *
      * @param name
      *            - put Challenge name.
@@ -111,7 +111,7 @@ public interface ChallengeService {
     Challenge getChallengeByName(String name);
 
     /**
-     * The method returns {@code List<SuccessUpdatedTask>}
+     * The method returns {@code List<SuccessUpdatedTask>}.
      *
      * @param id
      *            - put Challenge id.

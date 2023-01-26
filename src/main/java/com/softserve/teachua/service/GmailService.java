@@ -1,7 +1,7 @@
 package com.softserve.teachua.service;
 
 /**
- * This service contains methods to manage Gmail API
+ * This service contains methods to manage Gmail API.
  */
 public interface GmailService {
     /**

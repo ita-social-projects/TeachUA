@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * This controller is responsible for managing templates
+ * This controller is responsible for managing templates.
  */
 @RestController
 @Slf4j

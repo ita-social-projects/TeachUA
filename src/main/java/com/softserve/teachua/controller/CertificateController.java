@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * This controller is responsible for managing certificates
+ * This controller is responsible for managing certificates.
  */
 @RestController
 @Slf4j
@@ -51,7 +51,7 @@ public class CertificateController implements Api {
     }
 
     /**
-     * This endpoint is used to get the number of unsent certificates
+     * This endpoint is used to get the number of unsent certificates.
      *
      * @return number of unsent certificates
      */
@@ -87,7 +87,7 @@ public class CertificateController implements Api {
     }
 
     /**
-     * This endpoint is used to validate the certificate, user passes serial number into url, this controller returns
+     * This endpoint is used to validate the certificate, user passes serial number into url, this controller returns.
      * {@code CertificateVerificationResponse}
      *
      * @param serialNumber - serial number of certificate, being verified

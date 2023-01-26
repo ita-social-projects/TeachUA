@@ -127,6 +127,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
             List<List<Cell>> allCells = new ArrayList<List<Cell>>();
             XSSFWorkbook workbook;
             Sheet sheet;
+
             try {
                 workbook = new XSSFWorkbook(inputStream);
                 sheet = workbook.getSheetAt(0);
@@ -135,6 +136,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
             } catch (IOException e) {
                 throw new RuntimeException(FILE_NOT_READ_EXCEPTION);
             }
+
             for (Row row : sheet) {
                 if (isRowEmpty(row)) {
                     continue;

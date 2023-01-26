@@ -45,6 +45,9 @@ public class AboutUsItemController implements Api {
      */
     @GetMapping("/about")
     public List<AboutUsItemResponse> getAboutUsItems() {
+        System.out.println("Hello!");
+        int i = 1;
+        System.out.println(i);
         return aboutUsItemService.getListOfAboutUsItemResponses();
     }
 

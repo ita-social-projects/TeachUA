@@ -20,7 +20,7 @@ public class BannerTransferController implements Api {
     }
 
     /**
-     * Use this controller for add hardCoded Banner to DB on prod\dev
+     * Use this controller for add hardCoded Banner to DB on prod\dev.
      *
      * @return new {@code List<SuccessCreatedBannerItem}
      */

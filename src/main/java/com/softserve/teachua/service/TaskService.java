@@ -55,7 +55,7 @@ public interface TaskService {
     List<TaskPreview> getTasksByChallengeId(Long id);
 
     /**
-     * The method returns list {@code List<TaskPreview>} of task with startDate earlier from now, by challenge id
+     * The method returns list {@code List<TaskPreview>} of task with startDate earlier from now, by challenge id.
      *
      * @param id
      *            - put Challenge id.

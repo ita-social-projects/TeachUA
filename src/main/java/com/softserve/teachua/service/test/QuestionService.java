@@ -14,18 +14,18 @@ import org.springframework.data.domain.Pageable;
  */
 public interface QuestionService {
     /**
-     * This method a page of questions configured by pageable object
+     * This method a page of questions configured by pageable object.
      *
      * @param pageable pageable object that configures page number, page size and sorting
-     * @return new {@code Page<QuestionResponse>}
+     * @return new {@code Page<QuestionResponse>}.
      */
     Page<QuestionResponse> findAllQuestionsPageable(Pageable pageable);
 
     /**
-     * This method a page of questions searched by query and configured by pageable object
+     * This method a page of questions searched by query and configured by pageable object.
      *
      * @param pageable pageable object that configures page number, page size and sorting
-     * @param query    search query for question title, can be blank for all questions
+     * @param query    search query for question title can be blank for all questions
      * @param type     optional question type title
      * @param category optional question category title
      * @return new {@code Page<QuestionResponse>}
@@ -33,7 +33,7 @@ public interface QuestionService {
     Page<QuestionResponse> searchAllQuestionsPageable(Pageable pageable, String query, String type, String category);
 
     /**
-     * Finds a question by id, throws {@code ResponseStatusException} if not found
+     * Finds a question by id, throws {@code ResponseStatusException} if not found.
      *
      * @param id question id
      * @return new {@code QuestionResponse}
@@ -41,66 +41,66 @@ public interface QuestionService {
     QuestionResponse findQuestionById(Long id);
 
     /**
-     * Returns question by id, throws {@code ResponseStatusException} if not found
+     * Returns question by id, throws {@code ResponseStatusException} if not found.
      *
      * @param id question id
-     * @return
+     * @return the question
      */
     Question getQuestionById(Long id);
 
     /**
-     * This method returns list of questions by test id.
+     * Find all the questions by test id.
      *
-     * @param testId - put test id.
-     * @return new {@code List<Question>}.
+     * @param testId test id
+     * @return list founded questions
      */
     List<Question> findQuestionsByTestId(Long testId);
 
     /**
-     * This method returns list of questions by test id using join fetch.
+     * Find Questions by test id using join fetch.
      *
-     * @param testId - put test id.
-     * @return new {@code List<Question>}.
+     * @param testId test id
+     * @return a list of questions
      */
     List<Question> findQuestionsByTestIdEager(Long testId);
 
     /**
-     * This method returns list of questions by test entity.
+     * Find a list of questions by test entity.
      *
-     * @param test - put test entity.
-     * @return new {@code List<Question>}.
+     * @param test test entity
+     * @return a list of questions
      */
     List<Question> findQuestionsByTest(Test test);
 
     /**
-     * This method returns list of dto {@code QuestionResponse} by test id.
+     * Find a list of dto {@code QuestionResponse} by test id.
      *
-     * @param test - put test id.
-     * @return new {@code List<QuestionResponse>}.
+     * @param test test id
+     * @return list of dto {@code QuestionResponse}
      */
     List<QuestionResponse> findQuestionResponsesByTestId(Long test);
 
     /**
-     * This method returns list of dto {@code QuestionResponse} by test entity.
+     * Find a list of dto {@code QuestionResponse} by test entity.
      *
-     * @param test - put test entity.
-     * @return new {@code List<QuestionResponse>}.
+     * @param test test entity
+     * @return a list of dto {@code List<QuestionResponse>}.
      */
     List<QuestionResponse> findQuestionResponsesByTest(Test test);
 
     /**
-     * This method returns question entity if it was successfully added.
+     * Create a new question entity.
      *
-     * @param question - put question entity.
-     * @return new {@code Question}.
+     * @param question question entity
+     * @return question entity if it was successfully added
      */
     Question save(Question question);
 
     /**
-     * This method returns question entity if it was successfully added.
+     * Create a new question entity by given QuestionResponse.
      *
      * @param questionResponse question dto
-     * @return new {@code Question}
+     * @return a question entity if it was successfully added
      */
     Question save(QuestionResponse questionResponse);
 
@@ -113,14 +113,14 @@ public interface QuestionService {
     Question update(QuestionResponse questionResponse);
 
     /**
-     * Delete a question by id, throws {@code ResponseStatusException} if not found
+     * Delete a question by id, throws {@code ResponseStatusException} if not found.
      *
      * @param id question id
      */
     void delete(long id);
 
     /**
-     * This method returns TRUE if it was successfully import from Google Form.
+     * Import questions from Google Form.
      *
      * @param formId    - put form's ID.
      * @param creatorId - put creator's ID.

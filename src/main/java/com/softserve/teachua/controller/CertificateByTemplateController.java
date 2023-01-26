@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * This controller is responsible for managing certificates created by template
+ * This controller is responsible for managing certificates created by a template.
  */
 @RestController
 @Slf4j
@@ -123,7 +123,7 @@ public class CertificateByTemplateController implements Api {
     }
 
     /**
-     * The method validates excel file and returns
+     * The method validates excel file and returns.
      * <p>{@code List<String[]>}, in which one bucket contains two {@code String} classes</p>
      * <p>first String - message;</p>
      * <p>second String - message code(1 - warning; 2 - error; 3 - success);</p>

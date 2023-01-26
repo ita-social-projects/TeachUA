@@ -5,9 +5,9 @@ import java.util.List;
 
 public interface BannerItemTransferService {
     /**
-     * The method for add hardCoded Banner to DB
+     * The method for add hardCoded Banner to DB.
      *
      * @return new {@code List<SuccessCreatedBannerItem>}
      */
-    public List<SuccessCreatedBannerItem> moveBannerToDB();
+    List<SuccessCreatedBannerItem> moveBannerToDB();
 }

@@ -11,11 +11,11 @@ import java.util.List;
  */
 public interface SubscriptionService {
     /**
-     * This method returns Subscription entity by user id and group id.
+     * Find Subscription entity by user id and group id.
      *
-     * @param userId  - put user id.
-     * @param groupId - put group id.
-     * @return new {@code Subscription}
+     * @param userId user id
+     * @param groupId group id
+     * @return founded Subscription entity
      */
     Subscription findByUserIdAndGroupId(Long userId, Long groupId);
 
@@ -39,10 +39,10 @@ public interface SubscriptionService {
     SubscriptionProfile createSubscriptionByUserIdAndGroupId(Long userId, Long groupId);
 
     /**
-     * This method returns list of dto {@code List<UserResponse>} of all users of a group.
+     * Get a list of dto {@code List<UserResponse>} of all users of a group.
      *
-     * @param id - put group id.
-     * @return new {@code List<UserResponse>}.
+     * @param id group id
+     * @return a list of dto
      */
     List<UserResponse> getUserResponsesByGroupId(Long id);
 

@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface CertificateExcelService {
     /**
-     * This method parses excel-file and returns {@code ExcelParsingResponse} of mistakes and created dto
+     * This method parses excel-file and returns {@code ExcelParsingResponse} of mistakes and created dto.
      *
      * @param multipartFile - put bode of excel-file to parse
      * @return new {@code ExcelParsingResponse}.

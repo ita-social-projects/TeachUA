@@ -10,37 +10,42 @@ import java.util.NoSuchElementException;
  */
 public interface TopicService {
     /**
-     * This method returns Topic entity found by id.
-     * @param id - put Topic id.
-     * @return new {@code Topic}
+     * Find a Topic entity by given id.
+     *
+     * @param id a Topic id
+     * @return the Topic entity found by id
      */
     Topic findById(Long id);
 
     /**
-     * This method returns a Topic entity found by title.
-     * @param title - put topic title.
-     * @return new {@code Topic}.
-     * @throws NoSuchElementException if topic item does not exist.
+     * Find a Topic entity by title.
+     *
+     * @param title topic title
+     * @return a Topic entity found by title
+     * @throws NoSuchElementException if topic item does not exist
      */
     Topic findByTitle(String title);
 
     /**
-     * This method returns list of all topics.
-     * @return new {@code List<TopicProfile>}.
+     * Find all Topic profiles.
+     *
+     * @return a list of all topics.
      */
     List<TopicProfile> findAllTopicProfiles();
 
     /**
-     * This method creates new Topic entity.
-     * @param topicProfile - contains information about the new topic.
+     * Create a new Topic entity.
+     *
+     * @param topicProfile contains information about the new topic.
      */
     TopicProfile save(TopicProfile topicProfile);
 
     /**
-     * This method returns dto {@code TopicProfile} if topic was successfully updated.
-     * @param topicProfile - contains information about the new topic.
-     * @param id - put topic id here.
-     * @return new {@code TopicProfile}
+     * Update Topic by given id and TopicProfile.
+     *
+     * @param topicProfile contains information about the new topic.
+     * @param id topic id
+     * @return dto {@code TopicProfile} if the topic was successfully updated
      */
     TopicProfile updateById(TopicProfile topicProfile, Long id);
 }

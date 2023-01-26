@@ -24,10 +24,10 @@ public class BackUpController implements Api {
     }
 
     /**
-     * Use this endpoint to see files for backup
+     * Use this endpoint to see files for backup.
      *
-     * @param fileName
-     * @return
+     * @param fileName a file name
+     * @return a list of the files
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/backup/files")
@@ -39,8 +39,8 @@ public class BackUpController implements Api {
     /**
      * Use this endpoint to download .zip file with backup resources
      *
-     * @param response
-     * @throws IOException
+     * @param response HttpServletResponse
+     * @throws IOException occurs if we cannot write a file
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping(value = "/backup/download", produces = "application/.zip")
@@ -51,9 +51,9 @@ public class BackUpController implements Api {
     /**
      * Use this endpoint to upload backup archive(.zip(downloaded from /backup/download)) to project
      *
-     * @param file
-     * @return
-     * @throws IOException
+     * @param file uploaded file to back up
+     * @return a list of uploaded files
+     * @throws IOException can occur while I/O operations
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping(value = "/backup/upload")

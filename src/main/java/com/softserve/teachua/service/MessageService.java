@@ -13,18 +13,18 @@ import java.util.List;
 
 public interface MessageService {
     /**
-     * This method returns dto {@link MessageResponseDto} if message successfully added.
+     * Add message.
      *
-     * @param messageProfile put {@code MessageProfile} dto here.
-     * @return {@code MessageResponseDto}.
+     * @param messageProfile MessageProfile dto
+     * @return dto {@link MessageResponseDto} if a message successfully added
      */
     MessageResponseDto addMessage(MessageProfile messageProfile);
 
     /**
-     * This method returns entity {@link Message} by id.
+     * Get a message by id.
      *
-     * @param id put {@code Message} id here.
-     * @return {@code Message}.
+     * @param id a message id
+     * @return entity {@link Message} by id
      */
     Message getMessageById(Long id);
 
