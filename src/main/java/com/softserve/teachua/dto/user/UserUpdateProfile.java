@@ -26,7 +26,7 @@ public class UserUpdateProfile implements Convertible {
     private String lastName;
 
     @NotBlank
-    @Pattern(regexp = "^(\\+380)[0-9]{9}|(380)[0-9]{9}|^0[0-9]{9}$",
+    @Pattern(regexp = "^0\\d{9}$",
             message = "Phone number must contain 10 numbers and can`t contain other symbols")
 
     private String phone;

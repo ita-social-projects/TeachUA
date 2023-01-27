@@ -50,6 +50,6 @@ public class LocationResponse {
     private Double longitude;
     private Double latitude;
 
-    @Pattern(regexp = "0[\\d]{9}", message = "number should contain 10 digits start with 0")
+    @Pattern(regexp = "^0\\d{9}$", message = "number should contain 10 digits start with 0")
     private String phone;
 }
