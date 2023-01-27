@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @Service
 public class PdfTemplateServiceImpl implements PdfTemplateService {
+    public static final String CERTIFICATE_TEMPLATES_FOLDER = "certificates/templates/pdf-templates";
     private final CertificateByTemplateService certificateByTemplateService;
     private final CertificateTemplateRepository certificateTemplateRepository;
 
@@ -46,11 +47,11 @@ public class PdfTemplateServiceImpl implements PdfTemplateService {
 
             String templateName = Instant.now().toEpochMilli() + ".pdf";
             File file = new File(
-                    new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/"
+                    new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
                             + templateName);
 
             try (OutputStream os = Files.newOutputStream(
-                    Paths.get(new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/"
+                    Paths.get(new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
                             + templateName))) {
                 os.write(multipartFile.getBytes());
             }
@@ -72,12 +73,12 @@ public class PdfTemplateServiceImpl implements PdfTemplateService {
         try {
             List<String> messagesList = new ArrayList<>();
             Path source = Paths.get(
-                    new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/"
+                    new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
                             + data.getTemplateName());
             String targetName = data.getTemplateLastModifiedDate() + ".pdf";
 
             if (!(new File(
-                    new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/"
+                    new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
                             + targetName).exists())) {
                 Files.move(source, source.resolveSibling(targetName));
             } else {
