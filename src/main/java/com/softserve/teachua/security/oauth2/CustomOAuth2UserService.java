@@ -15,7 +15,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 @Slf4j
 @Service
@@ -52,7 +52,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(
                 oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
-        if (StringUtils.isEmpty(userInfo.getEmail())) {
+        if (ObjectUtils.isEmpty(userInfo.getEmail())) {
             throw new OAuth2AuthenticationProcessingException(NO_EMAIL);
         }
 
