@@ -118,8 +118,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         challengeRepository.deleteById(id);
         challengeRepository.flush();
         archiveModel(challenge);
-        ChallengeDeleteResponse challengeResponse = dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class);
-        return challengeResponse;
+        return dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class);
     }
 
     @Override
@@ -148,7 +147,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     @Override
     public void archiveModel(Challenge challenge) {
         ChallengeArch challengeArch = dtoConverter.convertToDto(challenge, ChallengeArch.class);
-        challengeArch.setTasksIds(challenge.getTasks().stream().map(task -> task.getId()).collect(Collectors.toSet()));
+        challengeArch.setTasksIds(challenge.getTasks().stream().map(Task::getId).collect(Collectors.toSet()));
         archiveService.saveModel(challengeArch);
     }
 
