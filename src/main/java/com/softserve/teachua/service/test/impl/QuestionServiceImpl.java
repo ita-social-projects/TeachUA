@@ -43,6 +43,9 @@ import org.springframework.web.server.ResponseStatusException;
 @Transactional
 @Service("testQuestionService")
 public class QuestionServiceImpl implements QuestionService {
+    private static final String TEXT_TYPE = "TEXT";
+    private static final String PARAGRAPH_TYPE = "PARAGRAPH";
+    private static final String BEGIN_OF_FORM_URI = "https://docs.google.com/forms/d/";
     private final Forms formsService;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
@@ -177,23 +180,21 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void questionsImport(String formUri, Long creatorId) throws IOException {
-        String formId = formUri.replace("https://docs.google.com/forms/d/", "")
-                .replace("/edit", "");
+        String formId = formUri.replace(BEGIN_OF_FORM_URI, "").replace("/edit", "");
 
-        String formName = readFormInfo(formId).getInfo().getTitle();
+        String categoryName = String.format("New Form (%s) from Google", readFormInfo(formId).getInfo().getTitle());
         List<Item> itemList = readFormInfo(formId).getItems();
 
-        if (!categoryRepository.findByTitle("New From (" + formName + ") from Google").isPresent()) {
-            categoryRepository.save(QuestionCategory.builder()
-                    .title("New From (" + formName + ") from Google").build());
+        if (!categoryRepository.findByTitle(categoryName).isPresent()) {
+            categoryRepository.save(QuestionCategory.builder().title(categoryName).build());
         }
+
         for (Item item : itemList) {
             Question question = new Question();
 
             question.setCreator(userService.getUserById(creatorId));
             question.setTitle(item.getTitle());
-            question.setQuestionCategory(
-                    categoryRepository.findByTitle("New From (" + formName + ") from Google").get());
+            question.setQuestionCategory(categoryRepository.findByTitle(categoryName).get());
 
             if (item.getDescription() != null) {
                 question.setDescription(item.getDescription());
@@ -204,46 +205,49 @@ public class QuestionServiceImpl implements QuestionService {
             Grading grading = item.getQuestionItem().getQuestion().getGrading();
             ChoiceQuestion choice = item.getQuestionItem().getQuestion().getChoiceQuestion();
             if (choice != null && grading != null) {
-                List<CorrectAnswer> correctAnswers = grading.getCorrectAnswers().getAnswers();
-
-                if (!typeRepository.findByTitle(choice.getType()).isPresent()) {
-                    QuestionType type = QuestionType.builder().title(choice.getType()).build();
-                    typeRepository.save(type);
-                }
-
-                question.setQuestionType(typeService.findByTitle(choice.getType()));
-                question = save(question);
-
-                List<Option> options = item.getQuestionItem().getQuestion().getChoiceQuestion().getOptions();
-
-                for (Option option : options) {
-                    Answer answer = new Answer();
-                    answer.setText(option.getValue());
-                    answer.setValue(grading.getPointValue());
-                    answer.setQuestion(question);
-
-                    for (CorrectAnswer correct : correctAnswers) {
-                        answer.setCorrect(option.getValue().equals(correct.getValue()));
-                    }
-                    log.info("**/Answer has been created.{}" + answer.toString());
-                    answer = answerRepository.save(answer);
-                    question.addAnswer(answer);
-                }
+                addNewType(question, choice.getType());
+                addOptionsToQuestion(item, grading, question);
             } else if (item.getQuestionItem().getQuestion().getTextQuestion().isEmpty()) {
-                if (!typeRepository.findByTitle("TEXT").isPresent()) {
-                    QuestionType type = QuestionType.builder().title("TEXT").build();
-                    typeRepository.save(type);
-                }
-                question.setQuestionType(typeService.findByTitle("TEXT"));
-                save(question);
+                addNewType(question, TEXT_TYPE);
             } else if (item.getQuestionItem().getQuestion().getTextQuestion().getParagraph()) {
-                if (!typeRepository.findByTitle("PARAGRAPH").isPresent()) {
-                    QuestionType type = QuestionType.builder().title("PARAGRAPH").build();
-                    typeRepository.save(type);
-                }
-                question.setQuestionType(typeService.findByTitle("PARAGRAPH"));
-                save(question);
+                addNewType(question, PARAGRAPH_TYPE);
             }
+        }
+    }
+
+    private void addNewType(Question question, String nameOfType) {
+        if (!typeRepository.findByTitle(nameOfType).isPresent()) {
+            QuestionType type = QuestionType.builder().title(nameOfType).build();
+            typeRepository.save(type);
+        }
+        question.setQuestionType(typeService.findByTitle(nameOfType));
+        save(question);
+    }
+
+    private void addOptionsToQuestion(Item item,
+                                      Grading grading,
+                                      Question question) {
+        List<Option> options = item.getQuestionItem().getQuestion().getChoiceQuestion().getOptions();
+        List<CorrectAnswer> correctAnswers = grading.getCorrectAnswers().getAnswers();
+
+        for (Option option : options) {
+            Answer answer = new Answer();
+            answer.setText(option.getValue());
+            answer.setValue(grading.getPointValue());
+            answer.setQuestion(question);
+
+            for (CorrectAnswer correct : correctAnswers) {
+                if (option.getValue().equals(correct.getValue())) {
+                    answer.setCorrect(true);
+                    answer.setValue(grading.getPointValue());
+                    break;
+                } else {
+                    answer.setCorrect(false);
+                    answer.setValue(0);
+                }
+            }
+            answer = answerRepository.save(answer);
+            question.addAnswer(answer);
         }
     }
 
