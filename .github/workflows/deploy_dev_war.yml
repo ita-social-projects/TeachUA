@@ -1,0 +1,64 @@
+name: Deploy to dev
+on:
+  workflow_dispatch:
+jobs:
+  prcheck:
+    runs-on: ubuntu-latest
+    steps:       
+      - name: Create folder for frontend
+        run: 'sudo mkdir /su_frontend'
+        
+      - name: Checkout frontend repo TeachUAClient
+        uses: actions/checkout@v2
+        with:
+          repository: ita-social-projects/TeachUAClient
+          ref: develop
+      
+      - name: Fix env vars
+        run: echo "PUBLIC_URL=/dev" >> .env.production  
+      
+      - name: Node version
+        run: "node --version"
+        
+      - name: Install dependencies
+        run: "npm install --legacy-peer-deps"
+        continue-on-error: true
+
+      - name: Build frontend
+        run: "CI=false npm run build"
+        
+      - name: copy frontend to frontend folder
+        run: 'sudo cp -r build/* /su_frontend'
+        
+      - name: Checkout backend repo TeachUA
+        uses: actions/checkout@v2
+        with:
+          repository: ita-social-projects/TeachUA
+          ref: rest
+          
+      - name: Inject frontend
+        run: 'sudo cp -r /su_frontend/* src/main/resources/frontend'
+        
+      - name: Build war
+        # run: 'mvn package -DskipTests -Dcheckstyle.skip'
+        run: 'mvn package'
+
+      - name: Copy results to the remote host over SSH
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          source: "target/dev.war"
+          target: "/opt/tomcat/latest/webapps/"
+          strip_components: 1
+          
+      - name: Change permissions to tomcat user
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: chown -R tomcat:tomcat /opt/tomcat
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY}}
+          
