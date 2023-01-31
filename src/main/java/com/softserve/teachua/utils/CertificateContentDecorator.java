@@ -16,15 +16,14 @@ public class CertificateContentDecorator {
     public static final String PATTERN_WITH_MONTH_AND_YEAR = " по d MMMM yyyy року";
 
     public String formHours(Integer hours) {
-        //return "Тривалість навчання - " + hours + " годин.";
         return String.valueOf(hours);
     }
 
     public String formDates(LocalDate startDate, LocalDate endDate) {
         Locale locale = Locale.forLanguageTag("uk-UA");
 
-        DateTimeFormatter startFormatter = null;
-        DateTimeFormatter endFormatter = null;
+        DateTimeFormatter startFormatter;
+        DateTimeFormatter endFormatter;
 
         if (startDate.getMonth().getValue() == endDate.getMonth().getValue()) {
             startFormatter = DateTimeFormatter.ofPattern(PATTERN_WITHOUT_MONTH_AND_YEAR, locale);
@@ -37,11 +36,6 @@ public class CertificateContentDecorator {
         }
 
         return startFormatter.format(startDate) + endFormatter.format(endDate);
-    }
-
-    public static String getRealPathToImage(String path) throws IOException {
-        Path resourcePath = Paths.get((new ClassPathResource("/certificates/images/" + path)).getURI());
-        return resourcePath.toFile().getAbsolutePath();
     }
 
     public String getRealFilePath(String path) throws IOException {
