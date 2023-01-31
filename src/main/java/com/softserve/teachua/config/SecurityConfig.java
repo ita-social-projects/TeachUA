@@ -83,7 +83,7 @@ public class SecurityConfig {
                 .antMatchers("/upload/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/club/*", "/clubs", "/challenge", "/challenge/*", "/challenge/**",
                         "/challenges/task/**", "/challenge/task/**", "/marathon", "/marathon/*", "/marathon/task/*",
-                        "/about", "/banners", "/banner/*", "/centers", "/center/*", "/service")
+                        "/about", "/banners", "/banner/*", "/centers", "/center/*", "/service", "/prometheus")
                 .permitAll()
                 .antMatchers("/api/**").permitAll()
                 .antMatchers(
