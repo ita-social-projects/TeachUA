@@ -9,7 +9,11 @@ import com.softserve.teachua.dto.test.result.UserResult;
 import com.softserve.teachua.dto.test.test.ResultTest;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.User;
-import com.softserve.teachua.model.test.*;
+import com.softserve.teachua.model.test.Answer;
+import com.softserve.teachua.model.test.Question;
+import com.softserve.teachua.model.test.QuestionHistory;
+import com.softserve.teachua.model.test.Result;
+import com.softserve.teachua.model.test.Test;
 import com.softserve.teachua.repository.test.ResultRepository;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.AnswerService;
@@ -18,21 +22,23 @@ import com.softserve.teachua.service.test.ResultService;
 import com.softserve.teachua.service.test.TestService;
 import com.softserve.teachua.utils.test.containers.AnswerResultContainer;
 import com.softserve.teachua.utils.test.containers.QuestionResultContainer;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNullIds;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.Link;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
-import static com.softserve.teachua.utils.test.validation.NullValidator.checkNullIds;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -99,10 +105,10 @@ public class ResultServiceImpl implements ResultService {
         Result result = findById(resultId);
         Test test = result.getTest();
         List<Question> questions = questionService.findQuestionsByTestIdEager(test.getId());
-        Set<QuestionHistory> qHistories = result.getQuestionHistories();
+        Set<QuestionHistory> questionHistories = result.getQuestionHistories();
         Map<Long, Set<Long>> questionSelectedAnswers = new HashMap<>();
         questions.forEach(x -> questionSelectedAnswers.put(x.getId(), new HashSet<>()));
-        qHistories.stream()
+        questionHistories.stream()
                 .map(QuestionHistory::getAnswer)
                 .forEach(x -> questionSelectedAnswers.get(x.getQuestion().getId()).add(x.getId()));
         generateResultTestBody(questions, resultTest, questionSelectedAnswers);
@@ -182,7 +188,7 @@ public class ResultServiceImpl implements ResultService {
             Set<Long> selectedAnswerIds = questionSelectedAnswers.get(question.getId());
             QuestionResultContainer questionResultContainer = new QuestionResultContainer();
 
-            for (Answer answer: answers) {
+            for (Answer answer : answers) {
                 AnswerResult answerResult = new AnswerResult();
                 AnswerResultContainer answerResultContainer = new AnswerResultContainer(answer);
                 answerResultContainer.calculateGrade(questionResultContainer, selectedAnswerIds);

@@ -6,42 +6,44 @@ import com.softserve.teachua.service.GmailService;
 import com.sun.mail.gimap.GmailMessage;
 import com.sun.mail.gimap.GmailSSLStore;
 import com.sun.mail.gimap.GmailThrIdTerm;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import javax.mail.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.List;
+import javax.mail.Flags;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.search.AndTerm;
 import javax.mail.search.FlagTerm;
 import javax.mail.search.FromTerm;
 import javax.mail.search.SearchTerm;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class GmailServiceImpl implements GmailService {
-
     private static final String FAILED_EMAILS_FILTER = "mailer-daemon@googlemail.com";
 
     private static final String PROTOCOL = "gimaps";
 
     private Folder certificatesFolder;
 
-    private final Session IMAPSession;
+    private final Session imapSession;
 
     private final CertificateService certificateService;
 
-    public GmailServiceImpl(Session IMAPSession, CertificateService certificateService) {
-        this.IMAPSession = IMAPSession;
+    public GmailServiceImpl(Session imapSession, CertificateService certificateService) {
+        this.imapSession = imapSession;
         this.certificateService = certificateService;
     }
 
     @Override
     public void detectFailedSendCertificates() {
         try {
-            GmailSSLStore store = (GmailSSLStore) IMAPSession.getStore(PROTOCOL);
+            GmailSSLStore store = (GmailSSLStore) imapSession.getStore(PROTOCOL);
             store.connect();
 
             Folder inboxFolder = store.getFolder("INBOX");
@@ -82,25 +84,26 @@ public class GmailServiceImpl implements GmailService {
         }
     }
 
-    private void processFailedMessage(Message failedMessage, Message messageAboutUndelivered) throws MessagingException {
+    private void processFailedMessage(Message failedMessage,
+                                      Message messageAboutUndelivered) throws MessagingException {
         String sendToEmail = failedMessage.getAllRecipients()[0].toString();
         LocalDate updateStatus = failedMessage.getSentDate().toInstant()
-            .atZone(ZoneId.systemDefault()).toLocalDate();
+                .atZone(ZoneId.systemDefault()).toLocalDate();
 
         List<Certificate> certificates = certificateService.getSentCertificatesByEmailAndUpdateStatus(
-            sendToEmail, updateStatus);
+                sendToEmail, updateStatus);
         if (!certificates.isEmpty()) {
             certificates.forEach(certificate ->
-                certificateService.updateDateAndSendStatus(certificate.getId(), false));
+                    certificateService.updateDateAndSendStatus(certificate.getId(), false));
             failedMessage.setFlag(Flags.Flag.DELETED, true);
             certificatesFolder.expunge();
             messageAboutUndelivered.setFlag(Flags.Flag.SEEN, true);
 
             log.info("Updated {} failed certificates for {}",
-                certificates.size(), certificates.get(0).getSendToEmail());
+                    certificates.size(), certificates.get(0).getSendToEmail());
         } else {
             log.info("Gmail has failed email for {} with date {}, but no certificate found in database",
-                sendToEmail, updateStatus);
+                    sendToEmail, updateStatus);
         }
     }
 }

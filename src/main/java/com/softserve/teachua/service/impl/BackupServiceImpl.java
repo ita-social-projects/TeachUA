@@ -4,18 +4,30 @@ import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.exception.MethodNotSupportedException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.StreamCloseException;
-import com.softserve.teachua.model.*;
-import com.softserve.teachua.repository.*;
+import com.softserve.teachua.model.AboutUsItem;
+import com.softserve.teachua.model.BannerItem;
+import com.softserve.teachua.model.Category;
+import com.softserve.teachua.model.Center;
+import com.softserve.teachua.model.Challenge;
+import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.ContactType;
+import com.softserve.teachua.model.GalleryPhoto;
+import com.softserve.teachua.model.News;
+import com.softserve.teachua.model.Task;
+import com.softserve.teachua.model.User;
+import com.softserve.teachua.repository.AboutUsItemRepository;
+import com.softserve.teachua.repository.BannerItemRepository;
+import com.softserve.teachua.repository.CategoryRepository;
+import com.softserve.teachua.repository.CenterRepository;
+import com.softserve.teachua.repository.ChallengeRepository;
+import com.softserve.teachua.repository.ClubRepository;
+import com.softserve.teachua.repository.ContactTypeRepository;
+import com.softserve.teachua.repository.GalleryRepository;
+import com.softserve.teachua.repository.NewsRepository;
+import com.softserve.teachua.repository.TaskRepository;
+import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.BackupService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,25 +39,30 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
 public class BackupServiceImpl implements BackupService {
-
-    private final static String ALL_FILES = "all";
-    private final static String IMAGES_DIRECTORY = "\\\\images";
-    private final static String NOT_FOUND_FILE_EXCEPTION = "File %s not found";
-    private final static String PUT_FILE_EXCEPTION = "Cant put file %s to zip archive";
-    private final static String WRITE_FILE_EXCEPTION = "Cant write file %s to zip archive";
-    private final static String CLOSE_FILE_UPLOAD_EXCEPTION = "Cant close file %s";
-    private final static String CLOSE_STREAM_EXCEPTION = "Cant close stream";
-    private final static String ZIP_STREAM_EXCEPTION = "Zip stream exception";
-    private final static String FILE_READ_EXCEPTION = "Cant read file %s ";
-    private final static String CANT_CREATE_DIRECTORY = "Cant create directory: %s";
-    private final static String BACKUP_DIRECTORY = "src\\main\\resources\\Backup\\\\";
-    private final static String SUCCESSFUL_ADDED_FILE = "File: %s Successfully added";
-    private final static String CANT_TRANSFER_FILE = " Cant transfer file to directory %s";
-    private final static String CANT_DELETE_DIRECTORY = "Cant delete directory %s";
+    private static final String ALL_FILES = "all";
+    private static final String IMAGES_DIRECTORY = "\\\\images";
+    private static final String NOT_FOUND_FILE_EXCEPTION = "File %s not found";
+    private static final String PUT_FILE_EXCEPTION = "Cant put file %s to zip archive";
+    private static final String WRITE_FILE_EXCEPTION = "Cant write file %s to zip archive";
+    private static final String CLOSE_FILE_UPLOAD_EXCEPTION = "Cant close file %s";
+    private static final String CLOSE_STREAM_EXCEPTION = "Cant close stream";
+    private static final String ZIP_STREAM_EXCEPTION = "Zip stream exception";
+    private static final String FILE_READ_EXCEPTION = "Cant read file %s ";
+    private static final String CANT_CREATE_DIRECTORY = "Cant create directory: %s";
+    private static final String BACKUP_DIRECTORY = "src\\main\\resources\\Backup\\\\";
+    private static final String SUCCESSFUL_ADDED_FILE = "File: %s Successfully added";
+    private static final String CANT_TRANSFER_FILE = " Cant transfer file to directory %s";
+    private static final String CANT_DELETE_DIRECTORY = "Cant delete directory %s";
 
     private final AboutUsItemRepository aboutUsItemRepository;
     private final BannerItemRepository bannerItemRepository;
@@ -60,10 +77,11 @@ public class BackupServiceImpl implements BackupService {
     private final ChallengeRepository challengeRepository;
 
     public BackupServiceImpl(AboutUsItemRepository aboutUsItemRepository, BannerItemRepository bannerItemRepository,
-            CategoryRepository categoryRepository, CenterRepository centerRepository, ClubRepository clubRepository,
-            ContactTypeRepository contactTypeRepository, GalleryRepository galleryRepository,
-            NewsRepository newsRepository, TaskRepository taskRepository, UserRepository userRepository,
-            ChallengeRepository challengeRepository) {
+                             CategoryRepository categoryRepository, CenterRepository centerRepository,
+                             ClubRepository clubRepository, ContactTypeRepository contactTypeRepository,
+                             GalleryRepository galleryRepository, NewsRepository newsRepository,
+                             TaskRepository taskRepository, UserRepository userRepository,
+                             ChallengeRepository challengeRepository) {
         this.aboutUsItemRepository = aboutUsItemRepository;
         this.bannerItemRepository = bannerItemRepository;
         this.categoryRepository = categoryRepository;
@@ -79,7 +97,6 @@ public class BackupServiceImpl implements BackupService {
 
     @Override
     public List<String> getAllBackupFiles(String fileName) {
-
         List<List<String>> filePathForBackup = new LinkedList<>();
         filePathForBackup.add(
                 aboutUsItemRepository.findAll().stream().map(AboutUsItem::getPicture).collect(Collectors.toList()));
@@ -116,7 +133,7 @@ public class BackupServiceImpl implements BackupService {
     }
 
     @Override
-    public void downloadBackup(HttpServletResponse response) throws IOException {
+    public void downloadBackup(HttpServletResponse response) {
         ZipOutputStream zipStream = null;
         try {
             zipStream = new ZipOutputStream(response.getOutputStream());
@@ -125,7 +142,6 @@ public class BackupServiceImpl implements BackupService {
         }
 
         for (String file : getAllBackupFiles(ALL_FILES)) {
-
             if (!(new File(file).exists())) {
                 throw new NotExistException(String.format(NOT_FOUND_FILE_EXCEPTION, file));
             }
@@ -134,7 +150,6 @@ public class BackupServiceImpl implements BackupService {
                 buffer = Files.readAllBytes(Paths.get(file));
             } catch (IOException e) {
                 throw new FileUploadException(FILE_READ_EXCEPTION);
-
             }
 
             ZipEntry zipEntry = new ZipEntry(file);
@@ -161,11 +176,9 @@ public class BackupServiceImpl implements BackupService {
             zipStream.close();
         } catch (IOException e) {
             throw new StreamCloseException(CLOSE_STREAM_EXCEPTION);
-
         }
         response.setStatus(HttpServletResponse.SC_OK);
         response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename= \"TeachUaBackup.zip\"");
-
     }
 
     @Override
@@ -182,11 +195,11 @@ public class BackupServiceImpl implements BackupService {
             throw new FileUploadException(String.format(CANT_TRANSFER_FILE, BACKUP_DIRECTORY));
         }
 
-        ZipInputStream zipInputStream = null;
-        ZipEntry zipEntry = null;
+        ZipEntry zipEntry;
         byte[] buffer = new byte[1024];
-        zipInputStream = new ZipInputStream(new FileInputStream(BACKUP_DIRECTORY + file.getOriginalFilename()));
-        try {
+
+        try (ZipInputStream zipInputStream = new ZipInputStream(
+                Files.newInputStream(Paths.get(BACKUP_DIRECTORY + file.getOriginalFilename())))) {
             zipEntry = zipInputStream.getNextEntry();
 
             while (zipEntry != null) {
@@ -212,18 +225,13 @@ public class BackupServiceImpl implements BackupService {
                 zipEntry = zipInputStream.getNextEntry();
 
                 movedFileList.add(String.format(SUCCESSFUL_ADDED_FILE, zipDirectory));
-
             }
-
         } catch (IOException e) {
             throw new FileUploadException(FILE_READ_EXCEPTION);
-        } finally {
-            zipInputStream.closeEntry();
-            zipInputStream.close();
         }
+
         if (!(new File(BACKUP_DIRECTORY).delete())) {
             throw new MethodNotSupportedException(String.format(CANT_DELETE_DIRECTORY, BACKUP_DIRECTORY));
-
         }
         return movedFileList;
     }

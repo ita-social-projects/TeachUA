@@ -7,14 +7,19 @@ import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.dto.station.StationResponse;
 import com.softserve.teachua.dto.station.SuccessCreatedStation;
 import com.softserve.teachua.service.StationService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import com.softserve.teachua.utils.annotation.AllowedRoles;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.util.List;
+import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing the stations.
@@ -34,9 +39,7 @@ public class StationController implements Api {
     /**
      * Use this endpoint to get station by id. The controller returns {@code StationResponse}.
      *
-     * @param id
-     *            - put station id.
-     *
+     * @param id - put station id.
      * @return {@code StationResponse}.
      */
     @GetMapping("/station/{id}")
@@ -47,9 +50,7 @@ public class StationController implements Api {
     /**
      * Use this endpoint to create station. The controller returns {@code SuccessCreatedStation}.
      *
-     * @param stationProfile
-     *            - place body to {@code StationProfile}.
-     *
+     * @param stationProfile - place body to {@code StationProfile}.
      * @return new {@code SuccessCreatedStation}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -61,11 +62,8 @@ public class StationController implements Api {
     /**
      * Use this endpoint to update station by id. The controller returns {@code StationProfile}.
      *
-     * @param id
-     *            - put station id.
-     * @param stationProfile
-     *            - place body to {@link CityProfile}.
-     *
+     * @param id             - put station id.
+     * @param stationProfile - place body to {@link CityProfile}.
      * @return {@code StationProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -87,9 +85,7 @@ public class StationController implements Api {
     /**
      * Use this endpoint to get stations by name. The controller returns list of {@code List<StationResponse>}.
      *
-     * @param name
-     *            - put city name.
-     *
+     * @param name - put city name.
      * @return {@code List<StationResponse>}.
      */
     @GetMapping("/stations/{name}")
@@ -99,16 +95,13 @@ public class StationController implements Api {
 
     @PostMapping("/district/stations")
     public List<StationResponse> getStationsByDistrictNameAndCityName(@RequestBody StationProfile stationProfile) {
-
         return stationService.getAllByDistrictNameAndCityName(stationProfile);
     }
 
     /**
      * Use this endpoint to delete station by id. The controller returns {@code StationResponse}.
      *
-     * @param id
-     *            - put station id.
-     *
+     * @param id - put station id.
      * @return {@code StationResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)

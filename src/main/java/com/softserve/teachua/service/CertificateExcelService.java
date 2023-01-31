@@ -11,9 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
  * This interface contains all needed methods to manage exel parser.
  */
 public interface CertificateExcelService {
-
     /**
-     * This method parses excel-file and returns {@code ExcelParsingResponse} of mistakes and created dto
+     * This method parses excel-file and returns {@code ExcelParsingResponse} of mistakes and created dto.
      *
      * @param multipartFile - put bode of excel-file to parse
      * @return new {@code ExcelParsingResponse}.
@@ -23,5 +22,5 @@ public interface CertificateExcelService {
     CertificateByTemplateExcelParsingResponse parseFlexibleExcel(MultipartFile multipartFile);
 
     List<String[]> validateCertificateByTemplateExcel(CertificateByTemplateTransfer data)
-        throws JsonProcessingException;
+            throws JsonProcessingException;
 }

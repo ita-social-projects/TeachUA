@@ -29,6 +29,7 @@ import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.utils.ChallengeUtil;
 import com.softserve.teachua.utils.HtmlUtils;
 import java.time.LocalDate;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -42,8 +43,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Slf4j
@@ -112,7 +111,6 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     @Override
     public ChallengeDeleteResponse deleteChallenge(Long id) {
         Challenge challenge = getChallengeById(id);
-        ChallengeDeleteResponse challengeResponse = dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class);
         challenge.getTasks().forEach((task) -> {
             task.setChallenge(null);
             taskRepository.save(task);
@@ -120,7 +118,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         challengeRepository.deleteById(id);
         challengeRepository.flush();
         archiveModel(challenge);
-        return challengeResponse;
+        return dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class);
     }
 
     @Override
@@ -149,7 +147,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     @Override
     public void archiveModel(Challenge challenge) {
         ChallengeArch challengeArch = dtoConverter.convertToDto(challenge, ChallengeArch.class);
-        challengeArch.setTasksIds(challenge.getTasks().stream().map(task -> task.getId()).collect(Collectors.toSet()));
+        challengeArch.setTasksIds(challenge.getTasks().stream().map(Task::getId).collect(Collectors.toSet()));
         archiveService.saveModel(challengeArch);
     }
 

@@ -2,7 +2,6 @@ package com.softserve.teachua.security.oauth2.user;
 
 import com.softserve.teachua.exception.oauth2.OAuth2AuthenticationProcessingException;
 import com.softserve.teachua.model.AuthProvider;
-
 import java.util.Map;
 
 public class OAuth2UserInfoFactory {

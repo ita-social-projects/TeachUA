@@ -31,40 +31,39 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @Service
 public class QuestionExcelServiceImpl implements QuestionExcelService {
-
     protected static final String FILE_NOT_FOUND_EXCEPTION =
-        "File %s could not be found";
+            "File %s could not be found";
     protected static final String FILE_NOT_READ_EXCEPTION =
-        "File %s could not be read";
+            "File %s could not be read";
     protected static final String FILE_NOT_CLOSE_EXCEPTION =
-        "File %s could not be closed";
+            "File %s could not be closed";
     private static final String FILE_LOAD_EXCEPTION =
-        "Could not load excel file";
+            "Could not load excel file";
     private static final String MISSING_HEADER_ROW =
-        "Відсутній рядок з назвами колонок";
+            "Відсутній рядок з назвами колонок";
     private static final String MISSING_COLUMN_TITLE_ERROR =
-        "Відсутня колонка з назвою запитання";
+            "Відсутня колонка з назвою запитання";
     private static final String MISSING_COLUMN_DESCRIPTION_ERROR =
-        "Відсутня колонка з описом запитання";
+            "Відсутня колонка з описом запитання";
     private static final String MISSING_COLUMN_TYPE_ERROR =
-        "Відсутня колонка з типом запитання";
+            "Відсутня колонка з типом запитання";
     private static final String MISSING_COLUMN_CATEGORY_ERROR =
-        "Відсутня колонка з категорією запитання";
+            "Відсутня колонка з категорією запитання";
     private static final String MISSING_COLUMN_ANSWER_ERROR =
-        "Відсутня колонка з варіантами відповідь до запитання";
+            "Відсутня колонка з варіантами відповідь до запитання";
     private static final String MISSING_COLUMN_CORRECT_ERROR =
-        "Відсутня колонка з правильними відповідями до запитання";
+            "Відсутня колонка з правильними відповідями до запитання";
     private static final String MISSING_COLUMN_VALUES_ERROR =
-        "Відсутня колонка з оцінками для запитання";
+            "Відсутня колонка з оцінками для запитання";
 
-    private final static String EMPTY_STRING = "";
-    private final static String TITLE = "назва";
-    private final static String DESCRIPTION = "опис";
-    private final static String TYPE = "тип";
-    private final static String CATEGORY = "категорія";
-    private final static String ANSWERS = "варіанти";
-    private final static String CORRECT = "правильна";
-    private final static String VALUE = "оцінка";
+    private static final String EMPTY_STRING = "";
+    private static final String TITLE = "назва";
+    private static final String DESCRIPTION = "опис";
+    private static final String TYPE = "тип";
+    private static final String CATEGORY = "категорія";
+    private static final String ANSWERS = "варіанти";
+    private static final String CORRECT = "правильна";
+    private static final String VALUE = "оцінка";
 
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
@@ -77,7 +76,6 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
 
     public QuestionExcelServiceImpl(AnswerRepository answerRepository,
                                     QuestionRepository questionRepository) {
-
         this.answerRepository = answerRepository;
         this.questionRepository = questionRepository;
     }
@@ -85,7 +83,7 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
     @Override
     public ExcelQuestionParsingResponse parseExcel(MultipartFile multipartFile) {
         response = new ExcelQuestionParsingResponse();
-        indexes = new int[] {-1, -1, -1, -1, -1, -1, -1};
+        indexes = new int[]{-1, -1, -1, -1, -1, -1, -1};
         try (InputStream inputStream = multipartFile.getInputStream()) {
             List<List<Cell>> list = excelToList(inputStream);
             response.setQuestionsInfo(createQuestions(list));
@@ -231,7 +229,7 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
                 if (!isColumnEmpty(sheet, currentCell.getColumnIndex())) {
                     String cell = dataFormatter.formatCellValue(currentCell);
                     if (cell.toLowerCase().contains(TITLE) || cell.toLowerCase().contains(DESCRIPTION)
-                        || cell.toLowerCase().contains(TYPE) || cell.toLowerCase().contains(ANSWERS)
+                            || cell.toLowerCase().contains(TYPE) || cell.toLowerCase().contains(ANSWERS)
 
                     ) {
                         headerRowIndex = allCells.size();
@@ -241,12 +239,11 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
             }
 
             allCells.add(allRowCells);
-
         }
 
         if (headerRowIndex == -1) {
             response.getQuestionParsingMistakes()
-                .add(new ExcelQuestionParsingMistake(MISSING_HEADER_ROW, EMPTY_STRING, null));
+                    .add(new ExcelQuestionParsingMistake(MISSING_HEADER_ROW, EMPTY_STRING, null));
             return allCells;
         } else {
             setIndexes(allCells.get(headerRowIndex));
@@ -275,7 +272,6 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
         }
 
         for (List<Cell> row : rows) {
-
             if (row.size() > 3) {
                 result.add(createQuestion(row));
             }
@@ -284,14 +280,12 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
         return result;
     }
 
-
     private QuestionExcel createQuestion(List<Cell> row) {
         List<Cell> data = new ArrayList<>(row);
         String title = null;
         String description = " ";
         String type = null;
         String category = null;
-
 
         if (indexes[0] != -1) {
             title = dataFormatter.formatCellValue(data.get(indexes[0])).trim();
@@ -307,10 +301,8 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
             category = dataFormatter.formatCellValue(data.get(indexes[3])).trim();
         }
 
-
         return QuestionExcel.builder().title(title).description(description).type(type).category(category).build();
     }
-
 
     private List<AnswerExcel> createAnswers(List<List<Cell>> rows) {
         List<AnswerExcel> result = new ArrayList<>();
@@ -322,15 +314,13 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
                 result.add(createAnswer(questionTitle, row));
             } else {
                 result.add(createAnswer(questionTitle, row));
-
             }
         }
 
         return result;
     }
 
-
-    private AnswerExcel createAnswer(String Title, List<Cell> row) {
+    private AnswerExcel createAnswer(String title, List<Cell> row) {
         String questionTitle = null;
 
         List<Cell> data = new ArrayList<>(row);
@@ -340,10 +330,7 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
         int value = 0;
 
         if (row.size() > 3) {
-
-
             if (indexes[0] != -1) {
-
                 questionTitle = dataFormatter.formatCellValue(data.get(indexes[0])).trim();
             }
             if (indexes[4] != -1) {
@@ -356,8 +343,7 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
                 value = Integer.parseInt(dataFormatter.formatCellValue(data.get(indexes[6])).trim());
             }
         } else {
-
-            questionTitle = Title;
+            questionTitle = title;
             if (indexes[4] != -1) {
                 text = dataFormatter.formatCellValue(data.get(0)).trim();
             }
@@ -367,18 +353,15 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
             if (indexes[6] != -1) {
                 value = Integer.parseInt(dataFormatter.formatCellValue(data.get(2)).trim());
             }
-
         }
 
         return AnswerExcel.builder()
-            .questionTitle(questionTitle)
-            .text(text)
-            .isCorrect(isCorrect)
-            .value(value)
-            .build();
-
+                .questionTitle(questionTitle)
+                .text(text)
+                .isCorrect(isCorrect)
+                .value(value)
+                .build();
     }
-
 
     private void setIndexes(List<Cell> row) {
         for (int i = 0; i < row.size(); i++) {
@@ -404,42 +387,39 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
             if (cell.contains(VALUE)) {
                 indexes[6] = i;
             }
-
         }
 
         if (indexes[0] == -1) {
-            response.getQuestionParsingMistakes()
-                .add(
+            response.getQuestionParsingMistakes().add(
                     new ExcelQuestionParsingMistake(MISSING_COLUMN_TITLE_ERROR, row.toString(), (long) headerRowIndex));
         }
 
         if (indexes[2] == -1) {
             response.getQuestionParsingMistakes()
-                .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_TYPE_ERROR, row.toString(),
-                    (long) headerRowIndex));
+                    .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_TYPE_ERROR, row.toString(),
+                            (long) headerRowIndex));
         }
         if (indexes[3] == -1) {
             response.getQuestionParsingMistakes()
-                .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_CATEGORY_ERROR, row.toString(),
-                    (long) headerRowIndex));
+                    .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_CATEGORY_ERROR, row.toString(),
+                            (long) headerRowIndex));
         }
 
         if (indexes[4] == -1) {
             response.getQuestionParsingMistakes()
-                .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_ANSWER_ERROR, row.toString(),
-                    (long) headerRowIndex));
+                    .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_ANSWER_ERROR, row.toString(),
+                            (long) headerRowIndex));
         }
         if (indexes[5] == -1) {
             response.getQuestionParsingMistakes()
-                .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_CORRECT_ERROR, row.toString(),
-                    (long) headerRowIndex));
+                    .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_CORRECT_ERROR, row.toString(),
+                            (long) headerRowIndex));
         }
         if (indexes[6] == -1) {
             response.getQuestionParsingMistakes()
-                .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_VALUES_ERROR, row.toString(),
-                    (long) headerRowIndex));
+                    .add(new ExcelQuestionParsingMistake(MISSING_COLUMN_VALUES_ERROR, row.toString(),
+                            (long) headerRowIndex));
         }
-
     }
 
     private boolean isRowEmpty(Row row) {
@@ -465,6 +445,4 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
         }
         return true;
     }
-
-
 }

@@ -1,15 +1,13 @@
 package com.softserve.teachua.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * This class is custom exception to check problems with user verification after registration.
- * <p>
- * The constructor accepts message for Exception
- * <p>
- * Use @code throw new NotVerifiedUserException("Authentication exception")
+ *
+ * <p>The constructor accepts message for Exception
+ *
+ * <p>Use @code throw new NotVerifiedUserException("Authentication exception")
  */
 @Slf4j
 public class NotVerifiedUserException extends RuntimeException {

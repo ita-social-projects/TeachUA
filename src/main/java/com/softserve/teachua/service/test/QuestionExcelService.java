@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface QuestionExcelService {
     /**
-     * This method parses excel-file and returns {@code ExcelQuestionParsingResponse} of mistakes and created dto
+     * This method parses excel-file and returns {@code ExcelQuestionParsingResponse} of mistakes and created dto.
      *
      * @param multipartFile
      *            - put bode of excel-file to parse

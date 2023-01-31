@@ -5,10 +5,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.softserve.teachua.utils.HtmlUtils;
+import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
-import java.io.IOException;
 
 /**
  * Use this class with @JsonDeserialize(using = HtmlModifyDeserialize.class) on DTO field to change html code.

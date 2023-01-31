@@ -6,15 +6,14 @@ import com.softserve.teachua.utils.test.validation.Violation;
 import com.softserve.teachua.utils.test.validation.container.QuestionValidationContainer;
 import com.softserve.teachua.utils.test.validation.container.TestValidationContainer;
 import com.softserve.teachua.utils.test.validation.exception.TestValidationException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +36,7 @@ public class TestValidationService {
             isValid = questionConstraintViolations.isEmpty();
         }
 
-        if (!isValid){
+        if (!isValid) {
             throw new TestValidationException(HttpStatus.BAD_REQUEST, testValidationContainer);
         }
     }

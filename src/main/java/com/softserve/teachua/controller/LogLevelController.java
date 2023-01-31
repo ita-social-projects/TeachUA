@@ -20,7 +20,7 @@ public class LogLevelController implements Api {
     }
 
     /**
-     * Use this endpoint to change logs level for package/class
+     * Use this endpoint to change logs level for package/class.
      *
      * @param level
      *            use this param to select the logging level

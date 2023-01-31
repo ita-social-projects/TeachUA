@@ -10,9 +10,7 @@ import lombok.With;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressProfile {
-
     private Long id;
     private String addressText;
     private String realCity;
-
 }

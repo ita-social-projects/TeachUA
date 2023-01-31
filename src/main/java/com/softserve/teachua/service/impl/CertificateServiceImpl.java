@@ -3,23 +3,46 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.certificate.*;
+import com.softserve.teachua.dto.certificate.CertificateContent;
+import com.softserve.teachua.dto.certificate.CertificatePreview;
+import com.softserve.teachua.dto.certificate.CertificateTransfer;
+import com.softserve.teachua.dto.certificate.CertificateUserResponse;
+import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.archivable.CertificateArch;
 import com.softserve.teachua.repository.CertificateRepository;
-import com.softserve.teachua.service.*;
+import com.softserve.teachua.service.ArchiveMark;
+import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.CertificateByTemplateService;
+import com.softserve.teachua.service.CertificateDatesService;
+import com.softserve.teachua.service.CertificateService;
+import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.utils.CertificateContentDecorator;
 import com.softserve.teachua.utils.QRCodeService;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,11 +55,10 @@ import org.springframework.web.server.ResponseStatusException;
 @Transactional
 @Slf4j
 public class CertificateServiceImpl implements CertificateService, ArchiveMark<Certificate> {
-
     private static final String CERTIFICATE_NOT_FOUND_BY_ID = "Certificate not found by id %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_SERIAL_NUMBER = "Certificate not found by serial number %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME_AND_DATES =
-        "Certificate not found by username and dates: %s, %s";
+            "Certificate not found by username and dates: %s, %s";
 
     private final ObjectMapper objectMapper;
     private final DtoConverter dtoConverter;
@@ -68,9 +90,10 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     @Override
     public List<CertificateTransfer> getListOfCertificates() {
-        List<CertificateTransfer> certificateTransfers = certificateRepository.findAll().stream().map(
-                certificate -> (CertificateTransfer) dtoConverter.convertToDto(certificate, CertificateTransfer.class))
-            .collect(Collectors.toList());
+        List<CertificateTransfer> certificateTransfers = certificateRepository.findAll().stream()
+                .map(certificate ->
+                        (CertificateTransfer) dtoConverter.convertToDto(certificate, CertificateTransfer.class))
+                .collect(Collectors.toList());
 
         log.debug("getting list of certificates {}", certificateTransfers);
         return certificateTransfers;
@@ -78,9 +101,10 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     @Override
     public List<CertificatePreview> getListOfCertificatesPreview() {
-        return certificateRepository.findAllByOrderByIdAsc().stream().map(
-                certificate -> (CertificatePreview) dtoConverter.convertToDto(certificate, CertificatePreview.class))
-            .collect(Collectors.toList());
+        return certificateRepository.findAllByOrderByIdAsc().stream()
+                .map(certificate ->
+                        (CertificatePreview) dtoConverter.convertToDto(certificate, CertificatePreview.class))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -88,12 +112,12 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         return certificateRepository.findAllForDownload(email)
                 .stream()
                 .map(certificate -> CertificateUserResponse.builder()
-                                .id(certificate.getId())
-                                .serialNumber(certificate.getSerialNumber())
-                                .certificateTypeName(certificate.getTemplate().getCertificateType().getName())
-                                .date(certificate.getDates().getDate())
-                                .courseDescription(certificate.getTemplate().getCourseDescription())
-                                .build())
+                        .id(certificate.getId())
+                        .serialNumber(certificate.getSerialNumber())
+                        .certificateTypeName(certificate.getTemplate().getCertificateType().getName())
+                        .date(certificate.getDates().getDate())
+                        .courseDescription(certificate.getTemplate().getCourseDescription())
+                        .build())
                 .collect(Collectors.toList());
     }
 
@@ -104,10 +128,10 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     @Override
     public List<CertificateTransfer> getListOfUnsentCertificates() {
-
-        List<CertificateTransfer> certificateTransfers = certificateRepository.findUnsentCertificates().stream().map(
-                certificate -> (CertificateTransfer) dtoConverter.convertToDto(certificate, CertificateTransfer.class))
-            .collect(Collectors.toList());
+        List<CertificateTransfer> certificateTransfers = certificateRepository.findUnsentCertificates().stream()
+                .map(certificate -> (CertificateTransfer) dtoConverter
+                        .convertToDto(certificate, CertificateTransfer.class))
+                .collect(Collectors.toList());
 
         log.debug("getting list of unsent certificates {}", certificateTransfers);
         return certificateTransfers;
@@ -160,9 +184,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     @Override
     public Certificate getByUserNameAndDates(String username, CertificateDates dates) {
         return certificateRepository.findByUserNameAndDates(username, dates).orElseThrow(() -> new NotExistException(
-            String.format(CERTIFICATE_NOT_FOUND_BY_USERNAME_AND_DATES, username, dates)));
+                String.format(CERTIFICATE_NOT_FOUND_BY_USERNAME_AND_DATES, username, dates)));
     }
-
 
     private Optional<Certificate> getOptionalCertificateById(Long id) {
         return certificateRepository.findById(id);
@@ -176,33 +199,35 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     public CertificateTransfer generateSerialNumber(CertificateTransfer response) {
         if (response.getTemplate().getCertificateType() == null || response.getDates().getCourseNumber() == null) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                "Can't generate serial number for certificate, because certificateType or courseNumber is not set");
+                    "Can't generate serial number for certificate, because certificateType or courseNumber is not set");
         }
 
         String courseNumber = String.format("%02d", Integer.valueOf(response.getDates().getCourseNumber()));
 
         Long largestSerialNumber = certificateRepository
-            .findMaxSerialNumber(response.getTemplate().getCertificateType().getCodeNumber().toString());
+                .findMaxSerialNumber(response.getTemplate().getCertificateType().getCodeNumber().toString());
         if (largestSerialNumber == null) {
             String initialNumber;
 
+            // @formatter:off
             switch (response.getTemplate().getCertificateType().getCodeNumber()) {
-                case 1:
-                    initialNumber = "0000017";
-                    break;
-                case 2:
-                    initialNumber = "0000061";
-                    break;
-                default:
-                    initialNumber = "0000001";
-                    break;
+              case 1:
+                  initialNumber = "0000017";
+                  break;
+              case 2:
+                  initialNumber = "0000061";
+                  break;
+              default:
+                  initialNumber = "0000001";
+                  break;
             }
-            response.setSerialNumber(Long
-                .valueOf(response.getTemplate().getCertificateType().getCodeNumber() + courseNumber + initialNumber));
+            // @formatter:on
+            response.setSerialNumber(Long.valueOf(
+                    response.getTemplate().getCertificateType().getCodeNumber() + courseNumber + initialNumber));
         } else {
             String certificateNumber = String.format("%07d", largestSerialNumber + 1);
             response.setSerialNumber(Long.valueOf(
-                response.getTemplate().getCertificateType().getCodeNumber() + courseNumber + certificateNumber));
+                    response.getTemplate().getCertificateType().getCodeNumber() + courseNumber + certificateNumber));
         }
 
         return response;
@@ -219,9 +244,9 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         response = generateSerialNumber(response);
 
         Certificate newCertificate = dtoConverter.convertToEntity(response, certificate).withId(id)
-            .withDates(certificate.getDates()).withSerialNumber(response.getSerialNumber())
-            .withTemplate(certificate.getTemplate()).withUser(certificate.getUser())
-            .withUserName(certificate.getUserName()).withSendToEmail(certificate.getSendToEmail());
+                .withDates(certificate.getDates()).withSerialNumber(response.getSerialNumber())
+                .withTemplate(certificate.getTemplate()).withUser(certificate.getUser())
+                .withUserName(certificate.getUserName()).withSendToEmail(certificate.getSendToEmail());
 
         log.debug("updating serial number of certificate by id {}", newCertificate);
 
@@ -244,8 +269,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         }
         if (transfer.getTemplate().getId() <= LAST_JRXML_TEMPLATE_ID) {
             CertificateContent content = CertificateContent.builder().id(transfer.getId())
-                .serialNumber(transfer.getSerialNumber()).issuanceDate(transfer.getDates().getDate())
-                .userName(transfer.getUserName()).studyDuration(transfer.getDates().getDuration()).build();
+                    .serialNumber(transfer.getSerialNumber()).issuanceDate(transfer.getDates().getDate())
+                    .userName(transfer.getUserName()).studyDuration(transfer.getDates().getDuration()).build();
             content.setStudyHours(certificateContentDecorator.formHours(transfer.getDates().getHours()));
             content.setQrCode(qrCodeService.getCertificateQrCodeAsStream(content.getSerialNumber()));
             content.setStudyForm(transfer.getDates().getStudyForm());
@@ -301,18 +326,18 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         Certificate certificate = getCertificateBySerialNumber(serialNumber);
 
         CertificateVerificationResponse response = CertificateVerificationResponse.builder()
-            .certificateTypeName(certificate.getTemplate().getCertificateType().getName())
-            .courseDescription(certificate.getTemplate().getCourseDescription())
-            .picturePath(certificate.getTemplate().getPicturePath())
-            .projectDescription(certificate.getTemplate().getProjectDescription())
-            .serialNumber(certificate.getSerialNumber()).userName(certificate.getUserName()).build();
+                .certificateTypeName(certificate.getTemplate().getCertificateType().getName())
+                .courseDescription(certificate.getTemplate().getCourseDescription())
+                .picturePath(certificate.getTemplate().getPicturePath())
+                .projectDescription(certificate.getTemplate().getProjectDescription())
+                .serialNumber(certificate.getSerialNumber()).userName(certificate.getUserName()).build();
         log.debug("verified certificate {}", certificate);
 
         return response;
     }
 
     public JasperPrint createJasperPrint(String templatePath, CertificateContent content)
-        throws JRException, IOException {
+            throws JRException, IOException {
         try (InputStream inputStream = new FileInputStream(certificateContentDecorator.getRealFilePath(templatePath))) {
             final JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
             return JasperFillManager.fillReport(jasperReport, getParameters(content), getDataSource(content));
@@ -361,9 +386,10 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
 
     @Override
     public List<CertificatePreview> getSimilarCertificatesByUserName(String userName) {
-        return certificateRepository.findSimilarByUserName(userName).stream().map(
-                certificate -> (CertificatePreview) dtoConverter.convertToDto(certificate, CertificatePreview.class))
-            .collect(Collectors.toList());
+        return certificateRepository.findSimilarByUserName(userName).stream()
+                .map(certificate -> (CertificatePreview) dtoConverter
+                        .convertToDto(certificate, CertificatePreview.class))
+                .collect(Collectors.toList());
     }
 
     @Override

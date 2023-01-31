@@ -4,7 +4,6 @@ import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.AboutUsItem;
-
 import java.util.List;
 
 /**

@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class QuestionDataRequest {
-
     @NotNull
     @JsonDeserialize
     List<QuestionExcel> questionsExcelList;

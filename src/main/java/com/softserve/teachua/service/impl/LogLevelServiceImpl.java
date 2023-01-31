@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class LogLevelServiceImpl implements LogLevelService {
-
     @Override
     public void changeLogLevel(final LogLevel logLevel, final String packagePath) {
         final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();

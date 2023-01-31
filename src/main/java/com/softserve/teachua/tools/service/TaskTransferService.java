@@ -1,7 +1,6 @@
 package com.softserve.teachua.tools.service;
 
 import com.softserve.teachua.dto.task.SuccessCreatedTask;
-
 import java.util.List;
 
 public interface TaskTransferService {

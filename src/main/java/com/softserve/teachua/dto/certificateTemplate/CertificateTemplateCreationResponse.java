@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CertificateTemplateCreationResponse {
-
     boolean isValid;
     List<String> messages;
     SuccessCreatedCertificateTemplate template;
-
 }

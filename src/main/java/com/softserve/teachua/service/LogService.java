@@ -1,8 +1,7 @@
 package com.softserve.teachua.service;
 
-import org.springframework.core.io.Resource;
-
 import java.util.List;
+import org.springframework.core.io.Resource;
 
 /**
  * This interface contains all needed methods to manage logs.

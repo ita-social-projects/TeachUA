@@ -7,6 +7,7 @@ import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.security.oauth2.user.OAuth2UserInfo;
 import com.softserve.teachua.security.oauth2.user.OAuth2UserInfoFactory;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -14,14 +15,11 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import java.util.Optional;
+import org.springframework.util.ObjectUtils;
 
 @Slf4j
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-
     private static final String NO_EMAIL = "Email not found from OAuth2 provider";
     private static final String USE_PASSWORD = "You are already sign up. Use your password to log in";
     private static final String USE_ANOTHER_PROVIDER = "You are already sign up. Use your %s to log in";
@@ -38,9 +36,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
      */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
+        OAuth2User user = super.loadUser(oAuth2UserRequest);
         try {
-            return processOAuth2User(oAuth2UserRequest, oAuth2User);
+            return processOAuth2User(oAuth2UserRequest, user);
         } catch (Exception ex) {
             throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
         }
@@ -52,13 +50,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
      * @return OAut2User
      */
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
-        OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(
+        OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(
                 oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
-        if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
+        if (ObjectUtils.isEmpty(userInfo.getEmail())) {
             throw new OAuth2AuthenticationProcessingException(NO_EMAIL);
         }
 
-        Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
+        Optional<User> userOptional = userRepository.findByEmail(userInfo.getEmail());
         User user;
         if (userOptional.isPresent()) {
             user = userOptional.get();
@@ -67,14 +65,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 throw new OAuth2AuthenticationProcessingException(USE_PASSWORD);
             }
             if (!userProvider.get().equals(AuthProvider.valueOf(
-                oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {
+                    oAuth2UserRequest.getClientRegistration().getRegistrationId()))) {
                 throw new OAuth2AuthenticationProcessingException(
-                    String.format(USE_ANOTHER_PROVIDER, user.getProvider()));
+                        String.format(USE_ANOTHER_PROVIDER, user.getProvider()));
             }
-            user = updateExistingUser(user, oAuth2UserInfo);
+            user = updateExistingUser(user, userInfo);
             log.debug("Successfully log in user - " + user);
         } else {
-            user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
+            user = registerNewUser(oAuth2UserRequest, userInfo);
         }
         return UserPrincipal.create(user, oAuth2User.getAttributes());
     }

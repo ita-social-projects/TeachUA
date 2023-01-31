@@ -3,11 +3,14 @@ package com.softserve.teachua.dto.location;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.utils.validations.CheckRussian;
-import lombok.*;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -47,6 +50,6 @@ public class LocationResponse {
     private Double longitude;
     private Double latitude;
 
-    @Pattern(regexp = "0[\\d]{9}", message = "number should contain 10 digits start with 0")
+    @Pattern(regexp = "^0\\d{9}$", message = "number should contain 10 digits start with 0")
     private String phone;
 }

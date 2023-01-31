@@ -2,13 +2,16 @@ package com.softserve.teachua.dto.news;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.utils.validations.CheckRussian;
+import java.time.LocalDate;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.*;
-import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,7 +34,8 @@ public class NewsProfile implements Convertible {
 
     @NotBlank
     @Size(max = 517, message = "Назва фото баннера повинна містити максимум 500 символів.")
-    @Pattern(regexp = "/upload/news/[^/]+\\.[A-z]{3,5}", message = "Неправильний шлях до файлу. Має виглядати як /upload/news/*.png")
+    @Pattern(regexp = "/upload/news/[^/]+\\.[A-z]{3,5}",
+            message = "Неправильний шлях до файлу. Має виглядати як /upload/news/*.png")
     private String urlTitleLogo;
 
     // @NotNull

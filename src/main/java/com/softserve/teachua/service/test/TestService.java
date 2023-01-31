@@ -1,8 +1,11 @@
 package com.softserve.teachua.service.test;
 
-import com.softserve.teachua.dto.test.test.*;
+import com.softserve.teachua.dto.test.test.CreateTest;
+import com.softserve.teachua.dto.test.test.PassTest;
+import com.softserve.teachua.dto.test.test.SuccessCreatedTest;
+import com.softserve.teachua.dto.test.test.TestProfile;
+import com.softserve.teachua.dto.test.test.ViewTest;
 import com.softserve.teachua.model.test.Test;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -11,93 +14,105 @@ import java.util.NoSuchElementException;
  */
 public interface TestService {
     /**
-     * This method returns dto {@code SuccessCreatedTest} if test was successfully added.
-     * @param test - put body of dto {@code CreateTest}.
-     * @return new {@code SuccessCreatedTest}.
+     * Create a new test using the DTO {@code CreateTest}.
+     *
+     * @param test body of dto {@code CreateTest}.
+     * @return dto {@code SuccessCreatedTest} if test was successfully added
      */
     SuccessCreatedTest addTest(CreateTest test);
 
     /**
-     * This method returns list of all active tests.
-     * @return new {@code List<Test>}.
+     * Find all active tests.
+     *
+     * @return list of all active tests
      */
     List<Test> findActiveTests();
 
     /**
-     * This method returns list of all archived tests.
-     * @return new {@code List<Test>}.
+     * Find all archived tests.
+     *
+     * @return a list of all archived tests
      */
     List<Test> findArchivedTests();
 
     /**
-     * This method returns list of all tests by specific group.
-     * @param groupId - put group id here.
-     * @return new {@code List<Test>}
+     * Find all tests by a specific group.
+     *
+     * @param groupId group id
+     * @return a list of all tests by a specific group.
      */
     List<Test> findAllByGroupId(Long groupId);
 
     /**
-     * This method returns list of all unarchived tests.
-     * @return new {@code List<Test>}.
+     * Find all unarchived tests.
+     *
+     * @return list of all unarchived tests
      */
     List<Test> findUnarchivedTests();
 
     /**
-     * This method returns entity {@code Test} of test by id.
-     * @param id - put test id.
-     * @return new {@code Test}.
-     * @throws NoSuchElementException if test does not exist.
+     * Find test entity by given test id.
+     *
+     * @param id test id
+     * @return entity {@code Test} of test by id
+     * @throws NoSuchElementException if a test does not exist.
      */
     Test findById(Long id);
 
     /**
      * This method archives test by id.
+     *
      * @param id - put test id.
-     * @throws NoSuchElementException if test does not exist.
      * @return new {@code TestProfile}
+     * @throws NoSuchElementException if a test does not exist.
      */
     TestProfile archiveTestById(Long id);
 
     /**
      * This method restores test by id.
+     *
      * @param id - put test id.
-     * @throws NoSuchElementException if test does not exist.
      * @return new {@code TestProfile}
+     * @throws NoSuchElementException if a test does not exist.
      */
     TestProfile restoreTestById(Long id);
 
     /**
-     * This method returns dto {@code PassTest} by test id.
-     * @param id - put test id.
-     * @return new {@code PassTest}.
-     * @throws NoSuchElementException if test does not exist.
+     * Find pass test by given test id.
+     *
+     * @param id test id
+     * @return dto {@code PassTest} by test id
+     * @throws NoSuchElementException if a test does not exist.
      */
     PassTest findPassTestById(Long id);
 
     /**
-     * This method returns list of dto {@code List<TestProfile>} of all unarchived tests.
-     * @return new {@code List<TestProfile>}.
+     * Find all unarchived tests.
+     *
+     * @return a list of dto {@code List<TestProfile>} of all unarchived tests
      */
     List<TestProfile> findUnarchivedTestProfiles();
 
     /**
-     * This method returns list of dto {@code List<TestProfile>} of all archived tests.
-     * @return new {@code List<TestProfile>}.
+     * Find all archived tests.
+     *
+     * @return a list of dto {@code List<TestProfile>} of all archived tests
      */
     List<TestProfile> findArchivedTestProfiles();
 
     /**
-     * This method returns dto {@code ViewTest} by test id.
-     * @param id - put test id.
-     * @return new {@code ViewTest}.
+     * Find test by given id.
+     *
+     * @param id test id
+     * @return dto {@code ViewTest} by test id
      */
     ViewTest findViewTestById(Long id);
 
     /**
-     * This method returns true or false depending on whether the user has a subscription to the group
-     * which contains a specific test.
-     * @param userId - put user id here.
-     * @param testId put test id here.
+     * Discover whether the user has a subscription to the group which contains a specific test.
+     *
+     * @param userId user id
+     * @param testId test id
      * @return new {@code boolean}
      * @throws IllegalArgumentException if the parameter is null.
      */

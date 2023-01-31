@@ -7,38 +7,37 @@ import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 /**
- * This service contains methods to manage certificates
+ * This service contains methods to manage certificates.
  */
 
 public interface CertificateService {
     /**
-     * This const means the last database id of the certificate's template, which generates using Jasper .xml file
+     * This const means the last database id of the certificate's template, which generates using Jasper .xml file.
      */
     Integer LAST_JRXML_TEMPLATE_ID = 4;
 
     /**
-     * This method returns list of dto {@code CertificateTransfer} of all certificates
+     * Get a list of dto {@code CertificateTransfer} of all certificates.
      *
      * @return new {@code List<CertificateTransfer>}
      */
     List<CertificateTransfer> getListOfCertificates();
 
     /**
-     * This method returns list of dto {@code CertificatePreview} of all certificates
+     * Get a list of dto {@code CertificatePreview} of all certificates.
      *
      * @return new {@code List<CertificatePreview>}
      */
     List<CertificatePreview> getListOfCertificatesPreview();
 
     /**
-     * This method returns list of dto {@code CertificateUserResponse} of certificates, found by email,
-     * except certificates without serial numbers
+     * Get a list of dto {@code CertificateUserResponse} of certificates, found by email,
+     * except certificates without serial numbers.
      *
      * @param sendToEmail user's email
      * @return new {@code List<CertificateUserResponse>}
@@ -46,7 +45,7 @@ public interface CertificateService {
     List<CertificateUserResponse> getListOfCertificatesByEmail(String sendToEmail);
 
     /**
-     * This method returns list of {@code Certificate}, found by sendToEmail and updateStatus with sendStatus true
+     * Get a list of {@code Certificate}, found by sendToEmail and updateStatus with sendStatus true.
      *
      * @param sendToEmail user's email
      * @param updateStatus date of sending
@@ -55,22 +54,22 @@ public interface CertificateService {
     List<Certificate> getSentCertificatesByEmailAndUpdateStatus(String sendToEmail, LocalDate updateStatus);
 
     /**
-     * This method returns list of dto {@code CertificateTransfer} of all unsent certificates (certificates with send
-     * status set to false)
+     * Get a list of dto {@code CertificateTransfer} of all unsent certificates (certificates with send
+     * status set to false).
      *
      * @return new {@code List<CertificateTransfer>}
      */
     List<CertificateTransfer> getListOfUnsentCertificates();
 
     /**
-     * This method accepts no params and finds one unsent certificate in db
+     * This method accepts no params and finds one unsent certificate in db.
      *
      * @return new {@code CertificateTransfer}
      */
     CertificateTransfer getOneUnsentCertificate();
 
     /**
-     * This method returns entity of {@code Certificate}, found by id
+     * Get an entity of {@code Certificate}, found by id.
      *
      * @param id
      *            put Certificate id
@@ -80,7 +79,7 @@ public interface CertificateService {
     Certificate getCertificateById(Long id);
 
     /**
-     * This method returns entity of {@code Certificate}, found by serialNumber
+     * Get an entity of {@code Certificate}, found by serialNumber.
      *
      * @param serialNumber
      *            put Certificate id
@@ -90,7 +89,7 @@ public interface CertificateService {
     Certificate getCertificateBySerialNumber(Long serialNumber);
 
     /**
-     * The method returns {@link Certificate} by user name
+     * The method returns {@link Certificate} by user name.
      *
      * @param username
      *            put user name
@@ -100,7 +99,7 @@ public interface CertificateService {
     List<Certificate> getCertificatesByUserName(String username);
 
     /**
-     * The method returns {@link Certificate} by user name and dates
+     * The method returns {@link Certificate} by user name and dates.
      *
      * @param username
      *            put user name
@@ -112,7 +111,7 @@ public interface CertificateService {
     Certificate getByUserNameAndDates(String username, CertificateDates dates);
 
     /**
-     * Method generates serial number and puts it into the dto {@code CertificateTransfer}
+     * Method generates serial number and puts it into the dto {@code CertificateTransfer}.
      *
      * @param response
      *            put dto {@code CertificateTransfer} to update with serial number
@@ -123,7 +122,7 @@ public interface CertificateService {
 
     /**
      * This method updates {@code Certificate} with specified id in database with data, provided in dto, returns dto of
-     * updated Certificate
+     * updated Certificate.
      *
      * @param id
      *            put Certificate id
@@ -133,7 +132,7 @@ public interface CertificateService {
     CertificateTransfer updateCertificateWithSerialNumber(Long id, CertificateTransfer response);
 
     /**
-     * This method saves entity {@code Certificate} into database
+     * This method saves entity {@code Certificate} into database.
      *
      * @param certificate
      *            entity to save
@@ -143,7 +142,7 @@ public interface CertificateService {
     Certificate addCertificate(Certificate certificate);
 
     /**
-     * This method updates email of certificate in database, returns entity {@code Certificate} of updated certificate
+     * This method updates email of certificate in database, returns entity {@code Certificate} of updated certificate.
      *
      * @param id
      *            id of certificate to update
@@ -155,7 +154,7 @@ public interface CertificateService {
     Certificate updateCertificateEmail(Long id, Certificate certificate);
 
     /**
-     * This method updates certificate in database, returns dto {@code CertificatePreview} of updated certificate
+     * This method updates certificate in database, returns dto {@code CertificatePreview} of updated certificate.
      *
      * @param id
      *            id of certificate to update
@@ -167,7 +166,7 @@ public interface CertificateService {
     CertificatePreview updateCertificatePreview(Long id, CertificatePreview certificatePreview);
 
     /**
-     * This method prepares map with parameters {@code Map<String, Object>} for jasper to generate certificate
+     * This method prepares map with parameters {@code Map<String, Object>} for jasper to generate certificate.
      *
      * @param content
      *            dto {@code CertificateContent} with parameters to put into certificate
@@ -178,7 +177,7 @@ public interface CertificateService {
 
     /**
      * This method gets the dto {@code CertificateTransfer}, prepares it and then generates certificate, returns it in
-     * form of {@code byte[]}
+     * form of {@code byte[]}.
      *
      * @param response
      *            put dto with certificate parameters
@@ -189,7 +188,7 @@ public interface CertificateService {
 
     /**
      * This method gets the email and serial number, checks if user owns certificate and then generates one,
-     * returns it in form of {@code byte[]}
+     * returns it in form of {@code byte[]}.
      *
      * @param userEmail
      *            put authenticated user email
@@ -202,7 +201,7 @@ public interface CertificateService {
 
     /**
      * This method gets the serial number, obtains certificate with specified serial number from DB, then if certificate
-     * exists, returns filled dto with info, in other case returns empty dto
+     * exists, returns filled dto with info, in other case returns empty dto.
      *
      * @param serialNumber
      *            put serial number to verify
@@ -212,7 +211,7 @@ public interface CertificateService {
     CertificateVerificationResponse validateCertificate(Long serialNumber);
 
     /**
-     * This method updates {@code Certificate} with specified id in database with given send status
+     * This method updates {@code Certificate} with specified id in database with given send status.
      *
      * @param id
      *            put Certificate id
@@ -222,7 +221,7 @@ public interface CertificateService {
     void updateDateAndSendStatus(Long id, boolean status);
 
     /**
-     * This method takes userName and finds certificates with username partially or fully equal to param
+     * This method takes userName and finds certificates with username partially or fully equal to param.
      *
      * @param userName - put username
      *

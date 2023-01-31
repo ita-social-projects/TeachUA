@@ -12,9 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CertificateTemplateUpdationResponse {
-
     boolean isUpdated;
     List<String> messages;
     CertificateTemplate template;
-
 }

@@ -1,12 +1,11 @@
 package com.softserve.teachua.dto.news;
 
 import com.softserve.teachua.dto.marker.Convertible;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor

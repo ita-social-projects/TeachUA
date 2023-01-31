@@ -1,18 +1,17 @@
 package com.softserve.teachua.dto.club;
 
 import com.softserve.teachua.dto.center.CenterForClub;
-import com.softserve.teachua.dto.center.CenterResponse;
-import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.*;
+import com.softserve.teachua.model.Category;
+import com.softserve.teachua.model.GalleryPhoto;
+import com.softserve.teachua.model.User;
+import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor

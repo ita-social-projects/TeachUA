@@ -2,24 +2,23 @@ package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.controller.test.QuestionCategoryController;
 import com.softserve.teachua.dto.test.questionCategory.QuestionCategoryProfile;
-import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.QuestionCategory;
 import com.softserve.teachua.repository.test.QuestionCategoryRepository;
 import com.softserve.teachua.service.test.QuestionCategoryService;
+import static com.softserve.teachua.utils.test.Messages.NO_ID_MESSAGE;
+import static com.softserve.teachua.utils.test.Messages.NO_TITLE_MESSAGE;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.Link;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-
-import static com.softserve.teachua.utils.test.Messages.*;
-import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RequiredArgsConstructor
 @Slf4j

@@ -1,9 +1,8 @@
 package com.softserve.teachua.dto.test.question;
 
 import com.softserve.teachua.dto.test.answer.PassingTestAnswer;
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class PassingTestQuestion {

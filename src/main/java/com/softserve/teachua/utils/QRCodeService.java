@@ -8,17 +8,16 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Hashtable;
+import javax.imageio.ImageIO;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -28,9 +27,11 @@ public class QRCodeService {
     private static final Integer ENCODELEVEL = 3;
     private static final String ENCODING = "utf-8";
     @Value("${baseURL}")
-    private String BASE_URL;
+    private String baseUrl;
 
     /**
+     * Return a Qr Code Image than can be used on the certificate.
+     *
      * @param content        content to be put into image
      * @param width          width of QR code
      * @param height         height of QR code
@@ -81,12 +82,12 @@ public class QRCodeService {
     }
 
     private String formContentUrl(Long serialNumber) {
-        return BASE_URL + "/certificate/" + serialNumber;
+        return baseUrl + "/certificate/" + serialNumber;
     }
 
     public ByteArrayInputStream getCertificateQrCodeAsStream(Long serialNumber) {
         return new ByteArrayInputStream(
-            getQrCodeImageBytes(formContentUrl(serialNumber), WIDTH, HEIGHT, getColorConfig(serialNumber)));
+                getQrCodeImageBytes(formContentUrl(serialNumber), WIDTH, HEIGHT, getColorConfig(serialNumber)));
     }
 
     public byte[] getCertificateQrCodeAsStream(Long serialNumber, float width, float height,
@@ -96,12 +97,12 @@ public class QRCodeService {
 
     private MatrixToImageConfig getColorConfig(Long serialNumber) {
         switch (Long.toString(serialNumber).charAt(0)) {
-            case '1':   // trainer id
-            case '2':   // moderator id
-            case '4':   // basic participant
-                return new MatrixToImageConfig(new Color(255, 255, 255).getRGB(), new Color(0, 0, 0, 0).getRGB());
-            default:
-                return new MatrixToImageConfig(new Color(0, 0, 0).getRGB(), new Color(0, 0, 0, 0).getRGB());
+          case '1':   // trainer id
+          case '2':   // moderator id
+          case '4':   // basic participant
+              return new MatrixToImageConfig(new Color(255, 255, 255).getRGB(), new Color(0, 0, 0, 0).getRGB());
+          default:
+              return new MatrixToImageConfig(new Color(0, 0, 0).getRGB(), new Color(0, 0, 0, 0).getRGB());
         }
     }
 }

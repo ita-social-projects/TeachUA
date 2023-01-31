@@ -2,14 +2,13 @@ package com.softserve.teachua.exception.test;
 
 import com.softserve.teachua.dto.exception.ExceptionResponse;
 import com.softserve.teachua.utils.test.validation.exception.TestValidationException;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.Objects;
 
 /**
  * Test exception handler to handle exceptions related to testing.
@@ -35,7 +34,7 @@ public class TestSystemExceptionHandler {
         log.debug(exception.getMessage());
         Throwable rootCause = exception.getRootCause();
         String message = "";
-        if(Objects.nonNull(rootCause)){
+        if (Objects.nonNull(rootCause)) {
             message = rootCause.getMessage();
         }
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()

@@ -6,7 +6,6 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;
-
 import java.util.List;
 import java.util.Set;
 
@@ -57,7 +56,7 @@ public interface LocationService {
      * @param club
      *            - put club.
      *
-     * @return
+     * @return a set of locations
      */
     Set<Location> updateLocationByClub(Set<LocationResponse> locations, Club club);
 

@@ -12,7 +12,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnswerExcel {
-
     private String questionTitle;
 
     private String text;

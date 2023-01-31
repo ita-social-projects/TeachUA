@@ -1,12 +1,16 @@
 package com.softserve.teachua.dto.databaseTransfer;
 
-import com.softserve.teachua.dto.databaseTransfer.model.*;
+import com.softserve.teachua.dto.databaseTransfer.model.CategoryExcel;
+import com.softserve.teachua.dto.databaseTransfer.model.CenterExcel;
+import com.softserve.teachua.dto.databaseTransfer.model.ClubExcel;
+import com.softserve.teachua.dto.databaseTransfer.model.DistrictExcel;
+import com.softserve.teachua.dto.databaseTransfer.model.LocationExcel;
+import com.softserve.teachua.dto.databaseTransfer.model.StationExcel;
 import com.softserve.teachua.model.ExcelCenterEntity;
 import com.softserve.teachua.model.ExcelClubEntity;
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class ExcelParsingData {

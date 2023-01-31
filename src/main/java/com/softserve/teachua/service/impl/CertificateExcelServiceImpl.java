@@ -9,29 +9,37 @@ import com.softserve.teachua.dto.certificateExcel.ExcelParsingMistake;
 import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
 import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.model.CertificateTemplate;
-import com.softserve.teachua.service.*;
-import java.util.*;
-import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import com.softserve.teachua.service.CertificateDataLoaderService;
+import com.softserve.teachua.service.CertificateExcelService;
+import com.softserve.teachua.service.CertificateTemplateService;
+import static com.softserve.teachua.utils.validations.CertificateUserNameValidator.NAME_PATTERN;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.softserve.teachua.utils.validations.CertificateUserNameValidator.NAME_PATTERN;
+import java.util.stream.Collectors;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -45,18 +53,18 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     private static final String MISSING_COLUMN_NAME_ERROR = "Відсутня колонка з ім'ям та прізвищем";
     private static final String MISSING_COLUMN_DATE_ERROR = "Відсутня колонка з датою видачі сертифікату";
     private static final String MISSING_COLUMN_EMAIL_ERROR = "Відсутня колонка з електронною адресою";
-    private final static String EMPTY_STRING = "";
-    private final static String SURNAME = "прізвище";
-    private final static String DATE = "дата";
-    private final static String EMAIL = "електронна";
-    private final static String DATE_FORMAT = "[d.MM.yyyy][MM/d/yy][MM/d/yyyy]";
-    private final static String WORD = "([А-ЯІЇЄ][а-яіїє']+[-–—]?){1,2}";
+    private static final String EMPTY_STRING = "";
+    private static final String SURNAME = "прізвище";
+    private static final String DATE = "дата";
+    private static final String EMAIL = "електронна";
+    private static final String DATE_FORMAT = "[d.MM.yyyy][MM/d/yy][MM/d/yyyy]";
+    private static final String WORD = "([А-ЯІЇЄ][а-яіїє']+[-–—]?){1,2}";
     private static final String INVALID_CHARACTERS_PRESENT = "Присутні недопустимі літери";
     private static final String INVALID_CHARS = "\\w";
     private static final String USER_NAME_ERROR = "Неправильний формат ПІБ!";
     private static final String USER_NAME_FORMAT = NAME_PATTERN;
     private static final String DATE_ERROR =
-        "Неправильний формат дати. Будь ласка, використовуйте наступний формат: \"dd.mm.yyyy\"!";
+            "Неправильний формат дати. Будь ласка, використовуйте наступний формат: \"dd.mm.yyyy\"!";
     private static final String DATE_FORMAT_REGEX = "[0-9]{2}.[0-9]{2}.[0-9]{4}";
     private static final String HOURS_ERROR = "Неправильний формат кількості годин!";
     private static final String COURSE_NUMBER_ERROR = "Неправильний формат номера курсу!";
@@ -78,7 +86,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     @Override
     public ExcelParsingResponse parseExcel(MultipartFile multipartFile) {
         response = new ExcelParsingResponse();
-        indexes = new int[] {-1, -1, -1};
+        indexes = new int[]{-1, -1, -1};
         response.setCertificatesInfo(createUserCertificates(excelToList(multipartFile, true)));
         return response;
     }
@@ -88,28 +96,30 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
         List<List<Cell>> allCells = excelToList(multipartFile, false);
 
         List<List<String>> allConvertedCells =
-            allCells.stream().map(cellList ->
-                cellList.stream().map(element -> {
-                    String value = "";
-                    switch (element.getCellType()) {
-                        case STRING:
-                            return element.getRichStringCellValue().getString();
-                        case NUMERIC:
-                            if (DateUtil.isCellDateFormatted(element)) {
-                                return String.valueOf(element.getDateCellValue());
-                            } else {
-                                return String.valueOf((int) element.getNumericCellValue());
+                allCells.stream().map(cellList ->
+                        cellList.stream().map(element -> {
+                            String value = "";
+                            // @formatter:off
+                            switch (element.getCellType()) {
+                              case STRING:
+                                  return element.getRichStringCellValue().getString();
+                              case NUMERIC:
+                                  if (DateUtil.isCellDateFormatted(element)) {
+                                      return String.valueOf(element.getDateCellValue());
+                                  } else {
+                                      return String.valueOf((int) element.getNumericCellValue());
+                                  }
+                              default:
+                                  return value;
                             }
-                        default:
-                            return value;
-                    }
-                }).collect(Collectors.toList())
-            ).collect(Collectors.toList());
+                            // @formatter:on
+                        }).collect(Collectors.toList())
+                ).collect(Collectors.toList());
 
         return CertificateByTemplateExcelParsingResponse.builder()
-            .columnHeadersList(allConvertedCells.remove(0))
-            .excelContent(allConvertedCells)
-            .build();
+                .columnHeadersList(allConvertedCells.remove(0))
+                .excelContent(allConvertedCells)
+                .build();
     }
 
     private List<List<Cell>> excelToList(MultipartFile multipartFile, boolean validate) {
@@ -117,6 +127,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
             List<List<Cell>> allCells = new ArrayList<List<Cell>>();
             XSSFWorkbook workbook;
             Sheet sheet;
+
             try {
                 workbook = new XSSFWorkbook(inputStream);
                 sheet = workbook.getSheetAt(0);
@@ -125,6 +136,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
             } catch (IOException e) {
                 throw new RuntimeException(FILE_NOT_READ_EXCEPTION);
             }
+
             for (Row row : sheet) {
                 if (isRowEmpty(row)) {
                     continue;
@@ -135,8 +147,8 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
                     Cell currentCell = cellIterator.next();
                     if (!isColumnEmpty(sheet, currentCell.getColumnIndex())) {
                         String cell = dataFormatter.formatCellValue(currentCell);
-                        if (validate && (cell.toLowerCase().contains(DATE) || cell.toLowerCase().contains(SURNAME) ||
-                            cell.toLowerCase().contains(EMAIL))) {
+                        if (validate && (cell.toLowerCase().contains(DATE) || cell.toLowerCase().contains(SURNAME)
+                                || cell.toLowerCase().contains(EMAIL))) {
                             headerRowIndex = allCells.size();
                         }
                         allRowCells.add(currentCell);
@@ -184,7 +196,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
             Matcher matcher = pattern.matcher(data.get(indexes[0]).toString());
             if (matcher.find()) {
                 response.getParsingMistakes().add(
-                    new ExcelParsingMistake(INVALID_CHARACTERS_PRESENT, data.get(indexes[0]).toString(), rowIndex));
+                        new ExcelParsingMistake(INVALID_CHARACTERS_PRESENT, data.get(indexes[0]).toString(), rowIndex));
             }
             name = formUserName(data.get(indexes[0]));
         }
@@ -194,7 +206,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
                 date = LocalDate.parse(stringDate, DateTimeFormatter.ofPattern(DATE_FORMAT));
             } catch (DateTimeParseException e) {
                 response.getParsingMistakes()
-                    .add(new ExcelParsingMistake(INCORRECT_DATE_FORMAT_ERROR, stringDate, rowIndex));
+                        .add(new ExcelParsingMistake(INCORRECT_DATE_FORMAT_ERROR, stringDate, rowIndex));
             }
         }
         if (indexes[2] != -1) {
@@ -231,15 +243,15 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
         }
         if (indexes[0] == -1) {
             response.getParsingMistakes()
-                .add(new ExcelParsingMistake(MISSING_COLUMN_NAME_ERROR, row.toString(), (long) headerRowIndex));
+                    .add(new ExcelParsingMistake(MISSING_COLUMN_NAME_ERROR, row.toString(), (long) headerRowIndex));
         }
         if (indexes[1] == -1) {
             response.getParsingMistakes()
-                .add(new ExcelParsingMistake(MISSING_COLUMN_DATE_ERROR, row.toString(), (long) headerRowIndex));
+                    .add(new ExcelParsingMistake(MISSING_COLUMN_DATE_ERROR, row.toString(), (long) headerRowIndex));
         }
         if (indexes[2] == -1) {
             response.getParsingMistakes()
-                .add(new ExcelParsingMistake(MISSING_COLUMN_EMAIL_ERROR, row.toString(), (long) headerRowIndex));
+                    .add(new ExcelParsingMistake(MISSING_COLUMN_EMAIL_ERROR, row.toString(), (long) headerRowIndex));
         }
     }
 
@@ -286,20 +298,20 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
         }
         Set<ConstraintViolation<CertificateExcel>> violations = validator.validate(certificateExcel);
         for (ConstraintViolation<CertificateExcel> violation : violations) {
-            response.getParsingMistakes()
-                .add(new ExcelParsingMistake(violation.getMessage(), violation.getInvalidValue().toString(), rowIndex));
+            response.getParsingMistakes().add(
+                    new ExcelParsingMistake(violation.getMessage(), violation.getInvalidValue().toString(), rowIndex));
         }
     }
 
     @Override
     public List<String[]> validateCertificateByTemplateExcel(CertificateByTemplateTransfer data)
-        throws JsonProcessingException {
+            throws JsonProcessingException {
         List<String[]> resultList = new ArrayList<>();
 
         CertificateTemplate certificateTemplate = templateService.getTemplateByFilePath(data.getTemplateName());
 
         HashMap<String, String> templateProperties =
-            new ObjectMapper().readValue(certificateTemplate.getProperties(), HashMap.class);
+                new ObjectMapper().readValue(certificateTemplate.getProperties(), HashMap.class);
         HashMap<String, String> values = new ObjectMapper().readValue(data.getValues(), HashMap.class);
 
         for (int i = 0; i < data.getExcelContent().size(); i++) {
@@ -307,89 +319,89 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
 
             for (int j = 0; j < data.getFieldsList().size(); j++) {
                 String value = dataLoaderService.getCertificateByTemplateValue(values, data.getFieldsList(),
-                    data.getColumnHeadersList(), data.getExcelColumnsOrder(), excelValues, data.getFieldsList().get(j));
+                        data.getColumnHeadersList(), data.getExcelColumnsOrder(), excelValues,
+                        data.getFieldsList().get(j));
                 String messageDescription =
-                    (!values.get(data.getFieldsList().get(j)).isEmpty() ? " Рядок " + (i + 2) + ". " : "") +
-                        "Значення \"" + value + "\".";
+                        (!values.get(data.getFieldsList().get(j)).isEmpty() ? " Рядок " + (i + 2) + ". " : "")
+                                + "Значення \"" + value + "\".";
 
                 if (value.trim().isEmpty()) {
-                    resultList.add(new String[] {"Рядок " + (j + 2) + ". " + "Пуста клітинка.", "2"});
+                    resultList.add(new String[]{"Рядок " + (j + 2) + ". " + "Пуста клітинка.", "2"});
                     continue;
                 }
+                // @formatter:off
                 switch (data.getFieldsList().get(j)) {
-                    case "Номер курсу":
-                        int courseNumber;
-                        try {
-                            courseNumber = Integer.parseInt(value);
-                        } catch (RuntimeException e) {
-                            resultList.add(new String[] {COURSE_NUMBER_ERROR + messageDescription, "2"});
-                            continue;
-                        }
-                        if (courseNumber <= 0) {
-                            resultList.add(new String[] {COURSE_NUMBER_ERROR + messageDescription, "2"});
-                        }
-                        continue;
-                    case "Електронна пошта":
-                        if (!value.matches(EMAIL_FORMAT)) {
-                            resultList.add(new String[] {EMAIL_ERROR + messageDescription, "2"});
-                        }
-                        continue;
-                    default:
-                        break;
+                  case "Номер курсу":
+                      int courseNumber;
+                      try {
+                          courseNumber = Integer.parseInt(value);
+                      } catch (RuntimeException e) {
+                          resultList.add(new String[]{COURSE_NUMBER_ERROR + messageDescription, "2"});
+                          continue;
+                      }
+                      if (courseNumber <= 0) {
+                          resultList.add(new String[]{COURSE_NUMBER_ERROR + messageDescription, "2"});
+                      }
+                      continue;
+                  case "Електронна пошта":
+                      if (!value.matches(EMAIL_FORMAT)) {
+                          resultList.add(new String[]{EMAIL_ERROR + messageDescription, "2"});
+                      }
+                      continue;
+                  default:
+                      break;
                 }
                 switch (templateProperties.get(data.getFieldsList().get(j))) {
-                    case "course_number":
-                        int courseNumber;
-                        try {
-                            courseNumber = Integer.parseInt(value);
-                        } catch (RuntimeException e) {
-                            resultList.add(new String[] {COURSE_NUMBER_ERROR + messageDescription, "2"});
-                            break;
-                        }
-                        if (courseNumber <= 0) {
-                            resultList.add(new String[] {COURSE_NUMBER_ERROR + messageDescription, "2"});
-                        }
-                        break;
-                    case "user_name":
-                        if (!value.matches(USER_NAME_FORMAT)) {
-                            StringBuilder stringBuilder = new StringBuilder();
-                            if (value.contains("  ")) {
-                                stringBuilder.append(" Подвійний пробіл!");
-                            }
-                            if (value.trim().length() < value.length()) {
-                                stringBuilder.append(" ПІБ починається/закінчується пробілом!");
-                            }
-                            resultList.add(new String[] {USER_NAME_ERROR + messageDescription + stringBuilder, "1"});
-                        }
-                        break;
-                    case "date":
-                        if (!value.matches(DATE_FORMAT_REGEX)) {
-                            resultList.add(new String[] {DATE_ERROR + messageDescription, "1"});
-                        }
-                        break;
-                    case "hours":
-                        int hours;
-                        try {
-                            hours = Integer.parseInt(value);
-                        } catch (RuntimeException e) {
-                            resultList.add(new String[] {HOURS_ERROR + messageDescription, "2"});
-                            break;
-                        }
-                        if (hours <= 0) {
-                            resultList.add(new String[] {HOURS_ERROR + messageDescription, "2"});
-                        }
-                        break;
-                    default:
-                        break;
+                  case "course_number":
+                      int courseNumber;
+                      try {
+                          courseNumber = Integer.parseInt(value);
+                      } catch (RuntimeException e) {
+                          resultList.add(new String[]{COURSE_NUMBER_ERROR + messageDescription, "2"});
+                          break;
+                      }
+                      if (courseNumber <= 0) {
+                          resultList.add(new String[]{COURSE_NUMBER_ERROR + messageDescription, "2"});
+                      }
+                      break;
+                  case "user_name":
+                      if (!value.matches(USER_NAME_FORMAT)) {
+                          StringBuilder stringBuilder = new StringBuilder();
+                          if (value.contains("  ")) {
+                              stringBuilder.append(" Подвійний пробіл!");
+                          }
+                          if (value.trim().length() < value.length()) {
+                              stringBuilder.append(" ПІБ починається/закінчується пробілом!");
+                          }
+                          resultList.add(new String[]{USER_NAME_ERROR + messageDescription + stringBuilder, "1"});
+                      }
+                      break;
+                  case "date":
+                      if (!value.matches(DATE_FORMAT_REGEX)) {
+                          resultList.add(new String[]{DATE_ERROR + messageDescription, "1"});
+                      }
+                      break;
+                  case "hours":
+                      int hours;
+                      try {
+                          hours = Integer.parseInt(value);
+                      } catch (RuntimeException e) {
+                          resultList.add(new String[]{HOURS_ERROR + messageDescription, "2"});
+                          break;
+                      }
+                      if (hours <= 0) {
+                          resultList.add(new String[]{HOURS_ERROR + messageDescription, "2"});
+                      }
+                      break;
+                  default:
+                      break;
                 }
-
+                // @formatter:on
             }
-
         }
         if (resultList.isEmpty()) {
-            resultList.add(new String[] {"Валідація пройшла успішно!", "3"});
+            resultList.add(new String[]{"Валідація пройшла успішно!", "3"});
         }
         return resultList;
     }
-
 }

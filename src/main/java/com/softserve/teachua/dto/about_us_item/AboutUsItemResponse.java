@@ -1,7 +1,10 @@
 package com.softserve.teachua.dto.about_us_item;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor

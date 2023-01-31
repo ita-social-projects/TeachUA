@@ -4,25 +4,22 @@ import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.model.User;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 @Repository
 public interface CertificateRepository extends JpaRepository<Certificate, Long> {
-
     List<Certificate> findCertificatesByUser(User user);
 
     List<Certificate> findCertificatesByTemplate(CertificateTemplate template);
 
-    @Query(value = "SELECT certificate from Certificate AS certificate " +
-            "WHERE certificate.sendStatus IS NULL")
+    @Query(value = "SELECT certificate from Certificate AS certificate WHERE certificate.sendStatus IS NULL")
     List<Certificate> findUnsentCertificates();
 
     /*-
@@ -53,12 +50,12 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     List<Certificate> findAllByOrderByIdAsc();
 
-    @Query(value = "SELECT * " +
-            "FROM certificates " +
-            "WHERE user_email = :email " +
-            "AND NOT (serial_number IS NULL AND update_status IS NOT NULL) " +
-            "ORDER BY update_status DESC",
-    nativeQuery = true)
+    @Query(value = "SELECT * "
+            + "FROM certificates "
+            + "WHERE user_email = :email "
+            + "AND NOT (serial_number IS NULL AND update_status IS NOT NULL) "
+            + "ORDER BY update_status DESC",
+            nativeQuery = true)
     List<Certificate> findAllForDownload(@Param("email") String email);
 
     List<Certificate> findAllBySendToEmailAndUpdateStatusAndSendStatusTrue(String sendToEmail, LocalDate updateDate);
@@ -75,6 +72,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
             + "WHERE CONCAT(t.serialNumber, '') " + "LIKE CONCAT(:type, '%') ")
     Long findMaxSerialNumber(@Param("type") String type);
 
-    @Query(value = "SELECT certificates from Certificate AS certificates where LOWER(certificates.userName) LIKE LOWER(CONCAT('%', :username, '%')) ORDER BY certificates.id ASC")
+    @Query(value = "SELECT certificates from Certificate AS certificates "
+            + "where LOWER(certificates.userName) LIKE LOWER(CONCAT('%', :username, '%')) ORDER BY certificates.id ASC")
     List<Certificate> findSimilarByUserName(@Param("username") String userName);
 }

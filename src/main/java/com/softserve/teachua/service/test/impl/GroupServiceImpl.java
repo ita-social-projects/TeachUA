@@ -8,20 +8,19 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.repository.test.GroupRepository;
 import com.softserve.teachua.service.test.GroupService;
+import static com.softserve.teachua.utils.test.Messages.INCORRECT_ENROLLMENT_KEY_MESSAGE;
+import static com.softserve.teachua.utils.test.Messages.NO_ID_MESSAGE;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.Link;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.softserve.teachua.utils.test.Messages.*;
-import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Slf4j
