@@ -1,6 +1,10 @@
 package com.softserve.teachua.service.test;
 
+import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
 import com.softserve.teachua.dto.test.question.questionExcel.ExcelQuestionParsingResponse;
+import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
+import java.util.List;
+import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -19,4 +23,8 @@ public interface QuestionExcelService {
     ExcelQuestionParsingResponse parseExcel(MultipartFile multipartFile);
 
     byte[] exportToExcel();
+
+    List<QuestionExcel> createQuestions(List<List<Cell>> rows);
+
+    List<AnswerExcel> createAnswers(List<List<Cell>> rows);
 }

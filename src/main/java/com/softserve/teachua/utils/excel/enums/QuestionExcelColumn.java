@@ -1,4 +1,6 @@
-package com.softserve.teachua.utils.excel;
+package com.softserve.teachua.utils.excel.enums;
+
+import com.softserve.teachua.utils.excel.ExcelColumn;
 
 public enum QuestionExcelColumn implements ExcelColumn {
     TITLE("назва", "Відсутня колонка з назвою запитання"),

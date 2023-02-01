@@ -12,7 +12,7 @@ import com.softserve.teachua.service.CertificateDataLoaderService;
 import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.ExcelParserService;
-import com.softserve.teachua.utils.excel.CertificateExcelColumn;
+import com.softserve.teachua.utils.excel.enums.CertificateExcelColumn;
 import com.softserve.teachua.utils.excel.ExcelColumn;
 import static com.softserve.teachua.utils.validations.CertificateUserNameValidator.NAME_PATTERN;
 import java.time.LocalDate;
@@ -52,7 +52,8 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     private static final String HOURS_ERROR = "Неправильний формат кількості годин!";
     private static final String COURSE_NUMBER_ERROR = "Неправильний формат номера курсу!";
     private static final String EMAIL_ERROR = "Неправильний формат електронної пошти!";
-    private static final String EMAIL_FORMAT = "[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}";
+    private static final String EMAIL_FORMAT = "[\\w-.]+@([\\w-]+\\.){1,61}+[\\w-]{2,4}";
+
     private final DataFormatter dataFormatter;
     private final CertificateTemplateService templateService;
     private final CertificateDataLoaderService dataLoaderService;
@@ -73,8 +74,9 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     public ExcelParsingResponse parseExcel(MultipartFile multipartFile) {
         response = new ExcelParsingResponse();
         List<List<Cell>> rows = excelParserService.excelToList(multipartFile);
-        indexes = excelParserService.getColumnIndexes(rows.get(0), CertificateExcelColumn.values(),
-                response.getParsingMistakes());
+        indexes = excelParserService.getColumnIndexes(rows.get(0), CertificateExcelColumn.values());
+        response.getParsingMistakes().addAll(
+                excelParserService.validateColumnsPresent(rows.get(0), CertificateExcelColumn.values(), indexes));
         if (response.getParsingMistakes().isEmpty()) {
             response.setCertificatesInfo(createUserCertificates(rows));
         }
@@ -157,7 +159,8 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
         return formUserName(nameCell);
     }
 
-    private List<CertificateExcel> createUserCertificates(List<List<Cell>> rows) {
+    @Override
+    public List<CertificateExcel> createUserCertificates(List<List<Cell>> rows) {
         List<CertificateExcel> result = new ArrayList<>();
         rows.remove(0);
         for (List<Cell> row : rows) {

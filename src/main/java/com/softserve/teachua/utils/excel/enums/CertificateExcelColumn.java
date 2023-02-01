@@ -1,4 +1,6 @@
-package com.softserve.teachua.utils.excel;
+package com.softserve.teachua.utils.excel.enums;
+
+import com.softserve.teachua.utils.excel.ExcelColumn;
 
 public enum CertificateExcelColumn implements ExcelColumn {
     SURNAME("прізвище", "Відсутня колонка з ім'ям та прізвищем"),

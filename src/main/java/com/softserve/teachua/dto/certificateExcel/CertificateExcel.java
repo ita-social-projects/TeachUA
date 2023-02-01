@@ -4,6 +4,7 @@ import com.softserve.teachua.utils.validations.CertificateUserName;
 import java.time.LocalDate;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class CertificateExcel {
     @DateTimeFormat(pattern = "d.MM.yyyy")
     @FutureOrPresent(message = "Дата видачі сертифікату не може бути в минулому")
     private LocalDate dateIssued;
+    @NotBlank
     @Email(message = "Неможливо розпізнати електронну адресу")
     private String email;
 }

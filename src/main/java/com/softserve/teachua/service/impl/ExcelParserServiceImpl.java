@@ -9,8 +9,6 @@ import com.softserve.teachua.dto.databaseTransfer.model.ClubExcel;
 import com.softserve.teachua.dto.databaseTransfer.model.DistrictExcel;
 import com.softserve.teachua.dto.databaseTransfer.model.LocationExcel;
 import com.softserve.teachua.dto.databaseTransfer.model.StationExcel;
-import com.softserve.teachua.service.CityService;
-import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.ExcelParserService;
 import com.softserve.teachua.utils.ExcelErrorType;
 import com.softserve.teachua.utils.excel.ExcelColumn;
@@ -49,16 +47,11 @@ public class ExcelParserServiceImpl implements ExcelParserService {
     private static final String CATEGORY_SHEET_NAME = "Категорії";
     private static final String FILE_NOT_READ_EXCEPTION = "Неможливо прочитати Excel файл";
 
-    final CityService cityService;
-    final DistrictService districtService;
     private final DataFormatter dataFormatter;
     private String previousName;
 
     @Autowired
-    public ExcelParserServiceImpl(CityService cityService, DistrictService districtService,
-                                  DataFormatter dataFormatter) {
-        this.cityService = cityService;
-        this.districtService = districtService;
+    public ExcelParserServiceImpl(DataFormatter dataFormatter) {
         this.dataFormatter = dataFormatter;
         previousName = "";
     }
@@ -112,7 +105,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
         try (InputStream inputStream = multipartFile.getInputStream();
              Workbook workbook = WorkbookFactory.create(inputStream)) {
             return workbook.getSheetAt(0);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, FILE_NOT_READ_EXCEPTION);
         }
     }
@@ -163,10 +156,9 @@ public class ExcelParserServiceImpl implements ExcelParserService {
     }
 
     @Override
-    public HashMap<ExcelColumn, Integer> getColumnIndexes(List<Cell> row, ExcelColumn[] excelColumns,
-                                                          List<ExcelParsingMistake> parsingMistakes) {
+    public HashMap<ExcelColumn, Integer> getColumnIndexes(List<Cell> headerRow, ExcelColumn[] excelColumns) {
         HashMap<ExcelColumn, Integer> indexes = new HashMap<>();
-        for (Cell cell : row) {
+        for (Cell cell : headerRow) {
             String lowerCaseCell = dataFormatter.formatCellValue(cell).toLowerCase();
             for (ExcelColumn column : excelColumns) {
                 if (lowerCaseCell.contains(column.getKeyWord())) {
@@ -174,15 +166,15 @@ public class ExcelParserServiceImpl implements ExcelParserService {
                 }
             }
         }
-        parsingMistakes.addAll(validateColumnsPresent(row, excelColumns, indexes));
         return indexes;
     }
 
-    private List<ExcelParsingMistake> validateColumnsPresent(List<Cell> row, ExcelColumn[] excelColumns,
+    @Override
+    public List<ExcelParsingMistake> validateColumnsPresent(List<Cell> headerRow, ExcelColumn[] excelColumns,
                                                              HashMap<ExcelColumn, Integer> indexes) {
         return Arrays.stream(excelColumns)
                 .filter(column -> !indexes.containsKey(column))
-                .map(column -> new ExcelParsingMistake(column.getMissingMessage(), row.toString(), 1))
+                .map(column -> new ExcelParsingMistake(column.getMissingMessage(), headerRow.toString(), 1))
                 .collect(Collectors.toList());
     }
 

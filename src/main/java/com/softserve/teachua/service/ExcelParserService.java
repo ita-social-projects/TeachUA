@@ -42,16 +42,14 @@ public interface ExcelParserService {
 
     /**
      * The method gets not empty cells from sheet.
-     *
-     * @return new {@code List<List<Cell>>}.
      */
     List<List<Cell>> excelToList(MultipartFile multipartFile);
 
     /**
      * The method defines indexes based on enum for first row of sheet.
-     *
-     * @return new {@code HashMap<ExcelColumn, Integer>}.
      */
-    HashMap<ExcelColumn, Integer> getColumnIndexes(List<Cell> row, ExcelColumn[] excelColumns,
-                                                   List<ExcelParsingMistake> parsingMistakes);
+    HashMap<ExcelColumn, Integer> getColumnIndexes(List<Cell> row, ExcelColumn[] excelColumns);
+
+    List<ExcelParsingMistake> validateColumnsPresent(List<Cell> row, ExcelColumn[] excelColumns,
+                                                     HashMap<ExcelColumn, Integer> indexes);
 }

@@ -10,7 +10,7 @@ import com.softserve.teachua.repository.test.QuestionRepository;
 import com.softserve.teachua.service.ExcelParserService;
 import com.softserve.teachua.service.test.QuestionExcelService;
 import com.softserve.teachua.utils.excel.ExcelColumn;
-import com.softserve.teachua.utils.excel.QuestionExcelColumn;
+import com.softserve.teachua.utils.excel.enums.QuestionExcelColumn;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,8 +50,9 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
     public ExcelQuestionParsingResponse parseExcel(MultipartFile multipartFile) {
         ExcelQuestionParsingResponse response = new ExcelQuestionParsingResponse();
         List<List<Cell>> rows = excelParserService.excelToList(multipartFile);
-        indexes = excelParserService.getColumnIndexes(rows.get(0), QuestionExcelColumn.values(),
-                response.getQuestionParsingMistakes());
+        indexes = excelParserService.getColumnIndexes(rows.get(0), QuestionExcelColumn.values());
+        response.getQuestionParsingMistakes().addAll(
+                excelParserService.validateColumnsPresent(rows.get(0), QuestionExcelColumn.values(), indexes));
         if (response.getQuestionParsingMistakes().isEmpty()) {
             response.setQuestionsInfo(createQuestions(rows));
             response.setAnswersInfo(createAnswers(rows));
@@ -169,7 +170,8 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
         }
     }
 
-    private List<QuestionExcel> createQuestions(List<List<Cell>> rows) {
+    @Override
+    public List<QuestionExcel> createQuestions(List<List<Cell>> rows) {
         List<QuestionExcel> result = new ArrayList<>();
         rows.remove(0);
         for (List<Cell> row : rows) {
@@ -199,7 +201,8 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
         return dataFormatter.formatCellValue(row.get(indexes.get(column))).trim();
     }
 
-    private List<AnswerExcel> createAnswers(List<List<Cell>> rows) {
+    @Override
+    public List<AnswerExcel> createAnswers(List<List<Cell>> rows) {
         List<AnswerExcel> result = new ArrayList<>();
         String questionTitle = null;
 
