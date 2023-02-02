@@ -1,4 +1,4 @@
-package com.softserve.teachua.utils.excel;
+package com.softserve.teachua.constants.excel;
 
 public interface ExcelColumn {
     String getKeyWord();

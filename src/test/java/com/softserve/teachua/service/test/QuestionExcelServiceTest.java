@@ -12,8 +12,8 @@ import com.softserve.teachua.dto.test.question.questionExcel.ExcelQuestionParsin
 import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
 import com.softserve.teachua.service.ExcelParserService;
 import com.softserve.teachua.service.test.impl.QuestionExcelServiceImpl;
-import com.softserve.teachua.utils.excel.ExcelColumn;
-import com.softserve.teachua.utils.excel.enums.QuestionExcelColumn;
+import com.softserve.teachua.constants.excel.ExcelColumn;
+import com.softserve.teachua.constants.excel.QuestionExcelColumn;
 import java.util.Arrays;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;

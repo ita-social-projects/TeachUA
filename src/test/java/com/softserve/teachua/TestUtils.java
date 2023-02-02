@@ -34,7 +34,7 @@ import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.model.CertificateType;
-import com.softserve.teachua.utils.excel.ExcelColumn;
+import com.softserve.teachua.constants.excel.ExcelColumn;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;

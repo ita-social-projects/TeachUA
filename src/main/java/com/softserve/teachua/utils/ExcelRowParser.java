@@ -1,7 +1,7 @@
-package com.softserve.teachua.utils.excel;
+package com.softserve.teachua.utils;
 
 import com.softserve.teachua.dto.databaseTransfer.ExcelFullParsingMistake;
-import com.softserve.teachua.utils.ExcelErrorType;
+import com.softserve.teachua.constants.excel.ExcelErrorType;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +12,14 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 /**
  * User this class for pars Excel data.
+ *
  * @author Vitalii Hapon
  */
 @Slf4j
 public class ExcelRowParser {
     public static final String INCORRECT_COORDINATES_FORMAT_ERROR = "Неправильний формат координат";
-    public static final String INCORRECT_COORDINATES_NUMERIC_FORMAT_ERROR = "Неможливо розпізнати числові значення координат";
+    public static final String INCORRECT_COORDINATES_NUMERIC_FORMAT_ERROR =
+            "Неможливо розпізнати числові значення координат";
     public static final String INCORRECT_NUMERIC_FORMAT_ERROR = "Очікується число";
     public static final String EMPTY_CELL_ERROR = "Пустка клітинка";
     public static final String UNNAMED_COLUMN_TITLE = "БЕЗІМЕННА КОЛОНКА";
@@ -69,13 +71,11 @@ public class ExcelRowParser {
                 log.debug("Cell Type Not String, cell value =" + cellValue + " Column = " + column);
                 return cellValue == null ? "" : cellValue;
             }
-        } else if (mistakes != null) {
-            if (!maybeEmpty) {
-                errorsFlag = true;
-                mistakes.add(ExcelFullParsingMistake.builder().cellValue("").rowIndex((long) row.getRowNum() + 1)
-                        .columnName(getColumnName(column)).errorDetails(EMPTY_CELL_ERROR)
-                        .sheetName(sheet.getSheetName()).critical(errorType == ExcelErrorType.CRITICAL).build());
-            }
+        } else if (mistakes != null && !maybeEmpty) {
+            errorsFlag = true;
+            mistakes.add(ExcelFullParsingMistake.builder().cellValue("").rowIndex((long) row.getRowNum() + 1)
+                    .columnName(getColumnName(column)).errorDetails(EMPTY_CELL_ERROR)
+                    .sheetName(sheet.getSheetName()).critical(errorType == ExcelErrorType.CRITICAL).build());
         }
         return "";
     }
@@ -116,7 +116,7 @@ public class ExcelRowParser {
                 try {
                     double longitude = Double.parseDouble(coordinateStrings[0]);
                     double latitude = Double.parseDouble(coordinateStrings[1]);
-                    return new Double[] { latitude, longitude };
+                    return new Double[] {latitude, longitude};
                 } catch (NumberFormatException e) {
                     errorsFlag = true;
                     mistakes.add(ExcelFullParsingMistake.builder().cellValue(coordinates)
@@ -126,7 +126,7 @@ public class ExcelRowParser {
                 }
             }
         }
-        return new Double[] { null, null };
+        return new Double[] {null, null};
     }
 
     public List<String> parseCategories(int column, boolean maybeEmpty) {
@@ -163,14 +163,14 @@ public class ExcelRowParser {
                 String formattedAges = ages.replaceAll("[a-zA-Z.,:' ]", "");
                 String[] fromToAges = formattedAges.split("-");
                 if (fromToAges.length < 2) {
-                    return new Integer[] { null, null };
+                    return new Integer[] {null, null};
                 }
-                return new Integer[] { Integer.parseInt(fromToAges[0]), Integer.parseInt(fromToAges[1]) };
+                return new Integer[] {Integer.parseInt(fromToAges[0]), Integer.parseInt(fromToAges[1])};
             } catch (NumberFormatException e) {
                 log.error(e.getMessage());
             }
         }
-        return new Integer[] { null, null };
+        return new Integer[] {null, null};
     }
 
     public Long getLong(int column, ExcelErrorType errorType) {

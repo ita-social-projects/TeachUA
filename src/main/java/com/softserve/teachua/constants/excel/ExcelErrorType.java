@@ -1,4 +1,4 @@
-package com.softserve.teachua.utils;
+package com.softserve.teachua.constants.excel;
 
 public enum ExcelErrorType {
     CRITICAL, NON_CRITICAL
