@@ -8,6 +8,7 @@ import com.softserve.teachua.exception.CannotDeleteFileException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.EntityIsUsedException;
 import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.teachua.exception.GoogleApisDocumentException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.JsonWriteException;
 import com.softserve.teachua.exception.LogNotFoundException;
@@ -54,6 +55,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
+    public static final String INVALID_FUTURE_DATE = "startDate Invalid future date";
+
     @ExceptionHandler(WrongAuthenticationException.class)
     public final ResponseEntity<Object> handleAuthenticationException(WrongAuthenticationException exception) {
         return buildExceptionBody(exception, UNAUTHORIZED);
@@ -124,12 +127,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
         Map<String, String> mapMessage = new HashMap<>();
-        mapMessage.put("startDate Invalid future date", "Дата не може бути у минулому");
+        mapMessage.put(INVALID_FUTURE_DATE, "Дата не може бути у минулому");
 
         StringBuilder sb = new StringBuilder();
-        exception.getBindingResult().getFieldErrors().forEach((error) -> {
-            if ((error.getField() + " " + error.getDefaultMessage()).contains("startDate Invalid future date")) {
-                sb.append(mapMessage.get("startDate Invalid future date")).append(" and ");
+        exception.getBindingResult().getFieldErrors().forEach(error -> {
+            if ((error.getField() + " " + error.getDefaultMessage()).contains(INVALID_FUTURE_DATE)) {
+                sb.append(mapMessage.get(INVALID_FUTURE_DATE)).append(" and ");
             } else {
                 sb.append(error.getField()).append(" ").append(error.getDefaultMessage()).append(" and ");
             }
@@ -168,6 +171,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public final ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException exception) {
+        return buildExceptionBody(exception, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(GoogleApisDocumentException.class)
+    public final ResponseEntity<Object> handleGoogleApisDocumentException(GoogleApisDocumentException exception) {
         return buildExceptionBody(exception, BAD_REQUEST);
     }
 
