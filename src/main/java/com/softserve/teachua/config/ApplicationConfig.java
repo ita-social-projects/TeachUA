@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javax.servlet.Filter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -62,5 +63,10 @@ public class ApplicationConfig {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         return mapper;
+    }
+
+    @Bean
+    public DataFormatter dataFormatter() {
+        return new DataFormatter();
     }
 }

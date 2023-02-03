@@ -26,7 +26,7 @@
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.exclusions>**/config/*</sonar.exclusions>
         <sonar.coverage.exclusions>
-            **/constants/*,**/dto/**,**/exception/**,**/model/**
+            **/constants/**,**/dto/**,**/exception/**,**/model/**
         </sonar.coverage.exclusions>
 	</properties>
 
@@ -49,11 +49,6 @@
 
 
 	<dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -124,7 +119,6 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.18.24</version>
-			<!-- <optional>true</optional> -->
 		</dependency>
 
 		<dependency>
@@ -413,7 +407,7 @@
                         <exclude>**/config/*</exclude>
                         <exclude>**/exception/**</exclude>
                         <exclude>**/model/**</exclude>
-                        <exclude>**/constants/*</exclude>
+                        <exclude>**/constants/**</exclude>
                         <exclude>**/dto/**</exclude>
                     </excludes>
                 </configuration>
