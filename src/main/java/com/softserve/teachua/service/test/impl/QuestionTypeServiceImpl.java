@@ -57,6 +57,7 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
     }
 
     @Override
+    @Transactional
     public QuestionTypeProfile save(QuestionTypeProfile typeProfile) {
         checkNull(typeProfile, "Question type");
         if (questionTypeRepository.existsByTitle(typeProfile.getTitle())) {
@@ -102,5 +103,4 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
     private Page<QuestionTypeResponse> mapToDtoPage(Page<QuestionType> types) {
         return types.map(this::mapToDto);
     }
-
 }

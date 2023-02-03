@@ -17,5 +17,4 @@ public interface QuestionCategoryRepository extends PagingAndSortingRepository<Q
     Page<QuestionCategory> findByTitleContainingIgnoreCase(Pageable pageable, String title);
 
     Boolean existsByTitle(String title);
-
 }

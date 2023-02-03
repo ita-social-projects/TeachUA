@@ -31,7 +31,7 @@ public interface QuestionTypeService {
     QuestionType findByTitle(String title);
 
     /**
-     * This method a page of question types searched by query and configured by pageable object
+     * This method a page of question types searched by query and configured by pageable object.
      * @param pageable pageable object that configures page number, page size and sorting
      * @param title search query for question title, can be blank for all questions
      * @return new {@code Page<QuestionTypeResponse>}
@@ -47,7 +47,7 @@ public interface QuestionTypeService {
     QuestionTypeProfile save(QuestionTypeProfile typeProfile);
 
     /**
-     * This method updates QuestionType entity by id
+     * This method updates QuestionType entity by id.
      * @param typeProfile update question type
      * @param id updated question id
      * @return new {@code QuestionTypeProfile}
@@ -55,9 +55,8 @@ public interface QuestionTypeService {
     QuestionTypeProfile updateById(QuestionTypeProfile typeProfile, Long id);
 
     /**
-     * Delete a QuestionType entry by a given id
+     * Delete a QuestionType entry by a given id.
      * @param id question type id
      */
     void deleteById(Long id);
-
 }

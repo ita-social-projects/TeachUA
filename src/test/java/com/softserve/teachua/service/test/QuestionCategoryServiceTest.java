@@ -2,11 +2,14 @@ package com.softserve.teachua.service.test;
 
 import com.softserve.teachua.dto.test.questionCategory.QuestionCategoryProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.EntityIsUsedException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.QuestionCategory;
 import com.softserve.teachua.repository.test.QuestionCategoryRepository;
+import com.softserve.teachua.repository.test.QuestionRepository;
 import com.softserve.teachua.service.test.impl.QuestionCategoryServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,9 +27,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 class QuestionCategoryServiceTest {
-
     @Mock
     private QuestionCategoryRepository questionCategoryRepository;
+
+    @Mock
+    private QuestionRepository questionRepository;
 
     @Mock
     private ModelMapper modelMapper;
@@ -52,6 +57,13 @@ class QuestionCategoryServiceTest {
         questionCategoryProfile = QuestionCategoryProfile.builder()
                 .title(EXISTING_CATEGORY_TITLE)
                 .build();
+    }
+
+    @Test
+    @DisplayName("Finding all question categories works")
+    void findAllCorrect() {
+        when(questionCategoryRepository.findAll()).thenReturn(Collections.singletonList(questionCategory));
+        assertEquals(Collections.singletonList(questionCategory), questionCategoryService.findAll());
     }
 
     @Test
@@ -121,6 +133,13 @@ class QuestionCategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Saving existing question type throws AlreadyExistException")
+    void saveException() {
+        when(questionCategoryRepository.existsByTitle(anyString())).thenReturn(true);
+        assertThrows(AlreadyExistException.class, () -> questionCategoryService.save(questionCategoryProfile));
+    }
+
+    @Test
     void saveCategoryWithNullTitleShouldThrowIllegalArgException() {
         assertThatThrownBy(() -> questionCategoryService.save(null))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -159,5 +178,18 @@ class QuestionCategoryServiceTest {
     void updateCategoryWithNullIdShouldThrowIllegalArgException() {
         assertThatThrownBy(() -> questionCategoryService.updateById(questionCategoryProfile, null))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Deleting question category works")
+    void deleteCorrect() {
+        assertDoesNotThrow(() -> questionCategoryService.deleteById(anyLong()));
+    }
+
+    @Test
+    @DisplayName("Deleting a used question category throws EntityIsUsedException")
+    void deleteException() {
+        when(questionRepository.existsByQuestionCategoryId(anyLong())).thenReturn(true);
+        assertThrows(EntityIsUsedException.class, () -> questionCategoryService.deleteById(anyLong()));
     }
 }

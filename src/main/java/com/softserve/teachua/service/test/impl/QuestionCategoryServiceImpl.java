@@ -73,6 +73,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
     }
 
     @Override
+    @Transactional
     public QuestionCategoryProfile save(QuestionCategoryProfile categoryProfile) {
         checkNull(categoryProfile, "Question category");
         if (questionCategoryRepository.existsByTitle(categoryProfile.getTitle())) {
@@ -125,5 +126,4 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
     private Page<QuestionCategoryResponse> mapToDtoPage(Page<QuestionCategory> categories) {
         return categories.map(this::mapToDto);
     }
-
 }

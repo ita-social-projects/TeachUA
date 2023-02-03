@@ -31,11 +31,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 @RestController
 public class QuestionTypeController implements Api {
-
     private final QuestionTypeService questionTypeService;
 
     /**
-     * Use this endpoint to get question types pageable and search by title
+     * Use this endpoint to get question types pageable and search by title.
      * @param pageable pagination configuration
      * @param query title search query
      * @return {@code Page<QuestionTypeResponse>}
@@ -85,5 +84,4 @@ public class QuestionTypeController implements Api {
     public void deleteQuestionCategory(@PathVariable Long id) {
         questionTypeService.deleteById(id);
     }
-
 }

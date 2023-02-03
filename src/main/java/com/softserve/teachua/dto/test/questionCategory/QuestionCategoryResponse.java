@@ -11,10 +11,8 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuestionCategoryResponse {
-
     private Long id;
 
     @NotBlank(message = "Заголовок категоріі питання не може бути пустим.")
     private String title;
-
 }

@@ -36,7 +36,7 @@ public class QuestionCategoryController implements Api {
     private final QuestionCategoryService questionCategoryService;
 
     /**
-     * Use this endpoint to get question categories pageable and search by title
+     * Use this endpoint to get question categories pageable and search by title.
      * @param pageable pagination configuration
      * @param query title search query
      * @return {@code Page<QuestionCategoryResponse>}
@@ -97,5 +97,4 @@ public class QuestionCategoryController implements Api {
     public void deleteQuestionCategory(@PathVariable Long id) {
         questionCategoryService.deleteById(id);
     }
-
 }

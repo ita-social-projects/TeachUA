@@ -4,7 +4,6 @@ import com.softserve.teachua.model.test.QuestionType;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,5 +17,4 @@ public interface QuestionTypeRepository extends PagingAndSortingRepository<Quest
     Page<QuestionType> findByTitleContainingIgnoreCase(Pageable pageable, String title);
 
     boolean existsByTitle(String title);
-
 }
