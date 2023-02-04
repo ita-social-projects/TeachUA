@@ -20,8 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtFilter extends OncePerRequestFilter {
     private static final String ABSENT_TOKEN = "Token is empty [%s]";
     private final JwtProvider jwtProvider;
-
-    private CustomUserDetailsService customUserDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     public JwtFilter(JwtProvider jwtProvider, CustomUserDetailsService customUserDetailsService) {
@@ -30,34 +29,25 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        log.debug("**doFilter start, requestURI {}", httpServletRequest.getRequestURI());
         try {
-            String jwt = jwtProvider.getJwtFromRequest(httpServletRequest);
+            String accessToken = jwtProvider.getJwtFromRequest(request);
 
-            if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
-                Long userId = jwtProvider.getUserIdFromToken(jwt);
-                String currentEmail = jwtProvider.getEmailFromToken(jwt);
-                log.debug("email user = " + currentEmail);
-                UserDetails userDetails = customUserDetailsService.loadUserById(userId);
-                if (!userDetails.getUsername().equals(currentEmail)) {
-                    throw new RuntimeException("Invalid email");
-                }
-                log.debug("USER AUTHORITIES");
-                log.debug(userDetails.getAuthorities().toString());
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+            if (StringUtils.hasText(accessToken) && jwtProvider.isAccessTokenValid(accessToken)) {
+                String userEmail = jwtProvider.getEmailFromAccessToken(accessToken);
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.debug("User " + userDetails.getUsername() + "successfully authenticate with token" + jwt);
+                log.debug("User {} successfully authenticate with token {}", userDetails.getUsername(), accessToken);
             } else {
-                log.debug(String.format(ABSENT_TOKEN, httpServletRequest.getRequestURI()));
+                log.debug(String.format(ABSENT_TOKEN, request.getRequestURI()));
             }
         } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
+            logger.error("Could not authenticate user", ex);
         }
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
-        log.debug("**doFilter done");
+        filterChain.doFilter(request, response);
     }
 }

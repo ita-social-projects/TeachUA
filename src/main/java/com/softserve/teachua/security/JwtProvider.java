@@ -8,76 +8,97 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
 @Slf4j
 public class JwtProvider {
-    private static final int TOKEN_LIFE_HOURS = 1;
-
-    @Value("${application.jwt.secret}")
-    private String jwtSecret;
+    @Value("${application.jwt.accessTokenSecret}")
+    private String accessTokenSecret;
+    @Value("${application.jwt.refreshTokenSecret}")
+    private String refreshTokenSecret;
+    @Value("${application.jwt.accessExpirationTimeInMinutes}")
+    private int accessExpirationTimeInMinutes;
+    @Value("${application.jwt.refreshExpirationTimeInMinutes}")
+    private int refreshExpirationTimeInMinutes;
 
     /**
-     * The method generate jwt token.
-     *
-     * @return jwt
+     * Method for generating access token.
      */
-    public String generateToken(Authentication authentication) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-
+    public String generateAccessToken(String email) {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR, TOKEN_LIFE_HOURS);
-        return Jwts.builder().setSubject(userPrincipal.getEmail()).setId(Long.toString(userPrincipal.getId()))
-                .setExpiration(calendar.getTime()).signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.MINUTE, accessExpirationTimeInMinutes);
+        return Jwts.builder()
+                .setSubject(email)
+                .setExpiration(calendar.getTime())
+                .signWith(SignatureAlgorithm.HS512, accessTokenSecret)
+                .compact();
     }
 
     /**
-     * The method retrieve user id from jwt token.
-     *
-     * @return id
+     * Method for generating refresh token.
      */
-    public Long getUserIdFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-        String claimsId = claims.getId();
-        claimsId = claimsId == null ? "0" : claimsId;
-        log.debug("claims.getId() = " + claimsId);
-        return Long.parseLong(claimsId);
+    public String generateRefreshToken(String email) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.MINUTE, refreshExpirationTimeInMinutes);
+        return Jwts.builder()
+                .setSubject(email)
+                .setExpiration(calendar.getTime())
+                .signWith(SignatureAlgorithm.HS512, refreshTokenSecret)
+                .compact();
     }
 
     /**
-     * The method validate token.
+     * The method validate access token.
      *
      * @return boolean
      */
-    public boolean validateToken(String token) {
+    public boolean isAccessTokenValid(String accessToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(refreshTokenSecret).parseClaimsJws(accessToken);
             return true;
         } catch (Exception e) {
-            // log.error("invalid token"); //Produces many logsgit
+            return false;
         }
-        return false;
     }
 
     /**
-     * The method retrieve user email from jwt token.
+     * The method validate access token.
+     *
+     * @return boolean
+     */
+    public boolean isRefreshTokenValid(String refreshToken) {
+        try {
+            Jwts.parser().setSigningKey(refreshTokenSecret).parseClaimsJws(refreshToken);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * The method retrieve user email from access token.
      *
      * @return email
      */
-    public String getEmailFromToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+    public String getEmailFromAccessToken(String accessToken) {
+        Claims claims = Jwts.parser().setSigningKey(accessTokenSecret)
+                .parseClaimsJws(accessToken).getBody();
         return claims.getSubject();
     }
 
-    public Date getExpirationDate(String token) {
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
-        return claims.getExpiration();
+    /**
+     * The method retrieve user email from refresh token.
+     *
+     * @return email
+     */
+    public String getEmailFromRefreshToken(String refreshToken) {
+        Claims claims = Jwts.parser().setSigningKey(refreshTokenSecret)
+                .parseClaimsJws(refreshToken).getBody();
+        return claims.getSubject();
     }
 
     /**

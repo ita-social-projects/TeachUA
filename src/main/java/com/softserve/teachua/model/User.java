@@ -1,7 +1,9 @@
 package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.softserve.teachua.dto.marker.Convertible;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,8 +11,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,9 +53,13 @@ public class User implements Convertible {
 
     @JsonBackReference(value = "userRole")
     @ManyToOne
-    @JoinColumn(name = "role_id")
     @ToString.Exclude
     private Role role;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @ToString.Exclude
+    private RefreshToken refreshToken;
 
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;

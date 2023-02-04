@@ -81,7 +81,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
         User user = userService.getUserByEmail(authentication.getName());
-        if (userRole.get() != "") {
+        if (userRole.isPresent() && userRole.get() != "") {
             user.setRole(roleService.findByName((String) userRole.get()));
             log.debug("Set user role" + userRole.get());
         } else {
@@ -90,9 +90,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
         userService.updateUser(user);
 
-        String token = tokenProvider.generateToken(authentication);
+        String accessToken = tokenProvider.generateAccessToken(user.getEmail());
+        String refreshToken = tokenProvider.generateRefreshToken(user.getEmail());
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", token)
+                .queryParam("accessToken", accessToken)
+                .queryParam("refreshToken", refreshToken)
                 .queryParam("id", user.getId())
                 .queryParam("role", user.getRole().getName())
                 .build().toUriString();
