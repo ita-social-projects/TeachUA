@@ -38,6 +38,11 @@ public class CertificateContentDecorator {
         return startFormatter.format(startDate) + endFormatter.format(endDate);
     }
 
+    public static String getRealPathToImage(String path) throws IOException {
+        Path resourcePath = Paths.get((new ClassPathResource("/certificates/images/" + path)).getURI());
+        return resourcePath.toFile().getAbsolutePath();
+    }
+
     public String getRealFilePath(String path) throws IOException {
         Path resourcePath = Paths.get((new ClassPathResource(path)).getURI());
         return resourcePath.toFile().getAbsolutePath();
