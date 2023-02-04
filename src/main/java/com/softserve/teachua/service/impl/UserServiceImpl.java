@@ -21,8 +21,9 @@ import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.MatchingPasswordException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
-import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.exception.UpdatePasswordException;
+import com.softserve.teachua.exception.UserAuthenticationException;
+import com.softserve.teachua.exception.UserPermissionException;
 import com.softserve.teachua.model.AuthProvider;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.UserArch;
@@ -52,7 +53,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -357,7 +357,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     public void verifyIsUserAdmin() {
         if (!userDetailsService.getUserPrincipal().getAuthorities()
                 .contains(new SimpleGrantedAuthority(RoleData.ADMIN.getDBRoleName()))) {
-            throw new AccessDeniedException(ONLY_ADMIN_CONTENT);
+            throw new UserPermissionException(ONLY_ADMIN_CONTENT);
         }
     }
 

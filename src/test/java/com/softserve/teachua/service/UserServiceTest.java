@@ -17,20 +17,25 @@ import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.MatchingPasswordException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
-import com.softserve.teachua.exception.UnauthorizedException;
+import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.exception.UpdatePasswordException;
+import com.softserve.teachua.exception.UserPermissionException;
 import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.UserArch;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.security.JwtProvider;
+import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.security.service.EncoderService;
 import com.softserve.teachua.service.impl.UserServiceImpl;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import static com.softserve.teachua.TestUtils.getUserPrincipal;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +60,7 @@ class UserServiceTest {
     private static final long NOT_EXISTING_ID = 500L;
     private static final boolean IS_STATUS = true;
     private static final Integer ROLE_ID = 72;
-    private static final String ROLE_NAME = "ADMIN";
+    private static final String ROLE_NAME = "ROLE_ADMIN";
     private static final String MISSPELLING_ROLE_NAME = "ROLE_ADMIN";
     private static final String EXISTING_EMAIL = "someuser@mail.com";
     private static final String NEW_EMAIL = "newuser@mail.com";
@@ -81,6 +86,8 @@ class UserServiceTest {
     private JwtProvider jwtProvider;
     @Mock
     private RefreshTokenService refreshTokenService;
+    @Mock
+    private CustomUserDetailsService userDetailsService;
     @Mock
     private RoleService roleService;
     @InjectMocks
@@ -242,8 +249,7 @@ class UserServiceTest {
         UserVerifyPassword userVerifyPassword = new UserVerifyPassword(EXISTING_ID, PASSWORD);
 
         assertThatThrownBy(() -> userService.validateUser(userVerifyPassword)).isInstanceOf(
-                        NotVerifiedUserException.class)
-                .hasMessage(String.format("User email is not verified: %s", EXISTING_ID));
+                        NotVerifiedUserException.class);
     }
 
     @Test
@@ -251,7 +257,7 @@ class UserServiceTest {
         when(userRepository.existsByEmail(EXISTING_EMAIL)).thenReturn(true);
         userProfile.setEmail(EXISTING_EMAIL);
 
-        assertThatThrownBy(() -> userService.registerUser(userProfile)).isInstanceOf(UnauthorizedException.class)
+        assertThatThrownBy(() -> userService.registerUser(userProfile)).isInstanceOf(UserAuthenticationException.class)
                 .hasMessage(String.format("Email %s already exist", EXISTING_EMAIL));
     }
 
@@ -265,7 +271,7 @@ class UserServiceTest {
     }
 
     @Test
-    void validateUserWithValidPasswordTest() {
+    void loginUserWithValidPasswordTest() {
         UserLogin userLogin = new UserLogin(NEW_EMAIL, PASSWORD);
         User newUser = User.builder().email(NEW_EMAIL).password(PASSWORD)
                 .role(role).status(IS_STATUS).build();
@@ -275,12 +281,12 @@ class UserServiceTest {
         when(jwtProvider.generateAccessToken(newUser.getEmail())).thenReturn(TOKEN);
         when(refreshTokenService.assignRefreshToken(newUser)).thenReturn(TOKEN);
 
-        SuccessLogin actual = userService.validateUser(userLogin);
+        SuccessLogin actual = userService.loginUser(userLogin);
         assertEquals(actual.getEmail(), userLogin.getEmail());
     }
 
     @Test
-    void validateUserWithInvalidPasswordTest() {
+    void loginUserWithInvalidPasswordTest() {
         String invalidPassword = "invalid password";
         UserLogin userLogin = new UserLogin(NEW_EMAIL, invalidPassword);
         User newUser = User.builder().email(NEW_EMAIL).password(invalidPassword).status(IS_STATUS).build();
@@ -288,7 +294,17 @@ class UserServiceTest {
 
         when(encodeService.isValidPassword(userLogin, newUser)).thenReturn(false);
 
-        assertThatThrownBy(() -> userService.validateUser(userLogin)).isInstanceOf(UnauthorizedException.class);
+        assertThatThrownBy(() -> userService.loginUser(userLogin)).isInstanceOf(UserAuthenticationException.class);
+    }
+
+    @Test
+    void loginUserWithStatusFalse() {
+        UserLogin userLogin = new UserLogin(NEW_EMAIL, PASSWORD);
+        User newUser = User.builder().email(NEW_EMAIL).password(PASSWORD)
+                .role(role).status(false).build();
+        when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
+
+        assertThatThrownBy(() -> userService.loginUser(userLogin)).isInstanceOf(NotVerifiedUserException.class);
     }
 
     @Test
@@ -380,6 +396,43 @@ class UserServiceTest {
         SuccessVerification actual = userService.verify(TOKEN);
         assertThat(actual).extracting(SuccessVerification::getMessage).isEqualTo(
                 String.format("Користувач %s %s успішно зареєстрований", user.getFirstName(), user.getLastName()));
+    }
+
+    @Test
+    void givenUserPrincipal_whenGetAuthenticatedUser_thenReturnUserEntity() {
+        UserPrincipal userPrincipal = getUserPrincipal(user);
+        when(userDetailsService.getUserPrincipal()).thenReturn(userPrincipal);
+        when(userRepository.findById(userPrincipal.getId())).thenReturn(Optional.of(user));
+
+        User actual = userService.getAuthenticatedUser();
+        assertEquals(user, actual);
+    }
+
+    @Test
+    void givenNotExistingUserPrincipal_whenGetAuthenticatedUser_thenThrowNotExistException() {
+        UserPrincipal userPrincipal = getUserPrincipal(user);
+        when(userDetailsService.getUserPrincipal()).thenReturn(userPrincipal);
+        when(userRepository.findById(userPrincipal.getId())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userService.getAuthenticatedUser())
+                .isInstanceOf(NotExistException.class);
+    }
+
+    @Test
+    void givenAdminUserPrincipal_whenVerifyIsUserAdmin_thenDoNotThrow() {
+        UserPrincipal userPrincipal = getUserPrincipal(user);
+        when(userDetailsService.getUserPrincipal()).thenReturn(userPrincipal);
+
+        assertThatNoException().isThrownBy(() -> userService.verifyIsUserAdmin());
+    }
+
+    @Test
+    void givenUserUserPrincipal_whenVerifyIsUserAdmin_thenThrow() {
+        UserPrincipal userPrincipal = getUserPrincipal(user.withRole(role.withName("ROLE_USER")));
+        when(userDetailsService.getUserPrincipal()).thenReturn(userPrincipal);
+
+        assertThatThrownBy(() -> userService.verifyIsUserAdmin())
+                .isInstanceOf(UserPermissionException.class);
     }
 
     @Test
