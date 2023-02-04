@@ -19,6 +19,7 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.exception.StreamCloseException;
 import com.softserve.teachua.exception.UpdatePasswordException;
+import com.softserve.teachua.exception.UserPermissionException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +38,6 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -64,8 +64,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildExceptionBody(exception, UNAUTHORIZED);
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public final ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException exception) {
+    @ExceptionHandler(UserPermissionException.class)
+    public final ResponseEntity<Object> handleUserPermissionException(UserPermissionException exception) {
         return buildExceptionBody(exception, FORBIDDEN);
     }
 

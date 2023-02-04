@@ -2,7 +2,7 @@ package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.dto.security.RefreshTokenResponse;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.exception.UnauthorizedException;
+import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.model.RefreshToken;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.RefreshTokenRepository;
@@ -60,7 +60,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private void validateRefreshToken(String refreshToken) {
         if (!jwtProvider.isRefreshTokenValid(refreshToken)) {
-            throw new UnauthorizedException(UNPROCESSED_REFRESH_TOKEN);
+            throw new UserAuthenticationException(UNPROCESSED_REFRESH_TOKEN);
         }
     }
 

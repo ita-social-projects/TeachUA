@@ -18,6 +18,7 @@ import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.exception.CertificateGenerationException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.exception.UserPermissionException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateType;
 import com.softserve.teachua.model.archivable.CertificateArch;
@@ -60,7 +61,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -492,7 +492,7 @@ class CertificateServiceTest {
         when(certificateRepository.findById(certificate.getId()))
                 .thenReturn(Optional.of(certificate));
 
-        assertThrows(AccessDeniedException.class, () ->
+        assertThrows(UserPermissionException.class, () ->
                 certificateService.getPdfOutputForDownload("foreign@gmail.com", certificate.getId()));
     }
 

@@ -2,6 +2,7 @@ package com.softserve.teachua.security;
 
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,8 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+@Slf4j
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
+    public static final String SECURITY_CONTEXT_ERROR =
+            "Attempt to get authenticated user failed. Check Authentication";
     private final UserRepository userRepository;
 
     public CustomUserDetailsService(UserRepository userRepository) {
@@ -31,8 +35,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         try {
             return ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    "There is no authenticated user in SecurityContext");
+            log.error(SECURITY_CONTEXT_ERROR, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, SECURITY_CONTEXT_ERROR);
         }
     }
 }

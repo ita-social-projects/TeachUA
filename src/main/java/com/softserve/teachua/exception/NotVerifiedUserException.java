@@ -1,17 +1,16 @@
 package com.softserve.teachua.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
 
 /**
  * This class is custom exception to check problems with user verification after registration.
  *
  * <p>The constructor accepts message for Exception
  *
- * <p>Use @code throw new NotVerifiedUserException("Authentication exception")
+ * <p>Use @code throw new NotVerifiedUserException("User is not verified")
  */
 @Slf4j
-public class NotVerifiedUserException extends AccessDeniedException {
+public class NotVerifiedUserException extends UserPermissionException {
     private static final long serialVersionUID = 1L;
     private static final String NOT_VERIFIED_USER_EXCEPTION = "User is not verified";
 

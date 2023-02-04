@@ -1,6 +1,7 @@
 package com.softserve.teachua.utils.annotation;
 
 import com.softserve.teachua.constants.RoleData;
+import com.softserve.teachua.exception.UserPermissionException;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,7 +11,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -19,8 +19,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Component
 @Slf4j
 public class AllowedRolesAspect {
-    private static final String PERMIT_EXCEPTION = "You have no necessary permissions (role)";
-
     @Around("@annotation(com.softserve.teachua.utils.annotation.AllowedRoles)")
     public Object doSomething(ProceedingJoinPoint jp) throws Throwable {
         Set<RoleData> roles = Arrays
@@ -34,7 +32,7 @@ public class AllowedRolesAspect {
             }
         }
 
-        throw new AccessDeniedException(PERMIT_EXCEPTION);
+        throw new UserPermissionException();
     }
 
     private HttpServletRequest getRequest() {

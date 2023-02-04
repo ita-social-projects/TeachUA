@@ -7,20 +7,18 @@ import org.springframework.security.core.AuthenticationException;
  * This class is custom exception for problem with authentication. (Invalid password, invalid email etc.)
  * The constructor accepts message for Exception
  *
- * <p>Use {@code throw new UnauthorizedException("Authentication exception")}
- *
- * @author Denis Burko
+ * <p>Use {@code throw new UserAuthenticationException("You are not authenticated")}
  */
 @Slf4j
-public class UnauthorizedException extends AuthenticationException {
+public class UserAuthenticationException extends AuthenticationException {
     private static final long serialVersionUID = 1L;
     private static final String WRONG_AUTHENTICATION_EXCEPTION = "You are not authenticated";
 
-    public UnauthorizedException(String message) {
+    public UserAuthenticationException(String message) {
         super(message.isEmpty() ? WRONG_AUTHENTICATION_EXCEPTION : message);
     }
 
-    public UnauthorizedException() {
+    public UserAuthenticationException() {
         super(WRONG_AUTHENTICATION_EXCEPTION);
     }
 }
