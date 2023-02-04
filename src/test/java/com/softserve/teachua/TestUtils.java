@@ -40,17 +40,23 @@ import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.model.CertificateType;
+import com.softserve.teachua.model.Role;
+import com.softserve.teachua.model.User;
+import com.softserve.teachua.security.UserPrincipal;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.SheetBuilder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class TestUtils {
 
@@ -126,6 +132,21 @@ public class TestUtils {
                 .email(USER_EMAIL)
                 .dateIssued(LocalDate.now())
                 .build();
+    }
+
+    public static UserPrincipal getUserPrincipal(User user) {
+        return new UserPrincipal(
+                user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                Collections.singletonList(
+                        new SimpleGrantedAuthority(
+                                Optional.ofNullable(user.getRole())
+                                        .map(Role::getName)
+                                        .orElse("ROLE_USER")
+                        )
+                )
+        );
     }
 
     public static QuestionExcel getQuestionExcel() {

@@ -176,7 +176,7 @@ class ClubServiceTest {
             .thenReturn(Club.builder().name(NEW_NAME).build());
         when(dtoConverter.convertToDto(club, SuccessUpdatedClub.class))
             .thenReturn(SuccessUpdatedClub.builder().name(NEW_NAME).build());
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getAuthenticatedUser()).thenReturn(user);
 
         SuccessUpdatedClub actual = clubService.updateClub(EXISTING_ID,
             ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).build());
@@ -216,7 +216,7 @@ class ClubServiceTest {
         doNothing().when(clubRepository).deleteById(EXISTING_ID);
         when(complaintRepository.getAllByClubId(EXISTING_ID)).thenReturn(Collections.emptyList());
         when(clubToClubResponseConverter.convertToClubResponse(club)).thenReturn(clubResponse);
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getAuthenticatedUser()).thenReturn(user);
         when(dtoConverter.convertToDto(club, ClubArch.class)).thenReturn(clubArch);
         when(archiveService.saveModel(clubArch)).thenReturn(Archive.builder().build());
         ClubResponse actual = clubService.deleteClubById(EXISTING_ID);
@@ -241,7 +241,7 @@ class ClubServiceTest {
         when(clubRepository.save(any())).thenReturn(newClub);
         when(dtoConverter.convertToDto(newClub, SuccessCreatedClub.class))
             .thenReturn(SuccessCreatedClub.builder().name(NEW_NAME).build());
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getAuthenticatedUser()).thenReturn(user);
 
         SuccessCreatedClub actual = clubService.addClub(clubProfile);
         assertEquals(clubProfile.getName(), actual.getName());

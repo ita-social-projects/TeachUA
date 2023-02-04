@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.TestUtils;
 import com.softserve.teachua.converter.CenterToCenterResponseConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
@@ -15,6 +16,7 @@ import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.service.impl.CenterServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,6 +67,8 @@ public class CenterServiceTest {
     private CenterToCenterResponseConverter centerToCenterResponseConverter;
     @Mock
     private UserService userService;
+    @Mock
+    private CustomUserDetailsService userDetailsService;
     @Mock
     private LocationService locationService;
     @Mock
@@ -134,7 +138,7 @@ public class CenterServiceTest {
         when(dtoConverter.convertToEntity(any(CenterProfile.class), any(Center.class))).thenReturn(new Center());
         when(dtoConverter.convertToDto(createCenter, SuccessCreatedCenter.class)).thenReturn(successCreatedCenter);
         when(clubService.getClubById(club.getId())).thenReturn(club);
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userDetailsService.getUserPrincipal()).thenReturn(TestUtils.getUserPrincipal(user));
     }
 
     private void setUpdateCenterMocks(){
