@@ -21,7 +21,7 @@ import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.MatchingPasswordException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
-import com.softserve.teachua.exception.UnauthorizedException;
+import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.exception.UpdatePasswordException;
 import com.softserve.teachua.model.AuthProvider;
 import com.softserve.teachua.model.User;
@@ -52,6 +52,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -68,7 +70,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
     private static final String USERS_NOT_FOUND_BY_ROLE_NAME = "User not found by role name - %s";
     private static final String WRONG_PASSWORD = "Wrong password";
-    private static final String NOT_VERIFIED = "User email is not verified: %s";
+    private static final String NOT_VERIFIED = "Ви не підтвердили електронну пошту: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
     private static final String ONLY_ADMIN_CONTENT = "Only the admin have permit to view this content";
@@ -172,7 +174,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     public SuccessRegistration registerUser(UserProfile userProfile) {
         userProfile.setEmail(userProfile.getEmail().toLowerCase());
         if (isUserExistByEmail(userProfile.getEmail())) {
-            throw new UnauthorizedException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
+            throw new UserAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
         }
 
         if (RoleData.ADMIN.getDBRoleName().equals(userProfile.getRoleName())) {
@@ -226,13 +228,13 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     }
 
     @Override
-    public SuccessLogin validateUser(UserLogin userLogin) {
+    public SuccessLogin loginUser(UserLogin userLogin) {
         userLogin.setEmail(userLogin.getEmail().toLowerCase());
         User user = getUserByEmail(userLogin.getEmail());
         if (!user.isStatus()) {
             throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userLogin.getEmail()));
         } else if (!encodeService.isValidPassword(userLogin, user)) {
-            throw new UnauthorizedException(WRONG_PASSWORD);
+            throw new UserAuthenticationException(WRONG_PASSWORD);
         }
         log.debug("User {} logged successfully", userLogin);
 
@@ -353,10 +355,9 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
 
     @Override
     public void verifyIsUserAdmin() {
-        User user = userRepository.findByEmail(userDetailsService.getUserPrincipal().getName())
-                .orElseThrow(() -> new UnauthorizedException(ONLY_ADMIN_CONTENT));
-        if (!user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
-            throw new UnauthorizedException(ONLY_ADMIN_CONTENT);
+        if (!userDetailsService.getUserPrincipal().getAuthorities()
+                .contains(new SimpleGrantedAuthority(RoleData.ADMIN.getDBRoleName()))) {
+            throw new AccessDeniedException(ONLY_ADMIN_CONTENT);
         }
     }
 

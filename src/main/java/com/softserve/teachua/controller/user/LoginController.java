@@ -46,7 +46,7 @@ public class LoginController implements Api {
     @PreAuthorize("!isAuthenticated()")
     @PostMapping("/signin")
     public SuccessLogin signIn(@Valid @RequestBody UserLogin userLogin) {
-        return userService.validateUser(userLogin);
+        return userService.loginUser(userLogin);
     }
 
     @PreAuthorize("!isAuthenticated()")

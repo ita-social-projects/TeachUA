@@ -16,7 +16,7 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
-import com.softserve.teachua.exception.UnauthorizedException;
+import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import java.util.List;
@@ -107,10 +107,10 @@ public interface UserService {
      *
      * @param userLogin - place dto with all params.
      * @return new {@code SuccessLogin}.
-     * @throws UnauthorizedException    if user password is incorrect.
-     * @throws NotVerifiedUserException if user verification code is incorrect.
+     * @throws UserAuthenticationException    if user password is incorrect.
+     * @throws NotVerifiedUserException if user email is not verified.
      */
-    SuccessLogin validateUser(UserLogin userLogin);
+    SuccessLogin loginUser(UserLogin userLogin);
 
     /**
      * The method returns dto {@code UserVerifyPassword} if user successfully logged.
