@@ -58,7 +58,7 @@ public class JwtProvider {
      */
     public boolean isAccessTokenValid(String accessToken) {
         try {
-            Jwts.parser().setSigningKey(refreshTokenSecret).parseClaimsJws(accessToken);
+            Jwts.parser().setSigningKey(accessTokenSecret).parseClaimsJws(accessToken);
             return true;
         } catch (Exception e) {
             return false;
