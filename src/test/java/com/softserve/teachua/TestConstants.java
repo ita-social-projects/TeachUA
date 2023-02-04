@@ -4,6 +4,12 @@ import java.time.LocalDate;
 import org.springframework.mock.web.MockMultipartFile;
 
 public final class TestConstants {
+    public static final Long USER_ID = 100L;
+    public static final String FIRST_NAME = "Тарас";
+    public static final String LAST_NAME = "Шевченко";
+    public static final String USER_ROLE = "USER_ROLE";
+    public static final String PASSWORD = "password";
+    public static final String PHONE = "+380960000000";
     public static final String EMPTY_STRING = "";
     public static final String NOT_EMPTY_STRING = "Value";
     public static final Long LONG_ID = 1L;

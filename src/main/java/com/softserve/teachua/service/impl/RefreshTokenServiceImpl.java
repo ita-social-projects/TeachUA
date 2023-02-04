@@ -1,7 +1,6 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.dto.security.RefreshTokenResponse;
-import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.model.RefreshToken;
 import com.softserve.teachua.model.User;
@@ -53,7 +52,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         getRefreshToken(refreshToken).setToken(newRefreshToken);
 
         return RefreshTokenResponse.builder()
-                .accessToken(jwtProvider.generateRefreshToken(email))
+                .accessToken(jwtProvider.generateAccessToken(email))
                 .refreshToken(newRefreshToken)
                 .build();
     }
@@ -66,6 +65,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private RefreshToken getRefreshToken(String refreshToken) {
         return refreshTokenRepository.findByToken(refreshToken)
-                .orElseThrow(() -> new NotExistException(REFRESH_TOKEN_NOT_IN_USE));
+                .orElseThrow(() -> new UserAuthenticationException(REFRESH_TOKEN_NOT_IN_USE));
     }
 }
