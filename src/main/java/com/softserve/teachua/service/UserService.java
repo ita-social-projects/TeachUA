@@ -1,6 +1,5 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.SuccessLogin;
 import com.softserve.teachua.dto.user.SuccessRegistration;
 import com.softserve.teachua.dto.user.SuccessUpdatedUser;
@@ -17,10 +16,10 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
-import com.softserve.teachua.exception.WrongAuthenticationException;
+import com.softserve.teachua.exception.UnauthorizedException;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.security.CustomUserDetailsService;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This interface contains all needed methods to manage users.
@@ -36,14 +35,6 @@ public interface UserService {
     UserResponse getUserProfileById(Long id);
 
     /**
-     * The method returns entity {@code UserEntity} of user by email.
-     *
-     * @param email - put user email.
-     * @return new {@code UserEntity}.
-     */
-    UserEntity getUserEntity(String email);
-
-    /**
      * The method returns entity {@code User} of user by id.
      *
      * @param id - put user id.
@@ -53,9 +44,11 @@ public interface UserService {
     User getUserById(Long id);
 
     /**
-     * The method returns user entity from request.
+     * The method get entire entity of authenticated user from database.
+     * Please, use {@link CustomUserDetailsService#getUserPrincipal()},
+     * if you need only id or email of authenticated user.
      */
-    User getUserFromRequest(HttpServletRequest httpServletRequest);
+    User getAuthenticatedUser();
 
     /**
      * The method returns dto {@code UserResponse} of deleted user by id.
@@ -114,8 +107,8 @@ public interface UserService {
      *
      * @param userLogin - place dto with all params.
      * @return new {@code SuccessLogin}.
-     * @throws WrongAuthenticationException if user password is incorrect.
-     * @throws NotVerifiedUserException     if user verification code is incorrect.
+     * @throws UnauthorizedException    if user password is incorrect.
+     * @throws NotVerifiedUserException if user verification code is incorrect.
      */
     SuccessLogin validateUser(UserLogin userLogin);
 
@@ -187,11 +180,4 @@ public interface UserService {
      * @param passwordUpdate - place dto {@code UserPasswordUpdate} with all params.
      */
     void updatePassword(Long id, UserPasswordUpdate passwordUpdate);
-
-    /**
-     * The method get current user from HttpServletRequest.
-     *
-     * @return new {@code User}
-     */
-    User getCurrentUser();
 }

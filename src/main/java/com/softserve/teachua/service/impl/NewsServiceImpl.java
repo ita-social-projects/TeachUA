@@ -45,7 +45,7 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
 
     @Autowired
     NewsServiceImpl(NewsRepository newsRepository, DtoConverter dtoConverter, ArchiveService archiveService,
-            UserService userService, ObjectMapper objectMapper) {
+                    UserService userService, ObjectMapper objectMapper) {
         this.newsRepository = newsRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
@@ -72,8 +72,8 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
 
     @Override
     public SuccessCreatedNews addNews(NewsProfile newsProfile) {
-        News news = newsRepository
-                .save(dtoConverter.convertToEntity(newsProfile, new News()).withUser(userService.getCurrentUser()));
+        News news = newsRepository.save(dtoConverter.convertToEntity(newsProfile, new News())
+                .withUser(userService.getAuthenticatedUser()));
         return dtoConverter.convertToDto(news, SuccessCreatedNews.class);
     }
 
@@ -87,18 +87,16 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
     }
 
     public List<NewsResponse> getAllCurrentNews() {
-        List<NewsResponse> newsResponses = newsRepository.getAllCurrentNews().stream()
+        return newsRepository.getAllCurrentNews().stream()
                 .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
                 .collect(Collectors.toList());
-        return newsResponses;
     }
 
     @Override
     public List<NewsResponse> getSimilarNewsByTitle(SimmilarNewsProfile newsProfile) {
-        List<NewsResponse> newsResponses = newsRepository.getNewsByTitle(newsProfile.getTitle()).stream()
+        return newsRepository.getNewsByTitle(newsProfile.getTitle()).stream()
                 .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
                 .collect(Collectors.toList());
-        return newsResponses;
     }
 
     @Override

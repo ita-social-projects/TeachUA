@@ -16,6 +16,7 @@ import com.softserve.teachua.model.archivable.FeedbackArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ClubService;
@@ -48,12 +49,14 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     private final UserService userService;
     private final ClubService clubService;
     private final ObjectMapper objectMapper;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter,
                                ClubRepository clubRepository, ArchiveService archiveService,
                                UserRepository userRepository, UserService userService,
-                               @Lazy ClubService clubService, ObjectMapper objectMapper) {
+                               @Lazy ClubService clubService, ObjectMapper objectMapper,
+                               CustomUserDetailsService customUserDetailsService) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
@@ -62,6 +65,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
         this.userService = userService;
         this.clubService = clubService;
         this.objectMapper = objectMapper;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Override
@@ -93,7 +97,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
 
     @Override
     public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile) {
-        feedbackProfile.setUserId(userService.getCurrentUser().getId());
+        feedbackProfile.setUserId(customUserDetailsService.getUserPrincipal().getId());
 
         if (!clubRepository.existsById(feedbackProfile.getClubId())) {
             throw new NotExistException("Club with id " + feedbackProfile.getClubId() + " does`nt exists");
@@ -148,7 +152,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
 
     @Override
     public FeedbackResponse updateFeedbackProfileById(Long id, FeedbackProfile feedbackProfile) {
-        User user = userService.getCurrentUser();
+        User user = userService.getAuthenticatedUser();
         validateFeedbackOwner(id, user);
         Feedback feedback = getFeedbackById(id);
         Feedback updFeedback = dtoConverter.convertToEntity(feedbackProfile, feedback).withId(id)

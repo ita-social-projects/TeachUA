@@ -24,6 +24,7 @@ import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CenterService;
@@ -72,6 +73,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     private final ClubToClubResponseConverter toClubResponseConverter;
     private final CoordinatesConverter coordinatesConverter;
     private final ObjectMapper objectMapper;
+    private final CustomUserDetailsService customUserDetailsService;
     private ClubService clubService;
 
     @Autowired
@@ -83,7 +85,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
                              CenterToCenterResponseConverter centerToCenterResponseConverter,
                              ClubToClubResponseConverter toClubResponseConverter,
                              CoordinatesConverter coordinatesConverter,
-                             ObjectMapper objectMapper) {
+                             ObjectMapper objectMapper, CustomUserDetailsService customUserDetailsService) {
         this.locationService = locationService;
         this.centerRepository = centerRepository;
         this.archiveService = archiveService;
@@ -99,6 +101,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         this.toClubResponseConverter = toClubResponseConverter;
         this.coordinatesConverter = coordinatesConverter;
         this.objectMapper = objectMapper;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Autowired
@@ -188,7 +191,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
     @Override
     public SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile) {
-        centerProfile.setUserId(userService.getCurrentUser().getId());
+        centerProfile.setUserId(customUserDetailsService.getUserPrincipal().getId());
 
         return addCenter(centerProfile);
     }

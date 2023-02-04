@@ -164,7 +164,7 @@ public class TestServiceImpl implements TestService {
     public ViewTest findViewTestById(Long id) {
         checkNull(id, "test id");
         Test test = findById(id);
-        User user = userService.getCurrentUser();
+        User user = userService.getAuthenticatedUser();
         ViewTest viewTest = modelMapper.map(test, ViewTest.class);
         Link testGroups = linkTo(methodOn(TestController.class)
                 .getGroups(id))
@@ -203,7 +203,7 @@ public class TestServiceImpl implements TestService {
     public SuccessCreatedTest addTest(CreateTest testDto) {
         checkNull(testDto, "Test");
         testValidationService.validateTest(testDto);
-        User user = userService.getCurrentUser();
+        User user = userService.getAuthenticatedUser();
         Test test = modelMapper.map(testDto, Test.class);
         test.setCreator(user);
         test.setDateOfCreation(LocalDate.now());

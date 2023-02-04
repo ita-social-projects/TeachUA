@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.SuccessLogin;
 import com.softserve.teachua.dto.user.SuccessRegistration;
 import com.softserve.teachua.dto.user.SuccessUpdatedUser;
@@ -22,16 +21,19 @@ import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.MatchingPasswordException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
+import com.softserve.teachua.exception.UnauthorizedException;
 import com.softserve.teachua.exception.UpdatePasswordException;
-import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.model.AuthProvider;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.UserArch;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.security.JwtProvider;
+import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.security.service.EncoderService;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.RefreshTokenService;
 import com.softserve.teachua.service.RoleService;
 import com.softserve.teachua.service.UserService;
 import java.io.UnsupportedEncodingException;
@@ -40,7 +42,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
@@ -51,16 +52,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 @Transactional
@@ -73,7 +68,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
     private static final String USERS_NOT_FOUND_BY_ROLE_NAME = "User not found by role name - %s";
     private static final String WRONG_PASSWORD = "Wrong password";
-    private static final String NOT_VERIFIED = "User is not verified: %s";
+    private static final String NOT_VERIFIED = "User email is not verified: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
     private static final String ONLY_ADMIN_CONTENT = "Only the admin have permit to view this content";
@@ -83,39 +78,37 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
     private final JwtProvider jwtProvider;
-    private final AuthenticationManager authenticationManager;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
+    private final CustomUserDetailsService userDetailsService;
+    private final RefreshTokenService refreshTokenService;
     @Value("${baseURL}")
     private String baseUrl;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, EncoderService encodeService, RoleService roleService,
                            DtoConverter dtoConverter, ArchiveService archiveService, JwtProvider jwtProvider,
-                           @Lazy AuthenticationManager authenticationManager, JavaMailSender javaMailSender,
-                           @Lazy PasswordEncoder passwordEncoder, ObjectMapper objectMapper) {
+                           JavaMailSender javaMailSender, @Lazy PasswordEncoder passwordEncoder,
+                           ObjectMapper objectMapper, RefreshTokenService refreshTokenService,
+                           CustomUserDetailsService userDetailsService) {
         this.userRepository = userRepository;
         this.encodeService = encodeService;
         this.roleService = roleService;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
         this.jwtProvider = jwtProvider;
-        this.authenticationManager = authenticationManager;
         this.javaMailSender = javaMailSender;
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = objectMapper;
+        this.userDetailsService = userDetailsService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
     public UserResponse getUserProfileById(Long id) {
         User user = getUserById(id);
         return dtoConverter.convertToDto(user, UserResponse.class);
-    }
-
-    @Override
-    public UserEntity getUserEntity(String email) {
-        return dtoConverter.convertToDto(getUserByEmail(email), UserEntity.class);
     }
 
     @Override
@@ -179,7 +172,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     public SuccessRegistration registerUser(UserProfile userProfile) {
         userProfile.setEmail(userProfile.getEmail().toLowerCase());
         if (isUserExistByEmail(userProfile.getEmail())) {
-            throw new WrongAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
+            throw new UnauthorizedException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
         }
 
         if (RoleData.ADMIN.getDBRoleName().equals(userProfile.getRoleName())) {
@@ -216,8 +209,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
 
     @Override
     public UserVerifyPassword validateUser(UserVerifyPassword userVerifyPassword) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
         if (userVerifyPassword.getPassword() == null) {
             userVerifyPassword.setPassword(
                     userRepository.findById(userVerifyPassword.getId())
@@ -237,21 +228,21 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     @Override
     public SuccessLogin validateUser(UserLogin userLogin) {
         userLogin.setEmail(userLogin.getEmail().toLowerCase());
-        UserEntity userEntity = getUserEntity(userLogin.getEmail());
-        if (!encodeService.isValidStatus(userEntity)) {
+        User user = getUserByEmail(userLogin.getEmail());
+        if (!user.isStatus()) {
             throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userLogin.getEmail()));
-        } else if (!encodeService.isValidPassword(userLogin, userEntity)) {
-            throw new WrongAuthenticationException(WRONG_PASSWORD);
+        } else if (!encodeService.isValidPassword(userLogin, user)) {
+            throw new UnauthorizedException(WRONG_PASSWORD);
         }
-        log.debug("user {} logged successfully", userLogin);
+        log.debug("User {} logged successfully", userLogin);
 
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return dtoConverter.convertFromDtoToDto(userEntity, new SuccessLogin())
-                .withAccessToken(jwtProvider.generateToken(authentication));
+        return SuccessLogin.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .role(user.getRole().getName())
+                .accessToken(jwtProvider.generateAccessToken(userLogin.getEmail()))
+                .refreshToken(refreshTokenService.assignRefreshToken(user))
+                .build();
     }
 
     @Override
@@ -352,18 +343,20 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     }
 
     @Override
-    public User getUserFromRequest(HttpServletRequest httpServletRequest) {
+    public User getAuthenticatedUser() {
+        UserPrincipal userPrincipal = userDetailsService.getUserPrincipal();
         return userRepository
-                .findById(jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest)))
-                .orElseThrow(WrongAuthenticationException::new);
+                .findById(userPrincipal.getId())
+                .orElseThrow(() ->
+                        new NotExistException(String.format(USER_NOT_FOUND_BY_ID, userPrincipal.getId())));
     }
 
     @Override
     public void verifyIsUserAdmin() {
-        User user = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new WrongAuthenticationException(ONLY_ADMIN_CONTENT));
+        User user = userRepository.findByEmail(userDetailsService.getUserPrincipal().getName())
+                .orElseThrow(() -> new UnauthorizedException(ONLY_ADMIN_CONTENT));
         if (!user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
-            throw new WrongAuthenticationException(ONLY_ADMIN_CONTENT);
+            throw new UnauthorizedException(ONLY_ADMIN_CONTENT);
         }
     }
 
@@ -476,13 +469,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         userRepository.save(user);
         log.debug("password reset {}", user);
         return userResetPassword;
-    }
-
-    @Override
-    public User getCurrentUser() {
-        HttpServletRequest httpServletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest();
-        return getUserFromRequest(httpServletRequest);
     }
 
     @Override

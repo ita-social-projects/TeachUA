@@ -95,7 +95,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         HtmlUtils.validateDescription(createChallenge.getDescription());
         validateSortNumber(createChallenge.getSortNumber());
         Challenge challenge = dtoConverter.convertToEntity(createChallenge, new Challenge());
-        challenge.setUser(userService.getCurrentUser());
+        challenge.setUser(userService.getAuthenticatedUser());
         challenge.setIsActive(true);
         return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessCreatedChallenge.class);
     }

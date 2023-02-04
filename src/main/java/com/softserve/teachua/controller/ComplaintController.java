@@ -8,7 +8,6 @@ import com.softserve.teachua.service.ComplaintService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,9 +82,8 @@ public class ComplaintController implements Api {
      */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/complaint")
-    public SuccessCreatedComplaint addComplaint(@Valid @RequestBody ComplaintProfile complaintProfile,
-            HttpServletRequest httpServletRequest) {
-        return complaintService.addComplaint(complaintProfile, httpServletRequest);
+    public SuccessCreatedComplaint addComplaint(@Valid @RequestBody ComplaintProfile complaintProfile) {
+        return complaintService.addComplaint(complaintProfile);
     }
 
     /**

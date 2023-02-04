@@ -12,7 +12,7 @@ import com.softserve.teachua.model.Complaint;
 import com.softserve.teachua.model.archivable.ComplaintArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
-import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ClubService;
@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,23 +40,24 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
-    private final UserRepository userRepository;
     private final UserService userService;
     private final ObjectMapper objectMapper;
     private final ClubService clubService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     public ComplaintServiceImpl(ComplaintRepository complaintRepository, DtoConverter dtoConverter,
-            ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository,
-            UserService userService, ObjectMapper objectMapper, ClubService clubService) {
+                                ClubRepository clubRepository, ArchiveService archiveService,
+                                UserService userService, ObjectMapper objectMapper, ClubService clubService,
+                                CustomUserDetailsService customUserDetailsService) {
         this.complaintRepository = complaintRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
-        this.userRepository = userRepository;
         this.userService = userService;
         this.objectMapper = objectMapper;
         this.clubService = clubService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Override
@@ -78,15 +78,11 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     }
 
     @Override
-    public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile,
-            HttpServletRequest httpServletRequest) {
-        complaintProfile.setUserId(userService.getUserFromRequest(httpServletRequest).getId());
+    public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile) {
+        complaintProfile.setUserId(customUserDetailsService.getUserPrincipal().getId());
 
         if (!clubRepository.existsById(complaintProfile.getClubId())) {
             throw new NotExistException("Club with id " + complaintProfile.getClubId() + " does`nt exists");
-        }
-        if (!userRepository.existsById(complaintProfile.getUserId())) {
-            throw new NotExistException("User with id " + complaintProfile.getUserId() + "does`nt exists");
         }
 
         Complaint complaint = complaintRepository

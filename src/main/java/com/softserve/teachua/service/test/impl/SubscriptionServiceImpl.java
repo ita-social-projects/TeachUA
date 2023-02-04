@@ -59,7 +59,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         for (Group group : groups) {
             if (group.getEnrollmentKey().equals(enrollmentKey)) {
-                User user = userService.getCurrentUser();
+                User user = userService.getAuthenticatedUser();
                 Subscription subscription = generateSubscription(group, user);
                 subscriptionRepository.save(subscription);
                 log.info("**/Subscription has been created. {}", subscription);
@@ -77,7 +77,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         Group group = groupService.findGroupById(groupId);
         Subscription subscription = generateSubscription(group, user);
         subscriptionRepository.save(subscription);
-        log.info("**/Subscription has been created. {}", subscription.toString());
+        log.info("**/Subscription has been created. {}", subscription);
         return generateSubscriptionProfile(subscription);
     }
 
