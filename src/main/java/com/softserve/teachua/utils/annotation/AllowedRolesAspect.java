@@ -1,7 +1,6 @@
 package com.softserve.teachua.utils.annotation;
 
 import com.softserve.teachua.constants.RoleData;
-import com.softserve.teachua.exception.WrongAuthenticationException;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,6 +10,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -34,7 +34,7 @@ public class AllowedRolesAspect {
             }
         }
 
-        throw new WrongAuthenticationException(PERMIT_EXCEPTION);
+        throw new AccessDeniedException(PERMIT_EXCEPTION);
     }
 
     private HttpServletRequest getRequest() {

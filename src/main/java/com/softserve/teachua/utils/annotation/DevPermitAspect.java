@@ -1,12 +1,12 @@
 package com.softserve.teachua.utils.annotation;
 
-import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.tools.FileUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -32,6 +32,6 @@ public class DevPermitAspect {
         if (currentJwt.equals(JWT) && fileUtils.isKeyFileExists()) {
             return joinPoint.proceed();
         }
-        throw new WrongAuthenticationException(PERMIT_EXCEPTION);
+        throw new AccessDeniedException(PERMIT_EXCEPTION);
     }
 }

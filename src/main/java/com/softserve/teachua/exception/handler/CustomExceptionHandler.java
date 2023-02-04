@@ -16,11 +16,9 @@ import com.softserve.teachua.exception.LogNotFoundException;
 import com.softserve.teachua.exception.MatchingPasswordException;
 import com.softserve.teachua.exception.MethodNotSupportedException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.exception.NotVerifiedUserException;
 import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.exception.StreamCloseException;
 import com.softserve.teachua.exception.UpdatePasswordException;
-import com.softserve.teachua.exception.WrongAuthenticationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -39,6 +37,8 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -59,9 +59,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public static final String INVALID_FUTURE_DATE = "startDate Invalid future date";
 
-    @ExceptionHandler(WrongAuthenticationException.class)
-    public final ResponseEntity<Object> handleAuthenticationException(WrongAuthenticationException exception) {
+    @ExceptionHandler(AuthenticationException.class)
+    public final ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception) {
         return buildExceptionBody(exception, UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public final ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException exception) {
+        return buildExceptionBody(exception, FORBIDDEN);
     }
 
     @ExceptionHandler(NotExistException.class)
@@ -102,11 +107,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(FileUploadException.class)
     public final ResponseEntity<Object> handleFileUploadException(JsonWriteException exception) {
         return buildExceptionBody(exception, UNPROCESSABLE_ENTITY);
-    }
-
-    @ExceptionHandler(NotVerifiedUserException.class)
-    public final ResponseEntity<Object> handleFileUploadException(RuntimeException exception) {
-        return buildExceptionBody(exception, FORBIDDEN);
     }
 
     @ExceptionHandler(MatchingPasswordException.class)
