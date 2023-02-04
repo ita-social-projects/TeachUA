@@ -39,18 +39,11 @@ public class PrometheusServiceImpl implements PrometheusService {
             // if line is comment or is empty, we don't store it
             if (!line.startsWith("#") && !line.trim().isEmpty()) {
                 Metric currentMetric = new Metric();
-                String[] keyAndValue = line.split(" ");
+                // negative look ahead regex, finds first space from the end of String
+                String[] keyAndValue = line.split("( )(?!.* )");
                 if (keyAndValue.length >= 2) {
-
-                    StringBuilder sb = new StringBuilder();
-                    // get full name of complex metric name
-                    for (int i = 0; i < keyAndValue.length - 1; i++) {
-                        sb.append(keyAndValue[i]);
-                    }
-                    currentMetric.setName(sb.toString());
-
-                    // get the value of given metric
-                    currentMetric.setValue(keyAndValue[keyAndValue.length - 1]);
+                    currentMetric.setName(keyAndValue[0]);
+                    currentMetric.setValue(keyAndValue[1]);
                     metricsList.add(currentMetric);
                 }
             }

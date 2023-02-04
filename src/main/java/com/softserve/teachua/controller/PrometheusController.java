@@ -19,7 +19,6 @@ public class PrometheusController implements Api {
         this.prometheusService = prometheusService;
     }
 
-
     /**
      * Use this endpoint to get a report from Prometheus. The controller returns {@code String}.
      *
@@ -27,12 +26,14 @@ public class PrometheusController implements Api {
      */
     @GetMapping(path = "/prometheus", produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("permitAll()")
     public String getPrometheusMetrics() {
         return prometheusService.getPrometheusMetrics();
     }
 
     /**
-     * Use this endpoint to get a report from Prometheus in a list form. The controller returns {@code List<Metric>}.
+     * Use this endpoint to get a report from Prometheus in a list form of Key and Values.
+     * The controller returns {@code List<Metric>}.
      *
      * @return new {@code List<Metric>}.
      */
