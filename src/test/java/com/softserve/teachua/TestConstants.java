@@ -10,6 +10,9 @@ public final class TestConstants {
     public static final String USER_ROLE = "USER_ROLE";
     public static final String PASSWORD = "password";
     public static final String PHONE = "+380960000000";
+    public static final String OLD_REFRESH_TOKEN = "oldRefreshToken";
+    public static final String NEW_REFRESH_TOKEN = "newRefreshToken";
+    public static final String ACCESS_TOKEN = "accessToken";
     public static final String EMPTY_STRING = "";
     public static final String NOT_EMPTY_STRING = "Value";
     public static final Long LONG_ID = 1L;

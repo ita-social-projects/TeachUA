@@ -7,6 +7,7 @@ import com.softserve.teachua.repository.UserRepository;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,9 +44,11 @@ class CustomUserDetailsServiceTest {
 
         UserDetails actual = userDetailsService.loadUserByUsername(user.getEmail());
 
-        assertEquals(userDetails.getUsername(), actual.getUsername());
-        assertEquals(userDetails.getPassword(), actual.getPassword());
-        assertEquals(userDetails.getAuthorities(), actual.getAuthorities());
+        assertAll("Should return appropriate UserDetails",
+                () -> assertEquals(userDetails.getUsername(), actual.getUsername()),
+                () -> assertEquals(userDetails.getPassword(), actual.getPassword()),
+                () -> assertEquals(userDetails.getAuthorities(), actual.getAuthorities())
+        );
     }
 
     @Test

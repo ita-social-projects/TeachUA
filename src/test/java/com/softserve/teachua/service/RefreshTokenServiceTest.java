@@ -1,5 +1,8 @@
 package com.softserve.teachua.service;
 
+import static com.softserve.teachua.TestConstants.ACCESS_TOKEN;
+import static com.softserve.teachua.TestConstants.NEW_REFRESH_TOKEN;
+import static com.softserve.teachua.TestConstants.OLD_REFRESH_TOKEN;
 import static com.softserve.teachua.TestUtils.getUser;
 import com.softserve.teachua.dto.security.RefreshTokenResponse;
 import com.softserve.teachua.exception.UserAuthenticationException;
@@ -24,9 +27,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class RefreshTokenServiceTest {
-    private static final String OLD_REFRESH_TOKEN = "oldRefreshToken";
-    private static final String NEW_REFRESH_TOKEN = "newRefreshToken";
-    private static final String ACCESS_TOKEN = "accessToken";
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
     @Mock
