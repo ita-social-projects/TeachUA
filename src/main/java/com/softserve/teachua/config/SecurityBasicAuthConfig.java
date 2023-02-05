@@ -10,24 +10,27 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
+/**
+ * Multiple Entry Points in Spring Security.
+ *
+ * @see <a href="https://www.baeldung.com/spring-security-multiple-entry-points">Link for spring-security-multiple-entry-points</a>
+ */
 @Configuration
 @EnableWebSecurity
 @Order(2)
-// Multiple Entry Points in Spring Security
-//https://www.baeldung.com/spring-security-multiple-entry-points
 public class SecurityBasicAuthConfig {
     @Bean
     public SecurityFilterChain filterChainAppForBasicAuth(HttpSecurity http) throws Exception {
         http.antMatcher("/api/prometheus")
-            .authorizeRequests().anyRequest().hasRole(RoleData.ADMIN.getRoleName())
-            .and().httpBasic().authenticationEntryPoint(authenticationEntryPoint());
+                .authorizeRequests().anyRequest().hasRole(RoleData.ADMIN.getRoleName())
+                .and().httpBasic().authenticationEntryPoint(authenticationEntryPoint());
         return http.build();
     }
 
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
         BasicAuthenticationEntryPoint entryPoint =
-            new BasicAuthenticationEntryPoint();
+                new BasicAuthenticationEntryPoint();
         entryPoint.setRealmName("basic auth realm");
         return entryPoint;
     }

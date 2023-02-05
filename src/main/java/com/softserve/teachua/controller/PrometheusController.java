@@ -33,7 +33,7 @@ public class PrometheusController implements Api {
      *
      * @return new {@code List<Metric>}.
      */
-    @GetMapping(path = "/prometheus1")
+    @GetMapping(path = "/prometheusKeysAndValues")
     @PreAuthorize("hasRole('ADMIN')")
     public List<Metric> getKeysAndValues() {
         return prometheusService.getKeysAndValues();
