@@ -1,13 +1,12 @@
 package com.softserve.teachua.config;
 
+import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-
-import java.util.Properties;
 
 /**
  * Class get settings to SMTP.
@@ -16,7 +15,6 @@ import java.util.Properties;
 @Configuration
 @PropertySource(value = "classpath:application-dev.properties")
 public class ConfigureSMTPProperties {
-
     @Value("${spring.mail.host}")
     private String host;
     @Value("${spring.mail.port}")

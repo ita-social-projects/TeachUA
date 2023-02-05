@@ -1,17 +1,15 @@
 package com.softserve.teachua.utils;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 @Component
 public class ReportDecorator {
-
     public static String formDescription(String description) {
         final JSONObject result = new JSONObject(description);
         final JSONArray resultArray = result.getJSONArray("blocks");

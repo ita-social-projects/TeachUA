@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class CoordinatesConverter {
-
     public void locationProfileConverterToDb(LocationProfile location) {
         if (location != null && location.getCoordinates() != null) {
             double[] latitudeAndLongitude = parseLatitudeAndLongitude(location.getCoordinates());

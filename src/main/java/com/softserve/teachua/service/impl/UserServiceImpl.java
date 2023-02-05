@@ -5,8 +5,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.security.UserEntity;
-import com.softserve.teachua.dto.user.*;
-import com.softserve.teachua.exception.*;
+import com.softserve.teachua.dto.user.SuccessLogin;
+import com.softserve.teachua.dto.user.SuccessRegistration;
+import com.softserve.teachua.dto.user.SuccessUpdatedUser;
+import com.softserve.teachua.dto.user.SuccessUserPasswordReset;
+import com.softserve.teachua.dto.user.SuccessVerification;
+import com.softserve.teachua.dto.user.UserLogin;
+import com.softserve.teachua.dto.user.UserPasswordUpdate;
+import com.softserve.teachua.dto.user.UserProfile;
+import com.softserve.teachua.dto.user.UserResetPassword;
+import com.softserve.teachua.dto.user.UserResponse;
+import com.softserve.teachua.dto.user.UserUpdateProfile;
+import com.softserve.teachua.dto.user.UserVerifyPassword;
+import com.softserve.teachua.exception.DatabaseRepositoryException;
+import com.softserve.teachua.exception.IncorrectInputException;
+import com.softserve.teachua.exception.MatchingPasswordException;
+import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.exception.NotVerifiedUserException;
+import com.softserve.teachua.exception.UpdatePasswordException;
+import com.softserve.teachua.exception.WrongAuthenticationException;
 import com.softserve.teachua.model.AuthProvider;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.UserArch;
@@ -17,6 +34,14 @@ import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.RoleService;
 import com.softserve.teachua.service.UserService;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +61,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ValidationException;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -76,9 +92,9 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, EncoderService encodeService, RoleService roleService,
-            DtoConverter dtoConverter, ArchiveService archiveService, JwtProvider jwtProvider,
-            @Lazy AuthenticationManager authenticationManager, JavaMailSender javaMailSender,
-            @Lazy PasswordEncoder passwordEncoder, ObjectMapper objectMapper) {
+                           DtoConverter dtoConverter, ArchiveService archiveService, JwtProvider jwtProvider,
+                           @Lazy AuthenticationManager authenticationManager, JavaMailSender javaMailSender,
+                           @Lazy PasswordEncoder passwordEncoder, ObjectMapper objectMapper) {
         this.userRepository = userRepository;
         this.encodeService = encodeService;
         this.roleService = roleService;
@@ -239,6 +255,11 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     }
 
     @Override
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
     public SuccessUpdatedUser updateUser(Long id, UserUpdateProfile userProfile) {
         User user = getUserById(id);
 
@@ -295,14 +316,9 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     /**
      * The method send message {@code message} to new user after registration.
      *
-     * @param user
-     *            - put user entity
-     *
-     * @throws MessagingException
-     *             if message isn`t sent
-     * @throws UnsupportedEncodingException
-     *             if there is wrong encoding
-     *
+     * @param user - put user entity
+     * @throws MessagingException           if message isn`t sent
+     * @throws UnsupportedEncodingException if there is wrong encoding
      * @value toAddress - an email of user to send verificationCode with httpRequest
      * @value fromAddress - an email of company getting from environment variables
      * @value senderName - name of company or name of user-sender
@@ -314,12 +330,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         String fromAddress = (System.getenv("USER_EMAIL"));
         String senderName = "TeachUA";
         String subject = "Підтвердіть Вашу реєстрацію";
-        String content = "Шановний/а [[userFullName]]!<br>"
-                + "Для підтвердження Вашої реєстрації, будь ласка, перейдіть за посиланням нижче: \n<br>"
-                + "<h3><a href=\"[[URL]]\" target=\"_self\">Підтвердити реєстрацію</a></h3>" + "Дякуємо!<br>"
-                + "Ініціатива \"Навчай українською\"";
-        String verifyURL = baseUrl + "/verify?code=" + user.getVerificationCode();
-        // String verifyURL = "http://localhost:3000/dev/verify?code=" + user.getVerificationCode();
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -327,6 +337,12 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         helper.setTo(toAddress);
         helper.setSubject(subject);
 
+        String verifyURL = baseUrl + "/verify?code=" + user.getVerificationCode();
+        // String verifyURL = "http://localhost:3000/dev/verify?code=" + user.getVerificationCode();
+        String content = "Шановний/а [[userFullName]]!<br>"
+                + "Для підтвердження Вашої реєстрації, будь ласка, перейдіть за посиланням нижче: \n<br>"
+                + "<h3><a href=\"[[URL]]\" target=\"_self\">Підтвердити реєстрацію</a></h3>" + "Дякуємо!<br>"
+                + "Ініціатива \"Навчай українською\"";
         content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
         content = content.replace("[[URL]]", verifyURL);
         message.setContent(content, "text/html; charset=UTF-8");
@@ -349,11 +365,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         if (!user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
             throw new WrongAuthenticationException(ONLY_ADMIN_CONTENT);
         }
-    }
-
-    @Override
-    public void updateUser(User user) {
-        userRepository.save(user);
     }
 
     private boolean isUserExistByEmail(String email) {
@@ -382,12 +393,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
             String fromAddress = (System.getenv("USER_EMAIL"));
             String senderName = "TeachUA";
             String subject = "Відновлення паролю";
-            String content = "Шановний/а [[userFullName]]!<br>"
-                    + "Для відновлення Вашого паролю, будь ласка, перейдіть за посиланням нижче: \n<br> "
-                    + "<h3><a href=\"[[URL]]\" target=\"_self\">Змінити пароль</a></h3>" + "Дякуємо!<br>"
-                    + "Ініціатива \"Навчай українською\"";
-            String verifyURL = baseUrl + "/verifyreset?code=" + user.getVerificationCode();
-            // String verifyURL = "http://localhost:3000/dev/verifyreset?code=" + user.getVerificationCode();
 
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -395,6 +400,12 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
             helper.setTo(toAddress);
             helper.setSubject(subject);
 
+            String content = "Шановний/а [[userFullName]]!<br>"
+                    + "Для відновлення Вашого паролю, будь ласка, перейдіть за посиланням нижче: \n<br> "
+                    + "<h3><a href=\"[[URL]]\" target=\"_self\">Змінити пароль</a></h3>" + "Дякуємо!<br>"
+                    + "Ініціатива \"Навчай українською\"";
+            String verifyURL = baseUrl + "/verifyreset?code=" + user.getVerificationCode();
+            // String verifyURL = "http://localhost:3000/dev/verifyreset?code=" + user.getVerificationCode();
             content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
             content = content.replace("[[URL]]", verifyURL);
             message.setContent(content, "text/html; charset=UTF-8");
@@ -450,11 +461,11 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
 
     @Override
     public SuccessUserPasswordReset verifyChangePassword(SuccessUserPasswordReset userResetPassword) {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        BCryptPasswordEncoder passEncoder = new BCryptPasswordEncoder();
         log.debug("step 3: " + userResetPassword.getVerificationCode() + " " + userResetPassword.getEmail());
         User user = getUserByVerificationCode(userResetPassword.getVerificationCode());
         user.setStatus(true);
-        if (bCryptPasswordEncoder.matches(userResetPassword.getPassword(), user.getPassword())) {
+        if (passEncoder.matches(userResetPassword.getPassword(), user.getPassword())) {
             throw new MatchingPasswordException("Новий пароль співпадає з старим");
         }
         userResetPassword.setEmail(user.getEmail());

@@ -2,9 +2,12 @@ package com.softserve.teachua.dto.task;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.marker.Convertible;
-import lombok.*;
-
 import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 @AllArgsConstructor
 @NoArgsConstructor

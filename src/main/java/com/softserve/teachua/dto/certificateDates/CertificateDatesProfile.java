@@ -1,10 +1,13 @@
 package com.softserve.teachua.dto.certificateDates;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import lombok.*;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,5 +30,4 @@ public class CertificateDatesProfile implements Convertible {
     @NotBlank
     @Pattern(regexp = "^[0-9]{2}$", message = "Неправильний формат.")
     private String courseNumber;
-
 }

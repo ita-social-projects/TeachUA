@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CertificateTemplateLastModificationDateSavingResponse {
-
     private List<String> messages;
     private String filePath;
-
 }

@@ -6,7 +6,6 @@ import com.softserve.teachua.dto.test.result.UserResult;
 import com.softserve.teachua.dto.test.test.ResultTest;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Result;
-
 import java.util.List;
 
 /**
@@ -14,54 +13,61 @@ import java.util.List;
  */
 public interface ResultService {
     /**
-     * This method returns entity {@code Result} of result by id.
-     * @param id - put result id.
-     * @return new {@code Result}.
+     * Find a result by given id.
+     *
+     * @param id result id
+     * @return entity {@code Result}
      */
     Result findById(Long id);
 
     /**
-     * This method returns an integer value of grade of a certain result.
-     * @param answers - put list of selected answers.
-     * @return int
+     * Calculate an integer value of grade of a certain result.
+     *
+     * @param answers a list of selected answers.
+     * @return a grade represented by an integer value
      */
     int countGrade(List<Answer> answers);
 
     /**
-     * This method returns all results by user id.
-     * @param userId - put user id here.
-     * @return new {@code List<Result>}
+     * Find all results by given user id.
+     *
+     * @param userId user id
+     * @return all results by user id
      */
     List<Result> findResultsByUserId(Long userId);
 
     /**
-     * This method returns dto {@code ResultTest} by test id and result id.
-     * @param resultId - put result id.
-     * @return new {@code ResultTest}.
+     * Get dto {@code ResultTest} by result id.
+     *
+     * @param resultId result id
+     * @return dto {@code ResultTest} by result id.
      */
     ResultTest getDetailedResultById(Long resultId);
 
     /**
-     * This method returns dto {@code SuccessCreatedResult} if result was successfully added.
-     * @param resultDto - put body of dto {@code CreateResult}.
-     * @return new {@code SuccessCreatedResult}.
+     * Create a new result from the dto {@code CreateResult}.
+     *
+     * @param resultDto body of dto {@code CreateResult}
+     * @return dto {@code SuccessCreatedResult} if a result was successfully added
      */
     SuccessCreatedResult saveResult(CreateResult resultDto);
 
     /**
-     * This method returns all result DTOs by user id and group id.
-     * @param groupId - put group id here.
-     * @param userId - put user id here.
-     * @return new {@code List<UserResult>}
+     * Find user results by given user id and group id.
+     *
+     * @param groupId group id
+     * @param userId user id
+     * @return all result DTOs by user id and group id
      */
     List<UserResult> findUserResultsByGroupIdAndUserId(Long groupId, Long userId);
 
     /**
-     * This method returns all result DTOs by user id and group id and test id.
-     * @param groupId - put group id here.
-     * @param userId - put user id here.
-     * @param testId - put test id here.
-     * @return new {@code List<UserResult>}
+     * Find user results by given user id, group id and test id.
+     *
+     * @param groupId group id
+     * @param userId user id
+     * @param testId test id
+     * @return all result DTOs by user id, group id and test id.
      */
     List<UserResult> findUserResultsByGroupIdAndUserIdAndTestId(Long groupId, Long userId, Long testId);
 }

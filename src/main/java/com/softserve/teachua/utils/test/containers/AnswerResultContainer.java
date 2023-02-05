@@ -1,9 +1,8 @@
 package com.softserve.teachua.utils.test.containers;
 
 import com.softserve.teachua.model.test.Answer;
-import lombok.Getter;
-
 import java.util.Set;
+import lombok.Getter;
 
 @Getter
 public class AnswerResultContainer {

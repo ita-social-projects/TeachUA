@@ -7,14 +7,18 @@ import com.softserve.teachua.dto.test.user.UserResponse;
 import com.softserve.teachua.service.test.GroupService;
 import com.softserve.teachua.service.test.GroupTestService;
 import com.softserve.teachua.service.test.SubscriptionService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.util.List;
-
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing groups.

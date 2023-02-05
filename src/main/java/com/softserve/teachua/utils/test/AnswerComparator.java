@@ -1,7 +1,6 @@
 package com.softserve.teachua.utils.test;
 
 import com.softserve.teachua.model.test.Answer;
-
 import java.util.Comparator;
 
 public class AnswerComparator implements Comparator<Answer> {

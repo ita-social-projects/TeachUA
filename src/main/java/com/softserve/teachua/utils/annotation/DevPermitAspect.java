@@ -15,7 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Component
 public class DevPermitAspect {
     private static final String PERMIT_EXCEPTION = "Only developers can perform this method";
-    private final static String JWT = "p3s6v9ycRfUj/A?D*G-x/WmZq4t7dRgUjXnq3ThWmYq3t6w9z$C&F?E(H+KbPeShVmYw!z%C*F";
+    private static final String JWT = "p3s6v9ycRfUj/A?D*G-x/WmZq4t7dRgUjXnq3ThWmYq3t6w9z$C&F?E(H+KbPeShVmYw!z%C*F";
     private final JwtProvider jwtProvider;
     private final FileUtils fileUtils;
 

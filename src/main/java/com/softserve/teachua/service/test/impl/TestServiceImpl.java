@@ -3,35 +3,50 @@ package com.softserve.teachua.service.test.impl;
 import com.softserve.teachua.controller.test.TestController;
 import com.softserve.teachua.dto.test.question.PassingTestQuestion;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
-import com.softserve.teachua.dto.test.test.*;
+import com.softserve.teachua.dto.test.test.CreateTest;
+import com.softserve.teachua.dto.test.test.PassTest;
+import com.softserve.teachua.dto.test.test.SuccessCreatedTest;
+import com.softserve.teachua.dto.test.test.TestProfile;
+import com.softserve.teachua.dto.test.test.ViewTest;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.User;
-import com.softserve.teachua.model.test.*;
+import com.softserve.teachua.model.test.Answer;
+import com.softserve.teachua.model.test.Group;
+import com.softserve.teachua.model.test.Question;
+import com.softserve.teachua.model.test.QuestionCategory;
+import com.softserve.teachua.model.test.QuestionTest;
+import com.softserve.teachua.model.test.QuestionType;
+import com.softserve.teachua.model.test.Subscription;
+import com.softserve.teachua.model.test.Test;
 import com.softserve.teachua.repository.test.SubscriptionRepository;
 import com.softserve.teachua.repository.test.TestRepository;
 import com.softserve.teachua.service.UserService;
-import com.softserve.teachua.service.test.*;
+import com.softserve.teachua.service.test.GroupService;
+import com.softserve.teachua.service.test.QuestionCategoryService;
+import com.softserve.teachua.service.test.QuestionService;
+import com.softserve.teachua.service.test.QuestionTestService;
+import com.softserve.teachua.service.test.QuestionTypeService;
+import com.softserve.teachua.service.test.TestService;
+import com.softserve.teachua.service.test.TopicService;
+import static com.softserve.teachua.utils.test.Messages.NO_CORRECT_ANSWERS_MESSAGE;
+import static com.softserve.teachua.utils.test.Messages.NO_ID_MESSAGE;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNullIds;
 import com.softserve.teachua.utils.test.validation.service.TestValidationService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.Link;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static com.softserve.teachua.utils.test.Messages.NO_CORRECT_ANSWERS_MESSAGE;
-import static com.softserve.teachua.utils.test.Messages.NO_ID_MESSAGE;
-import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
-import static com.softserve.teachua.utils.test.validation.NullValidator.checkNullIds;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.Link;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -55,15 +70,14 @@ public class TestServiceImpl implements TestService {
         List<Test> tests = testRepository.findAll();
         LocalDate currentDate = LocalDate.now();
 
-        for(Test test : tests) {
+        for (Test test : tests) {
             List<Group> groups = groupService.findAllByTestId(test.getId());
             boolean isActive = groups
                     .stream()
                     .anyMatch(group -> {
                         LocalDate startDate = group.getStartDate();
                         LocalDate endDate = group.getEndDate();
-                        return currentDate.isAfter(startDate) &&
-                               currentDate.isBefore(endDate);
+                        return currentDate.isAfter(startDate) && currentDate.isBefore(endDate);
                     });
             test.setActive(isActive);
             testRepository.save(test);
@@ -87,13 +101,13 @@ public class TestServiceImpl implements TestService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Test> findArchivedTests(){
+    public List<Test> findArchivedTests() {
         return testRepository.findArchivedTests();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Test> findUnarchivedTests(){
+    public List<Test> findUnarchivedTests() {
         return testRepository.findUnarchivedTests();
     }
 
@@ -118,7 +132,7 @@ public class TestServiceImpl implements TestService {
     public List<TestProfile> findUnarchivedTestProfiles() {
         List<Test> tests = findUnarchivedTests();
         List<TestProfile> testProfiles = new ArrayList<>();
-        for(Test test: tests){
+        for (Test test : tests) {
             TestProfile testProfile = modelMapper.map(test, TestProfile.class);
             Link viewTest = linkTo(methodOn(TestController.class)
                     .viewTest(test.getId()))
@@ -134,7 +148,7 @@ public class TestServiceImpl implements TestService {
     public List<TestProfile> findArchivedTestProfiles() {
         List<Test> tests = findArchivedTests();
         List<TestProfile> testProfiles = new ArrayList<>();
-        for(Test test: tests){
+        for (Test test : tests) {
             TestProfile testProfile = modelMapper.map(test, TestProfile.class);
             Link restoreTest = linkTo(methodOn(TestController.class)
                     .restoreTest(test.getId()))
@@ -189,7 +203,6 @@ public class TestServiceImpl implements TestService {
     public SuccessCreatedTest addTest(CreateTest testDto) {
         checkNull(testDto, "Test");
         testValidationService.validateTest(testDto);
-        SuccessCreatedTest successCreatedTest;
         User user = userService.getCurrentUser();
         Test test = modelMapper.map(testDto, Test.class);
         test.setCreator(user);
@@ -197,6 +210,7 @@ public class TestServiceImpl implements TestService {
         test.setTopic(topicService.findByTitle(testDto.getTopicTitle()));
         setQuestions(testDto, test);
         testRepository.save(test);
+        SuccessCreatedTest successCreatedTest;
         successCreatedTest = modelMapper.map(testDto, SuccessCreatedTest.class);
         log.info("**/Test has been created. {}", successCreatedTest.toString());
         return successCreatedTest;
@@ -204,7 +218,7 @@ public class TestServiceImpl implements TestService {
 
     private void setQuestions(CreateTest testDto, Test test) {
         int grade = 0;
-        for (QuestionProfile questionProfile: testDto.getQuestions()) {
+        for (QuestionProfile questionProfile : testDto.getQuestions()) {
             Question question = modelMapper.map(questionProfile, Question.class);
             QuestionTest questionTest = new QuestionTest();
             grade += questionProfile.getValue();
@@ -255,9 +269,9 @@ public class TestServiceImpl implements TestService {
     private QuestionType findQuestionType(QuestionProfile question) {
         int numberOfCorrectAnswers = question.getCorrectAnswerIndexes().size();
 
-        if (numberOfCorrectAnswers == 0)
+        if (numberOfCorrectAnswers == 0) {
             throw new IllegalArgumentException(NO_CORRECT_ANSWERS_MESSAGE);
-        else if (numberOfCorrectAnswers == 1) {
+        } else if (numberOfCorrectAnswers == 1) {
             return questionTypeService.findByTitle("radio");
         } else {
             return questionTypeService.findByTitle("checkbox");

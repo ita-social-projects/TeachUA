@@ -2,20 +2,17 @@ package com.softserve.teachua.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-
 import javax.servlet.Filter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableScheduling
@@ -66,5 +63,10 @@ public class ApplicationConfig {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         return mapper;
+    }
+
+    @Bean
+    public DataFormatter dataFormatter() {
+        return new DataFormatter();
     }
 }

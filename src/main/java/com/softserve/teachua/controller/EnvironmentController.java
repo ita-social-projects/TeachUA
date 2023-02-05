@@ -10,12 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @Hidden
 public class EnvironmentController implements Api {
-
     private EnvironmentService environmentService;
 
     public EnvironmentController(EnvironmentService environmentService) {
@@ -28,5 +25,4 @@ public class EnvironmentController implements Api {
             @RequestParam(value = "name", required = false, defaultValue = "") String name) {
         return environmentService.getEnvironment(name);
     }
-
 }

@@ -10,7 +10,5 @@ import lombok.With;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EnvironmentResponce {
-
     private String value;
-
 }

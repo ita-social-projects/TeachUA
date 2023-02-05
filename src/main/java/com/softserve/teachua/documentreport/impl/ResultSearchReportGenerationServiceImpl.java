@@ -2,6 +2,15 @@ package com.softserve.teachua.documentreport.impl;
 
 import com.softserve.teachua.documentreport.ReportGenerationService;
 import com.softserve.teachua.dto.club.ClubResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -16,19 +25,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 public class ResultSearchReportGenerationServiceImpl implements ReportGenerationService<Page<ClubResponse>> {
-
     private static final Logger LOGGER = LoggerFactory
             .getLogger(ResultSearchReportGenerationServiceImpl.class.getName());
     private static final String TEMPLATE_PATH = "/pdf-reports/template/ResultSearchPdfReportTemplate.jrxml";

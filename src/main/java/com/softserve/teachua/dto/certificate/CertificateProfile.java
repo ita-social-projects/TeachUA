@@ -5,17 +5,15 @@ import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.model.Messenger;
 import com.softserve.teachua.model.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.Column;
+import java.time.LocalDate;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor

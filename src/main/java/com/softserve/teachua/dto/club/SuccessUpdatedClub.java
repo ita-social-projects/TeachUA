@@ -5,14 +5,14 @@ import com.softserve.teachua.dto.contact_data.ContactDataResponse;
 import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.dto.user.UserPreview;
-import com.softserve.teachua.model.*;
+import com.softserve.teachua.model.Category;
+import com.softserve.teachua.model.GalleryPhoto;
+import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor

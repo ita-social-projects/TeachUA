@@ -16,12 +16,10 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 public class CertificateTypeProfile {
-
     private Integer id;
     @Min(value = 1, message = "(Кодовий номер) занадто малий")
     private Integer codeNumber;
     @NotBlank(message = "(Назва типу) не може бути пустою")
     @Size(max = 250, message = "(Назва типу) занадто велика")
     private String name;
-
 }

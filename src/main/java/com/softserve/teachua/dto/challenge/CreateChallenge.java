@@ -5,15 +5,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.utils.deserializers.HtmlModifyDeserialize;
 import com.softserve.teachua.utils.deserializers.TrimDeserialize;
 import com.softserve.teachua.utils.validations.CheckForeignLanguage;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,7 +36,8 @@ public class CreateChallenge {
     @CheckForeignLanguage
     private String description;
     @JsonDeserialize(using = TrimDeserialize.class)
-    @Pattern(regexp = "^https://docs\\.google\\.com/forms/d/e/[A-z0-9_-]+/viewform\\?embedded=true$", message = "must match https://docs.google.com/forms/d/e/{formCode}/viewform?embedded=true")
+    @Pattern(regexp = "^https://docs\\.google\\.com/forms/d/e/[A-z0-9_-]+/viewform\\?embedded=true$",
+            message = "must match https://docs.google.com/forms/d/e/{formCode}/viewform?embedded=true")
     @Size(max = 130, message = "must contain a maximum of 130 letters")
     private String registrationLink;
     @NotBlank

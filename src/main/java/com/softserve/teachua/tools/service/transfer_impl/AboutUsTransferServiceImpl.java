@@ -7,12 +7,11 @@ import com.softserve.teachua.service.AboutUsItemService;
 import com.softserve.teachua.tools.FileUtils;
 import com.softserve.teachua.tools.repository.AboutUsInfoRepository;
 import com.softserve.teachua.tools.service.AboutUsTransferService;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j

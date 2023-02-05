@@ -21,7 +21,6 @@ import lombok.With;
 @With
 @Builder
 public class CertificateDates implements Convertible {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -40,5 +39,4 @@ public class CertificateDates implements Convertible {
 
     @Column(name = "study_form")
     private String studyForm;
-
 }

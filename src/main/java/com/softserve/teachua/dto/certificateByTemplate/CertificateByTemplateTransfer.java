@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CertificateByTemplateTransfer {
-
     private List<String> fieldsList;
     private List<String> fieldPropertiesList;
     private String templateName;
@@ -19,5 +18,4 @@ public class CertificateByTemplateTransfer {
     private List<String> columnHeadersList;
     private List<List<String>> excelContent;
     private List<String> excelColumnsOrder;
-
 }

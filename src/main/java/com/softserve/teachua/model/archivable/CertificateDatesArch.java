@@ -15,7 +15,6 @@ import lombok.With;
 @Data
 @With
 public class CertificateDatesArch implements Convertible, Archivable {
-
     private String dates;
     private Integer hours;
     private String duration;

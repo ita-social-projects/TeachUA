@@ -3,15 +3,19 @@ package com.softserve.teachua.controller.test;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.test.questionCategory.QuestionCategoryProfile;
 import com.softserve.teachua.service.test.QuestionCategoryService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.util.List;
-
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing question categories.

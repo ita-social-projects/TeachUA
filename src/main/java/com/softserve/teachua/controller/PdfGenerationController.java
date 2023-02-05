@@ -1,12 +1,12 @@
 package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.documentreport.ReportGenerationService;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.service.CenterService;
 import com.softserve.teachua.service.ClubService;
-import com.softserve.teachua.documentreport.ReportGenerationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

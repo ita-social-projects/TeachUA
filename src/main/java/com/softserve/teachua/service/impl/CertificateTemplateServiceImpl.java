@@ -2,12 +2,19 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.certificateTemplate.*;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateCreationResponse;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplatePreview;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateProfile;
+import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUpdationResponse;
+import com.softserve.teachua.dto.certificateTemplate.CreateCertificateTemplate;
+import com.softserve.teachua.dto.certificateTemplate.SuccessCreatedCertificateTemplate;
+import com.softserve.teachua.dto.certificateTemplate.UpdateCertificateTemplate;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.repository.CertificateTemplateRepository;
 import com.softserve.teachua.service.ArchiveMark;
+import static com.softserve.teachua.service.CertificateService.LAST_JRXML_TEMPLATE_ID;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.CertificateTypeService;
 import java.io.IOException;
@@ -24,8 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.softserve.teachua.service.CertificateService.LAST_JRXML_TEMPLATE_ID;
 
 @Service
 @Transactional
@@ -63,13 +68,13 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
     @Override
     public CertificateTemplate getTemplateById(Integer id) {
         return certificateTemplateRepository.findById(id)
-            .orElseThrow(() -> new NotExistException(String.format(TEMPLATE_NOT_FOUND_BY_ID, id)));
+                .orElseThrow(() -> new NotExistException(String.format(TEMPLATE_NOT_FOUND_BY_ID, id)));
     }
 
     @Override
     public CertificateTemplateProfile getTemplateProfileById(Integer id) {
         CertificateTemplate template = certificateTemplateRepository.findById(id)
-            .orElseThrow(() -> new NotExistException(String.format(TEMPLATE_NOT_FOUND_BY_ID, id)));
+                .orElseThrow(() -> new NotExistException(String.format(TEMPLATE_NOT_FOUND_BY_ID, id)));
         CertificateTemplateProfile templateProfile = new CertificateTemplateProfile();
         BeanUtils.copyProperties(template, templateProfile);
         templateProfile.setUsed(certificateRepository.existsByTemplateId(id));
@@ -79,7 +84,7 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
     @Override
     public CertificateTemplate getTemplateByType(Integer type) {
         return certificateTemplateRepository.findFirstByCertificateTypeId(type)
-            .orElseThrow(() -> new NotExistException(String.format(TEMPLATE_NOT_FOUND_BY_TYPE, type)));
+                .orElseThrow(() -> new NotExistException(String.format(TEMPLATE_NOT_FOUND_BY_TYPE, type)));
     }
 
     @Override
@@ -98,20 +103,20 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
         }
         if (!messagesList.isEmpty()) {
             return CertificateTemplateCreationResponse.builder()
-                .isValid(false)
-                .messages(messagesList)
-                .build();
+                    .isValid(false)
+                    .messages(messagesList)
+                    .build();
         }
         CertificateTemplate certificateTemplate =
-            dtoConverter.convertToEntity(createCertificateTemplate, new CertificateTemplate());
+                dtoConverter.convertToEntity(createCertificateTemplate, new CertificateTemplate());
         certificateTemplate.setCertificateType(certificateTypeService.getCertificateTypeByCodeNumber(
-            Integer.valueOf(createCertificateTemplate.getCertificateType())
+                Integer.valueOf(createCertificateTemplate.getCertificateType())
         ));
         return CertificateTemplateCreationResponse.builder()
-            .isValid(true)
-            .template(dtoConverter.convertToDto(certificateTemplateRepository.save(certificateTemplate),
-                SuccessCreatedCertificateTemplate.class))
-            .build();
+                .isValid(true)
+                .template(dtoConverter.convertToDto(certificateTemplateRepository.save(certificateTemplate),
+                        SuccessCreatedCertificateTemplate.class))
+                .build();
     }
 
     @Override
@@ -120,7 +125,7 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
         List<CertificateTemplate> list;
         list = certificateTemplateRepository.findByIdGreaterThanOrderByIdDesc(LAST_JRXML_TEMPLATE_ID);
         list.forEach(
-            (challenge -> resultList.add(dtoConverter.convertToDto(challenge, CertificateTemplatePreview.class))));
+                (challenge -> resultList.add(dtoConverter.convertToDto(challenge, CertificateTemplatePreview.class))));
         return resultList;
     }
 
@@ -134,19 +139,19 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
         List<String> messagesList = new ArrayList<>();
         CertificateTemplate template = getTemplateById(id);
 
-        if (!template.getName().equals(updatedTemplate.getName()) &&
-            certificateTemplateRepository.existsByName(updatedTemplate.getName())) {
+        if (!template.getName().equals(updatedTemplate.getName())
+                && certificateTemplateRepository.existsByName(updatedTemplate.getName())) {
             messagesList.add("Шаблон із такою назвою уже існує!");
             return CertificateTemplateUpdationResponse.builder().isUpdated(false).messages(messagesList).build();
         }
 
         BeanUtils.copyProperties(updatedTemplate, template);
         template.setCertificateType(
-            certificateTypeService.getCertificateTypeByCodeNumber(updatedTemplate.getCertificateType()));
+                certificateTypeService.getCertificateTypeByCodeNumber(updatedTemplate.getCertificateType()));
         return CertificateTemplateUpdationResponse.builder()
-            .isUpdated(true)
-            .template(certificateTemplateRepository.save(template))
-            .build();
+                .isUpdated(true)
+                .template(certificateTemplateRepository.save(template))
+                .build();
     }
 
     @Override
@@ -158,8 +163,8 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
                 template = templateOptional.get();
                 try {
                     Path source = Paths.get(
-                        new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/" +
-                            template.getFilePath());
+                            new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/"
+                                    + template.getFilePath());
                     Files.delete(source);
                 } catch (IOException e) {
                     log.error("Failed to delete certificate template: error while deleting pdf template " + template);
@@ -172,5 +177,4 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
         }
         return false;
     }
-
 }

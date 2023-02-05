@@ -1,18 +1,20 @@
 package com.softserve.teachua.dao;
 
 import com.softserve.teachua.exception.BadRequestException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
-import java.sql.*;
-
 @Component
 @Slf4j
 public class BackupDaoImpl implements BackupDao {
-
     private final JdbcTemplate jdbcTemplate;
 
     private final DataSource dataSource;
@@ -25,7 +27,6 @@ public class BackupDaoImpl implements BackupDao {
 
     @Override
     public String getTable(String tableName) {
-
         String sql = "SELECT * FROM " + tableName;
 
         StringBuilder query = new StringBuilder("insert into ");
@@ -43,7 +44,6 @@ public class BackupDaoImpl implements BackupDao {
             resultSet = statement.executeQuery(sql);
             metadata = resultSet.getMetaData();
             columnCount = metadata.getColumnCount();
-
         } catch (SQLException e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -61,12 +61,10 @@ public class BackupDaoImpl implements BackupDao {
             } catch (SQLException e) {
                 throw new BadRequestException("not found2");
             }
-
         }
         query.append(") values\n");
 
         try {
-
             boolean bln = false;
             while (resultSet.next()) {
                 if (bln) {
@@ -101,6 +99,5 @@ public class BackupDaoImpl implements BackupDao {
             e.printStackTrace();
         }
         return query.toString();
-
     }
 }
