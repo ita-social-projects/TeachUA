@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,11 +35,9 @@ public class LoginController implements Api {
     }
 
     /**
-     * The controller returns dto {@code SuccessLogin} of sign-inned user.
+     * The endpoint returns dto {@code SuccessLogin} of sign-inned user.
      *
-     * @param userLogin
-     *            - dto with all params.
-     *
+     * @param userLogin - dto with all params.
      * @return new {@code SuccessLogin}.
      */
     @PreAuthorize("!isAuthenticated()")
@@ -49,15 +46,26 @@ public class LoginController implements Api {
         return userService.loginUser(userLogin);
     }
 
+    /**
+     * The endpoint returns dto {@code RefreshTokenResponse} with access and refresh token.
+     * Refresh token from request will be revoked.
+     *
+     * @param request {@code RefreshTokenRequest}.
+     * @return new {@code SuccessLogin}.
+     */
     @PreAuthorize("!isAuthenticated()")
     @PostMapping("/token/refresh")
     public RefreshTokenResponse refreshAccessToken(@Valid @RequestBody RefreshTokenRequest request) {
         return refreshTokenService.refreshAccessToken(request.getRefreshToken());
     }
 
+    /**
+     * The endpoint revokes requested refresh token.
+     *
+     * @param request {@code RefreshTokenRequest}.
+     */
     @PostMapping("/token/revoke")
-    public ResponseEntity<?> revokeRefreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+    public void revokeRefreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         refreshTokenService.revokeRefreshToken(request.getRefreshToken());
-        return ResponseEntity.ok().build();
     }
 }
