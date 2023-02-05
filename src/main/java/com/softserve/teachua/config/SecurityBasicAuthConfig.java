@@ -25,7 +25,7 @@ public class SecurityBasicAuthConfig {
     }
 
     @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint(){
+    public AuthenticationEntryPoint authenticationEntryPoint() {
         BasicAuthenticationEntryPoint entryPoint =
             new BasicAuthenticationEntryPoint();
         entryPoint.setRealmName("basic auth realm");

@@ -57,7 +57,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
+        throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -66,50 +66,50 @@ public class SecurityConfig {
         http.httpBasic()
             .disable().csrf().disable().cors()
             .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-                .exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint())
+            .exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint())
             .and()
-                .authorizeRequests()
-                .antMatchers("/", "/main").permitAll()
-                .antMatchers(
-                    "/v3/api-docs/**",
-                    "/swagger-ui.html",
-                    "/swagger-ui/**",
-                    "/swagger",
-                    "/swagger-resources/**",
-                    "/swagger-resources").permitAll()
-                .antMatchers("/static/**").permitAll()
-                .antMatchers("/manifest.json").permitAll()
-                .antMatchers("/favicon**").permitAll()
-                .antMatchers("/upload/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/club/*", "/clubs", "/challenge", "/challenge/*", "/challenge/**",
-                        "/challenges/task/**", "/challenge/task/**", "/marathon", "/marathon/*", "/marathon/task/*",
-                        "/about", "/banners", "/banner/*", "/centers", "/center/*", "/service")
-                .permitAll()
-                .antMatchers("/api/**").permitAll()
-                .antMatchers(
-                    HttpMethod.GET,
-                    "/challengeUA",
-                    "/challengeUA/registration",
-                    "/challengeUA/task/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/user/*").permitAll()
-                .antMatchers(HttpMethod.PUT, "/api/user/**").hasAnyRole(USER, ADMIN, MANAGER)
-                .antMatchers("/verify", "/verifyreset").permitAll()
-                .antMatchers("/roles").hasRole(ADMIN)
-                .antMatchers("/index").permitAll()
-                .antMatchers("/oauth2/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/logs").permitAll().antMatchers(HttpMethod.DELETE, "/logs").permitAll()
+            .authorizeRequests()
+            .antMatchers("/", "/main").permitAll()
+            .antMatchers(
+                "/v3/api-docs/**",
+                "/swagger-ui.html",
+                "/swagger-ui/**",
+                "/swagger",
+                "/swagger-resources/**",
+                "/swagger-resources").permitAll()
+            .antMatchers("/static/**").permitAll()
+            .antMatchers("/manifest.json").permitAll()
+            .antMatchers("/favicon**").permitAll()
+            .antMatchers("/upload/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/club/*", "/clubs", "/challenge", "/challenge/*", "/challenge/**",
+                "/challenges/task/**", "/challenge/task/**", "/marathon", "/marathon/*", "/marathon/task/*",
+                "/about", "/banners", "/banner/*", "/centers", "/center/*", "/service")
+            .permitAll()
+            .antMatchers("/api/**").permitAll()
+            .antMatchers(
+                HttpMethod.GET,
+                "/challengeUA",
+                "/challengeUA/registration",
+                "/challengeUA/task/*").permitAll()
+            .antMatchers(HttpMethod.GET, "/user/*").permitAll()
+            .antMatchers(HttpMethod.PUT, "/api/user/**").hasAnyRole(USER, ADMIN, MANAGER)
+            .antMatchers("/verify", "/verifyreset").permitAll()
+            .antMatchers("/roles").hasRole(ADMIN)
+            .antMatchers("/index").permitAll()
+            .antMatchers("/oauth2/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/logs").permitAll().antMatchers(HttpMethod.DELETE, "/logs").permitAll()
             .and() // oauth2
-                .oauth2Login().authorizationEndpoint().baseUri("/oauth2/authorize")
-                .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
-                .and().redirectionEndpoint().baseUri("/oauth2/callback/*")
-                .and().userInfoEndpoint().userService(customOAuth2UserService)
-                .and().successHandler(oAuth2AuthenticationSuccessHandler).failureHandler(oAuth2AuthenticationFailureHandler)
+            .oauth2Login().authorizationEndpoint().baseUri("/oauth2/authorize")
+            .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
+            .and().redirectionEndpoint().baseUri("/oauth2/callback/*")
+            .and().userInfoEndpoint().userService(customOAuth2UserService)
+            .and().successHandler(oAuth2AuthenticationSuccessHandler).failureHandler(oAuth2AuthenticationFailureHandler)
             .and() // jwtFilter and logout
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/signout")).logoutSuccessUrl("/signin");
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .logout()
+            .logoutRequestMatcher(new AntPathRequestMatcher("/signout")).logoutSuccessUrl("/signin");
         return http.build();
     }
 
