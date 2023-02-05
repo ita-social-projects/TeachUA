@@ -3,12 +3,11 @@ package com.softserve.teachua.service.impl;
 import com.softserve.teachua.dto.metric_item.Metric;
 import com.softserve.teachua.service.PrometheusService;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
