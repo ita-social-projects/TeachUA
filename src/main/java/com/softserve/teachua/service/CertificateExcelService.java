@@ -1,10 +1,10 @@
 package com.softserve.teachua.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.softserve.teachua.dto.certificateByTemplate.CertificateByTemplateTransfer;
-import com.softserve.teachua.dto.certificateExcel.CertificateByTemplateExcelParsingResponse;
-import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
-import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
+import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
+import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelParsingResponse;
+import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
+import com.softserve.teachua.dto.certificate_excel.ExcelParsingResponse;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.web.multipart.MultipartFile;

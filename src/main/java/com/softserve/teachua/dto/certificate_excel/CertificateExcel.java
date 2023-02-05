@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.certificateExcel;
+package com.softserve.teachua.dto.certificate_excel;
 
 import com.softserve.teachua.utils.validations.CertificateUserName;
 import java.time.LocalDate;

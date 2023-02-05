@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.certificateExcel;
+package com.softserve.teachua.dto.certificate_excel;
 
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
 import java.util.ArrayList;

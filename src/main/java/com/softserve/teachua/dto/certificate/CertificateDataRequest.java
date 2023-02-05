@@ -1,7 +1,7 @@
 package com.softserve.teachua.dto.certificate;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
+import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import java.time.LocalDate;
 import java.util.List;
 import javax.validation.constraints.Min;

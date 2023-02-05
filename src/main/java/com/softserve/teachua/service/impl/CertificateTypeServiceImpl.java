@@ -1,8 +1,8 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.certificateType.CertificateTypeProcessingResponse;
-import com.softserve.teachua.dto.certificateType.CertificateTypeProfile;
+import com.softserve.teachua.dto.certificate_type.CertificateTypeProcessingResponse;
+import com.softserve.teachua.dto.certificate_type.CertificateTypeProfile;
 import com.softserve.teachua.exception.EntityIsUsedException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.CertificateType;

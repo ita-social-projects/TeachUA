@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.certificateTemplate;
+package com.softserve.teachua.dto.certificate_template;
 
 import com.softserve.teachua.model.CertificateTemplate;
 import java.util.List;
@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CertificateTemplateUpdationResponse {
-    boolean isUpdated;
-    List<String> messages;
+public class CertificateTemplateProcessingResponse {
+    List<String[]> messages;
     CertificateTemplate template;
 }

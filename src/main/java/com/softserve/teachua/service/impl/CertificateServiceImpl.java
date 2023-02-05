@@ -44,6 +44,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -295,8 +296,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
                 Files.delete(filePath);
                 return bytes;
             } catch (IOException e) {
-                log.error("Error creating certificate by template");
-                e.printStackTrace();
+                log.error("Error creating certificate by template \n{}", ExceptionUtils.getStackTrace(e));
             }
         }
         return new byte[0];

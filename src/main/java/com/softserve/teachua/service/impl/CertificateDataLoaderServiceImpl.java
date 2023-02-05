@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.dto.certificate.CertificateDataRequest;
 import com.softserve.teachua.dto.certificate.CertificateDatabaseResponse;
-import com.softserve.teachua.dto.certificateByTemplate.CertificateByTemplateTransfer;
-import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
+import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
+import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
@@ -50,6 +50,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     private final CertificateTemplateRepository templateRepository;
     private final CertificateTypeRepository certificateTypeRepository;
     private final CertificateContentDecorator decorator;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public CertificateDataLoaderServiceImpl(CertificateService certificateService,
@@ -60,7 +61,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                                             CertificateDatesRepository datesRepository,
                                             CertificateTemplateRepository templateRepository,
                                             CertificateTypeRepository certificateTypeRepository,
-                                            CertificateContentDecorator decorator) {
+                                            CertificateContentDecorator decorator, ObjectMapper objectMapper) {
         this.certificateService = certificateService;
         this.certificateDatesService = certificateDatesService;
         this.certificateTypeService = certificateTypeService;
@@ -70,6 +71,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
         this.templateRepository = templateRepository;
         this.certificateTypeRepository = certificateTypeRepository;
         this.decorator = decorator;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -185,8 +187,8 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
         CertificateTemplate certificateTemplate = templateService.getTemplateByFilePath(data.getTemplateName());
 
         HashMap<String, String> templateProperties =
-                new ObjectMapper().readValue(certificateTemplate.getProperties(), HashMap.class);
-        HashMap<String, String> mainValues = new ObjectMapper().readValue(data.getValues(), HashMap.class);
+                objectMapper.readValue(certificateTemplate.getProperties(), HashMap.class);
+        HashMap<String, String> mainValues = objectMapper.readValue(data.getValues(), HashMap.class);
         boolean excelProcessing = false;
         int i = 1;
         if (!data.getExcelContent().isEmpty()) {
@@ -249,7 +251,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             }
             certificateDatesService.addCertificateDates(certificateDates);
 
-            certificate.setValues(new ObjectMapper().writeValueAsString(values));
+            certificate.setValues(objectMapper.writeValueAsString(values));
             certificate.setSendToEmail(
                     getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
                             data.getExcelColumnsOrder(), excelValues, "Електронна пошта"));
