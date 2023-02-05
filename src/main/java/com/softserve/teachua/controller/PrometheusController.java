@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class PrometheusController implements Api {
-
     private final PrometheusServiceImpl prometheusService;
 
     public PrometheusController(PrometheusServiceImpl prometheusService) {

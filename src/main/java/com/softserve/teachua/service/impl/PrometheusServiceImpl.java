@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class PrometheusServiceImpl implements PrometheusService {
-
     private final PrometheusMeterRegistry prometheusMeterRegistry;
 
     public PrometheusServiceImpl(PrometheusMeterRegistry prometheusMeterRegistry) {
@@ -29,12 +28,10 @@ public class PrometheusServiceImpl implements PrometheusService {
         ArrayList<Metric> metricsList = new ArrayList<>(50);
         // here we scrape metrics, and format them, to get it line by line
         String metrics = prometheusMeterRegistry.scrape().replaceAll("# HELP", "\n# HELP");
-
         // read String line by line to separate metrics as keys and values because we get metrics as plain text
         Scanner scanner = new Scanner(metrics);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-
             // if line is comment or is empty, we don't store it
             if (!line.startsWith("#") && !line.trim().isEmpty()) {
                 Metric currentMetric = new Metric();
@@ -48,7 +45,6 @@ public class PrometheusServiceImpl implements PrometheusService {
             }
         }
         scanner.close();
-
         return metricsList;
     }
 }
