@@ -1,5 +1,6 @@
-package com.softserve.teachua.dto.certificateTemplate;
+package com.softserve.teachua.dto.certificate_template;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.CertificateType;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class CertificateTemplateProfile implements Convertible {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class CertificateTemplatePreview implements Convertible {
     private Integer id;
     private boolean isUsed;
     private String name;

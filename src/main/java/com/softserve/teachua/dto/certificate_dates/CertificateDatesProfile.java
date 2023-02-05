@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.certificateDates;
+package com.softserve.teachua.dto.certificate_dates;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import javax.validation.constraints.NotBlank;

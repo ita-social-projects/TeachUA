@@ -2,15 +2,12 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateCreationResponse;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateLastModificationDateSavingResponse;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateMetadataTransfer;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplatePreview;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateProfile;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUpdationResponse;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUploadResponse;
-import com.softserve.teachua.dto.certificateTemplate.CreateCertificateTemplate;
-import com.softserve.teachua.dto.certificateTemplate.UpdateCertificateTemplate;
+import com.softserve.teachua.dto.certificate_template.CertificateTemplateLastModificationDateSavingResponse;
+import com.softserve.teachua.dto.certificate_template.CertificateTemplateMetadataTransfer;
+import com.softserve.teachua.dto.certificate_template.CertificateTemplatePreview;
+import com.softserve.teachua.dto.certificate_template.CertificateTemplateProcessingResponse;
+import com.softserve.teachua.dto.certificate_template.CertificateTemplateProfile;
+import com.softserve.teachua.dto.certificate_template.CertificateTemplateUploadResponse;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.PdfTemplateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
@@ -46,12 +43,12 @@ public class CertificateTemplateController implements Api {
      * The method saves template to database.
      *
      * @param createCertificateTemplate - {@code CreateCertificateTemplate} read from form.
-     * @return new {@code SuccessCreatedCertificateTemplate}
+     * @return new {@code CertificateTemplateProcessingResponse}
      */
     @PostMapping("/template")
     @AllowedRoles(RoleData.ADMIN)
-    public CertificateTemplateCreationResponse createTemplate(
-            @Valid @RequestBody CreateCertificateTemplate createCertificateTemplate) {
+    public CertificateTemplateProcessingResponse createTemplate(
+            @Valid @RequestBody CertificateTemplateProfile createCertificateTemplate) {
         return certificateTemplateService.addTemplate(createCertificateTemplate);
     }
 
@@ -98,7 +95,7 @@ public class CertificateTemplateController implements Api {
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/template/{id}")
-    public CertificateTemplateProfile getCertificateTemplate(@PathVariable Integer id) {
+    public CertificateTemplatePreview getCertificateTemplate(@PathVariable Integer id) {
         return certificateTemplateService.getTemplateProfileById(id);
     }
 
@@ -108,13 +105,12 @@ public class CertificateTemplateController implements Api {
      *
      * @param id              - put template id here.
      * @param updatedTemplate - put new parameters here.
-     * @return {@code CertificateTemplate} - shows result of updating template.
+     * @return {@code CertificateTemplateProfile} - shows result of updating template.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/template/{id}")
-    public CertificateTemplateUpdationResponse updateTemplate(@PathVariable Integer id,
-                                                              @Valid @RequestBody
-                                                              UpdateCertificateTemplate updatedTemplate) {
+    public CertificateTemplateProcessingResponse updateTemplate(@PathVariable Integer id, @Valid @RequestBody
+        CertificateTemplateProfile updatedTemplate) {
         return certificateTemplateService.updateTemplate(id, updatedTemplate);
     }
 

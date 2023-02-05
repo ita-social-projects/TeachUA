@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.certificateTemplate;
+package com.softserve.teachua.dto.certificate_template;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.validation.constraints.Size;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UpdateCertificateTemplate {
+public class CertificateTemplateProfile {
     private Integer id;
     @Size(max = 250, message = "(Назва шаблону) містить занадто велике значення!")
     private String name;

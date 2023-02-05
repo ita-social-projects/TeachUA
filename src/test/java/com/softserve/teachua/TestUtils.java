@@ -27,7 +27,7 @@ import static com.softserve.teachua.TestConstants.VARIANT;
 import static com.softserve.teachua.TestConstants.CORRECT;
 import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
-import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
+import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
 import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
 import com.softserve.teachua.model.Certificate;

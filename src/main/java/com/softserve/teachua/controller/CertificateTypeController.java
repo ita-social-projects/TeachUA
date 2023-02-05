@@ -2,8 +2,8 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.certificateType.CertificateTypeProcessingResponse;
-import com.softserve.teachua.dto.certificateType.CertificateTypeProfile;
+import com.softserve.teachua.dto.certificate_type.CertificateTypeProfile;
+import com.softserve.teachua.dto.certificate_type.CertificateTypeProcessingResponse;
 import com.softserve.teachua.model.CertificateType;
 import com.softserve.teachua.service.CertificateTypeService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;

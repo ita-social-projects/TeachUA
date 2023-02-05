@@ -1,8 +1,9 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateLastModificationDateSavingResponse;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateMetadataTransfer;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUploadResponse;
+import com.softserve.teachua.dto.certificate_template.CertificateTemplateLastModificationDateSavingResponse;
+import com.softserve.teachua.dto.certificate_template.CertificateTemplateMetadataTransfer;
+import com.softserve.teachua.dto.certificate_template.CertificateTemplateUploadResponse;
+import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.repository.CertificateTemplateRepository;
 import com.softserve.teachua.service.CertificateByTemplateService;
 import com.softserve.teachua.service.PdfTemplateService;
@@ -16,6 +17,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -47,24 +49,20 @@ public class PdfTemplateServiceImpl implements PdfTemplateService {
 
             String templateName = Instant.now().toEpochMilli() + ".pdf";
             File file = new File(
-                    new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
-                            + templateName);
+                    new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/" + templateName);
 
-            try (OutputStream os = Files.newOutputStream(
-                    Paths.get(new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
-                            + templateName))) {
+            try (OutputStream os = Files.newOutputStream(Paths.get(
+                    new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/" + templateName))) {
                 os.write(multipartFile.getBytes());
             }
             return CertificateTemplateUploadResponse.builder()
                     .fieldsList(certificateByTemplateService.getTemplateFields(file.getPath()))
-                    .templateName(templateName)
-                    .build();
+                    .templateName(templateName).build();
         } catch (IOException e) {
-            log.error("Error uploading pdf of template");
-            e.printStackTrace();
+            log.error("Error uploading pdf of template\n{}", ExceptionUtils.getStackTrace(e));
         }
 
-        return null;
+        throw new FileUploadException();
     }
 
     @Override
@@ -72,14 +70,12 @@ public class PdfTemplateServiceImpl implements PdfTemplateService {
             CertificateTemplateMetadataTransfer data) {
         try {
             List<String> messagesList = new ArrayList<>();
-            Path source = Paths.get(
-                    new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
-                            + data.getTemplateName());
+            Path source = Paths.get(new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
+                    + data.getTemplateName());
             String targetName = data.getTemplateLastModifiedDate() + ".pdf";
 
-            if (!(new File(
-                    new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
-                            + targetName).exists())) {
+            if (!(new File(new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
+                    + targetName).exists())) {
                 Files.move(source, source.resolveSibling(targetName));
             } else {
                 Files.delete(source);
@@ -89,15 +85,12 @@ public class PdfTemplateServiceImpl implements PdfTemplateService {
                 messagesList.add("Завантажений pdf-файл уже використовується іншим шаблоном!");
             }
 
-            return CertificateTemplateLastModificationDateSavingResponse.builder()
-                    .messages(messagesList)
-                    .filePath(targetName)
-                    .build();
+            return CertificateTemplateLastModificationDateSavingResponse.builder().messages(messagesList)
+                    .filePath(targetName).build();
         } catch (IOException e) {
-            log.error("Error saving pdf of template");
-            e.printStackTrace();
+            log.error("Error saving pdf of template \n{}", ExceptionUtils.getStackTrace(e));
         }
 
-        return null;
+        throw new FileUploadException();
     }
 }

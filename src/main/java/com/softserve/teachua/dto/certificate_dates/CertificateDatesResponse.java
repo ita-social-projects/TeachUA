@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.certificateDates;
+package com.softserve.teachua.dto.certificate_dates;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.marker.Convertible;

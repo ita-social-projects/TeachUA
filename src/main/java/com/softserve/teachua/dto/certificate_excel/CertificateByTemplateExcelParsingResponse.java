@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.certificateExcel;
+package com.softserve.teachua.dto.certificate_excel;
 
 import java.util.List;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.certificateType;
+package com.softserve.teachua.dto.certificate_type;
 
 import com.softserve.teachua.model.CertificateType;
 import java.util.List;
