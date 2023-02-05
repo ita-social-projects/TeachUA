@@ -25,8 +25,6 @@ public class PrometheusController implements Api {
      * @return new {@code String}.
      */
     @GetMapping(path = "/prometheus", produces = MediaType.TEXT_PLAIN_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
-//    @PreAuthorize("permitAll()")
     public String getPrometheusMetrics() {
         return prometheusService.getPrometheusMetrics();
     }
