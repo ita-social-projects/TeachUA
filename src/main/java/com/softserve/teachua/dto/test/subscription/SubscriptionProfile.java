@@ -1,11 +1,10 @@
 package com.softserve.teachua.dto.test.subscription;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDate;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @EqualsAndHashCode
 @Getter

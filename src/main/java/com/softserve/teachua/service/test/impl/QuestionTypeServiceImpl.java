@@ -4,16 +4,13 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.QuestionType;
 import com.softserve.teachua.repository.test.QuestionTypeRepository;
 import com.softserve.teachua.service.test.QuestionTypeService;
+import static com.softserve.teachua.utils.test.Messages.NO_TITLE_MESSAGE;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static com.softserve.teachua.utils.test.validation.NullValidator.*;
-import static com.softserve.teachua.utils.test.Messages.*;
-
 
 @RequiredArgsConstructor
 @Slf4j
@@ -36,5 +33,4 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
     public List<QuestionType> findAll() {
         return questionTypeRepository.findAll();
     }
-
 }

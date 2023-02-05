@@ -1,16 +1,14 @@
 package com.softserve.teachua.dto.test.question;
 
 import com.softserve.teachua.dto.test.answer.AnswerResponse;
+import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-import java.util.List;
 
 @Data
 @Builder
@@ -35,5 +33,4 @@ public class QuestionResponse {
     @NotNull
     @Valid
     private List<AnswerResponse> answers;
-
 }

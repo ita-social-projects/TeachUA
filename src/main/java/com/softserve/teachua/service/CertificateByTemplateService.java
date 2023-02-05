@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface CertificateByTemplateService {
     List<String> getTemplateFields(String templatePath) throws IOException;
+
     String createCertificateByTemplate(CertificateTransfer transfer) throws IOException;
 }

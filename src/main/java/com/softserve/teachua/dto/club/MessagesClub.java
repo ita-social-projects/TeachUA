@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class MessagesClub implements Convertible {
-
     private Long id;
     private String name;
 }

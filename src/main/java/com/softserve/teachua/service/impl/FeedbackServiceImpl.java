@@ -16,18 +16,21 @@ import com.softserve.teachua.model.archivable.FeedbackArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.repository.UserRepository;
-import com.softserve.teachua.service.*;
+import com.softserve.teachua.service.ArchiveMark;
+import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.ClubService;
+import com.softserve.teachua.service.FeedbackService;
+import com.softserve.teachua.service.UserService;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.validation.ValidationException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -48,8 +51,9 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
 
     @Autowired
     public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter,
-                               ClubRepository clubRepository, ArchiveService archiveService, UserRepository userRepository,
-                               UserService userService, @Lazy ClubService clubService, ObjectMapper objectMapper) {
+                               ClubRepository clubRepository, ArchiveService archiveService,
+                               UserRepository userRepository, UserService userService,
+                               @Lazy ClubService clubService, ObjectMapper objectMapper) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;

@@ -1,45 +1,37 @@
 package com.softserve.teachua.service;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
- * This interface contain method for files backup
+ * This interface contain method for files backup.
  */
 
 public interface BackupService {
     /**
-     * Use this method to see and check file for backup
+     * Use this method to see and check file for backup.
      *
-     * @param fileName
-     *
-     * @return
+     * @param fileName a file name to check for back up
+     * @return a list of files
      */
     List<String> getAllBackupFiles(String fileName);
 
     /**
-     * Use this method for download backup files
+     * Use this method for download backup files.
      *
-     * @param response
-     *
-     * @throws IOException
+     * @param response add backup file
      */
-    void downloadBackup(HttpServletResponse response) throws IOException;
+    void downloadBackup(HttpServletResponse response);
 
     /**
-     * Use this method for upload backup files to project(use file downloaded from @downloadBackup)
+     * Use this method for upload backup files to project(use file downloaded from @downloadBackup).
      *
-     * @param file
-     *
-     * @return
-     *
-     * @throws IOException
+     * @param file a file to save
+     * @return a list of filename
+     * @throws IOException can occur while I/O operations
      */
 
     List<String> uploadBackup(MultipartFile file) throws IOException;
-
 }

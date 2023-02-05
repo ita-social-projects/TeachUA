@@ -2,23 +2,21 @@ package com.softserve.teachua.dto.certificate;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
+import java.time.LocalDate;
+import java.util.List;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 public class CertificateDataRequest {
-
     @NotNull
     Integer type;
 
@@ -26,10 +24,8 @@ public class CertificateDataRequest {
     @Min(value = 1)
     Integer hours;
 
-//    @NotNull
     LocalDate startDate;
 
-//    @NotNull
     LocalDate endDate;
 
     @NotBlank

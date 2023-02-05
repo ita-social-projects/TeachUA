@@ -1,7 +1,6 @@
 package com.softserve.teachua.tools.service;
 
 import com.softserve.teachua.dto.challenge.SuccessCreatedChallenge;
-
 import java.util.List;
 
 public interface ChallengeTransferService {

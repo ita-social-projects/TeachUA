@@ -22,13 +22,14 @@ import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.QuestionCategoryService;
 import com.softserve.teachua.service.test.QuestionService;
 import com.softserve.teachua.service.test.QuestionTypeService;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,16 +38,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
-import static org.apache.commons.lang3.StringUtils.isAllBlank;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service("testQuestionService")
 public class QuestionServiceImpl implements QuestionService {
-
+    private static final String TEXT_TYPE = "TEXT";
+    private static final String PARAGRAPH_TYPE = "PARAGRAPH";
+    private static final String BEGIN_OF_FORM_URI = "https://docs.google.com/forms/d/";
     private final Forms formsService;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
@@ -66,29 +65,29 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional(readOnly = true)
     public Page<QuestionResponse> searchAllQuestionsPageable(
-        Pageable pageable, String query, String type, String category) {
+            Pageable pageable, String query, String type, String category) {
         if (!isEmpty(type) && !isEmpty(category)) {
             return mapToDtoPage(
-                questionRepository.findByTitleContainingIgnoreCaseAndQuestionTypeAndQuestionCategory(
-                    pageable,
-                    query,
-                    typeService.findByTitle(type),
-                    categoryService.findByTitle(category)
-                ));
+                    questionRepository.findByTitleContainingIgnoreCaseAndQuestionTypeAndQuestionCategory(
+                            pageable,
+                            query,
+                            typeService.findByTitle(type),
+                            categoryService.findByTitle(category)
+                    ));
         }
         if (!isEmpty(type)) {
             return mapToDtoPage(
-                questionRepository.findByTitleContainingIgnoreCaseAndQuestionType(
-                    pageable,
-                    query,
-                    typeService.findByTitle(type)
-                ));
+                    questionRepository.findByTitleContainingIgnoreCaseAndQuestionType(
+                            pageable,
+                            query,
+                            typeService.findByTitle(type)
+                    ));
         }
         if (!isEmpty(category)) {
             return mapToDtoPage(questionRepository.findByTitleContainingIgnoreCaseAndQuestionCategory(
-                pageable,
-                query,
-                categoryService.findByTitle(category)
+                    pageable,
+                    query,
+                    categoryService.findByTitle(category)
             ));
         }
         return mapToDtoPage(questionRepository.findByTitleContainingIgnoreCase(pageable, query));
@@ -104,10 +103,10 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public Question getQuestionById(Long id) {
         return questionRepository
-            .findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Question not found for id=" + id)
-            );
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Question not found for id=" + id)
+                );
     }
 
     @Override
@@ -164,7 +163,7 @@ public class QuestionServiceImpl implements QuestionService {
     public Question update(QuestionResponse questionResponse) {
         if (!questionRepository.existsById(questionResponse.getId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Question not found for id=" + questionResponse.getId());
+                    "Question not found for id=" + questionResponse.getId());
         }
         return save(mapToModel(questionResponse));
     }
@@ -181,21 +180,21 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void questionsImport(String formUri, Long creatorId) throws IOException {
-        String formId = formUri.replace("https://docs.google.com/forms/d/", "")
-            .replace("/edit", "");
+        String formId = formUri.replace(BEGIN_OF_FORM_URI, "").replace("/edit", "");
 
-        String formName = readFormInfo(formId).getInfo().getTitle();
+        String categoryName = String.format("New Form (%s) from Google", readFormInfo(formId).getInfo().getTitle());
         List<Item> itemList = readFormInfo(formId).getItems();
 
-        if (!categoryRepository.findByTitle("New From (" + formName + ") from Google").isPresent()) {
-            categoryRepository.save(QuestionCategory.builder().title("New From (" + formName + ") from Google").build());
+        if (!categoryRepository.findByTitle(categoryName).isPresent()) {
+            categoryRepository.save(QuestionCategory.builder().title(categoryName).build());
         }
+
         for (Item item : itemList) {
             Question question = new Question();
 
             question.setCreator(userService.getUserById(creatorId));
             question.setTitle(item.getTitle());
-            question.setQuestionCategory(categoryRepository.findByTitle("New From (" + formName + ") from Google").get());
+            question.setQuestionCategory(categoryRepository.findByTitle(categoryName).get());
 
             if (item.getDescription() != null) {
                 question.setDescription(item.getDescription());
@@ -206,45 +205,49 @@ public class QuestionServiceImpl implements QuestionService {
             Grading grading = item.getQuestionItem().getQuestion().getGrading();
             ChoiceQuestion choice = item.getQuestionItem().getQuestion().getChoiceQuestion();
             if (choice != null && grading != null) {
-                List<Option> options = item.getQuestionItem().getQuestion().getChoiceQuestion().getOptions();
-                List<CorrectAnswer> correctAnswers = grading.getCorrectAnswers().getAnswers();
-
-                if (!typeRepository.findByTitle(choice.getType()).isPresent()) {
-                    QuestionType type = QuestionType.builder().title(choice.getType()).build();
-                    typeRepository.save(type);
-                }
-
-                question.setQuestionType(typeService.findByTitle(choice.getType()));
-                question = save(question);
-
-                for (Option option : options) {
-                    Answer answer = new Answer();
-                    answer.setText(option.getValue());
-                    answer.setValue(grading.getPointValue());
-                    answer.setQuestion(question);
-
-                    for (CorrectAnswer correct : correctAnswers) {
-                        answer.setCorrect(option.getValue().equals(correct.getValue()));
-                    }
-                    log.info("**/Answer has been created.{}" + answer.toString());
-                    answer = answerRepository.save(answer);
-                    question.addAnswer(answer);
-                }
+                addNewType(question, choice.getType());
+                addOptionsToQuestion(item, grading, question);
             } else if (item.getQuestionItem().getQuestion().getTextQuestion().isEmpty()) {
-                if (!typeRepository.findByTitle("TEXT").isPresent()) {
-                    QuestionType type = QuestionType.builder().title("TEXT").build();
-                    typeRepository.save(type);
-                }
-                question.setQuestionType(typeService.findByTitle("TEXT"));
-                save(question);
+                addNewType(question, TEXT_TYPE);
             } else if (item.getQuestionItem().getQuestion().getTextQuestion().getParagraph()) {
-                if (!typeRepository.findByTitle("PARAGRAPH").isPresent()) {
-                    QuestionType type = QuestionType.builder().title("PARAGRAPH").build();
-                    typeRepository.save(type);
-                }
-                question.setQuestionType(typeService.findByTitle("PARAGRAPH"));
-                save(question);
+                addNewType(question, PARAGRAPH_TYPE);
             }
+        }
+    }
+
+    private void addNewType(Question question, String nameOfType) {
+        if (!typeRepository.findByTitle(nameOfType).isPresent()) {
+            QuestionType type = QuestionType.builder().title(nameOfType).build();
+            typeRepository.save(type);
+        }
+        question.setQuestionType(typeService.findByTitle(nameOfType));
+        save(question);
+    }
+
+    private void addOptionsToQuestion(Item item,
+                                      Grading grading,
+                                      Question question) {
+        List<Option> options = item.getQuestionItem().getQuestion().getChoiceQuestion().getOptions();
+        List<CorrectAnswer> correctAnswers = grading.getCorrectAnswers().getAnswers();
+
+        for (Option option : options) {
+            Answer answer = new Answer();
+            answer.setText(option.getValue());
+            answer.setValue(grading.getPointValue());
+            answer.setQuestion(question);
+
+            for (CorrectAnswer correct : correctAnswers) {
+                if (option.getValue().equals(correct.getValue())) {
+                    answer.setCorrect(true);
+                    answer.setValue(grading.getPointValue());
+                    break;
+                } else {
+                    answer.setCorrect(false);
+                    answer.setValue(0);
+                }
+            }
+            answer = answerRepository.save(answer);
+            question.addAnswer(answer);
         }
     }
 
@@ -254,11 +257,11 @@ public class QuestionServiceImpl implements QuestionService {
         List<Question> questions = (List<Question>) questionRepository.findAll();
 
         questions.forEach(question -> previews.add(
-            new QuestionPreview(
-                question.getId(),
-                question.getTitle(),
-                question.getDescription(),
-                question.getQuestionCategory().getTitle())));
+                new QuestionPreview(
+                        question.getId(),
+                        question.getTitle(),
+                        question.getDescription(),
+                        question.getQuestionCategory().getTitle())));
 
         return previews;
     }
@@ -266,33 +269,33 @@ public class QuestionServiceImpl implements QuestionService {
     private QuestionResponse mapToDto(Question question) {
         QuestionResponse questionResponse = modelMapper.map(question, QuestionResponse.class);
         questionResponse.setAnswerTitles(question.getAnswers()
-            .stream()
-            .map(Answer::getText)
-            .collect(Collectors.toList()));
+                .stream()
+                .map(Answer::getText)
+                .collect(Collectors.toList()));
         return questionResponse;
     }
 
     private Question mapToModel(QuestionResponse questionResponse) {
         Question question = Question.builder()
-            .id(questionResponse.getId())
-            .title(questionResponse.getTitle())
-            .description(questionResponse.getDescription())
-            .questionType(typeService.findByTitle(questionResponse.getQuestionTypeTitle()))
-            .questionCategory(categoryService.findByTitle(questionResponse.getQuestionCategoryTitle()))
-            .answers(questionResponse
-                .getAnswers()
-                .stream()
-                .map(answer -> modelMapper.map(answer, Answer.class))
-                .collect(Collectors.toSet()))
-            .build();
+                .id(questionResponse.getId())
+                .title(questionResponse.getTitle())
+                .description(questionResponse.getDescription())
+                .questionType(typeService.findByTitle(questionResponse.getQuestionTypeTitle()))
+                .questionCategory(categoryService.findByTitle(questionResponse.getQuestionCategoryTitle()))
+                .answers(questionResponse
+                        .getAnswers()
+                        .stream()
+                        .map(answer -> modelMapper.map(answer, Answer.class))
+                        .collect(Collectors.toSet()))
+                .build();
         question.getAnswers().stream().forEach(answer -> answer.setQuestion(question));
         return question;
     }
 
     private List<QuestionResponse> mapToDtoList(List<Question> questions) {
         return questions.stream()
-            .map(this::mapToDto)
-            .collect(Collectors.toList());
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     private Page<QuestionResponse> mapToDtoPage(Page<Question> questions) {

@@ -1,14 +1,24 @@
-root = true
-
-# All Files
 [*]
 charset = utf-8
 end_of_line = lf
+indent_size = 4
 indent_style = space
 insert_final_newline = true
-trim_trailing_whitespace = true
-
-# Java and XML Files
-[*.{java,xml}]
-indent_size = 4
+max_line_length = 120
 tab_width = 4
+trim_trailing_whitespace = true
+ij_continuation_indent_size = 8
+ij_formatter_off_tag = @formatter:off
+ij_formatter_on_tag = @formatter:on
+ij_formatter_tags_enabled = true
+
+[*.java]
+ij_java_line_comment_at_first_column = false
+ij_java_block_comment_at_first_column = false
+ij_java_keep_blank_lines_before_right_brace = 0
+ij_java_keep_blank_lines_in_declarations = 1
+ij_java_keep_blank_lines_in_code = 1
+ij_java_names_count_to_use_import_on_demand = 999
+ij_java_class_count_to_use_import_on_demand = 999
+ij_java_imports_layout = *
+ij_java_binary_operation_sign_on_next_line = true

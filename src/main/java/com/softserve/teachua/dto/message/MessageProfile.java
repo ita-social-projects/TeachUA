@@ -2,14 +2,14 @@ package com.softserve.teachua.dto.message;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.utils.validations.CheckRussian;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.With;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +18,6 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class MessageProfile implements Convertible {
-
     private Long id;
 
     @NotNull(message = " can't be null")

@@ -1,8 +1,7 @@
 package com.softserve.teachua.dto.test.test;
 
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class TestsContainer {

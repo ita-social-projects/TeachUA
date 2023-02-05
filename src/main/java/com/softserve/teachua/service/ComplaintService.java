@@ -5,9 +5,8 @@ import com.softserve.teachua.dto.complaint.ComplaintResponse;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Complaint;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This interface contains all needed methods to manage complaints.

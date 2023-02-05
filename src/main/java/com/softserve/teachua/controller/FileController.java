@@ -2,21 +2,22 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.service.FileRelevanceService;
 import com.softserve.teachua.service.FileOperationsService;
+import com.softserve.teachua.service.FileRelevanceService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class FileController implements Api {
-
     private final FileOperationsService fileOperationsService;
 
     private final FileRelevanceService fileRelevanceService;
@@ -65,5 +66,4 @@ public class FileController implements Api {
     public Set<String> getOrphanedFiles() {
         return fileRelevanceService.getAllOrphanedFiles();
     }
-
 }

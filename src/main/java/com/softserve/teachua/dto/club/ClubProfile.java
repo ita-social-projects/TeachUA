@@ -6,11 +6,18 @@ import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.utils.validations.CheckRussian;
-import lombok.*;
-
-import javax.validation.Valid;
-import javax.validation.constraints.*;
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +26,6 @@ import java.util.List;
 @With
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClubProfile implements Convertible {
-    
     private Long id;
 
     @NotEmpty

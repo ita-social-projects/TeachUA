@@ -6,7 +6,12 @@ import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.databaseTransfer.ExcelConvertToFormatStringContactsData;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingData;
-import com.softserve.teachua.dto.databaseTransfer.model.*;
+import com.softserve.teachua.dto.databaseTransfer.model.CategoryExcel;
+import com.softserve.teachua.dto.databaseTransfer.model.CenterExcel;
+import com.softserve.teachua.dto.databaseTransfer.model.ClubExcel;
+import com.softserve.teachua.dto.databaseTransfer.model.DistrictExcel;
+import com.softserve.teachua.dto.databaseTransfer.model.LocationExcel;
+import com.softserve.teachua.dto.databaseTransfer.model.StationExcel;
 import com.softserve.teachua.dto.district.DistrictProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.station.StationProfile;
@@ -18,14 +23,26 @@ import com.softserve.teachua.model.ExcelClubEntity;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ExcelCenterEntityRepository;
 import com.softserve.teachua.repository.ExcelClubEntityRepository;
-import com.softserve.teachua.service.*;
+import com.softserve.teachua.service.CategoryService;
+import com.softserve.teachua.service.CenterService;
+import com.softserve.teachua.service.CityService;
+import com.softserve.teachua.service.ClubService;
+import com.softserve.teachua.service.DataLoaderService;
+import com.softserve.teachua.service.DistrictService;
+import com.softserve.teachua.service.LocationService;
+import com.softserve.teachua.service.StationService;
+import com.softserve.teachua.service.UserService;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.zip.DataFormatException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.zip.DataFormatException;
 
 @Service
 @Slf4j
@@ -70,12 +87,13 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
     @Autowired
     public DataLoaderServiceImpl(CategoryService categoryService, CenterService centerService, ClubService clubService,
-            DistrictService districtService, StationService stationService, UserService userService,
-            CityService cityService, ClubRepository clubRepository, LocationService locationService,
-            ExcelConvertToFormatStringContactsData contactsConverter,
-            ExcelConvertToFormatStringContactsData excelContactsConverter,
-            ExcelCenterEntityRepository excelCenterEntityRepository,
-            ExcelClubEntityRepository excelClubEntityRepository) {
+                                 DistrictService districtService, StationService stationService,
+                                 UserService userService, CityService cityService, ClubRepository clubRepository,
+                                 LocationService locationService,
+                                 ExcelConvertToFormatStringContactsData contactsConverter,
+                                 ExcelConvertToFormatStringContactsData excelContactsConverter,
+                                 ExcelCenterEntityRepository excelCenterEntityRepository,
+                                 ExcelClubEntityRepository excelClubEntityRepository) {
         this.categoryService = categoryService;
         this.centerService = centerService;
         this.clubService = clubService;
@@ -93,9 +111,6 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
     @Override
     public void loadToDatabase(ExcelParsingData excelParsingData) {
-        Map<Long, Long> excelIdToDbId = new HashMap<>();
-        Set<String> categoriesNames = new HashSet<>();
-
         // todo tmp load data is in parser
         // loadExcelEntityToDB(excelParsingData);
 
@@ -104,6 +119,8 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
         loadDistricts(excelParsingData);
         loadStations(excelParsingData);
+        Set<String> categoriesNames = new HashSet<>();
+        Map<Long, Long> excelIdToDbId = new HashMap<>();
         loadCategories(excelParsingData, categoriesNames);
         loadCenters(excelParsingData, excelIdToDbId);
         loadClubs(excelParsingData, excelIdToDbId, categoriesNames);
@@ -140,7 +157,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
                 Long stationIdCheck = null;
                 if (location.getStation() != null
-                        & stationService.getOptionalStationByName(location.getStation()).isPresent()) {
+                        && stationService.getOptionalStationByName(location.getStation()).isPresent()) {
                     stationIdCheck = stationService.getOptionalStationByName(location.getStation()).get().getId();
                 }
 
@@ -227,8 +244,8 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .description(
                                 DESCRIPTION_JSON_LEFT
                                         + (club.getDescription().isEmpty() ? CLUB_DEFAULT_DESCRIPTION
-                                                : club.getDescription().replace("\"", "''").replace("\\", "/")
-                                                        .replace("\n", " ").replace("\r", " "))
+                                        : club.getDescription().replace("\"", "''").replace("\\", "/")
+                                        .replace("\n", " ").replace("\r", " "))
                                         + DESCRIPTION_JSON_RIGHT)
                         .name(club.getName()).urlBackground(DEFAULT_CLUB_URL_BACKGROUND).urlLogo(DEFAULT_CLUB_URL_LOGO)
                         .categoriesName(getFullCategoryName(categories, club.getCategories()))
@@ -283,7 +300,8 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
     private List<String> getFullCategoryName(Set<String> categoriesNames, List<String> shortCategoryNames) {
         return categoriesNames.stream().filter(
-                s -> shortCategoryNames.stream().map(String::toLowerCase).anyMatch(b -> s.toLowerCase().contains(b)))
+                        s -> shortCategoryNames.stream()
+                                .map(String::toLowerCase).anyMatch(b -> s.toLowerCase().contains(b)))
                 .collect(Collectors.toList());
     }
 

@@ -5,12 +5,11 @@ import com.softserve.teachua.repository.test.GroupTestRepository;
 import com.softserve.teachua.service.test.GroupService;
 import com.softserve.teachua.service.test.GroupTestService;
 import com.softserve.teachua.service.test.TestService;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNullIds;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.softserve.teachua.utils.test.validation.NullValidator.*;
 
 @RequiredArgsConstructor
 @Slf4j

@@ -1,23 +1,30 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.teachua.repository.*;
+import com.softserve.teachua.repository.AboutUsItemRepository;
+import com.softserve.teachua.repository.BannerItemRepository;
+import com.softserve.teachua.repository.CertificateTemplateRepository;
+import com.softserve.teachua.repository.ChallengeRepository;
+import com.softserve.teachua.repository.ClubRepository;
+import com.softserve.teachua.repository.ContactTypeRepository;
+import com.softserve.teachua.repository.GalleryRepository;
+import com.softserve.teachua.repository.NewsRepository;
+import com.softserve.teachua.repository.TaskRepository;
+import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.FileRelevanceService;
-import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class FileRelevanceServiceImpl implements FileRelevanceService {
+    private static final String ORPHANED_FILES_SEARCH_PATH = "upload";
 
-    private final String ORPHANED_FILES_SEARCH_PATH = "upload";
-
-    private final String[] ORPHANED_FILES_EXTENSIONS = {"png", "jpg"};
+    private static final String[] ORPHANED_FILES_EXTENSIONS = {"png", "jpg"};
 
     private final AboutUsItemRepository aboutUsItemRepository;
 
@@ -97,5 +104,4 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
                 .filter(file -> !mentionedFiles.contains(file))
                 .collect(Collectors.toSet());
     }
-
 }

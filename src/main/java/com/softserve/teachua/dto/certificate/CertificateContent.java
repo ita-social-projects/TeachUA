@@ -1,15 +1,14 @@
 package com.softserve.teachua.dto.certificate;
 
 import com.softserve.teachua.dto.marker.Convertible;
+import java.io.ByteArrayInputStream;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import java.io.ByteArrayInputStream;
 
 @AllArgsConstructor
 @NoArgsConstructor

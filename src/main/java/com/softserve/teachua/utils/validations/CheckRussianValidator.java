@@ -1,9 +1,8 @@
 package com.softserve.teachua.utils.validations;
 
-import lombok.extern.slf4j.Slf4j;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CheckRussianValidator implements ConstraintValidator<CheckRussian, String> {

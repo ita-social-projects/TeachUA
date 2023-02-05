@@ -1,7 +1,6 @@
 package com.softserve.teachua.utils;
 
 import com.softserve.teachua.exception.IncorrectInputException;
-
 import java.util.List;
 
 public class ChallengeUtil {

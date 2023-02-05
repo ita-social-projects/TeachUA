@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BackupService {
-
     private final BackupDaoImpl backupDao;
 
     @Autowired
@@ -19,7 +18,6 @@ public class BackupService {
     }
 
     public String getAllTables(String tableNames) {
-
         String[] names = tableNames.split(",");
         String text = "";
         for (String i : names) {

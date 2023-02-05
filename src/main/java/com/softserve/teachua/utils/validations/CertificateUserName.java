@@ -1,11 +1,11 @@
 package com.softserve.teachua.utils.validations;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
 /**
  * Use this annotation to check userName field on valid length, and valid words.
@@ -14,7 +14,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = CertificateUserNameValidator.class)
 public @interface CertificateUserName {
-
     String message() default "Неможливо розпізнати ім'я та прізвище";
 
     Class<?>[] groups() default {};

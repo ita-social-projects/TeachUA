@@ -2,13 +2,12 @@ package com.softserve.teachua.dto.certificate;
 
 import com.softserve.teachua.dto.certificateDates.CertificateDatesResponse;
 import com.softserve.teachua.dto.marker.Convertible;
+import java.time.LocalDate;
+import javax.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Email;
-import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor

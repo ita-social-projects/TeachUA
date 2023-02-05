@@ -1,14 +1,18 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.service.SqlDataExportService;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -99,8 +103,10 @@ public class SqlDataExportServiceImpl implements SqlDataExportService {
     }
 
     private ResultSet getTableRows(String tableName, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("select * from " + tableName);
-        return statement.executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement("select * from ?")) {
+            statement.setString(1, tableName);
+            return statement.executeQuery();
+        }
     }
 
     private List<String> getListOfTableNames(Connection connection) {

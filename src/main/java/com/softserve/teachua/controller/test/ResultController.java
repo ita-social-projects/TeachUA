@@ -6,17 +6,20 @@ import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
 import com.softserve.teachua.dto.test.result.UserResult;
 import com.softserve.teachua.dto.test.test.ResultTest;
 import com.softserve.teachua.service.test.ResultService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
+import lombok.RequiredArgsConstructor;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing results.
- * */
+ */
 
 @RequiredArgsConstructor
 @RestController
@@ -80,7 +83,7 @@ public class ResultController implements Api {
     @PostMapping(value = "/results",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public SuccessCreatedResult saveResult(@RequestBody CreateResult result){
+    public SuccessCreatedResult saveResult(@RequestBody CreateResult result) {
         return resultService.saveResult(result);
     }
 }

@@ -3,7 +3,7 @@ package com.softserve.teachua.controller;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.LogLevelService;
-import com.softserve.teachua.utils.LogLevel;
+import com.softserve.teachua.constants.LogLevel;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,7 +20,7 @@ public class LogLevelController implements Api {
     }
 
     /**
-     * Use this endpoint to change logs level for package/class
+     * Use this endpoint to change logs level for package/class.
      *
      * @param level
      *            use this param to select the logging level

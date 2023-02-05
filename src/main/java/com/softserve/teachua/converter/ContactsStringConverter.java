@@ -3,13 +3,12 @@ package com.softserve.teachua.converter;
 import com.softserve.teachua.dto.contact_data.ContactDataResponse;
 import com.softserve.teachua.model.ContactType;
 import com.softserve.teachua.service.ContactTypeService;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @NoArgsConstructor
 @Slf4j

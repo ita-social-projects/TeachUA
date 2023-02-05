@@ -2,13 +2,19 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.certificate.*;
+import com.softserve.teachua.dto.certificate.CertificateDataRequest;
+import com.softserve.teachua.dto.certificate.CertificateDatabaseResponse;
+import com.softserve.teachua.dto.certificate.CertificatePreview;
+import com.softserve.teachua.dto.certificate.CertificateUserResponse;
+import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
 import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.service.CertificateDataLoaderService;
 import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
+import java.util.List;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,14 +23,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import java.util.List;
-
 /**
- * This controller is responsible for managing certificates
+ * This controller is responsible for managing certificates.
  */
 @RestController
 @Slf4j
@@ -35,14 +44,14 @@ public class CertificateController implements Api {
 
     @Autowired
     public CertificateController(CertificateService certificateService, CertificateExcelService excelService,
-            CertificateDataLoaderService loaderService) {
+                                 CertificateDataLoaderService loaderService) {
         this.certificateService = certificateService;
         this.excelService = excelService;
         this.loaderService = loaderService;
     }
 
     /**
-     * This endpoint is used to get the number of unsent certificates
+     * This endpoint is used to get the number of unsent certificates.
      *
      * @return number of unsent certificates
      */
@@ -55,9 +64,7 @@ public class CertificateController implements Api {
     /**
      * The method uploads excel file and returns {@code ExcelParsingResponse}.
      *
-     * @param multipartFile
-     *            - excel file.
-     *
+     * @param multipartFile - excel file.
      * @return new {@code ExcelParsingResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -69,9 +76,7 @@ public class CertificateController implements Api {
     /**
      * The method saves data to database.
      *
-     * @param data
-     *            - {@code CertificateDataToDatabase} read from form.
-     *
+     * @param data - {@code CertificateDataToDatabase} read from form.
      * @return new {@code List<CertificateDatabaseResponse>}
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -82,12 +87,10 @@ public class CertificateController implements Api {
     }
 
     /**
-     * This endpoint is used to validate the certificate, user passes serial number into url, this controller returns
+     * This endpoint is used to validate the certificate, user passes serial number into url, this controller returns.
      * {@code CertificateVerificationResponse}
      *
-     * @param serialNumber
-     *            - serial number of certificate, being verified
-     *
+     * @param serialNumber - serial number of certificate, being verified
      * @return new {@code CertificateVerificationResponse}
      */
     @GetMapping("/certificate/{serialNumber}")
@@ -136,23 +139,20 @@ public class CertificateController implements Api {
     }
 
     @GetMapping("/certificate")
-    public List<CertificatePreview> searchCertificatesUser(@RequestParam(name="userName") String userName){
+    public List<CertificatePreview> searchCertificatesUser(@RequestParam(name = "userName") String userName) {
         return certificateService.getSimilarCertificatesByUserName(userName);
     }
 
     /**
      * This endpoint is used to get update certificate.
      *
-     * @param id
-     *            - put certificate id
-     * @param certificatePreview
-     *            - {@code CertificatePreview} to update
-     *
+     * @param id                 - put certificate id
+     * @param certificatePreview - {@code CertificatePreview} to update
      * @return {@code List<CertificatePreview>}
      */
     @PutMapping("/certificates/{id}")
     public CertificatePreview updateCertificate(@PathVariable Long id,
-            @Valid @RequestBody CertificatePreview certificatePreview) {
+                                                @Valid @RequestBody CertificatePreview certificatePreview) {
         return certificateService.updateCertificatePreview(id, certificatePreview);
     }
 }

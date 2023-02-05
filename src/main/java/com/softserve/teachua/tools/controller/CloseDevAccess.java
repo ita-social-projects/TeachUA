@@ -17,9 +17,9 @@ public class CloseDevAccess implements Api {
     }
 
     /**
-     * Use this endpoint to delete key-file and close access to transfer controller methods
+     * Use this endpoint to delete key-file and close access to transfer controller methods.
      *
-     * @return new {@code List<SuccessCreatedTask>}.
+     * @return information of success deleted file {@code ResponseEntity<String>}.
      */
     @DeleteMapping("/transfer/close")
     public ResponseEntity<String> closeAccess() {

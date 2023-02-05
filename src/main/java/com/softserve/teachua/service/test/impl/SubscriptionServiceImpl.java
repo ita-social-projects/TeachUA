@@ -5,7 +5,6 @@ import com.softserve.teachua.controller.test.SubscriptionController;
 import com.softserve.teachua.dto.test.subscription.CreateSubscription;
 import com.softserve.teachua.dto.test.subscription.SubscriptionProfile;
 import com.softserve.teachua.dto.test.user.UserResponse;
-import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.model.test.Subscription;
@@ -13,23 +12,24 @@ import com.softserve.teachua.repository.test.SubscriptionRepository;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.GroupService;
 import com.softserve.teachua.service.test.SubscriptionService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.Link;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import static com.softserve.teachua.utils.test.Messages.INCORRECT_ENROLLMENT_KEY_MESSAGE;
+import static com.softserve.teachua.utils.test.Messages.NO_SUBSCRIPTION_MESSAGE;
+import static com.softserve.teachua.utils.test.Messages.SUBSCRIPTION_EXISTS_MESSAGE;
+import static com.softserve.teachua.utils.test.Messages.TEST_WITHOUT_GROUP_MESSAGE;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
+import static com.softserve.teachua.utils.test.validation.NullValidator.checkNullIds;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-
-import static com.softserve.teachua.utils.test.Messages.*;
-import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
-import static com.softserve.teachua.utils.test.validation.NullValidator.checkNullIds;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.Link;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -53,8 +53,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         List<Group> groups = groupService.findAllByTestId(testId);
         String enrollmentKey = createSubscription.getEnrollmentKey();
 
-        if (groups.isEmpty())
+        if (groups.isEmpty()) {
             throw new NoSuchElementException(String.format(TEST_WITHOUT_GROUP_MESSAGE, testId));
+        }
 
         for (Group group : groups) {
             if (group.getEnrollmentKey().equals(enrollmentKey)) {

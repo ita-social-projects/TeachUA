@@ -41,7 +41,7 @@ public class CertificateTypeServiceImpl implements CertificateTypeService {
     @Override
     public CertificateType getCertificateTypeById(Integer id) {
         return certificateTypeRepository.findById(id)
-            .orElseThrow(() -> new NotExistException(String.format(TYPE_NOT_FOUND_BY_ID, id)));
+                .orElseThrow(() -> new NotExistException(String.format(TYPE_NOT_FOUND_BY_ID, id)));
     }
 
     @Override
@@ -64,16 +64,18 @@ public class CertificateTypeServiceImpl implements CertificateTypeService {
         List<String[]> messagesList = new ArrayList<>();
 
         if (certificateTypeRepository.existsByNameIgnoreCase(certificateTypeProfile.getName())) {
-            messagesList.add(new String[] {NAME_ALREADY_EXISTS_MESSAGE, "1"});
+            messagesList.add(new String[]{NAME_ALREADY_EXISTS_MESSAGE, "1"});
         }
         if (certificateTypeRepository.existsByCodeNumber(certificateTypeProfile.getCodeNumber())) {
-            messagesList.add(new String[] {CODE_NUMBER_ALREADY_EXISTS_MESSAGE, "3"});
+            messagesList.add(new String[]{CODE_NUMBER_ALREADY_EXISTS_MESSAGE, "3"});
             return CertificateTypeProcessingResponse.builder().messages(messagesList).build();
         }
 
-        return CertificateTypeProcessingResponse.builder().messages(messagesList).certificateType(
-                certificateTypeRepository.save(dtoConverter.convertToEntity(certificateTypeProfile, new CertificateType())))
-            .build();
+        return CertificateTypeProcessingResponse.builder()
+                .messages(messagesList)
+                .certificateType(certificateTypeRepository.save(
+                        dtoConverter.convertToEntity(certificateTypeProfile, new CertificateType())))
+                .build();
     }
 
     @Override
@@ -82,19 +84,19 @@ public class CertificateTypeServiceImpl implements CertificateTypeService {
         List<String[]> messagesList = new ArrayList<>();
         CertificateType certificateType = getCertificateTypeById(id);
 
-        if (!certificateType.getName().equals(updatedCertificateType.getName()) &&
-            certificateTypeRepository.existsByNameIgnoreCase(updatedCertificateType.getName())) {
-            messagesList.add(new String[] {NAME_ALREADY_EXISTS_MESSAGE, "1"});
+        if (!certificateType.getName().equals(updatedCertificateType.getName())
+                && certificateTypeRepository.existsByNameIgnoreCase(updatedCertificateType.getName())) {
+            messagesList.add(new String[]{NAME_ALREADY_EXISTS_MESSAGE, "1"});
         }
-        if (!certificateType.getCodeNumber().equals(updatedCertificateType.getCodeNumber()) &&
-            certificateTypeRepository.existsByCodeNumber(updatedCertificateType.getCodeNumber())) {
-            messagesList.add(new String[] {CODE_NUMBER_ALREADY_EXISTS_MESSAGE, "3"});
+        if (!certificateType.getCodeNumber().equals(updatedCertificateType.getCodeNumber())
+                && certificateTypeRepository.existsByCodeNumber(updatedCertificateType.getCodeNumber())) {
+            messagesList.add(new String[]{CODE_NUMBER_ALREADY_EXISTS_MESSAGE, "3"});
             return CertificateTypeProcessingResponse.builder().messages(messagesList).build();
         }
         BeanUtils.copyProperties(updatedCertificateType, certificateType);
 
         return CertificateTypeProcessingResponse.builder().messages(messagesList)
-            .certificateType(certificateTypeRepository.save(certificateType)).build();
+                .certificateType(certificateTypeRepository.save(certificateType)).build();
     }
 
     @Override

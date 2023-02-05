@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public interface Archivable {
     /**
-     * The method returns class of service which operates model
+     * The method returns class of service which operates model.
      *
      * @return {@Class}
      */

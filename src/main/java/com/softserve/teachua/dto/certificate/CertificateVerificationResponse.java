@@ -1,7 +1,12 @@
 package com.softserve.teachua.dto.certificate;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.With;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -10,7 +15,6 @@ import lombok.*;
 @Getter
 @Setter
 public class CertificateVerificationResponse implements Convertible {
-
     private Long serialNumber;
 
     private String certificateTypeName;
@@ -22,5 +26,4 @@ public class CertificateVerificationResponse implements Convertible {
     private String projectDescription;
 
     private String picturePath;
-
 }

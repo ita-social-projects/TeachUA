@@ -1,14 +1,31 @@
 package com.softserve.teachua.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserve.teachua.dto.marker.Convertible;
-import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.With;
+import org.hibernate.annotations.ColumnDefault;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -73,8 +90,9 @@ public class Club implements Convertible {
     private Set<Feedback> feedbacks;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "club_category", joinColumns = { @JoinColumn(name = "club_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "category_id") })
+    @JoinTable(name = "club_category",
+            joinColumns = {@JoinColumn(name = "club_id")},
+            inverseJoinColumns = {@JoinColumn(name = "category_id")})
     @ToString.Exclude
     private Set<Category> categories = new HashSet<>();
 

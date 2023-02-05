@@ -1,14 +1,12 @@
 package com.softserve.teachua.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * This class is custom exception for entity which already exists in Database or other data storage. The constructor
  * accepts message for Exception
- * <p>
- * Use @code throw new AlreadyExistException("Entity already exists")
+ *
+ * <p>Use @code throw new AlreadyExistException("Entity already exists")
  *
  * @author Denis Burko
  */

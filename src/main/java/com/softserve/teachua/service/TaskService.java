@@ -1,11 +1,13 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.task.*;
+import com.softserve.teachua.dto.task.CreateTask;
+import com.softserve.teachua.dto.task.SuccessCreatedTask;
+import com.softserve.teachua.dto.task.SuccessUpdatedTask;
+import com.softserve.teachua.dto.task.TaskPreview;
+import com.softserve.teachua.dto.task.TaskProfile;
+import com.softserve.teachua.dto.task.UpdateTask;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Task;
-
-import java.util.List;
-
 import java.util.List;
 
 /**
@@ -53,7 +55,7 @@ public interface TaskService {
     List<TaskPreview> getTasksByChallengeId(Long id);
 
     /**
-     * The method returns list {@code List<TaskPreview>} of task with startDate earlier from now, by challenge id
+     * The method returns list {@code List<TaskPreview>} of task with startDate earlier from now, by challenge id.
      *
      * @param id
      *            - put Challenge id.
