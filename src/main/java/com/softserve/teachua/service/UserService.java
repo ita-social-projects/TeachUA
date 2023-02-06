@@ -107,7 +107,7 @@ public interface UserService {
      *
      * @param userLogin - place dto with all params.
      * @return new {@code SuccessLogin}.
-     * @throws UserAuthenticationException    if user password is incorrect.
+     * @throws UserAuthenticationException if user password is incorrect.
      * @throws NotVerifiedUserException if user email is not verified.
      */
     SuccessLogin loginUser(UserLogin userLogin);

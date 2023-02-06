@@ -479,6 +479,8 @@ class UserServiceTest {
                 SuccessUserPasswordReset.builder().password(PASSWORD).verificationCode(TOKEN).build();
         user.setPassword(ENCODED_PASSWORD);
         when(userRepository.findByVerificationCode(anyString())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(userResetPassword.getPassword(), user.getPassword()))
+                .thenReturn(true);
 
         assertThatThrownBy(() -> userService.verifyChangePassword(userResetPassword)).isInstanceOf(
                 MatchingPasswordException.class).hasMessage("Новий пароль співпадає з старим");

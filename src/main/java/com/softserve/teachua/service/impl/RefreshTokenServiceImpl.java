@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
     public static final String UNPROCESSED_REFRESH_TOKEN = "Refresh token is invalid or has been expired";
-    public static final String REFRESH_TOKEN_NOT_IN_USE = "Refresh token is not in use";
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProvider jwtProvider;
 
@@ -65,6 +64,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private RefreshToken getRefreshToken(String refreshToken) {
         return refreshTokenRepository.findByToken(refreshToken)
-                .orElseThrow(() -> new UserAuthenticationException(REFRESH_TOKEN_NOT_IN_USE));
+                .orElseThrow(() -> new UserAuthenticationException(UNPROCESSED_REFRESH_TOKEN));
     }
 }

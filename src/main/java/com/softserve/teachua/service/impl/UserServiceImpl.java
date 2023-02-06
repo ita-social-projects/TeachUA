@@ -54,7 +54,6 @@ import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -455,11 +454,10 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
 
     @Override
     public SuccessUserPasswordReset verifyChangePassword(SuccessUserPasswordReset userResetPassword) {
-        BCryptPasswordEncoder passEncoder = new BCryptPasswordEncoder();
-        log.debug("step 3: " + userResetPassword.getVerificationCode() + " " + userResetPassword.getEmail());
+        log.debug("step 3: {} {}", userResetPassword.getVerificationCode(), userResetPassword.getEmail());
         User user = getUserByVerificationCode(userResetPassword.getVerificationCode());
         user.setStatus(true);
-        if (passEncoder.matches(userResetPassword.getPassword(), user.getPassword())) {
+        if (passwordEncoder.matches(userResetPassword.getPassword(), user.getPassword())) {
             throw new MatchingPasswordException("Новий пароль співпадає з старим");
         }
         userResetPassword.setEmail(user.getEmail());
@@ -468,7 +466,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         user.setVerificationCode(null);
 
         userRepository.save(user);
-        log.debug("password reset {}", user);
+        log.debug("Password reset {}", user);
         return userResetPassword;
     }
 
