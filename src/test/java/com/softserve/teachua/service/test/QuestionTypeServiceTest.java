@@ -1,6 +1,7 @@
 package com.softserve.teachua.service.test;
 
-import com.softserve.teachua.dto.test.questionType.QuestionTypeProfile;
+import com.softserve.teachua.dto.test.question_type.QuestionTypeProfile;
+import com.softserve.teachua.dto.test.question_type.QuestionTypeResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.EntityIsUsedException;
 import com.softserve.teachua.exception.NotExistException;
@@ -8,27 +9,23 @@ import com.softserve.teachua.model.test.QuestionType;
 import com.softserve.teachua.repository.test.QuestionRepository;
 import com.softserve.teachua.repository.test.QuestionTypeRepository;
 import com.softserve.teachua.service.test.impl.QuestionTypeServiceImpl;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith({MockitoExtension.class})
 class QuestionTypeServiceTest {
@@ -38,7 +35,7 @@ class QuestionTypeServiceTest {
     @Mock
     private QuestionRepository questionRepository;
 
-    @Spy
+    @Mock
     private ModelMapper modelMapper = new ModelMapper();
 
     @InjectMocks
@@ -48,18 +45,20 @@ class QuestionTypeServiceTest {
     private static final String EXISTING_TITLE = "Existing title";
     private static final long EXISTING_ID = 1;
     private static final long NON_EXISTING_ID = 2;
-    private static QuestionTypeProfile questionTypeProfile;
-
-    @BeforeAll
-    static void setAllUp() {
-        questionTypeProfile = QuestionTypeProfile.builder()
-                .title(EXISTING_TITLE)
-                .build();
-    }
+    private QuestionTypeProfile questionTypeProfile;
+    private QuestionTypeResponse questionTypeResponse;
 
     @BeforeEach
     public void setUp() {
         questionType = QuestionType.builder()
+                .title(EXISTING_TITLE)
+                .build();
+
+        questionTypeProfile = QuestionTypeProfile.builder()
+                .title(EXISTING_TITLE)
+                .build();
+
+        questionTypeResponse = QuestionTypeResponse.builder()
                 .title(EXISTING_TITLE)
                 .build();
     }
@@ -146,5 +145,27 @@ class QuestionTypeServiceTest {
     void findByNullTitleShouldThrowIllegalArgException() {
         assertThatThrownBy(() -> questionTypeService.findByTitle(null))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Mapping to DTO works correctly")
+    void mapToDtoTest() {
+        when(modelMapper.map(any(), eq(QuestionTypeResponse.class))).thenReturn(questionTypeResponse);
+        assertEquals(questionTypeResponse, questionTypeService.mapToDto(questionType));
+    }
+
+    @Test
+    @DisplayName("Searching all question types returns a page of all types")
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    void pagingCategories() {
+        Page questionTypePage = mock(Page.class);
+        Page questionTypeResponses = mock(Page.class);
+        when(questionTypeRepository.findByTitleContainingIgnoreCase(any(), anyString()))
+                .thenReturn(questionTypePage);
+        when(questionTypePage.map(any())).thenReturn(questionTypeResponses);
+
+        Pageable pageable = mock(Pageable.class);
+        assertEquals(questionTypeResponses,
+                questionTypeService.searchAllQuestionCategoriesPageable(pageable, ""));
     }
 }

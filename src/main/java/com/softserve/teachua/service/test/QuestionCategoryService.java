@@ -1,7 +1,7 @@
 package com.softserve.teachua.service.test;
 
-import com.softserve.teachua.dto.test.questionCategory.QuestionCategoryProfile;
-import com.softserve.teachua.dto.test.questionCategory.QuestionCategoryResponse;
+import com.softserve.teachua.dto.test.question_category.QuestionCategoryProfile;
+import com.softserve.teachua.dto.test.question_category.QuestionCategoryResponse;
 import com.softserve.teachua.model.test.QuestionCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

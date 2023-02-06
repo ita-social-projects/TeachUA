@@ -1,6 +1,7 @@
 package com.softserve.teachua.service.test;
 
-import com.softserve.teachua.dto.test.questionCategory.QuestionCategoryProfile;
+import com.softserve.teachua.dto.test.question_category.QuestionCategoryProfile;
+import com.softserve.teachua.dto.test.question_category.QuestionCategoryResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.EntityIsUsedException;
 import com.softserve.teachua.exception.NotExistException;
@@ -24,6 +25,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class QuestionCategoryServiceTest {
@@ -41,6 +44,7 @@ class QuestionCategoryServiceTest {
 
     private QuestionCategory questionCategory;
     private QuestionCategoryProfile questionCategoryProfile;
+    private QuestionCategoryResponse questionCategoryResponse;
 
     private final Long EXISTING_CATEGORY_ID = 1L;
     private final Long NOT_EXISTING_CATEGORY_ID = 100L;
@@ -52,9 +56,14 @@ class QuestionCategoryServiceTest {
     @BeforeEach
     public void setUp() {
         questionCategory = QuestionCategory.builder()
+                .id(EXISTING_CATEGORY_ID)
                 .title(EXISTING_CATEGORY_TITLE)
                 .build();
         questionCategoryProfile = QuestionCategoryProfile.builder()
+                .title(EXISTING_CATEGORY_TITLE)
+                .build();
+        questionCategoryResponse = QuestionCategoryResponse.builder()
+                .id(EXISTING_CATEGORY_ID)
                 .title(EXISTING_CATEGORY_TITLE)
                 .build();
     }
@@ -181,7 +190,7 @@ class QuestionCategoryServiceTest {
     }
 
     @Test
-    @DisplayName("Deleting question category works")
+    @DisplayName("Deleting question category works correctly")
     void deleteCorrect() {
         assertDoesNotThrow(() -> questionCategoryService.deleteById(anyLong()));
     }
@@ -190,6 +199,28 @@ class QuestionCategoryServiceTest {
     @DisplayName("Deleting a used question category throws EntityIsUsedException")
     void deleteException() {
         when(questionRepository.existsByQuestionCategoryId(anyLong())).thenReturn(true);
-        assertThrows(EntityIsUsedException.class, () -> questionCategoryService.deleteById(anyLong()));
+        assertThrows(EntityIsUsedException.class, () -> questionCategoryService.deleteById(EXISTING_CATEGORY_ID));
+    }
+
+    @Test
+    @DisplayName("Mapping to DTO works correctly")
+    void mapToDtoTest() {
+        when(modelMapper.map(any(), eq(QuestionCategoryResponse.class))).thenReturn(questionCategoryResponse);
+        assertEquals(questionCategoryResponse, questionCategoryService.mapToDto(questionCategory));
+    }
+
+    @Test
+    @DisplayName("Paging and searching Question categories works correctly")
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    void pageAndSearch() {
+        Page questionCategoryPage = mock(Page.class);
+        Page questionCategoryResponses = mock(Page.class);
+        when(questionCategoryRepository.findByTitleContainingIgnoreCase(any(), anyString()))
+                .thenReturn(questionCategoryPage);
+        when(questionCategoryPage.map(any())).thenReturn(questionCategoryResponses);
+
+        Pageable pageable = mock(Pageable.class);
+        assertEquals(questionCategoryResponses,
+                questionCategoryService.searchAllQuestionCategoriesPageable(pageable, ""));
     }
 }

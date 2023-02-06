@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.test.questionCategory;
+package com.softserve.teachua.dto.test.question_category;
 
 import com.softserve.teachua.utils.validations.CheckRussian;
 import javax.validation.constraints.NotBlank;

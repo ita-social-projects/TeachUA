@@ -1,7 +1,7 @@
 package com.softserve.teachua.service.test.impl;
 
-import com.softserve.teachua.dto.test.questionType.QuestionTypeProfile;
-import com.softserve.teachua.dto.test.questionType.QuestionTypeResponse;
+import com.softserve.teachua.dto.test.question_type.QuestionTypeProfile;
+import com.softserve.teachua.dto.test.question_type.QuestionTypeResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.EntityIsUsedException;
 import com.softserve.teachua.exception.NotExistException;
@@ -31,13 +31,14 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
     private final QuestionTypeRepository questionTypeRepository;
     private final QuestionRepository questionRepository;
     private final ModelMapper modelMapper;
+    private static final String QUESTION_TYPE_EXCEPTION_MESSAGE = "Question type";
 
     @Override
     @Transactional(readOnly = true)
     public QuestionType findById(Long id) {
         return questionTypeRepository.findById(id)
                 .orElseThrow(() -> new NotExistException(
-                        String.format(NO_ID_MESSAGE, "question type", id)
+                        String.format(NO_ID_MESSAGE, QUESTION_TYPE_EXCEPTION_MESSAGE, id)
                 ));
     }
 
@@ -47,13 +48,13 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
         checkNull(title, "Question type");
         return questionTypeRepository.findByTitle(title)
                 .orElseThrow(() -> new NotExistException(
-                        String.format(NO_TITLE_MESSAGE, "question type", title)));
+                        String.format(NO_TITLE_MESSAGE, QUESTION_TYPE_EXCEPTION_MESSAGE, title)));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<QuestionTypeResponse> searchAllQuestionCategoriesPageable(Pageable pageable, String title) {
-        return mapToDtoPage(questionTypeRepository.findByTitleContainingIgnoreCase(pageable, title));
+        return questionTypeRepository.findByTitleContainingIgnoreCase(pageable, title).map(this::mapToDto);
     }
 
     @Override
@@ -72,7 +73,7 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
     @Override
     @Transactional
     public QuestionTypeProfile updateById(QuestionTypeProfile typeProfile, Long id) {
-        checkNull(typeProfile, "Question type");
+        checkNull(typeProfile, QUESTION_TYPE_EXCEPTION_MESSAGE);
         QuestionType questionType = findById(id);
         questionType.setTitle(typeProfile.getTitle());
         questionTypeRepository.save(questionType);
@@ -96,11 +97,7 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
         return (List<QuestionType>) questionTypeRepository.findAll();
     }
 
-    private QuestionTypeResponse mapToDto(QuestionType type) {
+    public QuestionTypeResponse mapToDto(QuestionType type) {
         return modelMapper.map(type, QuestionTypeResponse.class);
-    }
-
-    private Page<QuestionTypeResponse> mapToDtoPage(Page<QuestionType> types) {
-        return types.map(this::mapToDto);
     }
 }

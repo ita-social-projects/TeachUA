@@ -2,8 +2,8 @@ package com.softserve.teachua.controller.test;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.test.questionType.QuestionTypeProfile;
-import com.softserve.teachua.dto.test.questionType.QuestionTypeResponse;
+import com.softserve.teachua.dto.test.question_type.QuestionTypeProfile;
+import com.softserve.teachua.dto.test.question_type.QuestionTypeResponse;
 import com.softserve.teachua.service.test.QuestionTypeService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.RequiredArgsConstructor;

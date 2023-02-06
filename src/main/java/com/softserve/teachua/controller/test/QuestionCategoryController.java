@@ -2,8 +2,8 @@ package com.softserve.teachua.controller.test;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.test.questionCategory.QuestionCategoryProfile;
-import com.softserve.teachua.dto.test.questionCategory.QuestionCategoryResponse;
+import com.softserve.teachua.dto.test.question_category.QuestionCategoryProfile;
+import com.softserve.teachua.dto.test.question_category.QuestionCategoryResponse;
 import com.softserve.teachua.service.test.QuestionCategoryService;
 import java.util.List;
 import javax.validation.Valid;

@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.test.questionType;
+package com.softserve.teachua.dto.test.question_type;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

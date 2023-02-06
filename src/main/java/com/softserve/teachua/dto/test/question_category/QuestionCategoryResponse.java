@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.test.questionType;
+package com.softserve.teachua.dto.test.question_category;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,9 +10,9 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionTypeProfile {
+public class QuestionCategoryResponse {
     private Long id;
 
-    @NotBlank(message = "Заголовок типу питання не може бути пустим.")
+    @NotBlank(message = "Заголовок категоріі питання не може бути пустим.")
     private String title;
 }
