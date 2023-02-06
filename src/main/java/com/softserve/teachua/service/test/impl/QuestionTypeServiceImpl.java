@@ -45,7 +45,7 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
     @Override
     @Transactional(readOnly = true)
     public QuestionType findByTitle(String title) {
-        checkNull(title, "Question type");
+        checkNull(title, QUESTION_TYPE_EXCEPTION_MESSAGE);
         return questionTypeRepository.findByTitle(title)
                 .orElseThrow(() -> new NotExistException(
                         String.format(NO_TITLE_MESSAGE, QUESTION_TYPE_EXCEPTION_MESSAGE, title)));
@@ -60,7 +60,7 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
     @Override
     @Transactional
     public QuestionTypeProfile save(QuestionTypeProfile typeProfile) {
-        checkNull(typeProfile, "Question type");
+        checkNull(typeProfile, QUESTION_TYPE_EXCEPTION_MESSAGE);
         if (questionTypeRepository.existsByTitle(typeProfile.getTitle())) {
             throw new AlreadyExistException(String.format(CATEGORY_EXISTS_WITH_TITLE, typeProfile.getTitle()));
         }
