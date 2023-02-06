@@ -8,6 +8,7 @@ import com.softserve.teachua.dto.certificate.CertificatePreview;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
+import com.softserve.teachua.exception.CertificateGenerationException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
@@ -284,8 +285,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
                 JasperPrint jasperPrint = createJasperPrint(transfer.getTemplate().getFilePath(), content);
                 JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);
                 return byteArrayOutputStream.toByteArray();
-            } catch (IOException | JRException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                log.error("Cannot generate certificate for {}, {}", transfer, e);
             }
         } else {
             try {
@@ -295,11 +296,10 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
                 Files.delete(filePath);
                 return bytes;
             } catch (IOException e) {
-                log.error("Error creating certificate by template");
-                e.printStackTrace();
+                log.error("Error creating certificate by template {}, {}", transfer, e);
             }
         }
-        return new byte[0];
+        throw new CertificateGenerationException();
     }
 
     @Override

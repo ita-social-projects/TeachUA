@@ -76,9 +76,7 @@ public class QRCodeService {
             log.debug("Error while writing code to outputStream");
         }
 
-        byte[] binaryData = out.toByteArray();
-
-        return binaryData;
+        return out.toByteArray();
     }
 
     private String formContentUrl(Long serialNumber) {

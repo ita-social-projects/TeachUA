@@ -13,14 +13,14 @@ public final class TestConstants {
     public static final String USER_NAME = "Власник Сертифікату";
     public static final LocalDate UPDATE_DATE = LocalDate.now();
     public static final String STRING_DATE = "01.11.2022";
-    public static final String STUDY_FORM = "онлайн";
+    public static final String STUDY_FORM = "дистанційна";
     public static final String COURSE_NUMBER = "10";
     public static final String DURATION = "з 4 по 21 жовтня 2022 року";
     public static final int HOURS = 40;
     public static final String CERTIFICATE_TEMPLATE_NAME = "Єдині учасник";
     public static final String FILE_PATH = "/certificates/templates/jedyni_participant_template.jrxml";
-    public static final String COURSE_DESCRIPTION = "Опис курсу";
-    public static final String PROJECT_DESCRIPTION = "Опис проєкту";
+    public static final String COURSE_DESCRIPTION = "Всеукраїнський курс підтримки в переході на українську мову";
+    public static final String PROJECT_DESCRIPTION = "Курс створений та реалізований у рамках проєкту Єдині";
     public static final String PICTURE_PATH = "/static/images/certificate/validation/jedyni_banner.png";
     public static final Integer CERTIFICATE_TYPE_CODE_NUMBER = 3;
     public static final String CERTIFICATE_TYPE_NAME = "Учасник";
