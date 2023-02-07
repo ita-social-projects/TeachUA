@@ -9,7 +9,7 @@ import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.model.RefreshToken;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.RefreshTokenRepository;
-import com.softserve.teachua.security.JwtProvider;
+import com.softserve.teachua.security.JwtUtils;
 import com.softserve.teachua.service.impl.RefreshTokenServiceImpl;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -30,7 +30,7 @@ class RefreshTokenServiceTest {
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
     @Mock
-    private JwtProvider jwtProvider;
+    private JwtUtils jwtUtils;
     @InjectMocks
     private RefreshTokenServiceImpl refreshTokenService;
     private RefreshToken refreshToken;
@@ -48,7 +48,7 @@ class RefreshTokenServiceTest {
     @Test
     void givenUserWithRefreshToken_whenAssignRefreshToken_thenSetNewTokenToUser() {
         User user = getUser().withRefreshToken(refreshToken);
-        when(jwtProvider.generateRefreshToken(user.getEmail()))
+        when(jwtUtils.generateRefreshToken(user.getEmail()))
                 .thenReturn(NEW_REFRESH_TOKEN);
 
         String actual = refreshTokenService.assignRefreshToken(user);
@@ -60,7 +60,7 @@ class RefreshTokenServiceTest {
     @Test
     void givenUserWithNullRefreshToken_whenAssignRefreshToken_thenSetTokenToUser() {
         User user = getUser().withRefreshToken(null);
-        when(jwtProvider.generateRefreshToken(user.getEmail()))
+        when(jwtUtils.generateRefreshToken(user.getEmail()))
                 .thenReturn(NEW_REFRESH_TOKEN);
 
         String actual = refreshTokenService.assignRefreshToken(user);
@@ -72,7 +72,7 @@ class RefreshTokenServiceTest {
 
     @Test
     void givenInvalidRefreshToken_whenRevokeRefreshToken_thenThrow() {
-        when(jwtProvider.isRefreshTokenValid(OLD_REFRESH_TOKEN))
+        when(jwtUtils.isRefreshTokenValid(OLD_REFRESH_TOKEN))
                 .thenReturn(false);
 
         assertThatThrownBy(() -> refreshTokenService.revokeRefreshToken(OLD_REFRESH_TOKEN))
@@ -81,7 +81,7 @@ class RefreshTokenServiceTest {
 
     @Test
     void givenRefreshTokenNotInUse_whenRevokeRefreshToken_thenThrow() {
-        when(jwtProvider.isRefreshTokenValid(OLD_REFRESH_TOKEN))
+        when(jwtUtils.isRefreshTokenValid(OLD_REFRESH_TOKEN))
                 .thenReturn(true);
         when(refreshTokenRepository.findByToken(OLD_REFRESH_TOKEN))
                 .thenReturn(Optional.empty());
@@ -93,7 +93,7 @@ class RefreshTokenServiceTest {
     @Test
     void givenValidRefreshToken_whenRevokeRefreshToken_thenRevoke() {
         User user = refreshToken.getUser();
-        when(jwtProvider.isRefreshTokenValid(OLD_REFRESH_TOKEN))
+        when(jwtUtils.isRefreshTokenValid(OLD_REFRESH_TOKEN))
                 .thenReturn(true);
         when(refreshTokenRepository.findByToken(OLD_REFRESH_TOKEN))
                 .thenReturn(Optional.of(refreshToken));
@@ -113,13 +113,13 @@ class RefreshTokenServiceTest {
                 .build();
 
         User user = refreshToken.getUser();
-        when(jwtProvider.isRefreshTokenValid(OLD_REFRESH_TOKEN))
+        when(jwtUtils.isRefreshTokenValid(OLD_REFRESH_TOKEN))
                 .thenReturn(true);
-        when(jwtProvider.getEmailFromRefreshToken(OLD_REFRESH_TOKEN))
+        when(jwtUtils.getEmailFromRefreshToken(OLD_REFRESH_TOKEN))
                 .thenReturn(user.getEmail());
-        when(jwtProvider.generateRefreshToken(user.getEmail()))
+        when(jwtUtils.generateRefreshToken(user.getEmail()))
                 .thenReturn(NEW_REFRESH_TOKEN);
-        when(jwtProvider.generateAccessToken(user.getEmail()))
+        when(jwtUtils.generateAccessToken(user.getEmail()))
                 .thenReturn(ACCESS_TOKEN);
         when(refreshTokenRepository.findByToken(OLD_REFRESH_TOKEN))
                 .thenReturn(Optional.of(refreshToken));
