@@ -2,6 +2,7 @@ package com.softserve.teachua.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static com.softserve.teachua.TestConstants.FILE_PATH_PDF;
 import static com.softserve.teachua.TestUtils.getCertificateTemplate;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.teachua.model.CertificateDates;
@@ -25,8 +26,6 @@ class CertificateDataLoaderServiceTest {
     @InjectMocks
     private CertificateDataLoaderServiceImpl certificateDataLoaderService;
     @Mock
-    private CertificateDatesRepository datesRepository;
-    @Mock
     private CertificateDatesService certificateDatesService;
     @Mock
     private CertificateTemplateService templateService;
@@ -43,6 +42,7 @@ class CertificateDataLoaderServiceTest {
     void setUp() throws JsonProcessingException {
         certificateTransfer = getCertificateByTemplateTransfer();
         certificateTemplate = getCertificateTemplate();
+        certificateTemplate.setFilePath(FILE_PATH_PDF);
     }
 
     @Test
@@ -60,19 +60,18 @@ class CertificateDataLoaderServiceTest {
     }
 
     private CertificateByTemplateTransfer getCertificateByTemplateTransfer() throws JsonProcessingException {
-        String json =
-                "{\"fieldsList\":[\"fullName\",\"learningForm\",\"Номер курсу\",\"countOfHours\",\"issueDate\","
-                        + "\"Електронна пошта\",\"duration\"],\"fieldPropertiesList\":[\"String\",\"String\",\"int\","
-                        + "\"int\",\"date\",\"String\",\"String\"],\"templateName\":\"1673724092154.pdf\","
-                        + "\"values\":\"{\\\"fullName\\\":\\\"\\\",\\\"learningForm\\\":\\\"дистанційна\\\",\\\"Номер"
-                        + " курсу\\\":\\\"1\\\",\\\"countOfHours\\\":\\\"99\\\",\\\"issueDate\\\":\\\"05.02.2023\\\","
-                        + "\\\"Електронна пошта\\\":\\\"\\\", \\\"duration\\\":\\\"duration\\\"}\","
-                        + "\"columnHeadersList\":[\"№ п/п\",\"Прізвище, ім'я, по батькові отримувача\",\"Номер "
-                        + "сертифіката\",\"Дата видачі\",\"Електронна адреса\",\"Примітки\"],"
-                        + "\"excelContent\":[[\"1\",\"Денисюк-Стасюк Олександр-Іван\",\"1010000001\",\"30.10.2023\","
-                        + "\"email@gmail.com\",\"Виданий без нанесення номера\"]],\"excelColumnsOrder\":[\"Прізвище, "
-                        + "ім'я, по батькові отримувача\",\"№ п/п\",\"Номер сертифіката\",\"Дата видачі\","
-                        + "\"Примітки\",\"Електронна адреса\", \"\"]}";
+        String json = "{\"fieldsList\":[\"fullName\",\"learningForm\",\"Номер курсу\",\"countOfHours\",\"issueDate\","
+                + "\"Електронна пошта\",\"duration\"],\"fieldPropertiesList\":[\"String\",\"String\",\"int\","
+                + "\"int\",\"date\",\"String\",\"String\"],\"templateName\":\"1673724092154.pdf\","
+                + "\"values\":\"{\\\"fullName\\\":\\\"\\\",\\\"learningForm\\\":\\\"дистанційна\\\",\\\"Номер"
+                + " курсу\\\":\\\"1\\\",\\\"countOfHours\\\":\\\"99\\\",\\\"issueDate\\\":\\\"05.02.2023\\\","
+                + "\\\"Електронна пошта\\\":\\\"\\\", \\\"duration\\\":\\\"duration\\\"}\","
+                + "\"columnHeadersList\":[\"№ п/п\",\"Прізвище, ім'я, по батькові отримувача\",\"Номер "
+                + "сертифіката\",\"Дата видачі\",\"Електронна адреса\",\"Примітки\"],"
+                + "\"excelContent\":[[\"1\",\"Денисюк-Стасюк Олександр-Іван\",\"1010000001\",\"30.10.2023\","
+                + "\"email@gmail.com\",\"Виданий без нанесення номера\"]],\"excelColumnsOrder\":[\"Прізвище, "
+                + "ім'я, по батькові отримувача\",\"№ п/п\",\"Номер сертифіката\",\"Дата видачі\","
+                + "\"Примітки\",\"Електронна адреса\", \"\"]}";
         return new ObjectMapper().readValue(json, CertificateByTemplateTransfer.class);
     }
 }

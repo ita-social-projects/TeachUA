@@ -13,7 +13,8 @@ import com.softserve.teachua.service.ArchiveMark;
 import static com.softserve.teachua.service.CertificateService.LAST_JRXML_TEMPLATE_ID;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.CertificateTypeService;
-import com.softserve.teachua.service.FileOperationsService;
+import static com.softserve.teachua.service.impl.PdfTemplateServiceImpl.CERTIFICATE_TEMPLATES_FOLDER;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,21 +44,27 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
     private final CertificateTemplateRepository certificateTemplateRepository;
     private final CertificateRepository certificateRepository;
     private final CertificateTypeService certificateTypeService;
-    private final FileOperationsService fileOperationsService;
-    @Value("certificates/templates/pdf-templates/")
     private String certificateTemplateUrl;
 
     @Autowired
     public CertificateTemplateServiceImpl(DtoConverter dtoConverter,
                                           CertificateTemplateRepository certificateTemplateRepository,
                                           CertificateRepository certificateRepository,
-                                          CertificateTypeService certificateTypeService,
-                                          FileOperationsService fileOperationsService) {
+                                          CertificateTypeService certificateTypeService) throws IOException {
         this.dtoConverter = dtoConverter;
         this.certificateTemplateRepository = certificateTemplateRepository;
         this.certificateRepository = certificateRepository;
         this.certificateTypeService = certificateTypeService;
-        this.fileOperationsService = fileOperationsService;
+        setCertificateTemplateUrl();
+    }
+
+    private void setCertificateTemplateUrl() throws IOException {
+        File directory =
+                new File(new ClassPathResource("/").getFile().getPath() + "/certificates/templates/pdf-templates");
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        certificateTemplateUrl = new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath();
     }
 
     @Override

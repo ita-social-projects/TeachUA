@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import static com.softserve.teachua.TestConstants.FILE_PATH_PDF;
 import static com.softserve.teachua.TestUtils.getCertificateTemplate;
 import static com.softserve.teachua.TestUtils.getCertificateType;
 import com.softserve.teachua.converter.DtoConverter;
@@ -15,7 +16,6 @@ import com.softserve.teachua.service.impl.CertificateTemplateServiceImpl;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -29,12 +29,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.when;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,11 +49,6 @@ class CertificateTemplateServiceTest {
     private CertificateTemplateRepository certificateTemplateRepository;
     @Mock
     private CertificateTypeService certificateTypeService;
-    @Mock
-    private ClassPathResource classPathResource;
-
-    @Mock
-    private FileOperationsService fileOperationsService;
     @Mock
     private DtoConverter dtoConverter;
 
@@ -75,6 +70,7 @@ class CertificateTemplateServiceTest {
     @BeforeEach
     void setUp() {
         certificateTemplate = getCertificateTemplate();
+        certificateTemplate.setFilePath(FILE_PATH_PDF);
         certificateType = getCertificateType();
 
         certificateTemplatePreview = mapper.map(certificateTemplate, CertificateTemplatePreview.class);
