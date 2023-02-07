@@ -1,7 +1,9 @@
 package com.softserve.teachua;
 
 import static com.softserve.teachua.TestConstants.CERTIFICATE_TEMPLATE_NAME;
+import static com.softserve.teachua.TestConstants.CERTIFICATE_TEMPLATE_PROPERTIES;
 import static com.softserve.teachua.TestConstants.CERTIFICATE_TYPE_CODE_NUMBER;
+import static com.softserve.teachua.TestConstants.CERTIFICATE_TYPE_ID;
 import static com.softserve.teachua.TestConstants.CERTIFICATE_TYPE_NAME;
 import static com.softserve.teachua.TestConstants.COURSE_DESCRIPTION;
 import static com.softserve.teachua.TestConstants.COURSE_NUMBER;
@@ -93,12 +95,13 @@ public class TestUtils {
                 .courseDescription(COURSE_DESCRIPTION)
                 .projectDescription(PROJECT_DESCRIPTION)
                 .picturePath(PICTURE_PATH)
-                .properties(null)
+                .properties(CERTIFICATE_TEMPLATE_PROPERTIES)
                 .build();
     }
 
     public static CertificateType getCertificateType() {
         return CertificateType.builder()
+                .id(CERTIFICATE_TYPE_ID)
                 .codeNumber(CERTIFICATE_TYPE_CODE_NUMBER)
                 .name(CERTIFICATE_TYPE_NAME)
                 .build();
