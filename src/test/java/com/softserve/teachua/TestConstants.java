@@ -26,7 +26,6 @@ public final class TestConstants {
     public static final String CERTIFICATE_TEMPLATE_PROPERTIES =
             "{\"id\":\"serial_number\",\"fullName\":\"user_name\",\"issueDate\":\"date\",\"countOfHours\":\"hours\","
                     + "\"learningForm\":\"study_form\",\"image\":\"qrCode_white\",\"duration\":\"duration\"}";
-
     public static final Integer CERTIFICATE_TYPE_ID = 3;
     public static final Integer CERTIFICATE_TYPE_CODE_NUMBER = 3;
     public static final String CERTIFICATE_TYPE_NAME = "Учасник";

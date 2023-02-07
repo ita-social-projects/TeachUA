@@ -10,10 +10,11 @@ import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.dto.certificate_excel.ExcelParsingResponse;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
 import com.softserve.teachua.model.CertificateTemplate;
-import com.softserve.teachua.service.CertificateDataLoaderService;
+import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;
 import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.ExcelParserService;
+import static com.softserve.teachua.utils.validations.CertificateUserNameValidator.NAME_PATTERN;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -34,7 +35,6 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import static com.softserve.teachua.utils.validations.CertificateUserNameValidator.NAME_PATTERN;
 
 @Slf4j
 @Service
@@ -48,7 +48,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     private static final String USER_NAME_FORMAT = NAME_PATTERN;
     private static final String DATE_ERROR =
             "Неправильний формат дати. Будь ласка, використовуйте наступний формат: \"dd.mm.yyyy\"!";
-    private static final String DATE_FORMAT_REGEX = "[0-9]{2}.[0-9]{2}.[0-9]{4}";
+    private static final String DATE_FORMAT_REGEX = "\\d{2}.\\d{2}.\\d{4}";
     private static final String HOURS_ERROR = "Неправильний формат кількості годин!";
     private static final String COURSE_NUMBER_ERROR = "Неправильний формат номера курсу!";
     private static final String EMAIL_ERROR = "Неправильний формат електронної пошти!";
@@ -56,18 +56,15 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
 
     private final DataFormatter dataFormatter;
     private final CertificateTemplateService templateService;
-    private final CertificateDataLoaderService dataLoaderService;
     private final ExcelParserService excelParserService;
     private final ObjectMapper objectMapper;
     private HashMap<ExcelColumn, Integer> indexes;
     private ExcelParsingResponse response;
 
     public CertificateExcelServiceImpl(DataFormatter dataFormatter, CertificateTemplateService templateService,
-                                       CertificateDataLoaderService dataLoaderService,
                                        ExcelParserService excelParserService, ObjectMapper objectMapper) {
         this.dataFormatter = dataFormatter;
         this.templateService = templateService;
-        this.dataLoaderService = dataLoaderService;
         this.excelParserService = excelParserService;
         this.objectMapper = objectMapper;
     }
@@ -208,7 +205,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
             List<String> excelValues = data.getExcelContent().get(i);
 
             for (int j = 0; j < data.getFieldsList().size(); j++) {
-                String value = dataLoaderService.getCertificateByTemplateValue(values, data.getFieldsList(),
+                String value = getCertificateByTemplateValue(values, data.getFieldsList(),
                         data.getColumnHeadersList(), data.getExcelColumnsOrder(), excelValues,
                         data.getFieldsList().get(j));
 

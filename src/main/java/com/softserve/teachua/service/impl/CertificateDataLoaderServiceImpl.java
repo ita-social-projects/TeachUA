@@ -15,6 +15,7 @@ import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.repository.CertificateTemplateRepository;
 import com.softserve.teachua.repository.CertificateTypeRepository;
 import com.softserve.teachua.service.CertificateDataLoaderService;
+import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;
 import com.softserve.teachua.service.CertificateDatesService;
 import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.service.CertificateTemplateService;
@@ -260,18 +261,5 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
 
             certificateService.addCertificate(certificate);
         }
-    }
-
-    @Override
-    public String getCertificateByTemplateValue(Map<String, String> values, List<String> fieldsList,
-                                                List<String> columnHeadersList, List<String> excelColumnsOrder,
-                                                List<String> excelValues, String propertyName) {
-        String result = values.get(propertyName);
-        if (result.trim().isEmpty()) {
-            result =
-                    excelValues.get(columnHeadersList.indexOf(excelColumnsOrder.get(fieldsList.indexOf(propertyName))));
-            values.put(propertyName, result);
-        }
-        return result;
     }
 }

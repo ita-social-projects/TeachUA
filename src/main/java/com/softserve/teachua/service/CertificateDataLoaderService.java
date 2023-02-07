@@ -22,7 +22,15 @@ public interface CertificateDataLoaderService {
 
     void saveCertificate(CertificateByTemplateTransfer data) throws JsonProcessingException;
 
-    String getCertificateByTemplateValue(Map<String, String> values, List<String> fieldsList,
-                                         List<String> columnHeadersList, List<String> excelColumnsOrder,
-                                         List<String> excelValues, String propertyName);
+    static String getCertificateByTemplateValue(Map<String, String> values, List<String> fieldsList,
+                                                List<String> columnHeadersList, List<String> excelColumnsOrder,
+                                                List<String> excelValues, String propertyName) {
+        String result = values.get(propertyName);
+        if (result.trim().isEmpty()) {
+            result =
+                    excelValues.get(columnHeadersList.indexOf(excelColumnsOrder.get(fieldsList.indexOf(propertyName))));
+            values.put(propertyName, result);
+        }
+        return result;
+    }
 }

@@ -1,17 +1,18 @@
 package com.softserve.teachua.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import static com.softserve.teachua.TestConstants.FILE_PATH_PDF;
 import static com.softserve.teachua.TestConstants.MOCK_MULTIPART_FILE;
-import static com.softserve.teachua.TestUtils.getCertificateExcel;
-import static com.softserve.teachua.TestUtils.getEmptyCell;
-import static com.softserve.teachua.TestUtils.getEmptySheet;
-import static com.softserve.teachua.TestUtils.getIndexes;
-import static com.softserve.teachua.TestUtils.getListOfEmptyCells;
+import static com.softserve.teachua.TestUtils.*;
+import com.softserve.teachua.constants.excel.CertificateExcelColumn;
+import com.softserve.teachua.constants.excel.ExcelColumn;
+import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.dto.certificate_excel.ExcelParsingResponse;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
+import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.service.impl.CertificateExcelServiceImpl;
-import com.softserve.teachua.constants.excel.ExcelColumn;
-import com.softserve.teachua.constants.excel.CertificateExcelColumn;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import static java.util.Collections.emptyList;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,25 +33,34 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateExcelServiceTest {
     public static final String PATTERN = "d.MM.yyyy";
+    private final HashMap<ExcelColumn, Integer> columnIndexes = getIndexes(CertificateExcelColumn.values());
+    private final DataFormatter cellFormatter = new DataFormatter();
+    private final ObjectMapper notMockObjectMapper = new ObjectMapper();
+    private final String INVALID_CERTIFICATE_TEMPLATE_PROPERTIES =
+            "{\"id\":\"serial_number\",\"fullName\":\"user_name\",\"issueDate\":\"date\",\"countOfHours\":\"hours\","
+                    + "\"learningForm\":\"study_form\",\"image\":\"qrCode_white\",\"duration\":\"duration\","
+                    + "\"course_number\":\"course_number\"}";
     @Mock
     private DataFormatter dataFormatter;
     @Mock
     private ExcelParserService excelParserService;
+    @Mock
+    private ObjectMapper objectMapper;
+    @Mock
+    private CertificateTemplateService templateService;
     @Spy
     @InjectMocks
     private CertificateExcelServiceImpl certificateExcelService;
-    private final HashMap<ExcelColumn, Integer> columnIndexes = getIndexes(CertificateExcelColumn.values());
-    private final DataFormatter cellFormatter = new DataFormatter();
     private CertificateExcel certificateExcel;
+    private CertificateByTemplateTransfer certificateTransfer;
+    private CertificateTemplate certificateTemplate;
 
     @BeforeEach
     void setUp() {
@@ -108,6 +119,36 @@ class CertificateExcelServiceTest {
         ExcelParsingResponse excelParsingResponse = certificateExcelService.parseExcel(MOCK_MULTIPART_FILE);
 
         assertEquals(4, excelParsingResponse.getParsingMistakes().size());
+    }
+
+    @Test
+    void validateCertificateByTemplateExcel_IfValid() throws JsonProcessingException {
+        certificateTransfer = getCertificateByTemplateTransfer();
+        certificateTemplate = getCertificateTemplate();
+        beforeValidateCertificateByTemplateExcel();
+
+        assertThat(certificateExcelService.validateCertificateByTemplateExcel(certificateTransfer).get(0)[1]).isEqualTo(
+                "3");
+    }
+
+    @Test
+    void validateCertificateByTemplateExcel_IfInvalid() throws JsonProcessingException {
+        certificateTransfer = getInvalidCertificateByTemplateTransfer();
+        certificateTemplate = getCertificateTemplate();
+        certificateTemplate.setProperties(INVALID_CERTIFICATE_TEMPLATE_PROPERTIES);
+        beforeValidateCertificateByTemplateExcel();
+
+        assertThat(certificateExcelService.validateCertificateByTemplateExcel(certificateTransfer)).hasSizeGreaterThan(
+                1);
+    }
+
+    private void beforeValidateCertificateByTemplateExcel() throws JsonProcessingException {
+        certificateTemplate.setFilePath(FILE_PATH_PDF);
+        when(templateService.getTemplateByFilePath(certificateTemplate.getFilePath())).thenReturn(certificateTemplate);
+        when(objectMapper.readValue(certificateTemplate.getProperties(), HashMap.class)).thenReturn(
+                notMockObjectMapper.readValue(certificateTemplate.getProperties(), HashMap.class));
+        when(objectMapper.readValue(certificateTransfer.getValues(), HashMap.class)).thenReturn(
+                notMockObjectMapper.readValue(certificateTransfer.getValues(), HashMap.class));
     }
 
     private List<List<Cell>> getValidRowCertificateExcel() {
