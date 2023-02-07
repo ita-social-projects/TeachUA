@@ -66,7 +66,6 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional(readOnly = true)
     public Page<QuestionResponse> searchAllQuestionsPageable(
             Pageable pageable, String query, String type, String category) {
-
         if (!isEmpty(type) && !isEmpty(category)) {
             return mapToDtoPage(
                     questionRepository.findByTitleContainingIgnoreCaseAndQuestionTypeAndQuestionCategory(
