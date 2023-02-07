@@ -16,12 +16,16 @@ import com.softserve.teachua.dto.certificate.CertificatePreview;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
+import com.softserve.teachua.exception.CertificateGenerationException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateType;
 import com.softserve.teachua.model.archivable.CertificateArch;
 import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.service.impl.CertificateServiceImpl;
+import com.softserve.teachua.utils.CertificateContentDecorator;
+import com.softserve.teachua.utils.QRCodeService;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Optional;
@@ -57,11 +61,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateServiceTest {
-
+    public static final String BASE_URL_FIELD = "baseUrl";
+    public static final String BASE_URL = "http://localhost:8080/dev";
     @Mock
     private CertificateRepository certificateRepository;
     @Mock
@@ -74,6 +80,10 @@ class CertificateServiceTest {
     private CertificateTemplateService certificateTemplateService;
     @Mock
     private CertificateDatesService certificateDatesService;
+    @Mock
+    private CertificateContentDecorator certificateContentDecorator;
+    @Mock
+    private QRCodeService qrCodeService;
     @Spy
     @InjectMocks
     private CertificateServiceImpl certificateService;
@@ -372,6 +382,33 @@ class CertificateServiceTest {
         verify(certificateRepository, times(1)).save(savedCertificateCaptor.capture());
         verify(dtoConverter).convertToDto(any(), eq(CertificateTransfer.class));
         assertNotNull(savedCertificateCaptor.getValue().getSerialNumber());
+    }
+
+    @Test
+    @DisplayName("Should return byte array corresponding to expected pdf")
+    void getPdfOutput() throws IOException {
+        ReflectionTestUtils.setField(qrCodeService, BASE_URL_FIELD, BASE_URL);
+
+        when(certificateContentDecorator.formHours(certificateTransfer.getDates().getHours()))
+                .thenReturn(String.valueOf(certificateTransfer.getDates().getHours()));
+        when(qrCodeService.getCertificateQrCodeAsStream(certificateTransfer.getSerialNumber()))
+                .thenCallRealMethod();
+        when(certificateContentDecorator.getRealFilePath(certificateTransfer.getTemplate().getFilePath()))
+                .thenCallRealMethod();
+
+        byte[] actual = certificateService.getPdfOutput(certificateTransfer);
+
+        assertThat(actual).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("Should throw CertificateGenerationException if cannot generate pdf")
+    void getPdfOutputOnException() throws IOException {
+        when(certificateContentDecorator.getRealFilePath(certificate.getTemplate().getFilePath()))
+                .thenThrow(IOException.class);
+
+        assertThatThrownBy(() -> certificateService.getPdfOutput(certificateTransfer))
+                .isInstanceOf(CertificateGenerationException.class);
     }
 
     @Test
