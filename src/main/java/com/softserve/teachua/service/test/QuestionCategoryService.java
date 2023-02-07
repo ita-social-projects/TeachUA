@@ -1,7 +1,10 @@
 package com.softserve.teachua.service.test;
 
-import com.softserve.teachua.dto.test.questionCategory.QuestionCategoryProfile;
+import com.softserve.teachua.dto.test.question_category.QuestionCategoryProfile;
+import com.softserve.teachua.dto.test.question_category.QuestionCategoryResponse;
 import com.softserve.teachua.model.test.QuestionCategory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 /**
@@ -32,6 +35,14 @@ public interface QuestionCategoryService {
     QuestionCategory findByTitle(String title);
 
     /**
+     * This method a page of question categories searched by query and configured by pageable object.
+     * @param pageable pageable object that configures page number, page size and sorting
+     * @param title search query for question title, can be blank for all questions
+     * @return new {@code Page<QuestionCategoryResponse>}
+     */
+    Page<QuestionCategoryResponse> searchAllQuestionCategoriesPageable(Pageable pageable, String title);
+
+    /**
      * Find all QuestionCategory entities.
      *
      * @return a list of all QuestionCategory entities
@@ -48,9 +59,15 @@ public interface QuestionCategoryService {
     /**
      * Update a QuestionCategory entity by given id.
      *
-     * @param categoryProfile - contains information about the new question category
+     * @param categoryProfile - contains information about the new question category.
      * @param id question category id
      * @return dto {@code QuestionCategoryProfile} if question category was successfully updated.
      */
     QuestionCategoryProfile updateById(QuestionCategoryProfile categoryProfile, Long id);
+
+    /**
+     * Delete a QuestionCategory entry by a given id.
+     * @param id question category id
+     */
+    void deleteById(Long id);
 }

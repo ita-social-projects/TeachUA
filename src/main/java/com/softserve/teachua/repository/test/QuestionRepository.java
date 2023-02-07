@@ -43,6 +43,10 @@ public interface QuestionRepository extends PagingAndSortingRepository<Question,
 
     Optional<Question> findByTitle(String title);
 
+    boolean existsByQuestionCategoryId(Long categoryId);
+
+    boolean existsByQuestionTypeId(Long typeId);
+
     @Query("SELECT qt.question FROM QuestionTest qt WHERE qt.test.id = :id")
     List<Question> findQuestionsByTestId(@Param("id") Long testId);
 
