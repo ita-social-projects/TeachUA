@@ -75,7 +75,7 @@ public class NewsServiceTest {
     private static final String USER_EXISTING_LASTNAME = "User Existing LastName";
 
     @BeforeEach
-    public void setMocks() {
+    void setMocks() {
 
         user = User.builder().id(USER_EXISTING_ID).firstName(USER_EXISTING_NAME).lastName(USER_EXISTING_LASTNAME)
                 .build();
@@ -94,14 +94,14 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void getNewsByCorrectIdShouldReturnNews() {
+    void getNewsByCorrectIdShouldReturnNews() {
         when(newsRepository.findById(CORRECT_NEWS_ID)).thenReturn(Optional.of(news));
         News actual = newsService.getNewsById(CORRECT_NEWS_ID);
         assertThat(actual).isEqualTo(news);
     }
 
     @Test
-    public void getNewsByWrongIdShouldReturnNull() {
+    void getNewsByWrongIdShouldReturnNull() {
         when(newsRepository.findById(WRONG_NEWS_ID)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> newsService.getNewsById(WRONG_NEWS_ID))
                 .isInstanceOf(NotExistException.class);
@@ -134,14 +134,14 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void getListOfNewsShouldReturnList() {
+    void getListOfNewsShouldReturnList() {
         when(newsRepository.findAll()).thenReturn(Collections.singletonList(news));
         when(dtoConverter.convertToDto(news, NewsResponse.class)).thenReturn(newsResponse);
         assertThat(newsService.getAllNews()).isNotEmpty().isEqualTo(Collections.singletonList(newsResponse));
     }
 
     @Test
-    public void getAllCurrentNewsShouldReturnList() {
+    void getAllCurrentNewsShouldReturnList() {
         when(newsRepository.getAllCurrentNews()).thenReturn(Collections.singletonList(news));
         when(dtoConverter.convertToDto(news, NewsResponse.class)).thenReturn(newsResponse);
 
@@ -151,7 +151,7 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void getSimilarNewsByTitleShouldReturnList() {
+    void getSimilarNewsByTitleShouldReturnList() {
         SimmilarNewsProfile simmilarNewsProfile = new SimmilarNewsProfile(news.getId(), news.getTitle());
 
         when(newsRepository.getNewsByTitle(simmilarNewsProfile.getTitle())).
@@ -165,7 +165,7 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void getListOfNewsShouldReturnPage() {
+    void getListOfNewsShouldReturnPage() {
         Pageable pageable = mock(Pageable.class);
         when(newsRepository.findAll(pageable))
                 .thenReturn(new PageImpl<>(Collections.singletonList(news)));
@@ -177,7 +177,7 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void updateNewsShouldReturnSuccessCreatedNews() {
+    void updateNewsShouldReturnSuccessCreatedNews() {
         when(newsRepository.findById(CORRECT_NEWS_ID)).thenReturn(Optional.of(news));
         when(newsRepository.save(news)).thenReturn(news);
         when(dtoConverter.convertToDto(news, SuccessCreatedNews.class)).thenReturn(successCreatedNews);
@@ -185,7 +185,7 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void createNewsShouldReturnSuccessCreatedNews() {
+    void createNewsShouldReturnSuccessCreatedNews() {
         when(dtoConverter.convertToEntity(newsProfile, new News())).thenReturn(news);
         when(newsRepository.save(any(News.class))).thenReturn(news);
         when(dtoConverter.convertToDto(news, SuccessCreatedNews.class)).thenReturn(successCreatedNews);
@@ -193,7 +193,7 @@ public class NewsServiceTest {
     }
 
     @Test
-    public void getNewsProfileByIdShouldReturnNewsResponse() {
+    void getNewsProfileByIdShouldReturnNewsResponse() {
         when(newsRepository.findById(CORRECT_NEWS_ID)).thenReturn(Optional.of(news));
         when(dtoConverter.convertToDto(news, NewsResponse.class)).thenReturn(newsResponse);
         NewsResponse actual = newsService.getNewsProfileById(CORRECT_NEWS_ID);

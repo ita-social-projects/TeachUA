@@ -1,8 +1,10 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.TestUtils;
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.ContactsStringConverter;
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.club.ClubOwnerProfile;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
@@ -33,6 +35,7 @@ import org.mockito.Mock;
 import org.mockito.internal.util.collections.Sets;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.softserve.teachua.TestUtils.getUser;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -262,6 +265,22 @@ class ClubServiceTest {
 
         List<ClubResponse> actual = clubService.getListOfClubs();
         assertEquals(clubResponse.getName(), actual.get(0).getName());
+    }
+
+    @Test
+    void changeClubOwner() {
+        User axpectedUser = getUser();
+        ClubOwnerProfile clubOwnerProfile = ClubOwnerProfile.builder()
+                .id(club.getId())
+                .user(axpectedUser)
+                .build();
+
+        when(userService.getAuthenticatedUser()).thenReturn(user);
+        when(clubRepository.findById(club.getId())).thenReturn(Optional.of(club));
+
+        clubService.changeClubOwner(user.getId(), clubOwnerProfile);
+
+        assertEquals(axpectedUser, club.getUser());
     }
 
     // @Test

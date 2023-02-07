@@ -42,6 +42,7 @@ import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTr
 import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
 import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
+import com.softserve.teachua.dto.user.UserLogin;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
@@ -84,6 +85,10 @@ public class TestUtils {
                 .id(INTEGER_ID)
                 .name(USER_ROLE)
                 .build();
+    }
+
+    public static UserLogin getUserLogin() {
+        return new UserLogin(getUser().getEmail(), getUser().getPassword());
     }
 
     public static Certificate getCertificate() {

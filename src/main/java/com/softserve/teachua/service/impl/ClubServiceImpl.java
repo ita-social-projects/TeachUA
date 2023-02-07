@@ -460,10 +460,10 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     @Override
-    public ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile) {
+    public ClubResponse changeClubOwner(Long clubId, ClubOwnerProfile clubOwnerProfile) {
         User user = userService.getAuthenticatedUser();
-        validateClubOwner(id, user);
-        Club club = getClubById(id);
+        validateClubOwner(clubId, user);
+        Club club = getClubById(clubId);
         club.setUser(clubOwnerProfile.getUser());
 
         log.debug("changed club owner by id {}", club);

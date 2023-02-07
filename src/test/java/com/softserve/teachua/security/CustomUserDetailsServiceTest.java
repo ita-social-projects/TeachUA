@@ -1,5 +1,6 @@
 package com.softserve.teachua.security;
 
+import static com.softserve.teachua.TestConstants.USER_EMAIL;
 import static com.softserve.teachua.TestUtils.getUser;
 import static com.softserve.teachua.TestUtils.getUserPrincipal;
 import com.softserve.teachua.model.User;
@@ -49,9 +50,9 @@ class CustomUserDetailsServiceTest {
 
     @Test
     void shouldThrowUsernameNotFoundException_whenLoadUserByUsername() {
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(USER_EMAIL)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> userDetailsService.loadUserByUsername(user.getEmail()))
+        assertThatThrownBy(() -> userDetailsService.loadUserByUsername(USER_EMAIL))
                 .isInstanceOf(UsernameNotFoundException.class);
     }
 }

@@ -64,6 +64,7 @@ public class LoginController implements Api {
      *
      * @param request {@code RefreshTokenRequest}.
      */
+    @PreAuthorize("!isAuthenticated()")
     @PostMapping("/token/revoke")
     public void revokeRefreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         refreshTokenService.revokeRefreshToken(request.getRefreshToken());

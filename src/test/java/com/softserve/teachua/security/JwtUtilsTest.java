@@ -2,6 +2,7 @@ package com.softserve.teachua.security;
 
 import static com.softserve.teachua.TestConstants.ACCESS_TOKEN;
 import static com.softserve.teachua.TestConstants.EMPTY_STRING;
+import static com.softserve.teachua.TestConstants.NOT_EMPTY_STRING;
 import static com.softserve.teachua.TestConstants.USER_EMAIL;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -86,6 +87,15 @@ class JwtUtilsTest {
     void givenRequestWithoutToken_whenGetJwtFromRequest_shouldNull() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getHeader(AUTHORIZATION)).thenReturn(null);
+
+        String actual = jwtUtils.getJwtFromRequest(request);
+        assertNull(actual);
+    }
+
+    @Test
+    void givenRequestWithInvalidToken_whenGetJwtFromRequest_shouldNull() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader(AUTHORIZATION)).thenReturn(NOT_EMPTY_STRING);
 
         String actual = jwtUtils.getJwtFromRequest(request);
         assertNull(actual);
