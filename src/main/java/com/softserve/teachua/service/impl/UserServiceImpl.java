@@ -240,7 +240,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         return SuccessLogin.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .role(user.getRole().getName())
+                .roleName(user.getRole().getName())
                 .accessToken(jwtUtils.generateAccessToken(userLogin.getEmail()))
                 .refreshToken(refreshTokenService.assignRefreshToken(user))
                 .build();
