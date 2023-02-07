@@ -3,7 +3,7 @@ package com.softserve.teachua.security.oauth2;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.model.User;
-import com.softserve.teachua.security.JwtProvider;
+import com.softserve.teachua.security.JwtUtils;
 import static com.softserve.teachua.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 import static com.softserve.teachua.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.USER_ROLE_PARAMETER;
 import com.softserve.teachua.security.util.CookieUtils;
@@ -28,7 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Slf4j
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private final JwtProvider tokenProvider;
+    private final JwtUtils tokenProvider;
 
     @Autowired
     UserService userService;
@@ -42,8 +42,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Autowired
-    OAuth2AuthenticationSuccessHandler(JwtProvider tokenProvider,
-            HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
+    OAuth2AuthenticationSuccessHandler(JwtUtils tokenProvider,
+                                       HttpCookieOAuth2AuthorizationRequestRepository
+                                               httpCookieOAuth2AuthorizationRequestRepository) {
         this.tokenProvider = tokenProvider;
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
     }
@@ -53,7 +54,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-            Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication) throws IOException, ServletException {
         String targetUrl = determineTargetUrl(request, response, authentication);
 
         if (response.isCommitted()) {
@@ -70,7 +71,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      * @return uri
      */
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
-            Authentication authentication) {
+                                        Authentication authentication) {
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
         Optional<Object> userRole = CookieUtils.getCookie(request, USER_ROLE_PARAMETER).map(Cookie::getValue);

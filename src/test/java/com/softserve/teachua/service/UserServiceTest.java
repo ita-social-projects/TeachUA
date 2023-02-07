@@ -26,7 +26,7 @@ import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.UserArch;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.CustomUserDetailsService;
-import com.softserve.teachua.security.JwtProvider;
+import com.softserve.teachua.security.JwtUtils;
 import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.security.service.EncoderService;
 import com.softserve.teachua.service.impl.UserServiceImpl;
@@ -83,7 +83,7 @@ class UserServiceTest {
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
     @Mock
-    private JwtProvider jwtProvider;
+    private JwtUtils jwtUtils;
     @Mock
     private RefreshTokenService refreshTokenService;
     @Mock
@@ -278,7 +278,7 @@ class UserServiceTest {
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
 
         when(encodeService.isValidPassword(userLogin, newUser)).thenReturn(true);
-        when(jwtProvider.generateAccessToken(newUser.getEmail())).thenReturn(TOKEN);
+        when(jwtUtils.generateAccessToken(newUser.getEmail())).thenReturn(TOKEN);
         when(refreshTokenService.assignRefreshToken(newUser)).thenReturn(TOKEN);
 
         SuccessLogin actual = userService.loginUser(userLogin);

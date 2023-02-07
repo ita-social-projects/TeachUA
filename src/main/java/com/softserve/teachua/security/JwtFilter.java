@@ -19,12 +19,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
     private static final String ABSENT_TOKEN = "Token is empty [%s]";
-    private final JwtProvider jwtProvider;
+    private final JwtUtils jwtUtils;
     private final CustomUserDetailsService customUserDetailsService;
 
     @Autowired
-    public JwtFilter(JwtProvider jwtProvider, CustomUserDetailsService customUserDetailsService) {
-        this.jwtProvider = jwtProvider;
+    public JwtFilter(JwtUtils jwtUtils, CustomUserDetailsService customUserDetailsService) {
+        this.jwtUtils = jwtUtils;
         this.customUserDetailsService = customUserDetailsService;
     }
 
@@ -32,10 +32,10 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
-            String accessToken = jwtProvider.getJwtFromRequest(request);
+            String accessToken = jwtUtils.getJwtFromRequest(request);
 
-            if (StringUtils.hasText(accessToken) && jwtProvider.isAccessTokenValid(accessToken)) {
-                String userEmail = jwtProvider.getEmailFromAccessToken(accessToken);
+            if (StringUtils.hasText(accessToken) && jwtUtils.isAccessTokenValid(accessToken)) {
+                String userEmail = jwtUtils.getEmailFromAccessToken(accessToken);
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

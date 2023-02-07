@@ -7,21 +7,29 @@ import java.util.Calendar;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
 @Slf4j
-public class JwtProvider {
-    @Value("${application.jwt.accessTokenSecret}")
-    private String accessTokenSecret;
-    @Value("${application.jwt.refreshTokenSecret}")
-    private String refreshTokenSecret;
-    @Value("${application.jwt.accessExpirationTimeInMinutes}")
-    private int accessExpirationTimeInMinutes;
-    @Value("${application.jwt.refreshExpirationTimeInMinutes}")
-    private int refreshExpirationTimeInMinutes;
+public class JwtUtils {
+    private final String accessTokenSecret;
+    private final String refreshTokenSecret;
+    private final Integer accessExpirationTimeInMinutes;
+    private final Integer refreshExpirationTimeInDays;
+
+    @Autowired
+    public JwtUtils(@Value("${application.jwt.accessTokenSecret}") String accessTokenSecret,
+                       @Value("${application.jwt.refreshTokenSecret}") String refreshTokenSecret,
+                       @Value("${application.jwt.accessExpirationTimeInMinutes}") Integer accessExpirationTime,
+                       @Value("${application.jwt.refreshExpirationTimeInDays}") Integer refreshExpirationTime) {
+        this.accessTokenSecret = accessTokenSecret;
+        this.refreshTokenSecret = refreshTokenSecret;
+        this.accessExpirationTimeInMinutes = accessExpirationTime;
+        this.refreshExpirationTimeInDays = refreshExpirationTime;
+    }
 
     /**
      * Method for generating access token.
@@ -43,7 +51,7 @@ public class JwtProvider {
     public String generateRefreshToken(String email) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.add(Calendar.MINUTE, refreshExpirationTimeInMinutes);
+        calendar.add(Calendar.DATE, refreshExpirationTimeInDays);
         return Jwts.builder()
                 .setSubject(email)
                 .setExpiration(calendar.getTime())

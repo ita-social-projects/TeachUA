@@ -11,7 +11,6 @@ import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.dto.search.TopClubProfile;
-import com.softserve.teachua.security.JwtProvider;
 import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -44,12 +43,10 @@ public class ClubController implements Api {
     private static final int CLUBS_PER_PAGE = 8;
     private static final int CLUBS_PER_USER_PAGE = 3;
     private final ClubService clubService;
-    private final JwtProvider jwtProvider;
 
     @Autowired
-    public ClubController(ClubService clubService, JwtProvider jwtProvider) {
+    public ClubController(ClubService clubService) {
         this.clubService = clubService;
-        this.jwtProvider = jwtProvider;
     }
 
     /**

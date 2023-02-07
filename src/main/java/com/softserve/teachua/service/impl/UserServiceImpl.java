@@ -29,7 +29,7 @@ import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.UserArch;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.CustomUserDetailsService;
-import com.softserve.teachua.security.JwtProvider;
+import com.softserve.teachua.security.JwtUtils;
 import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.security.service.EncoderService;
 import com.softserve.teachua.service.ArchiveMark;
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private final RoleService roleService;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
-    private final JwtProvider jwtProvider;
+    private final JwtUtils jwtUtils;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, EncoderService encodeService, RoleService roleService,
-                           DtoConverter dtoConverter, ArchiveService archiveService, JwtProvider jwtProvider,
+                           DtoConverter dtoConverter, ArchiveService archiveService, JwtUtils jwtUtils,
                            JavaMailSender javaMailSender, @Lazy PasswordEncoder passwordEncoder,
                            ObjectMapper objectMapper, RefreshTokenService refreshTokenService,
                            CustomUserDetailsService userDetailsService) {
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         this.roleService = roleService;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
-        this.jwtProvider = jwtProvider;
+        this.jwtUtils = jwtUtils;
         this.javaMailSender = javaMailSender;
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = objectMapper;
@@ -241,7 +241,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
                 .id(user.getId())
                 .email(user.getEmail())
                 .role(user.getRole().getName())
-                .accessToken(jwtProvider.generateAccessToken(userLogin.getEmail()))
+                .accessToken(jwtUtils.generateAccessToken(userLogin.getEmail()))
                 .refreshToken(refreshTokenService.assignRefreshToken(user))
                 .build();
     }

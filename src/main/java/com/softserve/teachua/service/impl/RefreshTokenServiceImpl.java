@@ -5,7 +5,7 @@ import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.model.RefreshToken;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.RefreshTokenRepository;
-import com.softserve.teachua.security.JwtProvider;
+import com.softserve.teachua.security.JwtUtils;
 import com.softserve.teachua.service.RefreshTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,17 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class RefreshTokenServiceImpl implements RefreshTokenService {
     public static final String UNPROCESSED_REFRESH_TOKEN = "Refresh token is invalid or has been expired";
     private final RefreshTokenRepository refreshTokenRepository;
-    private final JwtProvider jwtProvider;
+    private final JwtUtils jwtUtils;
 
-    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository, JwtProvider jwtProvider) {
+    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository, JwtUtils jwtUtils) {
         this.refreshTokenRepository = refreshTokenRepository;
-        this.jwtProvider = jwtProvider;
+        this.jwtUtils = jwtUtils;
     }
 
     @Override
     @Transactional
     public String assignRefreshToken(User user) {
-        String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
+        String refreshToken = jwtUtils.generateRefreshToken(user.getEmail());
         if (user.getRefreshToken() != null) {
             user.getRefreshToken().setToken(refreshToken);
         } else {
@@ -46,18 +46,18 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Transactional
     public RefreshTokenResponse refreshAccessToken(String refreshToken) {
         validateRefreshToken(refreshToken);
-        String email = jwtProvider.getEmailFromRefreshToken(refreshToken);
-        String newRefreshToken = jwtProvider.generateRefreshToken(email);
+        String email = jwtUtils.getEmailFromRefreshToken(refreshToken);
+        String newRefreshToken = jwtUtils.generateRefreshToken(email);
         getRefreshToken(refreshToken).setToken(newRefreshToken);
 
         return RefreshTokenResponse.builder()
-                .accessToken(jwtProvider.generateAccessToken(email))
+                .accessToken(jwtUtils.generateAccessToken(email))
                 .refreshToken(newRefreshToken)
                 .build();
     }
 
     private void validateRefreshToken(String refreshToken) {
-        if (!jwtProvider.isRefreshTokenValid(refreshToken)) {
+        if (!jwtUtils.isRefreshTokenValid(refreshToken)) {
             throw new UserAuthenticationException(UNPROCESSED_REFRESH_TOKEN);
         }
     }
