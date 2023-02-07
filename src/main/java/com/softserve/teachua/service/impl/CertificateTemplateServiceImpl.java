@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +44,6 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
     private final CertificateRepository certificateRepository;
     private final CertificateTypeService certificateTypeService;
     private final FileOperationsService fileOperationsService;
-    @Value("certificates/templates/pdf-templates/")
     private String certificateTemplateUrl;
 
     @Autowired
@@ -52,12 +51,13 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
                                           CertificateTemplateRepository certificateTemplateRepository,
                                           CertificateRepository certificateRepository,
                                           CertificateTypeService certificateTypeService,
-                                          FileOperationsService fileOperationsService) {
+                                          FileOperationsService fileOperationsService) throws IOException {
         this.dtoConverter = dtoConverter;
         this.certificateTemplateRepository = certificateTemplateRepository;
         this.certificateRepository = certificateRepository;
         this.certificateTypeService = certificateTypeService;
         this.fileOperationsService = fileOperationsService;
+        certificateTemplateUrl = new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath();
     }
 
     @Override
