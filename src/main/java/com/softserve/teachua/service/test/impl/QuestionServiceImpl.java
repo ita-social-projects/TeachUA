@@ -254,7 +254,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<QuestionPreview> getAllQuestions() {
         List<QuestionPreview> previews = new ArrayList<>();
-        List<Question> questions = (List<Question>) questionRepository.findAll();
+        List<Question> questions = questionRepository.findAll();
 
         questions.forEach(question -> previews.add(
                 new QuestionPreview(
@@ -288,7 +288,7 @@ public class QuestionServiceImpl implements QuestionService {
                         .map(answer -> modelMapper.map(answer, Answer.class))
                         .collect(Collectors.toSet()))
                 .build();
-        question.getAnswers().stream().forEach(answer -> answer.setQuestion(question));
+        question.getAnswers().forEach(answer -> answer.setQuestion(question));
         return question;
     }
 

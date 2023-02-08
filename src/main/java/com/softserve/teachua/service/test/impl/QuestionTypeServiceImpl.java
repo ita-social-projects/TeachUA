@@ -94,7 +94,7 @@ public class QuestionTypeServiceImpl implements QuestionTypeService {
     @Override
     @Transactional(readOnly = true)
     public List<QuestionType> findAll() {
-        return (List<QuestionType>) questionTypeRepository.findAll();
+        return questionTypeRepository.findAll();
     }
 
     public QuestionTypeResponse mapToDto(QuestionType type) {

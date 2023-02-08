@@ -42,7 +42,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
 
     @Override
     public List<QuestionCategory> findAll() {
-        return (List<QuestionCategory>) questionCategoryRepository.findAll();
+        return questionCategoryRepository.findAll();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
     @Override
     @Transactional(readOnly = true)
     public List<QuestionCategoryProfile> findAllCategoryProfiles() {
-        return mapToDtoList((List<QuestionCategory>) questionCategoryRepository.findAll());
+        return mapToDtoList(questionCategoryRepository.findAll());
     }
 
     @Override

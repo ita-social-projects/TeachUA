@@ -5,10 +5,11 @@ import com.softserve.teachua.model.test.QuestionCategory;
 import com.softserve.teachua.model.test.QuestionType;
 import java.util.List;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -17,8 +18,8 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository("testQuestionRepository")
-public interface QuestionRepository extends PagingAndSortingRepository<Question, Long> {
-    Optional<Question> findById(Long id);
+public interface QuestionRepository extends JpaRepository<Question, Long> {
+    @NotNull Optional<Question> findById(@NotNull Long id);
 
     Page<Question> findByTitleContainingIgnoreCase(Pageable pageable, String query);
 
