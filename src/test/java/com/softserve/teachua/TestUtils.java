@@ -1,8 +1,13 @@
 package com.softserve.teachua;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import static com.softserve.teachua.TestConstants.CERTIFICATE_TEMPLATE_NAME;
+import static com.softserve.teachua.TestConstants.CERTIFICATE_TEMPLATE_PROPERTIES;
 import static com.softserve.teachua.TestConstants.CERTIFICATE_TYPE_CODE_NUMBER;
+import static com.softserve.teachua.TestConstants.CERTIFICATE_TYPE_ID;
 import static com.softserve.teachua.TestConstants.CERTIFICATE_TYPE_NAME;
+import static com.softserve.teachua.TestConstants.CORRECT;
 import static com.softserve.teachua.TestConstants.COURSE_DESCRIPTION;
 import static com.softserve.teachua.TestConstants.COURSE_NUMBER;
 import static com.softserve.teachua.TestConstants.DURATION;
@@ -24,17 +29,17 @@ import static com.softserve.teachua.TestConstants.UPDATE_DATE;
 import static com.softserve.teachua.TestConstants.USER_EMAIL;
 import static com.softserve.teachua.TestConstants.USER_NAME;
 import static com.softserve.teachua.TestConstants.VARIANT;
-import static com.softserve.teachua.TestConstants.CORRECT;
+import com.softserve.teachua.constants.excel.ExcelColumn;
 import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
-import com.softserve.teachua.dto.certificateExcel.CertificateExcel;
+import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
+import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
 import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.model.CertificateType;
-import com.softserve.teachua.constants.excel.ExcelColumn;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -93,12 +98,13 @@ public class TestUtils {
                 .courseDescription(COURSE_DESCRIPTION)
                 .projectDescription(PROJECT_DESCRIPTION)
                 .picturePath(PICTURE_PATH)
-                .properties(null)
+                .properties(CERTIFICATE_TEMPLATE_PROPERTIES)
                 .build();
     }
 
     public static CertificateType getCertificateType() {
         return CertificateType.builder()
+                .id(CERTIFICATE_TYPE_ID)
                 .codeNumber(CERTIFICATE_TYPE_CODE_NUMBER)
                 .name(CERTIFICATE_TYPE_NAME)
                 .build();
@@ -185,5 +191,39 @@ public class TestUtils {
 
     public static Cell getEmptyCell() {
         return getEmptyRow(1).getCell(0);
+    }
+
+    public static CertificateByTemplateTransfer getCertificateByTemplateTransfer()
+            throws JsonProcessingException {
+        String json = "{\"fieldsList\":[\"fullName\",\"learningForm\",\"Номер курсу\",\"countOfHours\",\"issueDate\","
+                + "\"Електронна пошта\",\"duration\"],\"fieldPropertiesList\":[\"String\",\"String\",\"int\","
+                + "\"int\",\"date\",\"String\",\"String\"],\"templateName\":\"1673724092154.pdf\","
+                + "\"values\":\"{\\\"fullName\\\":\\\"\\\",\\\"learningForm\\\":\\\"дистанційна\\\",\\\"Номер"
+                + " курсу\\\":\\\"1\\\",\\\"countOfHours\\\":\\\"99\\\",\\\"issueDate\\\":\\\"05.02.2023\\\","
+                + "\\\"Електронна пошта\\\":\\\"\\\", \\\"duration\\\":\\\"duration\\\"}\","
+                + "\"columnHeadersList\":[\"№ п/п\",\"Прізвище, ім'я, по батькові отримувача\",\"Номер "
+                + "сертифіката\",\"Дата видачі\",\"Електронна адреса\",\"Примітки\"],"
+                + "\"excelContent\":[[\"1\",\"Денисюк-Стасюк Олександр-Іван\",\"1010000001\",\"30.10.2023\","
+                + "\"email@gmail.com\",\"Виданий без нанесення номера\"]],\"excelColumnsOrder\":[\"Прізвище, "
+                + "ім'я, по батькові отримувача\",\"№ п/п\",\"Номер сертифіката\",\"Дата видачі\","
+                + "\"Примітки\",\"Електронна адреса\", \"\"]}";
+        return new ObjectMapper().readValue(json, CertificateByTemplateTransfer.class);
+    }
+
+    public static CertificateByTemplateTransfer getInvalidCertificateByTemplateTransfer()
+            throws JsonProcessingException {
+        String json = "{\"fieldsList\":[\"fullName\",\"learningForm\",\"Номер курсу\",\"countOfHours\",\"issueDate\","
+                + "\"Електронна пошта\",\"duration\",\"course_number\"],\"fieldPropertiesList\":[\"String\",\"String\","
+                + "\"int\",\"int\",\"date\",\"String\",\"String\",\"int\"],\"templateName\":\"1673724092154.pdf\","
+                + "\"values\":\"{\\\"fullName\\\":\\\"\\\",\\\"learningForm\\\":\\\"дистанційна\\\",\\\"Номер"
+                + " курсу\\\":\\\"номер\\\",\\\"countOfHours\\\":\\\"-10\\\",\\\"issueDate\\\":\\\"2023/02/05\\\","
+                + "\\\"Електронна пошта\\\":\\\"\\\",\\\"duration\\\":\\\"\\\",\\\"course_number\\\":\\\"99\\\"}\","
+                + "\"columnHeadersList\":[\"№ п/п\",\"Прізвище, ім'я, по батькові отримувача\",\"Номер "
+                + "сертифіката\",\"Дата видачі\",\"Електронна адреса\",\"Примітки\",\"Статус\"],"
+                + "\"excelContent\":[[\"1\",\"Денисюк-Стасюк  Олександр-Іван \",\"1010000001\",\"05.02.2023\","
+                + "\"email@@gmail.com\",\"Виданий без нанесення номера\",\"\"]],\"excelColumnsOrder\":[\"Прізвище, "
+                + "ім'я, по батькові отримувача\",\"№ п/п\",\"Номер сертифіката\",\"Дата видачі\","
+                + "\"Примітки\",\"Електронна адреса\",\"Статус\"]}";
+        return new ObjectMapper().readValue(json, CertificateByTemplateTransfer.class);
     }
 }

@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.certificateTemplate;
+package com.softserve.teachua.dto.certificate_template;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CertificateTemplateLastModificationDateSavingResponse {
-    private List<String> messages;
-    private String filePath;
+public class CertificateTemplateUploadResponse {
+    private List<String> fieldsList;
+    private String templateName;
 }

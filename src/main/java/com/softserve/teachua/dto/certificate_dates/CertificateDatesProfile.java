@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.certificateDates;
+package com.softserve.teachua.dto.certificate_dates;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import javax.validation.constraints.NotBlank;
@@ -28,6 +28,6 @@ public class CertificateDatesProfile implements Convertible {
     private String duration;
 
     @NotBlank
-    @Pattern(regexp = "^[0-9]{2}$", message = "Неправильний формат.")
+    @Pattern(regexp = "^//d{2}$", message = "Неправильний формат.")
     private String courseNumber;
 }

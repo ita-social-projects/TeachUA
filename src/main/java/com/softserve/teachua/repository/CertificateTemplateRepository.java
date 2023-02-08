@@ -13,7 +13,7 @@ public interface CertificateTemplateRepository extends JpaRepository<Certificate
 
     Optional<CertificateTemplate> findByName(String name);
 
-    boolean existsByName(String name);
+    boolean existsByNameIgnoreCase(String name);
 
     List<CertificateTemplate> findAll();
 

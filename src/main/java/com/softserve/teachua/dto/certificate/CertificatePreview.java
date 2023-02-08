@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.certificate;
 
-import com.softserve.teachua.dto.certificateDates.CertificateDatesResponse;
+import com.softserve.teachua.dto.certificate_dates.CertificateDatesResponse;
 import com.softserve.teachua.dto.marker.Convertible;
 import java.time.LocalDate;
 import javax.validation.constraints.Email;

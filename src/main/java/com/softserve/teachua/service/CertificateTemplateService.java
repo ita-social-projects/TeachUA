@@ -1,11 +1,8 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateCreationResponse;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplatePreview;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateProfile;
-import com.softserve.teachua.dto.certificateTemplate.CertificateTemplateUpdationResponse;
-import com.softserve.teachua.dto.certificateTemplate.CreateCertificateTemplate;
-import com.softserve.teachua.dto.certificateTemplate.UpdateCertificateTemplate;
+import com.softserve.teachua.dto.certificate_template.CertificateTemplatePreview;
+import com.softserve.teachua.dto.certificate_template.CertificateTemplateProcessingResponse;
+import com.softserve.teachua.dto.certificate_template.CertificateTemplateProfile;
 import com.softserve.teachua.model.CertificateTemplate;
 import java.util.List;
 
@@ -44,7 +41,7 @@ public interface CertificateTemplateService {
      * @param certificateTemplate - put body of {@code CreateCertificateTemplate}
      * @return new {@code CertificateTemplateCreationResponse}
      */
-    CertificateTemplateCreationResponse addTemplate(CreateCertificateTemplate certificateTemplate);
+    CertificateTemplateProcessingResponse addTemplate(CertificateTemplateProfile certificateTemplate);
 
     /**
      * Get a List of {@code CertificateTemplatePreview} - all templates.
@@ -66,17 +63,16 @@ public interface CertificateTemplateService {
      *
      * @param id              put CertificateTemplate id
      * @param updatedTemplate put new data in this dto
-     * @return new {@code CertificateTemplateUpdationResponse}
+     * @return new {@code CertificateTemplateProcessingResponse}
      */
-    CertificateTemplateUpdationResponse updateTemplate(Integer id, UpdateCertificateTemplate updatedTemplate);
+    CertificateTemplateProcessingResponse updateTemplate(Integer id, CertificateTemplateProfile updatedTemplate);
 
     /**
      * This method deletes {@code CertificateTemplate} found by id.
      *
      * @param id put CertificateTemplate id
-     * @return {@code boolean}
      */
     boolean deleteTemplateById(Integer id);
 
-    CertificateTemplateProfile getTemplateProfileById(Integer id);
+    CertificateTemplatePreview getTemplateProfileById(Integer id);
 }

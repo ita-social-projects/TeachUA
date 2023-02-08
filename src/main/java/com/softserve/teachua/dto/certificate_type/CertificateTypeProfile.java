@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.certificateType;
+package com.softserve.teachua.dto.certificate_type;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.validation.constraints.Min;

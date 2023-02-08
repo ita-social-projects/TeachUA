@@ -7,7 +7,7 @@ import com.softserve.teachua.dto.certificate.CertificateDatabaseResponse;
 import com.softserve.teachua.dto.certificate.CertificatePreview;
 import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
-import com.softserve.teachua.dto.certificateExcel.ExcelParsingResponse;
+import com.softserve.teachua.dto.certificate_excel.ExcelParsingResponse;
 import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.service.CertificateDataLoaderService;
 import com.softserve.teachua.service.CertificateExcelService;

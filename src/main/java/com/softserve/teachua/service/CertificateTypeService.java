@@ -1,7 +1,7 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.certificateType.CertificateTypeProcessingResponse;
-import com.softserve.teachua.dto.certificateType.CertificateTypeProfile;
+import com.softserve.teachua.dto.certificate_type.CertificateTypeProcessingResponse;
+import com.softserve.teachua.dto.certificate_type.CertificateTypeProfile;
 import com.softserve.teachua.model.CertificateType;
 import java.util.List;
 
