@@ -61,7 +61,6 @@ values ('1', 'Спортивні секції', 'Футбол, бокс, хок�
         '#FFA940', '#FFA940', '#fff');
 
 
-
 insert into contact_type(id, name, url_logo)
 values (1,'Телефон', '/static/images/contacts/phone.svg'),
        (2,'Facebook', '/static/images/contacts/facebook.svg'),

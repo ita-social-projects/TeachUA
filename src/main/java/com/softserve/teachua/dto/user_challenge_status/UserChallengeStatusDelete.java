@@ -15,6 +15,5 @@ import lombok.NoArgsConstructor;
 public class UserChallengeStatusDelete {
     @NotBlank
     @Size(min = 2, max = 100)
-    @Pattern(regexp = "^[A-Z]+[_A-Z]*[A-Z]$")
     private String statusName;
 }

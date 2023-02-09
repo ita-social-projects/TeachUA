@@ -31,7 +31,6 @@ public class UserChallengeStatus implements Convertible {
 
     @NotBlank
     @Size(min = 2, max = 100)
-    @Pattern(regexp = "^[A-Z]+[_A-Z]*[A-Z]$")
     @Column(nullable = false, unique = true)
     private String statusName;
 }
