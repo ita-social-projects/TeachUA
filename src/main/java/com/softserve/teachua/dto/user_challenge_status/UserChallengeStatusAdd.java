@@ -1,7 +1,6 @@
 package com.softserve.teachua.dto.user_challenge_status;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
