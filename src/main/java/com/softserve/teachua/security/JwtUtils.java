@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 @Component
 @Slf4j
 public class JwtUtils {
+    public static final String USER_ID = "user_id";
     private final String accessTokenSecret;
     private final String refreshTokenSecret;
     private final Integer accessExpirationTimeInMinutes;
@@ -22,9 +23,9 @@ public class JwtUtils {
 
     @Autowired
     public JwtUtils(@Value("${application.jwt.accessTokenSecret}") String accessTokenSecret,
-                       @Value("${application.jwt.refreshTokenSecret}") String refreshTokenSecret,
-                       @Value("${application.jwt.accessExpirationTimeInMinutes}") Integer accessExpirationTime,
-                       @Value("${application.jwt.refreshExpirationTimeInDays}") Integer refreshExpirationTime) {
+                    @Value("${application.jwt.refreshTokenSecret}") String refreshTokenSecret,
+                    @Value("${application.jwt.accessExpirationTimeInMinutes}") Integer accessExpirationTime,
+                    @Value("${application.jwt.refreshExpirationTimeInDays}") Integer refreshExpirationTime) {
         this.accessTokenSecret = accessTokenSecret;
         this.refreshTokenSecret = refreshTokenSecret;
         this.accessExpirationTimeInMinutes = accessExpirationTime;
@@ -35,8 +36,7 @@ public class JwtUtils {
      * Method for generating access token.
      */
     public String generateAccessToken(String email) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
+        Calendar calendar = getCalendar();
         calendar.add(Calendar.MINUTE, accessExpirationTimeInMinutes);
         return Jwts.builder()
                 .setSubject(email)
@@ -48,15 +48,22 @@ public class JwtUtils {
     /**
      * Method for generating refresh token.
      */
-    public String generateRefreshToken(String email) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
+    public String generateRefreshToken(Long id) {
+        Calendar calendar = getCalendar();
         calendar.add(Calendar.DATE, refreshExpirationTimeInDays);
+        Claims claims = Jwts.claims();
+        claims.put(USER_ID, id);
         return Jwts.builder()
-                .setSubject(email)
+                .setClaims(claims)
                 .setExpiration(calendar.getTime())
                 .signWith(SignatureAlgorithm.HS512, refreshTokenSecret)
                 .compact();
+    }
+
+    private Calendar getCalendar() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        return calendar;
     }
 
     /**
@@ -99,14 +106,14 @@ public class JwtUtils {
     }
 
     /**
-     * The method retrieve user email from refresh token.
+     * The method retrieve user id from refresh token.
      *
-     * @return email
+     * @return user id
      */
-    public String getEmailFromRefreshToken(String refreshToken) {
+    public Long getUserIdFromRefreshToken(String refreshToken) {
         Claims claims = Jwts.parser().setSigningKey(refreshTokenSecret)
                 .parseClaimsJws(refreshToken).getBody();
-        return claims.getSubject();
+        return claims.get(USER_ID, Long.class);
     }
 
     /**

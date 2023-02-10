@@ -7,6 +7,7 @@ import com.softserve.teachua.security.JwtUtils;
 import static com.softserve.teachua.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 import static com.softserve.teachua.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.USER_ROLE_PARAMETER;
 import com.softserve.teachua.security.util.CookieUtils;
+import com.softserve.teachua.service.RefreshTokenService;
 import com.softserve.teachua.service.RoleService;
 import com.softserve.teachua.service.UserService;
 import java.io.IOException;
@@ -28,13 +29,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Slf4j
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private final JwtUtils tokenProvider;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    RoleService roleService;
+    private final JwtUtils jwtUtils;
+    private final UserService userService;
+    private final RoleService roleService;
+    private final RefreshTokenService refreshTokenService;
 
     @Value("#{'${authorizedRedirectUris}'.split(',')}")
     private List<String> authorizedRedirectUris;
@@ -42,11 +40,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Autowired
-    OAuth2AuthenticationSuccessHandler(JwtUtils tokenProvider,
+    OAuth2AuthenticationSuccessHandler(JwtUtils jwtUtils,
                                        HttpCookieOAuth2AuthorizationRequestRepository
-                                               httpCookieOAuth2AuthorizationRequestRepository) {
-        this.tokenProvider = tokenProvider;
+                                               httpCookieOAuth2AuthorizationRequestRepository, UserService userService,
+                                       RoleService roleService, RefreshTokenService refreshTokenService) {
+        this.jwtUtils = jwtUtils;
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
+        this.userService = userService;
+        this.roleService = roleService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     /**
@@ -91,8 +93,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
         userService.updateUser(user);
 
-        String accessToken = tokenProvider.generateAccessToken(user.getEmail());
-        String refreshToken = tokenProvider.generateRefreshToken(user.getEmail());
+        String accessToken = jwtUtils.generateAccessToken(user.getEmail());
+        String refreshToken = refreshTokenService.assignRefreshToken(user);
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)

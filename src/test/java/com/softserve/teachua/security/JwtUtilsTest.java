@@ -4,6 +4,8 @@ import static com.softserve.teachua.TestConstants.ACCESS_TOKEN;
 import static com.softserve.teachua.TestConstants.EMPTY_STRING;
 import static com.softserve.teachua.TestConstants.NOT_EMPTY_STRING;
 import static com.softserve.teachua.TestConstants.USER_EMAIL;
+import static com.softserve.teachua.TestConstants.USER_ID;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import javax.servlet.http.HttpServletRequest;
@@ -57,9 +59,9 @@ class JwtUtilsTest {
     }
 
     @Test
-    void givenValidToken_whenGetEmailFromRefreshToken_shouldReturnEmail() {
-        String actual = jwtUtils.getEmailFromRefreshToken(getRefreshToken());
-        assertEquals(USER_EMAIL, actual);
+    void givenValidToken_whenGetUserIdFromRefreshToken_shouldReturnEmail() {
+        Long actual = jwtUtils.getUserIdFromRefreshToken(getRefreshToken());
+        assertEquals(USER_ID, actual);
     }
 
     @Test
@@ -109,8 +111,10 @@ class JwtUtilsTest {
     }
 
     private String getRefreshToken() {
+        Claims claims = Jwts.claims();
+        claims.put("user_id", USER_ID);
         return Jwts.builder()
-                .setSubject(USER_EMAIL)
+                .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, REFRESH_TOKEN_SECRET)
                 .compact();
     }

@@ -1,6 +1,7 @@
 package com.softserve.teachua.utils.annotation;
 
 import com.softserve.teachua.constants.RoleData;
+import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.exception.UserPermissionException;
 import java.util.Arrays;
 import java.util.Set;
@@ -24,8 +25,10 @@ public class AllowedRolesAspect {
         Set<RoleData> roles = Arrays
                 .stream(((MethodSignature) jp.getSignature()).getMethod().getAnnotation(AllowedRoles.class).value())
                 .collect(Collectors.toSet());
-        log.debug("Allowed roles: {}", roles);
         HttpServletRequest httpServletRequest = getRequest();
+        if (httpServletRequest.getUserPrincipal() == null) {
+            throw new UserAuthenticationException();
+        }
         for (RoleData role : roles) {
             if (httpServletRequest.isUserInRole(role.getDBRoleName())) {
                 return jp.proceed();

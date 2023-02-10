@@ -1,6 +1,8 @@
 package com.softserve.teachua.service;
 
 import static com.softserve.teachua.TestConstants.ACCESS_TOKEN;
+import static com.softserve.teachua.TestConstants.ENCODED_REFRESH_TOKEN;
+import static com.softserve.teachua.TestConstants.NEW_ENCODED_REFRESH_TOKEN;
 import static com.softserve.teachua.TestConstants.NEW_REFRESH_TOKEN;
 import static com.softserve.teachua.TestConstants.OLD_REFRESH_TOKEN;
 import static com.softserve.teachua.TestUtils.getUser;
@@ -15,15 +17,16 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 class RefreshTokenServiceTest {
@@ -31,6 +34,8 @@ class RefreshTokenServiceTest {
     private RefreshTokenRepository refreshTokenRepository;
     @Mock
     private JwtUtils jwtUtils;
+    @Mock
+    private PasswordEncoder passwordEncoder;
     @InjectMocks
     private RefreshTokenServiceImpl refreshTokenService;
     private RefreshToken refreshToken;
@@ -41,33 +46,37 @@ class RefreshTokenServiceTest {
         refreshToken = RefreshToken.builder()
                 .id(user.getId())
                 .user(user)
-                .token(OLD_REFRESH_TOKEN)
+                .token(ENCODED_REFRESH_TOKEN)
                 .build();
     }
 
     @Test
     void givenUserWithRefreshToken_whenAssignRefreshToken_thenSetNewTokenToUser() {
         User user = getUser().withRefreshToken(refreshToken);
-        when(jwtUtils.generateRefreshToken(user.getEmail()))
+        when(jwtUtils.generateRefreshToken(user.getId()))
                 .thenReturn(NEW_REFRESH_TOKEN);
+        when(passwordEncoder.encode(NEW_REFRESH_TOKEN))
+                .thenReturn(ENCODED_REFRESH_TOKEN);
 
         String actual = refreshTokenService.assignRefreshToken(user);
 
         assertEquals(NEW_REFRESH_TOKEN, actual);
-        assertEquals(NEW_REFRESH_TOKEN, user.getRefreshToken().getToken());
+        assertEquals(ENCODED_REFRESH_TOKEN, user.getRefreshToken().getToken());
     }
 
     @Test
     void givenUserWithNullRefreshToken_whenAssignRefreshToken_thenSetTokenToUser() {
         User user = getUser().withRefreshToken(null);
-        when(jwtUtils.generateRefreshToken(user.getEmail()))
+        when(jwtUtils.generateRefreshToken(user.getId()))
                 .thenReturn(NEW_REFRESH_TOKEN);
+        when(passwordEncoder.encode(NEW_REFRESH_TOKEN))
+                .thenReturn(ENCODED_REFRESH_TOKEN);
 
         String actual = refreshTokenService.assignRefreshToken(user);
 
         assertEquals(NEW_REFRESH_TOKEN, actual);
         assertNotNull(user.getRefreshToken());
-        assertEquals(NEW_REFRESH_TOKEN, user.getRefreshToken().getToken());
+        assertEquals(ENCODED_REFRESH_TOKEN, user.getRefreshToken().getToken());
     }
 
     @Test
@@ -83,7 +92,9 @@ class RefreshTokenServiceTest {
     void givenRefreshTokenNotInUse_whenRevokeRefreshToken_thenThrow() {
         when(jwtUtils.isRefreshTokenValid(OLD_REFRESH_TOKEN))
                 .thenReturn(true);
-        when(refreshTokenRepository.findByToken(OLD_REFRESH_TOKEN))
+        when(jwtUtils.getUserIdFromRefreshToken(OLD_REFRESH_TOKEN))
+                .thenReturn(refreshToken.getId());
+        when(refreshTokenRepository.findById(refreshToken.getId()))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> refreshTokenService.revokeRefreshToken(OLD_REFRESH_TOKEN))
@@ -95,8 +106,12 @@ class RefreshTokenServiceTest {
         User user = refreshToken.getUser();
         when(jwtUtils.isRefreshTokenValid(OLD_REFRESH_TOKEN))
                 .thenReturn(true);
-        when(refreshTokenRepository.findByToken(OLD_REFRESH_TOKEN))
+        when(jwtUtils.getUserIdFromRefreshToken(OLD_REFRESH_TOKEN))
+                .thenReturn(user.getId());
+        when(refreshTokenRepository.findById(user.getId()))
                 .thenReturn(Optional.of(refreshToken));
+        when(passwordEncoder.matches(OLD_REFRESH_TOKEN, ENCODED_REFRESH_TOKEN))
+                .thenReturn(true);
 
         refreshTokenService.revokeRefreshToken(OLD_REFRESH_TOKEN);
 
@@ -115,18 +130,22 @@ class RefreshTokenServiceTest {
         User user = refreshToken.getUser();
         when(jwtUtils.isRefreshTokenValid(OLD_REFRESH_TOKEN))
                 .thenReturn(true);
-        when(jwtUtils.getEmailFromRefreshToken(OLD_REFRESH_TOKEN))
-                .thenReturn(user.getEmail());
-        when(jwtUtils.generateRefreshToken(user.getEmail()))
+        when(jwtUtils.getUserIdFromRefreshToken(OLD_REFRESH_TOKEN))
+                .thenReturn(user.getId());
+        when(refreshTokenRepository.findById(user.getId()))
+                .thenReturn(Optional.of(refreshToken));
+        when(passwordEncoder.matches(OLD_REFRESH_TOKEN, ENCODED_REFRESH_TOKEN))
+                .thenReturn(true);
+        when(passwordEncoder.encode(NEW_REFRESH_TOKEN))
+                .thenReturn(NEW_ENCODED_REFRESH_TOKEN);
+        when(jwtUtils.generateRefreshToken(user.getId()))
                 .thenReturn(NEW_REFRESH_TOKEN);
         when(jwtUtils.generateAccessToken(user.getEmail()))
                 .thenReturn(ACCESS_TOKEN);
-        when(refreshTokenRepository.findByToken(OLD_REFRESH_TOKEN))
-                .thenReturn(Optional.of(refreshToken));
 
         RefreshTokenResponse actual = refreshTokenService.refreshAccessToken(OLD_REFRESH_TOKEN);
 
         assertEquals(expected, actual);
-        assertEquals(NEW_REFRESH_TOKEN, refreshToken.getToken());
+        assertEquals(NEW_ENCODED_REFRESH_TOKEN, refreshToken.getToken());
     }
 }

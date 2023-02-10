@@ -7,6 +7,8 @@ import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.RefreshTokenRepository;
 import com.softserve.teachua.security.JwtUtils;
 import com.softserve.teachua.service.RefreshTokenService;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,55 +17,61 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public static final String UNPROCESSED_REFRESH_TOKEN = "Refresh token is invalid or has been expired";
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtils jwtUtils;
+    private final PasswordEncoder passwordEncoder;
 
-    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository, JwtUtils jwtUtils) {
+    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository, JwtUtils jwtUtils,
+                                   @Lazy PasswordEncoder passwordEncoder) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.jwtUtils = jwtUtils;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public String assignRefreshToken(User user) {
-        String refreshToken = jwtUtils.generateRefreshToken(user.getEmail());
+        String rawRefreshToken = jwtUtils.generateRefreshToken(user.getId());
+        String encodedRefreshToken = passwordEncoder.encode(rawRefreshToken);
         if (user.getRefreshToken() != null) {
-            user.getRefreshToken().setToken(refreshToken);
+            user.getRefreshToken().setToken(encodedRefreshToken);
         } else {
-            user.setRefreshToken(new RefreshToken().withUser(user).withToken(refreshToken));
+            user.setRefreshToken(new RefreshToken().withUser(user).withToken(encodedRefreshToken));
         }
-        return user.getRefreshToken().getToken();
+        return rawRefreshToken;
     }
 
     @Override
     @Transactional
-    public void revokeRefreshToken(String token) {
-        validateRefreshToken(token);
-        RefreshToken refreshToken = getRefreshToken(token);
-        refreshToken.revoke();
-        refreshTokenRepository.delete(refreshToken);
-    }
-
-    @Override
-    @Transactional
-    public RefreshTokenResponse refreshAccessToken(String refreshToken) {
+    public void revokeRefreshToken(String refreshToken) {
         validateRefreshToken(refreshToken);
-        String email = jwtUtils.getEmailFromRefreshToken(refreshToken);
-        String newRefreshToken = jwtUtils.generateRefreshToken(email);
-        getRefreshToken(refreshToken).setToken(newRefreshToken);
+        RefreshToken currentRefreshToken = getRefreshToken(refreshToken);
+        currentRefreshToken.revoke();
+        refreshTokenRepository.delete(currentRefreshToken);
+    }
+
+    @Override
+    @Transactional
+    public RefreshTokenResponse refreshAccessToken(String oldRefreshToken) {
+        validateRefreshToken(oldRefreshToken);
+        RefreshToken refreshToken = getRefreshToken(oldRefreshToken);
+        String newRefreshToken = jwtUtils.generateRefreshToken(refreshToken.getId());
+        refreshToken.setToken(passwordEncoder.encode(newRefreshToken));
 
         return RefreshTokenResponse.builder()
-                .accessToken(jwtUtils.generateAccessToken(email))
+                .accessToken(jwtUtils.generateAccessToken(refreshToken.getUser().getEmail()))
                 .refreshToken(newRefreshToken)
                 .build();
     }
 
-    private void validateRefreshToken(String refreshToken) {
-        if (!jwtUtils.isRefreshTokenValid(refreshToken)) {
-            throw new UserAuthenticationException(UNPROCESSED_REFRESH_TOKEN);
-        }
+    private RefreshToken getRefreshToken(String rawRefreshToken) {
+        Long userId = jwtUtils.getUserIdFromRefreshToken(rawRefreshToken);
+        return refreshTokenRepository.findById(userId)
+                .filter(refreshToken -> passwordEncoder.matches(rawRefreshToken, refreshToken.getToken()))
+                .orElseThrow(() -> new UserAuthenticationException(UNPROCESSED_REFRESH_TOKEN));
     }
 
-    private RefreshToken getRefreshToken(String refreshToken) {
-        return refreshTokenRepository.findByToken(refreshToken)
-                .orElseThrow(() -> new UserAuthenticationException(UNPROCESSED_REFRESH_TOKEN));
+    private void validateRefreshToken(String rawRefreshToken) {
+        if (!jwtUtils.isRefreshTokenValid(rawRefreshToken)) {
+            throw new UserAuthenticationException(UNPROCESSED_REFRESH_TOKEN);
+        }
     }
 }
