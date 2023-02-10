@@ -5,6 +5,8 @@ import com.softserve.teachua.dto.challenge_duration.ChallengeDurationForAdmin;
 import com.softserve.teachua.dto.challenge_duration.ChallengeDurationForAdminDurationLocalDate;
 import com.softserve.teachua.dto.challenge_duration.ChallengeDurationForAdminDurationString;
 import com.softserve.teachua.dto.duration_entity.DurationEntityResponse;
+import com.softserve.teachua.model.ChallengeDuration;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ChallengeDurationService {
@@ -17,4 +19,7 @@ public interface ChallengeDurationService {
     Boolean deleteChallengeDuration(ChallengeDurationDelete challengeDurationDelete);
 
     Boolean existUser(ChallengeDurationForAdminDurationLocalDate challengeDurationForAdminDurationLocalDate);
+
+    ChallengeDuration getChallengeDurationByChallengeIdAndStartEndDate(
+        Long challengeId, LocalDate startDate, LocalDate endDate);
 }

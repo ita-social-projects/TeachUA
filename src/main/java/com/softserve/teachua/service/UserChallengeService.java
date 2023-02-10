@@ -12,6 +12,7 @@ import com.softserve.teachua.dto.user_challenge.profile.UserChallengeForProfileD
 import com.softserve.teachua.dto.user_challenge.profile.UserChallengeForProfileGet;
 import com.softserve.teachua.dto.user_challenge.registration.UserChallengeForUserCreateWithDate;
 import com.softserve.teachua.dto.user_challenge.registration.UserChallengeForUserGetString;
+import com.softserve.teachua.model.UserChallenge;
 import java.util.List;
 
 public interface UserChallengeService {
@@ -38,4 +39,6 @@ public interface UserChallengeService {
     List<UserChallengeForAdminGet> getListUserChallengeForAdmin();
 
     String deleteUserChallengeForAdmin(UserChallengeForAdminDelete userChallengeForAdminDelete);
+
+    String deleteUserChallenge(UserChallenge userChallenge);
 }

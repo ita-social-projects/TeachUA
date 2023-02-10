@@ -51,7 +51,6 @@ public class UserChallengeController implements Api {
         return userChallengeService.deleteUserChallengeForProfile(userChallengeForProfileDelete);
     }
 
-    //    @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/user-challenge/registration/durations/{id}")
     public List<UserChallengeForUserGetString> getListUserChallengeDurationByChallengeId(@PathVariable Long id) {
         return userChallengeService.getListUserChallengeDurationByChallengeId(id);

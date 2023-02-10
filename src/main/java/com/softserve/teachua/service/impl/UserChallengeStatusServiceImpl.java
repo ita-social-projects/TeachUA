@@ -35,7 +35,7 @@ public class UserChallengeStatusServiceImpl implements UserChallengeStatusServic
     private static final String USER_CHALLENGE_STATUS_NOT_FOUND_BY_ID = "UserChallengeStatus not found by id: %s";
     private static final String USER_CHALLENGE_STATUS_NOT_FOUND_BY_STATUS_NAME =
             "UserChallengeStatus not found by statusName: %s";
-    private static final String USER_CHALLENGE_STATUS_NOT_FOUND_STATUSES = "UserChallengeStatus not found statuses";
+    private static final String USER_CHALLENGE_STATUS_NOT_FOUND_STATUSES = "UserChallengeStatus not found";
     private static final String USER_CHALLENGE_STATUS_DELETING_ERROR =
             "Can't delete userChallengeStatus cause of relationship";
     private final UserChallengeStatusRepository userChallengeStatusRepository;
@@ -60,12 +60,13 @@ public class UserChallengeStatusServiceImpl implements UserChallengeStatusServic
         if (userChallengeStatusGetList.isEmpty()) {
             throw new NotExistException(USER_CHALLENGE_STATUS_NOT_FOUND_STATUSES);
         }
-        log.debug("**/getting all UserChallengeStatusGet");
+        log.debug("**/getting all UserChallengeStatusGet ={}",userChallengeStatusGetList);
         return userChallengeStatusGetList;
     }
 
     @Override
     public List<UserChallengeStatusForOption> getAllUserChallengeStatusForOptions() {
+        log.debug("**/getting all UserChallengeStatusForOption");
         return getAllUserChallengeStatus()
                 .stream()
                 .map(status -> new UserChallengeStatusForOption(status.getStatusName(), status.getStatusName()))
@@ -79,7 +80,7 @@ public class UserChallengeStatusServiceImpl implements UserChallengeStatusServic
                         .orElseThrow(() -> new NotExistException(
                                 String.format(USER_CHALLENGE_STATUS_NOT_FOUND_BY_STATUS_NAME, statusName))),
                 UserChallengeStatusGet.class);
-        log.debug("**/getting UserChallengeStatusGet by statusName = " + statusName);
+        log.debug("**/getting UserChallengeStatusGet by statusName = {}", statusName);
         return userChallengeStatusGet;
     }
 
@@ -91,7 +92,7 @@ public class UserChallengeStatusServiceImpl implements UserChallengeStatusServic
         }
         UserChallengeStatus userChallengeStatus = userChallengeStatusRepository.save(
                 dtoConverter.convertToEntity(userChallengeStatusAdd, new UserChallengeStatus()));
-        log.debug("**/adding new userChallengeStatus = " + userChallengeStatusAdd.getStatusName());
+        log.debug("**/adding new userChallengeStatus = {}", userChallengeStatus);
         return dtoConverter.convertToDto(userChallengeStatus, UserChallengeStatusAdd.class);
     }
 
@@ -99,7 +100,7 @@ public class UserChallengeStatusServiceImpl implements UserChallengeStatusServic
     public UserChallengeStatusUpdate updateUserChallengeStatus(UserChallengeStatusUpdate userChallengeStatusUpdate) {
         UserChallengeStatus newUserChallengeStatus = getUserChallengeStatusById(userChallengeStatusUpdate.getId());
         newUserChallengeStatus.setStatusName(userChallengeStatusUpdate.getStatusName());
-        log.debug("**/updating UserChallengeStatus by userChallengeStatusUpdate = " + newUserChallengeStatus);
+        log.debug("**/updating UserChallengeStatus by newUserChallengeStatus = {}", newUserChallengeStatus);
         return dtoConverter.convertToDto(userChallengeStatusRepository.save(newUserChallengeStatus),
                 UserChallengeStatusUpdate.class);
     }
@@ -108,7 +109,7 @@ public class UserChallengeStatusServiceImpl implements UserChallengeStatusServic
         UserChallengeStatus userChallengeStatus = userChallengeStatusRepository
                 .getUserChallengeStatusById(id)
                 .orElseThrow(() -> new NotExistException(String.format(USER_CHALLENGE_STATUS_NOT_FOUND_BY_ID, id)));
-        log.debug("**/getting UserChallengeStatus by id = " + id);
+        log.debug("**/getting UserChallengeStatus by id = {}", id);
         return userChallengeStatus;
     }
 
@@ -128,11 +129,17 @@ public class UserChallengeStatusServiceImpl implements UserChallengeStatusServic
 
     @Override
     public boolean isUserChallengeStatusExistsById(Long id) {
-        return userChallengeStatusRepository.existsById(id);
+        boolean existsUserChallengeStatus = userChallengeStatusRepository.existsById(id);
+        log.debug("checking existence UserChallengeStatus by userChallengeStatusId ={} result ={}",
+            id, existsUserChallengeStatus);
+        return existsUserChallengeStatus;
     }
 
     private boolean isUserChallengeStatusExistsByName(String name) {
-        return userChallengeStatusRepository.existsByStatusName(name);
+        boolean existsUserChallengeStatus = userChallengeStatusRepository.existsByStatusName(name);
+        log.debug("checking existence UserChallengeStatus by statusName ={} result ={}",
+            name, existsUserChallengeStatus);
+        return existsUserChallengeStatus;
     }
 
     @Override

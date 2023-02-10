@@ -8,9 +8,12 @@ import java.util.Set;
 public interface DurationEntityService {
     List<DurationEntity> getListDurationEntity();
 
-    Set<DurationEntity> filterReceivedDurationForNewDuration(List<DurationEntityResponse> durationEntityResponseList);
+    Set<DurationEntity> filterReceivedDurationForNewDuration(
+        List<DurationEntityResponse> durationEntityResponseList);
 
-    List<DurationEntity> createAllDuration(Set<DurationEntity> durationEntitySet);
+    void createAllDurationEntityFromResponseList(
+        List<DurationEntityResponse> durationEntityResponseList);
 
-    List<DurationEntity> createAllDurationFromResponseList(List<DurationEntityResponse> durationEntityResponseList);
+    List<DurationEntity> createAllDurationEntity(
+        Set<DurationEntity> durationEntitySet);
 }
