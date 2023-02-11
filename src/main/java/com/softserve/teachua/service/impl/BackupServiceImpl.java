@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -42,6 +43,7 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -134,7 +136,7 @@ public class BackupServiceImpl implements BackupService {
 
     @Override
     public void downloadBackup(HttpServletResponse response) {
-        ZipOutputStream zipStream = null;
+        ZipOutputStream zipStream;
         try {
             zipStream = new ZipOutputStream(response.getOutputStream());
         } catch (IOException e) {
@@ -145,7 +147,7 @@ public class BackupServiceImpl implements BackupService {
             if (!(new File(file).exists())) {
                 throw new NotExistException(String.format(NOT_FOUND_FILE_EXCEPTION, file));
             }
-            byte[] buffer = new byte[1024];
+            byte[] buffer;
             try {
                 buffer = Files.readAllBytes(Paths.get(file));
             } catch (IOException e) {
@@ -183,14 +185,17 @@ public class BackupServiceImpl implements BackupService {
 
     @Override
     public List<String> uploadBackup(MultipartFile file) throws IOException {
+        String fileName = FilenameUtils.getName(file.getOriginalFilename());
+        Path backupPath = Paths.get(BACKUP_DIRECTORY);
+        Path fullPath = Paths.get(BACKUP_DIRECTORY, fileName);
         List<String> movedFileList = new LinkedList<>();
 
-        if (!(new File(BACKUP_DIRECTORY).isDirectory())) {
-            new File(BACKUP_DIRECTORY).mkdir();
+        if (Files.notExists(backupPath)) {
+            Files.createDirectories(backupPath);
         }
 
         try {
-            file.transferTo(Paths.get(BACKUP_DIRECTORY + file.getOriginalFilename()));
+            file.transferTo(fullPath);
         } catch (FileUploadException e) {
             throw new FileUploadException(String.format(CANT_TRANSFER_FILE, BACKUP_DIRECTORY));
         }
@@ -198,8 +203,7 @@ public class BackupServiceImpl implements BackupService {
         ZipEntry zipEntry;
         byte[] buffer = new byte[1024];
 
-        try (ZipInputStream zipInputStream = new ZipInputStream(
-                Files.newInputStream(Paths.get(BACKUP_DIRECTORY + file.getOriginalFilename())))) {
+        try (ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(fullPath))) {
             zipEntry = zipInputStream.getNextEntry();
 
             while (zipEntry != null) {
@@ -230,7 +234,7 @@ public class BackupServiceImpl implements BackupService {
             throw new FileUploadException(FILE_READ_EXCEPTION);
         }
 
-        if (!(new File(BACKUP_DIRECTORY).delete())) {
+        if (!Files.deleteIfExists(backupPath)) {
             throw new MethodNotSupportedException(String.format(CANT_DELETE_DIRECTORY, BACKUP_DIRECTORY));
         }
         return movedFileList;

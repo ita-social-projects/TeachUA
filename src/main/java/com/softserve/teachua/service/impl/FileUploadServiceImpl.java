@@ -16,6 +16,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,7 +36,8 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     @Override
     public String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile) {
-        Path uploadPath = Paths.get(uploadDir);
+        String normalizedUploadDir = FilenameUtils.normalize(uploadDir);
+        Path uploadPath = Paths.get(normalizedUploadDir);
 
         if (multipartFile.getSize() > IMAGE_SIZE_B) {
             throw new IncorrectInputException(
@@ -67,7 +69,8 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
-            Path filePath = uploadPath.resolve(fileName);
+            String normalizedFilePath = FilenameUtils.normalize(uploadPath.resolve(fileName).toString());
+            Path filePath = Paths.get(normalizedFilePath);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ioe) {
             throw new FileUploadException(String.format(FILE_UPLOAD_EXCEPTION, fileName));
@@ -89,7 +92,9 @@ public class FileUploadServiceImpl implements FileUploadService {
                 folderName = urlBackground.substring(0, ordinalIndexOf(urlBackground, "/", 4, false));
             } else if (urlGallery != null && !urlGallery.isEmpty()) {
                 String url = urlGallery.get(0).getUrl();
-                folderName = url.substring(0, ordinalIndexOf(url, "/", 4, false));
+                if (url != null) {
+                    folderName = url.substring(0, ordinalIndexOf(url, "/", 4, false));
+                }
             }
         } catch (IndexOutOfBoundsException ex) {
             log.error("Incorrect photo url");
@@ -107,11 +112,11 @@ public class FileUploadServiceImpl implements FileUploadService {
     // filePath - '/upload/...../fileName.extension'
     @Override
     public void deleteFile(String filePath) {
-        if (filePath.contains(UPLOAD_PLUG)) {
-            return;
-        }
         if (filePath == null || filePath.isEmpty()) {
             throw new IncorrectInputException("File path can not be null or empty");
+        }
+        if (filePath.contains(UPLOAD_PLUG)) {
+            return;
         }
         if (!filePath.contains(UPLOAD_LOCATION)) {
             throw new IncorrectInputException("Wrong uploaded file path");

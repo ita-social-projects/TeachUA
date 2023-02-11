@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +25,8 @@ public class FileOperationsServiceImpl implements FileOperationsService {
 
     @Override
     public List<String> listFiles(String path) {
-        File[] files = new File(path).listFiles();
+        String normalizedPath = FilenameUtils.normalize(path);
+        File[] files = new File(normalizedPath).listFiles();
         if (files == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, path + ", directory does not exist.");
         }
@@ -35,8 +37,9 @@ public class FileOperationsServiceImpl implements FileOperationsService {
 
     @Override
     public String readFile(String path) {
+        String normalizedPath = FilenameUtils.normalize(path);
         try {
-            return new String(Files.readAllBytes(Paths.get(path)));
+            return new String(Files.readAllBytes(Paths.get(normalizedPath)));
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, path + ", " + e.getMessage());
         }
@@ -44,8 +47,9 @@ public class FileOperationsServiceImpl implements FileOperationsService {
 
     @Override
     public ResponseEntity<Resource> downloadFile(String path) {
+        String normalizedPath = FilenameUtils.normalize(path);
         try {
-            InputStreamResource resource = new InputStreamResource(Files.newInputStream(Paths.get(path)));
+            InputStreamResource resource = new InputStreamResource(Files.newInputStream(Paths.get(normalizedPath)));
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + path);
             return ResponseEntity.ok()
@@ -59,7 +63,8 @@ public class FileOperationsServiceImpl implements FileOperationsService {
 
     @Override
     public ResponseEntity<String> deleteFile(String path) {
-        Path filePath = Paths.get(path);
+        String normalizedPath = FilenameUtils.normalize(path);
+        Path filePath = Paths.get(normalizedPath);
         if (!filePath.startsWith(Paths.get(ALLOWED_DELETE_ROOT))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Deletion is not allowed");
         }

@@ -1,6 +1,7 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.exception.CannotDeleteFileException;
+import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.LogNotFoundException;
 import com.softserve.teachua.service.LogService;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class LogServiceImpl implements LogService {
+    public static final String DOES_NOT_EXIST = "Log %s does not exist";
     @Value(value = "${logs.path}")
     private String path;
 
@@ -47,7 +50,7 @@ public class LogServiceImpl implements LogService {
 
         if (!Files.exists(pathToFile)) {
             log.error("Tried to read a file: {}, but it does not exist", fileName);
-            throw new LogNotFoundException(String.format("Log %s does not exist", fileName));
+            throw new LogNotFoundException(String.format(DOES_NOT_EXIST, fileName));
         }
 
         try (Stream<String> lines = Files.lines(pathToFile)) {
@@ -60,18 +63,21 @@ public class LogServiceImpl implements LogService {
     }
 
     public Resource loadLogAsResource(String fileName) {
-        Path pathToFile = Paths.get(path, fileName);
+        String foundedFileName = FilenameUtils.getName(fileName);
+        String normalizedPath = FilenameUtils.normalize(path);
+        Path pathToFile = Paths.get(normalizedPath, foundedFileName);
 
         if (!Files.exists(pathToFile)) {
             log.error("Tried to read a file: {}, but it does not exist", fileName);
-            throw new LogNotFoundException(String.format("Log %s does not exist", fileName));
+            throw new LogNotFoundException(String.format(DOES_NOT_EXIST, fileName));
         }
 
         try {
             return new UrlResource(pathToFile.toUri());
         } catch (MalformedURLException e) {
-            log.error("Cannot create a new UrlResource", e);
-            throw new RuntimeException(e);
+            String message = "Cannot create a new UrlResource";
+            log.error(message, e);
+            throw new IncorrectInputException(message);
         }
     }
 
@@ -81,7 +87,7 @@ public class LogServiceImpl implements LogService {
 
         if (!Files.exists(pathToFile)) {
             log.info("Tried to delete a file: {}, but it does not exist", fileName);
-            throw new LogNotFoundException(String.format("Log %s does not exist", fileName));
+            throw new LogNotFoundException(String.format(DOES_NOT_EXIST, fileName));
         }
 
         try {
