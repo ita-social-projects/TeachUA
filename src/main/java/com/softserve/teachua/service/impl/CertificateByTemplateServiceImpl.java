@@ -15,6 +15,7 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.service.CertificateByTemplateService;
+import static com.softserve.teachua.service.impl.PdfTemplateServiceImpl.CERTIFICATE_TEMPLATES_FOLDER;
 import com.softserve.teachua.utils.QRCodeService;
 import java.awt.Color;
 import java.io.File;
@@ -39,8 +40,14 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
     private static final String HALVAR_MD_PATH =
             "./src/main/resources/certificates/fonts/Halvar Breitschrift Medium.ttf";
 
+    private final QRCodeService qrCodeService;
+    private final ObjectMapper objectMapper;
+
     @Autowired
-    private QRCodeService qrCodeService;
+    public CertificateByTemplateServiceImpl(QRCodeService qrCodeService, ObjectMapper objectMapper) {
+        this.qrCodeService = qrCodeService;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public List<String> getTemplateFields(String templatePath) throws IOException {
@@ -56,30 +63,28 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
     @Override
     public String createCertificateByTemplate(CertificateTransfer transfer) throws IOException {
         String targetFileName = ThreadLocalRandom.current().nextInt() + ".pdf";
-        PdfReader reader = new PdfReader(
-                new ClassPathResource("certificates/templates/pdf-templates").getFile().getPath() + "/"
-                        + transfer.getTemplate().getFilePath());
 
-        File directory =
-                new File(new ClassPathResource("/").getFile().getPath() + "/" + "temp");
+        File directory = new File(new ClassPathResource("/").getFile().getPath() + "/temp");
         if (!directory.exists()) {
             directory.mkdir();
         }
-
-        PdfWriter writer =
-                new PdfWriter(new ClassPathResource("/").getFile().getPath() + "/" + "temp/" + targetFileName);
-        PdfDocument pdfDoc = new PdfDocument(reader, writer);
-
-        try (Document document = new Document(pdfDoc)) {
+        // @formatter:off
+        try (PdfReader reader = new PdfReader(
+                new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
+                        + transfer.getTemplate().getFilePath());
+             PdfWriter writer = new PdfWriter(
+                     new ClassPathResource("/").getFile().getPath() + "/temp/" + targetFileName);
+             PdfDocument pdfDoc = new PdfDocument(reader, writer);
+             Document document = new Document(pdfDoc)) {
+            // @formatter:on
             PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, true);
 
             PdfFont halvarBlk = PdfFontFactory.createFont(HALVAR_BLK_PATH, PdfEncodings.IDENTITY_H);
             PdfFont halvarMd = PdfFontFactory.createFont(HALVAR_MD_PATH, PdfEncodings.IDENTITY_H);
 
             HashMap<String, String> templateProperties =
-                    new ObjectMapper().readValue(transfer.getTemplate().getProperties(), HashMap.class);
-            HashMap<String, String> values =
-                    new ObjectMapper().readValue(transfer.getValues(), HashMap.class);
+                    objectMapper.readValue(transfer.getTemplate().getProperties(), HashMap.class);
+            HashMap<String, String> values = objectMapper.readValue(transfer.getValues(), HashMap.class);
 
             for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
                 // @formatter:off
