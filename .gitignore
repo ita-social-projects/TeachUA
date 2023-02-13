@@ -130,5 +130,5 @@ workspace.xml
 /node_modules/
 /**/node_modules/
 
-
-
+# Visual Studio Code
+/.vscode/
