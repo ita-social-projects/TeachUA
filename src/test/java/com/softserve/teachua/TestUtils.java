@@ -2,6 +2,10 @@ package com.softserve.teachua;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static com.softserve.teachua.TestConstants.CERTIFICATE_DATES_DURATION;
+import static com.softserve.teachua.TestConstants.CERTIFICATE_DATES_END_DATE;
+import static com.softserve.teachua.TestConstants.CERTIFICATE_DATES_START_DATE;
+import static com.softserve.teachua.TestConstants.CERTIFICATE_ISSUE_DATE;
 import static com.softserve.teachua.TestConstants.CERTIFICATE_TEMPLATE_NAME;
 import static com.softserve.teachua.TestConstants.CERTIFICATE_TEMPLATE_PROPERTIES;
 import static com.softserve.teachua.TestConstants.CERTIFICATE_TYPE_CODE_NUMBER;
@@ -10,7 +14,6 @@ import static com.softserve.teachua.TestConstants.CERTIFICATE_TYPE_NAME;
 import static com.softserve.teachua.TestConstants.CORRECT;
 import static com.softserve.teachua.TestConstants.COURSE_DESCRIPTION;
 import static com.softserve.teachua.TestConstants.COURSE_NUMBER;
-import static com.softserve.teachua.TestConstants.DURATION;
 import static com.softserve.teachua.TestConstants.FILE_PATH;
 import static com.softserve.teachua.TestConstants.HOURS;
 import static com.softserve.teachua.TestConstants.INTEGER_ID;
@@ -30,6 +33,7 @@ import static com.softserve.teachua.TestConstants.USER_EMAIL;
 import static com.softserve.teachua.TestConstants.USER_NAME;
 import static com.softserve.teachua.TestConstants.VARIANT;
 import com.softserve.teachua.constants.excel.ExcelColumn;
+import com.softserve.teachua.dto.certificate.CertificateDataRequest;
 import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
@@ -41,7 +45,6 @@ import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.model.CertificateType;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +87,7 @@ public class TestUtils {
                 .date(STRING_DATE)
                 .studyForm(STUDY_FORM)
                 .courseNumber(COURSE_NUMBER)
-                .duration(DURATION)
+                .duration(CERTIFICATE_DATES_DURATION)
                 .hours(HOURS)
                 .build();
     }
@@ -124,7 +127,21 @@ public class TestUtils {
         return CertificateExcel.builder()
                 .name(USER_NAME)
                 .email(USER_EMAIL)
-                .dateIssued(LocalDate.now())
+                .dateIssued(CERTIFICATE_ISSUE_DATE)
+                .build();
+    }
+
+    public static CertificateDataRequest getCertificateDataRequest() {
+        List<CertificateExcel> excelList = new ArrayList<>();
+        excelList.add(getCertificateExcel());
+
+        return CertificateDataRequest.builder()
+                .type(CERTIFICATE_TYPE_CODE_NUMBER)
+                .hours(HOURS)
+                .startDate(CERTIFICATE_DATES_START_DATE)
+                .endDate(CERTIFICATE_DATES_END_DATE)
+                .courseNumber(COURSE_NUMBER)
+                .excelList(excelList)
                 .build();
     }
 

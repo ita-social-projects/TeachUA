@@ -1,6 +1,8 @@
 package com.softserve.teachua;
 
+import com.softserve.teachua.utils.CertificateContentDecorator;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import org.springframework.mock.web.MockMultipartFile;
 
 public final class TestConstants {
@@ -12,10 +14,9 @@ public final class TestConstants {
     public static final Long SERIAL_NUMBER = 3010000001L;
     public static final String USER_NAME = "Власник Сертифікату";
     public static final LocalDate UPDATE_DATE = LocalDate.now();
-    public static final String STRING_DATE = "01.11.2022";
+    public static final String STRING_DATE = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     public static final String STUDY_FORM = "дистанційна";
     public static final String COURSE_NUMBER = "10";
-    public static final String DURATION = "з 4 по 21 жовтня 2022 року";
     public static final int HOURS = 40;
     public static final String CERTIFICATE_TEMPLATE_NAME = "Єдині учасник";
     public static final String FILE_PATH = "/certificates/templates/jedyni_participant_template.jrxml";
@@ -29,6 +30,11 @@ public final class TestConstants {
     public static final Integer CERTIFICATE_TYPE_ID = 3;
     public static final Integer CERTIFICATE_TYPE_CODE_NUMBER = 3;
     public static final String CERTIFICATE_TYPE_NAME = "Учасник";
+    public static final LocalDate CERTIFICATE_DATES_START_DATE = LocalDate.of(2023, 1, 1);
+    public static final LocalDate CERTIFICATE_DATES_END_DATE = LocalDate.of(2023, 1, 31);
+    public static final String CERTIFICATE_DATES_DURATION =
+            new CertificateContentDecorator().formDates(CERTIFICATE_DATES_START_DATE, CERTIFICATE_DATES_END_DATE);
+    public static final LocalDate CERTIFICATE_ISSUE_DATE = LocalDate.now();
     public static final String QUESTION_TITLE = "Укажіть дієприкметник";
     public static final String QUESTION_DESCRIPTION = "Вкажіть правильний варіант";
     public static final String QUESTION_CATEGORY = "Нова Категорія";

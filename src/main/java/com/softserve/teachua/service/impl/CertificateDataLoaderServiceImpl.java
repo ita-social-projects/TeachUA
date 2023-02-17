@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderService {
     private static final String UPDATED_EMAIL = "Оновлено електронну адресу учасника %s";
     private static final String ALREADY_EXISTS = "Сертифікат для учасника %s вже згенеровано %s";
-    private static final String DATE_FORMAT = "dd.MM.YYYY";
+    private static final String DATE_FORMAT = "dd.MM.yyyy";
     private static final String PROJECT_DESCRIPTION =
             "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить "
                     + "“Українська гуманітарна платформа”.";
@@ -120,6 +120,11 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     }
 
     private CertificateTemplate saveTemplate(Integer type) {
+        checkDataBaseContent();
+        return templateService.getTemplateByType(type);
+    }
+
+    private void checkDataBaseContent() {
         if (!certificateTypeRepository.existsById(1)) {
             certificateTypeService.addCertificateType(
                     CertificateType.builder().codeNumber(1).name("Тренер").build());
@@ -172,7 +177,6 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                     .projectDescription(PROJECT_DESCRIPTION)
                     .picturePath(PICTURE_PATH).build());
         }
-        return templateService.getTemplateByType(type);
     }
 
     @Override
