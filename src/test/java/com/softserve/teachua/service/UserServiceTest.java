@@ -28,7 +28,6 @@ import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.security.JwtUtils;
 import com.softserve.teachua.security.UserPrincipal;
-import com.softserve.teachua.security.service.EncoderService;
 import com.softserve.teachua.service.impl.UserServiceImpl;
 import java.util.Arrays;
 import java.util.List;
@@ -72,8 +71,6 @@ class UserServiceTest {
     private static final String FIRST_NAME = "username";
     @Mock
     private UserRepository userRepository;
-    @Mock
-    private EncoderService encodeService;
     @Mock
     private DtoConverter dtoConverter;
     @Mock
@@ -276,8 +273,8 @@ class UserServiceTest {
         User newUser = User.builder().email(NEW_EMAIL).password(PASSWORD)
                 .role(role).status(IS_STATUS).build();
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
+        when(passwordEncoder.matches(PASSWORD, PASSWORD)).thenReturn(true);
 
-        when(encodeService.isValidPassword(userLogin, newUser)).thenReturn(true);
         when(jwtUtils.generateAccessToken(newUser.getEmail())).thenReturn(TOKEN);
         when(refreshTokenService.assignRefreshToken(newUser)).thenReturn(TOKEN);
 
@@ -291,8 +288,6 @@ class UserServiceTest {
         UserLogin userLogin = new UserLogin(NEW_EMAIL, invalidPassword);
         User newUser = User.builder().email(NEW_EMAIL).password(invalidPassword).status(IS_STATUS).build();
         when(userRepository.findByEmail(NEW_EMAIL)).thenReturn(Optional.of(newUser));
-
-        when(encodeService.isValidPassword(userLogin, newUser)).thenReturn(false);
 
         assertThatThrownBy(() -> userService.loginUser(userLogin)).isInstanceOf(UserAuthenticationException.class);
     }

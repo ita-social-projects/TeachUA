@@ -31,7 +31,6 @@ import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.security.JwtUtils;
 import com.softserve.teachua.security.UserPrincipal;
-import com.softserve.teachua.security.service.EncoderService;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.RefreshTokenService;
@@ -74,7 +73,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
     private static final String ONLY_ADMIN_CONTENT = "Only the admin have permit to view this content";
     private final UserRepository userRepository;
-    private final EncoderService encodeService;
     private final RoleService roleService;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
@@ -88,13 +86,12 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private String baseUrl;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, EncoderService encodeService, RoleService roleService,
-                           DtoConverter dtoConverter, ArchiveService archiveService, JwtUtils jwtUtils,
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService, DtoConverter dtoConverter,
+                           ArchiveService archiveService, JwtUtils jwtUtils,
                            JavaMailSender javaMailSender, @Lazy PasswordEncoder passwordEncoder,
                            ObjectMapper objectMapper, RefreshTokenService refreshTokenService,
                            CustomUserDetailsService userDetailsService) {
         this.userRepository = userRepository;
-        this.encodeService = encodeService;
         this.roleService = roleService;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
@@ -181,7 +178,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         }
 
         User user = dtoConverter.convertToEntity(userProfile, new User())
-                .withPassword(encodeService.encodePassword(userProfile.getPassword()))
+                .withPassword(passwordEncoder.encode(userProfile.getPassword()))
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
         String phoneFormat = "38" + user.getPhone();
@@ -232,7 +229,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         User user = getUserByEmail(userLogin.getEmail());
         if (!user.isStatus()) {
             throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userLogin.getEmail()));
-        } else if (!encodeService.isValidPassword(userLogin, user)) {
+        } else if (!passwordEncoder.matches(userLogin.getPassword(), user.getPassword())) {
             throw new UserAuthenticationException(WRONG_PASSWORD);
         }
         log.debug("User {} logged successfully", userLogin);
@@ -462,7 +459,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         }
         userResetPassword.setEmail(user.getEmail());
         userResetPassword.setId(user.getId());
-        user.setPassword(encodeService.encodePassword(userResetPassword.getPassword()));
+        user.setPassword(passwordEncoder.encode(userResetPassword.getPassword()));
         user.setVerificationCode(null);
 
         userRepository.save(user);
