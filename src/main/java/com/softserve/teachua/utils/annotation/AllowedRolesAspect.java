@@ -1,14 +1,12 @@
 package com.softserve.teachua.utils.annotation;
 
 import com.softserve.teachua.constants.RoleData;
-import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.exception.UserPermissionException;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.security.UserPrincipal;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-@Slf4j
 public class AllowedRolesAspect {
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -32,9 +29,6 @@ public class AllowedRolesAspect {
                 .stream(((MethodSignature) jp.getSignature()).getMethod().getAnnotation(AllowedRoles.class).value())
                 .collect(Collectors.toSet());
         UserPrincipal userPrincipal = customUserDetailsService.getUserPrincipal();
-        if (userPrincipal == null) {
-            throw new UserAuthenticationException();
-        }
         for (RoleData role : roles) {
             if (userPrincipal.getAuthorities().contains(new SimpleGrantedAuthority(role.getDBRoleName()))) {
                 return jp.proceed();

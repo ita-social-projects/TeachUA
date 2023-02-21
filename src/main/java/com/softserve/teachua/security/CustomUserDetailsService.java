@@ -1,8 +1,10 @@
 package com.softserve.teachua.security;
 
+import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,11 +32,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public UserPrincipal getUserPrincipal() {
-        try {
-            return ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        } catch (Exception e) {
-            log.error(SECURITY_CONTEXT_ERROR, e);
-            return null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            return (UserPrincipal) authentication.getPrincipal();
         }
+        log.error(SECURITY_CONTEXT_ERROR);
+        throw new UserAuthenticationException();
     }
 }

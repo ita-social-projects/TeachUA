@@ -3,7 +3,6 @@ package com.softserve.teachua.utils.annotation;
 import static com.softserve.teachua.TestUtils.getUser;
 import static com.softserve.teachua.TestUtils.getUserPrincipal;
 import com.softserve.teachua.constants.RoleData;
-import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.exception.UserPermissionException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.CustomUserDetailsService;
@@ -36,12 +35,6 @@ class AllowedRolesAspectTest {
         when(jp.getSignature()).thenReturn(methodSignature);
         when(methodSignature.getMethod()).thenReturn(this.getClass().getMethod("methodForAdmin"));
         user = getUser();
-    }
-
-    @Test
-    void givenUserPrincipalNull_thenThrowUserAuthenticationException() {
-        when(customUserDetailsService.getUserPrincipal()).thenReturn(null);
-        assertThrows(UserAuthenticationException.class, () -> allowedRolesAspect.doSomething(jp));
     }
 
     @Test
