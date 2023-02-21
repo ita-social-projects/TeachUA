@@ -10,7 +10,6 @@ import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.model.CertificateType;
-import com.softserve.teachua.repository.CertificateDatesRepository;
 import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.repository.CertificateTemplateRepository;
 import com.softserve.teachua.repository.CertificateTypeRepository;
@@ -35,7 +34,7 @@ import org.springframework.stereotype.Service;
 public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderService {
     private static final String UPDATED_EMAIL = "Оновлено електронну адресу учасника %s";
     private static final String ALREADY_EXISTS = "Сертифікат для учасника %s вже згенеровано %s";
-    private static final String DATE_FORMAT = "dd.MM.YYYY";
+    private static final String DATE_FORMAT = "dd.MM.yyyy";
     private static final String PROJECT_DESCRIPTION =
             "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить "
                     + "“Українська гуманітарна платформа”.";
@@ -47,7 +46,6 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     private final CertificateTypeService certificateTypeService;
     private final CertificateTemplateService templateService;
     private final CertificateRepository certificateRepository;
-    private final CertificateDatesRepository datesRepository;
     private final CertificateTemplateRepository templateRepository;
     private final CertificateTypeRepository certificateTypeRepository;
     private final CertificateContentDecorator decorator;
@@ -59,7 +57,6 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                                             CertificateTypeService certificateTypeService,
                                             CertificateTemplateService templateService,
                                             CertificateRepository certificateRepository,
-                                            CertificateDatesRepository datesRepository,
                                             CertificateTemplateRepository templateRepository,
                                             CertificateTypeRepository certificateTypeRepository,
                                             CertificateContentDecorator decorator, ObjectMapper objectMapper) {
@@ -68,7 +65,6 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
         this.certificateTypeService = certificateTypeService;
         this.templateService = templateService;
         this.certificateRepository = certificateRepository;
-        this.datesRepository = datesRepository;
         this.templateRepository = templateRepository;
         this.certificateTypeRepository = certificateTypeRepository;
         this.decorator = decorator;
@@ -111,23 +107,24 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     private CertificateDates saveDates(CertificateDataRequest data, Integer index) {
         CertificateDates dates = CertificateDates.builder()
                 .date(data.getExcelList().get(index).getDateIssued().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
-                .hours(data.getHours()).courseNumber(data.getCourseNumber()).studyForm(data.getStudyType()).build();
+                .hours(data.getHours()).courseNumber(data.getCourseNumber()).build();
         if (data.getType() == 3) {
             dates.setDuration(decorator.formDates(data.getStartDate(), data.getEndDate()));
-            if (!datesRepository.existsByDurationAndAndDate(dates.getDuration(), dates.getDate())) {
-                return certificateDatesService.addCertificateDates(dates);
-            }
-            return certificateDatesService.getCertificateDatesByDurationAndDate(dates.getDuration(), dates.getDate());
+        } else {
+            dates.setStudyForm(data.getStudyType());
         }
-        //if (!datesRepository.existsByDate(dates.getDate())) {
-        if (!datesRepository.existsByHoursAndDate(dates.getHours(), dates.getDate())) {
+        if (!certificateDatesService.exists(dates)) {
             return certificateDatesService.addCertificateDates(dates);
         }
-        //return certificateDatesService.getCertificateDatesByDate(dates.getDate());
-        return certificateDatesService.getCertificateDatesByHoursAndDate(dates.getHours(), dates.getDate());
+        return certificateDatesService.getCertificateDates(dates);
     }
 
     private CertificateTemplate saveTemplate(Integer type) {
+        checkDataBaseContent();
+        return templateService.getTemplateByType(type);
+    }
+
+    private void checkDataBaseContent() {
         if (!certificateTypeRepository.existsById(1)) {
             certificateTypeService.addCertificateType(
                     CertificateType.builder().codeNumber(1).name("Тренер").build());
@@ -180,7 +177,6 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                     .projectDescription(PROJECT_DESCRIPTION)
                     .picturePath(PICTURE_PATH).build());
         }
-        return templateService.getTemplateByType(type);
     }
 
     @Override

@@ -20,12 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class CertificateDatesServiceImpl implements CertificateDatesService, ArchiveMark<CertificateDates> {
     private static final String DATE_NOT_FOUND_BY_ID = "Certificate dates not found by id: %s";
-    private static final String DATE_NOT_FOUND_BY_DURATION = "Certificate dates not found by duration: %s";
-    private static final String DATE_NOT_FOUND_BY_DATE = "Certificate dates not found by date: %s";
-    private static final String DATE_NOT_FOUND_BY_DURATION_AND_DATE =
-        "Certificate dates not found by duration and date: %s, %s";
-    private static final String DATE_NOT_FOUND_BY_HOURS_AND_DATE =
-        "Certificate dates not found by hours and date: %s, %s";
+    private static final String DATE_NOT_FOUND = "Certificate date not found: %s";
 
     private final CertificateDatesRepository certificateDatesRepository;
     private final DtoConverter dtoConverter;
@@ -44,7 +39,7 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
     @Override
     public void archiveModel(CertificateDates certificateDates) {
         CertificateDatesArch certificateDatesArch =
-            dtoConverter.convertToDto(certificateDates, CertificateDatesArch.class);
+                dtoConverter.convertToDto(certificateDates, CertificateDatesArch.class);
         archiveService.saveModel(certificateDatesArch);
     }
 
@@ -52,13 +47,20 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         CertificateDatesArch certificateDatesArch = objectMapper.readValue(archiveObject, CertificateDatesArch.class);
         certificateDatesRepository.save(
-            dtoConverter.convertToEntity(certificateDatesArch, CertificateDates.builder().build()));
+                dtoConverter.convertToEntity(certificateDatesArch, CertificateDates.builder().build()));
+    }
+
+    @Override
+    public boolean exists(CertificateDates certificateDates) {
+        return certificateDatesRepository.existsByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
+                certificateDates.getDate(), certificateDates.getHours(), certificateDates.getDuration(),
+                certificateDates.getCourseNumber(), certificateDates.getStudyForm());
     }
 
     @Override
     public CertificateDates getCertificateDatesById(Integer id) {
         return certificateDatesRepository.findById(id)
-            .orElseThrow(() -> new NotExistException(String.format(DATE_NOT_FOUND_BY_ID, id)));
+                .orElseThrow(() -> new NotExistException(String.format(DATE_NOT_FOUND_BY_ID, id)));
     }
 
     @Override
@@ -67,25 +69,10 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
     }
 
     @Override
-    public CertificateDates getCertificateDatesByDate(String date) {
-        return certificateDatesRepository.findByDate(date)
-            .orElseThrow(() -> new NotExistException(String.format(DATE_NOT_FOUND_BY_DATE, date)));
-    }
-
-    public CertificateDates getCertificateDatesByHoursAndDate(Integer hours, String date) {
-        return certificateDatesRepository.findByHoursAndDate(hours, date).orElseThrow(
-            () -> new NotExistException(String.format(DATE_NOT_FOUND_BY_HOURS_AND_DATE, hours, date)));
-    }
-
-    @Override
-    public CertificateDates getCertificateDatesByDuration(String duration) {
-        return certificateDatesRepository.findByDuration(duration)
-            .orElseThrow(() -> new NotExistException(String.format(DATE_NOT_FOUND_BY_DURATION, duration)));
-    }
-
-    @Override
-    public CertificateDates getCertificateDatesByDurationAndDate(String duration, String date) {
-        return certificateDatesRepository.findByDurationAndDate(duration, date).orElseThrow(
-            () -> new NotExistException(String.format(DATE_NOT_FOUND_BY_DURATION_AND_DATE, duration, date)));
+    public CertificateDates getCertificateDates(CertificateDates certificateDates) {
+        return certificateDatesRepository.findByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
+                        certificateDates.getDate(), certificateDates.getHours(), certificateDates.getDuration(),
+                        certificateDates.getCourseNumber(), certificateDates.getStudyForm())
+                .orElseThrow(() -> new NotExistException(String.format(DATE_NOT_FOUND, certificateDates)));
     }
 }

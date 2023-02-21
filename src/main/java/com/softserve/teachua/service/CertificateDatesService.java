@@ -7,53 +7,29 @@ import com.softserve.teachua.model.CertificateDates;
  */
 
 public interface CertificateDatesService {
+    boolean exists(CertificateDates certificateDates);
+
     /**
      * The method returns entity of {@code CertificateDates} found by id.
      *
-     * @param id - put CertificateDates id
+     * @param id put CertificateDates id
      * @return new {@code CertificateDates}
      */
     CertificateDates getCertificateDatesById(Integer id);
 
     /**
-     * The method returns entity of {@code CertificateDates} found by duration.
-     *
-     * @param duration - put CertificateDates duration
-     * @return new {@code CertificateDates}
-     */
-    CertificateDates getCertificateDatesByDuration(String duration);
-
-    /**
-     * The method returns entity of {@code CertificateDates} found by duration and date.
-     *
-     * @param duration - put CertificateDates duration
-     * @param date     - put CertificateDates date
-     * @return new {@code CertificateDates}
-     */
-    CertificateDates getCertificateDatesByDurationAndDate(String duration, String date);
-
-    /**
      * The method returns {@code CertificateDates} if dates successfully added.
      *
-     * @param dates - put body of {@code CertificateDates}
+     * @param dates put body of {@code CertificateDates}
      * @return new {@code CertificateDates}
      */
     CertificateDates addCertificateDates(CertificateDates dates);
 
     /**
-     * The method returns {@code CertificateDates} found by date.
+     * The method returns entity of {@code CertificateDates} found by all fields excluding the {@code id}.
      *
-     * @param date - put CertificateDates date
+     * @param certificateDates put CertificateDates
      * @return new {@code CertificateDates}
      */
-    CertificateDates getCertificateDatesByDate(String date);
-
-    /**
-     * The method returns entity of {@code CertificateDates} found by duration and date.
-     *
-     * @param hours - put CertificateDates hours
-     * @param date  - put CertificateDates date
-     * @return new {@code CertificateDates}
-     */
-    CertificateDates getCertificateDatesByHoursAndDate(Integer hours, String date);
+    CertificateDates getCertificateDates(CertificateDates certificateDates);
 }

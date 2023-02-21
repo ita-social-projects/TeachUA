@@ -67,7 +67,7 @@ public class CertificateTypeServiceImpl implements CertificateTypeService {
             messagesList.add(new String[]{NAME_ALREADY_EXISTS_MESSAGE, "1"});
         }
         if (certificateTypeRepository.existsByCodeNumber(certificateTypeProfile.getCodeNumber())) {
-            messagesList.add(new String[]{CODE_NUMBER_ALREADY_EXISTS_MESSAGE, "3"});
+            messagesList.add(new String[]{CODE_NUMBER_ALREADY_EXISTS_MESSAGE, "2"});
             return CertificateTypeProcessingResponse.builder().messages(messagesList).build();
         }
 
@@ -90,7 +90,7 @@ public class CertificateTypeServiceImpl implements CertificateTypeService {
         }
         if (!certificateType.getCodeNumber().equals(updatedCertificateType.getCodeNumber())
                 && certificateTypeRepository.existsByCodeNumber(updatedCertificateType.getCodeNumber())) {
-            messagesList.add(new String[]{CODE_NUMBER_ALREADY_EXISTS_MESSAGE, "3"});
+            messagesList.add(new String[]{CODE_NUMBER_ALREADY_EXISTS_MESSAGE, "2"});
             return CertificateTypeProcessingResponse.builder().messages(messagesList).build();
         }
         BeanUtils.copyProperties(updatedCertificateType, certificateType);
