@@ -1,6 +1,5 @@
 package com.softserve.teachua.exception;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 
 /**
@@ -9,9 +8,7 @@ import org.springframework.security.core.AuthenticationException;
  *
  * <p>Use {@code throw new UserAuthenticationException("You are not authenticated")}
  */
-@Slf4j
 public class UserAuthenticationException extends AuthenticationException {
-    private static final long serialVersionUID = 1L;
     private static final String WRONG_AUTHENTICATION_EXCEPTION = "You are not authenticated";
 
     public UserAuthenticationException(String message) {
