@@ -6,7 +6,6 @@ import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Complaint;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This interface contains all needed methods to manage complaints.
@@ -50,7 +49,7 @@ public interface ComplaintService {
      * @throws NotExistException
      *             if complaint not exists.
      */
-    SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile, HttpServletRequest httpServletRequest);
+    SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile);
 
     /**
      * Method list of dto {@link ComplaintResponse} of all complaints.

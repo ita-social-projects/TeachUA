@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.TestUtils;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
@@ -14,6 +15,7 @@ import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.service.impl.FeedbackServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +52,8 @@ public class FeedbackServiceTest {
 
     @Mock
     private UserService userService;
-
+    @Mock
+    private CustomUserDetailsService userDetailsService;
     @Mock
     private ClubRepository clubRepository;
 
@@ -78,7 +81,7 @@ public class FeedbackServiceTest {
     private final long NOT_EXISTING_CLUB_ID = 20L;
     private final long FEEDBACK_COUNT = 1;
     private final long EXISTING_USER_ID = 100L;
-    private final double CLUB_RATING = 4.0;;
+    private final double CLUB_RATING = 4.0;
     private final String EXISTING_TEXT = "Existing feedback";
     private final String NEW_TEXT = "New feedback";
     private final Long USER_ID = 12L;
@@ -167,7 +170,7 @@ public class FeedbackServiceTest {
 
     @Test
     public void addNewFeedbackShouldReturnSuccessCreatedFeedback() {
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getAuthenticatedUser()).thenReturn(user);
         when(clubRepository.existsById(EXISTING_CLUB_ID)).thenReturn(true);
         when(userRepository.existsById(EXISTING_USER_ID)).thenReturn(true);
         when(dtoConverter.convertToEntity(feedbackProfile, new Feedback())).thenReturn(feedback);
@@ -177,6 +180,7 @@ public class FeedbackServiceTest {
         doNothing().when(clubRepository).updateRating(EXISTING_CLUB_ID, CLUB_RATING, FEEDBACK_COUNT);
         when(dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class))
                 .thenReturn(SuccessCreatedFeedback.builder().text(NEW_TEXT).build());
+        when(userDetailsService.getUserPrincipal()).thenReturn(TestUtils.getUserPrincipal(user));
 
         SuccessCreatedFeedback actual = feedbackService.addFeedback(feedbackProfile);
         assertEquals(feedbackProfile.getText(), actual.getText());
@@ -184,7 +188,7 @@ public class FeedbackServiceTest {
 
     @Test
     public void updateFeedbackProfileByExistingIdShouldReturnFeedbackProfile() {
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getAuthenticatedUser()).thenReturn(user);
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         when(dtoConverter.convertToEntity(feedbackProfile, feedback)).thenReturn(updFeedback);
         when(dtoConverter.convertToDto(feedback, FeedbackResponse.class)).thenReturn(feedbackResponse);

@@ -58,7 +58,7 @@ public class TestServiceTest {
 
     private final Long USER_ID = 1L;
 
-    private ModelMapper mapper = new ModelMapper();
+    private final ModelMapper mapper = new ModelMapper();
     private com.softserve.teachua.model.test.Test test;
     private PassTest passTest;
     private Question question;
@@ -181,7 +181,7 @@ public class TestServiceTest {
     void findViewTestByExistingTestIdShouldReturnViewTest() {
         test.setActive(true);
         when(testRepository.findById(EXISTING_TEST_ID)).thenReturn(Optional.of(test));
-        when(userService.getCurrentUser()).thenReturn(generateUser());
+        when(userService.getAuthenticatedUser()).thenReturn(generateUser());
         when(modelMapper.map(test, ViewTest.class)).thenReturn(viewTest);
         when(subscriptionRepository.findAllByUserId(USER_ID)).thenReturn(subscriptionsByUser);
         when(groupService.findAllByTestId(EXISTING_TEST_ID)).thenReturn(groupsByTest);

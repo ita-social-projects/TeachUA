@@ -3,10 +3,11 @@ package com.softserve.teachua.security.oauth2;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.model.User;
-import com.softserve.teachua.security.JwtProvider;
+import com.softserve.teachua.security.JwtUtils;
 import static com.softserve.teachua.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 import static com.softserve.teachua.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.USER_ROLE_PARAMETER;
 import com.softserve.teachua.security.util.CookieUtils;
+import com.softserve.teachua.service.RefreshTokenService;
 import com.softserve.teachua.service.RoleService;
 import com.softserve.teachua.service.UserService;
 import java.io.IOException;
@@ -28,13 +29,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Slf4j
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private final JwtProvider tokenProvider;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    RoleService roleService;
+    private final JwtUtils jwtUtils;
+    private final UserService userService;
+    private final RoleService roleService;
+    private final RefreshTokenService refreshTokenService;
 
     @Value("#{'${authorizedRedirectUris}'.split(',')}")
     private List<String> authorizedRedirectUris;
@@ -42,10 +40,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Autowired
-    OAuth2AuthenticationSuccessHandler(JwtProvider tokenProvider,
-            HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
-        this.tokenProvider = tokenProvider;
+    OAuth2AuthenticationSuccessHandler(JwtUtils jwtUtils,
+                                       HttpCookieOAuth2AuthorizationRequestRepository
+                                               httpCookieOAuth2AuthorizationRequestRepository, UserService userService,
+                                       RoleService roleService, RefreshTokenService refreshTokenService) {
+        this.jwtUtils = jwtUtils;
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
+        this.userService = userService;
+        this.roleService = roleService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     /**
@@ -53,7 +56,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-            Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication) throws IOException, ServletException {
         String targetUrl = determineTargetUrl(request, response, authentication);
 
         if (response.isCommitted()) {
@@ -70,7 +73,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      * @return uri
      */
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
-            Authentication authentication) {
+                                        Authentication authentication) {
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
         Optional<Object> userRole = CookieUtils.getCookie(request, USER_ROLE_PARAMETER).map(Cookie::getValue);
@@ -81,7 +84,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
         User user = userService.getUserByEmail(authentication.getName());
-        if (userRole.get() != "") {
+        if (userRole.isPresent() && userRole.get() != "") {
             user.setRole(roleService.findByName((String) userRole.get()));
             log.debug("Set user role" + userRole.get());
         } else {
@@ -90,9 +93,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
         userService.updateUser(user);
 
-        String token = tokenProvider.generateToken(authentication);
+        String accessToken = jwtUtils.generateAccessToken(user.getEmail());
+        String refreshToken = refreshTokenService.assignRefreshToken(user);
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", token)
+                .queryParam("accessToken", accessToken)
+                .queryParam("refreshToken", refreshToken)
                 .queryParam("id", user.getId())
                 .queryParam("role", user.getRole().getName())
                 .build().toUriString();

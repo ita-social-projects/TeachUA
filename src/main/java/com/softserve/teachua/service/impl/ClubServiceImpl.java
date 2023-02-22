@@ -191,7 +191,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Override
     @Transactional
     public SuccessUpdatedClub updateClub(Long id, ClubResponse clubResponse) {
-        User user = userService.getCurrentUser();
+        User user = userService.getAuthenticatedUser();
         validateClubOwner(id, user);
         Club club = getClubById(id);
         Set<LocationResponse> locations = null;
@@ -272,7 +272,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             }
         }
 
-        User user = userService.getCurrentUser();
+        User user = userService.getAuthenticatedUser();
         clubProfile.setUserId(user.getId());
 
         Club club = clubRepository.save(dtoConverter
@@ -460,10 +460,10 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     @Override
-    public ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile) {
-        User user = userService.getCurrentUser();
-        validateClubOwner(id, user);
-        Club club = getClubById(id);
+    public ClubResponse changeClubOwner(Long clubId, ClubOwnerProfile clubOwnerProfile) {
+        User user = userService.getAuthenticatedUser();
+        validateClubOwner(clubId, user);
+        Club club = getClubById(clubId);
         club.setUser(clubOwnerProfile.getUser());
 
         log.debug("changed club owner by id {}", club);
@@ -627,7 +627,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Override
     @Transactional
     public ClubResponse deleteClubById(Long id) {
-        User user = userService.getCurrentUser();
+        User user = userService.getAuthenticatedUser();
         validateClubOwner(id, user);
 
         Club club = getClubById(id);
@@ -680,11 +680,10 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     @Override
-    public void validateClubOwner(Long id, User userFromRequest) {
+    public void validateClubOwner(Long id, User user) {
         User userFromClub = getClubById(id).getUser();
 
-        if (!(userFromClub != null && userFromRequest != null && userFromRequest.equals(userFromClub))
-                && !userFromRequest.getRole().getName().equalsIgnoreCase("ROLE_ADMIN")) {
+        if (!userFromClub.equals(user) && !user.getRole().getName().equalsIgnoreCase("ROLE_ADMIN")) {
             throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);
         }
     }

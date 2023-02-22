@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.TestUtils;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
@@ -10,26 +11,29 @@ import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Complaint;
 import com.softserve.teachua.model.User;
-import com.softserve.teachua.model.archivable.ClubArch;
 import com.softserve.teachua.model.archivable.ComplaintArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.security.CustomUserDetailsService;
+import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.service.impl.ComplaintServiceImpl;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.servlet.http.HttpServletRequestWrapper;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ComplaintServiceTest {
@@ -46,13 +50,11 @@ public class ComplaintServiceTest {
     @Mock
     private ArchiveService archiveService;
     @Mock
-    private HttpServletRequestWrapper httpServletRequest;
-    @Mock
     private ClubRepository clubRepository;
     @Mock
     private UserRepository userRepository;
     @Mock
-    private UserService userService;
+    private CustomUserDetailsService userDetailsService;
     @InjectMocks
     private ComplaintServiceImpl complaintService;
     private Complaint correctComplaint;
@@ -62,6 +64,7 @@ public class ComplaintServiceTest {
     private List<Complaint> complaintList;
     private Club club;
     private User user;
+    private UserPrincipal userPrincipal;
     private ComplaintArch complaintArch;
     private List<ComplaintResponse> complaintResponseList;
 
@@ -69,6 +72,7 @@ public class ComplaintServiceTest {
     public void setMocks() {
 
         user = User.builder().id(USER_ID).build();
+        userPrincipal = TestUtils.getUserPrincipal(user);
         club = Club.builder().id(CLUB_ID).build();
         correctComplaint = Complaint.builder().id(CORRECT_COMPLAINT_ID).club(club).build();
         correctComplaintResponse = ComplaintResponse.builder().id(CORRECT_COMPLAINT_ID).build();
@@ -121,16 +125,14 @@ public class ComplaintServiceTest {
 
     @Test
     public void addComplaintMustReturnSuccessCreatedComplaint() {
-
-        when(userService.getUserFromRequest(httpServletRequest)).thenReturn(user);
+        when(userDetailsService.getUserPrincipal()).thenReturn(userPrincipal);
         when(dtoConverter.convertToEntity(any(ComplaintProfile.class), any(Complaint.class)))
                 .thenReturn(new Complaint());
         when(clubRepository.existsById(CLUB_ID)).thenReturn(true);
-        when(userRepository.existsById(USER_ID)).thenReturn(true);
         when(complaintRepository.save(correctComplaint)).thenReturn(correctComplaint);
         when(dtoConverter.convertToDto(correctComplaint, SuccessCreatedComplaint.class))
                 .thenReturn(successCreatedComplaint);
-        SuccessCreatedComplaint expected = complaintService.addComplaint(correctComplaintProfile, httpServletRequest);
+        SuccessCreatedComplaint expected = complaintService.addComplaint(correctComplaintProfile);
         assertThat(expected).isEqualTo(successCreatedComplaint);
 
     }

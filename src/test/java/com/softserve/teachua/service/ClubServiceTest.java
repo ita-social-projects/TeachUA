@@ -1,8 +1,10 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.TestUtils;
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.ContactsStringConverter;
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.club.ClubOwnerProfile;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
@@ -33,6 +35,7 @@ import org.mockito.Mock;
 import org.mockito.internal.util.collections.Sets;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.softserve.teachua.TestUtils.getUser;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -176,7 +179,7 @@ class ClubServiceTest {
             .thenReturn(Club.builder().name(NEW_NAME).build());
         when(dtoConverter.convertToDto(club, SuccessUpdatedClub.class))
             .thenReturn(SuccessUpdatedClub.builder().name(NEW_NAME).build());
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getAuthenticatedUser()).thenReturn(user);
 
         SuccessUpdatedClub actual = clubService.updateClub(EXISTING_ID,
             ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).build());
@@ -216,7 +219,7 @@ class ClubServiceTest {
         doNothing().when(clubRepository).deleteById(EXISTING_ID);
         when(complaintRepository.getAllByClubId(EXISTING_ID)).thenReturn(Collections.emptyList());
         when(clubToClubResponseConverter.convertToClubResponse(club)).thenReturn(clubResponse);
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getAuthenticatedUser()).thenReturn(user);
         when(dtoConverter.convertToDto(club, ClubArch.class)).thenReturn(clubArch);
         when(archiveService.saveModel(clubArch)).thenReturn(Archive.builder().build());
         ClubResponse actual = clubService.deleteClubById(EXISTING_ID);
@@ -241,7 +244,7 @@ class ClubServiceTest {
         when(clubRepository.save(any())).thenReturn(newClub);
         when(dtoConverter.convertToDto(newClub, SuccessCreatedClub.class))
             .thenReturn(SuccessCreatedClub.builder().name(NEW_NAME).build());
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getAuthenticatedUser()).thenReturn(user);
 
         SuccessCreatedClub actual = clubService.addClub(clubProfile);
         assertEquals(clubProfile.getName(), actual.getName());
@@ -262,6 +265,22 @@ class ClubServiceTest {
 
         List<ClubResponse> actual = clubService.getListOfClubs();
         assertEquals(clubResponse.getName(), actual.get(0).getName());
+    }
+
+    @Test
+    void changeClubOwner() {
+        User axpectedUser = getUser();
+        ClubOwnerProfile clubOwnerProfile = ClubOwnerProfile.builder()
+                .id(club.getId())
+                .user(axpectedUser)
+                .build();
+
+        when(userService.getAuthenticatedUser()).thenReturn(user);
+        when(clubRepository.findById(club.getId())).thenReturn(Optional.of(club));
+
+        clubService.changeClubOwner(user.getId(), clubOwnerProfile);
+
+        assertEquals(axpectedUser, club.getUser());
     }
 
     // @Test

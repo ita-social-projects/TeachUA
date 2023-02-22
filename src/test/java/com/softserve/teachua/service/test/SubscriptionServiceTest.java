@@ -100,7 +100,7 @@ public class SubscriptionServiceTest {
     @Test
     void createSubscriptionByTestIdAndEnrollmentKeyShouldReturnSubscriptionProfile() {
         when(groupService.findAllByTestId(TEST_ID)).thenReturn(Collections.singletonList(group));
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getAuthenticatedUser()).thenReturn(user);
 
         SubscriptionProfile actual = subscriptionService.createSubscriptionByTestId(createSubscription, TEST_ID);
         assertEquals(subscriptionProfile, actual);
@@ -111,7 +111,7 @@ public class SubscriptionServiceTest {
         when(subscriptionRepository.findByUserIdAndGroupId(EXISTING_USER_ID, EXISTING_GROUP_ID))
             .thenReturn(subscription);
         when(groupService.findAllByTestId(TEST_ID)).thenReturn(Collections.singletonList(group));
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getAuthenticatedUser()).thenReturn(user);
         assertThatThrownBy(() -> subscriptionService.createSubscriptionByTestId(createSubscription, TEST_ID))
                 .isInstanceOf(IllegalStateException.class);
     }

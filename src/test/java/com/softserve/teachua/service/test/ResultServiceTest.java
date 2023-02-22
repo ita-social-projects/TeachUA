@@ -183,7 +183,7 @@ public class ResultServiceTest {
 
     @Test
     void saveCorrectResultShouldReturnSuccessCreatedResult() {
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userService.getAuthenticatedUser()).thenReturn(user);
         when(testService.findById(TEST_ID)).thenReturn(test);
         when(answerService.findAllById(selectedAnswersIds)).thenReturn(selectedAnswers);
         when(resultRepository.save(any())).thenReturn(result);

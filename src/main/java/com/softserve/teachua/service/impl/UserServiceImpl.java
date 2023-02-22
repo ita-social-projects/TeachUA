@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.security.UserEntity;
 import com.softserve.teachua.dto.user.SuccessLogin;
 import com.softserve.teachua.dto.user.SuccessRegistration;
 import com.softserve.teachua.dto.user.SuccessUpdatedUser;
@@ -23,15 +22,18 @@ import com.softserve.teachua.exception.MatchingPasswordException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
 import com.softserve.teachua.exception.UpdatePasswordException;
-import com.softserve.teachua.exception.WrongAuthenticationException;
+import com.softserve.teachua.exception.UserAuthenticationException;
+import com.softserve.teachua.exception.UserPermissionException;
 import com.softserve.teachua.model.AuthProvider;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.UserArch;
 import com.softserve.teachua.repository.UserRepository;
-import com.softserve.teachua.security.JwtProvider;
-import com.softserve.teachua.security.service.EncoderService;
+import com.softserve.teachua.security.CustomUserDetailsService;
+import com.softserve.teachua.security.JwtUtils;
+import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.RefreshTokenService;
 import com.softserve.teachua.service.RoleService;
 import com.softserve.teachua.service.UserService;
 import java.io.UnsupportedEncodingException;
@@ -40,7 +42,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
@@ -51,16 +52,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 @Transactional
@@ -73,49 +68,45 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     private static final String USER_NOT_FOUND_BY_VERIFICATION_CODE = "User not found or invalid link";
     private static final String USERS_NOT_FOUND_BY_ROLE_NAME = "User not found by role name - %s";
     private static final String WRONG_PASSWORD = "Wrong password";
-    private static final String NOT_VERIFIED = "User is not verified: %s";
+    private static final String NOT_VERIFIED = "Ви не підтвердили електронну пошту: %s";
     private static final String USER_DELETING_ERROR = "Can't delete user cause of relationship";
     private static final String USER_REGISTRATION_ERROR = "Can't register user";
     private static final String ONLY_ADMIN_CONTENT = "Only the admin have permit to view this content";
     private final UserRepository userRepository;
-    private final EncoderService encodeService;
     private final RoleService roleService;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
-    private final JwtProvider jwtProvider;
-    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
+    private final CustomUserDetailsService userDetailsService;
+    private final RefreshTokenService refreshTokenService;
     @Value("${baseURL}")
     private String baseUrl;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, EncoderService encodeService, RoleService roleService,
-                           DtoConverter dtoConverter, ArchiveService archiveService, JwtProvider jwtProvider,
-                           @Lazy AuthenticationManager authenticationManager, JavaMailSender javaMailSender,
-                           @Lazy PasswordEncoder passwordEncoder, ObjectMapper objectMapper) {
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService, DtoConverter dtoConverter,
+                           ArchiveService archiveService, JwtUtils jwtUtils,
+                           JavaMailSender javaMailSender, @Lazy PasswordEncoder passwordEncoder,
+                           ObjectMapper objectMapper, RefreshTokenService refreshTokenService,
+                           CustomUserDetailsService userDetailsService) {
         this.userRepository = userRepository;
-        this.encodeService = encodeService;
         this.roleService = roleService;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
-        this.jwtProvider = jwtProvider;
-        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
         this.javaMailSender = javaMailSender;
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = objectMapper;
+        this.userDetailsService = userDetailsService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
     public UserResponse getUserProfileById(Long id) {
         User user = getUserById(id);
         return dtoConverter.convertToDto(user, UserResponse.class);
-    }
-
-    @Override
-    public UserEntity getUserEntity(String email) {
-        return dtoConverter.convertToDto(getUserByEmail(email), UserEntity.class);
     }
 
     @Override
@@ -179,7 +170,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     public SuccessRegistration registerUser(UserProfile userProfile) {
         userProfile.setEmail(userProfile.getEmail().toLowerCase());
         if (isUserExistByEmail(userProfile.getEmail())) {
-            throw new WrongAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
+            throw new UserAuthenticationException(String.format(EMAIL_ALREADY_EXIST, userProfile.getEmail()));
         }
 
         if (RoleData.ADMIN.getDBRoleName().equals(userProfile.getRoleName())) {
@@ -187,7 +178,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         }
 
         User user = dtoConverter.convertToEntity(userProfile, new User())
-                .withPassword(encodeService.encodePassword(userProfile.getPassword()))
+                .withPassword(passwordEncoder.encode(userProfile.getPassword()))
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
         String phoneFormat = "38" + user.getPhone();
@@ -216,8 +207,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
 
     @Override
     public UserVerifyPassword validateUser(UserVerifyPassword userVerifyPassword) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
         if (userVerifyPassword.getPassword() == null) {
             userVerifyPassword.setPassword(
                     userRepository.findById(userVerifyPassword.getId())
@@ -235,23 +224,23 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     }
 
     @Override
-    public SuccessLogin validateUser(UserLogin userLogin) {
+    public SuccessLogin loginUser(UserLogin userLogin) {
         userLogin.setEmail(userLogin.getEmail().toLowerCase());
-        UserEntity userEntity = getUserEntity(userLogin.getEmail());
-        if (!encodeService.isValidStatus(userEntity)) {
+        User user = getUserByEmail(userLogin.getEmail());
+        if (!user.isStatus()) {
             throw new NotVerifiedUserException(String.format(NOT_VERIFIED, userLogin.getEmail()));
-        } else if (!encodeService.isValidPassword(userLogin, userEntity)) {
-            throw new WrongAuthenticationException(WRONG_PASSWORD);
+        } else if (!passwordEncoder.matches(userLogin.getPassword(), user.getPassword())) {
+            throw new UserAuthenticationException(WRONG_PASSWORD);
         }
-        log.debug("user {} logged successfully", userLogin);
+        log.debug("User {} logged successfully", userLogin);
 
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(userLogin.getEmail(), userLogin.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return dtoConverter.convertFromDtoToDto(userEntity, new SuccessLogin())
-                .withAccessToken(jwtProvider.generateToken(authentication));
+        return SuccessLogin.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .roleName(user.getRole().getName())
+                .accessToken(jwtUtils.generateAccessToken(userLogin.getEmail()))
+                .refreshToken(refreshTokenService.assignRefreshToken(user))
+                .build();
     }
 
     @Override
@@ -352,18 +341,19 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     }
 
     @Override
-    public User getUserFromRequest(HttpServletRequest httpServletRequest) {
+    public User getAuthenticatedUser() {
+        UserPrincipal userPrincipal = userDetailsService.getUserPrincipal();
         return userRepository
-                .findById(jwtProvider.getUserIdFromToken(jwtProvider.getJwtFromRequest(httpServletRequest)))
-                .orElseThrow(WrongAuthenticationException::new);
+                .findById(userPrincipal.getId())
+                .orElseThrow(() ->
+                        new NotExistException(String.format(USER_NOT_FOUND_BY_ID, userPrincipal.getId())));
     }
 
     @Override
     public void verifyIsUserAdmin() {
-        User user = userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(() -> new WrongAuthenticationException(ONLY_ADMIN_CONTENT));
-        if (!user.getRole().getName().equals(RoleData.ADMIN.getDBRoleName())) {
-            throw new WrongAuthenticationException(ONLY_ADMIN_CONTENT);
+        if (!userDetailsService.getUserPrincipal().getAuthorities()
+                .contains(new SimpleGrantedAuthority(RoleData.ADMIN.getDBRoleName()))) {
+            throw new UserPermissionException(ONLY_ADMIN_CONTENT);
         }
     }
 
@@ -461,28 +451,20 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
 
     @Override
     public SuccessUserPasswordReset verifyChangePassword(SuccessUserPasswordReset userResetPassword) {
-        BCryptPasswordEncoder passEncoder = new BCryptPasswordEncoder();
-        log.debug("step 3: " + userResetPassword.getVerificationCode() + " " + userResetPassword.getEmail());
+        log.debug("step 3: {} {}", userResetPassword.getVerificationCode(), userResetPassword.getEmail());
         User user = getUserByVerificationCode(userResetPassword.getVerificationCode());
         user.setStatus(true);
-        if (passEncoder.matches(userResetPassword.getPassword(), user.getPassword())) {
+        if (passwordEncoder.matches(userResetPassword.getPassword(), user.getPassword())) {
             throw new MatchingPasswordException("Новий пароль співпадає з старим");
         }
         userResetPassword.setEmail(user.getEmail());
         userResetPassword.setId(user.getId());
-        user.setPassword(encodeService.encodePassword(userResetPassword.getPassword()));
+        user.setPassword(passwordEncoder.encode(userResetPassword.getPassword()));
         user.setVerificationCode(null);
 
         userRepository.save(user);
-        log.debug("password reset {}", user);
+        log.debug("Password reset {}", user);
         return userResetPassword;
-    }
-
-    @Override
-    public User getCurrentUser() {
-        HttpServletRequest httpServletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .getRequest();
-        return getUserFromRequest(httpServletRequest);
     }
 
     @Override

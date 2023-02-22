@@ -150,7 +150,7 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public SuccessCreatedResult saveResult(CreateResult resultDto) {
         checkNull(resultDto, "Create result dto");
-        User user = userService.getCurrentUser();
+        User user = userService.getAuthenticatedUser();
         Result result = new Result();
         result.setUser(user);
         result.setTest(testService.findById(resultDto.getTestId()));
@@ -167,7 +167,7 @@ public class ResultServiceImpl implements ResultService {
         successResult.setTestId(resultDto.getTestId());
         successResult.setUserId(user.getId());
         successResult.setGrade(result.getGrade());
-        log.info("**/Result has been saved. {}", successResult.toString());
+        log.info("**/Result has been saved. {}", successResult);
         return successResult;
     }
 

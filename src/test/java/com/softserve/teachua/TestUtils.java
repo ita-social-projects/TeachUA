@@ -15,10 +15,14 @@ import static com.softserve.teachua.TestConstants.CORRECT;
 import static com.softserve.teachua.TestConstants.COURSE_DESCRIPTION;
 import static com.softserve.teachua.TestConstants.COURSE_NUMBER;
 import static com.softserve.teachua.TestConstants.FILE_PATH;
+import static com.softserve.teachua.TestConstants.FIRST_NAME;
 import static com.softserve.teachua.TestConstants.HOURS;
 import static com.softserve.teachua.TestConstants.INTEGER_ID;
+import static com.softserve.teachua.TestConstants.LAST_NAME;
 import static com.softserve.teachua.TestConstants.LONG_ID;
 import static com.softserve.teachua.TestConstants.NOT_EMPTY_STRING;
+import static com.softserve.teachua.TestConstants.PASSWORD;
+import static com.softserve.teachua.TestConstants.PHONE;
 import static com.softserve.teachua.TestConstants.PICTURE_PATH;
 import static com.softserve.teachua.TestConstants.PROJECT_DESCRIPTION;
 import static com.softserve.teachua.TestConstants.QUESTION_CATEGORY;
@@ -30,7 +34,9 @@ import static com.softserve.teachua.TestConstants.STRING_DATE;
 import static com.softserve.teachua.TestConstants.STUDY_FORM;
 import static com.softserve.teachua.TestConstants.UPDATE_DATE;
 import static com.softserve.teachua.TestConstants.USER_EMAIL;
+import static com.softserve.teachua.TestConstants.USER_ID;
 import static com.softserve.teachua.TestConstants.USER_NAME;
+import static com.softserve.teachua.TestConstants.USER_ROLE;
 import static com.softserve.teachua.TestConstants.VARIANT;
 import com.softserve.teachua.constants.excel.ExcelColumn;
 import com.softserve.teachua.dto.certificate.CertificateDataRequest;
@@ -40,22 +46,53 @@ import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTr
 import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
 import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
+import com.softserve.teachua.dto.user.UserLogin;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.model.CertificateType;
+import com.softserve.teachua.model.Role;
+import com.softserve.teachua.model.User;
+import com.softserve.teachua.security.UserPrincipal;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.SheetBuilder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class TestUtils {
+
+    public static User getUser() {
+        return User.builder()
+                .id(USER_ID)
+                .email(USER_EMAIL)
+                .firstName(FIRST_NAME)
+                .lastName(LAST_NAME)
+                .role(getUserRole())
+                .password(PASSWORD)
+                .phone(PHONE)
+                .status(true)
+                .build();
+    }
+
+    private static Role getUserRole() {
+        return Role.builder()
+                .id(INTEGER_ID)
+                .name(USER_ROLE)
+                .build();
+    }
+
+    public static UserLogin getUserLogin() {
+        return new UserLogin(getUser().getEmail(), getUser().getPassword());
+    }
 
     public static Certificate getCertificate() {
         return Certificate.builder()
@@ -143,6 +180,21 @@ public class TestUtils {
                 .courseNumber(COURSE_NUMBER)
                 .excelList(excelList)
                 .build();
+    }
+
+    public static UserPrincipal getUserPrincipal(User user) {
+        return new UserPrincipal(
+                user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                Collections.singletonList(
+                        new SimpleGrantedAuthority(
+                                Optional.ofNullable(user.getRole())
+                                        .map(Role::getName)
+                                        .orElse("ROLE_USER")
+                        )
+                )
+        );
     }
 
     public static QuestionExcel getQuestionExcel() {

@@ -10,6 +10,7 @@ import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.exception.CertificateGenerationException;
 import com.softserve.teachua.exception.NotExistException;
+import com.softserve.teachua.exception.UserPermissionException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.archivable.CertificateArch;
@@ -47,7 +48,6 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -308,7 +308,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         boolean isSent = Optional.ofNullable(certificate.getSendStatus()).orElse(false);
 
         if (!certificate.getSendToEmail().equals(userEmail)) {
-            throw new AccessDeniedException("Forbidden");
+            throw new UserPermissionException();
         } else if (isSent && certificate.getSerialNumber() == null && certificate.getUpdateStatus() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Requested certificate has no serial number");
         }

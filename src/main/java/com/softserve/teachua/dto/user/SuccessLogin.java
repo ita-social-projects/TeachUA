@@ -17,4 +17,5 @@ public class SuccessLogin implements Convertible {
     private String email;
     private String roleName;
     private String accessToken;
+    private String refreshToken;
 }

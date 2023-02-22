@@ -103,6 +103,7 @@ public class CertificateController implements Api {
      *
      * @return {@code List<CertificatePreview>}
      */
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/certificates")
     public List<CertificatePreview> getAllCertificates() {
         return certificateService.getListOfCertificatesPreview();
@@ -138,6 +139,7 @@ public class CertificateController implements Api {
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
 
+    @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/certificate")
     public List<CertificatePreview> searchCertificatesUser(@RequestParam(name = "userName") String userName) {
         return certificateService.getSimilarCertificatesByUserName(userName);
@@ -150,6 +152,7 @@ public class CertificateController implements Api {
      * @param certificatePreview - {@code CertificatePreview} to update
      * @return {@code List<CertificatePreview>}
      */
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/certificates/{id}")
     public CertificatePreview updateCertificate(@PathVariable Long id,
                                                 @Valid @RequestBody CertificatePreview certificatePreview) {
