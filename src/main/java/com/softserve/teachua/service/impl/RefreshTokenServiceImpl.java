@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class RefreshTokenServiceImpl implements RefreshTokenService {
     public static final String UNPROCESSED_REFRESH_TOKEN = "Refresh token is invalid or has been expired";
     private final RefreshTokenRepository refreshTokenRepository;
@@ -27,7 +28,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    @Transactional
     public String assignRefreshToken(User user) {
         String rawRefreshToken = jwtUtils.generateRefreshToken(user.getId());
         String encodedRefreshToken = passwordEncoder.encode(rawRefreshToken);
@@ -40,7 +40,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    @Transactional
     public void revokeRefreshToken(String refreshToken) {
         validateRefreshToken(refreshToken);
         RefreshToken currentRefreshToken = getRefreshToken(refreshToken);
@@ -49,7 +48,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    @Transactional
     public RefreshTokenResponse refreshAccessToken(String oldRefreshToken) {
         validateRefreshToken(oldRefreshToken);
         RefreshToken refreshToken = getRefreshToken(oldRefreshToken);
