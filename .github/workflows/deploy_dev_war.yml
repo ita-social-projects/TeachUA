@@ -8,6 +8,12 @@ jobs:
       - name: Create folder for frontend
         run: 'sudo mkdir /su_frontend'
         
+      - name: Use custom node version
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+        
       - name: Checkout frontend repo TeachUAClient
         uses: actions/checkout@v2
         with:
