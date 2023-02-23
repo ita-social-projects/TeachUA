@@ -4,7 +4,6 @@ import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     public static final String SECURITY_CONTEXT_ERROR =
-            "There was attempt to get UserPrincipal, but Security Context is empty.";
+            "There was attempt to get UserPrincipal, but Security Context doesn't contain one.";
     private final UserRepository userRepository;
 
     public CustomUserDetailsService(UserRepository userRepository) {
@@ -32,11 +31,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public UserPrincipal getUserPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            return (UserPrincipal) authentication.getPrincipal();
+        try {
+            return (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (Exception e) {
+            log.error(SECURITY_CONTEXT_ERROR, e);
+            throw new UserAuthenticationException();
         }
-        log.error(SECURITY_CONTEXT_ERROR);
-        throw new UserAuthenticationException();
     }
 }
