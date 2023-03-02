@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.With;
@@ -26,6 +27,7 @@ import lombok.With;
 @AllArgsConstructor
 @With
 @Builder
+@EqualsAndHashCode
 public class Certificate implements Convertible {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,11 +65,13 @@ public class Certificate implements Convertible {
     @JoinColumn(name = "template_id", referencedColumnName = "id")
     @JsonBackReference(value = "certificateTemplate")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private CertificateTemplate template;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dates_id", referencedColumnName = "id")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private CertificateDates dates;
 
     @Column(name = "`values`")
