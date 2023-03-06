@@ -3,7 +3,7 @@ scrape_configs:
     scrape_interval: 20s
     metrics_path: '/dev/api/prometheus'
     static_configs:
-      - targets: ['185.156.43.101:8080']
+      - targets: ['ip.ip.ip.ip:port']
     basic_auth:
-      username: 'admin@gmail.com'
-      password: 'admin'
+      username: 'username@gmail.com'
+      password: 'password'
