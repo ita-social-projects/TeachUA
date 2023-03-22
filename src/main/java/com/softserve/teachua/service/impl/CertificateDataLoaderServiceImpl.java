@@ -113,10 +113,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
         } else {
             dates.setStudyForm(data.getStudyType());
         }
-        if (!certificateDatesService.exists(dates)) {
-            return certificateDatesService.addCertificateDates(dates);
-        }
-        return certificateDatesService.getCertificateDates(dates);
+        return certificateDatesService.getOrCreateCertificateDates(dates);
     }
 
     private CertificateTemplate saveTemplate(Integer type) {

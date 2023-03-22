@@ -17,8 +17,8 @@ public interface CertificateDatesRepository extends JpaRepository<CertificateDat
                                                                        String courseNumber,
                                                                        String studyForm);
 
-    Optional<CertificateDates> findByDateAndHoursAndDurationAndCourseNumberAndStudyForm(String date, Integer hours,
-                                                                                        String duration,
-                                                                                        String courseNumber,
-                                                                                        String studyForm);
+    Optional<CertificateDates> findFirstByDateAndHoursAndDurationAndCourseNumberAndStudyForm(String date, Integer hours,
+                                                                                             String duration,
+                                                                                             String courseNumber,
+                                                                                             String studyForm);
 }
