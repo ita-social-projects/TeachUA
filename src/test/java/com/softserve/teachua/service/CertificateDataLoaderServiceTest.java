@@ -101,13 +101,13 @@ class CertificateDataLoaderServiceTest {
     }
 
     private void mockSaveDates(boolean isCertificateDateExists) {
-        when(certificateDatesService.exists(certificateDates)).thenReturn(isCertificateDateExists);
         when(decorator.formDates(CERTIFICATE_DATES_START_DATE, CERTIFICATE_DATES_END_DATE)).thenReturn(
                 CERTIFICATE_DATES_DURATION);
         if (isCertificateDateExists) {
-            when(certificateDatesService.getCertificateDates(certificateDates)).thenReturn(certificate.getDates());
+            when(certificateDatesService.getOrCreateCertificateDates(certificateDates)).thenReturn(
+                    certificate.getDates());
         } else {
-            when(certificateDatesService.addCertificateDates(certificateDates)).thenReturn(certificateDates);
+            when(certificateDatesService.getOrCreateCertificateDates(certificateDates)).thenReturn(certificateDates);
         }
     }
 

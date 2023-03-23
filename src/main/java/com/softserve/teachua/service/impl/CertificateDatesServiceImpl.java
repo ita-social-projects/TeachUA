@@ -10,6 +10,7 @@ import com.softserve.teachua.repository.CertificateDatesRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CertificateDatesService;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class CertificateDatesServiceImpl implements CertificateDatesService, ArchiveMark<CertificateDates> {
     private static final String DATE_NOT_FOUND_BY_ID = "Certificate dates not found by id: %s";
-    private static final String DATE_NOT_FOUND = "Certificate date not found: %s";
 
     private final CertificateDatesRepository certificateDatesRepository;
     private final DtoConverter dtoConverter;
@@ -69,10 +69,16 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
     }
 
     @Override
-    public CertificateDates getCertificateDates(CertificateDates certificateDates) {
-        return certificateDatesRepository.findByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
-                        certificateDates.getDate(), certificateDates.getHours(), certificateDates.getDuration(),
-                        certificateDates.getCourseNumber(), certificateDates.getStudyForm())
-                .orElseThrow(() -> new NotExistException(String.format(DATE_NOT_FOUND, certificateDates)));
+    public Optional<CertificateDates> findCertificateDates(CertificateDates certificateDates) {
+        return certificateDatesRepository.findFirstByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
+                certificateDates.getDate(), certificateDates.getHours(), certificateDates.getDuration(),
+                certificateDates.getCourseNumber(), certificateDates.getStudyForm());
+    }
+
+    @Override
+    @Transactional
+    public CertificateDates getOrCreateCertificateDates(CertificateDates certificateDates) {
+        return findCertificateDates(certificateDates).orElseGet(() ->
+                certificateDatesRepository.save(certificateDates));
     }
 }

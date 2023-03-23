@@ -87,23 +87,14 @@ class CertificateDatesServiceImplTest {
     }
 
     @Test
-    void getCertificateDatesIfExists() {
-        when(certificateDatesRepository.findByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
+    void getCertificateDates() {
+        when(certificateDatesRepository.findFirstByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
                 certificateDates.getDate(), certificateDates.getHours(), certificateDates.getDuration(),
                 certificateDates.getCourseNumber(), certificateDates.getStudyForm())).thenReturn(
                 Optional.ofNullable(certificateDates));
 
-        assertThat(certificateDatesService.getCertificateDates(certificateDates)).isEqualTo(certificateDates);
-    }
-
-    @Test
-    void getCertificateDatesIfDoesNotExists() {
-        when(certificateDatesRepository.findByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
-                certificateDates.getDate(), certificateDates.getHours(), certificateDates.getDuration(),
-                certificateDates.getCourseNumber(), certificateDates.getStudyForm())).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> certificateDatesService.getCertificateDates(certificateDates)).isInstanceOf(
-                NotExistException.class);
+        assertThat(certificateDatesService.findCertificateDates(certificateDates)).isEqualTo(
+                Optional.ofNullable(certificateDates));
     }
 
     @Test
@@ -132,5 +123,26 @@ class CertificateDatesServiceImplTest {
 
         assertThatThrownBy(() -> certificateDatesService.restoreModel(ARCHIVE_OBJECT)).isInstanceOf(
                 JsonProcessingException.class);
+    }
+
+    @Test
+    void getOrCreateCertificateDates_IfExists() {
+        when(certificateDatesRepository.findFirstByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
+                certificateDates.getDate(), certificateDates.getHours(), certificateDates.getDuration(),
+                certificateDates.getCourseNumber(), certificateDates.getStudyForm())).thenReturn(
+                Optional.ofNullable(certificateDates));
+
+        assertThat(certificateDatesService.getOrCreateCertificateDates(certificateDates)).isEqualTo(certificateDates);
+    }
+
+    @Test
+    void getOrCreateCertificateDates_IfDoesNotExist() {
+        when(certificateDatesRepository.findFirstByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
+                certificateDates.getDate(), certificateDates.getHours(), certificateDates.getDuration(),
+                certificateDates.getCourseNumber(), certificateDates.getStudyForm())).thenReturn(
+                Optional.empty());
+        when(certificateDatesRepository.save(certificateDates)).thenReturn(certificateDates);
+
+        assertThat(certificateDatesService.getOrCreateCertificateDates(certificateDates)).isEqualTo(certificateDates);
     }
 }
