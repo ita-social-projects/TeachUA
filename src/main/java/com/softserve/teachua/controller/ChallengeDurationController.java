@@ -2,7 +2,9 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.challenge_duration.ChallengeDurationAdd;
 import com.softserve.teachua.dto.challenge_duration.ChallengeDurationDelete;
+import com.softserve.teachua.dto.challenge_duration.ChallengeDurationDeleteResponse;
 import com.softserve.teachua.dto.challenge_duration.ChallengeDurationForAdmin;
 import com.softserve.teachua.dto.challenge_duration.ChallengeDurationForAdminDurationLocalDate;
 import com.softserve.teachua.dto.challenge_duration.ChallengeDurationForAdminDurationString;
@@ -12,6 +14,7 @@ import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,14 +47,15 @@ public class ChallengeDurationController implements Api {
 
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/admin/challenge-duration/{id}")
-    public String createChallengeDuration(@PathVariable Long id,
-                                          @RequestBody List<DurationEntityResponse> durationEntityResponseList) {
+    public Set<ChallengeDurationAdd> createChallengeDuration(
+        @PathVariable Long id, @RequestBody List<DurationEntityResponse> durationEntityResponseList) {
         return challengeDurationService.createChallengeDuration(id, durationEntityResponseList);
     }
 
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/admin/challenge-duration/delete")
-    public Boolean deleteChallengeDurationForAdmin(@RequestBody ChallengeDurationDelete challengeDurationDelete) {
+    public ChallengeDurationDeleteResponse deleteChallengeDurationForAdmin(
+        @RequestBody ChallengeDurationDelete challengeDurationDelete) {
         return challengeDurationService.deleteChallengeDuration(challengeDurationDelete);
     }
 

@@ -4,6 +4,7 @@ import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.user_challenge_status.UserChallengeStatusAdd;
 import com.softserve.teachua.dto.user_challenge_status.UserChallengeStatusDelete;
+import com.softserve.teachua.dto.user_challenge_status.UserChallengeStatusExist;
 import com.softserve.teachua.dto.user_challenge_status.UserChallengeStatusForOption;
 import com.softserve.teachua.dto.user_challenge_status.UserChallengeStatusGet;
 import com.softserve.teachua.dto.user_challenge_status.UserChallengeStatusUpdate;
@@ -68,7 +69,7 @@ public class UserChallengeStatusController implements Api {
 
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/user-challenge/status/exist/{id}")
-    public Boolean checkIfUserChallengeStatusIdExist(@NotNull @PathVariable Long id) {
+    public UserChallengeStatusExist checkIfUserChallengeStatusIdExist(@NotNull @PathVariable Long id) {
         return userChallengeStatusService.isUserChallengeStatusExistsById(id);
     }
 }

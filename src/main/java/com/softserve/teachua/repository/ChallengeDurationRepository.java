@@ -62,8 +62,17 @@ public interface ChallengeDurationRepository extends JpaRepository<ChallengeDura
             + "      and uc.challengeDuration.durationEntity.endDate =:endDate")
     boolean existUser(LocalDate startDate, LocalDate endDate);
 
-    @Query(value = "select count(ch) > 0 "
+    @Query(value = "select count(cd) > 0 "
                    + " from ChallengeDuration cd "
                    + " where cd =:challengeDuration")
     boolean existsChallengeDurations(ChallengeDuration challengeDuration);
+
+    @Query("select "
+        + "   case "
+        + "       when count(uc) > 0 then true "
+        + "       else false "
+        + "   end "
+        + "   from UserChallenge uc "
+        + "   where uc.challengeDuration.id =?1")
+    boolean existChallengeDurationRegisteredUsers(Long challengeDurationId);
 }

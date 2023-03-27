@@ -3,7 +3,10 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.challenge_duration.ChallengeDurationAdd;
 import com.softserve.teachua.dto.challenge_duration.ChallengeDurationDelete;
+import com.softserve.teachua.dto.challenge_duration.ChallengeDurationDeleteResponse;
+import com.softserve.teachua.dto.challenge_duration.ChallengeDurationExistUserResponse;
 import com.softserve.teachua.dto.challenge_duration.ChallengeDurationForAdmin;
 import com.softserve.teachua.dto.challenge_duration.ChallengeDurationForAdminDurationLocalDate;
 import com.softserve.teachua.dto.challenge_duration.ChallengeDurationForAdminDurationString;
@@ -25,12 +28,12 @@ import com.softserve.teachua.service.ChallengeService;
 import com.softserve.teachua.service.DurationEntityService;
 import com.softserve.teachua.service.UserChallengeService;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +52,11 @@ public class ChallengeDurationServiceImpl implements ChallengeDurationService, A
     private static final boolean DEFAULT_USER_EXIST_BOOLEAN = false;
     private static final String CHALLENGE_DURATION_ALREADY_EXIST =
         "Already exist ChallengeDuration %s";
+
+    private static final String CHALLENGE_DURATION_NOT_FOUND_BY_CHALLENGE_ID_AND_DURATION_ID =
+        "ChallengeDuration not found by challengeId: %s durationId: %s";
+    private static final String CHALLENGE_DURATION_NOT_FOUND_BY_CHALLENGE_DURATION_ID =
+        "ChallengeDuration not found by challengeDurationId: %s";
     private final ChallengeDurationRepository challengeDurationRepository;
     private final UserChallengeRepository userChallengeRepository;
     private final UserChallengeService userChallengeService;
@@ -109,73 +117,108 @@ public class ChallengeDurationServiceImpl implements ChallengeDurationService, A
             .collect(Collectors.toList());
     }
 
-    public String createChallengeDuration(Long challengeId, List<DurationEntityResponse> durationEntityResponseList) {
+    public Set<ChallengeDuration> mapToChallengeDurationForAdding(
+        Long challengeId, Set<DurationEntity> durationEntitySet) {
         Challenge challenge = challengeService.getChallengeById(challengeId);
-
-        durationEntityService.createAllDurationEntityFromResponseList(durationEntityResponseList);
-
-        Set<DurationEntityResponse> durationEntityResponseSet = filterDurationEntityToAdd(
-            challengeId, durationEntityResponseList);
-
-        Set<DurationEntity> durationEntitySet = filterDurationEntityFromResponse(durationEntityResponseSet);
-
-        durationEntitySet.stream()
-            .map(durationEntity -> new ChallengeDuration(
-                0L,
-                DEFAULT_USER_EXIST_BOOLEAN,
-                challenge,
-                durationEntity))
-            .forEach(this::createChallengeDuration);
-        return "Успішно";
+        Set<ChallengeDuration> resultChallengeDurationSet =
+            durationEntitySet.stream().map(duration -> ChallengeDuration
+                    .builder()
+                    .id(0L)
+                    .userExist(DEFAULT_USER_EXIST_BOOLEAN)
+                    .challenge(challenge)
+                    .durationEntity(duration)
+                    .build())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        log.debug("**/mapping resultChallengeDurationSet = {}", resultChallengeDurationSet);
+        return resultChallengeDurationSet;
     }
 
-    public void createChallengeDuration(ChallengeDuration challengeDuration) {
-        boolean existsChallengeDuration = checkChallengeDurationExists(challengeDuration);
+    @Override
+    public Set<ChallengeDurationAdd> createChallengeDuration(Long challengeId,
+                                                             List<DurationEntityResponse> durationEntityResponseList) {
+        Set<DurationEntity> durationEntitySetFromResponse = durationEntityService
+            .createAllDurationEntityFromResponseList(durationEntityResponseList);
+
+        Set<ChallengeDuration> mappedChallengeDuration =
+            mapToChallengeDurationForAdding(challengeId, durationEntitySetFromResponse);
+
+        Set<ChallengeDuration> challengeDurationsForAdding =
+            filterChallengeDurationToAdd(challengeId, mappedChallengeDuration);
+
+        Set<ChallengeDurationAdd> resultChallengeDurationAddSet = createChallengeDuration(challengeDurationsForAdding);
+        log.debug("**/creating all resultChallengeDurationAddSet = {} from durationEntityResponseList = {}",
+            resultChallengeDurationAddSet, durationEntityResponseList);
+        return resultChallengeDurationAddSet;
+    }
+
+    public Set<ChallengeDurationAdd> createChallengeDuration(Set<ChallengeDuration> challengeDurationSetReceived) {
+        Set<ChallengeDuration> challengeDurationSet =
+            challengeDurationSetReceived
+                .stream()
+                .map(this::createChallengeDuration)
+                .collect(Collectors.toSet());
+        Set<ChallengeDurationAdd> resultChallengeDurationAddSet = mapToChallengeDurationAdd(challengeDurationSet);
+        log.debug("**/creating resultChallengeDurationAddSet = {}", resultChallengeDurationAddSet);
+        return resultChallengeDurationAddSet;
+    }
+
+    @Override
+    public ChallengeDuration createChallengeDuration(ChallengeDuration challengeDuration) {
+        boolean existsChallengeDuration = checkChallengeDurationExists(challengeDuration).isUserExists();
         if (existsChallengeDuration) {
             throw new AlreadyExistException(String.format(CHALLENGE_DURATION_ALREADY_EXIST, challengeDuration));
         }
         ChallengeDuration challengeDurationAdded = challengeDurationRepository.save(challengeDuration);
         log.debug("**/adding new ChallengeDuration = {}", challengeDurationAdded);
+        return challengeDurationAdded;
     }
 
-    public Set<DurationEntity> filterDurationEntityFromResponse(Set<DurationEntityResponse> durationEntityResponseSet) {
-        List<DurationEntity> durationEntityList = durationEntityService.getListDurationEntity();
-        Set<DurationEntity> durationEntitySet = durationEntityList.stream()
-            .filter(durationEntity -> durationEntityResponseSet
-                .stream()
-                .allMatch(response -> durationEntity.getStartDate().equals(response.getStartDate())
-                    && durationEntity.getEndDate().equals(response.getEndDate())))
-            .collect(Collectors.toSet());
-        log.debug("**/filtering durationEntitySet= {} for new ChallengeDuration", durationEntitySet);
-        return durationEntitySet;
-    }
-
-    public Set<DurationEntityResponse> filterDurationEntityToAdd(
-        Long challengeId, List<DurationEntityResponse> durationEntityResponseList) {
-        List<ChallengeDuration> challengeDurationFromDBList =
-            challengeDurationRepository.getChallengeDurationByChallengeId(challengeId);
-        Set<DurationEntityResponse> durationEntityResponseSet = durationEntityResponseList
+    public Set<ChallengeDurationAdd> mapToChallengeDurationAdd(Set<ChallengeDuration> challengeDurationSet) {
+        Set<ChallengeDurationAdd> resultChallengeDurationAddSet = challengeDurationSet
             .stream()
-            .filter(duration -> challengeDurationFromDBList
-                .stream()
-                .noneMatch(challengeDuration -> challengeDuration.getChallenge().getId().equals(challengeId)
-                    && challengeDuration.getDurationEntity().getStartDate().equals(duration.getStartDate())
-                    && challengeDuration.getDurationEntity().getEndDate().equals(duration.getEndDate())))
-            .collect(Collectors.toSet());
-        log.debug("**/filtering durationEntityResponseSet= {} for new ChallengeDuration", durationEntityResponseSet);
-        return durationEntityResponseSet;
+            .map(challengeDuration ->
+                ChallengeDurationAdd
+                    .builder()
+                    .startDate(challengeDuration.getDurationEntity().getStartDate())
+                    .endDate(challengeDuration.getDurationEntity().getEndDate())
+                    .build())
+            .collect(Collectors.toCollection(LinkedHashSet::new));
+        log.debug("**/mapping resultChallengeDurationAddSet = {}", resultChallengeDurationAddSet);
+        return resultChallengeDurationAddSet;
     }
 
-    public boolean checkChallengeDurationExists(ChallengeDuration challengeDuration) {
-        boolean existsChallengeDuration = challengeDurationRepository.existsChallengeDurations(challengeDuration);
+    public Set<ChallengeDuration> filterChallengeDurationToAdd(
+        Long challengeId, Set<ChallengeDuration> challengeDurationSet) {
+        List<ChallengeDuration> challengeDurationFromDB =
+            challengeDurationRepository.getChallengeDurationByChallengeId(challengeId);
+        Set<ChallengeDuration> resultChallengeDurationSet = challengeDurationSet
+            .stream()
+            .filter(challengeDuration -> challengeDurationFromDB
+                .stream()
+                .noneMatch(fromDB -> fromDB.getChallenge().getId().equals(challengeId)
+                    && fromDB.getDurationEntity().getStartDate()
+                    .equals(challengeDuration.getDurationEntity().getStartDate())
+                    && fromDB.getDurationEntity().getEndDate()
+                    .equals(challengeDuration.getDurationEntity().getEndDate())))
+            .collect(Collectors.toCollection(LinkedHashSet::new));
+        log.debug("**/filtering challengeDurationSet= {} for new ChallengeDuration", challengeDurationSet);
+        return resultChallengeDurationSet;
+    }
+
+    @Override
+    public ChallengeDurationExistUserResponse checkChallengeDurationExists(ChallengeDuration challengeDuration) {
+        ChallengeDurationExistUserResponse existsChallengeDuration =
+            ChallengeDurationExistUserResponse
+                .builder()
+                .userExists(challengeDurationRepository.existsChallengeDurations(challengeDuration))
+                .build();
         log.debug("**/checking existence ChallengeDuration = {} result ={}",
             challengeDuration, existsChallengeDuration);
         return existsChallengeDuration;
     }
 
-
     @Override
-    public Boolean deleteChallengeDuration(ChallengeDurationDelete challengeDurationDelete) {
+    public ChallengeDurationDeleteResponse deleteChallengeDuration(ChallengeDurationDelete challengeDurationDelete) {
         ChallengeDuration challengeDuration = getChallengeDurationByChallengeIdAndStartEndDate(
             challengeDurationDelete.getChallengeId(),
             challengeDurationDelete.getStartDate(),
@@ -187,19 +230,26 @@ public class ChallengeDurationServiceImpl implements ChallengeDurationService, A
             challengeDurationDelete.getEndDate());
 
         userChallengeList.forEach(userChallengeService::deleteUserChallenge);
-        deleteChallengeDuration(challengeDuration);
-        return true;
+        return deleteChallengeDuration(challengeDuration);
     }
 
-    public void deleteChallengeDuration(ChallengeDuration challengeDuration) {
+    @Override
+    public ChallengeDurationDeleteResponse deleteChallengeDuration(ChallengeDuration challengeDuration) {
         try {
             challengeDurationRepository.delete(challengeDuration);
             challengeDurationRepository.flush();
-        } catch (DataAccessException | ValidationException e) {
+        } catch (ValidationException e) {
             throw new DatabaseRepositoryException(CHALLENGE_DURATION_DELETING_ERROR);
         }
         archiveModel(challengeDuration);
+        ChallengeDurationDeleteResponse challengeDurationDeleteResponse =
+            ChallengeDurationDeleteResponse
+                .builder()
+                .startDate(challengeDuration.getDurationEntity().getStartDate())
+                .endDate(challengeDuration.getDurationEntity().getEndDate())
+                .build();
         log.debug("challengeDuration {} was successfully deleted", challengeDuration);
+        return challengeDurationDeleteResponse;
     }
 
     @Override
@@ -216,6 +266,46 @@ public class ChallengeDurationServiceImpl implements ChallengeDurationService, A
         return challengeDuration;
     }
 
+    @Override
+    public ChallengeDuration getChallengeDurationById(Long challengeDurationId) {
+        ChallengeDuration challengeDuration = challengeDurationRepository.findById(challengeDurationId)
+            .orElseThrow(() -> new NotExistException(String.format(
+                CHALLENGE_DURATION_NOT_FOUND_BY_CHALLENGE_DURATION_ID, challengeDurationId)));
+        log.debug("getting ChallengeDuration ={} by challengeDurationId ={}",
+            challengeDuration, challengeDurationId);
+        return challengeDuration;
+    }
+
+    @Override
+    public ChallengeDuration getChallengeDurationByChallengeIdAndDurationId(Long challengeId, Long durationId) {
+        ChallengeDuration challengeDuration = challengeDurationRepository
+            .getChallengeDurationByChallengeIdAndDurationId(challengeId, durationId)
+            .orElseThrow(() -> new NotExistException(String.format(
+                CHALLENGE_DURATION_NOT_FOUND_BY_CHALLENGE_ID_AND_DURATION_ID,
+                challengeId, durationId)));
+        log.debug("getting ChallengeDuration ={} by challengeId ={} durationId ={}",
+            challengeDuration, challengeId, durationId);
+        return challengeDuration;
+    }
+
+    @Override
+    public void updateChallengeDurationUserExist(Long challengeDurationId, Boolean userExist) {
+        ChallengeDuration challengeDuration = getChallengeDurationById(challengeDurationId);
+        challengeDuration.setUserExist(userExist);
+        challengeDurationRepository.save(challengeDuration);
+        log.debug("**/Updating challengeDuration = " + challengeDuration);
+    }
+
+    @Override
+    public boolean existChallengeDurationRegisteredUsers(Long challengeDurationId) {
+        boolean existsRegisteredUsers = challengeDurationRepository
+            .existChallengeDurationRegisteredUsers(challengeDurationId);
+        log.debug("checking existence registeredUsers in ChallengeDuration by challengeId ={}",
+            challengeDurationId);
+        return existsRegisteredUsers;
+    }
+
+    @Override
     public void archiveModel(ChallengeDuration challengeDuration) {
         ChallengeDurationArch challengeDurationArch =
             dtoConverter.convertToDto(challengeDuration, ChallengeDurationArch.class);

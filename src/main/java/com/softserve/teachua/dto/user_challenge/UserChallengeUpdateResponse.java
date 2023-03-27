@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.user_challenge.profile;
+package com.softserve.teachua.dto.user_challenge;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import java.time.LocalDate;
@@ -9,23 +9,14 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class UserChallengeForProfileGet implements Convertible {
-    private Long id;
-
-    private Long challengeId;
+@Data
+public class UserChallengeUpdateResponse implements Convertible {
+    private Long userChallengeId;
 
     private String challengeName;
-
-    private LocalDate registrationChallengeDate;
 
     private LocalDate startChallengeDate;
 
     private LocalDate endChallengeDate;
-
-    private String userChallengeStatus;
 }
-
-
-

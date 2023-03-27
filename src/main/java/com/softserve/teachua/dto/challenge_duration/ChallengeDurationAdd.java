@@ -1,5 +1,6 @@
-package com.softserve.teachua.dto.user_challenge.admin;
+package com.softserve.teachua.dto.challenge_duration;
 
+import com.softserve.teachua.dto.marker.Convertible;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,10 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class UserChallengeForAdminGetChallengeDuration {
-    Long challengeId;
-    Long durationId;
-    boolean userExist;
+public class ChallengeDurationAdd implements Convertible {
     private LocalDate startDate;
     private LocalDate endDate;
 }

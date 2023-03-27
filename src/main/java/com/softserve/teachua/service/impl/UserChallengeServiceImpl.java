@@ -3,6 +3,9 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.user_challenge.UserChallengeCreateResponse;
+import com.softserve.teachua.dto.user_challenge.UserChallengeDeleteResponse;
+import com.softserve.teachua.dto.user_challenge.UserChallengeUpdateResponse;
 import com.softserve.teachua.dto.user_challenge.admin.UserChallengeForAdminDelete;
 import com.softserve.teachua.dto.user_challenge.admin.UserChallengeForAdminGet;
 import com.softserve.teachua.dto.user_challenge.admin.UserChallengeForAdminGetByChallengeIdDurationId;
@@ -25,22 +28,21 @@ import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.UserChallenge;
 import com.softserve.teachua.model.UserChallengeStatus;
 import com.softserve.teachua.model.archivable.UserChallengeArch;
-import com.softserve.teachua.repository.ChallengeDurationRepository;
 import com.softserve.teachua.repository.UserChallengeRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.service.ChallengeDurationService;
 import com.softserve.teachua.service.ChallengeService;
 import com.softserve.teachua.service.UserChallengeService;
 import com.softserve.teachua.service.UserChallengeStatusService;
 import com.softserve.teachua.service.UserService;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,17 +53,11 @@ public class UserChallengeServiceImpl implements UserChallengeService, ArchiveMa
     private static final String USER_CHALLENGE_ALREADY_EXIST = "Ви вже зареєстровані на цьому челенджі - %s";
     private static final String USER_CHALLENGE_NOT_FOUND = "UserChallenge not found";
     private static final String CHALLENGE_NOT_FOUND = "NotFound Challenge with id - %s";
-    private static final String CHALLENGE_DURATION_NOT_FOUND_BY_CHALLENGE_ID_AND_DATES =
-        "ChallengeDuration not found by challengeId: %s startDate: %s endDate: %s";
-    private static final String CHALLENGE_DURATION_NOT_FOUND_BY_CHALLENGE_ID_AND_DURATION_ID =
-        "ChallengeDuration not found by challengeId: %s durationId: %s";
-    private static final String CHALLENGE_DURATION_NOT_FOUND_BY_CHALLENGE_DURATION_ID =
-        "ChallengeDuration not found by challengeDurationId: %s";
     private static final String DEFAULT_USER_CHALLENGE_STATUS = "ADDED";
     private static final String USER_CHALLENGE_DELETING_ERROR =
         "Can't delete UserChallenge cause of relationship";
     private final UserChallengeRepository userChallengeRepository;
-    private final ChallengeDurationRepository challengeDurationRepository;
+    private final ChallengeDurationService challengeDurationService;
     private final UserChallengeStatusService userChallengeStatusService;
     private final ChallengeService challengeService;
     private final UserService userService;
@@ -71,13 +67,13 @@ public class UserChallengeServiceImpl implements UserChallengeService, ArchiveMa
 
     @Autowired
     public UserChallengeServiceImpl(UserChallengeRepository userChallengeRepository,
-                                    ChallengeDurationRepository challengeDurationRepository,
+                                    @Lazy ChallengeDurationService challengeDurationService,
                                     UserChallengeStatusService userChallengeStatusService,
                                     ChallengeService challengeService, UserService userService,
                                     DtoConverter dtoConverter, ArchiveService archiveService,
                                     ObjectMapper objectMapper) {
         this.userChallengeRepository = userChallengeRepository;
-        this.challengeDurationRepository = challengeDurationRepository;
+        this.challengeDurationService = challengeDurationService;
         this.userChallengeStatusService = userChallengeStatusService;
         this.challengeService = challengeService;
         this.userService = userService;
@@ -98,11 +94,12 @@ public class UserChallengeServiceImpl implements UserChallengeService, ArchiveMa
     }
 
     @Override
-    public String createUserChallengeByUser(UserChallengeForUserCreateWithDate userChallengeForUserCreateWithDate) {
+    public UserChallengeCreateResponse createUserChallengeByUser(
+        UserChallengeForUserCreateWithDate userChallengeForUserCreateWithDate) {
         Long userId = userChallengeForUserCreateWithDate.getUserId();
         Long challengeId = userChallengeForUserCreateWithDate.getChallengeId();
 
-        ChallengeDuration challengeDuration = getChallengeDurationByChallengeIdAndStartEndDate(
+        ChallengeDuration challengeDuration = challengeDurationService.getChallengeDurationByChallengeIdAndStartEndDate(
             challengeId,
             userChallengeForUserCreateWithDate.getStartDate(),
             userChallengeForUserCreateWithDate.getEndDate());
@@ -110,23 +107,7 @@ public class UserChallengeServiceImpl implements UserChallengeService, ArchiveMa
         return createUserChallenge(userId, challengeDuration);
     }
 
-    public ChallengeDuration getChallengeDurationByChallengeIdAndStartEndDate(
-        Long challengeId, LocalDate startDate, LocalDate endDate) {
-        ChallengeDuration challengeDuration = challengeDurationRepository
-            .getChallengeDurationByChallengeIdAndStartEndDate(
-                challengeId,
-                startDate,
-                endDate)
-            .orElseThrow(() -> new NotExistException(
-                String.format(CHALLENGE_DURATION_NOT_FOUND_BY_CHALLENGE_ID_AND_DATES,
-                    challengeId,
-                    startDate,
-                    endDate)));
-        log.debug("getting ChallengeDuration {} by challengeId ={} startDate ={} endDate ={}",
-            challengeDuration, challengeId, startDate, endDate);
-        return challengeDuration;
-    }
-
+    @Override
     public UserChallenge getUserChallengeByUserIdChallengeIdStartDateEndDate(
         Long userId, Long challengeId, LocalDate startDate, LocalDate endDate) {
         UserChallenge userChallenge = userChallengeRepository
@@ -137,7 +118,8 @@ public class UserChallengeServiceImpl implements UserChallengeService, ArchiveMa
     }
 
     @Override
-    public String deleteUserChallengeForProfile(UserChallengeForProfileDelete userChallengeForProfileDelete) {
+    public UserChallengeDeleteResponse deleteUserChallengeForProfile(
+        UserChallengeForProfileDelete userChallengeForProfileDelete) {
         UserChallenge userChallenge = getUserChallengeByUserIdChallengeIdStartDateEndDate(
             userChallengeForProfileDelete.getUserIdForDelete(), userChallengeForProfileDelete.getChallengeIdForDelete(),
             userChallengeForProfileDelete.getStartChallengeDate(), userChallengeForProfileDelete.getEndChallengeDate());
@@ -160,26 +142,32 @@ public class UserChallengeServiceImpl implements UserChallengeService, ArchiveMa
         return filterNonActiveUserChallengeForUserGetString(userChallengeForUserGetLocalDateList);
     }
 
+    @Override
     public List<UserChallengeForUserGetString> filterNonActiveUserChallengeForUserGetString(
         List<UserChallengeForUserGetLocalDate> userChallengeForUserGetLocalDateList) {
         List<UserChallengeForUserGetString> userChallengeForUserGetStringList = userChallengeForUserGetLocalDateList
             .stream()
             .filter(value -> checkIfDateAfterNowDate(value.getStartDate())
                 && checkIfDateAfterNowDate(value.getEndDate()))
-            .map(value -> new UserChallengeForUserGetString(value.getStartDate().toString(),
-                value.getEndDate().toString()))
+            .map(value -> UserChallengeForUserGetString
+                .builder()
+                .startDate(value.getStartDate().toString())
+                .endDate(value.getEndDate().toString())
+                .build())
             .collect(Collectors.toList());
         log.debug("filtering UserChallengeForUserGetString {} getting only active", userChallengeForUserGetStringList);
         return userChallengeForUserGetStringList;
     }
 
-    boolean checkIfChallengeIsActive(Long challengeId) {
+    @Override
+    public boolean checkIfChallengeIsActive(Long challengeId) {
         boolean isChallengeActive = challengeService.getChallengeById(challengeId).getIsActive();
         log.debug("checking id Challenge with id ={} is active", challengeId);
         return isChallengeActive;
     }
 
-    boolean checkIfDateAfterNowDate(LocalDate date) {
+    @Override
+    public boolean checkIfDateAfterNowDate(LocalDate date) {
         LocalDate now = LocalDate.now();
         boolean isDateAfterNow = date.isAfter(now);
         log.debug("checking date ={} is after now ={}", date, now);
@@ -246,28 +234,21 @@ public class UserChallengeServiceImpl implements UserChallengeService, ArchiveMa
     }
 
     @Override
-    public String createUserChallengeFromAdmin(UserChallengeForUserCreate userChallengeForUserCreate) {
+    public UserChallengeCreateResponse createUserChallengeFromAdmin(
+        UserChallengeForUserCreate userChallengeForUserCreate) {
         Long userId = userChallengeForUserCreate.getUserId();
         Long challengeId = userChallengeForUserCreate.getChallengeId();
         Long durationId = userChallengeForUserCreate.getDurationId();
 
-        ChallengeDuration challengeDuration = getChallengeDurationByChallengeIdAndDurationId(challengeId, durationId);
+        ChallengeDuration challengeDuration =
+            challengeDurationService.getChallengeDurationByChallengeIdAndDurationId(challengeId, durationId);
 
         return createUserChallenge(userId, challengeDuration);
     }
 
-    public ChallengeDuration getChallengeDurationByChallengeIdAndDurationId(Long challengeId, Long durationId) {
-        ChallengeDuration challengeDuration = challengeDurationRepository
-            .getChallengeDurationByChallengeIdAndDurationId(challengeId, durationId)
-            .orElseThrow(() -> new NotExistException(String.format(
-                CHALLENGE_DURATION_NOT_FOUND_BY_CHALLENGE_ID_AND_DURATION_ID,
-                challengeId, durationId)));
-        log.debug("getting ChallengeDuration ={} by challengeId ={} durationId ={}",
-            challengeDuration, challengeId, durationId);
-        return challengeDuration;
-    }
 
-    public String createUserChallenge(Long userId, ChallengeDuration challengeDuration) {
+    @Override
+    public UserChallengeCreateResponse createUserChallenge(Long userId, ChallengeDuration challengeDuration) {
         User user = userService.getUserById(userId);
 
         UserChallengeStatus userChallengeStatus = dtoConverter.convertToEntity(userChallengeStatusService
@@ -286,25 +267,34 @@ public class UserChallengeServiceImpl implements UserChallengeService, ArchiveMa
             throw new AlreadyExistException(
                 String.format(USER_CHALLENGE_ALREADY_EXIST, challengeDuration.getChallenge().getName()));
         }
+        userChallengeRepository.save(userChallenge);
+        challengeDurationService.updateChallengeDurationUserExist(challengeDuration.getId(), true);
+        UserChallengeCreateResponse userChallengeCreateResponse =
+            UserChallengeCreateResponse
+                .builder()
+                .challengeName(userChallenge.getChallengeDuration().getChallenge().getName())
+                .startDate(userChallenge.getChallengeDuration().getDurationEntity().getStartDate())
+                .endDate(userChallenge.getChallengeDuration().getDurationEntity().getEndDate())
+                .build();
 
         log.debug("**/adding new userChallenge = " + userChallenge);
-
-        userChallengeRepository.save(userChallenge);
-        updateChallengeDurationUserExist(challengeDuration.getId(), true);
-        return challengeDuration.getChallenge().getName();
+        return userChallengeCreateResponse;
     }
 
     @Override
-    public Long updateUserChallengeFromAdmin(UserChallengeForAdminUpdate userChallengeForAdminUpdate) {
+    public UserChallengeUpdateResponse updateUserChallengeFromAdmin(
+        UserChallengeForAdminUpdate userChallengeForAdminUpdate) {
         UserChallenge userChallenge = userChallengeRepository.getUserChallengeById(
             userChallengeForAdminUpdate.getUserChallengeId());
 
         User newUser = updateUserByIdAndUserChallengeData(userChallenge.getUser().getId(), userChallengeForAdminUpdate);
 
-        ChallengeDuration challengeDuration = getChallengeDurationById(userChallenge.getChallengeDuration().getId());
+        ChallengeDuration challengeDuration =
+            challengeDurationService.getChallengeDurationById(userChallenge.getChallengeDuration().getId());
 
-        UserChallengeStatus userChallengeStatus = dtoConverter.convertToEntity(userChallengeStatusService
-            .getUserChallengeStatusByStatusName(DEFAULT_USER_CHALLENGE_STATUS), new UserChallengeStatus());
+        UserChallengeStatus userChallengeStatus = dtoConverter.convertToEntity(
+            userChallengeStatusService.getUserChallengeStatusByStatusName(
+                userChallengeForAdminUpdate.getStatusName()), new UserChallengeStatus());
 
         UserChallenge newUserChallenge = new UserChallenge();
         newUserChallenge.setId(userChallengeForAdminUpdate.getUserChallengeId());
@@ -313,11 +303,21 @@ public class UserChallengeServiceImpl implements UserChallengeService, ArchiveMa
         newUserChallenge.setChallengeDuration(challengeDuration);
         newUserChallenge.setUserChallengeStatus(userChallengeStatus);
 
+        UserChallengeUpdateResponse userChallengeCreateResponse =
+            UserChallengeUpdateResponse
+                .builder()
+                .userChallengeId(newUserChallenge.getId())
+                .challengeName(newUserChallenge.getChallengeDuration().getChallenge().getName())
+                .startChallengeDate(newUserChallenge.getChallengeDuration().getDurationEntity().getStartDate())
+                .endChallengeDate(newUserChallenge.getChallengeDuration().getDurationEntity().getEndDate())
+                .build();
+
         log.debug("**/Updating userChallenge = {}", newUserChallenge);
         userChallengeRepository.save(newUserChallenge);
-        return newUserChallenge.getId();
+        return userChallengeCreateResponse;
     }
 
+    @Override
     public User updateUserByIdAndUserChallengeData(
         Long userId, UserChallengeForAdminUpdate userChallengeForAdminUpdate) {
         User user = userService.getUserById(userId);
@@ -332,12 +332,14 @@ public class UserChallengeServiceImpl implements UserChallengeService, ArchiveMa
         return user;
     }
 
+    @Override
     public List<UserChallengeForExist> getListUserChallengeForExist() {
         List<UserChallengeForExist> userChallengeForExistList = userChallengeRepository.getListUserChallengeForExist();
         log.debug("getting list of userChallengeForExistList {}", userChallengeForExistList);
         return userChallengeForExistList;
     }
 
+    @Override
     public boolean isUserChallengeExistByUserIdChallengeDurationId(Long userId, Long challengeDurationId) {
         boolean existsUserChallenge = getListUserChallengeForExist()
             .stream()
@@ -349,7 +351,8 @@ public class UserChallengeServiceImpl implements UserChallengeService, ArchiveMa
     }
 
     @Override
-    public String deleteUserChallengeForAdmin(UserChallengeForAdminDelete userChallengeForAdminDelete) {
+    public UserChallengeDeleteResponse deleteUserChallengeForAdmin(
+        UserChallengeForAdminDelete userChallengeForAdminDelete) {
         UserChallenge userChallenge = userChallengeRepository
             .getUserChallengeByUserIdAndChallengeDurationId(
                 userChallengeForAdminDelete.getUserId(),
@@ -359,49 +362,30 @@ public class UserChallengeServiceImpl implements UserChallengeService, ArchiveMa
     }
 
     @Override
-    public String deleteUserChallenge(UserChallenge userChallenge) {
-        if (Objects.isNull(userChallenge)) {
-            return "Вже відписані від челенджу";
-        } else {
-            try {
-                userChallengeRepository.delete(userChallenge);
-                userChallengeRepository.flush();
-                boolean checkForUpdateUserExist =
-                    existChallengeDurationRegisteredUsers(userChallenge.getChallengeDuration().getId());
-                if (!checkForUpdateUserExist) {
-                    updateChallengeDurationUserExist(userChallenge.getChallengeDuration().getId(), false);
-                }
-            } catch (DataAccessException | ValidationException e) {
-                throw new DatabaseRepositoryException(USER_CHALLENGE_DELETING_ERROR);
+    public UserChallengeDeleteResponse deleteUserChallenge(UserChallenge userChallenge) {
+        UserChallengeDeleteResponse response;
+        try {
+            userChallengeRepository.delete(userChallenge);
+            userChallengeRepository.flush();
+            boolean checkForUpdateUserExist =
+                challengeDurationService.existChallengeDurationRegisteredUsers(
+                    userChallenge.getChallengeDuration().getId());
+            if (!checkForUpdateUserExist) {
+                challengeDurationService.updateChallengeDurationUserExist(userChallenge.getChallengeDuration().getId(),
+                    false);
             }
-            archiveModel(userChallenge);
-            log.debug("deleting UserChallenge {} was successfully deleted", userChallenge);
-            return "Видалено";
+        } catch (ValidationException e) {
+            throw new DatabaseRepositoryException(USER_CHALLENGE_DELETING_ERROR);
         }
-    }
-
-    public void updateChallengeDurationUserExist(Long challengeDurationId, Boolean userExist) {
-        ChallengeDuration challengeDuration = getChallengeDurationById(challengeDurationId);
-        challengeDuration.setUserExist(userExist);
-        challengeDurationRepository.save(challengeDuration);
-        log.debug("**/Updating challengeDuration = " + challengeDuration);
-    }
-
-    public ChallengeDuration getChallengeDurationById(Long challengeDurationId) {
-        ChallengeDuration challengeDuration = challengeDurationRepository.findById(challengeDurationId)
-            .orElseThrow(() -> new NotExistException(String.format(
-                CHALLENGE_DURATION_NOT_FOUND_BY_CHALLENGE_DURATION_ID, challengeDurationId)));
-        log.debug("getting ChallengeDuration ={} by challengeDurationId ={}",
-            challengeDuration, challengeDurationId);
-        return challengeDuration;
-    }
-
-    public boolean existChallengeDurationRegisteredUsers(Long challengeDurationId) {
-        boolean existsRegisteredUsers = userChallengeRepository
-            .existChallengeDurationRegisteredUsers(challengeDurationId);
-        log.debug("checking existence registeredUsers in ChallengeDuration by challengeId ={}",
-            challengeDurationId);
-        return existsRegisteredUsers;
+        archiveModel(userChallenge);
+        response = UserChallengeDeleteResponse
+            .builder()
+            .challengeName(userChallenge.getChallengeDuration().getChallenge().getName())
+            .startChallengeDate(userChallenge.getChallengeDuration().getDurationEntity().getStartDate())
+            .endChallengeDate(userChallenge.getChallengeDuration().getDurationEntity().getEndDate())
+            .build();
+        log.debug("deleting UserChallenge {} was successfully deleted", userChallenge);
+        return response;
     }
 
     @Override

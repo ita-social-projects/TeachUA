@@ -1,19 +1,22 @@
 package com.softserve.teachua.service;
 
+import com.softserve.teachua.dto.duration_entity.DurationEntityExist;
 import com.softserve.teachua.dto.duration_entity.DurationEntityResponse;
 import com.softserve.teachua.model.DurationEntity;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
 public interface DurationEntityService {
     List<DurationEntity> getListDurationEntity();
 
-    Set<DurationEntity> filterReceivedDurationForNewDuration(
+    Set<DurationEntity> createAllDurationEntityFromResponseList(
         List<DurationEntityResponse> durationEntityResponseList);
 
-    void createAllDurationEntityFromResponseList(
+    Set<DurationEntity> mapDurationResponseListToDurationEntity(
         List<DurationEntityResponse> durationEntityResponseList);
 
-    List<DurationEntity> createAllDurationEntity(
-        Set<DurationEntity> durationEntitySet);
+    DurationEntityExist isDurationEntityExistsByDates(LocalDate startDate, LocalDate endDate);
+
+    DurationEntity createDurationEntity(DurationEntity durationEntity);
 }

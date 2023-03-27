@@ -125,13 +125,4 @@ public interface UserChallengeRepository extends JpaRepository<UserChallenge, Lo
             + "uc.challengeDuration.id)"
             + "from UserChallenge uc ")
     List<UserChallengeForExist> getListUserChallengeForExist();
-
-    @Query("select "
-            + "   case "
-            + "       when count(uc) > 0 then true "
-            + "       else false "
-            + "   end "
-            + "   from UserChallenge uc "
-            + "   where uc.challengeDuration.id =?1")
-    boolean existChallengeDurationRegisteredUsers(Long challengeDurationId);
 }

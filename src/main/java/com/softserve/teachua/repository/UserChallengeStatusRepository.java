@@ -15,9 +15,11 @@ public interface UserChallengeStatusRepository extends JpaRepository<UserChallen
             + "order by ucs.id")
     List<UserChallengeStatusGet> getAllUserChallengeStatus();
 
+    Optional<UserChallengeStatus> getUserChallengeStatusById(Long id);
+
     Optional<UserChallengeStatus> getUserChallengeStatusByStatusName(String statusName);
 
-    Optional<UserChallengeStatus> getUserChallengeStatusById(Long id);
+    boolean existsById(Long id);
 
     boolean existsByStatusName(String statusName);
 }

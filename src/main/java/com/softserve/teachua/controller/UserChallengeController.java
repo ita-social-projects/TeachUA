@@ -2,6 +2,9 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.user_challenge.UserChallengeCreateResponse;
+import com.softserve.teachua.dto.user_challenge.UserChallengeDeleteResponse;
+import com.softserve.teachua.dto.user_challenge.UserChallengeUpdateResponse;
 import com.softserve.teachua.dto.user_challenge.admin.UserChallengeForAdminDelete;
 import com.softserve.teachua.dto.user_challenge.admin.UserChallengeForAdminGet;
 import com.softserve.teachua.dto.user_challenge.admin.UserChallengeForAdminGetByChallengeIdDurationId;
@@ -20,7 +23,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,9 +36,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Tag(name = "userChallenge", description = "the UserChallenge API")
 @SecurityRequirement(name = "api")
-@AllArgsConstructor
 public class UserChallengeController implements Api {
     private final UserChallengeService userChallengeService;
+
+    public UserChallengeController(UserChallengeService userChallengeService) {
+        this.userChallengeService = userChallengeService;
+    }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile/user-challenge/user/{id}")
@@ -46,7 +51,7 @@ public class UserChallengeController implements Api {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/profile/user-challenge/user/delete")
-    public String deleteUserChallengeForProfile(
+    public UserChallengeDeleteResponse deleteUserChallengeForProfile(
             @Valid @RequestBody UserChallengeForProfileDelete userChallengeForProfileDelete) {
         return userChallengeService.deleteUserChallengeForProfile(userChallengeForProfileDelete);
     }
@@ -58,7 +63,7 @@ public class UserChallengeController implements Api {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/user/user-challenge/registration")
-    public String createUserChallengeByUser(
+    public UserChallengeCreateResponse createUserChallengeByUser(
             @Valid @RequestBody UserChallengeForUserCreateWithDate userChallengeForUserCreateWithDate) {
         return userChallengeService.createUserChallengeByUser(userChallengeForUserCreateWithDate);
     }
@@ -93,21 +98,21 @@ public class UserChallengeController implements Api {
 
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/admin/user-challenge/challenge/duration/registration")
-    public String createUserChallengeFromAdmin(
+    public UserChallengeCreateResponse createUserChallengeFromAdmin(
             @Valid @RequestBody UserChallengeForUserCreate userChallengeForUserCreate) {
         return userChallengeService.createUserChallengeFromAdmin(userChallengeForUserCreate);
     }
 
     @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/admin/user-challenge/challenge/duration/edit")
-    public Long updateUserChallengeFromAdmin(
+    public UserChallengeUpdateResponse updateUserChallengeFromAdmin(
             @Valid @RequestBody UserChallengeForAdminUpdate userChallengeForAdminUpdate) {
         return userChallengeService.updateUserChallengeFromAdmin(userChallengeForAdminUpdate);
     }
 
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/admin/user-challenge/challenge/duration/delete")
-    public String deleteUserChallengeForAdmin(
+    public UserChallengeDeleteResponse deleteUserChallengeForAdmin(
             @Valid @RequestBody UserChallengeForAdminDelete userChallengeForAdminDelete) {
         return userChallengeService.deleteUserChallengeForAdmin(userChallengeForAdminDelete);
     }

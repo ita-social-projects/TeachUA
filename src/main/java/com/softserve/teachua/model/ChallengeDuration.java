@@ -1,6 +1,7 @@
 package com.softserve.teachua.model;
 
 import com.softserve.teachua.dto.marker.Convertible;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -47,4 +48,32 @@ public class ChallengeDuration implements Convertible {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private DurationEntity durationEntity;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ChallengeDuration)) {
+            return false;
+        }
+        ChallengeDuration that = (ChallengeDuration) o;
+        return userExist == that.userExist && Objects.equals(id, that.id)
+            && Objects.equals(challenge, that.challenge)
+            && Objects.equals(durationEntity, that.durationEntity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userExist, challenge, durationEntity);
+    }
+
+    @Override
+    public String toString() {
+        return "ChallengeDuration{"
+            + "id=" + id
+            + ", userExist=" + userExist
+            + ", durationEntity=" + durationEntity
+            + '}';
+    }
 }

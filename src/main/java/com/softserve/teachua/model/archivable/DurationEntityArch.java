@@ -2,7 +2,8 @@ package com.softserve.teachua.model.archivable;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.marker.Archivable;
-import com.softserve.teachua.service.impl.UserChallengeStatusServiceImpl;
+import com.softserve.teachua.service.impl.DurationEntityServiceImpl;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,12 +15,15 @@ import lombok.With;
 @Builder
 @Data
 @With
-public class UserChallengeStatusArch implements Convertible, Archivable {
+public class DurationEntityArch implements Convertible, Archivable {
     private Long id;
-    private String statusName;
+
+    private LocalDate startDate;
+
+    private LocalDate endDate;
 
     @Override
     public Class getServiceClass() {
-        return UserChallengeStatusServiceImpl.class;
+        return DurationEntityServiceImpl.class;
     }
 }
