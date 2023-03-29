@@ -416,4 +416,9 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         }
         certificateRepository.save(certificate);
     }
+
+    @Override
+    public boolean existsByUserNameAndDates(String name, CertificateDates dates) {
+        return certificateRepository.existsByUserNameAndDates(name, dates);
+    }
 }

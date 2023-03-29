@@ -163,8 +163,13 @@ public class CertificateGoogleFormServiceImpl implements CertificateGoogleFormSe
                 }
                 certificate.setTemplate(certificateTemplate);
                 certificate.setDates(certificateDates);
-
-                validCertificates.add(certificate);
+                if (!certificateService.existsByUserNameAndDates(certificate.getUserName(), certificate.getDates())) {
+                    validCertificates.add(certificate);
+                } else {
+                    messageList.add(Pair.of(
+                            String.format("Сертифікат для \"%s\" уже додано", certificate.getUserName()),
+                            MessageType.ERROR));
+                }
             }
         }
 

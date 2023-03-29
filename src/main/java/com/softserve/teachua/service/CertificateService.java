@@ -237,4 +237,14 @@ public interface CertificateService {
      * @return - List of Certificates
      */
     List<CertificatePreview> getSimilarCertificatesByUserName(String userName);
+
+    /**
+     * This method checks whether certificate exists or not, using name and date.
+     *
+     * @param name put username
+     * @param dates put date
+     *
+     * @return - boolean
+     */
+    boolean existsByUserNameAndDates(String name, CertificateDates dates);
 }
