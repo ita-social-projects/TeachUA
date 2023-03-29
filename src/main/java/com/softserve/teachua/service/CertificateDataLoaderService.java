@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.dto.certificate.CertificateDataRequest;
 import com.softserve.teachua.dto.certificate.CertificateDatabaseResponse;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
+import com.softserve.teachua.dto.googleapis.QuizResult;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,27 @@ import java.util.Map;
  * This interface contains all needed methods to manage certificate data loader.
  */
 public interface CertificateDataLoaderService {
+    static String getCertificateByTemplateValue(Map<String, String> values, CertificateByTemplateTransfer data,
+                                                int certificateIndex, String propertyTypeName, String propertyName) {
+        String result = values.get(propertyName);
+        if (result.trim().isEmpty()) {
+            if (!data.getExcelContent().isEmpty()) {
+                List<String> excelValues = data.getExcelContent().get(certificateIndex);
+                result = excelValues.get(data.getColumnHeadersList()
+                        .indexOf(data.getExcelColumnsOrder().get(data.getFieldsList().indexOf(propertyName))));
+            } else if (!data.getGoogleFormResults().isEmpty()) {
+                QuizResult quizResult = data.getGoogleFormResults().get(certificateIndex);
+                if (propertyTypeName.equals("email")) {
+                    result = quizResult.getUserEmail();
+                } else if (propertyTypeName.equals("user_name")) {
+                    result = quizResult.getFullName();
+                }
+            }
+            values.put(propertyName, result);
+        }
+        return result;
+    }
+
     /**
      * This method saves dto {@code CertificateDatabaseResponse} to database, returns list of dto
      * {@code List<CertificateDatabaseResponse>} of messages.
@@ -21,16 +43,4 @@ public interface CertificateDataLoaderService {
     List<CertificateDatabaseResponse> saveToDatabase(CertificateDataRequest data);
 
     void saveCertificate(CertificateByTemplateTransfer data) throws JsonProcessingException;
-
-    static String getCertificateByTemplateValue(Map<String, String> values, List<String> fieldsList,
-                                                List<String> columnHeadersList, List<String> excelColumnsOrder,
-                                                List<String> excelValues, String propertyName) {
-        String result = values.get(propertyName);
-        if (result.trim().isEmpty()) {
-            result =
-                    excelValues.get(columnHeadersList.indexOf(excelColumnsOrder.get(fieldsList.indexOf(propertyName))));
-            values.put(propertyName, result);
-        }
-        return result;
-    }
 }

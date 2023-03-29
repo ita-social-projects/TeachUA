@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateSavingResponse;
+import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelParsingResponse;
 import com.softserve.teachua.dto.certificate_template.CertificateTemplatePreview;
-import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.service.CertificateDataLoaderService;
 import com.softserve.teachua.service.CertificateExcelService;
+import com.softserve.teachua.service.CertificateGoogleFormService;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import java.io.IOException;
@@ -34,14 +36,17 @@ public class CertificateByTemplateController implements Api {
     private final CertificateExcelService excelService;
     private final CertificateTemplateService certificateTemplateService;
     private final CertificateDataLoaderService loaderService;
+    private final CertificateGoogleFormService certificateGoogleFormService;
 
     @Autowired
     public CertificateByTemplateController(CertificateExcelService excelService,
                                            CertificateTemplateService certificateTemplateService,
-                                           CertificateDataLoaderService loaderService) {
+                                           CertificateDataLoaderService loaderService,
+                                           CertificateGoogleFormService certificateGoogleFormService) {
         this.excelService = excelService;
         this.certificateTemplateService = certificateTemplateService;
         this.loaderService = loaderService;
+        this.certificateGoogleFormService = certificateGoogleFormService;
     }
 
     /**
@@ -82,6 +87,10 @@ public class CertificateByTemplateController implements Api {
                       fieldPropertiesList.add("int");
                   }
                   break;
+              case "user_name":
+                  fieldsList.add(entry.getKey());
+                  fieldPropertiesList.add("user_name");
+                  break;
               default:
                   fieldsList.add(entry.getKey());
                   fieldPropertiesList.add("String");
@@ -89,7 +98,7 @@ public class CertificateByTemplateController implements Api {
             // @formatter:on
         }
         fieldsList.add("Електронна пошта");
-        fieldPropertiesList.add("String");
+        fieldPropertiesList.add("email");
         return CertificateByTemplateTransfer.builder()
                 .templateName(template.getFilePath())
                 .fieldsList(fieldsList)
@@ -137,5 +146,13 @@ public class CertificateByTemplateController implements Api {
             throws JsonProcessingException {
         log.info("Validate certificate/certificates by template " + data);
         return excelService.validateCertificateByTemplateExcel(data);
+    }
+
+    @AllowedRoles(RoleData.ADMIN)
+    @PostMapping("/certificate-by-template/save-gf")
+    public CertificateByTemplateSavingResponse saveGoogleFormCertificateData2(
+            @RequestBody CertificateByTemplateTransfer data) {
+        log.info("Save Google Form certificate/certificates by template " + data);
+        return certificateGoogleFormService.saveGoogleFormCertificateData(data);
     }
 }

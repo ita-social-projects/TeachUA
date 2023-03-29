@@ -9,18 +9,26 @@ import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelPar
 import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.dto.certificate_excel.ExcelParsingResponse;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
+import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.model.CertificateTemplate;
 import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;
 import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateTemplateService;
+import com.softserve.teachua.service.CertificateValidator;
 import com.softserve.teachua.service.ExcelParserService;
-import static com.softserve.teachua.utils.validations.CertificateUserNameValidator.NAME_PATTERN;
+import static com.softserve.teachua.service.impl.CertificateValidatorImpl.COURSE_NUMBER_ERROR;
+import static com.softserve.teachua.service.impl.CertificateValidatorImpl.HOURS_ERROR;
+import java.awt.Color;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,32 +47,26 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @Service
 public class CertificateExcelServiceImpl implements CertificateExcelService {
+    public static final String FULL_NAME_TEMPLATE_PROPERTY = "user_name";
     private static final String INCORRECT_DATE_FORMAT_ERROR = "Неможливо розпізнати дату видачі сертифікату";
     private static final String DATE_FORMAT = "[d.MM.yyyy][MM/d/yy][MM/d/yyyy]";
     private static final String WORD = "([А-ЯІЇЄ][а-яіїє']+[-–—]?){1,2}";
     private static final String INVALID_CHARACTERS_PRESENT = "Присутні недопустимі літери";
     private static final String INVALID_CHARS = "\\w";
-    private static final String USER_NAME_ERROR = "Неправильний формат ПІБ!";
-    private static final String USER_NAME_FORMAT = NAME_PATTERN;
-    private static final String DATE_ERROR =
-            "Неправильний формат дати. Будь ласка, використовуйте наступний формат: \"dd.mm.yyyy\"!";
-    private static final String DATE_FORMAT_REGEX = "\\d{2}.\\d{2}.\\d{4}";
-    private static final String HOURS_ERROR = "Неправильний формат кількості годин!";
-    private static final String COURSE_NUMBER_ERROR = "Неправильний формат номера курсу!";
-    private static final String EMAIL_ERROR = "Неправильний формат електронної пошти!";
-    private static final String EMAIL_FORMAT = "[\\w-.]+@([\\w-]+\\.){1,61}+[\\w-]{2,4}";
-
     private final DataFormatter dataFormatter;
     private final CertificateTemplateService templateService;
+    private final CertificateValidator certificateValidator;
     private final ExcelParserService excelParserService;
     private final ObjectMapper objectMapper;
     private HashMap<ExcelColumn, Integer> indexes;
     private ExcelParsingResponse response;
 
     public CertificateExcelServiceImpl(DataFormatter dataFormatter, CertificateTemplateService templateService,
-                                       ExcelParserService excelParserService, ObjectMapper objectMapper) {
+                                       CertificateValidator certificateValidator, ExcelParserService excelParserService,
+                                       ObjectMapper objectMapper) {
         this.dataFormatter = dataFormatter;
         this.templateService = templateService;
+        this.certificateValidator = certificateValidator;
         this.excelParserService = excelParserService;
         this.objectMapper = objectMapper;
     }
@@ -85,12 +87,11 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     @Override
     public CertificateByTemplateExcelParsingResponse parseFlexibleExcel(MultipartFile multipartFile) {
         List<List<Cell>> allCells = excelParserService.excelToList(multipartFile);
-
+        // @formatter:off
         List<List<String>> allConvertedCells =
                 allCells.stream().map(cellList ->
                         cellList.stream().map(element -> {
                             String value = "";
-                            // @formatter:off
                             switch (element.getCellType()) {
                               case STRING:
                                   return element.getRichStringCellValue().getString();
@@ -103,10 +104,9 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
                               default:
                                   return value;
                             }
-                            // @formatter:on
                         }).collect(Collectors.toList())
                 ).collect(Collectors.toList());
-
+        // @formatter:on
         return CertificateByTemplateExcelParsingResponse.builder()
                 .columnHeadersList(allConvertedCells.remove(0))
                 .excelContent(allConvertedCells)
@@ -202,47 +202,21 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
         HashMap<String, String> values = objectMapper.readValue(data.getValues(), HashMap.class);
 
         for (int i = 0; i < data.getExcelContent().size(); i++) {
-            List<String> excelValues = data.getExcelContent().get(i);
-
             for (int j = 0; j < data.getFieldsList().size(); j++) {
-                String value = getCertificateByTemplateValue(values, data.getFieldsList(),
-                        data.getColumnHeadersList(), data.getExcelColumnsOrder(), excelValues,
+                String value = getCertificateByTemplateValue(values, data, i, "",
                         data.getFieldsList().get(j));
 
                 if (value.trim().isEmpty()) {
                     resultList.add(new String[] {"Рядок " + (j + 2) + ". " + "Пуста клітинка.", "2"});
-                    continue;
-                }
+                } else {
+                    String messageDescription = " Рядок " + (i + 2) + ". " + "Значення \"" + value + "\".";
 
-                String messageDescription = " Рядок " + (i + 2) + ". " + "Значення \"" + value + "\".";
-                // @formatter:off
-                switch (data.getFieldsList().get(j)) {
-                  case "Номер курсу":
-                      validateNaturalNumber(value, resultList, COURSE_NUMBER_ERROR, messageDescription);
-                      continue;
-                  case "Електронна пошта":
-                      validateEmail(value, resultList, messageDescription);
-                      continue;
-                  default:
-                      break;
+                    if (!validateSpecialProperties(data.getFieldsList().get(j), value, resultList,
+                            messageDescription)) {
+                        validateCertificateProperties(templateProperties.get(data.getFieldsList().get(j)), value,
+                                resultList, messageDescription);
+                    }
                 }
-                switch (templateProperties.get(data.getFieldsList().get(j))) {
-                  case "course_number":
-                      validateNaturalNumber(value, resultList, COURSE_NUMBER_ERROR, messageDescription);
-                      break;
-                  case "user_name":
-                      validateUserName(value, resultList, messageDescription);
-                      break;
-                  case "date":
-                      validateDate(value, resultList, messageDescription);
-                      break;
-                  case "hours":
-                      validateNaturalNumber(value, resultList, HOURS_ERROR, messageDescription);
-                      break;
-                  default:
-                      break;
-                }
-                // @formatter:on
             }
         }
         if (resultList.isEmpty()) {
@@ -251,41 +225,43 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
         return resultList;
     }
 
-    private void validateNaturalNumber(String value, List<String[]> resultList, String errorDescription,
-                                       String messageDescription) {
-        int number;
-        try {
-            number = Integer.parseInt(value);
-            if (number <= 0) {
-                resultList.add(new String[] {errorDescription + messageDescription, "2"});
-            }
-        } catch (NumberFormatException e) {
-            resultList.add(new String[] {COURSE_NUMBER_ERROR + messageDescription, "2"});
+    private void validateCertificateProperties(String propertyName, String value, List<String[]> resultList,
+                                               String messageDescription) {
+        // @formatter:off
+        switch (propertyName) {
+          case "course_number":
+              certificateValidator.validateNaturalNumber(value, resultList, COURSE_NUMBER_ERROR,
+                      messageDescription);
+              break;
+          case FULL_NAME_TEMPLATE_PROPERTY:
+              certificateValidator.validateUserName(value, resultList, messageDescription);
+              break;
+          case "date":
+              certificateValidator.validateDate(value, resultList, messageDescription);
+              break;
+          case "hours":
+              certificateValidator.validateNaturalNumber(value, resultList, HOURS_ERROR, messageDescription);
+              break;
+          default:
+              break;
         }
+        // @formatter:on
     }
 
-    private void validateEmail(String value, List<String[]> resultList, String messageDescription) {
-        if (!value.matches(EMAIL_FORMAT)) {
-            resultList.add(new String[] {EMAIL_ERROR + messageDescription, "2"});
+    private boolean validateSpecialProperties(String propertyName, String value, List<String[]> resultList,
+                                              String messageDescription) {
+        // @formatter:off
+        switch (propertyName) {
+          case "Номер курсу":
+              certificateValidator.validateNaturalNumber(value, resultList, COURSE_NUMBER_ERROR,
+                      messageDescription);
+              return true;
+          case "Електронна пошта":
+              certificateValidator.validateEmail(value, resultList, messageDescription);
+              return true;
+          default:
+              return false;
         }
-    }
-
-    private void validateUserName(String value, List<String[]> resultList, String messageDescription) {
-        if (!value.matches(USER_NAME_FORMAT)) {
-            StringBuilder stringBuilder = new StringBuilder();
-            if (value.contains("  ")) {
-                stringBuilder.append(" Подвійний пробіл!");
-            }
-            if (value.trim().length() < value.length()) {
-                stringBuilder.append(" ПІБ починається/закінчується пробілом!");
-            }
-            resultList.add(new String[] {USER_NAME_ERROR + messageDescription + stringBuilder, "1"});
-        }
-    }
-
-    private void validateDate(String value, List<String[]> resultList, String messageDescription) {
-        if (!value.matches(DATE_FORMAT_REGEX)) {
-            resultList.add(new String[] {DATE_ERROR + messageDescription, "1"});
-        }
+        // @formatter:on
     }
 }
