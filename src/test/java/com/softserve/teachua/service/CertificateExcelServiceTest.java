@@ -3,6 +3,7 @@ package com.softserve.teachua.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static com.softserve.teachua.TestConstants.FILE_PATH_PDF;
+import static com.softserve.teachua.TestConstants.INVALID_CERTIFICATES_VALUES;
 import static com.softserve.teachua.TestConstants.INVALID_CERTIFICATE_TEMPLATE_PROPERTIES;
 import static com.softserve.teachua.TestConstants.MOCK_MULTIPART_FILE;
 import static com.softserve.teachua.TestUtils.getCertificateByTemplateTransfer;
@@ -186,5 +187,12 @@ class CertificateExcelServiceTest {
         row.get(CertificateExcelColumn.EMAIL.ordinal()).setCellValue("noEmail(((");
         row.get(CertificateExcelColumn.DATE.ordinal()).setCellValue(LocalDate.MIN);
         return rows;
+    }
+
+    @Test
+    void getBadCertificateValuesExcelBytes() throws JsonProcessingException {
+        when(objectMapper.readValue(INVALID_CERTIFICATES_VALUES, List.class)).thenReturn(
+                notMockObjectMapper.readValue(INVALID_CERTIFICATES_VALUES, List.class));
+        assertThat(certificateExcelService.getBadCertificateValuesExcelBytes(INVALID_CERTIFICATES_VALUES)).isNotEmpty();
     }
 }
