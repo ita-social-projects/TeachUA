@@ -1,6 +1,5 @@
 package com.softserve.teachua.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelParsingResponse;
 import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelValidationResult;
