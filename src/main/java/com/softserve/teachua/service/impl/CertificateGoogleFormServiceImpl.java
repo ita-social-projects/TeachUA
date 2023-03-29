@@ -2,6 +2,7 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.teachua.constants.MessageType;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateSavingResponse;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.teachua.exception.BadRequestException;
@@ -11,7 +12,6 @@ import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
 import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;
 import com.softserve.teachua.service.CertificateDatesService;
-import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateGoogleFormService;
 import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.service.CertificateTemplateService;
@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,26 +34,23 @@ public class CertificateGoogleFormServiceImpl implements CertificateGoogleFormSe
     private final CertificateTemplateService templateService;
     private final CertificateDatesService certificateDatesService;
     private final CertificateValidator certificateValidator;
-    private final CertificateExcelService certificateExcelService;
     private final ObjectMapper objectMapper;
 
     public CertificateGoogleFormServiceImpl(CertificateService certificateService,
                                             CertificateTemplateService templateService,
                                             CertificateDatesService certificateDatesService,
                                             CertificateValidator certificateValidator,
-                                            CertificateExcelService certificateExcelService,
                                             ObjectMapper objectMapper) {
         this.certificateService = certificateService;
         this.templateService = templateService;
         this.certificateDatesService = certificateDatesService;
         this.certificateValidator = certificateValidator;
-        this.certificateExcelService = certificateExcelService;
         this.objectMapper = objectMapper;
     }
 
     @Override
     public CertificateByTemplateSavingResponse saveGoogleFormCertificateData(CertificateByTemplateTransfer data) {
-        List<String[]> messageList = new LinkedList<>();
+        List<Pair<String, MessageType>> messageList = new LinkedList<>();
         List<Certificate> validCertificates = new ArrayList<>();
         List<Map<String, String>> invalidCertificateValues = new ArrayList<>();
 
@@ -112,12 +110,15 @@ public class CertificateGoogleFormServiceImpl implements CertificateGoogleFormSe
                         data.getFieldsList().get(j));
 
                 if (value.trim().isEmpty()) {
-                    messageList.add(new String[] {data.getFieldsList().get(j) + " повинен бути заповнений", "2"});
+                    messageList.add(Pair.of(
+                            String.format("\"%s\" повинен бути заповнений", data.getFieldsList().get(j)),
+                            MessageType.ERROR));
                     certificateErrors = true;
                     continue;
                 }
 
-                String messageDescription = data.getFieldsList().get(j) + " Значення \"" + value + "\".";
+                String messageDescription =
+                        String.format("\"%s\". Значення \"%s\"", data.getFieldsList().get(j), value);
                 // @formatter:off
                 switch (templateProperties.get(data.getFieldsList().get(j))) {
                   case "course_number":
@@ -168,9 +169,16 @@ public class CertificateGoogleFormServiceImpl implements CertificateGoogleFormSe
         }
 
         certificateService.addCertificates(validCertificates);
-        messageList.add(0, new String[] {
-                String.format("Збережено %d сертифікатів із %d", validCertificates.size(),
-                        data.getGoogleFormResults().size()), (!invalidCertificateValues.isEmpty() ? "1" : "3")});
+        if (!validCertificates.isEmpty()) {
+            messageList.add(0, Pair.of(
+                    String.format("Збережено %d сертифікатів із %d", validCertificates.size(),
+                            data.getGoogleFormResults().size()), MessageType.SUCCESS));
+        } else {
+            log.warn("Detected invalid certificates {}", invalidCertificateValues);
+            messageList.add(0, Pair.of(
+                    String.format("Збережено %d сертифікатів із %d", validCertificates.size(),
+                            data.getGoogleFormResults().size()), MessageType.WARNING));
+        }
         return CertificateByTemplateSavingResponse.builder()
                 .messages(messageList)
                 .invalidValues(invalidCertificateValues)

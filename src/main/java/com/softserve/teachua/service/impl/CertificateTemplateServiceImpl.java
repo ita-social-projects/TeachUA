@@ -1,6 +1,7 @@
 package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.softserve.teachua.constants.MessageType;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.certificate_template.CertificateTemplatePreview;
 import com.softserve.teachua.dto.certificate_template.CertificateTemplateProcessingResponse;
@@ -28,6 +29,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,15 +108,15 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
 
     @Override
     public CertificateTemplateProcessingResponse addTemplate(CertificateTemplateProfile createCertificateTemplate) {
-        List<String[]> messagesList = new ArrayList<>();
+        List<Pair<String, MessageType>> messagesList = new ArrayList<>();
         CertificateTemplate savedTemplate = null;
         boolean errors = false;
         if (certificateTemplateRepository.existsByNameIgnoreCase(createCertificateTemplate.getName())) {
-            messagesList.add(new String[] {NAME_ALREADY_EXISTS_MESSAGE, "2"});
+            messagesList.add(Pair.of(NAME_ALREADY_EXISTS_MESSAGE, MessageType.ERROR));
             errors = true;
         }
         if (certificateTemplateRepository.existsByFilePath(createCertificateTemplate.getFilePath())) {
-            messagesList.add(new String[] {FILE_ALREADY_EXISTS_MESSAGE, "2"});
+            messagesList.add(Pair.of(FILE_ALREADY_EXISTS_MESSAGE, MessageType.ERROR));
             errors = true;
         }
 
@@ -147,19 +149,19 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
     @Override
     public CertificateTemplateProcessingResponse updateTemplate(Integer id,
                                                                 CertificateTemplateProfile updatedTemplate) {
-        List<String[]> messagesList = new ArrayList<>();
+        List<Pair<String, MessageType>> messagesList = new ArrayList<>();
         CertificateTemplate targetTemplate = getTemplateById(id);
         CertificateTemplate finalTemplate = null;
         boolean errors = false;
 
         if (!targetTemplate.getName().equals(updatedTemplate.getName())
                 && certificateTemplateRepository.existsByNameIgnoreCase(updatedTemplate.getName())) {
-            messagesList.add(new String[] {NAME_ALREADY_EXISTS_MESSAGE, "2"});
+            messagesList.add(Pair.of(NAME_ALREADY_EXISTS_MESSAGE, MessageType.ERROR));
             errors = true;
         }
         if (!targetTemplate.getFilePath().equals(updatedTemplate.getFilePath())
                 && certificateTemplateRepository.existsByFilePath(updatedTemplate.getFilePath())) {
-            messagesList.add(new String[] {FILE_ALREADY_EXISTS_MESSAGE, "2"});
+            messagesList.add(Pair.of(FILE_ALREADY_EXISTS_MESSAGE, MessageType.ERROR));
             errors = true;
         }
 

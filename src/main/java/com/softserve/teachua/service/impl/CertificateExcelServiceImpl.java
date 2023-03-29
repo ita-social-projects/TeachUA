@@ -2,25 +2,23 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.teachua.constants.MessageType;
 import com.softserve.teachua.constants.excel.CertificateExcelColumn;
 import com.softserve.teachua.constants.excel.ExcelColumn;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelParsingResponse;
+import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelValidationResult;
 import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.dto.certificate_excel.ExcelParsingResponse;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
 import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.model.CertificateTemplate;
-import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;
 import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.CertificateValidator;
 import com.softserve.teachua.service.ExcelParserService;
-import static com.softserve.teachua.service.impl.CertificateValidatorImpl.COURSE_NUMBER_ERROR;
-import static com.softserve.teachua.service.impl.CertificateValidatorImpl.HOURS_ERROR;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -49,9 +47,12 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;
+import static com.softserve.teachua.service.impl.CertificateValidatorImpl.COURSE_NUMBER_ERROR;
+import static com.softserve.teachua.service.impl.CertificateValidatorImpl.HOURS_ERROR;
 
 @Slf4j
 @Service
@@ -200,15 +201,21 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     }
 
     @Override
-    public List<String[]> validateCertificateByTemplateExcel(CertificateByTemplateTransfer data)
-            throws JsonProcessingException {
-        List<String[]> resultList = new ArrayList<>();
+    public CertificateByTemplateExcelValidationResult validateCertificateByTemplateExcel(
+            CertificateByTemplateTransfer data) {
+        List<Pair<String, MessageType>> resultList = new ArrayList<>();
 
         CertificateTemplate certificateTemplate = templateService.getTemplateByFilePath(data.getTemplateName());
 
-        HashMap<String, String> templateProperties =
-                objectMapper.readValue(certificateTemplate.getProperties(), HashMap.class);
-        HashMap<String, String> values = objectMapper.readValue(data.getValues(), HashMap.class);
+        HashMap<String, String> templateProperties;
+        HashMap<String, String> values;
+        try {
+            templateProperties = objectMapper.readValue(certificateTemplate.getProperties(), HashMap.class);
+            values = objectMapper.readValue(data.getValues(), HashMap.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error json parsing");
+            throw new BadRequestException();
+        }
 
         for (int i = 0; i < data.getExcelContent().size(); i++) {
             for (int j = 0; j < data.getFieldsList().size(); j++) {
@@ -216,9 +223,10 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
                         data.getFieldsList().get(j));
 
                 if (value.trim().isEmpty()) {
-                    resultList.add(new String[] {"Рядок " + (j + 2) + ". " + "Пуста клітинка.", "2"});
+                    String messageDescription = String.format("Рядок %d. Пуста клітинка.", j + 2);
+                    resultList.add(Pair.of(messageDescription, MessageType.ERROR));
                 } else {
-                    String messageDescription = " Рядок " + (i + 2) + ". " + "Значення \"" + value + "\".";
+                    String messageDescription = String.format(" Рядок %d. Значення \"%s\".", j + 2, value);
 
                     if (!validateSpecialProperties(data.getFieldsList().get(j), value, resultList,
                             messageDescription)) {
@@ -229,12 +237,13 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
             }
         }
         if (resultList.isEmpty()) {
-            resultList.add(new String[] {"Валідація пройшла успішно!", "3"});
+            resultList.add(Pair.of("Валідація пройшла успішно!", MessageType.SUCCESS));
         }
-        return resultList;
+        return CertificateByTemplateExcelValidationResult.builder().messages(resultList).build();
     }
 
-    private void validateCertificateProperties(String propertyName, String value, List<String[]> resultList,
+    private void validateCertificateProperties(String propertyName, String value,
+                                               List<Pair<String, MessageType>> resultList,
                                                String messageDescription) {
         // @formatter:off
         switch (propertyName) {
@@ -257,7 +266,8 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
         // @formatter:on
     }
 
-    private boolean validateSpecialProperties(String propertyName, String value, List<String[]> resultList,
+    private boolean validateSpecialProperties(String propertyName, String value,
+                                              List<Pair<String, MessageType>> resultList,
                                               String messageDescription) {
         // @formatter:off
         switch (propertyName) {
@@ -319,7 +329,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
 
             workbook.write(outputStream);
         } catch (IOException e) {
-            log.error("Error of creating .excel file of bad certificates values");
+            log.error("Error creating .excel file of bad certificates values");
         }
 
         return outputStream.toByteArray();

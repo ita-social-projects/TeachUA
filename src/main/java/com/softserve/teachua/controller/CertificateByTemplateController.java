@@ -7,9 +7,9 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateSavingResponse;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelParsingResponse;
+import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelValidationResult;
 import com.softserve.teachua.dto.certificate_template.CertificateTemplatePreview;
 import com.softserve.teachua.model.CertificateTemplate;
-import com.softserve.teachua.security.JwtUtils;
 import com.softserve.teachua.service.CertificateDataLoaderService;
 import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateGoogleFormService;
@@ -137,18 +137,15 @@ public class CertificateByTemplateController implements Api {
     }
 
     /**
-     * The method validates excel file and returns.
-     * <p>{@code List<String[]>}, in which one bucket contains two {@code String} classes</p>
-     * <p>first String - message;</p>
-     * <p>second String - message code(1 - warning; 2 - error; 3 - success);</p>
+     * The method validates excel file.
      *
      * @param data template dto.
-     * @return new {@code List<String[]>}.
+     * @return new {@code CertificateByTemplateExcelValidationResult}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @PostMapping("/certificate-by-template/validate")
-    public List<String[]> validateCertificateExcelData(@RequestBody CertificateByTemplateTransfer data)
-            throws JsonProcessingException {
+    public CertificateByTemplateExcelValidationResult validateCertificateExcelData(
+            @RequestBody CertificateByTemplateTransfer data) {
         log.info("Validate certificate/certificates by template " + data);
         return excelService.validateCertificateByTemplateExcel(data);
     }
