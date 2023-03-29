@@ -41,6 +41,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.xssf.usermodel.DefaultIndexedColorMap;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -263,5 +272,56 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
               return false;
         }
         // @formatter:on
+    }
+
+    public byte[] getBadCertificateValuesExcelBytes(String invalidCertificateValues) {
+        List<Map<String, String>> invalidValuesList;
+        try {
+            invalidValuesList = objectMapper.readValue(invalidCertificateValues, List.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing invalid certificate values {}", invalidCertificateValues);
+            throw new BadRequestException();
+        }
+        List<String> columnNames = new ArrayList<>(invalidValuesList.get(0).keySet());
+        List<List<String>> rows = invalidValuesList.stream()
+                .map(Map::values)
+                .map(ArrayList::new)
+                .collect(Collectors.toList());
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = workbook.createSheet("Sheet1");
+
+            XSSFCellStyle headerStyle = workbook.createCellStyle();
+            headerStyle.setFillForegroundColor(new XSSFColor(new Color(250, 140, 22),
+                    new DefaultIndexedColorMap()));
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            XSSFRow headerRow = sheet.createRow(0);
+            for (int i = 0; i < columnNames.size(); i++) {
+                XSSFCell cell = headerRow.createCell(i);
+                cell.setCellValue(columnNames.get(i));
+                cell.setCellStyle(headerStyle);
+            }
+
+            for (int i = 0; i < rows.size(); i++) {
+                List<String> rowData = rows.get(i);
+                XSSFRow dataRow = sheet.createRow(i + 1);
+                for (int j = 0; j < rowData.size(); j++) {
+                    XSSFCell cell = dataRow.createCell(j);
+                    cell.setCellValue(rowData.get(j));
+                }
+            }
+
+            for (int i = 0; i < columnNames.size(); i++) {
+                sheet.autoSizeColumn(i);
+                sheet.setColumnWidth(i, Math.min(sheet.getColumnWidth(i), 100 * 256));
+            }
+
+            workbook.write(outputStream);
+        } catch (IOException e) {
+            log.error("Error of creating .excel file of bad certificates values");
+        }
+
+        return outputStream.toByteArray();
     }
 }

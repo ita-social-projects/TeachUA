@@ -9,6 +9,7 @@ import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTr
 import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelParsingResponse;
 import com.softserve.teachua.dto.certificate_template.CertificateTemplatePreview;
 import com.softserve.teachua.model.CertificateTemplate;
+import com.softserve.teachua.security.JwtUtils;
 import com.softserve.teachua.service.CertificateDataLoaderService;
 import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateGoogleFormService;
@@ -21,6 +22,10 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -154,5 +159,18 @@ public class CertificateByTemplateController implements Api {
             @RequestBody CertificateByTemplateTransfer data) {
         log.info("Save Google Form certificate/certificates by template " + data);
         return certificateGoogleFormService.saveGoogleFormCertificateData(data);
+    }
+
+    @AllowedRoles(RoleData.ADMIN)
+    @PostMapping("/certificate-by-template/get-invalid-certificates-excel")
+    public ResponseEntity<ByteArrayResource> getInvalidCertificatesExcel(@RequestBody String values) {
+        log.info("Form invalid certificates excel " + values);
+
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=certificates.xlsx");
+        ByteArrayResource resource = new ByteArrayResource(excelService.getBadCertificateValuesExcelBytes(values));
+
+        return ResponseEntity.ok().headers(header).contentLength(resource.getByteArray().length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
     }
 }

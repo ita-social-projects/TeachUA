@@ -27,4 +27,6 @@ public interface CertificateExcelService {
 
     List<String[]> validateCertificateByTemplateExcel(CertificateByTemplateTransfer data)
             throws JsonProcessingException;
+
+    byte[] getBadCertificateValuesExcelBytes(String badCertificateValues);
 }
