@@ -20,4 +20,8 @@ public class UserChallengeStatusDelete implements Convertible {
     @NotBlank
     @Size(min = 2, max = 100)
     private String statusName;
+
+    @NotBlank
+    @Size(min = 2, max = 100)
+    private String statusTitle;
 }

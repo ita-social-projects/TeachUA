@@ -116,7 +116,7 @@ public class UserChallengeStatusServiceImpl implements UserChallengeStatusServic
         List<UserChallengeStatusForOption> userChallengeStatusForOptionList =
             userChallengeStatusGetList
             .stream()
-            .map(status -> new UserChallengeStatusForOption(status.getStatusName(), status.getStatusName()))
+            .map(status -> new UserChallengeStatusForOption(status.getStatusTitle(), status.getStatusName()))
             .collect(Collectors.toList());
         log.debug("**/mapping UserChallengeStatusGet ={} to UserChallengeStatusForOption ={}",
             userChallengeStatusGetList, userChallengeStatusForOptionList);
@@ -134,7 +134,7 @@ public class UserChallengeStatusServiceImpl implements UserChallengeStatusServic
         UserChallengeStatus userChallengeStatus = userChallengeStatusRepository.save(
             dtoConverter.convertToEntity(userChallengeStatusAdd, new UserChallengeStatus()));
         UserChallengeStatusAdd userChallengeStatusAddResponse = UserChallengeStatusAdd.builder().statusName(
-            userChallengeStatusAdd.getStatusName()).build();
+            userChallengeStatusAdd.getStatusName()).statusTitle(userChallengeStatusAdd.getStatusTitle()).build();
         log.debug("**/adding new userChallengeStatus = {}", userChallengeStatus);
         return userChallengeStatusAddResponse;
     }
@@ -143,6 +143,7 @@ public class UserChallengeStatusServiceImpl implements UserChallengeStatusServic
     public UserChallengeStatusUpdate updateUserChallengeStatus(UserChallengeStatusUpdate userChallengeStatusUpdate) {
         UserChallengeStatus newUserChallengeStatus = getUserChallengeStatusById(userChallengeStatusUpdate.getId());
         newUserChallengeStatus.setStatusName(userChallengeStatusUpdate.getStatusName());
+        newUserChallengeStatus.setStatusTitle(userChallengeStatusUpdate.getStatusTitle());
         log.debug("**/updating UserChallengeStatus by newUserChallengeStatus = {}", newUserChallengeStatus);
         return dtoConverter.convertToDto(userChallengeStatusRepository.save(newUserChallengeStatus),
             UserChallengeStatusUpdate.class);
@@ -159,8 +160,11 @@ public class UserChallengeStatusServiceImpl implements UserChallengeStatusServic
         }
         archiveModel(userChallengeStatus);
         UserChallengeStatusDelete userChallengeStatusDelete =
-            UserChallengeStatusDelete.builder().id(userChallengeStatus.getId()).statusName(
-            userChallengeStatus.getStatusName()).build();
+            UserChallengeStatusDelete.builder()
+                .id(userChallengeStatus.getId())
+                .statusName(userChallengeStatus.getStatusName())
+                .statusTitle(userChallengeStatus.getStatusTitle())
+                .build();
         log.debug("userChallengeStatus {} was successfully deleted", userChallengeStatus);
         return userChallengeStatusDelete;
     }

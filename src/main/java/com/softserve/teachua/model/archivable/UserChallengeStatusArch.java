@@ -17,6 +17,7 @@ import lombok.With;
 public class UserChallengeStatusArch implements Convertible, Archivable {
     private Long id;
     private String statusName;
+    private String statusTitle;
 
     @Override
     public Class getServiceClass() {

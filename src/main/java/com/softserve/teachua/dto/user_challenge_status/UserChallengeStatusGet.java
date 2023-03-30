@@ -18,4 +18,6 @@ public class UserChallengeStatusGet implements Convertible {
 
     @NotBlank
     private String statusName;
+    @NotBlank
+    private String statusTitle;
 }

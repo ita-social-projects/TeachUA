@@ -32,4 +32,8 @@ public class UserChallengeStatus implements Convertible {
     @Size(min = 2, max = 100)
     @Column(nullable = false, unique = true)
     private String statusName;
+    @NotBlank
+    @Size(min = 2, max = 100)
+    @Column(nullable = false, unique = true)
+    private String statusTitle;
 }

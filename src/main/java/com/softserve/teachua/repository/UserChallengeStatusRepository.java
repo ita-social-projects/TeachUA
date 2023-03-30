@@ -10,7 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface UserChallengeStatusRepository extends JpaRepository<UserChallengeStatus, Long> {
     @Query(value = "select distinct new com.softserve.teachua.dto.user_challenge_status.UserChallengeStatusGet("
             + "    ucs.id,"
-            + "    ucs.statusName)"
+            + "    ucs.statusName,"
+            + "    ucs.statusTitle)"
             + "from UserChallengeStatus ucs "
             + "order by ucs.id")
     List<UserChallengeStatusGet> getAllUserChallengeStatus();

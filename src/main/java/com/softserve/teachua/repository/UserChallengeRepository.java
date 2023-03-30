@@ -21,7 +21,7 @@ public interface UserChallengeRepository extends JpaRepository<UserChallenge, Lo
             + "u.registrationDate, "
             + "u.challengeDuration.durationEntity.startDate, "
             + "u.challengeDuration.durationEntity.endDate, "
-            + "u.userChallengeStatus.statusName) "
+            + "u.userChallengeStatus.statusTitle) "
             + "FROM UserChallenge u "
             + "WHERE u.user.id = :id")
     List<UserChallengeForProfileGet> getUserChallengeForProfileByUserId(Long id);
@@ -72,7 +72,7 @@ public interface UserChallengeRepository extends JpaRepository<UserChallenge, Lo
             + "uc.user.email,"
             + "uc.user.phone,"
             + "uc.user.role.name,"
-            + "uc.userChallengeStatus.statusName,"
+            + "uc.userChallengeStatus.statusTitle,"
             + "uc.registrationDate)"
             + "FROM UserChallenge uc "
             + "WHERE uc.challengeDuration.challenge.id =?1 "
