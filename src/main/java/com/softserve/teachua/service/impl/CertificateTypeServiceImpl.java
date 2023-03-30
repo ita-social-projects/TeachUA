@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.constants.MessageType;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.certificate_type.CertificateTypeProcessingResponse;
 import com.softserve.teachua.dto.certificate_type.CertificateTypeProfile;
@@ -16,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,13 +63,13 @@ public class CertificateTypeServiceImpl implements CertificateTypeService {
 
     @Override
     public CertificateTypeProcessingResponse addCertificateType(CertificateTypeProfile certificateTypeProfile) {
-        List<String[]> messagesList = new ArrayList<>();
+        List<Pair<String, MessageType>> messagesList = new ArrayList<>();
 
         if (certificateTypeRepository.existsByNameIgnoreCase(certificateTypeProfile.getName())) {
-            messagesList.add(new String[]{NAME_ALREADY_EXISTS_MESSAGE, "1"});
+            messagesList.add(Pair.of(NAME_ALREADY_EXISTS_MESSAGE, MessageType.WARNING));
         }
         if (certificateTypeRepository.existsByCodeNumber(certificateTypeProfile.getCodeNumber())) {
-            messagesList.add(new String[]{CODE_NUMBER_ALREADY_EXISTS_MESSAGE, "2"});
+            messagesList.add(Pair.of(CODE_NUMBER_ALREADY_EXISTS_MESSAGE, MessageType.ERROR));
             return CertificateTypeProcessingResponse.builder().messages(messagesList).build();
         }
 
@@ -81,16 +83,16 @@ public class CertificateTypeServiceImpl implements CertificateTypeService {
     @Override
     public CertificateTypeProcessingResponse updateCertificateType(Integer id,
                                                                    CertificateTypeProfile updatedCertificateType) {
-        List<String[]> messagesList = new ArrayList<>();
+        List<Pair<String, MessageType>> messagesList = new ArrayList<>();
         CertificateType certificateType = getCertificateTypeById(id);
 
         if (!certificateType.getName().equals(updatedCertificateType.getName())
                 && certificateTypeRepository.existsByNameIgnoreCase(updatedCertificateType.getName())) {
-            messagesList.add(new String[]{NAME_ALREADY_EXISTS_MESSAGE, "1"});
+            messagesList.add(Pair.of(NAME_ALREADY_EXISTS_MESSAGE, MessageType.WARNING));
         }
         if (!certificateType.getCodeNumber().equals(updatedCertificateType.getCodeNumber())
                 && certificateTypeRepository.existsByCodeNumber(updatedCertificateType.getCodeNumber())) {
-            messagesList.add(new String[]{CODE_NUMBER_ALREADY_EXISTS_MESSAGE, "2"});
+            messagesList.add(Pair.of(CODE_NUMBER_ALREADY_EXISTS_MESSAGE, MessageType.ERROR));
             return CertificateTypeProcessingResponse.builder().messages(messagesList).build();
         }
         BeanUtils.copyProperties(updatedCertificateType, certificateType);

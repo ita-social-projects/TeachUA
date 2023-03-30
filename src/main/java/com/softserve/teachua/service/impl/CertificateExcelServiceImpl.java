@@ -2,25 +2,31 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.teachua.constants.MessageType;
 import com.softserve.teachua.constants.excel.CertificateExcelColumn;
 import com.softserve.teachua.constants.excel.ExcelColumn;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelParsingResponse;
+import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelValidationResult;
 import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.dto.certificate_excel.ExcelParsingResponse;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
+import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.model.CertificateTemplate;
-import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;
 import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateTemplateService;
+import com.softserve.teachua.service.CertificateValidator;
 import com.softserve.teachua.service.ExcelParserService;
-import static com.softserve.teachua.utils.validations.CertificateUserNameValidator.NAME_PATTERN;
+import java.awt.Color;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,38 +39,44 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.xssf.usermodel.DefaultIndexedColorMap;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;
+import static com.softserve.teachua.service.impl.CertificateValidatorImpl.COURSE_NUMBER_ERROR;
+import static com.softserve.teachua.service.impl.CertificateValidatorImpl.HOURS_ERROR;
 
 @Slf4j
 @Service
 public class CertificateExcelServiceImpl implements CertificateExcelService {
+    public static final String FULL_NAME_TEMPLATE_PROPERTY = "user_name";
     private static final String INCORRECT_DATE_FORMAT_ERROR = "Неможливо розпізнати дату видачі сертифікату";
     private static final String DATE_FORMAT = "[d.MM.yyyy][MM/d/yy][MM/d/yyyy]";
     private static final String WORD = "([А-ЯІЇЄ][а-яіїє']+[-–—]?){1,2}";
     private static final String INVALID_CHARACTERS_PRESENT = "Присутні недопустимі літери";
     private static final String INVALID_CHARS = "\\w";
-    private static final String USER_NAME_ERROR = "Неправильний формат ПІБ!";
-    private static final String USER_NAME_FORMAT = NAME_PATTERN;
-    private static final String DATE_ERROR =
-            "Неправильний формат дати. Будь ласка, використовуйте наступний формат: \"dd.mm.yyyy\"!";
-    private static final String DATE_FORMAT_REGEX = "\\d{2}.\\d{2}.\\d{4}";
-    private static final String HOURS_ERROR = "Неправильний формат кількості годин!";
-    private static final String COURSE_NUMBER_ERROR = "Неправильний формат номера курсу!";
-    private static final String EMAIL_ERROR = "Неправильний формат електронної пошти!";
-    private static final String EMAIL_FORMAT = "[\\w-.]+@([\\w-]+\\.){1,61}+[\\w-]{2,4}";
-
     private final DataFormatter dataFormatter;
     private final CertificateTemplateService templateService;
+    private final CertificateValidator certificateValidator;
     private final ExcelParserService excelParserService;
     private final ObjectMapper objectMapper;
     private HashMap<ExcelColumn, Integer> indexes;
     private ExcelParsingResponse response;
 
     public CertificateExcelServiceImpl(DataFormatter dataFormatter, CertificateTemplateService templateService,
-                                       ExcelParserService excelParserService, ObjectMapper objectMapper) {
+                                       CertificateValidator certificateValidator, ExcelParserService excelParserService,
+                                       ObjectMapper objectMapper) {
         this.dataFormatter = dataFormatter;
         this.templateService = templateService;
+        this.certificateValidator = certificateValidator;
         this.excelParserService = excelParserService;
         this.objectMapper = objectMapper;
     }
@@ -85,12 +97,11 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     @Override
     public CertificateByTemplateExcelParsingResponse parseFlexibleExcel(MultipartFile multipartFile) {
         List<List<Cell>> allCells = excelParserService.excelToList(multipartFile);
-
+        // @formatter:off
         List<List<String>> allConvertedCells =
                 allCells.stream().map(cellList ->
                         cellList.stream().map(element -> {
                             String value = "";
-                            // @formatter:off
                             switch (element.getCellType()) {
                               case STRING:
                                   return element.getRichStringCellValue().getString();
@@ -103,10 +114,9 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
                               default:
                                   return value;
                             }
-                            // @formatter:on
                         }).collect(Collectors.toList())
                 ).collect(Collectors.toList());
-
+        // @formatter:on
         return CertificateByTemplateExcelParsingResponse.builder()
                 .columnHeadersList(allConvertedCells.remove(0))
                 .excelContent(allConvertedCells)
@@ -191,101 +201,138 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     }
 
     @Override
-    public List<String[]> validateCertificateByTemplateExcel(CertificateByTemplateTransfer data)
-            throws JsonProcessingException {
-        List<String[]> resultList = new ArrayList<>();
+    public CertificateByTemplateExcelValidationResult validateCertificateByTemplateExcel(
+            CertificateByTemplateTransfer data) {
+        List<Pair<String, MessageType>> resultList = new ArrayList<>();
 
         CertificateTemplate certificateTemplate = templateService.getTemplateByFilePath(data.getTemplateName());
 
-        HashMap<String, String> templateProperties =
-                objectMapper.readValue(certificateTemplate.getProperties(), HashMap.class);
-        HashMap<String, String> values = objectMapper.readValue(data.getValues(), HashMap.class);
+        HashMap<String, String> templateProperties;
+        HashMap<String, String> values;
+        try {
+            templateProperties = objectMapper.readValue(certificateTemplate.getProperties(), HashMap.class);
+            values = objectMapper.readValue(data.getValues(), HashMap.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error json parsing");
+            throw new BadRequestException();
+        }
 
         for (int i = 0; i < data.getExcelContent().size(); i++) {
-            List<String> excelValues = data.getExcelContent().get(i);
-
             for (int j = 0; j < data.getFieldsList().size(); j++) {
-                String value = getCertificateByTemplateValue(values, data.getFieldsList(),
-                        data.getColumnHeadersList(), data.getExcelColumnsOrder(), excelValues,
+                String value = getCertificateByTemplateValue(values, data, i, "",
                         data.getFieldsList().get(j));
 
                 if (value.trim().isEmpty()) {
-                    resultList.add(new String[] {"Рядок " + (j + 2) + ". " + "Пуста клітинка.", "2"});
-                    continue;
-                }
+                    String messageDescription = String.format("Рядок %d. Пуста клітинка.", j + 2);
+                    resultList.add(Pair.of(messageDescription, MessageType.ERROR));
+                } else {
+                    String messageDescription = String.format(" Рядок %d. Значення \"%s\".", j + 2, value);
 
-                String messageDescription = " Рядок " + (i + 2) + ". " + "Значення \"" + value + "\".";
-                // @formatter:off
-                switch (data.getFieldsList().get(j)) {
-                  case "Номер курсу":
-                      validateNaturalNumber(value, resultList, COURSE_NUMBER_ERROR, messageDescription);
-                      continue;
-                  case "Електронна пошта":
-                      validateEmail(value, resultList, messageDescription);
-                      continue;
-                  default:
-                      break;
+                    if (!validateSpecialProperties(data.getFieldsList().get(j), value, resultList,
+                            messageDescription)) {
+                        validateCertificateProperties(templateProperties.get(data.getFieldsList().get(j)), value,
+                                resultList, messageDescription);
+                    }
                 }
-                switch (templateProperties.get(data.getFieldsList().get(j))) {
-                  case "course_number":
-                      validateNaturalNumber(value, resultList, COURSE_NUMBER_ERROR, messageDescription);
-                      break;
-                  case "user_name":
-                      validateUserName(value, resultList, messageDescription);
-                      break;
-                  case "date":
-                      validateDate(value, resultList, messageDescription);
-                      break;
-                  case "hours":
-                      validateNaturalNumber(value, resultList, HOURS_ERROR, messageDescription);
-                      break;
-                  default:
-                      break;
-                }
-                // @formatter:on
             }
         }
         if (resultList.isEmpty()) {
-            resultList.add(new String[] {"Валідація пройшла успішно!", "3"});
+            resultList.add(Pair.of("Валідація пройшла успішно!", MessageType.SUCCESS));
         }
-        return resultList;
+        return CertificateByTemplateExcelValidationResult.builder().messages(resultList).build();
     }
 
-    private void validateNaturalNumber(String value, List<String[]> resultList, String errorDescription,
-                                       String messageDescription) {
-        int number;
+    private void validateCertificateProperties(String propertyName, String value,
+                                               List<Pair<String, MessageType>> resultList,
+                                               String messageDescription) {
+        // @formatter:off
+        switch (propertyName) {
+          case "course_number":
+              certificateValidator.validateNaturalNumber(value, resultList, COURSE_NUMBER_ERROR,
+                      messageDescription);
+              break;
+          case FULL_NAME_TEMPLATE_PROPERTY:
+              certificateValidator.validateUserName(value, resultList, messageDescription);
+              break;
+          case "date":
+              certificateValidator.validateDate(value, resultList, messageDescription);
+              break;
+          case "hours":
+              certificateValidator.validateNaturalNumber(value, resultList, HOURS_ERROR, messageDescription);
+              break;
+          default:
+              break;
+        }
+        // @formatter:on
+    }
+
+    private boolean validateSpecialProperties(String propertyName, String value,
+                                              List<Pair<String, MessageType>> resultList,
+                                              String messageDescription) {
+        // @formatter:off
+        switch (propertyName) {
+          case "Номер курсу":
+              certificateValidator.validateNaturalNumber(value, resultList, COURSE_NUMBER_ERROR,
+                      messageDescription);
+              return true;
+          case "Електронна пошта":
+              certificateValidator.validateEmail(value, resultList, messageDescription);
+              return true;
+          default:
+              return false;
+        }
+        // @formatter:on
+    }
+
+    public byte[] getBadCertificateValuesExcelBytes(String invalidCertificateValues) {
+        List<Map<String, String>> invalidValuesList;
         try {
-            number = Integer.parseInt(value);
-            if (number <= 0) {
-                resultList.add(new String[] {errorDescription + messageDescription, "2"});
-            }
-        } catch (NumberFormatException e) {
-            resultList.add(new String[] {COURSE_NUMBER_ERROR + messageDescription, "2"});
+            invalidValuesList = objectMapper.readValue(invalidCertificateValues, List.class);
+        } catch (JsonProcessingException e) {
+            log.error("Error parsing invalid certificate values {}", invalidCertificateValues);
+            throw new BadRequestException();
         }
-    }
+        List<String> columnNames = new ArrayList<>(invalidValuesList.get(0).keySet());
+        List<List<String>> rows = invalidValuesList.stream()
+                .map(Map::values)
+                .map(ArrayList::new)
+                .collect(Collectors.toList());
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = workbook.createSheet("Sheet1");
 
-    private void validateEmail(String value, List<String[]> resultList, String messageDescription) {
-        if (!value.matches(EMAIL_FORMAT)) {
-            resultList.add(new String[] {EMAIL_ERROR + messageDescription, "2"});
-        }
-    }
+            XSSFCellStyle headerStyle = workbook.createCellStyle();
+            headerStyle.setFillForegroundColor(new XSSFColor(new Color(250, 140, 22),
+                    new DefaultIndexedColorMap()));
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-    private void validateUserName(String value, List<String[]> resultList, String messageDescription) {
-        if (!value.matches(USER_NAME_FORMAT)) {
-            StringBuilder stringBuilder = new StringBuilder();
-            if (value.contains("  ")) {
-                stringBuilder.append(" Подвійний пробіл!");
+            XSSFRow headerRow = sheet.createRow(0);
+            for (int i = 0; i < columnNames.size(); i++) {
+                XSSFCell cell = headerRow.createCell(i);
+                cell.setCellValue(columnNames.get(i));
+                cell.setCellStyle(headerStyle);
             }
-            if (value.trim().length() < value.length()) {
-                stringBuilder.append(" ПІБ починається/закінчується пробілом!");
-            }
-            resultList.add(new String[] {USER_NAME_ERROR + messageDescription + stringBuilder, "1"});
-        }
-    }
 
-    private void validateDate(String value, List<String[]> resultList, String messageDescription) {
-        if (!value.matches(DATE_FORMAT_REGEX)) {
-            resultList.add(new String[] {DATE_ERROR + messageDescription, "1"});
+            for (int i = 0; i < rows.size(); i++) {
+                List<String> rowData = rows.get(i);
+                XSSFRow dataRow = sheet.createRow(i + 1);
+                for (int j = 0; j < rowData.size(); j++) {
+                    XSSFCell cell = dataRow.createCell(j);
+                    cell.setCellValue(rowData.get(j));
+                }
+            }
+
+            for (int i = 0; i < columnNames.size(); i++) {
+                sheet.autoSizeColumn(i);
+                sheet.setColumnWidth(i, Math.min(sheet.getColumnWidth(i), 100 * 256));
+            }
+
+            workbook.write(outputStream);
+        } catch (IOException e) {
+            log.error("Error creating .excel file of bad certificates values");
+            throw new BadRequestException();
         }
+
+        return outputStream.toByteArray();
     }
 }

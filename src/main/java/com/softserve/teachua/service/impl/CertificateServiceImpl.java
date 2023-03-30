@@ -354,6 +354,11 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     }
 
     @Override
+    public void addCertificates(List<Certificate> certificates) {
+        certificates.forEach(this::addCertificate);
+    }
+
+    @Override
     public Certificate updateCertificateEmail(Long id, Certificate certificate) {
         Certificate certificateFound = getCertificateById(id);
         certificateFound.setSendToEmail(certificate.getSendToEmail());
@@ -410,5 +415,10 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
             certificate.setDates(certificateDatesService.getCertificateDatesById(certificateArch.getDatesId()));
         }
         certificateRepository.save(certificate);
+    }
+
+    @Override
+    public boolean existsByUserNameAndDates(String name, CertificateDates dates) {
+        return certificateRepository.existsByUserNameAndDates(name, dates);
     }
 }

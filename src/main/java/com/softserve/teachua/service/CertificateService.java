@@ -142,6 +142,15 @@ public interface CertificateService {
     Certificate addCertificate(Certificate certificate);
 
     /**
+     * This method saves entities {@code Certificate} into database.
+     *
+     * @param certificates
+     *            list of entities to save
+     *
+     */
+    void addCertificates(List<Certificate> certificates);
+
+    /**
      * This method updates email of certificate in database, returns entity {@code Certificate} of updated certificate.
      *
      * @param id
@@ -228,4 +237,14 @@ public interface CertificateService {
      * @return - List of Certificates
      */
     List<CertificatePreview> getSimilarCertificatesByUserName(String userName);
+
+    /**
+     * This method checks whether certificate exists or not, using name and date.
+     *
+     * @param name put username
+     * @param dates put date
+     *
+     * @return - boolean
+     */
+    boolean existsByUserNameAndDates(String name, CertificateDates dates);
 }

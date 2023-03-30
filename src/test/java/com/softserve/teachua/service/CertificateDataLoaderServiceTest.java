@@ -129,7 +129,14 @@ class CertificateDataLoaderServiceTest {
                 notMockObjectMapper.readValue(certificateByTemplateTransfer.getValues(), HashMap.class));
         when(certificateService.addCertificate(any())).thenReturn(null);
 
+        Certificate expectedCertificate = notMockObjectMapper.readValue("{\"id"
+                + "\":null,\"serialNumber\":null,\"user\":null,\"userName\":\"Денисюк-Стасюк Олександр-Іван\","
+                + "\"sendToEmail\":\"email@gmail.com\",\"messengerUserName\":null,\"messenger\":null,"
+                + "\"sendStatus\":null,\"updateStatus\":null,\"dates\":{\"id\":43,\"date\":\"05.02.2023\","
+                + "\"hours\":99,\"duration\":null,\"courseNumber\":\"1\",\"studyForm\":\"дистанційна\"},"
+                + "\"values\":null}", Certificate.class);
+
         certificateDataLoaderService.saveCertificate(certificateByTemplateTransfer);
-        verify(certificateService, times(1)).addCertificate(any());
+        verify(certificateService, times(1)).addCertificate(expectedCertificate);
     }
 }

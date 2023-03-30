@@ -44,6 +44,7 @@ import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
+import com.softserve.teachua.dto.googleapis.QuizResult;
 import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
 import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
 import com.softserve.teachua.dto.user.UserLogin;
@@ -69,6 +70,7 @@ import org.apache.poi.ss.util.SheetBuilder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class TestUtils {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static User getUser() {
         return User.builder()
@@ -266,17 +268,17 @@ public class TestUtils {
             throws JsonProcessingException {
         String json = "{\"fieldsList\":[\"fullName\",\"learningForm\",\"Номер курсу\",\"countOfHours\",\"issueDate\","
                 + "\"Електронна пошта\",\"duration\"],\"fieldPropertiesList\":[\"String\",\"String\",\"int\","
-                + "\"int\",\"date\",\"String\",\"String\"],\"templateName\":\"1673724092154.pdf\","
-                + "\"values\":\"{\\\"fullName\\\":\\\"\\\",\\\"learningForm\\\":\\\"дистанційна\\\",\\\"Номер"
-                + " курсу\\\":\\\"1\\\",\\\"countOfHours\\\":\\\"99\\\",\\\"issueDate\\\":\\\"05.02.2023\\\","
+                + "\"int\",\"date\",\"String\",\"String\"],\"templateName\":\"1673724092154.pdf\",\"values\":"
+                + "\"{\\\"fullName\\\":\\\"\\\",\\\"learningForm\\\":\\\"дистанційна\\\",\\\"Номер курсу\\\":"
+                + "\\\"1\\\",\\\"countOfHours\\\":\\\"99\\\",\\\"issueDate\\\":\\\"05.02.2023\\\","
                 + "\\\"Електронна пошта\\\":\\\"\\\", \\\"duration\\\":\\\"duration\\\"}\","
-                + "\"columnHeadersList\":[\"№ п/п\",\"Прізвище, ім'я, по батькові отримувача\",\"Номер "
-                + "сертифіката\",\"Дата видачі\",\"Електронна адреса\",\"Примітки\"],"
-                + "\"excelContent\":[[\"1\",\"Денисюк-Стасюк Олександр-Іван\",\"1010000001\",\"30.10.2023\","
-                + "\"email@gmail.com\",\"Виданий без нанесення номера\"]],\"excelColumnsOrder\":[\"Прізвище, "
-                + "ім'я, по батькові отримувача\",\"№ п/п\",\"Номер сертифіката\",\"Дата видачі\","
-                + "\"Примітки\",\"Електронна адреса\", \"\"]}";
-        return new ObjectMapper().readValue(json, CertificateByTemplateTransfer.class);
+                + "\"columnHeadersList\":[\"№ п/п\",\"Прізвище, ім'я, по батькові отримувача\","
+                + "\"Номер сертифіката\",\"Дата видачі\",\"Електронна адреса\",\"Примітки\"],\"excelContent\""
+                + ":[[\"1\",\"Денисюк-Стасюк Олександр-Іван\",\"1010000001\",\"30.10.2023\",\"email@gmail.com\""
+                + ",\"Виданий без нанесення номера\"]],\"excelColumnsOrder\":[\"Прізвище, ім'я, по батькові "
+                + "отримувача\",\"№ п/п\",\"Номер сертифіката\",\"Дата видачі\",\"Примітки\","
+                + "\"Електронна адреса\", \"\"],\"googleFormResults\":[]}";
+        return objectMapper.readValue(json, CertificateByTemplateTransfer.class);
     }
 
     public static CertificateByTemplateTransfer getInvalidCertificateByTemplateTransfer()
@@ -293,6 +295,53 @@ public class TestUtils {
                 + "\"email@@gmail.com\",\"Виданий без нанесення номера\",\"\"]],\"excelColumnsOrder\":[\"Прізвище, "
                 + "ім'я, по батькові отримувача\",\"№ п/п\",\"Номер сертифіката\",\"Дата видачі\","
                 + "\"Примітки\",\"Електронна адреса\",\"Статус\"]}";
-        return new ObjectMapper().readValue(json, CertificateByTemplateTransfer.class);
+        return objectMapper.readValue(json, CertificateByTemplateTransfer.class);
+    }
+
+    public static List<QuizResult> getQuizResults() {
+        QuizResult quizResult1 = QuizResult.builder()
+                .userEmail("grygor@test.com")
+                .fullName("Григоренко Григорій Григорович")
+                .totalScore(5)
+                .build();
+        QuizResult quizResult2 = QuizResult.builder()
+                .userEmail("andriy@test.com")
+                .fullName("Андрійко Андрій Андрійович")
+                .totalScore(1)
+                .build();
+        QuizResult quizResult3 = QuizResult.builder()
+                .userEmail("ivan@test.com")
+                .fullName("Іванко Іван Іванович")
+                .totalScore(3)
+                .build();
+
+        List<QuizResult> results = new ArrayList<>();
+        results.add(quizResult1);
+        results.add(quizResult2);
+        results.add(quizResult3);
+
+        return results;
+    }
+    public static List<QuizResult> getInvalidQuizResults() {
+        QuizResult quizResult1 = QuizResult.builder()
+                .userEmail("grygortest.com")
+                .fullName("Григоренко  Григорій Григорович ")
+                .totalScore(5)
+                .build();
+        QuizResult quizResult2 = QuizResult.builder()
+                .userEmail("@test.com")
+                .fullName("Андрійко Андрій  Андрійович")
+                .totalScore(1)
+                .build();
+        QuizResult quizResult3 = QuizResult.builder()
+                .userEmail("ivan@")
+                .fullName("Іванко Іван Іванович")
+                .totalScore(3)
+                .build();
+        List<QuizResult> results = new ArrayList<>();
+        results.add(quizResult1);
+        results.add(quizResult2);
+        results.add(quizResult3);
+        return results;
     }
 }

@@ -38,6 +38,10 @@ public final class TestConstants {
     public static final String CERTIFICATE_TEMPLATE_PROPERTIES =
             "{\"id\":\"serial_number\",\"fullName\":\"user_name\",\"issueDate\":\"date\",\"countOfHours\":\"hours\","
                     + "\"learningForm\":\"study_form\",\"image\":\"qrCode_white\",\"duration\":\"duration\"}";
+    public static final String INVALID_CERTIFICATE_TEMPLATE_PROPERTIES =
+            "{\"id\":\"serial_number\",\"fullName\":\"user_name\",\"issueDate\":\"date\",\"countOfHours\":\"hours\","
+                    + "\"learningForm\":\"study_form\",\"image\":\"qrCode_white\",\"duration\":\"duration\","
+                    + "\"course_number\":\"course_number\"}";
     public static final Integer CERTIFICATE_TYPE_ID = 3;
     public static final Integer CERTIFICATE_TYPE_CODE_NUMBER = 3;
     public static final String CERTIFICATE_TYPE_NAME = "Учасник";
@@ -53,4 +57,14 @@ public final class TestConstants {
     public static final String VARIANT = "Вигравши";
     public static final String CORRECT = "TRUE";
     public static final MockMultipartFile MOCK_MULTIPART_FILE = new MockMultipartFile("file", new byte[0]);
+    public static final String INVALID_CERTIFICATES_VALUES =
+            "[{\"Номер курсу\":\"\",\"fullName\":\"Григор Григорій Григорович\",\"learningForm\":\"\","
+                    + "\"Електронна пошта\":\"test@test.com\",\"countOfHours\":\"\","
+                    + "\"issueDate\":\"\"},{\"Номер курсу\":\"\",\"fullName\":\"Коваль Микола Миколайович\","
+                    + "\"learningForm\":\"\",\"Електронна пошта\":\"test@test.com\",\"countOfHours\":\"\","
+                    + "\"issueDate\":\"\"},{\"Номер курсу\":\"\",\"fullName\":\"Федорович Федір\","
+                    + "\"learningForm\":\"\",\"Електронна пошта\":\"test@test.com\",\"countOfHours\":\"\","
+                    + "\"issueDate\":\"\"},{\"Номер курсу\":\"\",\"fullName\":\"Коваль Сергій Сергійович\","
+                    + "\"learningForm\":\"\",\"Електронна пошта\":\"test@test.com\",\"countOfHours\":\"\","
+                    + "\"issueDate\":\"\"}]\n";
 }

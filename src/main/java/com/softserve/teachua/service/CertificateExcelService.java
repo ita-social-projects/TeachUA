@@ -1,8 +1,8 @@
 package com.softserve.teachua.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelParsingResponse;
+import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelValidationResult;
 import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.dto.certificate_excel.ExcelParsingResponse;
 import java.util.List;
@@ -25,6 +25,7 @@ public interface CertificateExcelService {
 
     List<CertificateExcel> createUserCertificates(List<List<Cell>> rows);
 
-    List<String[]> validateCertificateByTemplateExcel(CertificateByTemplateTransfer data)
-            throws JsonProcessingException;
+    CertificateByTemplateExcelValidationResult validateCertificateByTemplateExcel(CertificateByTemplateTransfer data);
+
+    byte[] getBadCertificateValuesExcelBytes(String badCertificateValues);
 }

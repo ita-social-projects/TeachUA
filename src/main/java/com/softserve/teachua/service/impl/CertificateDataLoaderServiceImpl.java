@@ -183,72 +183,59 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
         HashMap<String, String> templateProperties =
                 objectMapper.readValue(certificateTemplate.getProperties(), HashMap.class);
         HashMap<String, String> mainValues = objectMapper.readValue(data.getValues(), HashMap.class);
-        boolean excelProcessing = false;
+
         int i = 1;
         if (!data.getExcelContent().isEmpty()) {
             i = data.getExcelContent().size();
-            excelProcessing = true;
         }
         for (int j = 0; j < i; j++) {
             HashMap<String, String> values = new HashMap<>(mainValues);
             CertificateDates certificateDates = new CertificateDates();
             Certificate certificate = new Certificate();
 
-            List<String> excelValues = null;
-            if (excelProcessing) {
-                excelValues = data.getExcelContent().get(j);
-            }
             for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
                 // @formatter:off
                 switch (entry.getValue()) {
                   case "serial_number":
                       if (!templateProperties.containsValue("course_number")) {
-                          certificateDates.setCourseNumber(getCertificateByTemplateValue(values, data.getFieldsList(),
-                                  data.getColumnHeadersList(),
-                                  data.getExcelColumnsOrder(), excelValues, "Номер курсу"));
+                          certificateDates.setCourseNumber(getCertificateByTemplateValue(values, data, j,
+                                  "", "Номер курсу"));
                       }
                       break;
                   case "course_number":
                       certificateDates.setCourseNumber(
-                              getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
-                                      data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                              getCertificateByTemplateValue(values, data, j, entry.getValue(), entry.getKey()));
                       break;
                   case "user_name":
                       certificate.setUserName(
-                              getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
-                                      data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                              getCertificateByTemplateValue(values, data, j, entry.getValue(), entry.getKey()));
                       break;
                   case "date":
                       certificateDates.setDate(
-                              getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
-                                      data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                              getCertificateByTemplateValue(values, data, j, entry.getValue(), entry.getKey()));
                       break;
                   case "duration":
                       certificateDates.setDuration(
-                              getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
-                                      data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                              getCertificateByTemplateValue(values, data, j, entry.getValue(), entry.getKey()));
                       break;
                   case "hours":
                       certificateDates.setHours(Integer.valueOf(
-                              getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
-                                      data.getExcelColumnsOrder(), excelValues, entry.getKey())));
+                              getCertificateByTemplateValue(values, data, j, entry.getValue(), entry.getKey())));
                       break;
                   case "study_form":
                       certificateDates.setStudyForm(
-                              getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
-                                      data.getExcelColumnsOrder(), excelValues, entry.getKey()));
+                              getCertificateByTemplateValue(values, data, j, entry.getValue(), entry.getKey()));
                       break;
                   default:
                       break;
                 }
                 // @formatter:on
             }
-            certificateDatesService.addCertificateDates(certificateDates);
+            certificateDates = certificateDatesService.getOrCreateCertificateDates(certificateDates);
 
             certificate.setValues(objectMapper.writeValueAsString(values));
-            certificate.setSendToEmail(
-                    getCertificateByTemplateValue(values, data.getFieldsList(), data.getColumnHeadersList(),
-                            data.getExcelColumnsOrder(), excelValues, "Електронна пошта"));
+            certificate.setSendToEmail(getCertificateByTemplateValue(values, data, j, "email",
+                    "Електронна пошта"));
             certificate.setTemplate(certificateTemplate);
             certificate.setDates(certificateDates);
 
