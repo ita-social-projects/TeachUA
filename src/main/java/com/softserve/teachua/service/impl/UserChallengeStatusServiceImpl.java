@@ -77,9 +77,6 @@ public class UserChallengeStatusServiceImpl implements UserChallengeStatusServic
     public List<UserChallengeStatusGet> getAllUserChallengeStatus() {
         List<UserChallengeStatusGet> userChallengeStatusGetList =
             userChallengeStatusRepository.getAllUserChallengeStatus();
-        if (userChallengeStatusGetList.isEmpty()) {
-            throw new NotExistException(USER_CHALLENGE_STATUS_NOT_FOUND_STATUSES);
-        }
         log.debug("**/getting all UserChallengeStatusGet ={}", userChallengeStatusGetList);
         return userChallengeStatusGetList;
     }
