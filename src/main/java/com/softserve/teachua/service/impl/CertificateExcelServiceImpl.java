@@ -330,6 +330,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
             workbook.write(outputStream);
         } catch (IOException e) {
             log.error("Error creating .excel file of bad certificates values");
+            throw new BadRequestException();
         }
 
         return outputStream.toByteArray();
