@@ -15,7 +15,7 @@
 	<description>TeachUA</description>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.slf4j.version>1.7.30</org.slf4j.version>
 		<skipTests>false</skipTests>
