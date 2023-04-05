@@ -8,7 +8,7 @@ import com.softserve.teachua.service.test.GroupService;
 import com.softserve.teachua.service.test.GroupTestService;
 import com.softserve.teachua.service.test.SubscriptionService;
 import java.util.List;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;

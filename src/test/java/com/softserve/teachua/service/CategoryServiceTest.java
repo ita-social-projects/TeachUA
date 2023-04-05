@@ -24,7 +24,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import javax.validation.ValidationException;
+import jakarta.validation.ValidationException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;

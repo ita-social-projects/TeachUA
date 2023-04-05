@@ -12,7 +12,7 @@ import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.PdfTemplateService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import java.util.List;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

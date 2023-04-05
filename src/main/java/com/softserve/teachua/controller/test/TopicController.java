@@ -4,7 +4,7 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.test.topic.TopicProfile;
 import com.softserve.teachua.service.test.TopicService;
 import java.util.List;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;

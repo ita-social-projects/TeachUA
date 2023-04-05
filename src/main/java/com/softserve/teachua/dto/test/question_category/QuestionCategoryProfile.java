@@ -1,8 +1,8 @@
 package com.softserve.teachua.dto.test.question_category;
 
 import com.softserve.teachua.utils.validations.CheckRussian;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

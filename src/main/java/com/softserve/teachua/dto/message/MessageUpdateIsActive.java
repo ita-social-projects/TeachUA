@@ -1,7 +1,7 @@
 package com.softserve.teachua.dto.message;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

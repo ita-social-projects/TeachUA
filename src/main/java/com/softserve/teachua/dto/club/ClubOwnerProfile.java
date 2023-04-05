@@ -2,7 +2,7 @@ package com.softserve.teachua.dto.club;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.User;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

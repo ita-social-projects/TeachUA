@@ -3,7 +3,7 @@ package com.softserve.teachua.dto.test.question.questionExcel;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
 import java.util.List;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

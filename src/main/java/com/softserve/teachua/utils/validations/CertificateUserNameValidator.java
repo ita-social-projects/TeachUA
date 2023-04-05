@@ -1,7 +1,7 @@
 package com.softserve.teachua.utils.validations;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class CertificateUserNameValidator implements ConstraintValidator<CertificateUserName, String> {
     private static final String EMPTY_EXCEPTION = "Ім'я учасника не може бути порожнім";

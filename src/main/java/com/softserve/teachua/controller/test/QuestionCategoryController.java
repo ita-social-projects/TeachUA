@@ -6,7 +6,7 @@ import com.softserve.teachua.dto.test.question_category.QuestionCategoryProfile;
 import com.softserve.teachua.dto.test.question_category.QuestionCategoryResponse;
 import com.softserve.teachua.service.test.QuestionCategoryService;
 import java.util.List;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import lombok.RequiredArgsConstructor;
 import static org.springframework.http.HttpStatus.CREATED;

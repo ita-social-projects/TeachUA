@@ -2,7 +2,7 @@ package com.softserve.teachua.dto.message;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.utils.validations.CheckRussian;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
