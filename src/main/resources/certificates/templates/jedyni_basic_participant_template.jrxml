@@ -87,7 +87,7 @@
                 <textElement textAlignment="Center">
                     <font size="21"/>
                 </textElement>
-                <textFieldExpression>"брав(-ла) участь у проєкті “Єдині” та успішно\nзакінчив(-ла) навчальний курс із вивчення\nукраїнської мови базового рівня."</textFieldExpression>
+                <textFieldExpression>"брав(-ла) участь у проєкті “Єдині” та успішно\nзакінчив(-ла) граматичний курс\nукраїнської мови."</textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="295" y="397" width="500" height="135" uuid="cc8ec782-950d-4f13-ba7c-cadf15587a3e"/>
