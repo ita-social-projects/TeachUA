@@ -51,7 +51,7 @@ class ExcelParserServiceTest {
         ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () ->
                 excelParserService.getSheetFromExcelFile(MOCK_MULTIPART_FILE));
 
-        assertThat(thrown.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(thrown.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Test
