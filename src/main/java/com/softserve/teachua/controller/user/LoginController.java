@@ -10,6 +10,7 @@ import com.softserve.teachua.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "login", description = "the Login API")
 @SecurityRequirement(name = "api")
+@Slf4j
 public class LoginController implements Api {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
@@ -56,7 +58,9 @@ public class LoginController implements Api {
     @PreAuthorize("!isAuthenticated()")
     @PostMapping("/token/refresh")
     public RefreshTokenResponse refreshAccessToken(@Valid @RequestBody RefreshTokenRequest request) {
-        return refreshTokenService.refreshAccessToken(request.getRefreshToken());
+        RefreshTokenResponse result = refreshTokenService.refreshAccessToken(request.getRefreshToken());
+        log.info("Updated access jwt, using refresh token");
+        return result;
     }
 
     /**
