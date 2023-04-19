@@ -53,11 +53,6 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
         }
     }
 
-    @Override
-    public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
-        return null;
-    }
-
     /**
      * The method remove authorization request.
      *

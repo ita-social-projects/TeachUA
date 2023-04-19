@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import org.hibernate.annotations.Type;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,6 +29,5 @@ public class Question implements Convertible {
     private String title;
 
     @Column
-    @Type(type = "text")
     private String text;
 }
