@@ -236,7 +236,6 @@ public class ClubRepositoryIT {
     @Test
     public void advancedSearchWithManyCategoryNameShouldReturnAllClubsWithThatCategories() {
         ClubSearchTestEntity testClub = ClubAdvancedSearchRepository.getClubWithManyCategoryName();
-        System.out.println(testClub.getCategoriesNames());
         List<Club> clubs = clubRepository
                 .findAllBylAdvancedSearch(null, null, null, null, null, testClub.getCategoriesNames(), null, null)
                 .getContent();
