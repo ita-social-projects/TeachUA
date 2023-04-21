@@ -378,19 +378,17 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 && (advancedSearchClubProfile.getAge() < 2 || advancedSearchClubProfile.getAge() > 18)) {
             throw new IncorrectInputException("Age should be from 2 to 18 years inclusive");
         }
-        List<String> categories;
         if (advancedSearchClubProfile.getCategoriesName() == null) {
-            categories = CategoryUtil.replaceSemicolonToComma(
-                            categoryService.getAllCategories().stream().map(CategoryResponse::getName).toList());
-        } else {
-            categories = CategoryUtil.replaceSemicolonToComma(advancedSearchClubProfile.getCategoriesName());
+            advancedSearchClubProfile.setCategoriesName(
+                    categoryService.getAllCategories().stream().map(CategoryResponse::getName).toList());
         }
         log.debug("getAdvancedSearchClubs, advClubProf :" + advancedSearchClubProfile.toString());
 
         Page<Club> clubResponses = clubRepository.findAllBylAdvancedSearch(advancedSearchClubProfile.getName(),
                 advancedSearchClubProfile.getAge(), advancedSearchClubProfile.getCityName(),
                 advancedSearchClubProfile.getDistrictName(), advancedSearchClubProfile.getStationName(),
-                categories, advancedSearchClubProfile.getIsOnline(), pageable);
+                CategoryUtil.replaceSemicolonToComma(advancedSearchClubProfile.getCategoriesName()),
+                advancedSearchClubProfile.getIsOnline(), pageable);
 
         return new PageImpl<>(
                 clubResponses.stream().map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))

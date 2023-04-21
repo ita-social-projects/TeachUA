@@ -77,7 +77,7 @@ public class JwtUtils {
      */
     public boolean isAccessTokenValid(String accessToken) {
         try {
-            return !isTokenExpired(accessToken, accessTokenSecret);
+            return isTokenNotExpired(accessToken, accessTokenSecret);
         } catch (Exception e) {
             return false;
         }
@@ -90,7 +90,7 @@ public class JwtUtils {
      */
     public boolean isRefreshTokenValid(String refreshToken) {
         try {
-            return !isTokenExpired(refreshToken, refreshTokenSecret);
+            return isTokenNotExpired(refreshToken, refreshTokenSecret);
         } catch (Exception e) {
             return false;
         }
@@ -127,8 +127,8 @@ public class JwtUtils {
         return null;
     }
 
-    private boolean isTokenExpired(String token, String secret) {
-        return extractExpiration(token, secret).before(new Date());
+    private boolean isTokenNotExpired(String token, String secret) {
+        return !extractExpiration(token, secret).before(new Date());
     }
 
     public <T> T extractClaim(String token, String secret, Function<Claims, T> claimsResolver) {

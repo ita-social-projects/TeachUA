@@ -21,6 +21,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class JwtFilterTest {
@@ -77,6 +78,16 @@ class JwtFilterTest {
         when(jwtUtils.getEmailFromAccessToken(NOT_EMPTY_STRING)).thenReturn(USER_EMAIL);
         when(customUserDetailsService.loadUserByUsername(USER_EMAIL))
                 .thenReturn(getUserPrincipal(getUser()));
+
+        assertDoesNotThrow(() -> jwtFilter.doFilterInternal(request, response, chain));
+    }
+
+    @Test
+    void givenValidToken_whenUserDoesNotExist_shouldThrowAnException() {
+        when(jwtUtils.getJwtFromRequest(request)).thenReturn(NOT_EMPTY_STRING);
+        when(jwtUtils.isAccessTokenValid(NOT_EMPTY_STRING)).thenReturn(true);
+        when(jwtUtils.getEmailFromAccessToken(NOT_EMPTY_STRING)).thenReturn(USER_EMAIL);
+        when(customUserDetailsService.loadUserByUsername(USER_EMAIL)).thenThrow(UsernameNotFoundException.class);
 
         assertDoesNotThrow(() -> jwtFilter.doFilterInternal(request, response, chain));
     }

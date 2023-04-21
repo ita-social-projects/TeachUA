@@ -58,9 +58,8 @@ public class LoginController implements Api {
     @PreAuthorize("!isAuthenticated()")
     @PostMapping("/token/refresh")
     public RefreshTokenResponse refreshAccessToken(@Valid @RequestBody RefreshTokenRequest request) {
-        RefreshTokenResponse result = refreshTokenService.refreshAccessToken(request.getRefreshToken());
-        log.info("Updated access jwt, using refresh token");
-        return result;
+        log.info("Refresh token request");
+        return refreshTokenService.refreshAccessToken(request.getRefreshToken());
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.softserve.teachua.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import java.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -46,8 +45,6 @@ public class JwtFilter extends OncePerRequestFilter {
             } else {
                 log.debug(String.format(ABSENT_TOKEN, request.getRequestURI()));
             }
-        } catch (ExpiredJwtException ex) {
-            log.error("Detected expired jwt token");
         } catch (Exception ex) {
             log.error("Could not authenticate user", ex);
         }
