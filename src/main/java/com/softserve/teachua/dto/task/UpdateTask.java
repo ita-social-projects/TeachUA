@@ -35,7 +35,7 @@ public class UpdateTask implements Convertible {
     @JsonDeserialize(using = HtmlModifyDeserialize.class)
     @CheckForeignLanguage
     @NotBlank(message = "must not be blank")
-    @Size(min = 40, max = 10000, message = "must contain a maximum of 10000 letters")
+    @Size(min = 40, max = 3000, message = "must contain a minimum of 40 and a maximum of 3000 letters")
     private String description;
     @NotBlank
     @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.png")
