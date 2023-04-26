@@ -103,7 +103,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     @Override
     public SuccessUpdatedChallenge updateChallenge(Long id, UpdateChallenge updateChallenge) {
         HtmlUtils.validateDescription(updateChallenge.getDescription());
-        if(!challengeRepository.getReferenceById(id).getSortNumber().equals(updateChallenge.getSortNumber())) {
+        if (!challengeRepository.getReferenceById(id).getSortNumber().equals(updateChallenge.getSortNumber())) {
             validateSortNumber(updateChallenge.getSortNumber());
         }
         Challenge challenge = getChallengeById(id);
@@ -143,7 +143,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     public SuccessUpdateChallengePreview updateChallengePreview(Long id,
             SuccessUpdateChallengePreview updateChallengePreview) {
         Challenge challenge = getChallengeById(id);
-        if(!challengeRepository.getReferenceById(id).getSortNumber().equals(updateChallengePreview.getSortNumber())) {
+        if (!challengeRepository.getReferenceById(id).getSortNumber().equals(updateChallengePreview.getSortNumber())) {
             validateSortNumber(updateChallengePreview.getSortNumber());
         }
         BeanUtils.copyProperties(updateChallengePreview, challenge);
