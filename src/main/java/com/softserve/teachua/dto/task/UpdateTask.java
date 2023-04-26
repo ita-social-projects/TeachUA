@@ -25,7 +25,7 @@ public class UpdateTask implements Convertible {
     @JsonDeserialize(using = TrimDeserialize.class)
     @NotBlank
     @CheckForeignLanguage
-    @Size(min = 5, max = 255, message = "must contain a minimum of 5 and a maximum of 255 letters")
+    @Size(min = 5, max = 50, message = "must contain a minimum of 5 and a maximum of 50 letters")
     private String name;
     @JsonDeserialize(using = HtmlModifyDeserialize.class)
     @NotBlank
@@ -34,6 +34,7 @@ public class UpdateTask implements Convertible {
     private String headerText;
     @JsonDeserialize(using = HtmlModifyDeserialize.class)
     @CheckForeignLanguage
+    @NotBlank(message = "must not be blank")
     @Size(min = 40, max = 3000, message = "must contain a minimum of 40 and a maximum of 3000 letters")
     private String description;
     @NotBlank

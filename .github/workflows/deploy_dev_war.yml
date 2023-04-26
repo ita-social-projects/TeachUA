@@ -28,6 +28,9 @@ jobs:
       - name: Node version
         run: "node --version"
         
+      - name: Java version
+        run: "java -version"
+        
       - name: Install dependencies
         run: "npm install --legacy-peer-deps"
         continue-on-error: true
