@@ -275,6 +275,9 @@ class ChallengeServiceTest {
         when(dtoConverter.convertToDto(challenge, SuccessUpdatedChallenge.class))
             .thenReturn(successUpdatedChallenge);
 
+        when(challengeRepository.getReferenceById(challenge.getId()))
+                .thenReturn(challenge);
+
         assertThat(challengeService.updateChallenge(challenge.getId(), updateChallenge))
             .isEqualTo(successUpdatedChallenge);
 
@@ -285,6 +288,8 @@ class ChallengeServiceTest {
     void updateChallengeWithNewNameAndDescriptionAndTitle() {
         when(challengeRepository.findById(challenge.getId()))
             .thenReturn(Optional.of(challenge));
+        when(challengeRepository.getReferenceById(challenge.getId()))
+                .thenReturn(challenge);
 
         updateChallenge.setDescription(UPDATED_DESCRIPTION);
         updateChallenge.setName(UPDATED_NAME);
@@ -329,6 +334,9 @@ class ChallengeServiceTest {
         when(dtoConverter.convertToDto(challenge, SuccessUpdateChallengePreview.class))
             .thenReturn(successUpdateChallengePreview);
 
+        when(challengeRepository.getReferenceById(challenge.getId()))
+                .thenReturn(challenge);
+
         assertThat(challengeService.updateChallengePreview(challenge.getId(), challengeUpdatePreview))
             .isEqualTo(successUpdateChallengePreview);
 
@@ -342,6 +350,9 @@ class ChallengeServiceTest {
 
         when(challengeRepository.findById(challenge.getId()))
             .thenReturn(Optional.of(challenge));
+
+        when(challengeRepository.getReferenceById(challenge.getId()))
+                .thenReturn(challenge);
 
         challengeService.updateChallengePreview(challenge.getId(),successUpdateChallengePreview);
 
