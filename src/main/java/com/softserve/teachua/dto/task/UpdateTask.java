@@ -34,6 +34,7 @@ public class UpdateTask implements Convertible {
     private String headerText;
     @JsonDeserialize(using = HtmlModifyDeserialize.class)
     @CheckForeignLanguage
+    @NotBlank(message = "must not be blank")
     @Size(min = 40, max = 10000, message = "must contain a maximum of 10000 letters")
     private String description;
     @NotBlank
