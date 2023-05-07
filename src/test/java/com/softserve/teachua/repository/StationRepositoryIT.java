@@ -1,22 +1,17 @@
 package com.softserve.teachua.repository;
 
+import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.Collections;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @Slf4j
 @DataJpaTest
-public class StationRepositoryIT {
-
+class StationRepositoryIT {
     private static final String EXISTING_NAME = "Академмістечко";
     private static final String NOT_EXISTING_NAME = "Кульпарова";
 
@@ -32,17 +27,17 @@ public class StationRepositoryIT {
     private StationRepository stationRepository;
 
     @Test
-    public void findByExistingIdShouldReturnCorrectStationEntity() {
-        assertThat(stationRepository.findById(EXISTING_ID).get().getName()).isEqualTo(EXISTING_NAME);
+    void findByExistingIdShouldReturnCorrectStationEntity() {
+        assertThat(stationRepository.findById(EXISTING_ID).orElseThrow().getName()).isEqualTo(EXISTING_NAME);
     }
 
     @Test
-    public void findByNotExistingIdShouldReturnOptionalEmpty() {
-        assertThat(stationRepository.findById(NOT_EXISTING_ID)).isEqualTo(Optional.empty());
+    void findByNotExistingIdShouldReturnOptionalEmpty() {
+        assertThat(stationRepository.findById(NOT_EXISTING_ID)).isEmpty();
     }
 
     @Test
-    public void findAllByExistingCityNameShouldReturnListOfStations() {
+    void findAllByExistingCityNameShouldReturnListOfStations() {
         assertThat(stationRepository.findAllByCityName(EXISTING_CITY_NAME)).hasSize(RETURN_LIST_SIZE);
         assertThat(stationRepository.findAll().get(0).getId()).isEqualTo(1L);
         assertThat(stationRepository.findAll().get(1).getId()).isEqualTo(2L);
@@ -58,28 +53,27 @@ public class StationRepositoryIT {
     }
 
     @Test
-    public void findAllByNotExistingCityNameShouldReturnEmptyListOfStations() {
+    void findAllByNotExistingCityNameShouldReturnEmptyListOfStations() {
         assertThat(stationRepository.findAllByCityName(NOT_EXISTING_CITY_NAME)).isEqualTo(Collections.emptyList());
     }
 
     @Test
-    public void findByExistingNameShouldReturnCorrectStationEntity() {
-        assertThat(stationRepository.findByName(EXISTING_NAME).get().getName()).isEqualTo(EXISTING_NAME);
+    void findByExistingNameShouldReturnCorrectStationEntity() {
+        assertThat(stationRepository.findByName(EXISTING_NAME).orElseThrow().getName()).isEqualTo(EXISTING_NAME);
     }
 
     @Test
-    public void findByNotExistingNameShouldReturnOptionalEmpty() {
-        assertThat(stationRepository.findByName(NOT_EXISTING_NAME)).isEqualTo(Optional.empty());
+    void findByNotExistingNameShouldReturnOptionalEmpty() {
+        assertThat(stationRepository.findByName(NOT_EXISTING_NAME)).isEmpty();
     }
 
     @Test
-    public void existsByNameShouldReturnTrue() {
+    void existsByNameShouldReturnTrue() {
         assertTrue(stationRepository.existsByName(EXISTING_NAME));
     }
 
     @Test
-    public void notExistsByNameShouldReturnFalse() {
+    void notExistsByNameShouldReturnFalse() {
         assertFalse(stationRepository.existsByName(NOT_EXISTING_NAME));
     }
-
 }

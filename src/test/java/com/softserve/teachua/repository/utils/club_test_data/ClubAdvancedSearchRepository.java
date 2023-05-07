@@ -1,6 +1,5 @@
 package com.softserve.teachua.repository.utils.club_test_data;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

@@ -13,7 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-public class BannerItemRepositoryIT {
+class BannerItemRepositoryIT {
     private static final String BANNER_ITEM_1 = "Banner item 1";
     private static final String BANNER_ITEM_2 = "Banner item 2";
     private static final String BANNER_ITEM_3 = "Banner item 3";
@@ -36,14 +36,14 @@ public class BannerItemRepositoryIT {
     private BannerItemRepository bannerItemRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         entityManager.persist(bannerItem1);
         entityManager.persist(bannerItem2);
         entityManager.persist(bannerItem3);
     }
 
     @Test
-    public void findAllByOrderBySequenceNumberAscShouldReturnSortedListBySequenceNumber() {
+    void findAllByOrderBySequenceNumberAscShouldReturnSortedListBySequenceNumber() {
         assertThat(bannerItemRepository.findAllByOrderBySequenceNumberAsc()).isEqualTo(sortedBannerItems);
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-public class TaskRepositoryIT {
+class TaskRepositoryIT {
     private static final String CHALLENGE_ONE = "Challenge1";
     private static final String CHALLENGE_TWO = "Challenge2";
     private static final String TASK = "Task";
@@ -35,7 +35,7 @@ public class TaskRepositoryIT {
     private TaskRepository taskRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         entityManager.persist(challenge1);
         entityManager.persist(challenge2);
         entityManager.persist(task1);
@@ -43,29 +43,29 @@ public class TaskRepositoryIT {
     }
 
     @Test
-    public void findTasksByChallengeShouldReturnListOfTasks() {
+    void findTasksByChallengeShouldReturnListOfTasks() {
         assertThat(taskRepository.findTasksByChallenge(challenge1)).isEqualTo(tasksWithChallenge1Sorted);
     }
 
     @Test
-    public void findTasksByChallengeShouldReturnEmptyListWhenNothingFound() {
+    void findTasksByChallengeShouldReturnEmptyListWhenNothingFound() {
         assertThat(taskRepository.findTasksByChallenge(challenge2)).isEqualTo(Collections.emptyList());
     }
 
     @Test
-    public void findTasksByChallengeAndStartDateBeforeOrderByStartDateShouldReturnSortedListOfTasks() {
+    void findTasksByChallengeAndStartDateBeforeOrderByStartDateShouldReturnSortedListOfTasks() {
         assertThat(taskRepository.findTasksByChallengeAndStartDateBeforeOrderByStartDate(challenge1,
                 LocalDate.now().plusDays(2))).isEqualTo(tasksWithChallenge1Sorted);
     }
 
     @Test
-    public void findTasksByChallengeAndStartDateBeforeOrderByStartDateShouldReturnEmptyListWithWrongDate() {
+    void findTasksByChallengeAndStartDateBeforeOrderByStartDateShouldReturnEmptyListWithWrongDate() {
         assertThat(taskRepository.findTasksByChallengeAndStartDateBeforeOrderByStartDate(challenge1,
                 LocalDate.now().plusDays(0))).isEqualTo(Collections.emptyList());
     }
 
     @Test
-    public void findTasksByChallengeAndStartDateBeforeOrderByStartDateShouldReturnEmptyListWithChallengeWithoutTasks() {
+    void findTasksByChallengeAndStartDateBeforeOrderByStartDateShouldReturnEmptyListWithChallengeWithoutTasks() {
         assertThat(taskRepository.findTasksByChallengeAndStartDateBeforeOrderByStartDate(challenge2,
                 LocalDate.now().plusDays(2))).isEqualTo(Collections.emptyList());
     }

@@ -1,20 +1,17 @@
 package com.softserve.teachua.repository;
 
 import com.softserve.teachua.model.District;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @DataJpaTest
-public class DistrictRepositoryIT {
+class DistrictRepositoryIT {
     private static final Long EXISTING_ID = 1L;
     private static final Long NOT_EXISTING_ID = 500L;
 
@@ -28,56 +25,56 @@ public class DistrictRepositoryIT {
     private DistrictRepository districtRepository;
 
     @Test
-    public void findByExistingIdShouldReturnOptionalOfCorrectDistrictEntity() {
+    void findByExistingIdShouldReturnOptionalOfCorrectDistrictEntity() {
         assertThat(districtRepository.findById(EXISTING_ID)).isInstanceOf(Optional.class);
-        assertThat(districtRepository.findById(EXISTING_ID).get()).isInstanceOf(District.class);
-        assertThat(districtRepository.findById(EXISTING_ID).get().getId()).isEqualTo(EXISTING_ID);
+        assertThat(districtRepository.findById(EXISTING_ID).orElseThrow()).isInstanceOf(District.class);
+        assertThat(districtRepository.findById(EXISTING_ID).orElseThrow().getId()).isEqualTo(EXISTING_ID);
     }
 
     @Test
-    public void findByNotExistingIdShouldReturnOptionalEmpty() {
-        assertThat(districtRepository.findById(NOT_EXISTING_ID)).isEqualTo(Optional.empty());
+    void findByNotExistingIdShouldReturnOptionalEmpty() {
+        assertThat(districtRepository.findById(NOT_EXISTING_ID)).isEmpty();
     }
 
     @Test
-    public void findByExistingNameShouldReturnOptionalOfCorrectDistrictEntity() {
+    void findByExistingNameShouldReturnOptionalOfCorrectDistrictEntity() {
         assertThat(districtRepository.findByName(EXISTING_NAME)).isInstanceOf(Optional.class);
-        assertThat(districtRepository.findByName(EXISTING_NAME).get()).isInstanceOf(District.class);
-        assertThat(districtRepository.findByName(EXISTING_NAME).get().getName()).isEqualTo(EXISTING_NAME);
+        assertThat(districtRepository.findByName(EXISTING_NAME).orElseThrow()).isInstanceOf(District.class);
+        assertThat(districtRepository.findByName(EXISTING_NAME).orElseThrow().getName()).isEqualTo(EXISTING_NAME);
     }
 
     @Test
-    public void findByNotExistingNameShouldReturnOptionalEmpty() {
-        assertThat(districtRepository.findByName(NOT_EXISTING_NAME)).isEqualTo(Optional.empty());
+    void findByNotExistingNameShouldReturnOptionalEmpty() {
+        assertThat(districtRepository.findByName(NOT_EXISTING_NAME)).isEmpty();
     }
 
     @Test
-    public void findFirstByExistingNameShouldReturnOptionalOfCorrectDistrictEntity() {
+    void findFirstByExistingNameShouldReturnOptionalOfCorrectDistrictEntity() {
         assertThat(districtRepository.findByName(EXISTING_NAME)).isInstanceOf(Optional.class);
-        assertThat(districtRepository.findByName(EXISTING_NAME).get()).isInstanceOf(District.class);
-        assertThat(districtRepository.findByName(EXISTING_NAME).get().getName()).isEqualTo(EXISTING_NAME);
+        assertThat(districtRepository.findByName(EXISTING_NAME).orElseThrow()).isInstanceOf(District.class);
+        assertThat(districtRepository.findByName(EXISTING_NAME).orElseThrow().getName()).isEqualTo(EXISTING_NAME);
     }
 
     @Test
-    public void findFirstByNotExistingNameShouldReturnOptionalEmpty() {
-        assertThat(districtRepository.findByName(NOT_EXISTING_NAME)).isEqualTo(Optional.empty());
+    void findFirstByNotExistingNameShouldReturnOptionalEmpty() {
+        assertThat(districtRepository.findByName(NOT_EXISTING_NAME)).isEmpty();
     }
 
     @Test
-    public void existsByExistingNameShouldReturnTrue() {
+    void existsByExistingNameShouldReturnTrue() {
         assertTrue(districtRepository.existsByName(EXISTING_NAME));
     }
 
     @Test
-    public void existsByNotExistingNameShouldReturnFalse() {
+    void existsByNotExistingNameShouldReturnFalse() {
         assertFalse(districtRepository.existsByName(NOT_EXISTING_NAME));
     }
 
     @Test
-    public void findAllByExistingCityNameShouldReturnListOfCorrectDistrictEntities() {
+    void findAllByExistingCityNameShouldReturnListOfCorrectDistrictEntities() {
         List<District> list = districtRepository.findAllByCityName(EXISTING_CITY_NAME);
 
-        assertThat(list.size()).isGreaterThan(0);
+        assertThat(list).isNotEmpty();
 
         for (District district : list) {
             assertThat(district.getCity().getName()).isEqualTo(EXISTING_CITY_NAME);
@@ -85,15 +82,15 @@ public class DistrictRepositoryIT {
     }
 
     @Test
-    public void findAllByNotExistingCityNameShouldReturnEmptyList() {
-        assertThat(districtRepository.findAllByCityName(NOT_EXISTING_CITY_NAME).size()).isEqualTo(0);
+    void findAllByNotExistingCityNameShouldReturnEmptyList() {
+        assertThat(districtRepository.findAllByCityName(NOT_EXISTING_CITY_NAME)).isEmpty();
     }
 
     @Test
-    public void findAllByOrderByIdAscTest() {
+    void findAllByOrderByIdAscTest() {
         List<District> list = districtRepository.findAllByOrderByIdAsc();
 
-        assertThat(list.size()).isGreaterThan(0);
+        assertThat(list).isNotEmpty();
 
         for (int i = 1; i < list.size(); i++) {
             assertThat(list.get(i).getId()).isGreaterThan(list.get(i - 1).getId());
