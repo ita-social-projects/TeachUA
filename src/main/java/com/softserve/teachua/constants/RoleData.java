@@ -7,9 +7,9 @@ public enum RoleData {
     ADMIN("ADMIN"), USER("USER"), MANAGER("MANAGER");
 
     private static final String DB_PREFIX = "ROLE_";
-    private String name;
+    private final String name;
 
-    private RoleData(String name) {
+    RoleData(String name) {
         this.name = name;
     }
 

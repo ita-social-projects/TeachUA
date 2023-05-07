@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Hidden
 public class EnvironmentController implements Api {
-    private EnvironmentService environmentService;
+    private final EnvironmentService environmentService;
 
     public EnvironmentController(EnvironmentService environmentService) {
         this.environmentService = environmentService;

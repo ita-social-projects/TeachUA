@@ -52,8 +52,8 @@ public class CategoryServiceTest {
     private ArchiveService archiveService;
     @InjectMocks
     private CategoryServiceImpl categoryService;
-    private Category correctCategory = Category.builder().id(CORRECT_ID).name(CORRECT_NAME).build();;
-    private CategoryProfile categoryProfile = CategoryProfile.builder().id(CORRECT_ID).name(CORRECT_NAME).build();
+    private final Category correctCategory = Category.builder().id(CORRECT_ID).name(CORRECT_NAME).build();;
+    private final CategoryProfile categoryProfile = CategoryProfile.builder().id(CORRECT_ID).name(CORRECT_NAME).build();
     private List<Category> list;
     private List<CategoryResponse> responseList;
     private CategoryArch categoryArch;

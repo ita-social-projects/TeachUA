@@ -27,13 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * This controller is for managing the categories.
  */
-
 @RestController
 @Slf4j
 @Tag(name = "category", description = "the Category API")
 @SecurityRequirement(name = "api")
 public class CategoryController implements Api {
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @Autowired
     public CategoryController(CategoryService categoryService) {
