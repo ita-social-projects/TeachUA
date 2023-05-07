@@ -203,7 +203,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                         .centerExternalId(center.getCenterExternalId()).build());
                 excelIdToDbId.put(center.getCenterExternalId(), createdCenter.getId());
             } catch (AlreadyExistException e) {
-                log.error("***###ERROR CENTER to DB: " + center.toString());
+                log.error("***###ERROR CENTER to DB: " + center);
                 log.error("Trying to add already exists center from excel");
             } catch (Exception constraintViolationException) {
                 log.error("Validation in description center: " + center.getCenterExternalId());
@@ -258,7 +258,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
                 clubService.addClubsFromExcel(clubProfile);
             } catch (AlreadyExistException e) {
-                log.error("***###ERROR Club to DB: " + club.toString());
+                log.error("***###ERROR Club to DB: " + club);
                 log.error(e.getMessage());
             } catch (Exception constraintViolationException) {
                 log.error("Validation in description: " + club.getClubExternalId());

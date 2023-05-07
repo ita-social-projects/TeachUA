@@ -373,7 +373,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             advancedSearchClubProfile.setCategoriesName(
                     categoryService.getAllCategories().stream().map(CategoryResponse::getName).toList());
         }
-        log.debug("getAdvancedSearchClubs, advClubProf :" + advancedSearchClubProfile.toString());
+        log.debug("getAdvancedSearchClubs, advClubProf :" + advancedSearchClubProfile);
 
         Page<Club> clubResponses = clubRepository.findAllBylAdvancedSearch(advancedSearchClubProfile.getName(),
                 advancedSearchClubProfile.getAge(), advancedSearchClubProfile.getCityName(),
