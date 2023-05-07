@@ -269,7 +269,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         return new PageImpl<>(
                 centerResponses.stream()
                         .map(centerToCenterResponseConverter::convertToCenterResponse)
-                        .collect(Collectors.toList()),
+                        .toList(),
                 centerResponses.getPageable(), centerResponses.getTotalElements());
     }
 
@@ -279,7 +279,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         return new PageImpl<>(
                 clubsResponses
                         .stream().map(toClubResponseConverter::convertToClubResponse)
-                        .collect(Collectors.toList()), clubsResponses.getPageable(), clubsResponses.getTotalElements()
+                        .toList(), clubsResponses.getPageable(), clubsResponses.getTotalElements()
         );
     }
 
@@ -293,7 +293,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         return new PageImpl<>(
                 centersOnPage.stream()
                         .map(centerToCenterResponseConverter::convertToCenterResponse)
-                        .peek(centerResponse -> log.debug(centerResponse.toString())).collect(Collectors.toList()),
+                        .peek(centerResponse -> log.debug(centerResponse.toString())).toList(),
                 centersOnPage.getPageable(), centersOnPage.getTotalElements());
     }
 
@@ -313,7 +313,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     public List<CenterResponse> getListOfCenters() {
         return centerRepository.findAll().stream()
                 .map(centerToCenterResponseConverter::convertToCenterResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private boolean isCenterExistByName(String name) {
@@ -387,7 +387,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
             updCenter.setRating(clubRepository.findAvgRating(centerResponse.getId()));
             centerRepository.save(updCenter);
             return centerResponse;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     @Override

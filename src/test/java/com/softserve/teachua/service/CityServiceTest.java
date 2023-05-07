@@ -74,9 +74,7 @@ public class CityServiceTest {
     void getCityProfileByNotExistingIdShouldThrowNotExistException() {
         when(cityRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            cityService.getCityProfileById(NOT_EXISTING_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> cityService.getCityProfileById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -91,9 +89,7 @@ public class CityServiceTest {
     public void getCityByNotExistingIdShouldThrowNotExistException() {
         when(cityRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            cityService.getCityById(NOT_EXISTING_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> cityService.getCityById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -108,9 +104,7 @@ public class CityServiceTest {
     void getCityByNotExistingNameShouldThrowNotExistException() {
         when(cityRepository.findByName(NOT_EXISTING_NAME)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            cityService.getCityByName(NOT_EXISTING_NAME);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> cityService.getCityByName(NOT_EXISTING_NAME)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -132,9 +126,7 @@ public class CityServiceTest {
         cityProfile.setName(EXISTING_NAME);
         when(cityRepository.existsByName(EXISTING_NAME)).thenReturn(true);
 
-        assertThatThrownBy(() -> {
-            cityService.addCity(cityProfile);
-        }).isInstanceOf(AlreadyExistException.class);
+        assertThatThrownBy(() -> cityService.addCity(cityProfile)).isInstanceOf(AlreadyExistException.class);
     }
 
     @Test
@@ -165,9 +157,7 @@ public class CityServiceTest {
     void updateCityByNotExistingIdShouldThrowNotExistException() {
         when(cityRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            cityService.updateCity(NOT_EXISTING_ID, cityProfile);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> cityService.updateCity(NOT_EXISTING_ID, cityProfile)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -188,8 +178,6 @@ public class CityServiceTest {
     void deleteCityByNotExistingIdShouldThrowNotExistException() {
         when(cityRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            cityService.deleteCityById(NOT_EXISTING_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> cityService.deleteCityById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 }

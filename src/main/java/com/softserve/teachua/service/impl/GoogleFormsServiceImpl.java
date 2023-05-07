@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +65,7 @@ public class GoogleFormsServiceImpl implements GoogleFormsService {
                                     .get(0).getValue().trim())
                             .totalScore(resp.getTotalScore() == null ? 0 : resp.getTotalScore().intValue())
                             .build()
-                    ).collect(Collectors.toList());
+                    ).toList();
         }
 
         return GoogleFormsResponse.builder()

@@ -87,9 +87,7 @@ public class BannerItemServiceTest {
     public void getBannerItemProfileByNotExistingIdShouldThrowNotExistException() {
         when(bannerItemRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            bannerItemService.getBannerItemProfileById(NOT_EXISTING_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> bannerItemService.getBannerItemProfileById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -104,9 +102,7 @@ public class BannerItemServiceTest {
     public void getBannerItemByNotExistingIdShouldThrowNotExistException() {
         when(bannerItemRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            bannerItemService.getBannerItemById(NOT_EXISTING_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> bannerItemService.getBannerItemById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -158,9 +154,7 @@ public class BannerItemServiceTest {
     public void updateBannerItemWithNotExistingIdThrowNotExistException() {
         when(bannerItemRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            bannerItemService.updateBannerItem(NOT_EXISTING_ID, bannerItemProfile);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> bannerItemService.updateBannerItem(NOT_EXISTING_ID, bannerItemProfile)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -179,8 +173,6 @@ public class BannerItemServiceTest {
     public void deleteBannerItemWithNotExistingIdShouldThrowNotExistException() {
         when(bannerItemRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            bannerItemService.deleteBannerItemById(NOT_EXISTING_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> bannerItemService.deleteBannerItemById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 }

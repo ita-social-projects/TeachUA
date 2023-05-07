@@ -18,7 +18,6 @@ import com.softserve.teachua.service.CityService;
 import com.softserve.teachua.service.DistrictService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +102,7 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
     public List<DistrictResponse> getListOfDistricts() {
         List<DistrictResponse> districtResponses = districtRepository.findAllByOrderByIdAsc().stream()
                 .map(district -> (DistrictResponse) dtoConverter.convertToDto(district, DistrictResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of districts = " + districtResponses);
         return districtResponses;
@@ -113,7 +112,7 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
     public List<DistrictResponse> getListOfDistrictsByCityName(String name) {
         List<DistrictResponse> districtResponses = districtRepository.findAllByCityName(name).stream()
                 .map(district -> (DistrictResponse) dtoConverter.convertToDto(district, DistrictResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of districts = " + districtResponses);
         return districtResponses;

@@ -1,5 +1,6 @@
 package com.softserve.teachua.repository;
 
+import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.repository.utils.club_test_data.ClubAdvancedSearchRepository;
@@ -163,10 +164,8 @@ public class ClubRepositoryIT {
 
         assertThat(clubs.size()).isGreaterThan(0);
 
-        clubs.forEach(club -> {
-            assertThat(testClub.getAge()).isGreaterThanOrEqualTo(club.getAgeFrom())
-                    .isLessThanOrEqualTo(club.getAgeTo());
-        });
+        clubs.forEach(club -> assertThat(testClub.getAge()).isGreaterThanOrEqualTo(club.getAgeFrom())
+                .isLessThanOrEqualTo(club.getAgeTo()));
     }
 
     @Test
@@ -198,9 +197,7 @@ public class ClubRepositoryIT {
 
         assertThat(clubs.size()).isGreaterThan(0);
 
-        clubs.forEach(club -> {
-            assertTrue(club.getIsOnline());
-        });
+        clubs.forEach(club -> assertTrue(club.getIsOnline()));
     }
 
     //@Test
@@ -212,9 +209,7 @@ public class ClubRepositoryIT {
 
         assertThat(clubs.size()).isGreaterThan(0);
 
-        clubs.forEach(club -> {
-            assertFalse(club.getIsOnline());
-        });
+        clubs.forEach(club -> assertFalse(club.getIsOnline()));
     }
 
     @Test
@@ -227,10 +222,8 @@ public class ClubRepositoryIT {
 
         assertThat(clubs.size()).isGreaterThan(0);
 
-        clubs.forEach(club -> {
-            assertTrue(club.getCategories().stream().map(category -> category.getName())
-                    .anyMatch(testClub.getCategoriesNames()::contains));
-        });
+        clubs.forEach(club -> assertTrue(club.getCategories().stream().map(Category::getName)
+                .anyMatch(testClub.getCategoriesNames()::contains)));
     }
 
     @Test
@@ -242,10 +235,8 @@ public class ClubRepositoryIT {
 
         assertThat(clubs.size()).isGreaterThan(0);
 
-        clubs.forEach(club -> {
-            assertTrue(club.getCategories().stream().map(category -> category.getName())
-                    .anyMatch(testClub.getCategoriesNames()::contains));
-        });
+        clubs.forEach(club -> assertTrue(club.getCategories().stream().map(Category::getName)
+                .anyMatch(testClub.getCategoriesNames()::contains)));
     }
 
     //@Test
@@ -269,10 +260,8 @@ public class ClubRepositoryIT {
 
         assertThat(clubs.size()).isGreaterThan(0);
 
-        clubs.forEach(club -> {
-            assertTrue(club.getLocations().stream().map(location -> location.getCity().getName())
-                    .anyMatch(testClub.getCityName()::contains));
-        });
+        clubs.forEach(club -> assertTrue(club.getLocations().stream().map(location -> location.getCity().getName())
+                .anyMatch(testClub.getCityName()::contains)));
     }
 
     //@Test
@@ -285,10 +274,8 @@ public class ClubRepositoryIT {
 
         assertThat(clubs.size()).isGreaterThan(0);
 
-        clubs.forEach(club -> {
-            assertTrue(club.getLocations().stream().map(location -> location.getCity().getName())
-                    .anyMatch(testClub.getCityName()::contains));
-        });
+        clubs.forEach(club -> assertTrue(club.getLocations().stream().map(location -> location.getCity().getName())
+                .anyMatch(testClub.getCityName()::contains)));
     }
 
     @Test
@@ -312,10 +299,8 @@ public class ClubRepositoryIT {
 
         assertThat(clubs.size()).isGreaterThan(0);
 
-        clubs.forEach(club -> {
-            assertTrue(club.getLocations().stream().map(location -> location.getDistrict().getName())
-                    .anyMatch(testClub.getDistrictName()::contains));
-        });
+        clubs.forEach(club -> assertTrue(club.getLocations().stream().map(location -> location.getDistrict().getName())
+                .anyMatch(testClub.getDistrictName()::contains)));
     }
 
     @Test
@@ -339,10 +324,8 @@ public class ClubRepositoryIT {
 
         assertThat(clubs.size()).isGreaterThan(0);
 
-        clubs.forEach(club -> {
-            assertTrue(club.getLocations().stream().map(location -> location.getStation().getName())
-                    .anyMatch(testClub.getStationName()::contains));
-        });
+        clubs.forEach(club -> assertTrue(club.getLocations().stream().map(location -> location.getStation().getName())
+                .anyMatch(testClub.getStationName()::contains)));
     }
 
     @Test
@@ -375,7 +358,7 @@ public class ClubRepositoryIT {
                     .anyMatch(testClub.getDistrictName()::contains));
             assertTrue(club.getLocations().stream().map(location -> location.getStation().getName())
                     .anyMatch(testClub.getStationName()::contains));
-            assertTrue(club.getCategories().stream().map(category -> category.getName())
+            assertTrue(club.getCategories().stream().map(Category::getName)
                     .anyMatch(testClub.getCategoriesNames()::contains));
         });
     }

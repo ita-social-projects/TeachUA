@@ -107,9 +107,7 @@ public class DistrictServiceTest {
     @Test
     public void getDistrictByWrongNameShouldThrowNotExistException() {
         when(districtRepository.findFirstByName(WRONG_DISTRICT_NAME)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> {
-            districtService.getDistrictByName(WRONG_DISTRICT_NAME);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> districtService.getDistrictByName(WRONG_DISTRICT_NAME)).isInstanceOf(NotExistException.class);
 
     }
 
@@ -126,9 +124,7 @@ public class DistrictServiceTest {
     @Test
     public void addDistrictShouldThrowAlreadyExistException() {
         when(districtRepository.existsByName(CORRECT_DISTRICT_NAME)).thenReturn(true);
-        assertThatThrownBy(() -> {
-            districtService.addDistrict(districtProfile);
-        }).isInstanceOf(AlreadyExistException.class);
+        assertThatThrownBy(() -> districtService.addDistrict(districtProfile)).isInstanceOf(AlreadyExistException.class);
     }
 
     @Test

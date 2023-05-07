@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,7 @@ public class AddressServiceImpl implements AddressService {
         List<Location> locationList = locationRepository.findAll().stream()
                 .filter(location -> (hasAddressOtherCity(location.getAddress()))
                         && !location.getAddress().matches(".*(" + location.getCity().getName() + UKRAINIAN_ALPHABET)
-                ).collect(Collectors.toList());
+                ).toList();
 
         List<AddressProfile> addressProfileList = new LinkedList<>();
 

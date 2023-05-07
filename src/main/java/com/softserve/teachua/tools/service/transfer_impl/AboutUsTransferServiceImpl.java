@@ -6,7 +6,6 @@ import com.softserve.teachua.tools.FileUtils;
 import com.softserve.teachua.tools.repository.AboutUsInfoRepository;
 import com.softserve.teachua.tools.service.AboutUsTransferService;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +31,6 @@ public class AboutUsTransferServiceImpl implements AboutUsTransferService {
                 aboutUs.setPicture(fileUtils.moveImage(aboutUs.getPicture(), "aboutUs"));
             }
             return aboutUs;
-        }).map(aboutUsItemService::addAboutUsItem).collect(Collectors.toList());
+        }).map(aboutUsItemService::addAboutUsItem).toList();
     }
 }

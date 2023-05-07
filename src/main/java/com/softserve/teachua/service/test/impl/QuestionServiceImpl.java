@@ -271,7 +271,7 @@ public class QuestionServiceImpl implements QuestionService {
         questionResponse.setAnswerTitles(question.getAnswers()
                 .stream()
                 .map(Answer::getText)
-                .collect(Collectors.toList()));
+                .toList());
         return questionResponse;
     }
 
@@ -295,7 +295,7 @@ public class QuestionServiceImpl implements QuestionService {
     private List<QuestionResponse> mapToDtoList(List<Question> questions) {
         return questions.stream()
                 .map(this::mapToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Page<QuestionResponse> mapToDtoPage(Page<Question> questions) {

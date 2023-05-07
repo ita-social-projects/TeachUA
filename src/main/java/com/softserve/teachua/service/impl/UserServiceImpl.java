@@ -42,7 +42,6 @@ import jakarta.validation.ValidationException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,7 +128,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         });
         List<UserResponse> userResponses = users.stream()
                 .map(user -> (UserResponse) dtoConverter.convertToDto(user, UserResponse.class))
-                .collect(Collectors.toList());
+                .toList();
         log.debug("getting users by role name - {}", roleName);
         return userResponses;
     }
@@ -160,7 +159,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     public List<UserResponse> getListOfUsers() {
         List<UserResponse> userResponses = userRepository.findAll().stream()
                 .map(user -> (UserResponse) dtoConverter.convertToDto(user, UserResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("getting list of users {}", userResponses);
         return userResponses;

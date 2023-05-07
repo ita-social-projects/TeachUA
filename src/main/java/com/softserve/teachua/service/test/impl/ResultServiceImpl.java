@@ -68,10 +68,10 @@ public class ResultServiceImpl implements ResultService {
         List<Result> userResults = findResultsByUserId(userId);
         List<Long> groupTestsIds = testService.findAllByGroupId(groupId).stream()
                 .map(Test::getId)
-                .collect(Collectors.toList());
+                .toList();
         List<Result> results = userResults.stream()
                 .filter(result -> groupTestsIds.contains(result.getTest().getId()))
-                .collect(Collectors.toList());
+                .toList();
         List<UserResult> dtoResults = mapToDtoList(results);
         setResultLink(dtoResults);
         return dtoResults;
@@ -84,7 +84,7 @@ public class ResultServiceImpl implements ResultService {
         List<Result> userResults = findResultsByUserId(userId);
         List<Result> results = userResults.stream()
                 .filter(result -> result.getTest().getId().equals(testId))
-                .collect(Collectors.toList());
+                .toList();
         List<UserResult> dtoResults = mapToDtoList(results);
         setResultLink(dtoResults);
         return dtoResults;
@@ -216,6 +216,6 @@ public class ResultServiceImpl implements ResultService {
     private List<UserResult> mapToDtoList(List<Result> results) {
         return results.stream()
                 .map(result -> modelMapper.map(result, UserResult.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

@@ -24,7 +24,6 @@ import com.softserve.teachua.service.FeedbackService;
 import com.softserve.teachua.service.UserService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,7 +88,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     public List<FeedbackResponse> getAllByClubId(Long id) {
         List<FeedbackResponse> feedbackResponses = feedbackRepository.getAllByClubId(id).stream()
                 .map(feedback -> (FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("get list of feedback -" + feedbackResponses);
         return feedbackResponses;
@@ -117,7 +116,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     public List<FeedbackResponse> getListOfFeedback() {
         List<FeedbackResponse> feedbackResponses = feedbackRepository.findAll().stream()
                 .map(feedback -> (FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("get list of feedback -" + feedbackResponses);
         return feedbackResponses;

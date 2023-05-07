@@ -23,7 +23,6 @@ import com.softserve.teachua.utils.HtmlUtils;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +74,7 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
     public List<TaskPreview> getTasksByChallengeId(Long id) {
         Challenge challenge = challengeService.getChallengeById(id);
         Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
-        return taskRepository.findTasksByChallenge(challenge).stream().map(function).collect(Collectors.toList());
+        return taskRepository.findTasksByChallenge(challenge).stream().map(function).toList();
     }
 
     @Override
@@ -83,7 +82,7 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
         Challenge challenge = challengeService.getChallengeById(id);
         Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
         return taskRepository.findCurrentTasksByChallenge(challenge).stream().map(function)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -101,7 +100,7 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
     public List<TaskPreview> getListOfTasks() {
         List<TaskPreview> taskPreviewList = taskRepository.findAll().stream()
                 .map(task -> (TaskPreview) dtoConverter.convertToDto(task, TaskPreview.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("getting list of tasks {}", taskPreviewList);
         return taskPreviewList;

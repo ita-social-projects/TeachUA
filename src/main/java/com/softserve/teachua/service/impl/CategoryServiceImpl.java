@@ -19,7 +19,6 @@ import com.softserve.teachua.service.CategoryService;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +98,7 @@ public class CategoryServiceImpl implements CategoryService, ArchiveMark<Categor
 
         List<CategoryResponse> categoryResponses = categoryList.stream()
                 .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
-                .collect(Collectors.toList());
+                .toList();
         log.debug("Getting list of categories = {}", categoryResponses);
         return categoryResponses;
     }
@@ -110,7 +109,7 @@ public class CategoryServiceImpl implements CategoryService, ArchiveMark<Categor
         return new PageImpl<>(
                 categoryResponses.stream()
                         .map(category -> (CategoryResponse) dtoConverter.convertToDto(category, CategoryResponse.class))
-                        .collect(Collectors.toList()),
+                        .toList(),
                 categoryResponses.getPageable(), categoryResponses.getTotalElements());
     }
 
@@ -139,7 +138,7 @@ public class CategoryServiceImpl implements CategoryService, ArchiveMark<Categor
         }
         return categories.stream().map(
                 category -> (SearchPossibleResponse) dtoConverter.convertToDto(category, SearchPossibleResponse.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

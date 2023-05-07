@@ -13,7 +13,6 @@ import com.softserve.teachua.service.AboutUsItemService;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<A
 
     @Autowired
     public AboutUsItemServiceImpl(AboutUsItemRepository aboutUsItemRepository, ArchiveService archiveService,
-            DtoConverter dtoConverter, ObjectMapper objectMapper) {
+                                  DtoConverter dtoConverter, ObjectMapper objectMapper) {
         this.aboutUsItemRepository = aboutUsItemRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
@@ -64,10 +63,9 @@ public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<A
 
     @Override
     public List<AboutUsItemResponse> getListOfAboutUsItemResponses() {
-        List<AboutUsItemResponse> aboutUsItemResponses = aboutUsItemRepository.findAllByOrderByNumberAsc().stream()
+        return aboutUsItemRepository.findAllByOrderByNumberAsc().stream()
                 .map(item -> (AboutUsItemResponse) dtoConverter.convertToDto(item, AboutUsItemResponse.class))
-                .collect(Collectors.toList());
-        return aboutUsItemResponses;
+                .toList();
     }
 
     @Override

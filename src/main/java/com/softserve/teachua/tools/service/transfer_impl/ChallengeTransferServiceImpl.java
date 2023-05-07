@@ -10,7 +10,6 @@ import com.softserve.teachua.tools.repository.ChallengeInfoRepository;
 import com.softserve.teachua.tools.service.ChallengeTransferService;
 import com.softserve.teachua.tools.transmodel.ChallengeTransfer;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,7 +46,7 @@ public class ChallengeTransferServiceImpl implements ChallengeTransferService {
             createChallenge.setPicture(fileUtils.moveImage(createChallenge.getPicture(), "challenges"));
             return dtoConverter.convertToEntity(createChallenge, Challenge.builder().build()).withId(null);
         }).map(challengeRepository::save).map(challenge -> (SuccessCreatedChallenge) dtoConverter
-                .convertToDto(challenge, SuccessCreatedChallenge.class)).collect(Collectors.toList());
+                .convertToDto(challenge, SuccessCreatedChallenge.class)).toList();
     }
 
     @Override

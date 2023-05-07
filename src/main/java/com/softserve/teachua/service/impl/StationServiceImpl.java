@@ -19,7 +19,6 @@ import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.StationService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +87,7 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
         List<StationResponse> stationList = stationRepository
                 .findAllByDistrictNameAndCityName(stationProfile.getDistrictName(), stationProfile.getCityName())
                 .stream().map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/get all stations by District = " + stationList);
 
@@ -116,7 +115,7 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     public List<StationResponse> getListOfStations() {
         List<StationResponse> stationResponses = stationRepository.findAll().stream()
                 .map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of stations = " + stationResponses);
         return stationResponses;
@@ -126,7 +125,7 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     public List<StationResponse> getListOfStationsByCityName(String name) {
         List<StationResponse> stationResponses = stationRepository.findAllByCityName(name).stream()
                 .map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of stations = " + stationResponses);
         return stationResponses;

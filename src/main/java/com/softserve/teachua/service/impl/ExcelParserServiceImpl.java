@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -175,7 +174,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
         return Arrays.stream(excelColumns)
                 .filter(column -> !indexes.containsKey(column))
                 .map(column -> new ExcelParsingMistake(column.getMissingMessage(), headerRow.toString(), 1))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Long parseCenters(XSSFWorkbook excelBook, List<CenterExcel> centersOutput,

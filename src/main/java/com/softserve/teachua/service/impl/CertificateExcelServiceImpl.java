@@ -13,10 +13,17 @@ import com.softserve.teachua.dto.certificate_excel.ExcelParsingResponse;
 import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
 import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.model.CertificateTemplate;
+import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;
 import com.softserve.teachua.service.CertificateExcelService;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.CertificateValidator;
 import com.softserve.teachua.service.ExcelParserService;
+import static com.softserve.teachua.service.impl.CertificateValidatorImpl.COURSE_NUMBER_ERROR;
+import static com.softserve.teachua.service.impl.CertificateValidatorImpl.HOURS_ERROR;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,11 +37,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -50,9 +52,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;
-import static com.softserve.teachua.service.impl.CertificateValidatorImpl.COURSE_NUMBER_ERROR;
-import static com.softserve.teachua.service.impl.CertificateValidatorImpl.HOURS_ERROR;
 
 @Slf4j
 @Service
@@ -94,29 +93,31 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
         return response;
     }
 
+    @SuppressWarnings("checkstyle:Indentation")
     @Override
     public CertificateByTemplateExcelParsingResponse parseFlexibleExcel(MultipartFile multipartFile) {
         List<List<Cell>> allCells = excelParserService.excelToList(multipartFile);
-        // @formatter:off
         List<List<String>> allConvertedCells =
                 allCells.stream().map(cellList ->
                         cellList.stream().map(element -> {
                             String value = "";
                             switch (element.getCellType()) {
-                              case STRING:
-                                  return element.getRichStringCellValue().getString();
-                              case NUMERIC:
-                                  if (DateUtil.isCellDateFormatted(element)) {
-                                      return String.valueOf(element.getDateCellValue());
-                                  } else {
-                                      return String.valueOf((int) element.getNumericCellValue());
-                                  }
-                              default:
-                                  return value;
+                                case STRING -> {
+                                    return element.getRichStringCellValue().getString();
+                                }
+                                case NUMERIC -> {
+                                    if (DateUtil.isCellDateFormatted(element)) {
+                                        return String.valueOf(element.getDateCellValue());
+                                    } else {
+                                        return String.valueOf((int) element.getNumericCellValue());
+                                    }
+                                }
+                                default -> {
+                                    return value;
+                                }
                             }
-                        }).collect(Collectors.toList())
-                ).collect(Collectors.toList());
-        // @formatter:on
+                        }).toList()
+                ).toList();
         return CertificateByTemplateExcelParsingResponse.builder()
                 .columnHeadersList(allConvertedCells.remove(0))
                 .excelContent(allConvertedCells)
@@ -293,10 +294,10 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
             throw new BadRequestException();
         }
         List<String> columnNames = new ArrayList<>(invalidValuesList.get(0).keySet());
-        List<List<String>> rows = invalidValuesList.stream()
+        List<ArrayList<String>> rows = invalidValuesList.stream()
                 .map(Map::values)
                 .map(ArrayList::new)
-                .collect(Collectors.toList());
+                .toList();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (XSSFWorkbook workbook = new XSSFWorkbook()) {
             XSSFSheet sheet = workbook.createSheet("Sheet1");

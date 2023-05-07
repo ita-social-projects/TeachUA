@@ -213,7 +213,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
         Club updatedClub = dtoConverter.convertToEntity(clubResponse, club).withId(id)
                 .withCategories(
-                        clubResponse.getCategories().stream().map(categoryResponse -> categoryResponse.getName())
+                        clubResponse.getCategories().stream().map(CategoryResponse::getName)
                                 .map(categoryService::getCategoryByName).collect(Collectors.toSet()))
                 .withContacts(contactsStringConverter.convertContactDataResponseToString(clubResponse.getContacts()))
                 .withLocations(locationService.updateLocationByClub(locations, club)).withCenter(center);
@@ -223,7 +223,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             galleryRepository.deleteAllByClubId(clubResponse.getId());
             updatedClub.setUrlGallery(galleryPhotos.stream().map(photo -> galleryRepository.save(
                             new GalleryPhoto().withUrl(photo.getUrl()).withClub(updatedClub)))
-                    .collect(Collectors.toList()));
+                    .toList());
         }
 
         log.debug("updating club by id {}", updatedClub);
@@ -287,7 +287,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             club.setUrlGallery(galleryPhotos.stream()
                     .map(url -> galleryRepository.save(dtoConverter.convertToEntity(url,
                             new GalleryPhoto()).withClub(club).withUrl(url.getUrlGallery())))
-                    .collect(Collectors.toList()));
+                    .toList());
         }
         log.debug("adding club with name : {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
@@ -328,8 +328,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Override
     public List<ClubResponse> getListOfClubs() {
         List<ClubResponse> clubResponses = clubRepository.findAll().stream()
-                .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
-                .collect(Collectors.toList());
+                .map(club -> toClubResponseConverter.convertToClubResponse(club))
+                .toList();
 
         log.debug("getting list of clubs {}", clubResponses);
         return clubResponses;
@@ -338,18 +338,17 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Override
     public List<ClubResponse> getListOfClubsByCenterId(long centerId) {
         List<ClubResponse> clubResponses = clubRepository.findClubsByCenterId(centerId).stream()
-                .map(club -> toClubResponseConverter.convertToClubResponse(club))
-                .collect(Collectors.toList());
+                .map(toClubResponseConverter::convertToClubResponse)
+                .toList();
         log.debug("getting list of clubs {}", clubResponses);
         return clubResponses;
     }
 
     @Override
     public List<ClubResponse> getListClubsByUserId(Long id) {
-        List<ClubResponse> clubResponses = clubRepository.findAllByUserId(id).stream()
-                .map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
-                .collect(Collectors.toList());
-        return clubResponses;
+        return clubRepository.findAllByUserId(id).stream()
+                .map(club -> toClubResponseConverter.convertToClubResponse(club))
+                .toList();
     }
 
     @Override
@@ -358,8 +357,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 .findByCategoriesNames(similarClubProfile.getId(),
                         CategoryUtil.replaceSemicolonToComma(similarClubProfile.getCategoriesName()),
                         similarClubProfile.getCityName(), PageRequest.of(0, 2))
-                .stream().map(category -> (ClubResponse) toClubResponseConverter.convertToClubResponse(category))
-                .collect(Collectors.toList());
+                .stream().map(toClubResponseConverter::convertToClubResponse)
+                .toList();
     }
 
     @Override
@@ -382,8 +381,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 advancedSearchClubProfile.getIsOnline(), pageable);
 
         return new PageImpl<>(
-                clubResponses.stream().map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
-                        .collect(Collectors.toList()),
+                clubResponses.stream().map(toClubResponseConverter::convertToClubResponse)
+                        .toList(),
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
 
@@ -392,8 +391,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         Page<Club> clubResponses = clubRepository.findAllWithoutCategories(pageable);
 
         return new PageImpl<>(
-                clubResponses.stream().map(club -> toClubResponseConverter.convertToClubResponse(club))
-                        .collect(Collectors.toList()),
+                clubResponses.stream().map(toClubResponseConverter::convertToClubResponse)
+                        .toList(),
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
 
@@ -409,8 +408,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         log.debug("===find clubs : " + clubResponses.getNumberOfElements());
 
         return new PageImpl<>(
-                clubResponses.stream().map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
-                        .collect(Collectors.toList()),
+                clubResponses.stream().map(toClubResponseConverter::convertToClubResponse)
+                        .toList(),
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
 
@@ -419,7 +418,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         return clubRepository.findTop3ByName(text, cityName, PageRequest.of(0, 3)).stream()
                 .map(category -> (SearchPossibleResponse) dtoConverter.convertToDto(category,
                         SearchPossibleResponse.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -427,8 +426,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         Page<Club> clubResponses = clubRepository.findAllByUserId(id, pageable);
 
         return new PageImpl<>(
-                clubResponses.stream().map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
-                        .collect(Collectors.toList()),
+                clubResponses.stream().map(toClubResponseConverter::convertToClubResponse)
+                        .toList(),
                 clubResponses.getPageable(), clubResponses.getTotalElements());
     }
 
@@ -437,8 +436,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         List<Club> clubResponses = clubRepository.findAllClubsByParameters(searchClubProfile.getCityName(),
                 searchClubProfile.getCategoryName());
 
-        return clubResponses.stream().map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
-                .collect(Collectors.toList());
+        return clubResponses.stream().map(toClubResponseConverter::convertToClubResponse)
+                .toList();
     }
 
     @Override
@@ -499,8 +498,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                         center.setContacts(json.toString());
                     }
                     log.info(center.getContacts());
-                }).collect(Collectors.toList());
-        updatedCenters.forEach((center -> centerRepository.save(center)));
+                }).toList();
+        updatedCenters.forEach((centerRepository::save));
 
         List<Club> clubs = clubRepository.findAll();
         List<Club> updatedClubs = clubs.stream().filter(club -> club.getContacts() != null)
@@ -532,34 +531,39 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                                                 : factory.arrayNode();
 
                                         String convertedValue = convert(value);
-
-                                        if (convertedValue.equals("+380950993545093138461606328812020958114277")) {
-                                            array.add("+380950993545");
-                                            array.add("+380931384616");
-                                            array.add("+380632881202");
-                                            array.add("+380958114277");
-                                        } else if (convertedValue.equals("+38044517699704451761880445178279")) {
-                                            array.add("+380445176997");
-                                            array.add("+380445176188");
-                                            array.add("+380445178279");
-                                        } else if (convertedValue.equals("+38044599612309640318")) {
-                                            array.add("+380445996123");
-                                        } else if (convertedValue.equals("+3804456499930445749818")) {
-                                            array.add("+380445649993");
-                                            array.add("+380445749818");
-                                        } else if (convertedValue.equals("+3804456462130445608993")) {
-                                            array.add("+380445646213");
-                                            array.add("+380445608993");
-                                        } else if (convertedValue.equals("+3804456254940445640218")) {
-                                            array.add("+380445625494");
-                                            array.add("+380445640218");
-                                        } else if (convertedValue.equals("+380938380570994517940")) {
-                                            array.add("+380938380570");
-                                            array.add("+380994517940");
-                                        } else {
-                                            array.add(convertedValue);
+                                        // @formatter:off
+                                        switch (convertedValue) {
+                                          case "+380950993545093138461606328812020958114277" -> {
+                                              array.add("+380950993545");
+                                              array.add("+380931384616");
+                                              array.add("+380632881202");
+                                              array.add("+380958114277");
+                                          }
+                                          case "+38044517699704451761880445178279" -> {
+                                              array.add("+380445176997");
+                                              array.add("+380445176188");
+                                              array.add("+380445178279");
+                                          }
+                                          case "+38044599612309640318" -> array.add("+380445996123");
+                                          case "+3804456499930445749818" -> {
+                                              array.add("+380445649993");
+                                              array.add("+380445749818");
+                                          }
+                                          case "+3804456462130445608993" -> {
+                                              array.add("+380445646213");
+                                              array.add("+380445608993");
+                                          }
+                                          case "+3804456254940445640218" -> {
+                                              array.add("+380445625494");
+                                              array.add("+380445640218");
+                                          }
+                                          case "+380938380570994517940" -> {
+                                              array.add("+380938380570");
+                                              array.add("+380994517940");
+                                          }
+                                          default -> array.add(convertedValue);
                                         }
-
+                                        // @formatter:on
                                         json.set(key, array);
                                     } else {
                                         json.put(key, value);
@@ -570,8 +574,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                     }
 
                     log.info(club.getContacts());
-                }).collect(Collectors.toList());
-        updatedClubs.forEach((club -> clubRepository.save(club)));
+                }).toList();
+        updatedClubs.forEach((clubRepository::save));
     }
 
     private JsonNode toJSON(String json) {
@@ -615,16 +619,14 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         Club club = getClubById(id);
 
         try {
-            club.getFeedbacks().stream().forEach(feedback -> {
-                feedbackRepository.deleteById(feedback.getId());
-            });
+            club.getFeedbacks().forEach(feedback -> feedbackRepository.deleteById(feedback.getId()));
 
-            club.getLocations().stream().forEach(location -> {
+            club.getLocations().forEach(location -> {
                 location.setClub(null);
                 locationRepository.deleteById(location.getId());
             });
 
-            club.getUrlGallery().stream().forEach(urlGallery -> {
+            club.getUrlGallery().forEach(urlGallery -> {
                 Optional<GalleryPhoto> galleryPhoto = galleryRepository.findById(urlGallery.getId());
                 if (galleryPhoto.isPresent()) {
                     galleryPhoto.get().setClub(null);
@@ -632,9 +634,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 }
             });
 
-            complaintRepository.getAllByClubId(club.getId()).forEach(complaint -> {
-                complaintRepository.deleteById(complaint.getId());
-            });
+            complaintRepository.getAllByClubId(club.getId())
+                    .forEach(complaint -> complaintRepository.deleteById(complaint.getId()));
 
             // fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground(), club.getUrlGallery());
 
@@ -718,15 +719,14 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             updClub.setFeedbackCount(feedbackRepository.getAllByClubId(clubResponse.getId()).stream().count());
             clubRepository.save(updClub);
             return clubResponse;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     @Override
     public List<ClubResponse> getTopClubsByCity(TopClubProfile topClubProfile) {
-        List<ClubResponse> clubResponses = clubRepository
+        return clubRepository
                 .findTopClubsByCity(topClubProfile.getCityName(), topClubProfile.getAmount()).stream()
-                .map(club -> toClubResponseConverter.convertToClubResponse(club)).collect(Collectors.toList());
-        return clubResponses;
+                .map(toClubResponseConverter::convertToClubResponse).toList();
     }
 
     private SuccessUpdatedClub updateClubRating(Club club, Double rating, Long feedbackCount) {
@@ -747,7 +747,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     public void archiveModel(Club club) {
         ClubArch clubArch = dtoConverter.convertToDto(club, ClubArch.class);
         clubArch.setUrlGalleriesIds(
-                club.getUrlGallery().stream().map(GalleryPhoto::getId).collect(Collectors.toList()));
+                club.getUrlGallery().stream().map(GalleryPhoto::getId).toList());
         clubArch.setLocationsIds(club.getLocations().stream().map(Location::getId).collect(Collectors.toSet()));
         clubArch.setCategoriesIds(club.getCategories().stream().map(Category::getId).collect(Collectors.toSet()));
         clubArch.setFeedbacksIds(club.getFeedbacks().stream().map(Feedback::getId).collect(Collectors.toSet()));
@@ -764,7 +764,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 .withLocations(clubArch.getLocationsIds().stream().map(locationService::getLocationById)
                         .collect(Collectors.toSet()))
                 .withUrlGallery(clubArch.getUrlGalleriesIds().stream().map(galleryRepository::findById)
-                        .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList()))
+                        .filter(Optional::isPresent).map(Optional::get).toList())
                 .withFeedbacks(clubArch.getFeedbacksIds().stream().map(feedbackService::getFeedbackById)
                         .collect(Collectors.toSet()));
         if (Optional.ofNullable(clubArch.getCenterId()).isPresent()) {

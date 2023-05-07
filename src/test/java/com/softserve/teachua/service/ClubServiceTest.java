@@ -131,9 +131,7 @@ class ClubServiceTest {
     void getClubProfileByNotExistingIdShouldThrowNotExistException() {
         when(clubRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            clubService.getClubProfileById(NOT_EXISTING_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> clubService.getClubProfileById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -148,9 +146,7 @@ class ClubServiceTest {
     void getClubByNotExistingIdShouldThrowNotExistException() {
         when(clubRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            clubService.getClubById(NOT_EXISTING_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> clubService.getClubById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -165,9 +161,7 @@ class ClubServiceTest {
     void getClubByNotExistingNameShouldThrowNotExistException() {
         when(clubRepository.findByName(NOT_EXISTING_NAME)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            clubService.getClubByName(NOT_EXISTING_NAME);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> clubService.getClubByName(NOT_EXISTING_NAME)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -190,9 +184,7 @@ class ClubServiceTest {
     void updateClubByNotExistingIdShouldThrowNotExistException() {
         when(clubRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            clubService.updateClub(NOT_EXISTING_ID, ClubResponse.builder().name(NEW_NAME).build());
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> clubService.updateClub(NOT_EXISTING_ID, ClubResponse.builder().name(NEW_NAME).build())).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -208,9 +200,7 @@ class ClubServiceTest {
     void getClubProfileByNotExistingNameShouldThrowNotExistException() {
         when(clubRepository.findByName(NOT_EXISTING_NAME)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            clubService.getClubProfileByName(NOT_EXISTING_NAME);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> clubService.getClubProfileByName(NOT_EXISTING_NAME)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -230,9 +220,7 @@ class ClubServiceTest {
     void deleteClubByNotExistingIdShouldThrowNotExistException() {
         when(clubRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            clubService.deleteClubById(NOT_EXISTING_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> clubService.deleteClubById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -253,9 +241,7 @@ class ClubServiceTest {
     @Test
     void addClubIfExistShouldThrowAlreadyExistException() {
         when(clubRepository.existsByName(NEW_NAME)).thenReturn(true);
-        assertThatThrownBy(() -> {
-            clubService.addClub(clubProfile);
-        }).isInstanceOf(AlreadyExistException.class);
+        assertThatThrownBy(() -> clubService.addClub(clubProfile)).isInstanceOf(AlreadyExistException.class);
     }
 
     @Test

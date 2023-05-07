@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,19 +21,18 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class TaskTransferServiceImpl implements TaskTransferService {
+    private static final String TARGET_PACKAGE = "tasks";
+    private static final String TARGET_PACKAGE_FOR_DATA = "tasks/taskData";
     private final FileUtils fileUtils;
     private final DtoConverter dtoConverter;
     private final TaskRepository taskRepository;
     private final ChallengeService challengeService;
     private final TaskDao taskDao;
-
     private final String uaTeachChallenge = "Навчай українською челендж"; // id=1
     private final String languageChallenge = "Мовомаратон"; // id=2
+    private final Map imageMap;
     private String uaTeachChallengeImage = "data_for_db/task_images/challengeUA.jpg";
     private String languageChallengeImage = "data_for_db/task_images/marathon_log.png";
-    private static final String TARGET_PACKAGE = "tasks";
-    private static final String TARGET_PACKAGE_FOR_DATA = "tasks/taskData";
-    private final Map imageMap;
 
     @Autowired
     public TaskTransferServiceImpl(FileUtils fileReader, DtoConverter dtoConverter, TaskRepository taskRepository,
@@ -93,7 +91,7 @@ public class TaskTransferServiceImpl implements TaskTransferService {
         }).map(taskRepository::save).map(task -> {
             log.info("Task: " + task);
             return (SuccessCreatedTask) dtoConverter.convertToDto(task, SuccessCreatedTask.class);
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     @Override

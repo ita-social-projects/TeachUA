@@ -35,7 +35,6 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -99,37 +98,37 @@ public class BackupServiceImpl implements BackupService {
     public List<String> getAllBackupFiles(String fileName) {
         List<List<String>> filePathForBackup = new LinkedList<>();
         filePathForBackup.add(
-                aboutUsItemRepository.findAll().stream().map(AboutUsItem::getPicture).collect(Collectors.toList()));
+                aboutUsItemRepository.findAll().stream().map(AboutUsItem::getPicture).toList());
         filePathForBackup
-                .add(bannerItemRepository.findAll().stream().map(BannerItem::getPicture).collect(Collectors.toList()));
+                .add(bannerItemRepository.findAll().stream().map(BannerItem::getPicture).toList());
         filePathForBackup
-                .add(categoryRepository.findAll().stream().map(Category::getUrlLogo).collect(Collectors.toList()));
+                .add(categoryRepository.findAll().stream().map(Category::getUrlLogo).toList());
         filePathForBackup.add(
-                centerRepository.findAll().stream().map(Center::getUrlBackgroundPicture).collect(Collectors.toList()));
-        filePathForBackup.add(centerRepository.findAll().stream().map(Center::getUrlLogo).collect(Collectors.toList()));
+                centerRepository.findAll().stream().map(Center::getUrlBackgroundPicture).toList());
+        filePathForBackup.add(centerRepository.findAll().stream().map(Center::getUrlLogo).toList());
         filePathForBackup
-                .add(clubRepository.findAll().stream().map(Club::getUrlBackground).collect(Collectors.toList()));
-        filePathForBackup.add(clubRepository.findAll().stream().map(Club::getUrlLogo).collect(Collectors.toList()));
+                .add(clubRepository.findAll().stream().map(Club::getUrlBackground).toList());
+        filePathForBackup.add(clubRepository.findAll().stream().map(Club::getUrlLogo).toList());
         filePathForBackup.add(
-                contactTypeRepository.findAll().stream().map(ContactType::getUrlLogo).collect(Collectors.toList()));
+                contactTypeRepository.findAll().stream().map(ContactType::getUrlLogo).toList());
         filePathForBackup
-                .add(galleryRepository.findAll().stream().map(GalleryPhoto::getUrl).collect(Collectors.toList()));
+                .add(galleryRepository.findAll().stream().map(GalleryPhoto::getUrl).toList());
         filePathForBackup
-                .add(newsRepository.findAll().stream().map(News::getUrlTitleLogo).collect(Collectors.toList()));
-        filePathForBackup.add(taskRepository.findAll().stream().map(Task::getPicture).collect(Collectors.toList()));
-        filePathForBackup.add(userRepository.findAll().stream().map(User::getUrlLogo).collect(Collectors.toList()));
+                .add(newsRepository.findAll().stream().map(News::getUrlTitleLogo).toList());
+        filePathForBackup.add(taskRepository.findAll().stream().map(Task::getPicture).toList());
+        filePathForBackup.add(userRepository.findAll().stream().map(User::getUrlLogo).toList());
         filePathForBackup
-                .add(challengeRepository.findAll().stream().map(Challenge::getPicture).collect(Collectors.toList()));
+                .add(challengeRepository.findAll().stream().map(Challenge::getPicture).toList());
         filePathForBackup.add(FileUtils.listFiles(new File(IMAGES_DIRECTORY), null, false).stream().map(File::getName)
-                .collect(Collectors.toList()));
+                .toList());
 
         log.debug("**/ getting file list for backup");
         if (!fileName.equals(ALL_FILES)) {
             return filePathForBackup.stream().flatMap(Collection::stream).distinct()
-                    .filter(file -> file != null && file.contains(fileName)).collect(Collectors.toList());
+                    .filter(file -> file != null && file.contains(fileName)).toList();
         }
         return filePathForBackup.stream().flatMap(Collection::stream).distinct()
-                .filter(file -> file != null && !file.isEmpty()).collect(Collectors.toList());
+                .filter(file -> file != null && !file.isEmpty()).toList();
     }
 
     @Override

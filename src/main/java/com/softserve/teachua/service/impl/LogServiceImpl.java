@@ -11,7 +11,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +32,7 @@ public class LogServiceImpl implements LogService {
                     .map(Path::getFileName)
                     .map(Path::toString)
                     .sorted(Comparator.reverseOrder())
-                    .collect(Collectors.toList());
+                    .toList();
         } catch (IOException e) {
             log.error("Error occurred while walking through log files in directory: {}", path, e);
         }
@@ -51,7 +50,7 @@ public class LogServiceImpl implements LogService {
         }
 
         try (Stream<String> lines = Files.lines(pathToFile)) {
-            return lines.collect(Collectors.toList());
+            return lines.toList();
         } catch (IOException e) {
             log.error("Error occurred while reading a log file: {}", fileName, e);
         }

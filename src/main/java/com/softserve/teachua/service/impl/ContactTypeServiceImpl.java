@@ -17,7 +17,6 @@ import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ContactTypeService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class ContactTypeServiceImpl implements ContactTypeService, ArchiveMark<C
     public List<ContactTypeResponse> getListOfContactTypes() {
         List<ContactTypeResponse> contactTypeResponses = contactTypeRepository.findAll().stream()
                 .map(type -> (ContactTypeResponse) dtoConverter.convertToDto(type, ContactTypeResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of contact type = " + contactTypeResponses);
 

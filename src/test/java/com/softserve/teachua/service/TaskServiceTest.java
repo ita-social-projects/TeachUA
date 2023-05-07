@@ -98,9 +98,7 @@ public class TaskServiceTest {
     @Test
     public void getTaskByWrongIdShouldThrowNotExistException() {
         when(taskRepository.findById(WRONG_TASK_ID)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> {
-            taskService.getTaskById(WRONG_TASK_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> taskService.getTaskById(WRONG_TASK_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test

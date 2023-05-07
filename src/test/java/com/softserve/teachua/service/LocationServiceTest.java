@@ -101,9 +101,7 @@ public class LocationServiceTest {
 
     @Test
     public void updateCenterLocationByEmptyLocationProfileSetShouldReturnIncorrectInputException() {
-        assertThatThrownBy(() -> {
-            locationService.updateCenterLocation(null, correctCenter);
-        }).isInstanceOf(IncorrectInputException.class);
+        assertThatThrownBy(() -> locationService.updateCenterLocation(null, correctCenter)).isInstanceOf(IncorrectInputException.class);
     }
 
     @Test

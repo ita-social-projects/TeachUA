@@ -112,9 +112,7 @@ public class StationServiceImplTest {
     @Test
     public void getStationByWrongNameShouldThrowNotExistException() {
         when(stationRepository.findByName(WRONG_STATION_NAME)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> {
-            stationService.getStationByName(WRONG_STATION_NAME);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> stationService.getStationByName(WRONG_STATION_NAME)).isInstanceOf(NotExistException.class);
 
     }
 
@@ -131,9 +129,7 @@ public class StationServiceImplTest {
     @Test
     public void addStationShouldThrowAlreadyExistException() {
         when(stationRepository.existsByName(CORRECT_STATION_NAME)).thenReturn(true);
-        assertThatThrownBy(() -> {
-            stationService.addStation(stationProfile);
-        }).isInstanceOf(AlreadyExistException.class);
+        assertThatThrownBy(() -> stationService.addStation(stationProfile)).isInstanceOf(AlreadyExistException.class);
     }
 
     @Test

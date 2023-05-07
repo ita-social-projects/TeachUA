@@ -1,6 +1,5 @@
 package com.softserve.teachua.tools;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.exception.IncorrectInputException;
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,18 +52,16 @@ public class FileUtils {
     public <T> List<T> readFromFile(String filePath, Class<T> tClass) {
         Path path = getPathOfFile(filePath);
         try (BufferedReader reader = Files.newBufferedReader(path)) {
-            String fileLines = String.join("", reader.lines().collect(Collectors.toList()));
+            String fileLines = String.join("", reader.lines().toList());
             return objectMapper.readValue(fileLines,
                     objectMapper.getTypeFactory().constructCollectionType(List.class, tClass));
         } catch (JsonMappingException e) {
             throw new IncorrectInputException(
                     String.format(MAPPER_EXCEPTION, e.getLocalizedMessage(), tClass, e.getMessage()));
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } catch (NotExistException e) {
             throw new NotExistException(String.format(FILE_FIND_EXCEPTION, filePath));
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -79,7 +75,7 @@ public class FileUtils {
     public Path getPathOfFile(String filePath) {
         try {
             return Paths.get(Optional.ofNullable(getClass().getClassLoader().getResource(filePath))
-                    .orElseThrow(() -> new NotExistException()).toURI());
+                    .orElseThrow(NotExistException::new).toURI());
         } catch (URISyntaxException e) {
             throw new IncorrectInputException(e.getMessage());
         } catch (NotExistException e) {

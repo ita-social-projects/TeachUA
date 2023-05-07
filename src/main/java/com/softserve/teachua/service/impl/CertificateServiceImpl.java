@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -94,7 +93,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         List<CertificateTransfer> certificateTransfers = certificateRepository.findAll().stream()
                 .map(certificate ->
                         (CertificateTransfer) dtoConverter.convertToDto(certificate, CertificateTransfer.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("getting list of certificates {}", certificateTransfers);
         return certificateTransfers;
@@ -105,7 +104,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         return certificateRepository.findAllByOrderByIdAsc().stream()
                 .map(certificate ->
                         (CertificatePreview) dtoConverter.convertToDto(certificate, CertificatePreview.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -119,7 +118,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
                         .date(certificate.getDates().getDate())
                         .courseDescription(certificate.getTemplate().getCourseDescription())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -132,7 +131,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         List<CertificateTransfer> certificateTransfers = certificateRepository.findUnsentCertificates().stream()
                 .map(certificate -> (CertificateTransfer) dtoConverter
                         .convertToDto(certificate, CertificateTransfer.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("getting list of unsent certificates {}", certificateTransfers);
         return certificateTransfers;
@@ -196,6 +195,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         return certificateRepository.findBySerialNumber(serialNumber);
     }
 
+    @SuppressWarnings("checkstyle:Indentation")
     @Override
     public CertificateTransfer generateSerialNumber(CertificateTransfer response) {
         if (response.getTemplate().getCertificateType() == null || response.getDates().getCourseNumber() == null) {
@@ -208,21 +208,13 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         Long largestSerialNumber = certificateRepository
                 .findMaxSerialNumber(response.getTemplate().getCertificateType().getCodeNumber().toString());
         if (largestSerialNumber == null) {
-            String initialNumber;
+            String initialNumber =
+                    switch (response.getTemplate().getCertificateType().getCodeNumber()) {
+                        case 1 -> "0000017";
+                        case 2 -> "0000061";
+                        default -> "0000001";
+                    };
 
-            // @formatter:off
-            switch (response.getTemplate().getCertificateType().getCodeNumber()) {
-              case 1:
-                  initialNumber = "0000017";
-                  break;
-              case 2:
-                  initialNumber = "0000061";
-                  break;
-              default:
-                  initialNumber = "0000001";
-                  break;
-            }
-            // @formatter:on
             response.setSerialNumber(Long.valueOf(
                     response.getTemplate().getCertificateType().getCodeNumber() + courseNumber + initialNumber));
         } else {
@@ -394,7 +386,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         return certificateRepository.findSimilarByUserName(userName).stream()
                 .map(certificate -> (CertificatePreview) dtoConverter
                         .convertToDto(certificate, CertificatePreview.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

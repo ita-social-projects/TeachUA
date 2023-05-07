@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.zip.DataFormatException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -295,7 +294,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         return categoriesNames.stream().filter(
                         s -> shortCategoryNames.stream()
                                 .map(String::toLowerCase).anyMatch(b -> s.toLowerCase().contains(b)))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void loadCategories(ExcelParsingData excelParsingData, Set<String> categoriesNames) {

@@ -112,9 +112,7 @@ public class FeedbackServiceTest {
     public void getFeedbackByNotExistingIdTestShouldReturnNotExistException() {
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            feedbackService.getFeedbackById(NOT_EXISTING_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> feedbackService.getFeedbackById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -150,9 +148,7 @@ public class FeedbackServiceTest {
     public void getFeedbackProfileByNotExistingIdShouldReturnNotExistException() {
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            feedbackService.getFeedbackProfileById(NOT_EXISTING_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> feedbackService.getFeedbackProfileById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -206,9 +202,7 @@ public class FeedbackServiceTest {
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         feedbackProfile.setClubId(club.getId());
-        assertThatThrownBy(() -> {
-            feedbackService.updateFeedbackProfileById(NOT_EXISTING_ID, feedbackProfile);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> feedbackService.updateFeedbackProfileById(NOT_EXISTING_ID, feedbackProfile)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -232,9 +226,7 @@ public class FeedbackServiceTest {
 
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            feedbackService.deleteFeedbackById(NOT_EXISTING_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> feedbackService.deleteFeedbackById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test

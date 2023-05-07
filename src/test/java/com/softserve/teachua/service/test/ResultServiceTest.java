@@ -23,7 +23,6 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,7 +78,7 @@ public class ResultServiceTest {
         selectedAnswers = generateSelectedAnswersList();
         selectedAnswersIds = selectedAnswers.stream()
                 .map(Answer::getId)
-                .collect(Collectors.toList());
+                .toList();
         questionHistories.forEach(result::addQuestionHistory);
         resultTest = generateResultTest();
         successCreatedResult = generateSuccessCreatedResult();

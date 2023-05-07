@@ -90,9 +90,7 @@ public class RoleServiceTest {
     public void getRoleProfileByWrongIdShouldReturnCorrectRoleResponse() {
         when(roleRepository.findById(WRONG_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            roleService.getRoleProfileById(WRONG_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> roleService.getRoleProfileById(WRONG_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -114,9 +112,7 @@ public class RoleServiceTest {
     public void getRoleByWrongIdShouldReturnCorrectRole() {
         when(roleRepository.findById(WRONG_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            roleService.getRoleById(WRONG_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> roleService.getRoleById(WRONG_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -134,27 +130,21 @@ public class RoleServiceTest {
     public void updateRoleWithWrongIdTest() {
         when(roleRepository.findById(WRONG_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            roleService.updateRole(WRONG_ID, newRoleProfile);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> roleService.updateRole(WRONG_ID, newRoleProfile)).isInstanceOf(NotExistException.class);
     }
 
     @Test
     public void getRoleByWrongNameShouldReturnCorrectRole() {
         when(roleRepository.findByName(WRONG_NAME)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            roleService.findByName(WRONG_NAME);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> roleService.findByName(WRONG_NAME)).isInstanceOf(NotExistException.class);
     }
 
     @Test
     public void getRoleByWrongNameShouldThrowNotExistException() {
         when(roleRepository.findByName(WRONG_NAME)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            roleService.findByName(WRONG_NAME);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> roleService.findByName(WRONG_NAME)).isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -173,9 +163,7 @@ public class RoleServiceTest {
         newRoleProfile.setRoleName(CORRECT_NAME);
         when(roleRepository.existsByName(CORRECT_NAME)).thenReturn(true);
 
-        assertThatThrownBy(() -> {
-            roleService.addNewRole(newRoleProfile);
-        }).isInstanceOf(AlreadyExistException.class);
+        assertThatThrownBy(() -> roleService.addNewRole(newRoleProfile)).isInstanceOf(AlreadyExistException.class);
     }
 
     @Test
@@ -195,8 +183,6 @@ public class RoleServiceTest {
     public void deleteRoleShouldThrowNotExistException() {
         when(roleRepository.findById(WRONG_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> {
-            roleService.deleteRoleById(WRONG_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> roleService.deleteRoleById(WRONG_ID)).isInstanceOf(NotExistException.class);
     }
 }

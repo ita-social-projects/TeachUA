@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -60,6 +59,7 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
         }
     }
 
+    @SuppressWarnings("checkstyle:Indentation")
     @Override
     public String createCertificateByTemplate(CertificateTransfer transfer) throws IOException {
         String targetFileName = ThreadLocalRandom.current().nextInt() + ".pdf";
@@ -87,30 +87,24 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
             HashMap<String, String> values = objectMapper.readValue(transfer.getValues(), HashMap.class);
 
             for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
-                // @formatter:off
                 switch (entry.getValue()) {
-                  case "serial_number":
-                      setValue(form.getField(entry.getKey()), transfer.getSerialNumber().toString(), halvarBlk,
-                              halvarMd);
-                      break;
-                  case "qrCode_white":
-                  case "qrCode_black":
-                      List<Float> position = Arrays.stream(
-                                      form.getField(entry.getKey()).getWidgets().get(0).getRectangle().toString()
-                                              .replace("[", "").replace("]", "").split(" "))
-                              .map(Float::valueOf).collect(Collectors.toList());
-
-                      float width = position.get(2) - position.get(0);
-                      float height = position.get(3) - position.get(1);
-                      Image image = getQrCodeImage(transfer.getSerialNumber(), width, height, entry.getValue());
-                      image.setFixedPosition(position.get(0), position.get(1));
-
-                      document.add(image);
-                      break;
-                  default:
-                      setValue(form.getField(entry.getKey()), values.get(entry.getKey()), halvarBlk, halvarMd);
+                    case "serial_number" ->
+                            setValue(form.getField(entry.getKey()), transfer.getSerialNumber().toString(), halvarBlk,
+                                    halvarMd);
+                    case "qrCode_white", "qrCode_black" -> {
+                        List<Float> position = Arrays.stream(
+                                        form.getField(entry.getKey()).getWidgets().get(0).getRectangle().toString()
+                                                .replace("[", "").replace("]", "")
+                                                .split(" "))
+                                .map(Float::valueOf).toList();
+                        float width = position.get(2) - position.get(0);
+                        float height = position.get(3) - position.get(1);
+                        Image image = getQrCodeImage(transfer.getSerialNumber(), width, height, entry.getValue());
+                        image.setFixedPosition(position.get(0), position.get(1));
+                        document.add(image);
+                    }
+                    default -> setValue(form.getField(entry.getKey()), values.get(entry.getKey()), halvarBlk, halvarMd);
                 }
-                // @formatter:on
             }
             form.flattenFields();
         } catch (IOException e) {
