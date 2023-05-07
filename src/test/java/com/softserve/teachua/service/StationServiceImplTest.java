@@ -80,11 +80,6 @@ public class StationServiceImplTest {
                 .cityName(CITY_NAME).build();
     }
 
-    // @Test
-    // public void getOptionalStationByIdShouldReturnOptionalStation(){
-    // when(stationRepository.findById(CORRECT_STATION_ID)).thenReturn();
-    // }
-
     @Test
     public void getStationByCorrectIdShouldReturnStation() {
         when(stationRepository.findById(CORRECT_STATION_ID)).thenReturn(Optional.of(station));

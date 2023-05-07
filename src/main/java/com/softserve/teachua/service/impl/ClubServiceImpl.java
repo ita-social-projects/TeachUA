@@ -408,18 +408,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
         log.debug("===find clubs : " + clubResponses.getNumberOfElements());
 
-        // The functionality is not used now - search for clubs by the name of the center.
-        // if (clubResponses.getNumberOfElements() == 0) {
-        // log.debug("==============================");
-        // log.debug("clubResponses by club name is empty==> start search by center name "
-        // + searchClubProfile.getClubName());
-        // clubResponses = clubRepository
-        // .findClubsByCenterName(searchClubProfile.getClubName(),
-        // searchClubProfile.getCityName(), pageable);
-        // log.debug("result of search by centerName : " + clubResponses.getNumberOfElements());
-        // log.debug(clubResponses.toString());
-        // }
-
         return new PageImpl<>(
                 clubResponses.stream().map(club -> (ClubResponse) toClubResponseConverter.convertToClubResponse(club))
                         .collect(Collectors.toList()),

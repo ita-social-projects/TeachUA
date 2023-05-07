@@ -182,9 +182,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
                 .withRole(roleService.findByName(userProfile.getRoleName()));
 
         String phoneFormat = "38" + user.getPhone();
-        // String Formated = String.format("%s (%s) %s %s %s", phoneFormat.substring(0, 3),
-        // phoneFormat.substring(3, 6), phoneFormat.substring(6, 9), phoneFormat.substring(9, 11),
-        // phoneFormat.substring(11, 13));
 
         user.setPhone(phoneFormat);
 
