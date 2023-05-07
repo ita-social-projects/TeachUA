@@ -38,10 +38,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class ComplaintServiceTest {
 
-    private static final Long CORRECT_COMPLAINT_ID = 1l;
-    private static final Long WRONG_COMPLAINT_ID = 2l;
-    private static final Long CLUB_ID = 100l;
-    private static final Long USER_ID = 1000l;
+    private static final Long CORRECT_COMPLAINT_ID = 1L;
+    private static final Long WRONG_COMPLAINT_ID = 2L;
+    private static final Long CLUB_ID = 100L;
+    private static final Long USER_ID = 1000L;
 
     @Mock
     private ComplaintRepository complaintRepository;

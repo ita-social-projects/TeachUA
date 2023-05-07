@@ -149,7 +149,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Override
     public Club getClubById(Long id) {
         Optional<Club> optionalClub = getOptionalClubById(id);
-        if (!optionalClub.isPresent()) {
+        if (optionalClub.isEmpty()) {
             throw new NotExistException(String.format(CLUB_NOT_FOUND_BY_ID, id));
         }
 
@@ -169,7 +169,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Override
     public Club getClubByName(String name) {
         Optional<Club> optionalClub = getOptionalClubByName(name);
-        if (!optionalClub.isPresent()) {
+        if (optionalClub.isEmpty()) {
             throw new NotExistException(String.format(CLUB_NOT_FOUND_BY_NAME, name));
         }
 
@@ -636,7 +636,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             complaintRepository.getAllByClubId(club.getId())
                     .forEach(complaint -> complaintRepository.deleteById(complaint.getId()));
 
-            // fileUploadService.deleteImages(club.getUrlLogo(), club.getUrlBackground(), club.getUrlGallery());
 
             clubRepository.deleteById(id);
         } catch (DataAccessException | ValidationException e) {

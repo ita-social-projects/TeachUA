@@ -61,12 +61,12 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
                     .description(questionExcel.getDescription())
                     .creator(userService.getUserById(creatorId)).build();
 
-            if (!categoryRepository.findByTitle(questionExcel.getCategory()).isPresent()) {
+            if (categoryRepository.findByTitle(questionExcel.getCategory()).isEmpty()) {
                 categoryRepository.save(QuestionCategory.builder().title(questionExcel.getCategory()).build());
             }
             question.setQuestionCategory(categoryRepository.findByTitle(questionExcel.getCategory()).get());
 
-            if (!typeRepository.findByTitle(questionExcel.getType().toUpperCase()).isPresent()) {
+            if (typeRepository.findByTitle(questionExcel.getType().toUpperCase()).isEmpty()) {
                 typeRepository.save(QuestionType.builder().title(questionExcel.getType().toUpperCase()).build());
             }
             question.setQuestionType(typeRepository.findByTitle(questionExcel.getType().toUpperCase()).get());

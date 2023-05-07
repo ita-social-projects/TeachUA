@@ -153,7 +153,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     public Certificate getCertificateById(Long id) {
         Optional<Certificate> optionalCertificate = getOptionalCertificateById(id);
 
-        if (!optionalCertificate.isPresent()) {
+        if (optionalCertificate.isEmpty()) {
             throw new NotExistException(String.format(CERTIFICATE_NOT_FOUND_BY_ID, id));
         }
 
@@ -166,7 +166,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     public Certificate getCertificateBySerialNumber(Long serialNumber) {
         Optional<Certificate> optionalCertificate = getOptionalCertificateBySerialNumber(serialNumber);
 
-        if (!optionalCertificate.isPresent()) {
+        if (optionalCertificate.isEmpty()) {
             log.debug("certificate with serial number {} not found", serialNumber);
             throw new NotExistException(String.format(CERTIFICATE_NOT_FOUND_BY_SERIAL_NUMBER, serialNumber));
         }

@@ -42,8 +42,8 @@ public class CenterServiceTest {
     private static final Long WRONG_CENTER_ID = 1000L;
     private static final List<Long> CLUBS_ID = new LinkedList<>();
     private static final Set<Club> CLUBS = new HashSet<>();
-    private static final Long CORRECT_LOCATION_ID = 1l;
-    private static final Long CLUB_ID = 1l;
+    private static final Long CORRECT_LOCATION_ID = 1L;
+    private static final Long CLUB_ID = 1L;
     private static final Long USER_ID = 72L;
     private static final String USER_EMAIL = "user@gmail.com";
 

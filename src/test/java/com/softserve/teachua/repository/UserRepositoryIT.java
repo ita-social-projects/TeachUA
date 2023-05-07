@@ -52,7 +52,7 @@ public class UserRepositoryIT {
     @Test
     public void findByExistingIdShouldReturnAdminEmail() {
         Optional<User> user = userRepository.findById(EXISTING_ID);
-        String userEmail = user.isPresent() ? user.get().getEmail() : null;
+        String userEmail = user.map(User::getEmail).orElse(null);
         assertThat(userEmail).isEqualTo(ADMIN_EMAIL);
     }
 

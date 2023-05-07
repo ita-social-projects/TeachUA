@@ -99,12 +99,11 @@ public class ContactTypeServiceImpl implements ContactTypeService, ArchiveMark<C
     @Override
     public ContactType getContactTypeById(Long id) {
         Optional<ContactType> optionalContactType = getOptionalContactTypeById(id);
-        if (!optionalContactType.isPresent()) {
+        if (optionalContactType.isEmpty()) {
             throw new NotExistException(String.format(CONTACT_TYPE_NOT_FOUND_BY_ID, id));
         }
 
-        ContactType contactType = optionalContactType.get();
-        return contactType;
+        return optionalContactType.get();
     }
 
     @Override

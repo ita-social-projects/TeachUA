@@ -9,6 +9,8 @@ import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.archivable.AboutUsItemArch;
 import com.softserve.teachua.repository.AboutUsItemRepository;
 import com.softserve.teachua.service.impl.AboutUsItemServiceImpl;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -101,21 +103,21 @@ class AboutUsItemServiceImplTest {
 
     @Test
     public void getListOfAboutUsItemResponsesShouldReturnListOfAboutUsItemResponses() {
-        when(aboutUsItemRepository.findAllByOrderByNumberAsc()).thenReturn(Arrays.asList(aboutUsItem));
+        when(aboutUsItemRepository.findAllByOrderByNumberAsc()).thenReturn(Collections.singletonList(aboutUsItem));
         when(dtoConverter.convertToDto(aboutUsItem, AboutUsItemResponse.class)).thenReturn(aboutUsItemResponse);
         assertThat(aboutUsItemService.getListOfAboutUsItemResponses()).isNotEmpty()
-                .isEqualTo(Arrays.asList(aboutUsItemResponse));
+                .isEqualTo(Collections.singletonList(aboutUsItemResponse));
     }
 
     @Test
     public void getListOfAboutUsItemResponsesShouldReturnEmptyList() {
-        when(aboutUsItemRepository.findAllByOrderByNumberAsc()).thenReturn(Arrays.asList());
+        when(aboutUsItemRepository.findAllByOrderByNumberAsc()).thenReturn(List.of());
         assertThat(aboutUsItemService.getListOfAboutUsItemResponses()).isEmpty();
     }
 
     @Test
     public void addAboutUsItemShouldReturnAboutUsItemResponse() {
-        when(aboutUsItemRepository.findAllByOrderByNumberAsc()).thenReturn(Arrays.asList(aboutUsItem));
+        when(aboutUsItemRepository.findAllByOrderByNumberAsc()).thenReturn(Collections.singletonList(aboutUsItem));
         when(dtoConverter.convertToEntity(aboutUsItemProfile, new AboutUsItem())).thenReturn(aboutUsItem);
         when(aboutUsItemRepository.save(aboutUsItem)).thenReturn(aboutUsItem);
         when(dtoConverter.convertToDto(aboutUsItem, AboutUsItemResponse.class)).thenReturn(aboutUsItemResponse);

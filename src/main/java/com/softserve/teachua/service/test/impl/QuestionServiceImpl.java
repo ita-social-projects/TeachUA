@@ -185,7 +185,7 @@ public class QuestionServiceImpl implements QuestionService {
         String categoryName = String.format("New Form (%s) from Google", readFormInfo(formId).getInfo().getTitle());
         List<Item> itemList = readFormInfo(formId).getItems();
 
-        if (!categoryRepository.findByTitle(categoryName).isPresent()) {
+        if (categoryRepository.findByTitle(categoryName).isEmpty()) {
             categoryRepository.save(QuestionCategory.builder().title(categoryName).build());
         }
 
@@ -216,7 +216,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     private void addNewType(Question question, String nameOfType) {
-        if (!typeRepository.findByTitle(nameOfType).isPresent()) {
+        if (typeRepository.findByTitle(nameOfType).isEmpty()) {
             QuestionType type = QuestionType.builder().title(nameOfType).build();
             typeRepository.save(type);
         }

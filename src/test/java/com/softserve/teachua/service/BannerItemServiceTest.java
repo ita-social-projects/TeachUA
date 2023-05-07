@@ -10,6 +10,7 @@ import com.softserve.teachua.model.BannerItem;
 import com.softserve.teachua.model.archivable.BannerItemArch;
 import com.softserve.teachua.repository.BannerItemRepository;
 import com.softserve.teachua.service.impl.BannerItemServiceImpl;
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -107,7 +108,7 @@ public class BannerItemServiceTest {
 
     @Test
     public void getListOfBannerItemsShouldReturnListOfBannerItemResponses() {
-        List<BannerItem> bannerItems = Arrays.asList(bannerItem);
+        List<BannerItem> bannerItems = Collections.singletonList(bannerItem);
 
         when(bannerItemRepository.findAllByOrderBySequenceNumberAsc()).thenReturn(bannerItems);
         when(dtoConverter.convertToDto(bannerItem, BannerItemResponse.class)).thenReturn(bannerItemResponse);

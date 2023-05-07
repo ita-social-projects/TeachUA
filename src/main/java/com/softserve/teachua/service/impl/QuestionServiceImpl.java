@@ -48,7 +48,7 @@ public class QuestionServiceImpl implements QuestionService, ArchiveMark<Questio
     @Override
     public Question getQuestionById(Long id) {
         Optional<Question> optionalQuestion = getOptionalQuestionById(id);
-        if (!optionalQuestion.isPresent()) {
+        if (optionalQuestion.isEmpty()) {
             throw new NotExistException(String.format(QUESTION_NOT_FOUND_BY_ID, id));
         }
 

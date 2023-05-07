@@ -55,7 +55,7 @@ public class CityServiceImpl implements CityService, ArchiveMark<City> {
     @Override
     public City getCityById(Long id) {
         Optional<City> optionalCity = getOptionalCityById(id);
-        if (!optionalCity.isPresent()) {
+        if (optionalCity.isEmpty()) {
             throw new NotExistException(String.format(CITY_NOT_FOUND_BY_ID, id));
         }
         City city = optionalCity.get();
@@ -66,7 +66,7 @@ public class CityServiceImpl implements CityService, ArchiveMark<City> {
     @Override
     public City getCityByName(String name) {
         Optional<City> optionalCity = getOptionalCityByName(name);
-        if (!optionalCity.isPresent()) {
+        if (optionalCity.isEmpty()) {
             throw new NotExistException(String.format(CITY_NOT_FOUND_BY_NAME, name));
         }
 

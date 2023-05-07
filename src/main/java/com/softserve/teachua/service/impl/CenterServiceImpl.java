@@ -199,7 +199,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     @Override
     public Center getCenterById(Long id) {
         Optional<Center> optionalCenter = getOptionalCenterById(id);
-        if (!optionalCenter.isPresent()) {
+        if (optionalCenter.isEmpty()) {
             throw new NotExistException(String.format(CENTER_NOT_FOUND_BY_ID, id));
         }
 
@@ -300,7 +300,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     @Override
     public Center getCenterByName(String name) {
         Optional<Center> optionalCenter = getOptionalCenterByName(name);
-        if (!optionalCenter.isPresent()) {
+        if (optionalCenter.isEmpty()) {
             throw new NotExistException(String.format(CENTER_NOT_FOUND_BY_NAME, name));
         }
 

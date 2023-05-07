@@ -12,6 +12,8 @@ import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.service.impl.TaskServiceImpl;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -105,21 +107,21 @@ public class TaskServiceTest {
     public void getTasksByCorrectChallengeIdShouldReturnListOfTaskPreview() {
         when(challengeService.getChallengeById(CORRECT_CHALLENGE_ID)).thenReturn(challenge);
         when(dtoConverter.convertToDto(task, TaskPreview.class)).thenReturn(taskPreview);
-        when(taskRepository.findTasksByChallenge(challenge)).thenReturn(Arrays.asList(task));
+        when(taskRepository.findTasksByChallenge(challenge)).thenReturn(Collections.singletonList(task));
         assertThat(taskService.getTasksByChallengeId(CORRECT_CHALLENGE_ID)).isNotEmpty()
-                .isEqualTo(Arrays.asList(taskPreview));
+                .isEqualTo(Collections.singletonList(taskPreview));
     }
 
     @Test
     public void getListOfTasksShouldReturnListOfTaskPreview() {
-        when(taskRepository.findAll()).thenReturn(Arrays.asList(task));
+        when(taskRepository.findAll()).thenReturn(Collections.singletonList(task));
         when(dtoConverter.convertToDto(task, TaskPreview.class)).thenReturn(taskPreview);
-        assertThat(taskService.getListOfTasks()).isNotEmpty().isEqualTo(Arrays.asList(taskPreview));
+        assertThat(taskService.getListOfTasks()).isNotEmpty().isEqualTo(Collections.singletonList(taskPreview));
     }
 
     @Test
     public void getListOfTasksShouldReturnEmptyList() {
-        when(taskRepository.findAll()).thenReturn(Arrays.asList());
+        when(taskRepository.findAll()).thenReturn(List.of());
         assertThat(taskService.getListOfTasks()).isEmpty();
     }
 

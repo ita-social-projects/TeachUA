@@ -131,7 +131,7 @@ public class CityServiceTest {
 
     @Test
     void getListOfCitiesShouldReturnListOfCitiResponces() {
-        List<City> cities = Arrays.asList(city);
+        List<City> cities = Collections.singletonList(city);
 
         when(dtoConverter.convertToDto(city, CityResponse.class)).thenReturn(cityResponse);
         when(cityRepository.findAllByOrderByIdAsc()).thenReturn(cities);

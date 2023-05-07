@@ -12,6 +12,7 @@ import com.softserve.teachua.model.archivable.ComplaintArch;
 import com.softserve.teachua.model.archivable.RoleArch;
 import com.softserve.teachua.repository.RoleRepository;
 import com.softserve.teachua.service.impl.RoleServiceImpl;
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -69,11 +71,11 @@ public class RoleServiceTest {
 
     @Test
     public void getListOfRolesShouldReturnCorrectRoleResponse() {
-        when(roleRepository.findAll()).thenReturn(Arrays.asList(correctRole));
+        when(roleRepository.findAll()).thenReturn(Collections.singletonList(correctRole));
         when(dtoConverter.convertToDto(correctRole, RoleResponse.class)).thenReturn(correctRoleResponse);
 
         List<RoleResponse> actual = roleService.getListOfRoles();
-        assertEquals(actual.isEmpty(), false);
+        assertFalse(actual.isEmpty());
         assertEquals(actual.get(0), correctRoleResponse);
     }
 

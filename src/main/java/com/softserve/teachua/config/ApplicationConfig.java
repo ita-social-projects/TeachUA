@@ -26,7 +26,7 @@ public class ApplicationConfig {
     private static final String SWAGGER_RESOURCE = "api-docs";
 
     @Value("${server.servlet.context-path}")
-    private String rootUri; // ="";
+    private String rootUri;
 
     private String removeSecondSlash(String uri) {
         return uri.replace("//", "/").replace(":/", "://");

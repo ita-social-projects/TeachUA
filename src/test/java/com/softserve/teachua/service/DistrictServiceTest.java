@@ -10,6 +10,8 @@ import com.softserve.teachua.model.City;
 import com.softserve.teachua.model.District;
 import com.softserve.teachua.repository.DistrictRepository;
 import com.softserve.teachua.service.impl.DistrictServiceImpl;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -129,24 +131,25 @@ public class DistrictServiceTest {
 
     @Test
     public void getListOfDistrictsShouldReturnListOfDistrictResponses() {
-        when(districtRepository.findAllByOrderByIdAsc()).thenReturn(Arrays.asList(district));
+        when(districtRepository.findAllByOrderByIdAsc()).thenReturn(Collections.singletonList(district));
         when(dtoConverter.convertToDto(district, DistrictResponse.class)).thenReturn(districtResponse);
 
-        assertThat(districtService.getListOfDistricts()).isNotEmpty().isEqualTo(Arrays.asList(districtResponse));
+        assertThat(districtService.getListOfDistricts()).isNotEmpty().isEqualTo(
+                Collections.singletonList(districtResponse));
     }
 
     @Test
     public void getListOfDistrictsByCorrectCityNameShouldReturnListOfDistrictResponses() {
-        when(districtRepository.findAllByCityName(CITY_NAME)).thenReturn(Arrays.asList(district));
+        when(districtRepository.findAllByCityName(CITY_NAME)).thenReturn(Collections.singletonList(district));
         when(dtoConverter.convertToDto(district, DistrictResponse.class)).thenReturn(districtResponse);
 
         assertThat(districtService.getListOfDistrictsByCityName(CITY_NAME)).isNotEmpty()
-                .isEqualTo(Arrays.asList(districtResponse));
+                .isEqualTo(Collections.singletonList(districtResponse));
     }
 
     @Test
     public void getListOfDistrictsByWrongCityNameShouldReturnListOfDistrictResponses() {
-        when(districtRepository.findAllByCityName(WRONG_CITY_NAME)).thenReturn(Arrays.asList());
+        when(districtRepository.findAllByCityName(WRONG_CITY_NAME)).thenReturn(List.of());
         assertThat(districtService.getListOfDistrictsByCityName(WRONG_CITY_NAME)).isEmpty();
     }
 

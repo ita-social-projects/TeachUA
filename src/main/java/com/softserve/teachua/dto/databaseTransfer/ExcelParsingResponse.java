@@ -10,7 +10,9 @@ import lombok.Data;
 public class ExcelParsingResponse {
     private final List<ExcelFullParsingMistake> parsingMistakes = new ArrayList<>();
 
-    // total records count including records with mistakes
+    /**
+     * Total records count including records with mistakes.
+     */
     private final Map<String, Long> sheetRowsCount = new HashMap<>();
 
     private final ExcelParsingData data = new ExcelParsingData();

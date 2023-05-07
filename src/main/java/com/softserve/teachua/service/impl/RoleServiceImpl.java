@@ -61,7 +61,7 @@ public class RoleServiceImpl implements RoleService, ArchiveMark<Role> {
     @Override
     public Role getRoleById(Integer id) {
         Optional<Role> optionalRole = getOptionalRoleById(id);
-        if (!optionalRole.isPresent()) {
+        if (optionalRole.isEmpty()) {
             throw new NotExistException(String.format(ROLE_NOT_FOUND_BY_ID, id));
         }
 
@@ -81,7 +81,7 @@ public class RoleServiceImpl implements RoleService, ArchiveMark<Role> {
     @Override
     public Role findByName(String name) {
         Optional<Role> optionalRole = roleRepository.findByName(name);
-        if (!optionalRole.isPresent()) {
+        if (optionalRole.isEmpty()) {
             throw new NotExistException(String.format(ROLE_NOT_FOUND_BY_NAME, name));
         }
 

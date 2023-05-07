@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     @Override
     public User getUserById(Long id) {
         Optional<User> optionalUser = getOptionalUserById(id);
-        if (!optionalUser.isPresent()) {
+        if (optionalUser.isEmpty()) {
             throw new NotExistException(String.format(USER_NOT_FOUND_BY_ID, id));
         }
 
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     @Override
     public User getUserByEmail(String email) {
         Optional<User> optionalUser = getOptionalUserByEmail(email);
-        if (!optionalUser.isPresent()) {
+        if (optionalUser.isEmpty()) {
             throw new NotExistException(String.format(USER_NOT_FOUND_BY_EMAIL, email));
         }
 
@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     @Override
     public User getUserByVerificationCode(String verificationCode) {
         Optional<User> optionalUser = getOptionalUserByVerificationCode(verificationCode);
-        if (!optionalUser.isPresent()) {
+        if (optionalUser.isEmpty()) {
             throw new NotExistException(USER_NOT_FOUND_BY_VERIFICATION_CODE);
         }
 
@@ -323,7 +323,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
         helper.setSubject(subject);
 
         String verifyURL = baseUrl + "/verify?code=" + user.getVerificationCode();
-        // String verifyURL = "http://localhost:3000/dev/verify?code=" + user.getVerificationCode();
         String content = "Шановний/а [[userFullName]]!<br>"
                 + "Для підтвердження Вашої реєстрації, будь ласка, перейдіть за посиланням нижче: \n<br>"
                 + "<h3><a href=\"[[URL]]\" target=\"_self\">Підтвердити реєстрацію</a></h3>" + "Дякуємо!<br>"
@@ -391,7 +390,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
                     + "<h3><a href=\"[[URL]]\" target=\"_self\">Змінити пароль</a></h3>" + "Дякуємо!<br>"
                     + "Ініціатива \"Навчай українською\"";
             String verifyURL = baseUrl + "/verifyreset?code=" + user.getVerificationCode();
-            // String verifyURL = "http://localhost:3000/dev/verifyreset?code=" + user.getVerificationCode();
             content = content.replace("[[userFullName]]", user.getLastName() + " " + user.getFirstName());
             content = content.replace("[[URL]]", verifyURL);
             message.setContent(content, "text/html; charset=UTF-8");
@@ -402,7 +400,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
             log.error(e.getMessage());
         }
 
-        // return dtoConverter.convertToDto(user, SuccessUserPasswordReset.class);
         return null;
     }
 
@@ -420,7 +417,6 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
                 .setMessage(String.format("Користувач %s %s верифікований", user.getFirstName(), user.getLastName()));
 
         log.debug("step 2: " + userPasswordReset.getVerificationCode() + " " + userPasswordReset.getEmail());
-        // return userPasswordReset;
         return successVerificationUser;
     }
 

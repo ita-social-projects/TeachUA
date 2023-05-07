@@ -60,9 +60,8 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     @Override
     public Station getStationById(Long id) {
         Optional<Station> optionalStation = id == null ? Optional.empty() : getOptionalStationById(id);
-        if (!optionalStation.isPresent()) {
+        if (optionalStation.isEmpty()) {
             return null;
-            // throw new NotExistException(String.format(STATION_NOT_FOUND_BY_ID, id));
         }
 
         Station station = optionalStation.get();
@@ -73,7 +72,7 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     @Override
     public Station getStationByName(String name) {
         Optional<Station> optionalStation = getOptionalStationByName(name);
-        if (!optionalStation.isPresent()) {
+        if (optionalStation.isEmpty()) {
             throw new NotExistException(String.format(STATION_NOT_FOUND_BY_NAME, name));
         }
 

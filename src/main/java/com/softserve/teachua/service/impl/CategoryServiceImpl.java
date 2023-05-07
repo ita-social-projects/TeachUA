@@ -59,7 +59,7 @@ public class CategoryServiceImpl implements CategoryService, ArchiveMark<Categor
     @Override
     public Category getCategoryById(Long id) {
         Optional<Category> optionalCategory = getOptionalCategoryById(id);
-        if (!optionalCategory.isPresent()) {
+        if (optionalCategory.isEmpty()) {
             throw new NotExistException(String.format(CATEGORY_NOT_FOUND_BY_ID, id));
         }
 
@@ -72,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService, ArchiveMark<Categor
     @Override
     public Category getCategoryByName(String name) {
         Optional<Category> optionalCategory = getOptionalCategoryByName(name);
-        if (!optionalCategory.isPresent()) {
+        if (optionalCategory.isEmpty()) {
             throw new NotExistException(String.format(CATEGORY_NOT_FOUND_BY_NAME, name));
         }
 

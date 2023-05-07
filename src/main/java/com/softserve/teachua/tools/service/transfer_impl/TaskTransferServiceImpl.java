@@ -46,8 +46,8 @@ public class TaskTransferServiceImpl implements TaskTransferService {
         imageMap.put("Крок 16. Рахуйте українською ",
                 Arrays.asList("data_for_db/taskData/day16_1.png", "data_for_db/taskData/day16_2.png",
                         "data_for_db/taskData/day16_3.png", "data_for_db/taskData/day16_4.png"));
-        imageMap.put("Крок 17. Мандруйте Україною ", Arrays.asList("data_for_db/taskData/day17_1.png"));
-        imageMap.put("Крок 24. Пізнавайте українське мистецтво", Arrays.asList("data_for_db/taskData/day24_1.jpg"));
+        imageMap.put("Крок 17. Мандруйте Україною ", List.of("data_for_db/taskData/day17_1.png"));
+        imageMap.put("Крок 24. Пізнавайте українське мистецтво", List.of("data_for_db/taskData/day24_1.jpg"));
     }
 
     @Override

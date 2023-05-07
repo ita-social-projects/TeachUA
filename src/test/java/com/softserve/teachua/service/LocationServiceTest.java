@@ -26,9 +26,9 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class LocationServiceTest {
 
-    private static final Long CORRECT_LOCATION_ID = 1l;
-    private static final Long CORRECT_CENTER_ID = 3l;
-    private static final Long CORRECT_CLUB_ID = 5l;
+    private static final Long CORRECT_LOCATION_ID = 1L;
+    private static final Long CORRECT_CENTER_ID = 3L;
+    private static final Long CORRECT_CLUB_ID = 5L;
 
     @Mock
     private LocationRepository locationRepository;

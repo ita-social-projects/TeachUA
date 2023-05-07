@@ -60,7 +60,7 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
     @Override
     public News getNewsById(Long id) {
         Optional<News> optionalNews = getOptionalNewsById(id);
-        if (!optionalNews.isPresent()) {
+        if (optionalNews.isEmpty()) {
             throw new NotExistException(String.format(NEWS_NOT_FOUND_BY_ID, id));
         }
 

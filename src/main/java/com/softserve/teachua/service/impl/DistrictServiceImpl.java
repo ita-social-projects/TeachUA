@@ -57,9 +57,8 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
     @Override
     public District getDistrictById(Long id) {
         Optional<District> optionalDistrict = id == null ? Optional.empty() : getOptionalDistrictById(id);
-        if (!optionalDistrict.isPresent()) {
+        if (optionalDistrict.isEmpty()) {
             return null;
-            // throw new NotExistException(String.format(DISTRICT_NOT_FOUND_BY_ID, id));
         }
 
         District district = optionalDistrict.get();
@@ -70,7 +69,7 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
     @Override
     public District getDistrictByName(String name) {
         Optional<District> optionalDistrict = getOptionalDistrictByName(name);
-        if (!optionalDistrict.isPresent()) {
+        if (optionalDistrict.isEmpty()) {
             throw new NotExistException(String.format(DISTRICT_NOT_FOUND_BY_NAME, name));
         }
 

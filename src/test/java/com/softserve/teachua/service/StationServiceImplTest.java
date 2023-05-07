@@ -10,6 +10,8 @@ import com.softserve.teachua.model.City;
 import com.softserve.teachua.model.Station;
 import com.softserve.teachua.repository.StationRepository;
 import com.softserve.teachua.service.impl.StationServiceImpl;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -134,24 +136,25 @@ public class StationServiceImplTest {
 
     @Test
     public void getListOfStationsShouldReturnListOfStationResponses() {
-        when(stationRepository.findAll()).thenReturn(Arrays.asList(station));
+        when(stationRepository.findAll()).thenReturn(Collections.singletonList(station));
         when(dtoConverter.convertToDto(station, StationResponse.class)).thenReturn(stationResponse);
 
-        assertThat(stationService.getListOfStations()).isNotEmpty().isEqualTo(Arrays.asList(stationResponse));
+        assertThat(stationService.getListOfStations()).isNotEmpty().isEqualTo(
+                Collections.singletonList(stationResponse));
     }
 
     @Test
     public void getListOfStationsByCorrectCityNameShouldReturnListOfStationResponses() {
-        when(stationRepository.findAllByCityName(CITY_NAME)).thenReturn(Arrays.asList(station));
+        when(stationRepository.findAllByCityName(CITY_NAME)).thenReturn(Collections.singletonList(station));
         when(dtoConverter.convertToDto(station, StationResponse.class)).thenReturn(stationResponse);
 
         assertThat(stationService.getListOfStationsByCityName(CITY_NAME)).isNotEmpty()
-                .isEqualTo(Arrays.asList(stationResponse));
+                .isEqualTo(Collections.singletonList(stationResponse));
     }
 
     @Test
     public void getListOfStationsByWrongCityNameShouldReturnListOfStationResponses() {
-        when(stationRepository.findAllByCityName(WRONG_CITY_NAME)).thenReturn(Arrays.asList());
+        when(stationRepository.findAllByCityName(WRONG_CITY_NAME)).thenReturn(List.of());
         assertThat(stationService.getListOfStationsByCityName(WRONG_CITY_NAME)).isEmpty();
     }
 

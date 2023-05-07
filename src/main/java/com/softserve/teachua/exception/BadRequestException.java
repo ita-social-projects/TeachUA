@@ -1,6 +1,5 @@
 package com.softserve.teachua.exception;
 
-//import javassist.tools.web.BadHttpRequest;
 
 import org.springframework.lang.Nullable;
 

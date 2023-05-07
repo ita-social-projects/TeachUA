@@ -81,7 +81,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     public Archive getArchiveObjectById(Long id) {
         Optional<Archive> model = archiveRepository.findById(id);
 
-        if (!model.isPresent()) {
+        if (model.isEmpty()) {
             throw new NotExistException();
         }
 

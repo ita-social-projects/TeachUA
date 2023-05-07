@@ -40,7 +40,6 @@ public class UpdateTask implements Convertible {
     @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.png")
     private String picture;
     @NotNull
-    // @Future
     private LocalDate startDate;
     @NotNull
     private Long challengeId;
