@@ -23,9 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<AboutUsItem> {
-    private static final String ABOUT_US_ITEM_ALREADY_EXIST = "AboutUsItem with number: %s already exist";
     private static final String ABOUT_US_ITEM_NOT_FOUND_BY_ID = "AboutUsItem was not found by id: %s";
-    private static final String ABOUT_US_ITEM_NULL_FIELD_ERROR = "AboutUsItem cannot exist without \"%s\"";
     private static final String WRONG_LINK = "Youtube link should contain 'watch?v='";
     private static final String VIDEO_PARAM = "watch?v=";
     private static final String EMBED_VIDEO_URL = "https://www.youtube.com/embed/";

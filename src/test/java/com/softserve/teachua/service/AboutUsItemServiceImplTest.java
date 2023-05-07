@@ -60,8 +60,6 @@ class AboutUsItemServiceImplTest {
 
     // order
     private static final Long FIRST_POSITION = 0L;
-    private static final Long MIDDLE_POSITION = 1L;
-    private static final Long LAST_POSITION = 3L;
 
     @BeforeEach
     public void setUpMocks() {

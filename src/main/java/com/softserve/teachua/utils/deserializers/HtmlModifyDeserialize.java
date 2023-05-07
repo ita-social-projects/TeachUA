@@ -1,6 +1,5 @@
 package com.softserve.teachua.utils.deserializers;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -17,7 +16,7 @@ import org.jsoup.nodes.Document;
 public class HtmlModifyDeserialize extends JsonDeserializer<String> {
     @Override
     public String deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
-            throws IOException, JacksonException {
+            throws IOException {
         String html = jsonParser.getText();
         if (html == null) {
             return null;

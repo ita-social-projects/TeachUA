@@ -46,11 +46,8 @@ import org.springframework.stereotype.Service;
 public class DataLoaderServiceImpl implements DataLoaderService {
     private static final long DEFAULT_USER_OWNER_ID = 1L;
     private static final String CENTER_DEFAULT_URL_WEB = "#";
-    private static final String CENTER_DEFAULT_EMAIL = "email@mail.com";
     private static final String DEFAULT_CATEGORY_ICON_URL = "/static/images/categories/other.svg";
     private static final String DEFAULT_CATEGORY_BACKGROUND_COLOR = "#13C2C2";
-    private static final String DEFAULT_CLUB_WORK_TIME = "09:00-16:00";
-    private static final String DEFAULT_CLUB_URL_WEB = "#";
     private static final String DEFAULT_CLUB_URL_LOGO = "#";
     private static final String DEFAULT_CLUB_URL_BACKGROUND = "/static/images/club/bg_2.png";
     private static final String CLUB_DEFAULT_DESCRIPTION = "Опис відсутній";

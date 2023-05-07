@@ -1,6 +1,5 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.constants.MessageType;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.certificate_template.CertificateTemplatePreview;
@@ -75,7 +74,7 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
+    public void restoreModel(String archiveObject) {
         // TODO
     }
 

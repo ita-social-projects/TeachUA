@@ -59,7 +59,7 @@ public class CenterReportGenerationServiceImpl implements ReportGenerationServic
         return JasperFillManager.fillReport(jasperReport, getParameters(centerResponse), getDataSource(centerResponse));
     }
 
-    private Map<String, Object> getParameters(CenterResponse centerResponse) throws IOException, JRException {
+    private Map<String, Object> getParameters(CenterResponse centerResponse) throws IOException {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("CENTER", centerResponse);
         parameters.put("CLUBS_SUB_REPORT_PATH", getRealFilePath(CLUBS_SUB_REPORT_PATH));

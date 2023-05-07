@@ -82,7 +82,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
     private static final String CLUB_DELETING_ERROR = "Can't delete club cause of relationship";
-    private static final String CLUB_CREATING_ERROR = "Club without \"%s\" isn't created.";
     private static final String CLUB_CANT_BE_MANAGE_BY_USER =
             "The user cannot manage a club that does not belong to the user";
     private final ComplaintRepository complaintRepository;

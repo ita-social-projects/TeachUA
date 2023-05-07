@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class DistrictServiceImpl implements DistrictService, ArchiveMark<District> {
     private static final String DISTRICT_ALREADY_EXIST = "District already exist with name: %s";
-    private static final String DISTRICT_NOT_FOUND_BY_ID = "District not found by id: %s";
     private static final String DISTRICT_NOT_FOUND_BY_NAME = "District not found by name: %s";
     private static final String DISTRICT_DELETING_ERROR = "Can't delete district cause of relationship";
 

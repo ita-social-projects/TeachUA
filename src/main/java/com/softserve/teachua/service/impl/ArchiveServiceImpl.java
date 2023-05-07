@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 public class ArchiveServiceImpl implements ArchiveService {
-    private static final String JSON_WRITE_EXCEPTION = "Model with name: %s can't be converted to json";
     private final ArchiveRepository archiveRepository;
     private final ObjectMapper objectMapper;
 

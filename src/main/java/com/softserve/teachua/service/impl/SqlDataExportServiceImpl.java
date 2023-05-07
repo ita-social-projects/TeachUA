@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class SqlDataExportServiceImpl implements SqlDataExportService {
-    DataSource dataSource;
+    final DataSource dataSource;
 
     @Autowired
     public SqlDataExportServiceImpl(DataSource dataSource) {

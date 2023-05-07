@@ -6,7 +6,6 @@ import com.softserve.teachua.dao.BackupDaoImpl;
 import com.softserve.teachua.dao.service.BackupService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -40,7 +39,7 @@ public class TablesBackupController implements Api {
     }
 
     @GetMapping("/download")
-    public ResponseEntity<Resource> download(@RequestParam String tableNames) throws IOException {
+    public ResponseEntity<Resource> download(@RequestParam String tableNames) {
         HttpHeaders headers = new HttpHeaders();
 
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=backup.sql");
