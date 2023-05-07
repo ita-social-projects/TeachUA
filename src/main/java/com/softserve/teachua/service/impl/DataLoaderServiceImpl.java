@@ -20,7 +20,6 @@ import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.City;
 import com.softserve.teachua.model.ExcelCenterEntity;
 import com.softserve.teachua.model.ExcelClubEntity;
-import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ExcelCenterEntityRepository;
 import com.softserve.teachua.repository.ExcelClubEntityRepository;
 import com.softserve.teachua.service.CategoryService;
@@ -31,7 +30,6 @@ import com.softserve.teachua.service.DataLoaderService;
 import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.LocationService;
 import com.softserve.teachua.service.StationService;
-import com.softserve.teachua.service.UserService;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -75,9 +73,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     private final ClubService clubService;
     private final DistrictService districtService;
     private final StationService stationService;
-    private final UserService userService;
     private final CityService cityService;
-    private final ClubRepository clubRepository;
     private final LocationService locationService;
     private final ExcelConvertToFormatStringContactsData contactsConverter;
     private final ExcelConvertToFormatStringContactsData excelContactsConverter;
@@ -88,8 +84,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     @Autowired
     public DataLoaderServiceImpl(CategoryService categoryService, CenterService centerService, ClubService clubService,
                                  DistrictService districtService, StationService stationService,
-                                 UserService userService, CityService cityService, ClubRepository clubRepository,
-                                 LocationService locationService,
+                                 CityService cityService, LocationService locationService,
                                  ExcelConvertToFormatStringContactsData contactsConverter,
                                  ExcelConvertToFormatStringContactsData excelContactsConverter,
                                  ExcelCenterEntityRepository excelCenterEntityRepository,
@@ -99,9 +94,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         this.clubService = clubService;
         this.districtService = districtService;
         this.stationService = stationService;
-        this.userService = userService;
         this.cityService = cityService;
-        this.clubRepository = clubRepository;
         this.locationService = locationService;
         this.contactsConverter = contactsConverter;
         this.excelContactsConverter = excelContactsConverter;

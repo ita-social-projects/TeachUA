@@ -9,19 +9,15 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
 public class BackupDaoImpl implements BackupDao {
-    private final JdbcTemplate jdbcTemplate;
-
     private final DataSource dataSource;
 
     @Autowired
-    public BackupDaoImpl(JdbcTemplate jdbcTemplate, DataSource dataSource) {
-        this.jdbcTemplate = jdbcTemplate;
+    public BackupDaoImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 

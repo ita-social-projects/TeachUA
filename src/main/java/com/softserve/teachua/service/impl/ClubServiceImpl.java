@@ -41,7 +41,6 @@ import com.softserve.teachua.model.archivable.ClubArch;
 import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
-import com.softserve.teachua.repository.ContactTypeRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.repository.GalleryRepository;
 import com.softserve.teachua.repository.LocationRepository;
@@ -53,7 +52,6 @@ import com.softserve.teachua.service.CityService;
 import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.FeedbackService;
-import com.softserve.teachua.service.FileUploadService;
 import com.softserve.teachua.service.LocationService;
 import com.softserve.teachua.service.StationService;
 import com.softserve.teachua.service.UserService;
@@ -87,7 +85,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private static final String CLUB_CREATING_ERROR = "Club without \"%s\" isn't created.";
     private static final String CLUB_CANT_BE_MANAGE_BY_USER =
             "The user cannot manage a club that does not belong to the user";
-    private final ContactTypeRepository contactTypeRepository;
     private final ComplaintRepository complaintRepository;
     private final ClubRepository clubRepository;
     private final LocationRepository locationRepository;
@@ -101,7 +98,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private final UserService userService;
     private final CenterRepository centerRepository;
     private final LocationService locationService;
-    private final FileUploadService fileUploadService;
     private final CoordinatesConverter coordinatesConverter;
     private final GalleryRepository galleryRepository;
     private final CenterService centerService;
@@ -113,16 +109,13 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository, CenterRepository centerRepository,
                            LocationRepository locationRepository, DtoConverter dtoConverter,
-                           ArchiveService archiveService,
-                           CityService cityService, DistrictService districtService, StationService stationService,
-                           CategoryService categoryService, UserService userService,
+                           ArchiveService archiveService, CityService cityService, DistrictService districtService,
+                           StationService stationService, CategoryService categoryService, UserService userService,
                            ClubToClubResponseConverter toClubResponseConverter, LocationService locationService,
-                           FileUploadService fileUploadService, CoordinatesConverter coordinatesConverter,
-                           GalleryRepository galleryRepository, CenterService centerService,
-                           FeedbackRepository feedbackRepository,
+                           CoordinatesConverter coordinatesConverter, GalleryRepository galleryRepository,
+                           CenterService centerService, FeedbackRepository feedbackRepository,
                            ObjectMapper objectMapper, ContactsStringConverter contactsStringConverter,
-                           ComplaintRepository complaintRepository,
-                           ContactTypeRepository contactTypeRepository) {
+                           ComplaintRepository complaintRepository) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -135,7 +128,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         this.toClubResponseConverter = toClubResponseConverter;
         this.centerRepository = centerRepository;
         this.locationService = locationService;
-        this.fileUploadService = fileUploadService;
         this.coordinatesConverter = coordinatesConverter;
         this.galleryRepository = galleryRepository;
         this.centerService = centerService;
@@ -143,7 +135,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         this.objectMapper = objectMapper;
         this.contactsStringConverter = contactsStringConverter;
         this.complaintRepository = complaintRepository;
-        this.contactTypeRepository = contactTypeRepository;
     }
 
     @Autowired
