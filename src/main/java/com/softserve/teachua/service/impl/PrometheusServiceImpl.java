@@ -20,14 +20,14 @@ public class PrometheusServiceImpl implements PrometheusService {
 
     @Override
     public String getPrometheusMetrics() {
-        return prometheusMeterRegistry.scrape().replaceAll("# HELP", "\n# HELP");
+        return prometheusMeterRegistry.scrape().replace("# HELP", "\n# HELP");
     }
 
     @Override
     public List<Metric> getKeysAndValues() {
         ArrayList<Metric> metricsList = new ArrayList<>(50);
         // here we scrape metrics, and format them, to get it line by line
-        String metrics = prometheusMeterRegistry.scrape().replaceAll("# HELP", "\n# HELP");
+        String metrics = prometheusMeterRegistry.scrape().replace("# HELP", "\n# HELP");
         // read String line by line to separate metrics as keys and values because we get metrics as plain text
         Scanner scanner = new Scanner(metrics);
         while (scanner.hasNextLine()) {

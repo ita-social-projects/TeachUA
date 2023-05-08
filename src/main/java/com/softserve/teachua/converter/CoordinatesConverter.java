@@ -29,7 +29,7 @@ public class CoordinatesConverter {
 
     private double[] parseLatitudeAndLongitude(String coordinates) {
         try {
-            String[] latAndLng = coordinates.replaceAll(" ", "").split(",");
+            String[] latAndLng = coordinates.replace(" ", "").split(",");
             return new double[]{Double.parseDouble(latAndLng[0]), Double.parseDouble(latAndLng[1])};
         } catch (Exception e) {
             throw new IncorrectInputException("Parsing error. Wrong coordinates format.");

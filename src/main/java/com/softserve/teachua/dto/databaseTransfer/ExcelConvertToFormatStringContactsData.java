@@ -9,7 +9,7 @@ public class ExcelConvertToFormatStringContactsData {
     }
 
     private String parsePhoneCell(String phoneRow) {
-        String formattedData = phoneRow.replaceAll(" ", "");
+        String formattedData = phoneRow.replace(" ", "");
         String[] phones = formattedData.split("[,;]");
 
         StringBuilder builder = new StringBuilder();
@@ -24,7 +24,7 @@ public class ExcelConvertToFormatStringContactsData {
     private String parseSiteUrlCell(String siteUrl) {
         StringBuilder builder = new StringBuilder();
 
-        String formattedData = siteUrl.replaceAll(" ", "");
+        String formattedData = siteUrl.replace(" ", "");
 
         String[] siteUrls = formattedData.split("[,;]");
 
