@@ -147,7 +147,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         User user = null;
         if (centerProfile.getUserId() != null) {
             log.debug("CenterServiceImpl=> centerProfile.userId == " + centerProfile.getUserId());
-            user = userRepository.getOne(centerProfile.getUserId());
+            user = userRepository.findById(centerProfile.getUserId()).orElseThrow(NotExistException::new);
         } else {
             log.debug("CenterServiceImpl=> centerProfile.userId == null");
         }

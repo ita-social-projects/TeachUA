@@ -41,6 +41,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
@@ -147,6 +148,7 @@ class CenterServiceTest {
         when(dtoConverter.convertToDto(createCenter, SuccessCreatedCenter.class)).thenReturn(successCreatedCenter);
         when(clubService.getClubById(club.getId())).thenReturn(club);
         when(userDetailsService.getUserPrincipal()).thenReturn(TestUtils.getUserPrincipal(user));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
     }
 
     private void setUpdateCenterMocks() {
