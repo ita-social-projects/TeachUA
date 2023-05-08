@@ -29,38 +29,23 @@ public class BackupDaoImpl implements BackupDao {
         query.append(tableName);
         query.append("(");
 
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        ResultSetMetaData metadata = null;
-        int columnCount = 0;
-        try {
-            connection = dataSource.getConnection();
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(sql);
-            metadata = resultSet.getMetaData();
-            columnCount = metadata.getColumnCount();
-        } catch (SQLException e) {
-            throw new BadRequestException(e.getMessage());
-        }
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            ResultSetMetaData metadata = resultSet.getMetaData();
+            int columnCount = metadata.getColumnCount();
 
-        for (int i = 0; i < columnCount; i++) {
-            String columnName = null;
-            try {
-                columnName = metadata.getColumnName(i + 1);
+            for (int i = 0; i < columnCount; i++) {
+                String columnName = metadata.getColumnName(i + 1);
                 query.append(columnName);
                 if (i == (columnCount - 1)) {
                     query.append(" ");
                 } else {
                     query.append(", ");
                 }
-            } catch (SQLException e) {
-                throw new BadRequestException("not found2");
             }
-        }
-        query.append(") values\n");
+            query.append(") values\n");
 
-        try {
             boolean bln = false;
             while (resultSet.next()) {
                 if (bln) {
@@ -82,18 +67,13 @@ public class BackupDaoImpl implements BackupDao {
                     }
                 }
             }
-        } catch (SQLException e) {
-            throw new BadRequestException("not found3");
-        }
-        query.append(";\n");
+            query.append(";\n");
 
-        log.info(query.toString());
-
-        try {
-            connection.close();
+            log.info(query.toString());
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new BadRequestException(e.getMessage());
         }
+
         return query.toString();
     }
 }
