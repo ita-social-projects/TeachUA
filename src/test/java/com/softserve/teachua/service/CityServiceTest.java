@@ -8,52 +8,46 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.City;
-import com.softserve.teachua.model.archivable.CenterArch;
 import com.softserve.teachua.model.archivable.CityArch;
 import com.softserve.teachua.repository.CityRepository;
 import com.softserve.teachua.service.impl.CityServiceImpl;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
-public class CityServiceTest {
-
+class CityServiceTest {
+    private final long EXISTING_ID = 1L;
+    private final long NOT_EXISTING_ID = 500L;
+    private final String NOT_EXISTING_NAME = "Kyiv";
+    private final String EXISTING_NAME = "Lviv";
+    private final String NEW_NAME = "Dnipro";
     @Mock
     private CityRepository cityRepository;
-
     @Mock
     private DtoConverter dtoConverter;
-
     @Mock
     private ArchiveService archiveService;
-
     @InjectMocks
     private CityServiceImpl cityService;
-
     private City city;
     private CityProfile cityProfile;
     private CityResponse cityResponse;
     private CityArch cityArch;
 
-    private final long EXISTING_ID = 1L;
-    private final long NOT_EXISTING_ID = 500L;
-
-    private final String NOT_EXISTING_NAME = "Kyiv";
-    private final String EXISTING_NAME = "Lviv";
-    private final String NEW_NAME = "Dnipro";
-
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         city = City.builder().id(EXISTING_ID).name(EXISTING_NAME).build();
         cityProfile = CityProfile.builder().name(NEW_NAME).build();
         cityResponse = CityResponse.builder().name(EXISTING_NAME).build();
@@ -78,7 +72,7 @@ public class CityServiceTest {
     }
 
     @Test
-    public void getCityByExistingIdShouldReturnCorrectCity() {
+    void getCityByExistingIdShouldReturnCorrectCity() {
         when(cityRepository.findById(EXISTING_ID)).thenReturn(Optional.of(city));
 
         City actual = cityService.getCityById(EXISTING_ID);
@@ -86,7 +80,7 @@ public class CityServiceTest {
     }
 
     @Test
-    public void getCityByNotExistingIdShouldThrowNotExistException() {
+    void getCityByNotExistingIdShouldThrowNotExistException() {
         when(cityRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> cityService.getCityById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
@@ -157,7 +151,8 @@ public class CityServiceTest {
     void updateCityByNotExistingIdShouldThrowNotExistException() {
         when(cityRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> cityService.updateCity(NOT_EXISTING_ID, cityProfile)).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> cityService.updateCity(NOT_EXISTING_ID, cityProfile)).isInstanceOf(
+                NotExistException.class);
     }
 
     @Test

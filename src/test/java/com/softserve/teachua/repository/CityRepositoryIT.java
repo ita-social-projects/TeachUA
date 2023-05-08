@@ -29,7 +29,7 @@ class CityRepositoryIT {
 
     @Test
     void findByNotExistingIdShouldReturnOptionalEmpty() {
-        assertThat(cityRepository.findById(NOT_EXISTING_ID)).isNotEmpty();
+        assertThat(cityRepository.findById(NOT_EXISTING_ID)).isEmpty();
     }
 
     @Test

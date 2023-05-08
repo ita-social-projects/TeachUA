@@ -21,22 +21,23 @@ import com.softserve.teachua.service.impl.ComplaintServiceImpl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ComplaintServiceTest {
+class ComplaintServiceTest {
 
     private static final Long CORRECT_COMPLAINT_ID = 1L;
     private static final Long WRONG_COMPLAINT_ID = 2L;
@@ -69,7 +70,7 @@ public class ComplaintServiceTest {
     private List<ComplaintResponse> complaintResponseList;
 
     @BeforeEach
-    public void setMocks() {
+    void setMocks() {
 
         user = User.builder().id(USER_ID).build();
         userPrincipal = TestUtils.getUserPrincipal(user);
@@ -90,7 +91,7 @@ public class ComplaintServiceTest {
     }
 
     @Test
-    public void getAllByClubIdMustReturnListOfComplaintResponse() {
+    void getAllByClubIdMustReturnListOfComplaintResponse() {
         when(complaintRepository.getAllByClubId(CLUB_ID)).thenReturn(complaintList);
         when(dtoConverter.convertToDto(correctComplaint, ComplaintResponse.class)).thenReturn(correctComplaintResponse);
         List<ComplaintResponse> expectedList = complaintService.getAllByClubId(CLUB_ID);
@@ -98,33 +99,31 @@ public class ComplaintServiceTest {
     }
 
     @Test
-    public void getAllComplaintMustReturnListOfComplaintResponse() {
+    void getAllComplaintMustReturnListOfComplaintResponse() {
         when(complaintRepository.findAll()).thenReturn(complaintList);
         when((dtoConverter.convertToDto(correctComplaint, ComplaintResponse.class)))
                 .thenReturn(correctComplaintResponse);
         List<ComplaintResponse> expectedList = complaintService.getAll();
         assertThat(expectedList).isEqualTo(complaintResponseList);
-
     }
 
     @Test
-    public void getComplaintByExistingIdMustReturnCorrectComplaint() {
+    void getComplaintByExistingIdMustReturnCorrectComplaint() {
         when(complaintRepository.findById(CORRECT_COMPLAINT_ID)).thenReturn(Optional.of(correctComplaint));
         Complaint expectedComplaint = complaintService.getComplaintById(CORRECT_COMPLAINT_ID);
         assertThat(expectedComplaint).isEqualTo(correctComplaint);
     }
 
     @Test
-    public void getComplaintByWrongIdMustReturnNotExistException() {
+    void getComplaintByWrongIdMustReturnNotExistException() {
         when(complaintRepository.findById(WRONG_COMPLAINT_ID)).thenReturn(Optional.empty());
         NotExistException exception = assertThrows(NotExistException.class,
                 () -> complaintService.getComplaintById(WRONG_COMPLAINT_ID));
         assertThat(exception.getMessage()).contains(WRONG_COMPLAINT_ID.toString());
-
     }
 
     @Test
-    public void addComplaintMustReturnSuccessCreatedComplaint() {
+    void addComplaintMustReturnSuccessCreatedComplaint() {
         when(userDetailsService.getUserPrincipal()).thenReturn(userPrincipal);
         when(dtoConverter.convertToEntity(any(ComplaintProfile.class), any(Complaint.class)))
                 .thenReturn(new Complaint());
@@ -134,11 +133,10 @@ public class ComplaintServiceTest {
                 .thenReturn(successCreatedComplaint);
         SuccessCreatedComplaint expected = complaintService.addComplaint(correctComplaintProfile);
         assertThat(expected).isEqualTo(successCreatedComplaint);
-
     }
 
     @Test
-    public void deleteComplaintByExistingIdMustReturnComplaintResponse() {
+    void deleteComplaintByExistingIdMustReturnComplaintResponse() {
         when(complaintRepository.findById(CORRECT_COMPLAINT_ID)).thenReturn(Optional.of(correctComplaint));
         when(dtoConverter.convertToDto(correctComplaint, ComplaintResponse.class)).thenReturn(correctComplaintResponse);
         when(dtoConverter.convertToDto(correctComplaint, ComplaintArch.class)).thenReturn(complaintArch);
@@ -147,7 +145,7 @@ public class ComplaintServiceTest {
     }
 
     @Test
-    public void deleteComplaintByIdUnSuccessDeletingMustReturnDatabaseRepositoryException() {
+    void deleteComplaintByIdUnSuccessDeletingMustReturnDatabaseRepositoryException() {
         when(complaintRepository.findById(CORRECT_COMPLAINT_ID)).thenReturn(Optional.of(correctComplaint));
         doThrow(DatabaseRepositoryException.class).when(complaintRepository).deleteById(CORRECT_COMPLAINT_ID);
         DatabaseRepositoryException expectedException = assertThrows(DatabaseRepositoryException.class,
@@ -156,7 +154,7 @@ public class ComplaintServiceTest {
     }
 
     @Test
-    public void getComplaintProfileByIdMustReturnComplaintResponse() {
+    void getComplaintProfileByIdMustReturnComplaintResponse() {
         when(complaintRepository.findById(CORRECT_COMPLAINT_ID)).thenReturn(Optional.of(correctComplaint));
         when(dtoConverter.convertToDto(correctComplaint, ComplaintResponse.class)).thenReturn(correctComplaintResponse);
         ComplaintResponse expected = complaintService.getComplaintProfileById(CORRECT_COMPLAINT_ID);
@@ -165,7 +163,7 @@ public class ComplaintServiceTest {
     }
 
     @Test
-    public void updateComplaintProfileByIdMustReturnComplaintProfile() {
+    void updateComplaintProfileByIdMustReturnComplaintProfile() {
         when(complaintRepository.findById(CORRECT_COMPLAINT_ID)).thenReturn(Optional.of(correctComplaint));
         when(dtoConverter.convertToEntity(correctComplaintProfile, correctComplaint)).thenReturn(correctComplaint);
         when(complaintRepository.save(correctComplaint)).thenReturn(correctComplaint);
@@ -174,5 +172,4 @@ public class ComplaintServiceTest {
                 correctComplaintProfile);
         assertThat(expectedComplaintProfile).isEqualTo(correctComplaintProfile);
     }
-
 }

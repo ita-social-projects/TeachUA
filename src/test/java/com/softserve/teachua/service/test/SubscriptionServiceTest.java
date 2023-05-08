@@ -10,26 +10,32 @@ import com.softserve.teachua.model.test.Subscription;
 import com.softserve.teachua.repository.test.SubscriptionRepository;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.impl.SubscriptionServiceImpl;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
-public class SubscriptionServiceTest {
+class SubscriptionServiceTest {
+    private final Long TEST_ID = 1L;
+    private final Long TEST_WITHOUT_GROUP_ID = 10L;
+    private final Long EXISTING_USER_ID = 1L;
+    private final Long EXISTING_GROUP_ID = 1L;
+    private final Long NOT_EXISTING_USER_ID = 100L;
+    private final Long NOT_EXISTING_GROUP_ID = 100L;
+    private final LocalDate expirationDate = LocalDate.now();
+    private final ModelMapper mapper = new ModelMapper();
     @Mock
     private SubscriptionRepository subscriptionRepository;
     @Mock
@@ -38,19 +44,8 @@ public class SubscriptionServiceTest {
     private UserService userService;
     @Mock
     private ModelMapper modelMapper;
-
     @InjectMocks
     private SubscriptionServiceImpl subscriptionService;
-
-    private final Long TEST_ID = 1L;
-    private final Long TEST_WITHOUT_GROUP_ID = 10L;
-    private final Long EXISTING_USER_ID = 1L;
-    private final Long EXISTING_GROUP_ID = 1L;
-    private final Long NOT_EXISTING_USER_ID = 100L;
-    private final Long NOT_EXISTING_GROUP_ID = 100L;
-    private final LocalDate expirationDate = LocalDate.now();
-
-    private final ModelMapper mapper = new ModelMapper();
     private Subscription subscription;
     private SubscriptionProfile subscriptionProfile;
     private CreateSubscription createSubscription;
@@ -71,7 +66,7 @@ public class SubscriptionServiceTest {
     @Test
     void findSubscriptionByExistingUserIdAndExistingGroupIdShouldReturnSubscription() {
         when(subscriptionRepository.findByUserIdAndGroupId(EXISTING_USER_ID, EXISTING_GROUP_ID))
-            .thenReturn(subscription);
+                .thenReturn(subscription);
 
         Subscription actual = subscriptionService.findByUserIdAndGroupId(EXISTING_USER_ID, EXISTING_GROUP_ID);
         assertEquals(subscription, actual);
@@ -109,7 +104,7 @@ public class SubscriptionServiceTest {
     @Test
     void createSubscriptionThatAlreadyExistsByTestIdAndEnrollmentKeyShouldThrowIllegalStateException() {
         when(subscriptionRepository.findByUserIdAndGroupId(EXISTING_USER_ID, EXISTING_GROUP_ID))
-            .thenReturn(subscription);
+                .thenReturn(subscription);
         when(groupService.findAllByTestId(TEST_ID)).thenReturn(Collections.singletonList(group));
         when(userService.getAuthenticatedUser()).thenReturn(user);
         assertThatThrownBy(() -> subscriptionService.createSubscriptionByTestId(createSubscription, TEST_ID))
@@ -185,7 +180,7 @@ public class SubscriptionServiceTest {
     @Test
     void deleteSubscriptionByUserIdAndGroupIdShouldReturnSubscriptionProfile() {
         when(subscriptionRepository.findAllByUserIdAndGroupId(EXISTING_USER_ID, EXISTING_GROUP_ID))
-            .thenReturn(Collections.singletonList(subscription));
+                .thenReturn(Collections.singletonList(subscription));
 
         SubscriptionProfile actual = subscriptionService
                 .deleteSubscriptionByUserIdAndGroupId(EXISTING_USER_ID, EXISTING_GROUP_ID);

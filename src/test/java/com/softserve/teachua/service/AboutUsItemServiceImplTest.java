@@ -11,15 +11,13 @@ import com.softserve.teachua.repository.AboutUsItemRepository;
 import com.softserve.teachua.service.impl.AboutUsItemServiceImpl;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Arrays;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,29 +27,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AboutUsItemServiceImplTest {
 
-    @Mock
-    private AboutUsItemRepository aboutUsItemRepository;
-
-    @Mock
-    private ArchiveService archiveService;
-
-    @Mock
-    private DtoConverter dtoConverter;
-
-    @InjectMocks
-    private AboutUsItemServiceImpl aboutUsItemService;
-
-    private AboutUsItem aboutUsItem;
-    private AboutUsItemResponse aboutUsItemResponse;
-    private AboutUsItemArch aboutUsItemArch;
-    private AboutUsItemProfile aboutUsItemProfile;
-
     private static final Long CORRECT_ITEM_ID = 1L;
     private static final Long WRONG_ITEM_ID = 2L;
     private static final String ITEM_TEXT = "text";
     private static final Long ITEM_TYPE = 1L;
-
-    // video
     private static final String VIDEO_ID = "ABC123";
     private static final String DEFAULT_YOUTUBE_LINK = String
             .format("https://www.youtube.com/watch?v=%s&ab_channel=MyChannel", VIDEO_ID);
@@ -59,12 +38,23 @@ class AboutUsItemServiceImplTest {
             "https://www.youtube.com/watch?v=%s&list=List&start_radio=1&rv=rvrvrv&ab_channel=MyChannel", VIDEO_ID);
     private static final String WRONG_YOUTUBE_LINK = "https://www.youtube.com/ab_channel=MyChannel";
     private static final String VALIDATED_URL = String.format("https://www.youtube.com/embed/%s", VIDEO_ID);
-
     // order
     private static final Long FIRST_POSITION = 0L;
+    @Mock
+    private AboutUsItemRepository aboutUsItemRepository;
+    @Mock
+    private ArchiveService archiveService;
+    @Mock
+    private DtoConverter dtoConverter;
+    @InjectMocks
+    private AboutUsItemServiceImpl aboutUsItemService;
+    private AboutUsItem aboutUsItem;
+    private AboutUsItemResponse aboutUsItemResponse;
+    private AboutUsItemArch aboutUsItemArch;
+    private AboutUsItemProfile aboutUsItemProfile;
 
     @BeforeEach
-    public void setUpMocks() {
+    void setUpMocks() {
         aboutUsItem = AboutUsItem.builder().id(CORRECT_ITEM_ID).text(ITEM_TEXT).type(ITEM_TYPE).number(FIRST_POSITION)
                 .build();
 
@@ -77,32 +67,32 @@ class AboutUsItemServiceImplTest {
     }
 
     @Test
-    public void getAboutUsItemByCorrectIdShouldReturnAboutUsItem() {
+    void getAboutUsItemByCorrectIdShouldReturnAboutUsItem() {
         when(aboutUsItemRepository.findById(CORRECT_ITEM_ID)).thenReturn(Optional.of(aboutUsItem));
         assertThat(aboutUsItemService.getAboutUsItemById(CORRECT_ITEM_ID)).isEqualTo(aboutUsItem);
     }
 
     @Test
-    public void getAboutUsItemByWrongIdThrowNotExistException() {
+    void getAboutUsItemByWrongIdThrowNotExistException() {
         assertThatThrownBy(() -> aboutUsItemService.getAboutUsItemById(WRONG_ITEM_ID))
                 .isInstanceOf(NotExistException.class);
     }
 
     @Test
-    public void getAboutUsItemResponseByCorrectIdShouldReturnAboutUsItem() {
+    void getAboutUsItemResponseByCorrectIdShouldReturnAboutUsItem() {
         when(aboutUsItemRepository.findById(CORRECT_ITEM_ID)).thenReturn(Optional.of(aboutUsItem));
         when(dtoConverter.convertToDto(aboutUsItem, AboutUsItemResponse.class)).thenReturn(aboutUsItemResponse);
         assertThat(aboutUsItemService.getAboutUsItemResponseById(CORRECT_ITEM_ID)).isEqualTo(aboutUsItemResponse);
     }
 
     @Test
-    public void getAboutUsItemResponseByWrongIdThrowNotExistException() {
+    void getAboutUsItemResponseByWrongIdThrowNotExistException() {
         assertThatThrownBy(() -> aboutUsItemService.getAboutUsItemResponseById(WRONG_ITEM_ID))
                 .isInstanceOf(NotExistException.class);
     }
 
     @Test
-    public void getListOfAboutUsItemResponsesShouldReturnListOfAboutUsItemResponses() {
+    void getListOfAboutUsItemResponsesShouldReturnListOfAboutUsItemResponses() {
         when(aboutUsItemRepository.findAllByOrderByNumberAsc()).thenReturn(Collections.singletonList(aboutUsItem));
         when(dtoConverter.convertToDto(aboutUsItem, AboutUsItemResponse.class)).thenReturn(aboutUsItemResponse);
         assertThat(aboutUsItemService.getListOfAboutUsItemResponses()).isNotEmpty()
@@ -110,13 +100,13 @@ class AboutUsItemServiceImplTest {
     }
 
     @Test
-    public void getListOfAboutUsItemResponsesShouldReturnEmptyList() {
+    void getListOfAboutUsItemResponsesShouldReturnEmptyList() {
         when(aboutUsItemRepository.findAllByOrderByNumberAsc()).thenReturn(List.of());
         assertThat(aboutUsItemService.getListOfAboutUsItemResponses()).isEmpty();
     }
 
     @Test
-    public void addAboutUsItemShouldReturnAboutUsItemResponse() {
+    void addAboutUsItemShouldReturnAboutUsItemResponse() {
         when(aboutUsItemRepository.findAllByOrderByNumberAsc()).thenReturn(Collections.singletonList(aboutUsItem));
         when(dtoConverter.convertToEntity(aboutUsItemProfile, new AboutUsItem())).thenReturn(aboutUsItem);
         when(aboutUsItemRepository.save(aboutUsItem)).thenReturn(aboutUsItem);
@@ -125,7 +115,7 @@ class AboutUsItemServiceImplTest {
     }
 
     @Test
-    public void updateAboutUsItemShouldReturnAboutUsItemResponse() {
+    void updateAboutUsItemShouldReturnAboutUsItemResponse() {
         when(aboutUsItemRepository.findById(CORRECT_ITEM_ID)).thenReturn(Optional.of(aboutUsItem));
         when(aboutUsItemRepository.save(aboutUsItem)).thenReturn(aboutUsItem);
         when(dtoConverter.convertToDto(aboutUsItem, AboutUsItemResponse.class)).thenReturn(aboutUsItemResponse);
@@ -134,7 +124,7 @@ class AboutUsItemServiceImplTest {
     }
 
     @Test
-    public void deleteAboutUsItemByIdShouldReturnAboutUsItemResponse() {
+    void deleteAboutUsItemByIdShouldReturnAboutUsItemResponse() {
         when(aboutUsItemRepository.findById(CORRECT_ITEM_ID)).thenReturn(Optional.of(aboutUsItem));
         doNothing().when(aboutUsItemRepository).deleteById(CORRECT_ITEM_ID);
         doNothing().when(aboutUsItemRepository).flush();
@@ -145,28 +135,27 @@ class AboutUsItemServiceImplTest {
     }
 
     @Test
-    public void validateVideoWithNullUrlShouldReturnNull() {
+    void validateVideoWithNullUrlShouldReturnNull() {
         aboutUsItemProfile.setVideo(null);
-        assertThat(aboutUsItemService.validateVideoUrl(aboutUsItemProfile)).isEqualTo(null);
+        assertThat(aboutUsItemService.validateVideoUrl(aboutUsItemProfile)).isNull();
     }
 
     @Test
-    public void validateVideoWithDefaultUrlShouldReturnValidatedUrl() {
+    void validateVideoWithDefaultUrlShouldReturnValidatedUrl() {
         aboutUsItemProfile.setVideo(DEFAULT_YOUTUBE_LINK);
         assertThat(aboutUsItemService.validateVideoUrl(aboutUsItemProfile)).isEqualTo(VALIDATED_URL);
     }
 
     @Test
-    public void validateVideoWithExtendedUrlShouldReturnValidatedUrl() {
+    void validateVideoWithExtendedUrlShouldReturnValidatedUrl() {
         aboutUsItemProfile.setVideo(EXTENDED_YOUTUBE_LINK);
         assertThat(aboutUsItemService.validateVideoUrl(aboutUsItemProfile)).isEqualTo(VALIDATED_URL);
     }
 
     @Test
-    public void validateVideoWithWrongUrlShouldThrowIllegalArgumentException() {
+    void validateVideoWithWrongUrlShouldThrowIllegalArgumentException() {
         aboutUsItemProfile.setVideo(WRONG_YOUTUBE_LINK);
         assertThatThrownBy(() -> aboutUsItemService.validateVideoUrl(aboutUsItemProfile))
                 .isInstanceOf(IllegalArgumentException.class);
     }
-
 }

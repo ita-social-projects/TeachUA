@@ -8,30 +8,43 @@ import com.softserve.teachua.dto.test.result.UserResult;
 import com.softserve.teachua.dto.test.test.ResultTest;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.User;
-import com.softserve.teachua.model.test.*;
+import com.softserve.teachua.model.test.Answer;
+import com.softserve.teachua.model.test.Question;
+import com.softserve.teachua.model.test.QuestionHistory;
+import com.softserve.teachua.model.test.QuestionType;
+import com.softserve.teachua.model.test.Result;
 import com.softserve.teachua.repository.test.ResultRepository;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.impl.ResultServiceImpl;
 import com.softserve.teachua.utils.test.AnswerComparator;
+import static com.softserve.teachua.utils.test.Messages.CORRECT_MESSAGE;
+import static com.softserve.teachua.utils.test.Messages.INCORRECT_MESSAGE;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.TreeSet;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import java.time.LocalDateTime;
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
-import static com.softserve.teachua.utils.test.Messages.*;
-
 @ExtendWith(MockitoExtension.class)
-public class ResultServiceTest {
+class ResultServiceTest {
+    private final Long EXISTING_RESULT_ID = 1L;
+    private final Long NOT_EXISTING_RESULT_ID = 100L;
+    private final Long USER_ID = 1L;
+    private final Long GROUP_ID = 1L;
+    private final Long TEST_ID = 1L;
+    private final ModelMapper mapper = new ModelMapper();
     @Mock
     private ResultRepository resultRepository;
     @Mock
@@ -44,18 +57,8 @@ public class ResultServiceTest {
     private AnswerService answerService;
     @Mock
     private UserService userService;
-
     @InjectMocks
     private ResultServiceImpl resultService;
-
-    private final Long EXISTING_RESULT_ID = 1L;
-    private final Long NOT_EXISTING_RESULT_ID = 100L;
-
-    private final Long USER_ID = 1L;
-    private final Long GROUP_ID = 1L;
-    private final Long TEST_ID = 1L;
-
-    private final ModelMapper mapper = new ModelMapper();
     private List<Question> questions;
     private List<Answer> selectedAnswers;
     private List<Long> selectedAnswersIds;
@@ -192,7 +195,7 @@ public class ResultServiceTest {
     @Test
     void saveResultWithResultDtoIsNullShouldThrowIllegalArgumentException() {
         assertThatThrownBy(() -> resultService.saveResult(null))
-            .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     private List<Answer> generateSelectedAnswersList() {
@@ -224,7 +227,7 @@ public class ResultServiceTest {
 
     private List<Question> generateQuestionsList() {
         List<Question> questions = new ArrayList<>();
-        for (long i = 0, k = 1; i < 2; i++, k+=3) {
+        for (long i = 0, k = 1; i < 2; i++, k += 3) {
             String type = i == 1 ? "radio" : "checkbox";
             questions.add(generateQuestionWithId(i, k, type));
         }

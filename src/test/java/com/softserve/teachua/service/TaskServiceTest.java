@@ -14,41 +14,41 @@ import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.service.impl.TaskServiceImpl;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
-public class TaskServiceTest {
-
+class TaskServiceTest {
+    // task
+    private final Long CORRECT_TASK_ID = 1L;
+    private final Long WRONG_TASK_ID = 2L;
+    private final String CORRECT_TASK_NAME = "MyTask";
+    private final String WRONG_TASK_NAME = "BadTask";
+    // challenge
+    private final Long CORRECT_CHALLENGE_ID = 2L;
+    private final String CORRECT_CHALLENGE_NAME = "MyChallenge";
     @Mock
     private TaskRepository taskRepository;
-
     @Mock
     private ArchiveService archiveService;
-
     @Mock
     private DtoConverter dtoConverter;
-
     @Mock
     private ChallengeService challengeService;
-
     @Mock
     private UserService userService;
-
     @InjectMocks
     private TaskServiceImpl taskService;
-
     private Task task;
     private TaskProfile taskProfile;
     private TaskPreview taskPreview;
@@ -58,18 +58,8 @@ public class TaskServiceTest {
     private SuccessUpdatedTask successUpdatedTask;
     private Challenge challenge;
 
-    // task
-    private final Long CORRECT_TASK_ID = 1L;
-    private final Long WRONG_TASK_ID = 2L;
-    private final String CORRECT_TASK_NAME = "MyTask";
-    private final String WRONG_TASK_NAME = "BadTask";
-
-    // challenge
-    private final Long CORRECT_CHALLENGE_ID = 2L;
-    private final String CORRECT_CHALLENGE_NAME = "MyChallenge";
-
     @BeforeEach
-    public void setMocks() {
+    void setMocks() {
         challenge = Challenge.builder().id(CORRECT_CHALLENGE_ID).name(CORRECT_CHALLENGE_NAME).build();
 
         task = Task.builder().id(CORRECT_TASK_ID).name(CORRECT_TASK_NAME).challenge(challenge).build();
@@ -88,23 +78,22 @@ public class TaskServiceTest {
 
         taskProfile = TaskProfile.builder().id(CORRECT_TASK_ID).name(CORRECT_TASK_NAME)
                 .challengeId(CORRECT_CHALLENGE_ID).build();
-
     }
 
     @Test
-    public void getTaskByCorrectIdShouldReturnTask() {
+    void getTaskByCorrectIdShouldReturnTask() {
         when(taskRepository.findById(CORRECT_TASK_ID)).thenReturn(Optional.of(task));
         assertThat(taskService.getTaskById(CORRECT_TASK_ID)).isEqualTo(task);
     }
 
     @Test
-    public void getTaskByWrongIdShouldThrowNotExistException() {
+    void getTaskByWrongIdShouldThrowNotExistException() {
         when(taskRepository.findById(WRONG_TASK_ID)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> taskService.getTaskById(WRONG_TASK_ID)).isInstanceOf(NotExistException.class);
     }
 
     @Test
-    public void getTasksByCorrectChallengeIdShouldReturnListOfTaskPreview() {
+    void getTasksByCorrectChallengeIdShouldReturnListOfTaskPreview() {
         when(challengeService.getChallengeById(CORRECT_CHALLENGE_ID)).thenReturn(challenge);
         when(dtoConverter.convertToDto(task, TaskPreview.class)).thenReturn(taskPreview);
         when(taskRepository.findTasksByChallenge(challenge)).thenReturn(Collections.singletonList(task));
@@ -113,20 +102,20 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void getListOfTasksShouldReturnListOfTaskPreview() {
+    void getListOfTasksShouldReturnListOfTaskPreview() {
         when(taskRepository.findAll()).thenReturn(Collections.singletonList(task));
         when(dtoConverter.convertToDto(task, TaskPreview.class)).thenReturn(taskPreview);
         assertThat(taskService.getListOfTasks()).isNotEmpty().isEqualTo(Collections.singletonList(taskPreview));
     }
 
     @Test
-    public void getListOfTasksShouldReturnEmptyList() {
+    void getListOfTasksShouldReturnEmptyList() {
         when(taskRepository.findAll()).thenReturn(List.of());
         assertThat(taskService.getListOfTasks()).isEmpty();
     }
 
     @Test
-    public void createTaskShouldReturnSuccessCreatedTask() {
+    void createTaskShouldReturnSuccessCreatedTask() {
         when(challengeService.getChallengeById(CORRECT_CHALLENGE_ID)).thenReturn(challenge);
         when(dtoConverter.convertToEntity(createTask, new Task())).thenReturn(task);
         when(taskRepository.save(task)).thenReturn(task);
@@ -135,7 +124,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void updateTaskShouldReturnSuccessUpdatedTask() {
+    void updateTaskShouldReturnSuccessUpdatedTask() {
         when(taskRepository.findById(CORRECT_TASK_ID)).thenReturn(Optional.of(task));
         when(challengeService.getChallengeById(CORRECT_CHALLENGE_ID)).thenReturn(challenge);
         when(taskRepository.save(task)).thenReturn(task);
@@ -144,7 +133,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void deleteTaskShouldReturnTaskProfile() {
+    void deleteTaskShouldReturnTaskProfile() {
         when(taskRepository.findById(CORRECT_TASK_ID)).thenReturn(Optional.of(task));
         when(dtoConverter.convertToDto(task, TaskProfile.class)).thenReturn(taskProfile);
         // when(archiveService.saveModel(task)).thenReturn(task);
@@ -152,5 +141,4 @@ public class TaskServiceTest {
         doNothing().when(taskRepository).flush();
         assertThat(taskService.deleteTask(CORRECT_TASK_ID)).isEqualTo(taskProfile);
     }
-
 }

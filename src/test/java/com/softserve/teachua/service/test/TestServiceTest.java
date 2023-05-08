@@ -1,15 +1,30 @@
 package com.softserve.teachua.service.test;
 
 import com.softserve.teachua.dto.test.question.QuestionProfile;
-import com.softserve.teachua.dto.test.test.*;
+import com.softserve.teachua.dto.test.test.CreateTest;
+import com.softserve.teachua.dto.test.test.PassTest;
+import com.softserve.teachua.dto.test.test.SuccessCreatedTest;
+import com.softserve.teachua.dto.test.test.TestProfile;
+import com.softserve.teachua.dto.test.test.ViewTest;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.User;
-import com.softserve.teachua.model.test.*;
+import com.softserve.teachua.model.test.Group;
+import com.softserve.teachua.model.test.Question;
+import com.softserve.teachua.model.test.QuestionCategory;
+import com.softserve.teachua.model.test.QuestionType;
+import com.softserve.teachua.model.test.Subscription;
+import com.softserve.teachua.model.test.Topic;
 import com.softserve.teachua.repository.test.SubscriptionRepository;
 import com.softserve.teachua.repository.test.TestRepository;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.impl.TestServiceImpl;
 import com.softserve.teachua.utils.test.validation.service.TestValidationService;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,16 +32,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-
-import java.time.LocalDate;
-import java.util.*;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TestServiceTest {
+class TestServiceTest {
+    private final Long EXISTING_TEST_ID = 1L;
+    private final Long NOT_EXISTING_TEST_ID = 100L;
+    private final Long USER_ID = 1L;
+    private final ModelMapper mapper = new ModelMapper();
     @Mock
     private TestRepository testRepository;
     @Mock
@@ -49,16 +70,8 @@ public class TestServiceTest {
     private QuestionTestService questionTestService;
     @Mock
     private TestValidationService testValidationService;
-
     @InjectMocks
     private TestServiceImpl testService;
-
-    private final Long EXISTING_TEST_ID = 1L;
-    private final Long NOT_EXISTING_TEST_ID = 100L;
-
-    private final Long USER_ID = 1L;
-
-    private final ModelMapper mapper = new ModelMapper();
     private com.softserve.teachua.model.test.Test test;
     private PassTest passTest;
     private Question question;
@@ -193,7 +206,7 @@ public class TestServiceTest {
     void findViewTestByNotExistingTestIdShouldThrowNotExistException() {
         when(testRepository.findById(NOT_EXISTING_TEST_ID)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> testService.findViewTestById(NOT_EXISTING_TEST_ID))
-            .isInstanceOf(NotExistException.class);
+                .isInstanceOf(NotExistException.class);
     }
 
     @Test
@@ -293,13 +306,13 @@ public class TestServiceTest {
         when(topicService.findByTitle(topicTitle)).thenReturn(topic);
         when(modelMapper.map(questionProfile, Question.class)).thenReturn(question);
         assertThatThrownBy(() -> testService.addTest(createTest))
-            .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void createTestByTestDtoIsNullShouldReturnSuccessCreatedTest() {
         assertThatThrownBy(() -> testService.addTest(null))
-            .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -390,7 +403,8 @@ public class TestServiceTest {
     }
 
     private com.softserve.teachua.model.test.Test generateTestWithId(Long id) {
-        com.softserve.teachua.model.test.Test test = mapper.map(createTest, com.softserve.teachua.model.test.Test.class);
+        com.softserve.teachua.model.test.Test test =
+                mapper.map(createTest, com.softserve.teachua.model.test.Test.class);
         test.setId(id);
         return test;
     }

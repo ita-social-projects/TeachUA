@@ -11,58 +11,47 @@ import com.softserve.teachua.model.archivable.BannerItemArch;
 import com.softserve.teachua.repository.BannerItemRepository;
 import com.softserve.teachua.service.impl.BannerItemServiceImpl;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class BannerItemServiceTest {
+class BannerItemServiceTest {
 
+    private final Long EXISTING_ID = 1L;
+    private final Long NOT_EXISTING_ID = 500L;
+    private final String VALID_TITLE = "Valid Title/Валідний тайтл/123456";
+    private final String VALID_SUBTITLE = "Valid Subtitle/Валідний Субтайтл/123456";
+    private final String VALID_PICTURE_PATH = "/upload/folder/file.png";
+    private final String NEW_VALID_TITLE = "New Valid Title/Валідний тайтл/123456";
+    private final String NEW_VALID_PICTURE_PATH = "/upload/folder/newfile.png";
+    private final Integer VALID_SEQUENCE_NUMBER = 1;
     @Mock
     private BannerItemRepository bannerItemRepository;
-
     @Mock
     private DtoConverter dtoConverter;
-
     @Mock
     private ArchiveService archiveService;
-
     @InjectMocks
     private BannerItemServiceImpl bannerItemService;
-
     private BannerItem bannerItem;
     private BannerItemProfile bannerItemProfile;
     private BannerItemResponse bannerItemResponse;
     private SuccessCreatedBannerItem successCreatedBannerItem;
     private BannerItemArch bannerItemArch;
 
-    private final Long EXISTING_ID = 1L;
-    private final Long NOT_EXISTING_ID = 500L;
-
-    private final String VALID_TITLE = "Valid Title/Валідний тайтл/123456";
-    private final String VALID_SUBTITLE = "Valid Subtitle/Валідний Субтайтл/123456";
-    private final String VALID_PICTURE_PATH = "/upload/folder/file.png";
-
-    private final String NEW_VALID_TITLE = "New Valid Title/Валідний тайтл/123456";
-    private final String NEW_VALID_PICTURE_PATH = "/upload/folder/newfile.png";
-
-    private final Integer VALID_SEQUENCE_NUMBER = 1;
-
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         bannerItem = BannerItem.builder().id(EXISTING_ID).title(VALID_TITLE).subtitle(VALID_SUBTITLE)
                 .picture(VALID_PICTURE_PATH).sequenceNumber(VALID_SEQUENCE_NUMBER).build();
         bannerItemProfile = BannerItemProfile.builder().title(NEW_VALID_TITLE).picture(NEW_VALID_PICTURE_PATH)
@@ -76,7 +65,7 @@ public class BannerItemServiceTest {
     }
 
     @Test
-    public void getBannerItemProfileByExistingIdShouldReturnBannerItemResponse() {
+    void getBannerItemProfileByExistingIdShouldReturnBannerItemResponse() {
         when(bannerItemRepository.findById(EXISTING_ID)).thenReturn(Optional.of(bannerItem));
         when(dtoConverter.convertToDto(bannerItem, BannerItemResponse.class)).thenReturn(bannerItemResponse);
 
@@ -85,14 +74,15 @@ public class BannerItemServiceTest {
     }
 
     @Test
-    public void getBannerItemProfileByNotExistingIdShouldThrowNotExistException() {
+    void getBannerItemProfileByNotExistingIdShouldThrowNotExistException() {
         when(bannerItemRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> bannerItemService.getBannerItemProfileById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> bannerItemService.getBannerItemProfileById(NOT_EXISTING_ID)).isInstanceOf(
+                NotExistException.class);
     }
 
     @Test
-    public void getBannerItemByExistingIdShouldReturnBannerItem() {
+    void getBannerItemByExistingIdShouldReturnBannerItem() {
         when(bannerItemRepository.findById(EXISTING_ID)).thenReturn(Optional.of(bannerItem));
 
         BannerItem actual = bannerItemService.getBannerItemById(EXISTING_ID);
@@ -100,14 +90,15 @@ public class BannerItemServiceTest {
     }
 
     @Test
-    public void getBannerItemByNotExistingIdShouldThrowNotExistException() {
+    void getBannerItemByNotExistingIdShouldThrowNotExistException() {
         when(bannerItemRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> bannerItemService.getBannerItemById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> bannerItemService.getBannerItemById(NOT_EXISTING_ID)).isInstanceOf(
+                NotExistException.class);
     }
 
     @Test
-    public void getListOfBannerItemsShouldReturnListOfBannerItemResponses() {
+    void getListOfBannerItemsShouldReturnListOfBannerItemResponses() {
         List<BannerItem> bannerItems = Collections.singletonList(bannerItem);
 
         when(bannerItemRepository.findAllByOrderBySequenceNumberAsc()).thenReturn(bannerItems);
@@ -121,7 +112,7 @@ public class BannerItemServiceTest {
     }
 
     @Test
-    public void addBannerItemWithValidDataShouldReturnSuccessCreatedBannerItem() {
+    void addBannerItemWithValidDataShouldReturnSuccessCreatedBannerItem() {
         BannerItem newBanner = BannerItem.builder().title(NEW_VALID_TITLE).picture(NEW_VALID_PICTURE_PATH)
                 .sequenceNumber(VALID_SEQUENCE_NUMBER).build();
 
@@ -136,7 +127,7 @@ public class BannerItemServiceTest {
     }
 
     @Test
-    public void updateBannerItemWithExistingIdShouldReturnBannerItemResponse() {
+    void updateBannerItemWithExistingIdShouldReturnBannerItemResponse() {
         BannerItemResponse expected = BannerItemResponse.builder().title(NEW_VALID_TITLE)
                 .picture(NEW_VALID_PICTURE_PATH).sequenceNumber(VALID_SEQUENCE_NUMBER).build();
 
@@ -152,14 +143,15 @@ public class BannerItemServiceTest {
     }
 
     @Test
-    public void updateBannerItemWithNotExistingIdThrowNotExistException() {
+    void updateBannerItemWithNotExistingIdThrowNotExistException() {
         when(bannerItemRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> bannerItemService.updateBannerItem(NOT_EXISTING_ID, bannerItemProfile)).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> bannerItemService.updateBannerItem(NOT_EXISTING_ID, bannerItemProfile)).isInstanceOf(
+                NotExistException.class);
     }
 
     @Test
-    public void deleteBannerItemWithExistingId() {
+    void deleteBannerItemWithExistingId() {
         when(bannerItemRepository.findById(EXISTING_ID)).thenReturn(Optional.of(bannerItem));
         doNothing().when(bannerItemRepository).deleteById(EXISTING_ID);
         doNothing().when(bannerItemRepository).flush();
@@ -171,9 +163,10 @@ public class BannerItemServiceTest {
     }
 
     @Test
-    public void deleteBannerItemWithNotExistingIdShouldThrowNotExistException() {
+    void deleteBannerItemWithNotExistingIdShouldThrowNotExistException() {
         when(bannerItemRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> bannerItemService.deleteBannerItemById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> bannerItemService.deleteBannerItemById(NOT_EXISTING_ID)).isInstanceOf(
+                NotExistException.class);
     }
 }

@@ -17,64 +17,27 @@ import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.service.impl.FeedbackServiceImpl;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class FeedbackServiceTest {
-
-    @Mock
-    private FeedbackRepository feedbackRepository;
-
-    @Mock
-    private DtoConverter dtoConverter;
-
-    @Mock
-    private ArchiveService archiveService;
-
-    @Mock
-    private UserService userService;
-    @Mock
-    private CustomUserDetailsService userDetailsService;
-    @Mock
-    private ClubRepository clubRepository;
-
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private ClubService clubService;
-
-    @InjectMocks
-    private FeedbackServiceImpl feedbackService;
-
-    private Feedback feedback;
-    private Feedback updFeedback;
-    private FeedbackProfile feedbackProfile;
-    private FeedbackResponse updFeedbackResponse;
-    private FeedbackResponse feedbackResponse;
-    private User user;
-    private Club club;
-    private Role role;
-
+class FeedbackServiceTest {
     private final long EXISTING_ID = 1L;
     private final long NOT_EXISTING_ID = 2L;
     private final long EXISTING_CLUB_ID = 10L;
@@ -87,9 +50,35 @@ public class FeedbackServiceTest {
     private final Long USER_ID = 12L;
     private final String USER_EMAIL = "test@gmail.com";
     private final Integer ROLE_ID = 3;
+    @Mock
+    private FeedbackRepository feedbackRepository;
+    @Mock
+    private DtoConverter dtoConverter;
+    @Mock
+    private ArchiveService archiveService;
+    @Mock
+    private UserService userService;
+    @Mock
+    private CustomUserDetailsService userDetailsService;
+    @Mock
+    private ClubRepository clubRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private ClubService clubService;
+    @InjectMocks
+    private FeedbackServiceImpl feedbackService;
+    private Feedback feedback;
+    private Feedback updFeedback;
+    private FeedbackProfile feedbackProfile;
+    private FeedbackResponse updFeedbackResponse;
+    private FeedbackResponse feedbackResponse;
+    private User user;
+    private Club club;
+    private Role role;
 
     @BeforeEach
-    public void setMocks() {
+    void setMocks() {
         club = Club.builder().id(EXISTING_CLUB_ID).build();
         role = Role.builder().id(ROLE_ID).name(RoleData.ADMIN.getDBRoleName()).build();
         user = User.builder().id(EXISTING_USER_ID).email(USER_EMAIL).role(role).build();
@@ -102,21 +91,22 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void getFeedbackByCorrectIdShouldReturnCorrectFeedback() {
+    void getFeedbackByCorrectIdShouldReturnCorrectFeedback() {
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         Feedback actual = feedbackService.getFeedbackById(EXISTING_ID);
         assertEquals(actual, feedback);
     }
 
     @Test
-    public void getFeedbackByNotExistingIdTestShouldReturnNotExistException() {
+    void getFeedbackByNotExistingIdTestShouldReturnNotExistException() {
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> feedbackService.getFeedbackById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> feedbackService.getFeedbackById(NOT_EXISTING_ID)).isInstanceOf(
+                NotExistException.class);
     }
 
     @Test
-    public void getAllByExistingClubIdShouldReturnListOfFeedbackResponse() {
+    void getAllByExistingClubIdShouldReturnListOfFeedbackResponse() {
         List<Feedback> feedbackList = new ArrayList<>();
         feedbackList.add(feedback);
         // final long EXISTING_CLUB_ID = 3L;
@@ -128,7 +118,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void getAllByNotExistingClubIdShouldReturnEmpty() {
+    void getAllByNotExistingClubIdShouldReturnEmpty() {
         when(feedbackRepository.getAllByClubId(NOT_EXISTING_CLUB_ID)).thenReturn(new ArrayList<>());
 
         List<FeedbackResponse> actual = feedbackService.getAllByClubId(NOT_EXISTING_CLUB_ID);
@@ -136,7 +126,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void getFeedbackProfileByExistingIdShouldReturnFeedbackResponse() {
+    void getFeedbackProfileByExistingIdShouldReturnFeedbackResponse() {
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         when(dtoConverter.convertToDto(feedback, FeedbackResponse.class)).thenReturn(feedbackResponse);
 
@@ -145,14 +135,15 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void getFeedbackProfileByNotExistingIdShouldReturnNotExistException() {
+    void getFeedbackProfileByNotExistingIdShouldReturnNotExistException() {
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> feedbackService.getFeedbackProfileById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> feedbackService.getFeedbackProfileById(NOT_EXISTING_ID)).isInstanceOf(
+                NotExistException.class);
     }
 
     @Test
-    public void getListOfFeedbackTestShouldReturnListOfFeedbackResponse() {
+    void getListOfFeedbackTestShouldReturnListOfFeedbackResponse() {
         List<Feedback> feedbacks = new ArrayList<>();
         feedbacks.add(feedback);
 
@@ -165,7 +156,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void addNewFeedbackShouldReturnSuccessCreatedFeedback() {
+    void addNewFeedbackShouldReturnSuccessCreatedFeedback() {
         when(userService.getAuthenticatedUser()).thenReturn(user);
         when(clubRepository.existsById(EXISTING_CLUB_ID)).thenReturn(true);
         when(userRepository.existsById(EXISTING_USER_ID)).thenReturn(true);
@@ -183,7 +174,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void updateFeedbackProfileByExistingIdShouldReturnFeedbackProfile() {
+    void updateFeedbackProfileByExistingIdShouldReturnFeedbackProfile() {
         when(userService.getAuthenticatedUser()).thenReturn(user);
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         when(dtoConverter.convertToEntity(feedbackProfile, feedback)).thenReturn(updFeedback);
@@ -198,15 +189,17 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void updateFeedbackProfileByNotExistingIdShouldReturnNotExistException() {
+    void updateFeedbackProfileByNotExistingIdShouldReturnNotExistException() {
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
         feedbackProfile.setClubId(club.getId());
-        assertThatThrownBy(() -> feedbackService.updateFeedbackProfileById(NOT_EXISTING_ID, feedbackProfile)).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(
+                () -> feedbackService.updateFeedbackProfileById(NOT_EXISTING_ID, feedbackProfile)).isInstanceOf(
+                NotExistException.class);
     }
 
     @Test
-    public void deleteFeedbackByExistingIdShouldReturnFeedbackResponse() {
+    void deleteFeedbackByExistingIdShouldReturnFeedbackResponse() {
         feedbackResponse.setId(EXISTING_ID);
 
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
@@ -221,26 +214,26 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void deleteFeedbackByNotExistingIdShouldReturnNotExistException() {
+    void deleteFeedbackByNotExistingIdShouldReturnNotExistException() {
         feedbackResponse.setId(NOT_EXISTING_ID);
 
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> feedbackService.deleteFeedbackById(NOT_EXISTING_ID)).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(() -> feedbackService.deleteFeedbackById(NOT_EXISTING_ID)).isInstanceOf(
+                NotExistException.class);
     }
 
     @Test
-    public void getOptionalFeedbackByExistingIdShouldReturnOptionalOfFeedback() {
+    void getOptionalFeedbackByExistingIdShouldReturnOptionalOfFeedback() {
         when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(feedback));
         Optional<Feedback> actual = feedbackRepository.findById(EXISTING_ID);
         assertEquals(Optional.of(feedback), actual);
     }
 
     @Test
-    public void getOptionalFeedbackByNotExistingIdShouldReturnEmpty() {
+    void getOptionalFeedbackByNotExistingIdShouldReturnEmpty() {
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
         Optional<Feedback> actual = feedbackRepository.findById(NOT_EXISTING_ID);
         assertEquals(Optional.empty(), actual);
     }
-
 }
