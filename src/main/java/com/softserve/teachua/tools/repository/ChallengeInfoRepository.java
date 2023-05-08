@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class ChallengeInfoRepository {
+    private ChallengeInfoRepository() {
+    }
+
     @SuppressWarnings("checkstyle:LineLength")
     public static List<ChallengeTransfer> getChallengesList() {
         return Collections.singletonList(

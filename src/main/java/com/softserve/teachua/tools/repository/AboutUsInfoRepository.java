@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AboutUsInfoRepository {
+    private AboutUsInfoRepository() {
+    }
+
     public static List<AboutUsItemProfile> getAboutUsInfo() {
         String firstText = "Про ініціативу";
         String secondText = "<p>Ініціатива “Навчай українською” - це небайдужі громадяни, які об'єдналися, щоб "

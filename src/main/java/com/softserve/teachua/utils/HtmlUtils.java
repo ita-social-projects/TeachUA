@@ -10,6 +10,9 @@ import org.jsoup.safety.Safelist;
  * @author Roman Klymus
  */
 public class HtmlUtils {
+    private HtmlUtils() {
+    }
+
     private static final String FORBIDDEN_DESC_TAGS = "You have used forbidden tags or attributes. "
             + "Only allow the following: a, b, blockquote, br, caption, cite, code, col, colgroup, "
             + "dd, div, dl, dt, em, h1, h2, h3, h4, h5, h6, i, img, li, ol, p, pre, q, small, span, "

@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.util.SerializationUtils;
 
 public class CookieUtils {
+    private CookieUtils() {
+    }
+
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
 
