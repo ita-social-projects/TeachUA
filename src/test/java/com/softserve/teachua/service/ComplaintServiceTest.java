@@ -158,7 +158,7 @@ class ComplaintServiceTest {
         when(complaintRepository.findById(CORRECT_COMPLAINT_ID)).thenReturn(Optional.of(correctComplaint));
         when(dtoConverter.convertToDto(correctComplaint, ComplaintResponse.class)).thenReturn(correctComplaintResponse);
         ComplaintResponse expected = complaintService.getComplaintProfileById(CORRECT_COMPLAINT_ID);
-        System.out.println(expected);
+
         assertThat(expected).isEqualTo(correctComplaintResponse);
     }
 

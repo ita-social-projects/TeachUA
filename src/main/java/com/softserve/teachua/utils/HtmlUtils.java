@@ -1,6 +1,7 @@
 package com.softserve.teachua.utils;
 
 import com.softserve.teachua.exception.IncorrectInputException;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
@@ -9,6 +10,7 @@ import org.jsoup.safety.Safelist;
  *
  * @author Roman Klymus
  */
+@Slf4j
 public class HtmlUtils {
     private HtmlUtils() {
     }
@@ -39,8 +41,8 @@ public class HtmlUtils {
         if (desc == null) {
             return;
         }
-        System.out.println(desc);
-        System.out.println(Jsoup.clean(desc, DESC_SAFELIST)); // Use this to debug which tags are not valid
+        log.info(desc);
+        log.debug(Jsoup.clean(desc, DESC_SAFELIST));
         if (!Jsoup.isValid(desc, DESC_SAFELIST)) {
             throw new IncorrectInputException(FORBIDDEN_DESC_TAGS);
         }
