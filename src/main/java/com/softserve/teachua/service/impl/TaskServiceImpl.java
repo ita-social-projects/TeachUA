@@ -22,6 +22,7 @@ import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.utils.HtmlUtils;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +94,6 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
             userService.verifyIsUserAdmin();
         }
         TaskProfile taskProfile = dtoConverter.convertToDto(task, TaskProfile.class);
-        taskProfile.setChallengeId(task.getChallenge().getId());
         return taskProfile;
     }
 
@@ -125,7 +125,6 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
         BeanUtils.copyProperties(updateTask, task);
         task.setChallenge(challengeService.getChallengeById(updateTask.getChallengeId()));
         SuccessUpdatedTask updatedTask = dtoConverter.convertToDto(taskRepository.save(task), SuccessUpdatedTask.class);
-        // updatedTask.setChallengeId(updatedTask.getChallengeId());
         return updatedTask;
     }
 
