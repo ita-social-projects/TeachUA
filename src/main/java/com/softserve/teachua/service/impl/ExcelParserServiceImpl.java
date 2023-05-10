@@ -179,7 +179,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
 
     private Long parseCenters(XSSFWorkbook excelBook, List<CenterExcel> centersOutput,
                               List<LocationExcel> locationsOutput, List<ExcelFullParsingMistake> mistakesOutput) {
-        return parseSheet(excelBook, CENTER_SHEET_NAME, (row) -> {
+        return parseSheet(excelBook, CENTER_SHEET_NAME, row -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
             log.debug("name = " + rowParser.getString(1, ExcelErrorType.CRITICAL));
@@ -233,7 +233,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
 
     private Long parseClubs(XSSFWorkbook excelBook, List<ClubExcel> clubExcels, List<LocationExcel> locationsOutput,
                             List<ExcelFullParsingMistake> mistakesOutput) {
-        return parseSheet(excelBook, CLUB_SHEET_NAME, (row) -> {
+        return parseSheet(excelBook, CLUB_SHEET_NAME, row -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
             if (rowParser.isColumnEmpty(0)) {
@@ -305,7 +305,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
 
     private Long parseDistricts(XSSFWorkbook excelBook, List<DistrictExcel> districtsOutput,
                                 List<ExcelFullParsingMistake> mistakesOutput) {
-        return parseSheet(excelBook, DISTRICT_SHEET_NAME, (row) -> {
+        return parseSheet(excelBook, DISTRICT_SHEET_NAME, row -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
             districtsOutput.add(DistrictExcel.builder().city(rowParser.getString(0, ExcelErrorType.CRITICAL))
@@ -316,7 +316,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
 
     private Long parseStations(XSSFWorkbook excelBook, List<StationExcel> stationsOutput,
                                List<ExcelFullParsingMistake> mistakesOutput) {
-        return parseSheet(excelBook, STATION_SHEET_NAME, (row) -> {
+        return parseSheet(excelBook, STATION_SHEET_NAME, row -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
             stationsOutput.add(StationExcel.builder().city(rowParser.getString(0, ExcelErrorType.CRITICAL))
@@ -327,7 +327,7 @@ public class ExcelParserServiceImpl implements ExcelParserService {
 
     private Long parseCategories(XSSFWorkbook excelBook, List<CategoryExcel> categoriesOutput,
                                  List<ExcelFullParsingMistake> mistakesOutput) {
-        return parseSheet(excelBook, CATEGORY_SHEET_NAME, (row) -> {
+        return parseSheet(excelBook, CATEGORY_SHEET_NAME, row -> {
             ExcelRowParser rowParser = new ExcelRowParser(mistakesOutput, row);
 
             String name = rowParser.getString(0, ExcelErrorType.CRITICAL).trim();

@@ -73,14 +73,14 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
     @Override
     public List<TaskPreview> getTasksByChallengeId(Long id) {
         Challenge challenge = challengeService.getChallengeById(id);
-        Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
+        Function<Task, TaskPreview> function = task -> dtoConverter.convertToDto(task, TaskPreview.class);
         return taskRepository.findTasksByChallenge(challenge).stream().map(function).toList();
     }
 
     @Override
     public List<TaskPreview> getCurrentTasksByChallengeId(Long id) {
         Challenge challenge = challengeService.getChallengeById(id);
-        Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
+        Function<Task, TaskPreview> function = task -> dtoConverter.convertToDto(task, TaskPreview.class);
         return taskRepository.findCurrentTasksByChallenge(challenge).stream().map(function)
                 .toList();
     }

@@ -111,7 +111,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     @Override
     public ChallengeDeleteResponse deleteChallenge(Long id) {
         Challenge challenge = getChallengeById(id);
-        challenge.getTasks().forEach((task) -> {
+        challenge.getTasks().forEach(task -> {
             task.setChallenge(null);
             taskRepository.save(task);
         });
@@ -128,7 +128,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
             userService.verifyIsUserAdmin();
         }
         ChallengeProfile challengeProfile = dtoConverter.convertToDto(challenge, ChallengeProfile.class);
-        Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
+        Function<Task, TaskPreview> function = task -> dtoConverter.convertToDto(task, TaskPreview.class);
         List<TaskPreview> tasks = taskRepository.findCurrentTasksByChallenge(challenge)
                 .stream().map(function).toList();
         challengeProfile.setTasks(tasks);

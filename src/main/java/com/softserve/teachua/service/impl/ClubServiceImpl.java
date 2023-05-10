@@ -327,7 +327,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Override
     public List<ClubResponse> getListOfClubs() {
         List<ClubResponse> clubResponses = clubRepository.findAll().stream()
-                .map(club -> toClubResponseConverter.convertToClubResponse(club))
+                .map(toClubResponseConverter::convertToClubResponse)
                 .toList();
 
         log.debug("getting list of clubs {}", clubResponses);
@@ -346,7 +346,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Override
     public List<ClubResponse> getListClubsByUserId(Long id) {
         return clubRepository.findAllByUserId(id).stream()
-                .map(club -> toClubResponseConverter.convertToClubResponse(club))
+                .map(toClubResponseConverter::convertToClubResponse)
                 .toList();
     }
 
@@ -502,7 +502,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
         List<Club> clubs = clubRepository.findAll();
         List<Club> updatedClubs = clubs.stream().filter(club -> club.getContacts() != null)
-                .filter((club) -> !this.isValidJSON(club.getContacts())).peek((club) -> {
+                .filter(club -> !this.isValidJSON(club.getContacts())).peek(club -> {
                     JsonNodeFactory factory = JsonNodeFactory.instance;
                     if (club.getContacts().startsWith("{")) {
                         String contacts = club.getContacts().replace("::", ":");
