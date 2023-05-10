@@ -11,7 +11,7 @@ public class RestoreArchiveException extends IllegalStateException {
     private static final long serialVersionUID = 1L;
     private static final String RESTORE_ARCHIVE_EXCEPTION = "Can't restore model " + PROGRAM_WAS_CHANGED;
 
-    public RestoreArchiveException(@Nullable String message) {
+    public RestoreArchiveException(String message) {
         super(message.isEmpty() ? RESTORE_ARCHIVE_EXCEPTION : message);
     }
 

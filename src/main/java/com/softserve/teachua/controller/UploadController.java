@@ -4,6 +4,7 @@ import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.impl.FileUploadServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,7 +47,7 @@ public class UploadController implements Api {
     @PostMapping("/upload-image")
     @CrossOrigin
     public String uploadPhoto(@RequestParam("image") MultipartFile image, @RequestParam("folder") String folder) {
-        String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(image.getOriginalFilename()));
         String uploadDir = String.format("%s/%s", uploadDirectory, folder);
 
         return fileUploadServiceImpl.uploadImage(uploadDir, fileName, image);
