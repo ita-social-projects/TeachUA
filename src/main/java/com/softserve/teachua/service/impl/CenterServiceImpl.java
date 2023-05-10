@@ -292,8 +292,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
         return new PageImpl<>(
                 centersOnPage.stream()
-                        .map(centerToCenterResponseConverter::convertToCenterResponse)
-                        .peek(centerResponse -> log.debug(centerResponse.toString())).toList(),
+                        .map(centerToCenterResponseConverter::convertToCenterResponse).toList(),
                 centersOnPage.getPageable(), centersOnPage.getTotalElements());
     }
 

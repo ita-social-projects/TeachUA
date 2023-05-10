@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.exception.CannotDeleteFileException;
 import com.softserve.teachua.exception.LogNotFoundException;
 import com.softserve.teachua.service.LogService;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class LogServiceImpl implements LogService {
+    public static final String NOT_EXIST = "Log %s does not exist";
     @Value(value = "${logs.path}")
     private String path;
 
@@ -46,7 +48,7 @@ public class LogServiceImpl implements LogService {
 
         if (!Files.exists(pathToFile)) {
             log.error("Tried to read a file: {}, but it does not exist", fileName);
-            throw new LogNotFoundException(String.format("Log %s does not exist", fileName));
+            throw new LogNotFoundException(String.format(NOT_EXIST, fileName));
         }
 
         try (Stream<String> lines = Files.lines(pathToFile)) {
@@ -63,14 +65,14 @@ public class LogServiceImpl implements LogService {
 
         if (!Files.exists(pathToFile)) {
             log.error("Tried to read a file: {}, but it does not exist", fileName);
-            throw new LogNotFoundException(String.format("Log %s does not exist", fileName));
+            throw new LogNotFoundException(String.format(NOT_EXIST, fileName));
         }
 
         try {
             return new UrlResource(pathToFile.toUri());
         } catch (MalformedURLException e) {
             log.error("Cannot create a new UrlResource", e);
-            throw new RuntimeException(e);
+            throw new BadRequestException();
         }
     }
 
@@ -80,7 +82,7 @@ public class LogServiceImpl implements LogService {
 
         if (!Files.exists(pathToFile)) {
             log.info("Tried to delete a file: {}, but it does not exist", fileName);
-            throw new LogNotFoundException(String.format("Log %s does not exist", fileName));
+            throw new LogNotFoundException(String.format(NOT_EXIST, fileName));
         }
 
         try {

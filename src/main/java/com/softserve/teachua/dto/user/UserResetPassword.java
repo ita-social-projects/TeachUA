@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class UserResetPassword {
-    public String email;
+    private String email;
 }

@@ -14,7 +14,6 @@ import jakarta.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = CheckRussianValidator.class)
 public @interface CheckRussian {
-    // String message() default "can't contain russian letters";
     String message() default "Помилка. Присутні недопустимі символи";
 
     Class<?>[] groups() default {};

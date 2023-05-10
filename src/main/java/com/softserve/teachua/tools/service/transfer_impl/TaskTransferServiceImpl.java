@@ -28,8 +28,8 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     private final TaskRepository taskRepository;
     private final ChallengeService challengeService;
     private final TaskDao taskDao;
-    private final String uaTeachChallenge = "Навчай українською челендж"; // id=1
-    private final String languageChallenge = "Мовомаратон"; // id=2
+    private static final String UA_TEACH_CHALLENGE = "Навчай українською челендж"; // id=1
+    private static final String LANGUAGE_CHALLENGE = "Мовомаратон"; // id=2
     private final Map<String, List<String>> imageMap;
     private String uaTeachChallengeImage = "data_for_db/task_images/challengeUA.jpg";
     private String languageChallengeImage = "data_for_db/task_images/marathon_log.png";
@@ -69,10 +69,10 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     private List<SuccessCreatedTask> createTasks(List<TaskProfile> tasks) {
         return tasks.stream().map(taskProfile -> {
             if (taskProfile.getChallengeId() == 1) {
-                taskProfile.setChallengeId(challengeService.getChallengeByName(uaTeachChallenge).getId());
+                taskProfile.setChallengeId(challengeService.getChallengeByName(UA_TEACH_CHALLENGE).getId());
                 taskProfile.setPicture(uaTeachChallengeImage);
             } else {
-                taskProfile.setChallengeId(challengeService.getChallengeByName(languageChallenge).getId());
+                taskProfile.setChallengeId(challengeService.getChallengeByName(LANGUAGE_CHALLENGE).getId());
                 taskProfile.setPicture(languageChallengeImage);
             }
 

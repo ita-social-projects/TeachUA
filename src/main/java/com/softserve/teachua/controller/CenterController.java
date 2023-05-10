@@ -141,7 +141,6 @@ public class CenterController implements Api {
      * @param id - put category id.
      * @return new {@code CenterResponse}.
      */
-    // TODO
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @DeleteMapping("/center/{id}")
     public CenterResponse deleteCenter(@PathVariable Long id) {

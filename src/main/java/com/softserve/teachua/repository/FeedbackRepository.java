@@ -22,7 +22,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     /**
      * Method to get average rating by club id.
      *
-     * @param clubId
+     * @param clubId club id
      *
      * @return Double if club have any feedback
      */

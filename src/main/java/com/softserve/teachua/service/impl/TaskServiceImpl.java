@@ -123,8 +123,7 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
         Task task = getTaskById(id);
         BeanUtils.copyProperties(updateTask, task);
         task.setChallenge(challengeService.getChallengeById(updateTask.getChallengeId()));
-        SuccessUpdatedTask updatedTask = dtoConverter.convertToDto(taskRepository.save(task), SuccessUpdatedTask.class);
-        return updatedTask;
+        return dtoConverter.convertToDto(taskRepository.save(task), SuccessUpdatedTask.class);
     }
 
     @Override

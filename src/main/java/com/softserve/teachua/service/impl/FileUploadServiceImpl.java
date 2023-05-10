@@ -114,7 +114,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         if (filePath.contains(UPLOAD_PLUG)) {
             return;
         }
-        if (filePath == null || filePath.isEmpty()) {
+        if (filePath.isEmpty()) {
             throw new IncorrectInputException("File path can not be null or empty");
         }
         if (!filePath.contains(UPLOAD_LOCATION)) {

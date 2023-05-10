@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class SuccessUserPasswordReset {
-    public Long id;
-    public String email;
-    public String password;
-    public String verificationCode;
+    private Long id;
+    private String email;
+    private String password;
+    private String verificationCode;
 }

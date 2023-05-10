@@ -49,8 +49,7 @@ public class EmailServiceImpl implements EmailService {
             pdfBodyPart.setDataHandler(new DataHandler(dataSource));
             pdfBodyPart.setFileName("certificate.pdf");
         } catch (MessagingException exception) {
-            log.warn("Problem with creation pdf certificate. Pdf body part.");
-            exception.printStackTrace();
+            log.warn("Problem with creation pdf certificate. Pdf body part. {}", exception.getMessage());
         }
 
         try {

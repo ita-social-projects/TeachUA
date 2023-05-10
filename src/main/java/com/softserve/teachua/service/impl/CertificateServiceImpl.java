@@ -278,7 +278,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
                 JasperExportManager.exportReportToPdfStream(jasperPrint, byteArrayOutputStream);
                 return byteArrayOutputStream.toByteArray();
             } catch (Exception e) {
-                log.error("Cannot generate certificate for {}, {}", transfer, e);
+                log.error("Cannot generate certificate for {}, {}", transfer, e.getMessage());
             }
         } else {
             try {
@@ -288,7 +288,7 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
                 Files.delete(filePath);
                 return bytes;
             } catch (IOException e) {
-                log.error("Error creating certificate by template {}, {}", transfer, e);
+                log.error("Error creating certificate by template {}, {}", transfer, e.getMessage());
             }
         }
         throw new CertificateGenerationException();

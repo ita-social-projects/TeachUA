@@ -15,7 +15,6 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.service.CertificateByTemplateService;
-import static com.softserve.teachua.service.impl.PdfTemplateServiceImpl.CERTIFICATE_TEMPLATES_FOLDER;
 import com.softserve.teachua.utils.QRCodeService;
 import java.awt.Color;
 import java.io.File;
@@ -30,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import static com.softserve.teachua.service.impl.PdfTemplateServiceImpl.CERTIFICATE_TEMPLATES_FOLDER;
 
 @Slf4j
 @Component
@@ -68,7 +68,6 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
         if (!directory.exists()) {
             directory.mkdir();
         }
-        // @formatter:off
         try (PdfReader reader = new PdfReader(
                 new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
                         + transfer.getTemplate().getFilePath());
@@ -76,7 +75,6 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
                      new ClassPathResource("/").getFile().getPath() + "/temp/" + targetFileName);
              PdfDocument pdfDoc = new PdfDocument(reader, writer);
              Document document = new Document(pdfDoc)) {
-            // @formatter:on
             PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, true);
 
             PdfFont halvarBlk = PdfFontFactory.createFont(HALVAR_BLK_PATH, PdfEncodings.IDENTITY_H);

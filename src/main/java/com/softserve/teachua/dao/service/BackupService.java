@@ -19,11 +19,11 @@ public class BackupService {
 
     public String getAllTables(String tableNames) {
         String[] names = tableNames.split(",");
-        String text = "";
+        StringBuilder stringBuilder = new StringBuilder();
         for (String i : names) {
-            text = text + getTable(i);
+            stringBuilder.append(getTable(i));
         }
 
-        return text;
+        return stringBuilder.toString();
     }
 }

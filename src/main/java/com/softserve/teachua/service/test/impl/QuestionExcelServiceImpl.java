@@ -3,6 +3,7 @@ package com.softserve.teachua.service.test.impl;
 import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
 import com.softserve.teachua.dto.test.question.questionExcel.ExcelQuestionParsingResponse;
 import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
+import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.repository.test.AnswerRepository;
@@ -112,7 +113,7 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
             for (Cell cell : cells) {
                 if (cell.getColumnIndex() == 0) {
                     cell.setCellStyle(style);
-                    cell.setCellValue(i + 1);
+                    cell.setCellValue(i + 1d);
                 }
                 if (cell.getColumnIndex() == 1) {
                     cell.setCellValue(questions.get(i).getTitle());
@@ -166,7 +167,7 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
             workbook.close();
             return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BadRequestException();
         }
     }
 

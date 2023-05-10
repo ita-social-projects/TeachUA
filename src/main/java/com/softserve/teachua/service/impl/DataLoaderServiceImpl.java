@@ -16,12 +16,9 @@ import com.softserve.teachua.dto.district.DistrictProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.City;
-import com.softserve.teachua.model.ExcelCenterEntity;
-import com.softserve.teachua.model.ExcelClubEntity;
-import com.softserve.teachua.repository.ExcelCenterEntityRepository;
-import com.softserve.teachua.repository.ExcelClubEntityRepository;
 import com.softserve.teachua.service.CategoryService;
 import com.softserve.teachua.service.CenterService;
 import com.softserve.teachua.service.CityService;
@@ -74,17 +71,12 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     private final ExcelConvertToFormatStringContactsData contactsConverter;
     private final ExcelConvertToFormatStringContactsData excelContactsConverter;
 
-    private final ExcelCenterEntityRepository excelCenterEntityRepository;
-    private final ExcelClubEntityRepository excelClubEntityRepository;
-
     @Autowired
     public DataLoaderServiceImpl(CategoryService categoryService, CenterService centerService, ClubService clubService,
                                  DistrictService districtService, StationService stationService,
                                  CityService cityService, LocationService locationService,
                                  ExcelConvertToFormatStringContactsData contactsConverter,
-                                 ExcelConvertToFormatStringContactsData excelContactsConverter,
-                                 ExcelCenterEntityRepository excelCenterEntityRepository,
-                                 ExcelClubEntityRepository excelClubEntityRepository) {
+                                 ExcelConvertToFormatStringContactsData excelContactsConverter) {
         this.categoryService = categoryService;
         this.centerService = centerService;
         this.clubService = clubService;
@@ -94,15 +86,10 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         this.locationService = locationService;
         this.contactsConverter = contactsConverter;
         this.excelContactsConverter = excelContactsConverter;
-        this.excelCenterEntityRepository = excelCenterEntityRepository;
-        this.excelClubEntityRepository = excelClubEntityRepository;
     }
 
     @Override
     public void loadToDatabase(ExcelParsingData excelParsingData) {
-        // todo tmp load data is in parser
-        // loadExcelEntityToDB(excelParsingData);
-
         log.debug("=========LOADING DATA TO DB STEP: all locations form dto =========");
         log.debug(excelParsingData.getLocations().toString());
 
@@ -112,18 +99,8 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         Map<Long, Long> excelIdToDbId = new HashMap<>();
         loadCategories(excelParsingData, categoriesNames);
         loadCenters(excelParsingData, excelIdToDbId);
-        loadClubs(excelParsingData, excelIdToDbId, categoriesNames);
+        loadClubs(excelParsingData, categoriesNames);
         loadLocations(excelParsingData);
-    }
-
-    private void loadExcelEntityToDB(ExcelParsingData excelParsingData) {
-        for (ExcelCenterEntity center : excelParsingData.getExcelCenters()) {
-            excelCenterEntityRepository.save(center);
-        }
-
-        for (ExcelClubEntity club : excelParsingData.getExcelClubs()) {
-            excelClubEntityRepository.save(club);
-        }
     }
 
     private void loadLocations(ExcelParsingData excelParsingData) {
@@ -141,13 +118,15 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 Long districtIdCheck = null;
                 if (location.getDistrict() != null
                         && districtService.getOptionalDistrictByName(location.getDistrict()).isPresent()) {
-                    districtIdCheck = districtService.getOptionalDistrictByName(location.getDistrict()).get().getId();
+                    districtIdCheck = districtService.getOptionalDistrictByName(location.getDistrict())
+                            .orElseThrow(NotExistException::new).getId();
                 }
 
                 Long stationIdCheck = null;
                 if (location.getStation() != null
                         && stationService.getOptionalStationByName(location.getStation()).isPresent()) {
-                    stationIdCheck = stationService.getOptionalStationByName(location.getStation()).get().getId();
+                    stationIdCheck = stationService.getOptionalStationByName(location.getStation())
+                            .orElseThrow(NotExistException::new).getId();
                 }
 
                 LocationProfile locationProfile = LocationProfile.builder().id(location.getId())
@@ -167,7 +146,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                     }
                 } else {
                     log.debug("Review Club Location location.getClubExternalId() = " + location.getClubExternalId());
-                    while (clubService.getClubByClubExternalId(location.getClubExternalId()).size() == 0) {
+                    while (clubService.getClubByClubExternalId(location.getClubExternalId()).isEmpty()) {
                         location.setClubExternalId(location.getClubExternalId() - 1);
                     }
                     locationProfile = locationProfile.withClubId(
@@ -208,7 +187,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         }
     }
 
-    private void loadClubs(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId, Set<String> categories) {
+    private void loadClubs(ExcelParsingData excelParsingData, Set<String> categories) {
         log.debug("(row 219, DataLoader) ======= loadClubs DataLoaderService =========");
         for (ClubExcel club : excelParsingData.getClubs()) {
             log.debug(club.toString());
@@ -224,8 +203,6 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 if (center != null) {
                     realCenterId = center.getId();
                 }
-
-                // ******************************* TODO
 
                 ClubProfile clubProfile = ClubProfile.builder().ageFrom(club.getAgeFrom()).ageTo(club.getAgeTo())
                         .centerId(realCenterId).centerExternalId(club.getCenterExternalId())

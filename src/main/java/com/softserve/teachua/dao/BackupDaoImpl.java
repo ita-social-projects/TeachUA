@@ -59,7 +59,7 @@ public class BackupDaoImpl implements BackupDao {
                     if (null == columnValue) {
                         columnValue = "";
                     }
-                    query.append("'" + columnValue + "'");
+                    query.append("'").append(columnValue).append("'");
                     if (i == (columnCount - 1)) {
                         query.append(")");
                     } else {

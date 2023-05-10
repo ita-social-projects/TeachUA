@@ -9,6 +9,7 @@ import com.google.api.services.forms.v1.model.Item;
 import com.google.api.services.forms.v1.model.Option;
 import com.softserve.teachua.dto.test.question.QuestionPreview;
 import com.softserve.teachua.dto.test.question.QuestionResponse;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.model.test.QuestionCategory;
@@ -46,6 +47,7 @@ public class QuestionServiceImpl implements QuestionService {
     private static final String TEXT_TYPE = "TEXT";
     private static final String PARAGRAPH_TYPE = "PARAGRAPH";
     private static final String BEGIN_OF_FORM_URI = "https://docs.google.com/forms/d/";
+    public static final String TEST_ID = "Test id";
     private final Forms formsService;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
@@ -112,14 +114,14 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional(readOnly = true)
     public List<Question> findQuestionsByTestId(Long testId) {
-        checkNull(testId, "Test id");
+        checkNull(testId, TEST_ID);
         return questionRepository.findQuestionsByTestId(testId);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Question> findQuestionsByTestIdEager(Long testId) {
-        checkNull(testId, "Test id");
+        checkNull(testId, TEST_ID);
         return questionRepository.findAllQuestionsByTestIdFetch(testId);
     }
 
@@ -133,7 +135,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional(readOnly = true)
     public List<QuestionResponse> findQuestionResponsesByTestId(Long id) {
-        checkNull(id, "Test id");
+        checkNull(id, TEST_ID);
         return mapToDtoList(questionRepository.findQuestionsByTestId(id));
     }
 
@@ -194,7 +196,8 @@ public class QuestionServiceImpl implements QuestionService {
 
             question.setCreator(userService.getUserById(creatorId));
             question.setTitle(item.getTitle());
-            question.setQuestionCategory(categoryRepository.findByTitle(categoryName).get());
+            question.setQuestionCategory(categoryRepository.findByTitle(categoryName)
+                    .orElseThrow(NotExistException::new));
 
             if (item.getDescription() != null) {
                 question.setDescription(item.getDescription());

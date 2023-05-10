@@ -305,14 +305,13 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                                         .map(categoryService::getCategoryByName).collect(Collectors.toSet())))
                         .withUser(null).withCenter(null);
             } catch (Exception e) {
-                // todo bad solution .... do refactor !!!!!
                 log.debug("(row 268, ClubServiceImpl)    saving club ");
                 log.debug(e.getMessage());
 
                 return new Club();
             }
         } else {
-            Center center = centerRepository.findById(clubProfile.getCenterId()).get();
+            Center center = centerRepository.findById(clubProfile.getCenterId()).orElseThrow(NotExistException::new);
             log.debug("(clubServiceImpl) ==>  addClubsFromExcel = >  with EXTERNAL_center_id ="
                     + center.getCenterExternalId());
             log.debug("addClubsFromExcel => " + clubProfile.getCenterId() + " with real center, id =" + center.getId());
@@ -498,7 +497,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                     }
                     log.info(center.getContacts());
                 }).toList();
-        updatedCenters.forEach((centerRepository::save));
+        centerRepository.saveAll(updatedCenters);
 
         List<Club> clubs = clubRepository.findAll();
         List<Club> updatedClubs = clubs.stream().filter(club -> club.getContacts() != null)
@@ -574,12 +573,11 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
                     log.info(club.getContacts());
                 }).toList();
-        updatedClubs.forEach((clubRepository::save));
+        clubRepository.saveAll(updatedClubs);
     }
 
     private JsonNode toJSON(String json) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readTree(json);
         } catch (JsonProcessingException e) {
             return null;

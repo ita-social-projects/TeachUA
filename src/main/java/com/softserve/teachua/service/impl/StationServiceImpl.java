@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class StationServiceImpl implements StationService, ArchiveMark<Station> {
     private static final String STATION_ALREADY_EXIST = "Station already exist with name: %s";
-    private static final String STATION_NOT_FOUND_BY_ID = "Station not found by id: %s";
     private static final String STATION_NOT_FOUND_BY_NAME = "Station not found by name: %s";
     private static final String STATION_DELETING_ERROR = "Can't delete station cause of relationship";
 

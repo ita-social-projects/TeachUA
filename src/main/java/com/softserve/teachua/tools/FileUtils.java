@@ -59,7 +59,7 @@ public class FileUtils {
             throw new IncorrectInputException(
                     String.format(MAPPER_EXCEPTION, e.getLocalizedMessage(), tClass, e.getMessage()));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error while reading from file {}, {}", filePath, e.getMessage());
         } catch (NotExistException e) {
             throw new NotExistException(String.format(FILE_FIND_EXCEPTION, filePath));
         }

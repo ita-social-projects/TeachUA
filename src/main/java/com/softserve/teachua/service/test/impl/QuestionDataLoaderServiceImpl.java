@@ -4,6 +4,7 @@ import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
 import com.softserve.teachua.dto.test.question.QuestionDatabaseResponse;
 import com.softserve.teachua.dto.test.question.questionExcel.QuestionDataRequest;
 import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.model.test.QuestionCategory;
@@ -64,12 +65,14 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
             if (categoryRepository.findByTitle(questionExcel.getCategory()).isEmpty()) {
                 categoryRepository.save(QuestionCategory.builder().title(questionExcel.getCategory()).build());
             }
-            question.setQuestionCategory(categoryRepository.findByTitle(questionExcel.getCategory()).get());
+            question.setQuestionCategory(categoryRepository.findByTitle(questionExcel.getCategory())
+                    .orElseThrow(NotExistException::new));
 
             if (typeRepository.findByTitle(questionExcel.getType().toUpperCase()).isEmpty()) {
                 typeRepository.save(QuestionType.builder().title(questionExcel.getType().toUpperCase()).build());
             }
-            question.setQuestionType(typeRepository.findByTitle(questionExcel.getType().toUpperCase()).get());
+            question.setQuestionType(typeRepository.findByTitle(questionExcel.getType().toUpperCase())
+                    .orElseThrow(NotExistException::new));
 
             Optional<Question> questionFromDB = questionRepository.findByTitle(question.getTitle());
             if (questionFromDB.isPresent()) {
@@ -93,11 +96,13 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
             Optional<Question> question = questionRepository.findByTitle(answerExcel.getQuestionTitle().trim());
             question.ifPresent(answer::setQuestion);
 
-            List<Answer> answerList = answerRepository.findAllByQuestionId(question.get().getId());
+            List<Answer> answerList = answerRepository.findAllByQuestionId(
+                    question.orElseThrow(NotExistException::new).getId());
             if (answerList.contains(answer)) {
                 responses.add(
                         new QuestionDatabaseResponse(
-                                String.format(ANSWERS_ALREADY_EXISTS, answer.getText(), question.get().getTitle())));
+                                String.format(ANSWERS_ALREADY_EXISTS, answer.getText(),
+                                        question.orElseThrow(NotExistException::new).getTitle())));
             } else {
                 answerRepository.save(answer);
             }

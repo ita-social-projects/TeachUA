@@ -1,7 +1,5 @@
 package com.softserve.teachua.exception;
 
-import org.springframework.lang.Nullable;
-
 public class RestoreArchiveException extends IllegalStateException {
     private static final String PROGRAM_WAS_CHANGED = "(the structure of the program was changed)";
     public static final String CANT_FIND_CLASS = "Can't find serviceClass " + PROGRAM_WAS_CHANGED;
