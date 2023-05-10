@@ -19,7 +19,7 @@ public class QuestionArch implements Convertible, Archivable {
     private String text;
 
     @Override
-    public Class getServiceClass() {
+    public Class<QuestionServiceImpl> getServiceClass() {
         return QuestionServiceImpl.class;
     }
 }

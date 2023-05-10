@@ -25,7 +25,7 @@ public class MessageArch implements Convertible, Archivable {
     private Boolean isActive;
 
     @Override
-    public Class getServiceClass() {
+    public Class<MessageServiceImpl> getServiceClass() {
         return MessageServiceImpl.class;
     }
 }

@@ -31,7 +31,7 @@ public class UserArch implements Convertible, Archivable {
     private List<Long> certificatesIds;
 
     @Override
-    public Class getServiceClass() {
+    public Class<UserServiceImpl> getServiceClass() {
         return UserServiceImpl.class;
     }
 }

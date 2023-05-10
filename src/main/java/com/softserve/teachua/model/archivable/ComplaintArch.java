@@ -23,7 +23,7 @@ public class ComplaintArch implements Convertible, Archivable {
     private String text;
 
     @Override
-    public Class getServiceClass() {
+    public Class<ComplaintServiceImpl> getServiceClass() {
         return ComplaintServiceImpl.class;
     }
 }

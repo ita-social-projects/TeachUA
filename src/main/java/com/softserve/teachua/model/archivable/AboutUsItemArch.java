@@ -22,7 +22,7 @@ public class AboutUsItemArch implements Convertible, Archivable {
     private Long number;
 
     @Override
-    public Class getServiceClass() {
+    public Class<AboutUsItemServiceImpl> getServiceClass() {
         return AboutUsItemServiceImpl.class;
     }
 }

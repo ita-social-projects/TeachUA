@@ -41,7 +41,7 @@ public class ClubArch implements Convertible, Archivable {
     private Long centerExternalId;
 
     @Override
-    public Class getServiceClass() {
+    public Class<ClubServiceImpl> getServiceClass() {
         return ClubServiceImpl.class;
     }
 }

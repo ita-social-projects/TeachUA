@@ -30,7 +30,7 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     private final TaskDao taskDao;
     private final String uaTeachChallenge = "Навчай українською челендж"; // id=1
     private final String languageChallenge = "Мовомаратон"; // id=2
-    private final Map imageMap;
+    private final Map<String, List<String>> imageMap;
     private String uaTeachChallengeImage = "data_for_db/task_images/challengeUA.jpg";
     private String languageChallengeImage = "data_for_db/task_images/marathon_log.png";
 
@@ -42,7 +42,7 @@ public class TaskTransferServiceImpl implements TaskTransferService {
         this.taskRepository = taskRepository;
         this.challengeService = challengeService;
         this.taskDao = taskDao;
-        imageMap = new HashMap<String, List<String>>();
+        imageMap = new HashMap<>();
         imageMap.put("Крок 16. Рахуйте українською ",
                 Arrays.asList("data_for_db/taskData/day16_1.png", "data_for_db/taskData/day16_2.png",
                         "data_for_db/taskData/day16_3.png", "data_for_db/taskData/day16_4.png"));
@@ -68,10 +68,6 @@ public class TaskTransferServiceImpl implements TaskTransferService {
 
     private List<SuccessCreatedTask> createTasks(List<TaskProfile> tasks) {
         return tasks.stream().map(taskProfile -> {
-            // if(!taskProfile.getPicture().isEmpty()) {
-            // taskProfile.setPicture(fileUtils.moveImage(taskProfile.getPicture(), "tasks"));
-            // }
-            // temporary implementation (uses only once)
             if (taskProfile.getChallengeId() == 1) {
                 taskProfile.setChallengeId(challengeService.getChallengeByName(uaTeachChallenge).getId());
                 taskProfile.setPicture(uaTeachChallengeImage);
@@ -81,7 +77,7 @@ public class TaskTransferServiceImpl implements TaskTransferService {
             }
 
             if (imageMap.containsKey(taskProfile.getName())) {
-                ((List<String>) imageMap.get(taskProfile.getName())).stream()
+                imageMap.get(taskProfile.getName()).stream()
                         .forEach(url -> taskProfile.setDescription(taskProfile.getDescription().replace(url,
                                 System.getenv("BASE_URL") + fileUtils.moveImage(url, TARGET_PACKAGE_FOR_DATA))));
             }

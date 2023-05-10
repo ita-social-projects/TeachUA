@@ -33,7 +33,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public FilterRegistrationBean customFilterBean() {
+    public FilterRegistrationBean<Filter> customFilterBean() {
         FilterRegistrationBean<Filter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
         filterFilterRegistrationBean.setFilter((request, response, chain) -> {
             HttpServletRequest req = (HttpServletRequest) request;

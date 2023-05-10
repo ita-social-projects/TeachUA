@@ -13,7 +13,10 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.EnumMap;
 import java.util.Hashtable;
+import java.util.Map;
 import javax.imageio.ImageIO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,11 +43,11 @@ public class QRCodeService {
      *                       if null, the method will use a black-and-white style
      * @return returns a generated QR code image as {@code BufferedImage}
      */
-    private BufferedImage getQrCodeImage(String content, int width, int height, Hashtable hints,
+    private BufferedImage getQrCodeImage(String content, int width, int height, Map<EncodeHintType, Serializable> hints,
                                          MatrixToImageConfig qrColorsConfig) {
         QRCodeWriter writer = new QRCodeWriter();
         if (hints == null) {
-            hints = new Hashtable();
+            hints = new Hashtable<>();
             hints.put(EncodeHintType.CHARACTER_SET, ENCODING);
         }
         BitMatrix matrix = null;
@@ -63,7 +66,7 @@ public class QRCodeService {
     }
 
     private byte[] getQrCodeImageBytes(String content, int width, int height, MatrixToImageConfig qrColorsConfig) {
-        Hashtable hints = new Hashtable();
+        Map<EncodeHintType, Serializable> hints = new EnumMap<>(EncodeHintType.class);
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.forBits(ENCODELEVEL));
         hints.put(EncodeHintType.CHARACTER_SET, ENCODING);
         BufferedImage qrCodeImage = getQrCodeImage(content, width, height, hints, qrColorsConfig);

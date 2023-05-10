@@ -19,7 +19,7 @@ public class DistrictArch implements Convertible, Archivable {
     private Long cityId;
 
     @Override
-    public Class getServiceClass() {
+    public Class<DistrictServiceImpl> getServiceClass() {
         return DistrictServiceImpl.class;
     }
 }

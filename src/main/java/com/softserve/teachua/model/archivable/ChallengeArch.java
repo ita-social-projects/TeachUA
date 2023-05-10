@@ -27,7 +27,7 @@ public class ChallengeArch implements Convertible, Archivable {
     private Set<Long> tasksIds;
 
     @Override
-    public Class getServiceClass() {
+    public Class<ChallengeServiceImpl> getServiceClass() {
         return ChallengeServiceImpl.class;
     }
 }

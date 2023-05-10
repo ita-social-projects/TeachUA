@@ -64,7 +64,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     public Archive restoreArchiveObject(Long id) {
         Archive archiveObject = getArchiveObjectById(id);
         try {
-            ArchiveMark archiveMark = (ArchiveMark) context.getBean(Class.forName(archiveObject.getClassName()));
+            ArchiveMark<?> archiveMark = (ArchiveMark<?>) context.getBean(Class.forName(archiveObject.getClassName()));
             archiveMark.restoreModel(archiveObject.getData());
         } catch (ClassNotFoundException exception) {
             log.error(RestoreArchiveException.CANT_FIND_CLASS, exception);
