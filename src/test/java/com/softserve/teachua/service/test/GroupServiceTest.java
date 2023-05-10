@@ -212,7 +212,7 @@ class GroupServiceTest {
 
     @Test
     void updateGroupWithNotExistingIdShouldThrowNotExistException() {
-        when(groupRepository.findById(NOT_EXISTING_GROUP_ID)).thenReturn(Optional.empty());
+        when(groupRepository.existsById(NOT_EXISTING_GROUP_ID)).thenReturn(false);
 
         assertThatThrownBy(() -> groupService.updateById(updateGroup, NOT_EXISTING_GROUP_ID))
                 .isInstanceOf(NotExistException.class);
@@ -220,7 +220,7 @@ class GroupServiceTest {
 
     @Test
     void updateGroupWithExistingIdShouldReturnUpdateGroup() {
-        when(groupRepository.findById(EXISTING_GROUP_ID)).thenReturn(Optional.of(group));
+        when(groupRepository.existsById(EXISTING_GROUP_ID)).thenReturn(true);
         when(modelMapper.map(updateGroup, Group.class)).thenReturn(group);
 
         UpdateGroup actual = groupService.updateById(updateGroup, EXISTING_GROUP_ID);
