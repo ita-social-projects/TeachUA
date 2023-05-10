@@ -209,7 +209,7 @@ public class QuestionServiceImpl implements QuestionService {
                 addOptionsToQuestion(item, grading, question);
             } else if (item.getQuestionItem().getQuestion().getTextQuestion().isEmpty()) {
                 addNewType(question, TEXT_TYPE);
-            } else if (item.getQuestionItem().getQuestion().getTextQuestion().getParagraph()) {
+            } else if (Boolean.TRUE.equals(item.getQuestionItem().getQuestion().getTextQuestion().getParagraph())) {
                 addNewType(question, PARAGRAPH_TYPE);
             }
         }

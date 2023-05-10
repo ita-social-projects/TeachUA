@@ -124,7 +124,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     @Override
     public ChallengeProfile getChallenge(Long id) {
         Challenge challenge = getChallengeById(id);
-        if (!challenge.getIsActive()) {
+        if (Boolean.FALSE.equals(challenge.getIsActive())) {
             userService.verifyIsUserAdmin();
         }
         ChallengeProfile challengeProfile = dtoConverter.convertToDto(challenge, ChallengeProfile.class);

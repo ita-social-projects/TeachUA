@@ -79,7 +79,7 @@ public class QuestionCategoryServiceImpl implements QuestionCategoryService {
     @Transactional
     public QuestionCategoryProfile save(QuestionCategoryProfile categoryProfile) {
         checkNull(categoryProfile, QUESTION_CATEGORY_EXCEPTION_MESSAGE);
-        if (questionCategoryRepository.existsByTitle(categoryProfile.getTitle())) {
+        if (Boolean.TRUE.equals(questionCategoryRepository.existsByTitle(categoryProfile.getTitle()))) {
             throw new AlreadyExistException(String.format(CATEGORY_EXISTS_WITH_TITLE, categoryProfile.getTitle()));
         }
         QuestionCategory questionCategory = modelMapper.map(categoryProfile, QuestionCategory.class);
