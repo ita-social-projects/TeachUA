@@ -2,9 +2,9 @@ package com.softserve.teachua.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import javax.servlet.Filter;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.Filter;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;

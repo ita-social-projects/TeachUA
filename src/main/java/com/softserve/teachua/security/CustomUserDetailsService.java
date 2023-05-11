@@ -34,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         try {
             return (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } catch (Exception e) {
-            log.error(SECURITY_CONTEXT_ERROR, e);
+            log.error(SECURITY_CONTEXT_ERROR);
             throw new UserAuthenticationException();
         }
     }

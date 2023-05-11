@@ -2,9 +2,9 @@ package com.softserve.teachua.security.oauth2;
 
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.softserve.teachua.security.util.CookieUtils;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
@@ -51,11 +51,6 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
             CookieUtils.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME,
                     redirectUriAfterLogin, COOKIE_EXPIRE_SECONDS);
         }
-    }
-
-    @Override
-    public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
-        return null;
     }
 
     /**

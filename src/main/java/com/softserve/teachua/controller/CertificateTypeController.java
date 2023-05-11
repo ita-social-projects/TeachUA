@@ -8,7 +8,7 @@ import com.softserve.teachua.model.CertificateType;
 import com.softserve.teachua.service.CertificateTypeService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import java.util.List;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

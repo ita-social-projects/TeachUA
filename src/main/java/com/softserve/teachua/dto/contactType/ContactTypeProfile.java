@@ -1,7 +1,7 @@
 package com.softserve.teachua.dto.contactType;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -319,7 +319,7 @@ class CertificateServiceTest {
         ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () ->
                 certificateService.generateSerialNumber(invalidCertificateTransfer));
 
-        assertThat(thrown.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(thrown.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ParameterizedTest
@@ -506,7 +506,7 @@ class CertificateServiceTest {
 
         ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () ->
                 certificateService.getPdfOutputForDownload(certificate.getSendToEmail(), certificate.getId()));
-        assertThat(thrown.getStatus()).isEqualTo(HttpStatus.NOT_ACCEPTABLE);
+        assertThat(thrown.getStatusCode()).isEqualTo(HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ParameterizedTest

@@ -1,6 +1,6 @@
 package com.softserve.teachua.exception;
 
-import com.sun.istack.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * This class is custom exception for every Database repository problem. (Database isn't available, can't save entity to

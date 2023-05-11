@@ -41,7 +41,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             + " (:city LIKE 'online' AND club.isOnline = true) OR " + "(:city IS NULL OR city.name = :city)) AND "
             + "(:isOnline is null or club.isOnline=:isOnline) AND "
             + "(:age IS NULL or club.ageFrom <= :age AND club.ageTo >= :age) AND "
-            + "((:categories) IS NULL OR category.name IN (:categories)) AND "
+            + "(category.name IN (:categories)) AND "
             + "(:district IS NULL OR district.name = :district) AND " + "(:name IS NULL OR "
             + "LOWER(club.name) LIKE LOWER(CONCAT('%', :name , '%')) OR "
             + "LOWER(club.description) LIKE LOWER(CONCAT('%', :name , '%'))) AND "
@@ -106,9 +106,9 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             + " WHERE club.center.id = :centerId and club.feedbackCount > 0")
     Double findAvgRating(@Param("centerId") Long centerId);
 
-    @Query(value = "SELECT * from clubs as c left join locations as l on l.club_id = c.id "
-            + "left join cities on cities.id = l.city_id "
-            + "where cities.name = :city order by c.rating desc limit :amount", nativeQuery = true)
+    @Query(value = "SELECT c.* from clubs as c left join locations as l on l.club_id = c.id "
+            + "left join cities as ct on ct.id = l.city_id "
+            + "where ct.name = :city order by c.rating desc limit :amount", nativeQuery = true)
     List<Club> findTopClubsByCity(@Param("city") String cityName, @Param("amount") int amount);
 
     @Query(value = "SELECT club from Club as club LEFT JOIN club.categories as categories WHERE categories.id is NULL")

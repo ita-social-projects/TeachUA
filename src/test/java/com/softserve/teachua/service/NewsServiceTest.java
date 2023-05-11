@@ -18,7 +18,7 @@ import com.softserve.teachua.repository.NewsRepository;
 import com.softserve.teachua.service.impl.NewsServiceImpl;
 import java.util.Collections;
 import java.util.Optional;
-import javax.validation.ValidationException;
+import jakarta.validation.ValidationException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;

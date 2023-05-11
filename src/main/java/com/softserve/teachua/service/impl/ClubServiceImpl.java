@@ -10,6 +10,7 @@ import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.ContactsStringConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.club.ClubOwnerProfile;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
@@ -57,13 +58,13 @@ import com.softserve.teachua.service.LocationService;
 import com.softserve.teachua.service.StationService;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.utils.CategoryUtil;
+import jakarta.validation.ValidationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -79,8 +80,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.SUPPORTS)
 @Slf4j
 public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
-    private final ContactTypeRepository contactTypeRepository;
-    private final ComplaintRepository complaintRepository;
     private static final String CLUB_ALREADY_EXIST = "Club already exist with name: %s";
     private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
@@ -88,7 +87,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private static final String CLUB_CREATING_ERROR = "Club without \"%s\" isn't created.";
     private static final String CLUB_CANT_BE_MANAGE_BY_USER =
             "The user cannot manage a club that does not belong to the user";
-
+    private final ContactTypeRepository contactTypeRepository;
+    private final ComplaintRepository complaintRepository;
     private final ClubRepository clubRepository;
     private final LocationRepository locationRepository;
     private final DtoConverter dtoConverter;
@@ -107,8 +107,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private final CenterService centerService;
     private final FeedbackRepository feedbackRepository;
     private final ObjectMapper objectMapper;
-    private FeedbackService feedbackService;
     private final ContactsStringConverter contactsStringConverter;
+    private FeedbackService feedbackService;
 
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository, CenterRepository centerRepository,
@@ -378,7 +378,10 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 && (advancedSearchClubProfile.getAge() < 2 || advancedSearchClubProfile.getAge() > 18)) {
             throw new IncorrectInputException("Age should be from 2 to 18 years inclusive");
         }
-
+        if (advancedSearchClubProfile.getCategoriesName() == null) {
+            advancedSearchClubProfile.setCategoriesName(
+                    categoryService.getAllCategories().stream().map(CategoryResponse::getName).toList());
+        }
         log.debug("getAdvancedSearchClubs, advClubProf :" + advancedSearchClubProfile.toString());
 
         Page<Club> clubResponses = clubRepository.findAllBylAdvancedSearch(advancedSearchClubProfile.getName(),

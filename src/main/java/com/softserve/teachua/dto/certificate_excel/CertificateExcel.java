@@ -2,9 +2,9 @@ package com.softserve.teachua.dto.certificate_excel;
 
 import com.softserve.teachua.utils.validations.CertificateUserName;
 import java.time.LocalDate;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

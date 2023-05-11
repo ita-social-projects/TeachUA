@@ -3,9 +3,13 @@ package com.softserve.teachua.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+import java.security.Key;
 import java.util.Calendar;
 import java.util.Date;
-import javax.servlet.http.HttpServletRequest;
+import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,8 +26,8 @@ public class JwtUtils {
     private final Integer refreshExpirationTimeInDays;
 
     @Autowired
-    public JwtUtils(@Value("${application.jwt.accessTokenSecret}") String accessTokenSecret,
-                    @Value("${application.jwt.refreshTokenSecret}") String refreshTokenSecret,
+    public JwtUtils(@Value("${application.jwt.accessSecretKey}") String accessTokenSecret,
+                    @Value("${application.jwt.refreshSecretKey}") String refreshTokenSecret,
                     @Value("${application.jwt.accessExpirationTimeInMinutes}") Integer accessExpirationTime,
                     @Value("${application.jwt.refreshExpirationTimeInDays}") Integer refreshExpirationTime) {
         this.accessTokenSecret = accessTokenSecret;
@@ -41,7 +45,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject(email)
                 .setExpiration(calendar.getTime())
-                .signWith(SignatureAlgorithm.HS512, accessTokenSecret)
+                .signWith(getSignInKey(accessTokenSecret), SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -56,7 +60,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(calendar.getTime())
-                .signWith(SignatureAlgorithm.HS512, refreshTokenSecret)
+                .signWith(getSignInKey(refreshTokenSecret), SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -73,8 +77,7 @@ public class JwtUtils {
      */
     public boolean isAccessTokenValid(String accessToken) {
         try {
-            Jwts.parser().setSigningKey(accessTokenSecret).parseClaimsJws(accessToken);
-            return true;
+            return isTokenNotExpired(accessToken, accessTokenSecret);
         } catch (Exception e) {
             return false;
         }
@@ -87,8 +90,7 @@ public class JwtUtils {
      */
     public boolean isRefreshTokenValid(String refreshToken) {
         try {
-            Jwts.parser().setSigningKey(refreshTokenSecret).parseClaimsJws(refreshToken);
-            return true;
+            return isTokenNotExpired(refreshToken, refreshTokenSecret);
         } catch (Exception e) {
             return false;
         }
@@ -100,9 +102,7 @@ public class JwtUtils {
      * @return email
      */
     public String getEmailFromAccessToken(String accessToken) {
-        Claims claims = Jwts.parser().setSigningKey(accessTokenSecret)
-                .parseClaimsJws(accessToken).getBody();
-        return claims.getSubject();
+        return extractClaim(accessToken, accessTokenSecret, Claims::getSubject);
     }
 
     /**
@@ -111,9 +111,7 @@ public class JwtUtils {
      * @return user id
      */
     public Long getUserIdFromRefreshToken(String refreshToken) {
-        Claims claims = Jwts.parser().setSigningKey(refreshTokenSecret)
-                .parseClaimsJws(refreshToken).getBody();
-        return claims.get(USER_ID, Long.class);
+        return extractClaim(refreshToken, refreshTokenSecret, claims -> claims.get(USER_ID, Long.class));
     }
 
     /**
@@ -127,5 +125,32 @@ public class JwtUtils {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    private boolean isTokenNotExpired(String token, String secret) {
+        return !extractExpiration(token, secret).before(new Date());
+    }
+
+    public <T> T extractClaim(String token, String secret, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token, secret);
+        return claimsResolver.apply(claims);
+    }
+
+    private Date extractExpiration(String token, String secret) {
+        return extractClaim(token, secret, Claims::getExpiration);
+    }
+
+    private Claims extractAllClaims(String token, String secret) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey(secret))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    private Key getSignInKey(String secret) {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
