@@ -37,6 +37,6 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
-          source: "checkstyle.xml"
+          source: "images/logo.png"
           target: "/root/temp2/"
           strip_components: 1
