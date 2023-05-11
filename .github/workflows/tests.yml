@@ -38,5 +38,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           source: "checkstyle.xml"
-          target: "/root/temp/"
+          target: "/root/temp2/"
           strip_components: 1
