@@ -29,3 +29,14 @@ jobs:
 
       #- name: Run tests with Maven
       #  run: mvn --batch-mode --update-snapshots verify -Dcheckstyle.skip
+      
+      - name: Copy results to the remote host over SSH
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          source: "pom.xml"
+          target: "/root/temp/"
+          strip_components: 1
