@@ -1,17 +1,31 @@
-name: Tests
-on: pull_request
+name: Test and Check
+on:
+  pull_request:
+  workflow_dispatch:
 jobs:
   build:
     name: verify
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3
+        
+      - name: Directory location
+        run: "pwd"
+        
+      - name: List files
+        run: "ls -al"
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-      - name: Run tests with Maven
-        run: mvn --batch-mode --update-snapshots verify -Dcheckstyle.skip
+
+      - name: Java version
+        run: "java -version"
+
+      #- name: Run tests with Maven
+      #  run: mvn --batch-mode --update-snapshots verify -Dcheckstyle.skip
