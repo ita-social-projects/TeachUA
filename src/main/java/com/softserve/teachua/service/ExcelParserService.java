@@ -1,7 +1,7 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
-import com.softserve.teachua.dto.databaseTransfer.ExcelParsingResponse;
+import com.softserve.teachua.dto.database_transfer.ExcelParsingMistake;
+import com.softserve.teachua.dto.database_transfer.ExcelParsingResponse;
 import com.softserve.teachua.constants.excel.ExcelColumn;
 import java.io.IOException;
 import java.io.InputStream;

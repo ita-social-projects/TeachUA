@@ -10,7 +10,7 @@ import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelPar
 import com.softserve.teachua.dto.certificate_excel.CertificateByTemplateExcelValidationResult;
 import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.dto.certificate_excel.ExcelParsingResponse;
-import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
+import com.softserve.teachua.dto.database_transfer.ExcelParsingMistake;
 import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.model.CertificateTemplate;
 import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;

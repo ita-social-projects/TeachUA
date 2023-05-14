@@ -1,8 +1,8 @@
 package com.softserve.teachua.service.test;
 
-import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
-import com.softserve.teachua.dto.test.question.questionExcel.ExcelQuestionParsingResponse;
-import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
+import com.softserve.teachua.dto.test.answer.answer_excel.AnswerExcel;
+import com.softserve.teachua.dto.test.question.question_excel.ExcelQuestionParsingResponse;
+import com.softserve.teachua.dto.test.question.question_excel.QuestionExcel;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.web.multipart.MultipartFile;

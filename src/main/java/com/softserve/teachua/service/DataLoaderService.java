@@ -1,6 +1,6 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.databaseTransfer.ExcelParsingData;
+import com.softserve.teachua.dto.database_transfer.ExcelParsingData;
 
 /**
  * This interface contains all needed methods to manage data loader.

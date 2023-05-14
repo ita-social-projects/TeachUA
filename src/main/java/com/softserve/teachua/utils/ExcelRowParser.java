@@ -1,6 +1,6 @@
 package com.softserve.teachua.utils;
 
-import com.softserve.teachua.dto.databaseTransfer.ExcelFullParsingMistake;
+import com.softserve.teachua.dto.database_transfer.ExcelFullParsingMistake;
 import com.softserve.teachua.constants.excel.ExcelErrorType;
 import java.util.ArrayList;
 import java.util.List;

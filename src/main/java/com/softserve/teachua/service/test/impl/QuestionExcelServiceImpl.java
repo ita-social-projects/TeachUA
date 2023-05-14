@@ -1,8 +1,8 @@
 package com.softserve.teachua.service.test.impl;
 
-import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
-import com.softserve.teachua.dto.test.question.questionExcel.ExcelQuestionParsingResponse;
-import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
+import com.softserve.teachua.dto.test.answer.answer_excel.AnswerExcel;
+import com.softserve.teachua.dto.test.question.question_excel.ExcelQuestionParsingResponse;
+import com.softserve.teachua.dto.test.question.question_excel.QuestionExcel;
 import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;

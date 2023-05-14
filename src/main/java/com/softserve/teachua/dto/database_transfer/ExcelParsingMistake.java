@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.databaseTransfer;
+package com.softserve.teachua.dto.database_transfer;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

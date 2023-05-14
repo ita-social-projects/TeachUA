@@ -20,7 +20,7 @@ import com.softserve.teachua.constants.excel.ExcelColumn;
 import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.teachua.dto.certificate_excel.CertificateExcel;
 import com.softserve.teachua.dto.certificate_excel.ExcelParsingResponse;
-import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
+import com.softserve.teachua.dto.database_transfer.ExcelParsingMistake;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.service.impl.CertificateExcelServiceImpl;
 import com.softserve.teachua.service.impl.CertificateValidatorImpl;

@@ -2,9 +2,9 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.contactType.ContactTypeProfile;
-import com.softserve.teachua.dto.contactType.ContactTypeResponse;
-import com.softserve.teachua.dto.contactType.SuccessCreatedContactType;
+import com.softserve.teachua.dto.contact_type.ContactTypeProfile;
+import com.softserve.teachua.dto.contact_type.ContactTypeResponse;
+import com.softserve.teachua.dto.contact_type.SuccessCreatedContactType;
 import com.softserve.teachua.model.ContactType;
 import com.softserve.teachua.service.ContactTypeService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;

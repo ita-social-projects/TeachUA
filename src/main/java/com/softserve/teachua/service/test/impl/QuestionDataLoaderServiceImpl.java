@@ -1,9 +1,9 @@
 package com.softserve.teachua.service.test.impl;
 
-import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
+import com.softserve.teachua.dto.test.answer.answer_excel.AnswerExcel;
 import com.softserve.teachua.dto.test.question.QuestionDatabaseResponse;
-import com.softserve.teachua.dto.test.question.questionExcel.QuestionDataRequest;
-import com.softserve.teachua.dto.test.question.questionExcel.QuestionExcel;
+import com.softserve.teachua.dto.test.question.question_excel.QuestionDataRequest;
+import com.softserve.teachua.dto.test.question.question_excel.QuestionExcel;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;

@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.databaseTransfer.model;
+package com.softserve.teachua.dto.database_transfer.model;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.utils.validations.CheckRussian;

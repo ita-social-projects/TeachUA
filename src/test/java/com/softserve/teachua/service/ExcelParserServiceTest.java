@@ -8,7 +8,7 @@ import static com.softserve.teachua.TestUtils.getEmptyRow;
 import static com.softserve.teachua.TestUtils.getEmptySheet;
 import static com.softserve.teachua.TestUtils.getIndexes;
 import static com.softserve.teachua.TestUtils.getListOfEmptyCells;
-import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
+import com.softserve.teachua.dto.database_transfer.ExcelParsingMistake;
 import com.softserve.teachua.service.impl.ExcelParserServiceImpl;
 import com.softserve.teachua.constants.excel.ExcelColumn;
 import com.softserve.teachua.constants.excel.CertificateExcelColumn;

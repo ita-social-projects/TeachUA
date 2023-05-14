@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.contactType;
+package com.softserve.teachua.dto.contact_type;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import jakarta.validation.constraints.NotEmpty;

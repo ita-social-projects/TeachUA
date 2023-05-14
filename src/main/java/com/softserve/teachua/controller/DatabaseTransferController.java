@@ -2,9 +2,9 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.databaseTransfer.ExcelLoadSuccess;
-import com.softserve.teachua.dto.databaseTransfer.ExcelParsingData;
-import com.softserve.teachua.dto.databaseTransfer.ExcelParsingResponse;
+import com.softserve.teachua.dto.database_transfer.ExcelLoadSuccess;
+import com.softserve.teachua.dto.database_transfer.ExcelParsingData;
+import com.softserve.teachua.dto.database_transfer.ExcelParsingResponse;
 import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.service.DataLoaderService;
 import com.softserve.teachua.service.ExcelParserService;

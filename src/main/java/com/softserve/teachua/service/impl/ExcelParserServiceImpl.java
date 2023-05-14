@@ -1,14 +1,14 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.teachua.dto.databaseTransfer.ExcelFullParsingMistake;
-import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
-import com.softserve.teachua.dto.databaseTransfer.ExcelParsingResponse;
-import com.softserve.teachua.dto.databaseTransfer.model.CategoryExcel;
-import com.softserve.teachua.dto.databaseTransfer.model.CenterExcel;
-import com.softserve.teachua.dto.databaseTransfer.model.ClubExcel;
-import com.softserve.teachua.dto.databaseTransfer.model.DistrictExcel;
-import com.softserve.teachua.dto.databaseTransfer.model.LocationExcel;
-import com.softserve.teachua.dto.databaseTransfer.model.StationExcel;
+import com.softserve.teachua.dto.database_transfer.ExcelFullParsingMistake;
+import com.softserve.teachua.dto.database_transfer.ExcelParsingMistake;
+import com.softserve.teachua.dto.database_transfer.ExcelParsingResponse;
+import com.softserve.teachua.dto.database_transfer.model.CategoryExcel;
+import com.softserve.teachua.dto.database_transfer.model.CenterExcel;
+import com.softserve.teachua.dto.database_transfer.model.ClubExcel;
+import com.softserve.teachua.dto.database_transfer.model.DistrictExcel;
+import com.softserve.teachua.dto.database_transfer.model.LocationExcel;
+import com.softserve.teachua.dto.database_transfer.model.StationExcel;
 import com.softserve.teachua.service.ExcelParserService;
 import com.softserve.teachua.constants.excel.ExcelErrorType;
 import com.softserve.teachua.constants.excel.ExcelColumn;
