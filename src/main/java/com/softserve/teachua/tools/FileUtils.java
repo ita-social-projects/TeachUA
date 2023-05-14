@@ -63,7 +63,7 @@ public class FileUtils {
         } catch (NotExistException e) {
             throw new NotExistException(String.format(FILE_FIND_EXCEPTION, filePath));
         }
-        return null;
+        throw new IllegalArgumentException();
     }
 
     /**

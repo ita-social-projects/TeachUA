@@ -31,7 +31,8 @@ public class TestSystemExceptionHandler {
     }
 
     @ExceptionHandler(value = DataIntegrityViolationException.class)
-    public ResponseEntity<ExceptionResponse> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
+    public ResponseEntity<ExceptionResponse> handleDataIntegrityViolationException(
+            DataIntegrityViolationException exception) {
         log.debug(exception.getMessage());
         Throwable rootCause = exception.getRootCause();
         String message = "";
