@@ -174,6 +174,13 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
                             .collect(Collectors.toSet()));
         }
 
+        saveClubs(centerProfile, center);
+
+        log.debug("**/adding new center = " + centerProfile.getName());
+        return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
+    }
+
+    private void saveClubs(CenterProfile centerProfile, Center center) {
         List<Long> clubsId = centerProfile.getClubsId();
 
         if (clubsId != null && !clubsId.isEmpty()) {
@@ -184,9 +191,6 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
                 clubRepository.save(club);
             }
         }
-
-        log.debug("**/adding new center = " + centerProfile.getName());
-        return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
     }
 
     @Override
@@ -228,16 +232,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
                 .withUrlBackgroundPicture(centerProfile.getUrlBackgroundPicture())
                 .withLocations(locationService.updateCenterLocation(locations, center));
 
-        List<Long> clubsId = centerProfile.getClubsId();
-
-        if (clubsId != null && !clubsId.isEmpty()) {
-            for (Long clubId : clubsId) {
-                log.debug("ID - " + clubId);
-                Club club = clubService.getClubById(clubId);
-                club.setCenter(center);
-                clubRepository.save(club);
-            }
-        }
+        saveClubs(centerProfile, center);
         log.debug("**/updating center by id = " + newCenter);
         return dtoConverter.convertToDto(centerRepository.save(newCenter), CenterProfile.class);
     }
