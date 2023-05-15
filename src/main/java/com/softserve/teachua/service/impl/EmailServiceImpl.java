@@ -28,6 +28,7 @@ public class EmailServiceImpl implements EmailService {
 
     private final CertificateService certificateService;
 
+    @SuppressWarnings("squid:S1450") //Suppressed because of project's business logic.
     private MimeBodyPart pdfBodyPart;
 
     @Autowired

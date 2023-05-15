@@ -59,8 +59,8 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
         }
     }
 
-    @SuppressWarnings("checkstyle:Indentation")
     @Override
+    @SuppressWarnings("checkstyle:Indentation") //Suppressed because of unsupported switch style.
     public String createCertificateByTemplate(CertificateTransfer transfer) throws IOException {
         String targetFileName = ThreadLocalRandom.current().nextInt() + ".pdf";
 

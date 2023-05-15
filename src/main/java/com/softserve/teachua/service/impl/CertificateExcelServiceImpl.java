@@ -93,8 +93,8 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
         return response;
     }
 
-    @SuppressWarnings("checkstyle:Indentation")
     @Override
+    @SuppressWarnings("checkstyle:Indentation") //Suppressed because of unsupported switch style
     public CertificateByTemplateExcelParsingResponse parseFlexibleExcel(MultipartFile multipartFile) {
         List<List<Cell>> allCells = excelParserService.excelToList(multipartFile);
         List<List<String>> allConvertedCells =

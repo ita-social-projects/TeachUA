@@ -49,6 +49,7 @@ public class CertificateGoogleFormServiceImpl implements CertificateGoogleFormSe
     }
 
     @Override
+    @SuppressWarnings({"squid:S3776", "squid:S135"}) //Suppressed because of project's business logic.
     public CertificateByTemplateSavingResponse saveGoogleFormCertificateData(CertificateByTemplateTransfer data) {
         List<Pair<String, MessageType>> messageList = new LinkedList<>();
         List<Certificate> validCertificates = new ArrayList<>();

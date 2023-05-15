@@ -27,6 +27,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 @Service
+@SuppressWarnings("squid:S1075") //Suppressed because of project's business logic.
 public class ClubReportGenerationServiceImpl implements ReportGenerationService<ClubResponse> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClubReportGenerationServiceImpl.class.getName());
     private static final String TEMPLATE_PATH = "/pdf-reports/template/ClubPdfReportTemplate.jrxml";

@@ -195,8 +195,8 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         return certificateRepository.findBySerialNumber(serialNumber);
     }
 
-    @SuppressWarnings("checkstyle:Indentation")
     @Override
+    @SuppressWarnings("checkstyle:Indentation") //Suppressed because of unsupported switch style.
     public CertificateTransfer generateSerialNumber(CertificateTransfer response) {
         if (response.getTemplate().getCertificateType() == null || response.getDates().getCourseNumber() == null) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
