@@ -14,13 +14,14 @@ jobs:
           node-version: 16
 
       - name: Checkout frontend repo TeachUAClient
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ita-social-projects/TeachUAClient
           ref: develop
                 
       - name: Install dependencies
         run: "npm install --legacy-peer-deps"
+        continue-on-error: true
         
       - name: Build frontend
         run: "CI=false npm run build"
@@ -29,7 +30,7 @@ jobs:
         run: 'sudo cp -r build/* /su_frontend'
         
       - name: Checkout backend repo TeachUA
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ita-social-projects/TeachUA
           ref: rest
@@ -39,6 +40,16 @@ jobs:
         
       - name: Inject frontend
         run: 'sudo cp -r /su_frontend/* src/main/resources/frontend'
+        
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+          
+      - name: Java version
+        run: "java -version"
         
       - name: Build war
         # run: 'mvn package -DskipTests -Dcheckstyle.skip'
