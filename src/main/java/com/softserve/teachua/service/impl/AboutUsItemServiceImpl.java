@@ -123,41 +123,43 @@ public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<A
     @Override
     public void changeOrder(Long id, Long position) {
         List<AboutUsItem> items = getListOfAboutUsItems();
+        if (items.size() <= 1) {
+            return;
+        }
         AboutUsItem item = getAboutUsItemById(id);
-        if (items.size() > 1) {
-            if (position == items.size() + 1) {
-                item.setNumber(items.get((int) (position - 2)).getNumber() + STEP);
-            } else if (position == 1) {
-                Long num = STEP;
+
+        if (position == items.size() + 1) {
+            item.setNumber(items.get((int) (position - 2)).getNumber() + STEP);
+        } else if (position == 1) {
+            long num = STEP;
+            for (AboutUsItem element : items) {
+                AboutUsItemProfile profile = dtoConverter.convertToDto(element, AboutUsItemProfile.class);
+                profile.setNumber(num);
+                num += STEP;
+                updateAboutUsItem(element.getId(), profile);
+            }
+            item.setNumber(1L);
+        } else {
+            Long up = items.get((int) (position - 1)).getNumber();
+            Long down = items.get(position.intValue()).getNumber();
+            if (down - up > 1) {
+                Long median = (down + up) / 2;
+                item.setNumber(median);
+            } else {
+                long num = 1L;
                 for (AboutUsItem element : items) {
                     AboutUsItemProfile profile = dtoConverter.convertToDto(element, AboutUsItemProfile.class);
                     profile.setNumber(num);
                     num += STEP;
                     updateAboutUsItem(element.getId(), profile);
                 }
-                item.setNumber(1L);
-            } else {
-                Long up = items.get((int) (position - 1)).getNumber();
-                Long down = items.get(position.intValue()).getNumber();
-                if (down - up > 1) {
-                    Long median = (down + up) / 2;
-                    item.setNumber(median);
-                } else {
-                    Long num = 1L;
-                    for (AboutUsItem element : items) {
-                        AboutUsItemProfile profile = dtoConverter.convertToDto(element, AboutUsItemProfile.class);
-                        profile.setNumber(num);
-                        num += STEP;
-                        updateAboutUsItem(element.getId(), profile);
-                    }
-                    up = items.get((int) (position - 1)).getNumber();
-                    down = items.get(position.intValue()).getNumber();
-                    Long median = (down + up) / 2;
-                    item.setNumber(median);
-                }
+                up = items.get((int) (position - 1)).getNumber();
+                down = items.get(position.intValue()).getNumber();
+                Long median = (down + up) / 2;
+                item.setNumber(median);
             }
-            updateAboutUsItem(id, dtoConverter.convertToDto(item, AboutUsItemProfile.class));
         }
+        updateAboutUsItem(id, dtoConverter.convertToDto(item, AboutUsItemProfile.class));
     }
 
     @Override
