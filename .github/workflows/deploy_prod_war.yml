@@ -12,6 +12,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          
+      - name: Node version
+        run: "node --version"
 
       - name: Checkout frontend repo TeachUAClient
         uses: actions/checkout@v3
