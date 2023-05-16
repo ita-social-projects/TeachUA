@@ -283,7 +283,7 @@
                 <configuration>
                     <skipTests>${skipUnitTests}</skipTests>
                     <includes>
-                        <include>**/*.java</include>
+                        <include>**/*Test.java</include>
                     </includes>
                     <systemPropertyVariables>
                         <surefire.application.password>
