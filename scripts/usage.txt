@@ -1,5 +1,0 @@
-run: docker-compose up --build
-prometheus config:
-	targets: local or remote address and port
-	basic_auth: username and password for basic auth protected endpoint
-	
