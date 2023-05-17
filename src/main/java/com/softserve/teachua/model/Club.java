@@ -81,7 +81,7 @@ public class Club implements Convertible {
     @Column
     private Boolean isOnline;
 
-    @OneToMany(mappedBy = "club")
+    @OneToMany(mappedBy = "club", fetch = FetchType.EAGER)
     @ToString.Exclude
     private Set<Location> locations;
 
