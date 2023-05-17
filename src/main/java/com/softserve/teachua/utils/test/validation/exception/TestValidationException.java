@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public class TestValidationException extends RuntimeException {
     private final HttpStatus status;
-    private final ValidationContainer container;
+    private final transient ValidationContainer container;
 
     @Override
     public String getMessage() {
