@@ -1,7 +1,6 @@
 package com.softserve.teachua.converter;
 
 import com.softserve.teachua.dto.location.LocationProfile;
-import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.exception.IncorrectInputException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,14 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CoordinatesConverter {
     public void locationProfileConverterToDb(LocationProfile location) {
-        if (location != null && location.getCoordinates() != null) {
-            double[] latitudeAndLongitude = parseLatitudeAndLongitude(location.getCoordinates());
-            location.setLatitude(latitudeAndLongitude[0]);
-            location.setLongitude(latitudeAndLongitude[1]);
-        }
-    }
-
-    public void locationResponseConverterToDb(LocationResponse location) {
         if (location != null && location.getCoordinates() != null) {
             double[] latitudeAndLongitude = parseLatitudeAndLongitude(location.getCoordinates());
             location.setLatitude(latitudeAndLongitude[0]);

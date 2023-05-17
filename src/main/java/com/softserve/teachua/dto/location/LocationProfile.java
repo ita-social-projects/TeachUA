@@ -29,19 +29,22 @@ public class LocationProfile {
     @NotBlank
     @CheckRussian
     private String address;
+    @NotBlank
+    @CheckRussian
+    private String cityName;
+    @NotBlank
+    @CheckRussian
+    private String districtName;
+    @NotBlank
+    @CheckRussian
+    private String stationName;
+
     private Long cityId;
     private Long districtId;
     private Long stationId;
 
-    @NotBlank
-    @CheckRussian
-    private String cityName;
-
-    @CheckRussian
-    private String districtName;
-
-    @CheckRussian
-    private String stationName;
+    private Long centerId;
+    private Long clubId;
 
     @NotNull(message = " cannot be null")
     @NotBlank(message = " cannot be blank")
@@ -49,8 +52,6 @@ public class LocationProfile {
     private Double longitude;
     private Double latitude;
 
-    private Long centerId;
-    private Long clubId;
 
     @NotNull(message = "number cannot be null")
     @NotBlank(message = "number cannot be blank")

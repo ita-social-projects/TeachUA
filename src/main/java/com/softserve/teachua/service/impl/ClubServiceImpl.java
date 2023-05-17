@@ -19,7 +19,6 @@ import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
-import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
@@ -64,6 +63,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -184,22 +184,13 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         User user = userService.getAuthenticatedUser();
         validateClubOwner(id, user);
         Club club = getClubById(id);
-        Set<LocationResponse> locations = null;
+        Set<LocationProfile> locations = null;
 
         if (clubResponse.getLocations() != null) {
             locations = new HashSet<>(clubResponse.getLocations());
             if (!locations.isEmpty()) {
-                for (LocationResponse profile : locations) {
-                    coordinatesConverter.locationResponseConverterToDb(profile);
-                    if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
-                        profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
-                    }
-                    if (profile.getDistrictName() != null && !profile.getDistrictName().isEmpty()) {
-                        profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
-                    }
-                    if (profile.getStationName() != null && !profile.getStationName().isEmpty()) {
-                        profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
-                    }
+                for (LocationProfile profile : locations) {
+                    updateLocation(profile);
                     profile.setClubId(id);
                 }
             }
@@ -229,6 +220,19 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         return dtoConverter.convertToDto(clubRepository.save(updatedClub), SuccessUpdatedClub.class);
     }
 
+    private void updateLocation(LocationProfile profile) {
+        coordinatesConverter.locationProfileConverterToDb(profile);
+        if (StringUtils.isNotEmpty(profile.getCityName())) {
+            profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
+        }
+        if (StringUtils.isNotEmpty(profile.getDistrictName())) {
+            profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
+        }
+        if (StringUtils.isNotEmpty(profile.getStationName())) {
+            profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
+        }
+    }
+
     @Override
     public ClubResponse getClubProfileByName(String name) {
         return toClubResponseConverter.convertToClubResponse(getClubByName(name));
@@ -249,16 +253,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
         if (locations != null && !locations.isEmpty()) {
             for (LocationProfile profile : locations) {
-                coordinatesConverter.locationProfileConverterToDb(profile);
-                if (profile.getCityName() != null && !profile.getCityName().isEmpty()) {
-                    profile.setCityId(cityService.getCityByName(profile.getCityName()).getId());
-                }
-                if (profile.getDistrictName() != null && !profile.getDistrictName().isEmpty()) {
-                    profile.setDistrictId(districtService.getDistrictByName(profile.getDistrictName()).getId());
-                }
-                if (profile.getStationName() != null && !profile.getStationName().isEmpty()) {
-                    profile.setStationId(stationService.getStationByName(profile.getStationName()).getId());
-                }
+                updateLocation(profile);
             }
         }
 
@@ -452,135 +447,148 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Override
     public void updateContacts() {
         List<Center> centers = centerRepository.findAll();
-        List<Center> updatedCenters = centers.stream().filter(center -> center.getContacts() != null)
-                .filter(center -> !this.isValidJSON(center.getContacts())).peek(center -> {
+        List<Center> updatedCenters = getUpdatedCenters(centers);
+        centerRepository.saveAll(updatedCenters);
+
+        List<Club> clubs = clubRepository.findAll();
+        List<Club> updatedClubs = getUpdatedClubs(clubs);
+        clubRepository.saveAll(updatedClubs);
+    }
+
+    private List<Center> getUpdatedCenters(List<Center> centers) {
+        return centers.stream().filter(center -> center.getContacts() != null)
+                .filter(center -> !this.isValidJSON(center.getContacts())).map(center -> {
                     JsonNodeFactory factory = JsonNodeFactory.instance;
                     if (center.getContacts().startsWith("{")) {
                         String contacts = center.getContacts().replace("::", ":");
-                        ObjectNode node = (ObjectNode) toJSON(contacts);
-
-                        if (node.has("1")) {
-                            ArrayNode array = factory.arrayNode();
-                            array.add(convert(node.get("1").asText()));
-                            node.set("1", array);
-                        }
+                        ObjectNode node = getJsonNodes(factory, contacts);
 
                         center.setContacts(node.toString());
                     } else {
                         ObjectNode json = factory.objectNode();
-                        Stream.of(center.getContacts().split(",")).map(String::trim)
-                                .filter(contact -> !contact.isEmpty()).filter(contact -> !contact.endsWith("::"))
-                                .map(contact -> contact.split("::")).forEach(contact -> {
-                                    String key = contact[0];
-                                    String value = contact[1];
-
-                                    if (key.equals("1")) {
-                                        ArrayNode array = json.has(key) ? (ArrayNode) json.get(key)
-                                                : factory.arrayNode();
-
-                                        String convertedValue = convert(value);
-
-                                        if (convertedValue.equals("+3804442732290443600106")) {
-                                            array.add("+380444273229");
-                                            array.add("+380443600106");
-                                        } else {
-                                            array.add(convertedValue);
-                                        }
-
-                                        json.set(key, array);
-                                    } else {
-                                        json.put(key, value);
-                                    }
-                                });
+                        updateCenterContacts(center, factory, json);
 
                         center.setContacts(json.toString());
                     }
                     log.info(center.getContacts());
+                    return center;
                 }).toList();
-        centerRepository.saveAll(updatedCenters);
+    }
 
-        List<Club> clubs = clubRepository.findAll();
-        List<Club> updatedClubs = clubs.stream().filter(club -> club.getContacts() != null)
-                .filter(club -> !this.isValidJSON(club.getContacts())).peek(club -> {
+    private void updateCenterContacts(Center center, JsonNodeFactory factory, ObjectNode json) {
+        Stream.of(center.getContacts().split(",")).map(String::trim)
+                .filter(contact -> !contact.isEmpty()).filter(contact -> !contact.endsWith("::"))
+                .map(contact -> contact.split("::")).forEach(contact -> {
+                    String key = contact[0];
+                    String value = contact[1];
+
+                    if (key.equals("1")) {
+                        ArrayNode array = json.has(key) ? (ArrayNode) json.get(key)
+                                : factory.arrayNode();
+                        String convertedValue = convert(value);
+
+                        if (convertedValue.equals("+3804442732290443600106")) {
+                            array.add("+380444273229");
+                            array.add("+380443600106");
+                        } else {
+                            array.add(convertedValue);
+                        }
+                        json.set(key, array);
+                    } else {
+                        json.put(key, value);
+                    }
+                });
+    }
+
+    private List<Club> getUpdatedClubs(List<Club> clubs) {
+        return clubs.stream().filter(club -> club.getContacts() != null)
+                .filter(club -> !this.isValidJSON(club.getContacts())).map(club -> {
                     JsonNodeFactory factory = JsonNodeFactory.instance;
                     if (club.getContacts().startsWith("{")) {
                         String contacts = club.getContacts().replace("::", ":");
-                        ObjectNode node = (ObjectNode) toJSON(contacts);
-
-                        if (node.has("1")) {
-                            ArrayNode array = factory.arrayNode();
-                            array.add(convert(node.get("1").asText()));
-                            node.set("1", array);
-                        }
+                        ObjectNode node = getJsonNodes(factory, contacts);
 
                         club.setContacts(node.toString());
                     } else {
                         ObjectNode json = factory.objectNode();
-
-                        Stream.of(club.getContacts().split(",")).map(String::trim)
-                                .filter(contact -> !contact.isEmpty())
-                                .filter(contact -> !contact.endsWith("::")).map(contact -> contact.split("::"))
-                                .forEach(contact -> {
-                                    String key = contact[0];
-                                    String value = contact[1];
-
-                                    if (key.equals("1")) {
-                                        ArrayNode array = json.has(key) ? (ArrayNode) json.get(key)
-                                                : factory.arrayNode();
-
-                                        String convertedValue = convert(value);
-                                        // @formatter:off
-                                        switch (convertedValue) {
-                                          case "+380950993545093138461606328812020958114277" -> {
-                                              array.add("+380950993545");
-                                              array.add("+380931384616");
-                                              array.add("+380632881202");
-                                              array.add("+380958114277");
-                                          }
-                                          case "+38044517699704451761880445178279" -> {
-                                              array.add("+380445176997");
-                                              array.add("+380445176188");
-                                              array.add("+380445178279");
-                                          }
-                                          case "+38044599612309640318" -> array.add("+380445996123");
-                                          case "+3804456499930445749818" -> {
-                                              array.add("+380445649993");
-                                              array.add("+380445749818");
-                                          }
-                                          case "+3804456462130445608993" -> {
-                                              array.add("+380445646213");
-                                              array.add("+380445608993");
-                                          }
-                                          case "+3804456254940445640218" -> {
-                                              array.add("+380445625494");
-                                              array.add("+380445640218");
-                                          }
-                                          case "+380938380570994517940" -> {
-                                              array.add("+380938380570");
-                                              array.add("+380994517940");
-                                          }
-                                          default -> array.add(convertedValue);
-                                        }
-                                        // @formatter:on
-                                        json.set(key, array);
-                                    } else {
-                                        json.put(key, value);
-                                    }
-                                });
+                        updateClubContacts(club, factory, json);
 
                         club.setContacts(json.toString());
                     }
-
                     log.info(club.getContacts());
+                    return club;
                 }).toList();
-        clubRepository.saveAll(updatedClubs);
+    }
+
+    private void updateClubContacts(Club club, JsonNodeFactory factory, ObjectNode json) {
+        Stream.of(club.getContacts().split(",")).map(String::trim)
+                .filter(contact -> !contact.isEmpty())
+                .filter(contact -> !contact.endsWith("::")).map(contact -> contact.split("::"))
+                .forEach(contact -> {
+                    String key = contact[0];
+                    String value = contact[1];
+
+                    if (key.equals("1")) {
+                        ArrayNode array = json.has(key) ? (ArrayNode) json.get(key)
+                                : factory.arrayNode();
+
+                        String convertedValue = convert(value);
+                        // @formatter:off
+                        switch (convertedValue) {
+                          case "+380950993545093138461606328812020958114277" -> {
+                              array.add("+380950993545");
+                              array.add("+380931384616");
+                              array.add("+380632881202");
+                              array.add("+380958114277");
+                          }
+                          case "+38044517699704451761880445178279" -> {
+                              array.add("+380445176997");
+                              array.add("+380445176188");
+                              array.add("+380445178279");
+                          }
+                          case "+38044599612309640318" -> array.add("+380445996123");
+                          case "+3804456499930445749818" -> {
+                              array.add("+380445649993");
+                              array.add("+380445749818");
+                          }
+                          case "+3804456462130445608993" -> {
+                              array.add("+380445646213");
+                              array.add("+380445608993");
+                          }
+                          case "+3804456254940445640218" -> {
+                              array.add("+380445625494");
+                              array.add("+380445640218");
+                          }
+                          case "+380938380570994517940" -> {
+                              array.add("+380938380570");
+                              array.add("+380994517940");
+                          }
+                          default -> array.add(convertedValue);
+                        }
+                        // @formatter:on
+                        json.set(key, array);
+                    } else {
+                        json.put(key, value);
+                    }
+                });
+    }
+
+    private ObjectNode getJsonNodes(JsonNodeFactory factory, String contacts) {
+        ObjectNode node = (ObjectNode) toJSON(contacts);
+
+        if (node.has("1")) {
+            ArrayNode array = factory.arrayNode();
+            array.add(convert(node.get("1").asText()));
+            node.set("1", array);
+        }
+        return node;
     }
 
     private JsonNode toJSON(String json) {
         try {
             return objectMapper.readTree(json);
         } catch (JsonProcessingException e) {
-            return null;
+            throw new IllegalArgumentException();
         }
     }
 
@@ -634,7 +642,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             complaintRepository.getAllByClubId(club.getId())
                     .forEach(complaint -> complaintRepository.deleteById(complaint.getId()));
 
-
             clubRepository.deleteById(id);
         } catch (DataAccessException | ValidationException e) {
             throw new DatabaseRepositoryException(CLUB_DELETING_ERROR);
@@ -679,7 +686,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             club.setRating(0.0);
         }
 
-        Long newFeedbackCount = club.getFeedbackCount() + 1;
+        long newFeedbackCount = club.getFeedbackCount() + 1;
         Double newRating = (club.getRating() * club.getFeedbackCount() + feedbackResponse.getRate()) / newFeedbackCount;
 
         return updateClubRating(club, newRating, newFeedbackCount);
@@ -700,7 +707,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     public SuccessUpdatedClub updateRatingDeleteFeedback(FeedbackResponse feedbackResponse) {
         Club club = getClubById(feedbackResponse.getClub().getId());
 
-        Long newFeedbackCount = club.getFeedbackCount() - 1;
+        long newFeedbackCount = club.getFeedbackCount() - 1;
         Double newRating = newFeedbackCount == 0 ? 0
                 : (club.getRating() * club.getFeedbackCount() - feedbackResponse.getRate()) / newFeedbackCount;
 
@@ -712,7 +719,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         return getListOfClubs().stream().map(clubResponse -> {
             Club updClub = getClubById(clubResponse.getId());
             updClub.setRating(feedbackRepository.findAvgRating(clubResponse.getId()));
-            updClub.setFeedbackCount(feedbackRepository.getAllByClubId(clubResponse.getId()).stream().count());
+            updClub.setFeedbackCount((long) feedbackRepository.getAllByClubId(clubResponse.getId()).size());
             clubRepository.save(updClub);
             return clubResponse;
         }).toList();

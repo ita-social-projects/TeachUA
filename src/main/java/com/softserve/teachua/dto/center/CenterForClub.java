@@ -2,7 +2,7 @@ package com.softserve.teachua.dto.center;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.contact_data.ContactDataResponse;
-import com.softserve.teachua.dto.location.LocationResponse;
+import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.user.UserPreview;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -36,7 +36,7 @@ public class CenterForClub {
 
     private UserPreview user;
 
-    private Set<LocationResponse> locations;
+    private Set<LocationProfile> locations;
 
     private Set<ContactDataResponse> contacts;
 }

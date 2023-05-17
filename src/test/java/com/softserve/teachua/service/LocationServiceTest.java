@@ -2,7 +2,6 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.location.LocationProfile;
-import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
@@ -50,10 +49,10 @@ class LocationServiceTest {
     private Club correctClub;
     private Location correctLocation;
     private LocationProfile correctLocationProfile;
-    private LocationResponse locationResponse;
+    private LocationProfile locationProfile;
     private Set<LocationProfile> filledLocationProfileSet;
     private Set<Location> locationSet;
-    private Set<LocationResponse> locationResponses;
+    private Set<LocationProfile> locations;
 
     @BeforeEach
     void setMocks() {
@@ -66,7 +65,7 @@ class LocationServiceTest {
         correctLocationProfile =
                 LocationProfile.builder().id(CORRECT_LOCATION_ID).centerId(correctCenter.getId()).build();
 
-        locationResponse = LocationResponse.builder().id(CORRECT_LOCATION_ID).build();
+        locationProfile = LocationProfile.builder().id(CORRECT_LOCATION_ID).build();
 
         filledLocationProfileSet = new HashSet<>();
         filledLocationProfileSet.add(correctLocationProfile);
@@ -74,8 +73,8 @@ class LocationServiceTest {
         locationSet = new HashSet<>();
         locationSet.add(correctLocation);
 
-        locationResponses = new HashSet<>();
-        locationResponses.add(locationResponse);
+        locations = new HashSet<>();
+        locations.add(locationProfile);
     }
 
     @Test
@@ -104,9 +103,9 @@ class LocationServiceTest {
     @Test
     void updateLocationByFilledClubShouldReturnLocationSet() {
         when(locationRepository.deleteAllByClub(correctClub)).thenReturn(locationSet);
-        when(dtoConverter.convertToEntity(locationResponse, new Location())).thenReturn(correctLocation);
+        when(dtoConverter.convertToEntity(locationProfile, new Location())).thenReturn(correctLocation);
         when(locationRepository.save(any(Location.class))).thenReturn(correctLocation);
-        Set<Location> actual = locationService.updateLocationByClub(locationResponses, correctClub);
+        Set<Location> actual = locationService.updateLocationByClub(locations, correctClub);
         assertThat(actual).isEqualTo(locationSet);
     }
 

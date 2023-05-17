@@ -3,14 +3,13 @@ package com.softserve.teachua.controller;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.location.LocationProfile;
-import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.model.Location;
 import com.softserve.teachua.service.LocationService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -91,16 +90,16 @@ public class LocationController implements Api {
     }
 
     /**
-     * The controller returns dto {@code LocationResponse} of deleted location by id.
+     * The controller returns dto {@code LocationProfile} of deleted location by id.
      *
      * @param id
      *            - put Location id.
      *
-     * @return new {@code LocationResponse}.
+     * @return new {@code LocationProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
     @DeleteMapping("/location/{id}")
-    public LocationResponse deleteLocation(@PathVariable Long id) {
+    public LocationProfile deleteLocation(@PathVariable Long id) {
         return locationService.deleteLocationById(id);
     }
 }
