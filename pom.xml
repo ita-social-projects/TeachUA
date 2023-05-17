@@ -18,7 +18,7 @@
         <!-- - - - - - Encoding - - - - - -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- - - - - - Java - - - - - -->
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <!-- - - - - - Reports - - - - - -->
         <testng.reports.directory>./target/surefire-reports/test-output</testng.reports.directory>
         <aspectj.version>1.9.19</aspectj.version>

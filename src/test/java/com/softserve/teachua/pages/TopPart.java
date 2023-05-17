@@ -10,6 +10,7 @@ public abstract class TopPart {
     //
     private WebElement logo;
     private WebElement club;
+    private WebElement aboutUs;
 
     public TopPart(WebDriver driver) {
         this.driver = driver;
@@ -44,8 +45,21 @@ public abstract class TopPart {
         return getClub().getText();
     }
 
-    public void clickvClub() {
+    public void clickClub() {
         getClub().click();
+    }
+
+    // aboutUs
+    public WebElement getAboutUs() {
+        return aboutUs;
+    }
+
+    public String getAboutUsText() {
+        return getAboutUs().getText();
+    }
+
+    public void clickAboutUs() {
+        getAboutUs().click();
     }
 
     // Functional
@@ -55,5 +69,10 @@ public abstract class TopPart {
     public HomePage gotoHomePage() {
         clickLogo();
         return new HomePage(driver);
+    }
+
+    public AboutUsPage gotoAboutUsPage() {
+        clickLogo();
+        return new AboutUsPage(driver);
     }
 }
