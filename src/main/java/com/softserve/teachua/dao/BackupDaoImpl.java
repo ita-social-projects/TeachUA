@@ -2,10 +2,10 @@ package com.softserve.teachua.dao;
 
 import com.softserve.teachua.exception.BadRequestException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +23,17 @@ public class BackupDaoImpl implements BackupDao {
 
     @Override
     public String getTable(String tableName) {
-        String sql = "SELECT * FROM " + tableName;
+        String sql = "SELECT * FROM ?";
 
         StringBuilder query = new StringBuilder("insert into ");
         query.append(tableName);
         query.append("(");
 
         try (Connection connection = dataSource.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, tableName);
+            ResultSet resultSet = statement.executeQuery(sql);
+
             ResultSetMetaData metadata = resultSet.getMetaData();
             int columnCount = metadata.getColumnCount();
 
