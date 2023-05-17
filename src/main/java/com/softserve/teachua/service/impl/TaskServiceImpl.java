@@ -93,7 +93,6 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
             userService.verifyIsUserAdmin();
         }
         TaskProfile taskProfile = dtoConverter.convertToDto(task, TaskProfile.class);
-        taskProfile.setChallengeId(task.getChallenge().getId());
         return taskProfile;
     }
 
@@ -125,7 +124,6 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
         BeanUtils.copyProperties(updateTask, task);
         task.setChallenge(challengeService.getChallengeById(updateTask.getChallengeId()));
         SuccessUpdatedTask updatedTask = dtoConverter.convertToDto(taskRepository.save(task), SuccessUpdatedTask.class);
-        // updatedTask.setChallengeId(updatedTask.getChallengeId());
         return updatedTask;
     }
 
