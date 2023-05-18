@@ -55,6 +55,7 @@ public abstract class TestRunner {
     public static void tearDown() {
         //TestRunner.this.presentationSleep(); // For Presentation ONLY
         if (driver != null) {
+            //driver.close(); // Close browser only
             driver.quit();
         }
         System.out.println("@AfterAll executed");
