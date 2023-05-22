@@ -5,6 +5,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public abstract class TopPart {
+    protected static final String TAG_ATTRIBUTE_STYLE = "style";
+    protected final String TAG_ATTRIBUTE_VALUE = "value";
+    protected final String TAG_ATTRIBUTE_SRC = "src";
 
     protected WebDriver driver;
     //
