@@ -11,6 +11,8 @@ public class HomeBannerContainer {
 
     private final String HOME_BANNER_DIV_ELEMENT_CSSSELECTOR = "div.about-carousel-block div.slick-slide:not(.slick-cloned)";
     private final String SLICK_DOTS_BOTTOMS_CSSSELECTOR = "div.about-carousel-block  ul.slick-dots.slick-dots-bottom li";
+
+    private final String HOME_BANNER_TITLE_NOT_FOUND = "homeBannerTitle: %s not Found.";
     //
     protected WebDriver driver;
     //
@@ -34,99 +36,105 @@ public class HomeBannerContainer {
         }
     }
 
-
     // Page Object
 
-    /*
-    // productComponents
-    public List<ProductComponent> getProductComponents() {
-        return productComponents;
+    // homeBannerComponents
+    public List<HomeBannerComponent> getHomeBannerComponents() {
+        return homeBannerComponents;
+    }
+
+    // slickDotsBottoms
+    public List<WebElement> getSlickDotsBottoms() {
+        return slickDotsBottoms;
+    }
+
+    protected void clickSlickDotsBottomsByNumber(int number) {
+        getSlickDotsBottoms().get(number).click();
     }
 
     // Functional
 
-    public int getProductComponentsCount()
-    {
-        return getProductComponents().size();
+    public int getHomeBannerComponentsCount() {
+        return getHomeBannerComponents().size();
     }
 
-    public List<String> getProductComponentNames()
-    {
-        List<String> productComponentNames = new ArrayList<>();
-        for (ProductComponent current : getProductComponents())
-        {
-            productComponentNames.add(current.getNameText());
+    public List<String> getHomeBannerComponentTitles() {
+        List<String> homeBannerComponentTitles = new ArrayList<>();
+        for (HomeBannerComponent current : getHomeBannerComponents()) {
+            homeBannerComponentTitles.add(current.getTitleLabelText());
         }
-        return productComponentNames;
+        return homeBannerComponentTitles;
     }
 
-    public ProductComponent getProductComponentByName(String productName)
-    {
-        ProductComponent result = null;
-        for (ProductComponent current : getProductComponents())
-        {
-            if (current.getNameText().toLowerCase()
-                    .equals(productName.toLowerCase()))
-            {
+    public int getHomeBannerComponentByTitlePosition(String homeBannerTitle) {
+        int position = -1;
+        for (int i = 0; i < getHomeBannerComponentTitles().size(); i++) {
+            if (getHomeBannerComponentTitles().get(i).toLowerCase().equals(homeBannerTitle.toLowerCase())) {
+                position = i;
+                break;
+            }
+        }
+        if (position == -1) {
+            // TODO Develop Custom Exception
+            throw new RuntimeException(String.format(HOME_BANNER_TITLE_NOT_FOUND, homeBannerTitle));
+        }
+        return position;
+    }
+
+    public HomeBannerComponent getHomeBannerComponentByTitle(String homeBannerTitle) {
+        HomeBannerComponent result = null;
+        for (HomeBannerComponent current : getHomeBannerComponents()) {
+            if (current.getTitleLabelText().toLowerCase()
+                    .equals(homeBannerTitle.toLowerCase())) {
                 result = current;
                 break;
             }
         }
-        if (result == null)
-        {
+        if (result == null) {
             // TODO Develop Custom Exception
             // Use String.format()
-            throw new RuntimeException("ProductName: " + productName + " not Found.");
+            throw new RuntimeException(String.format(HOME_BANNER_TITLE_NOT_FOUND, homeBannerTitle));
         }
         return result;
     }
 
-    // TODO Move to Product
-    public String getProductComponentPriceByName(String productName)
-    //public String getProductComponentPriceByName(Product productName)
-    {
-        return getProductComponentByName(productName).getPriceText();
-        //return getProductComponentByName(productName.getName()).getPriceText();
+    public HomeBannerComponent getHomeBannerComponentByPartialTitle(String homeBannerPartialTitle) {
+        HomeBannerComponent result = null;
+        for (HomeBannerComponent current : getHomeBannerComponents()) {
+            if (current.getTitleLabelText().toLowerCase()
+                    .contains(homeBannerPartialTitle.toLowerCase())) {
+                result = current;
+                break;
+            }
+        }
+        if (result == null) {
+            // TODO Develop Custom Exception
+            // Use String.format()
+            throw new RuntimeException(String.format(HOME_BANNER_TITLE_NOT_FOUND, homeBannerPartialTitle));
+        }
+        return result;
     }
 
-    // TODO Move to Product
-    public String getProductComponentDescriptionByName(String productName)
+    // TODO Move to HomeBannerComponent
+    public String getHomeBannerComponentDescriptionByTitle(String homeBannerTitle)
+    //public String getHomeBannerComponentDescriptionByTitle(Product productName)
     {
-        return getProductComponentByName(productName).getPartialDescriptionText();
+        return getHomeBannerComponentByTitle(homeBannerTitle).getDescriptionText();
     }
 
-    // TODO Move to Product
-    public void clickProductComponentAddToCartButtonByName(String productName)
-    {
-        getProductComponentByName(productName).clickAddToCartButton();
+    // TODO Move to HomeBannerComponent
+    public void clickDetailsButtonByHomeBannerComponentByTitle(String homeBannerTitle) {
+        getHomeBannerComponentByTitle(homeBannerTitle).clickDetailsButton();
     }
-
-    // TODO Move to Product
-    public void clickProductComponentAddToWishButtonByName(String productName)
-    {
-        getProductComponentByName(productName).clickAddToWishButton();
-    }
-*/
-
-    /*-
-    public String getProductComponentPriceByProduct(Product product)
-    {
-        return getProductComponentPriceByName(product.getName());
-    }
-
-    public String getProductComponentDescriptionByProduct(Product product)
-    {
-        return getProductComponentDescriptionByName(product.getName());
-    }
-    */
 
     // Business Logic
 
-    /*-
-    public ProductComponent getProductComponentByName(Product product)
-    {
-        return getProductComponentByName(product.getName());
+    public void chooseHomeBannerComponentByNumber(int number) {
+        clickSlickDotsBottomsByNumber(number);
     }
-    */
+
+    public void chooseHomeBannerComponentByTitle(String homeBannerTitle) {
+        clickSlickDotsBottomsByNumber(getHomeBannerComponentByTitlePosition(homeBannerTitle));
+    }
 
 }

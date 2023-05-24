@@ -9,8 +9,8 @@ public class HomePage extends TopPart {
     public static final String DETAILS_BUTTON_TEXT = "Детальніше";
     public static final String CLUB_DIRECTION_TEXT = "Оберіть напрям гуртків";
 
-    private WebElement detailsButton;
     private WebElement clubDirectionLabel;
+    private HomeBannerContainer homeBannerContainer;
 
     public HomePage(WebDriver driver) {
         super(driver);
@@ -18,27 +18,14 @@ public class HomePage extends TopPart {
     }
 
     private void initElements() {
-        detailsButton = driver.findElement(By.cssSelector("a[href*='/clubs'] button.details-button"));
+        //detailsButton = driver.findElement(By.cssSelector("a[href*='/clubs'] button.details-button"));
         clubDirectionLabel = driver.findElement(By.cssSelector("div.categories-header h2.label"));
+        homeBannerContainer = new HomeBannerContainer(driver);
     }
 
     // Page Object
 
-    // detailsButton
-    public WebElement getDetailsButton() {
-        return detailsButton;
-    }
-
-    public String getDetailsButtonText() {
-        return getDetailsButton().findElement(By.cssSelector("span")).getText();
-    }
-
-    public void clickDetailsButton() {
-        getDetailsButton().click();
-    }
-
     // clubDirectionLabel
-
     public WebElement getClubDirectionLabel() {
         return clubDirectionLabel;
     }
@@ -47,9 +34,24 @@ public class HomePage extends TopPart {
         return getClubDirectionLabel().getText();
     }
 
+    // homeBannerContainer
+    public HomeBannerContainer getHomeBannerContainer() {
+        return homeBannerContainer;
+    }
 
     // Functional
 
     // Business Logic
+
+    public HomePage chooseHomeBannerComponentByNumber(int number) {
+        getHomeBannerContainer().clickSlickDotsBottomsByNumber(number);
+        return this;
+    }
+
+    public HomePage chooseHomeBannerComponentByTitle(String homeBannerTitle) {
+        getHomeBannerContainer().clickSlickDotsBottomsByNumber(getHomeBannerContainer()
+                .getHomeBannerComponentByTitlePosition(homeBannerTitle));
+        return this;
+    }
 
 }
