@@ -35,6 +35,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.zip.DataFormatException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -110,30 +111,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         for (LocationExcel location : excelParsingData.getLocations()) {
             log.debug("(row 133, DataLoader : " + location.toString());
             try {
-                String cityName = location.getCity();
-                if (cityName == null || cityName.isEmpty()) {
-                    cityName = "Київ";
-                }
-
-                Long districtIdCheck = null;
-                if (location.getDistrict() != null
-                        && districtService.getOptionalDistrictByName(location.getDistrict()).isPresent()) {
-                    districtIdCheck = districtService.getOptionalDistrictByName(location.getDistrict())
-                            .orElseThrow(NotExistException::new).getId();
-                }
-
-                Long stationIdCheck = null;
-                if (location.getStation() != null
-                        && stationService.getOptionalStationByName(location.getStation()).isPresent()) {
-                    stationIdCheck = stationService.getOptionalStationByName(location.getStation())
-                            .orElseThrow(NotExistException::new).getId();
-                }
-
-                LocationProfile locationProfile = LocationProfile.builder().id(location.getId())
-                        .address(location.getAddress()).latitude(location.getLatitude())
-                        .longitude(location.getLongitude()).name(location.getName())
-                        .cityId(cityService.getCityByName(cityName).getId()).districtId(districtIdCheck)
-                        .stationId(stationIdCheck).build();
+                LocationProfile locationProfile = getLocationProfile(location);
                 if (location.getClubExternalId() == null) {
                     locationProfile = locationProfile.withClubId(null);
                     if (location.getCenterExternalId() == null) {
@@ -165,6 +143,30 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         }
     }
 
+    private LocationProfile getLocationProfile(LocationExcel location) {
+        String cityName = location.getCity();
+        if (cityName == null || cityName.isEmpty()) {
+            cityName = "Київ";
+        }
+
+        Long districtIdCheck = null;
+        if (StringUtils.isNotEmpty(location.getDistrict())) {
+            districtIdCheck = districtService.getOptionalDistrictByName(location.getDistrict())
+                    .orElseThrow(NotExistException::new).getId();
+        }
+
+        Long stationIdCheck = null;
+        if (StringUtils.isNotEmpty(location.getStation())) {
+            stationIdCheck = stationService.getOptionalStationByName(location.getStation())
+                    .orElseThrow(NotExistException::new).getId();
+        }
+        return LocationProfile.builder().id(location.getId())
+                .address(location.getAddress()).latitude(location.getLatitude())
+                .longitude(location.getLongitude()).name(location.getName())
+                .cityId(cityService.getCityByName(cityName).getId()).districtId(districtIdCheck)
+                .stationId(stationIdCheck).build();
+    }
+
     private void loadCenters(ExcelParsingData excelParsingData, Map<Long, Long> excelIdToDbId) {
         log.debug("======= load_CENTERS DataLoaderService =========");
 
@@ -191,31 +193,13 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         log.debug("(row 219, DataLoader) ======= loadClubs DataLoaderService =========");
         for (ClubExcel club : excelParsingData.getClubs()) {
             log.debug(club.toString());
+            if (club.getAgeFrom() == null) {
+                club.setAgeFrom(2);
+                club.setAgeTo(18);
+            }
             try {
-                if (club.getAgeFrom() == null) {
-                    club.setAgeFrom(2);
-                    club.setAgeTo(18);
-                }
-
                 Center center = centerService.getCenterByExternalId(club.getCenterExternalId());
-                Long realCenterId = null;
-
-                if (center != null) {
-                    realCenterId = center.getId();
-                }
-
-                ClubProfile clubProfile = ClubProfile.builder().ageFrom(club.getAgeFrom()).ageTo(club.getAgeTo())
-                        .centerId(realCenterId).centerExternalId(club.getCenterExternalId())
-                        .clubExternalId(club.getClubExternalId())
-                        .description(
-                                DESCRIPTION_JSON_LEFT
-                                        + (club.getDescription().isEmpty() ? CLUB_DEFAULT_DESCRIPTION
-                                        : club.getDescription().replace("\"", "''").replace("\\", "/")
-                                        .replace("\n", " ").replace("\r", " "))
-                                        + DESCRIPTION_JSON_RIGHT)
-                        .name(club.getName()).urlBackground(DEFAULT_CLUB_URL_BACKGROUND).urlLogo(DEFAULT_CLUB_URL_LOGO)
-                        .categoriesName(getFullCategoryName(categories, club.getCategories()))
-                        .contacts(contactsConverter.collectAllContactsData(club.getSite(), club.getPhone())).build();
+                ClubProfile clubProfile = getClubProfile(categories, club, center);
                 if (club.getCenterExternalId() == null) {
                     clubProfile = clubProfile.withCenterId(null);
                 } else {
@@ -238,6 +222,25 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 log.error(constraintViolationException.getMessage());
             }
         }
+    }
+
+    private ClubProfile getClubProfile(Set<String> categories, ClubExcel club, Center center) {
+        Long realCenterId = null;
+        if (center != null) {
+            realCenterId = center.getId();
+        }
+        return ClubProfile.builder().ageFrom(club.getAgeFrom()).ageTo(club.getAgeTo())
+                .centerId(realCenterId).centerExternalId(club.getCenterExternalId())
+                .clubExternalId(club.getClubExternalId())
+                .description(
+                        DESCRIPTION_JSON_LEFT
+                                + (club.getDescription().isEmpty() ? CLUB_DEFAULT_DESCRIPTION
+                                : club.getDescription().replace("\"", "''").replace("\\", "/")
+                                .replace("\n", " ").replace("\r", " "))
+                                + DESCRIPTION_JSON_RIGHT)
+                .name(club.getName()).urlBackground(DEFAULT_CLUB_URL_BACKGROUND).urlLogo(DEFAULT_CLUB_URL_LOGO)
+                .categoriesName(getFullCategoryName(categories, club.getCategories()))
+                .contacts(contactsConverter.collectAllContactsData(club.getSite(), club.getPhone())).build();
     }
 
     private void loadDistricts(ExcelParsingData excelParsingData) {

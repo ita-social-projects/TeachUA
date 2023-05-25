@@ -2,7 +2,7 @@ package com.softserve.teachua.dto.club;
 
 import com.softserve.teachua.dto.center.CenterForClub;
 import com.softserve.teachua.dto.contact_data.ContactDataResponse;
-import com.softserve.teachua.dto.location.LocationResponse;
+import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.dto.user.UserPreview;
 import com.softserve.teachua.model.Category;
@@ -33,7 +33,7 @@ public class SuccessUpdatedClub implements Convertible {
     private UserPreview user;
     private CenterForClub center;
     private Double rating;
-    private Set<LocationResponse> locations;
+    private Set<LocationProfile> locations;
     private Boolean isApproved;
     private Boolean isOnline;
     private Long feedbackCount;

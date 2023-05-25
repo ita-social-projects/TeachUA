@@ -127,24 +127,29 @@ public class ResultServiceImpl implements ResultService {
         for (Map.Entry<Question, List<Answer>> pair : idAnswers.entrySet()) {
             Question question = pair.getKey();
             List<Answer> answers = pair.getValue();
-            int questionGrade = 0;
-
-            if (question.getQuestionType().getTitle().equals("radio")) {
-                for (Answer a : answers) {
-                    if (a.isCorrect() && selectedAnswers.contains(a)) {
-                        questionGrade += a.getValue();
-                    }
-                }
-            } else if (question.getQuestionType().getTitle().equals("checkbox")) {
-                for (Answer a : answers) {
-                    boolean answerIsCorrect = a.isCorrect();
-                    int value = a.getValue();
-                    questionGrade += answerIsCorrect ? value : -value;
-                }
-            }
+            int questionGrade = getQuestionGrade(selectedAnswers, question, answers);
             grade += Math.max(questionGrade, 0);
         }
         return grade;
+    }
+
+    private int getQuestionGrade(List<Answer> selectedAnswers, Question question, List<Answer> answers) {
+        int questionGrade = 0;
+
+        if (question.getQuestionType().getTitle().equals("radio")) {
+            for (Answer a : answers) {
+                if (a.isCorrect() && selectedAnswers.contains(a)) {
+                    questionGrade += a.getValue();
+                }
+            }
+        } else if (question.getQuestionType().getTitle().equals("checkbox")) {
+            for (Answer a : answers) {
+                boolean answerIsCorrect = a.isCorrect();
+                int value = a.getValue();
+                questionGrade += answerIsCorrect ? value : -value;
+            }
+        }
+        return questionGrade;
     }
 
     @Override

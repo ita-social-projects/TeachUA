@@ -1,5 +1,7 @@
 package com.softserve.teachua.service.test.impl;
 
+import com.softserve.teachua.constants.excel.ExcelColumn;
+import com.softserve.teachua.constants.excel.QuestionExcelColumn;
 import com.softserve.teachua.dto.test.answer.answer_excel.AnswerExcel;
 import com.softserve.teachua.dto.test.question.question_excel.ExcelQuestionParsingResponse;
 import com.softserve.teachua.dto.test.question.question_excel.QuestionExcel;
@@ -10,8 +12,6 @@ import com.softserve.teachua.repository.test.AnswerRepository;
 import com.softserve.teachua.repository.test.QuestionRepository;
 import com.softserve.teachua.service.ExcelParserService;
 import com.softserve.teachua.service.test.QuestionExcelService;
-import com.softserve.teachua.constants.excel.ExcelColumn;
-import com.softserve.teachua.constants.excel.QuestionExcelColumn;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -110,55 +110,13 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
             List<Answer> answers = answerRepository.findAllByQuestionId(questions.get(i).getId());
             Answer answer = answers.get(0);
 
-            for (Cell cell : cells) {
-                if (cell.getColumnIndex() == 0) {
-                    cell.setCellStyle(style);
-                    cell.setCellValue(i + 1d);
-                }
-                if (cell.getColumnIndex() == 1) {
-                    cell.setCellValue(questions.get(i).getTitle());
-                }
-                if (cell.getColumnIndex() == 2) {
-                    cell.setCellValue(questions.get(i).getDescription());
-                }
-                if (cell.getColumnIndex() == 3) {
-                    cell.setCellStyle(style);
-                    cell.setCellValue(questions.get(i).getQuestionType().getTitle());
-                }
-                if (cell.getColumnIndex() == 4) {
-                    cell.setCellValue(questions.get(i).getQuestionCategory().getTitle());
-                }
-                if (cell.getColumnIndex() == 5) {
-                    cell.setCellValue(answer.getText());
-                }
-                if (cell.getColumnIndex() == 6) {
-                    cell.setCellValue(answer.isCorrect());
-                }
-                if (cell.getColumnIndex() == 7) {
-                    cell.setCellStyle(style);
-                    cell.setCellValue(answer.getValue());
-                }
-            }
+            fillQuestionHeader(style, questions, i, cells, answer);
+
             answers.remove(answer);
             rowNumber++;
-            for (Answer a : answers) {
-                row = sheet.createRow(rowNumber);
-                cells = createCells(row);
 
-                for (Cell cell : cells) {
-                    if (cell.getColumnIndex() == 5) {
-                        cell.setCellValue(a.getText());
-                    }
-                    if (cell.getColumnIndex() == 6) {
-                        cell.setCellValue(a.isCorrect());
-                    }
-                    if (cell.getColumnIndex() == 7) {
-                        cell.setCellStyle(style);
-                        cell.setCellValue(a.getValue());
-                    }
-                }
-                rowNumber++;
-            }
+            rowNumber = fillQuestionAnswers(rowNumber, sheet, style, answers);
+
             rowNumber++;
         }
 
@@ -168,6 +126,52 @@ public class QuestionExcelServiceImpl implements QuestionExcelService {
             return byteArrayOutputStream.toByteArray();
         } catch (IOException e) {
             throw new BadRequestException();
+        }
+    }
+
+    private int fillQuestionAnswers(int rowNumber, Sheet sheet, CellStyle style, List<Answer> answers) {
+        for (Answer a : answers) {
+            Row row = sheet.createRow(rowNumber);
+            List<Cell> cells = createCells(row);
+
+            for (Cell cell : cells) {
+                if (cell.getColumnIndex() == 5) {
+                    cell.setCellValue(a.getText());
+                }
+                if (cell.getColumnIndex() == 6) {
+                    cell.setCellValue(a.isCorrect());
+                }
+                if (cell.getColumnIndex() == 7) {
+                    cell.setCellStyle(style);
+                    cell.setCellValue(a.getValue());
+                }
+            }
+            rowNumber++;
+        }
+        return rowNumber;
+    }
+
+    private void fillQuestionHeader(CellStyle style, List<Question> questions, int i, List<Cell> cells, Answer answer) {
+        for (Cell cell : cells) {
+            switch (cell.getColumnIndex()) {
+              case 0 -> {
+                  cell.setCellStyle(style);
+                  cell.setCellValue(i + 1d);
+              }
+              case 1 -> cell.setCellValue(questions.get(i).getTitle());
+              case 2 -> cell.setCellValue(questions.get(i).getDescription());
+              case 3 -> {
+                  cell.setCellStyle(style);
+                  cell.setCellValue(questions.get(i).getQuestionType().getTitle());
+              }
+              case 4 -> cell.setCellValue(questions.get(i).getQuestionCategory().getTitle());
+              case 5 -> cell.setCellValue(answer.getText());
+              case 6 -> cell.setCellValue(answer.isCorrect());
+              default -> {
+                  cell.setCellStyle(style);
+                  cell.setCellValue(answer.getValue());
+              }
+            }
         }
     }
 

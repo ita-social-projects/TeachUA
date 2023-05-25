@@ -27,6 +27,7 @@ import com.softserve.teachua.repository.NewsRepository;
 import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.BackupService;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,7 +39,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
@@ -96,32 +96,23 @@ public class BackupServiceImpl implements BackupService {
 
     @Override
     public List<String> getAllBackupFiles(String fileName) {
-        List<List<String>> filePathForBackup = new LinkedList<>();
-        filePathForBackup.add(
-                aboutUsItemRepository.findAll().stream().map(AboutUsItem::getPicture).toList());
-        filePathForBackup
-                .add(bannerItemRepository.findAll().stream().map(BannerItem::getPicture).toList());
-        filePathForBackup
-                .add(categoryRepository.findAll().stream().map(Category::getUrlLogo).toList());
-        filePathForBackup.add(
-                centerRepository.findAll().stream().map(Center::getUrlBackgroundPicture).toList());
-        filePathForBackup.add(centerRepository.findAll().stream().map(Center::getUrlLogo).toList());
-        filePathForBackup
-                .add(clubRepository.findAll().stream().map(Club::getUrlBackground).toList());
-        filePathForBackup.add(clubRepository.findAll().stream().map(Club::getUrlLogo).toList());
-        filePathForBackup.add(
-                contactTypeRepository.findAll().stream().map(ContactType::getUrlLogo).toList());
-        filePathForBackup
-                .add(galleryRepository.findAll().stream().map(GalleryPhoto::getUrl).toList());
-        filePathForBackup
-                .add(newsRepository.findAll().stream().map(News::getUrlTitleLogo).toList());
-        filePathForBackup.add(taskRepository.findAll().stream().map(Task::getPicture).toList());
-        filePathForBackup.add(userRepository.findAll().stream().map(User::getUrlLogo).toList());
-        filePathForBackup
-                .add(challengeRepository.findAll().stream().map(Challenge::getPicture).toList());
-        filePathForBackup.add(FileUtils.listFiles(new File(IMAGES_DIRECTORY), null, false).stream().map(File::getName)
-                .toList());
-
+        List<List<String>> filePathForBackup = List.of(
+                aboutUsItemRepository.findAll().stream().map(AboutUsItem::getPicture).toList(),
+                bannerItemRepository.findAll().stream().map(BannerItem::getPicture).toList(),
+                categoryRepository.findAll().stream().map(Category::getUrlLogo).toList(),
+                centerRepository.findAll().stream().map(Center::getUrlBackgroundPicture).toList(),
+                centerRepository.findAll().stream().map(Center::getUrlLogo).toList(),
+                clubRepository.findAll().stream().map(Club::getUrlBackground).toList(),
+                clubRepository.findAll().stream().map(Club::getUrlLogo).toList(),
+                contactTypeRepository.findAll().stream().map(ContactType::getUrlLogo).toList(),
+                galleryRepository.findAll().stream().map(GalleryPhoto::getUrl).toList(),
+                newsRepository.findAll().stream().map(News::getUrlTitleLogo).toList(),
+                taskRepository.findAll().stream().map(Task::getPicture).toList(),
+                userRepository.findAll().stream().map(User::getUrlLogo).toList(),
+                challengeRepository.findAll().stream().map(Challenge::getPicture).toList(),
+                FileUtils.listFiles(new File(IMAGES_DIRECTORY), null, false).stream()
+                        .map(File::getName).toList()
+                );
         log.debug("**/ getting file list for backup");
         if (!fileName.equals(ALL_FILES)) {
             return filePathForBackup.stream().flatMap(Collection::stream).distinct()
@@ -133,7 +124,7 @@ public class BackupServiceImpl implements BackupService {
 
     @Override
     public void downloadBackup(HttpServletResponse response) {
-        ZipOutputStream zipStream = null;
+        ZipOutputStream zipStream;
         try {
             zipStream = new ZipOutputStream(response.getOutputStream());
         } catch (IOException e) {
@@ -144,7 +135,7 @@ public class BackupServiceImpl implements BackupService {
             if (!(new File(file).exists())) {
                 throw new NotExistException(String.format(NOT_FOUND_FILE_EXCEPTION, file));
             }
-            byte[] buffer = new byte[1024];
+            byte[] buffer;
             try {
                 buffer = Files.readAllBytes(Paths.get(file));
             } catch (IOException e) {
@@ -201,30 +192,7 @@ public class BackupServiceImpl implements BackupService {
                 Files.newInputStream(Paths.get(BACKUP_DIRECTORY + file.getOriginalFilename())))) {
             zipEntry = zipInputStream.getNextEntry();
 
-            while (zipEntry != null) {
-                String zipDirectory = zipEntry.getName().split("TeachUA\\\\")[1];
-                File newFile = new File(zipDirectory);
-                if (zipEntry.isDirectory()) {
-                    if (!newFile.isDirectory() && !newFile.mkdir()) {
-                        throw new IOException(String.format(CANT_CREATE_DIRECTORY, newFile));
-                    }
-                } else {
-                    File parent = newFile.getParentFile();
-                    if (!parent.isDirectory() && !parent.mkdirs()) {
-                        throw new IOException(String.format(CANT_CREATE_DIRECTORY, parent));
-                    }
-
-                    int len;
-                    try (FileOutputStream fos = new FileOutputStream(newFile)) {
-                        while ((len = zipInputStream.read(buffer)) > 0) {
-                            fos.write(buffer, 0, len);
-                        }
-                    }
-                }
-                zipEntry = zipInputStream.getNextEntry();
-
-                movedFileList.add(String.format(SUCCESSFUL_ADDED_FILE, zipDirectory));
-            }
+            zipEntries(movedFileList, zipEntry, buffer, zipInputStream);
         } catch (IOException e) {
             throw new FileUploadException(FILE_READ_EXCEPTION);
         }
@@ -233,5 +201,33 @@ public class BackupServiceImpl implements BackupService {
             throw new MethodNotSupportedException(String.format(CANT_DELETE_DIRECTORY, BACKUP_DIRECTORY));
         }
         return movedFileList;
+    }
+
+    private void zipEntries(List<String> movedFileList, ZipEntry zipEntry, byte[] buffer,
+                            ZipInputStream zipInputStream) throws IOException {
+        while (zipEntry != null) {
+            String zipDirectory = zipEntry.getName().split("TeachUA\\\\")[1];
+            File newFile = new File(zipDirectory);
+            if (zipEntry.isDirectory()) {
+                if (!newFile.isDirectory() && !newFile.mkdir()) {
+                    throw new IOException(String.format(CANT_CREATE_DIRECTORY, newFile));
+                }
+            } else {
+                File parent = newFile.getParentFile();
+                if (!parent.isDirectory() && !parent.mkdirs()) {
+                    throw new IOException(String.format(CANT_CREATE_DIRECTORY, parent));
+                }
+
+                int len;
+                try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                    while ((len = zipInputStream.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                }
+            }
+            zipEntry = zipInputStream.getNextEntry();
+
+            movedFileList.add(String.format(SUCCESSFUL_ADDED_FILE, zipDirectory));
+        }
     }
 }

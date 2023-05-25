@@ -37,38 +37,11 @@ public class BackupDaoImpl implements BackupDao {
             ResultSetMetaData metadata = resultSet.getMetaData();
             int columnCount = metadata.getColumnCount();
 
-            for (int i = 0; i < columnCount; i++) {
-                String columnName = metadata.getColumnName(i + 1);
-                query.append(columnName);
-                if (i == (columnCount - 1)) {
-                    query.append(" ");
-                } else {
-                    query.append(", ");
-                }
-            }
+            formTableHeader(query, metadata, columnCount);
             query.append(") values\n");
 
             boolean bln = false;
-            while (resultSet.next()) {
-                if (bln) {
-                    query.append(",\n");
-                }
-                bln = true;
-                query.append("(");
-                for (int i = 0; i < columnCount; i++) {
-                    String columnName = metadata.getColumnName(i + 1);
-                    Object columnValue = resultSet.getObject(columnName);
-                    if (null == columnValue) {
-                        columnValue = "";
-                    }
-                    query.append("'").append(columnValue).append("'");
-                    if (i == (columnCount - 1)) {
-                        query.append(")");
-                    } else {
-                        query.append(", ");
-                    }
-                }
-            }
+            formTableData(query, resultSet, metadata, columnCount, bln);
             query.append(";\n");
 
             log.info(query.toString());
@@ -77,5 +50,42 @@ public class BackupDaoImpl implements BackupDao {
         }
 
         return query.toString();
+    }
+
+    private void formTableHeader(StringBuilder query, ResultSetMetaData metadata, int columnCount)
+            throws SQLException {
+        for (int i = 0; i < columnCount; i++) {
+            String columnName = metadata.getColumnName(i + 1);
+            query.append(columnName);
+            if (i == (columnCount - 1)) {
+                query.append(" ");
+            } else {
+                query.append(", ");
+            }
+        }
+    }
+
+    private void formTableData(StringBuilder query, ResultSet resultSet, ResultSetMetaData metadata, int columnCount,
+                                  boolean bln) throws SQLException {
+        while (resultSet.next()) {
+            if (bln) {
+                query.append(",\n");
+            }
+            bln = true;
+            query.append("(");
+            for (int i = 0; i < columnCount; i++) {
+                String columnName = metadata.getColumnName(i + 1);
+                Object columnValue = resultSet.getObject(columnName);
+                if (null == columnValue) {
+                    columnValue = "";
+                }
+                query.append("'").append(columnValue).append("'");
+                if (i == (columnCount - 1)) {
+                    query.append(")");
+                } else {
+                    query.append(", ");
+                }
+            }
+        }
     }
 }

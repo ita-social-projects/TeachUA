@@ -75,12 +75,9 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
                     .orElseThrow(NotExistException::new));
 
             Optional<Question> questionFromDB = questionRepository.findByTitle(question.getTitle());
-            if (questionFromDB.isPresent()) {
-                if (questionFromDB.get().equals(question)) {
-                    responses.add(new QuestionDatabaseResponse(String.format(QUESTION_ALREADY_EXISTS, question)));
-                } else {
-                    questionService.save(question);
-                }
+
+            if (questionFromDB.filter(q -> q.equals(question)).isPresent()) {
+                responses.add(new QuestionDatabaseResponse(String.format(QUESTION_ALREADY_EXISTS, question)));
             } else {
                 questionService.save(question);
             }
