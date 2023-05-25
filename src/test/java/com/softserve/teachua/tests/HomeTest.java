@@ -44,19 +44,23 @@ public class HomeTest extends TestRunner {
         presentationSleep();
         //
         // Check
-        homePage = homePage.chooseHomeBannerComponentByNumber(3);
+        homePage = homePage.chooseHomeBannerComponentByNumber(8);
         presentationSleep();
         //
-        for (int i = 0; i< homePage.getHomeBannerContainer().getHomeBannerComponentsCount() - 4; i++) {
-            homePage.chooseHomeBannerComponentByNumber(i);
-            presentationSleep();
-        }
+        //takeScreenShot("check");
+        takePageSource("check");
+
+        //
+//        for (int i = 0; i< homePage.getHomeBannerContainer().getHomeBannerComponentsCount(); i++) {
+//            homePage.chooseHomeBannerComponentByNumber(i);
+//            presentationSleep();
+//        }
         //
         System.out.println("TITLES: " + homePage.getHomeBannerContainer().getHomeBannerComponentTitles());
         //
-        homePage.getHomeBannerContainer()
-                .getHomeBannerComponentByPartialTitle("Тестовий банер")
-                .clickDetailsButton();
+//        homePage.getHomeBannerContainer()
+//                .getHomeBannerComponentByPartialTitle("Тестовий банер")
+//                .clickDetailsButton();
         presentationSleep();
         //
         presentationSleep();

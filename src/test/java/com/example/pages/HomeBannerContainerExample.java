@@ -1,4 +1,4 @@
-package com.softserve.teachua.pages;
+package com.example.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -7,7 +7,7 @@ import org.openqa.selenium.WebElement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeBannerContainer {
+public class HomeBannerContainerExample {
 
     private final String HOME_BANNER_DIV_ELEMENT_CSSSELECTOR = "div.about-carousel-block div.slick-slide:not(.slick-cloned)";
     private final String SLICK_DOTS_BOTTOMS_CSSSELECTOR = "div.about-carousel-block  ul.slick-dots.slick-dots-bottom li";
@@ -16,10 +16,10 @@ public class HomeBannerContainer {
     //
     protected WebDriver driver;
     //
-    private List<HomeBannerComponent> homeBannerComponents;
+    private List<HomeBannerComponentExample> homeBannerComponents;
     private List<WebElement> slickDotsBottoms;
 
-    public HomeBannerContainer(WebDriver driver) {
+    public HomeBannerContainerExample(WebDriver driver) {
         this.driver = driver;
         initElements();
     }
@@ -28,7 +28,7 @@ public class HomeBannerContainer {
         // init elements
         homeBannerComponents = new ArrayList<>();
         for (WebElement current : driver.findElements(By.cssSelector(HOME_BANNER_DIV_ELEMENT_CSSSELECTOR))) {
-            homeBannerComponents.add(new HomeBannerComponent(current));
+            homeBannerComponents.add(new HomeBannerComponentExample(current));
         }
         slickDotsBottoms = new ArrayList<>();
         for (WebElement current : driver.findElements(By.cssSelector(SLICK_DOTS_BOTTOMS_CSSSELECTOR))) {
@@ -39,7 +39,7 @@ public class HomeBannerContainer {
     // Page Object
 
     // homeBannerComponents
-    public List<HomeBannerComponent> getHomeBannerComponents() {
+    public List<HomeBannerComponentExample> getHomeBannerComponents() {
         return homeBannerComponents;
     }
 
@@ -60,9 +60,8 @@ public class HomeBannerContainer {
 
     public List<String> getHomeBannerComponentTitles() {
         List<String> homeBannerComponentTitles = new ArrayList<>();
-        for (HomeBannerComponent current : getHomeBannerComponents()) {
+        for (HomeBannerComponentExample current : getHomeBannerComponents()) {
             homeBannerComponentTitles.add(current.getTitleLabelText());
-            System.out.println("\ncurrent.get ... isDisplayed() " + current.getcSearchDivElement().isDisplayed());
         }
         return homeBannerComponentTitles;
     }
@@ -82,9 +81,9 @@ public class HomeBannerContainer {
         return position;
     }
 
-    public HomeBannerComponent getHomeBannerComponentByTitle(String homeBannerTitle) {
-        HomeBannerComponent result = null;
-        for (HomeBannerComponent current : getHomeBannerComponents()) {
+    public HomeBannerComponentExample getHomeBannerComponentByTitle(String homeBannerTitle) {
+        HomeBannerComponentExample result = null;
+        for (HomeBannerComponentExample current : getHomeBannerComponents()) {
             if (current.getTitleLabelText().toLowerCase()
                     .equals(homeBannerTitle.toLowerCase())) {
                 result = current;
@@ -99,9 +98,9 @@ public class HomeBannerContainer {
         return result;
     }
 
-    public HomeBannerComponent getHomeBannerComponentByPartialTitle(String homeBannerPartialTitle) {
-        HomeBannerComponent result = null;
-        for (HomeBannerComponent current : getHomeBannerComponents()) {
+    public HomeBannerComponentExample getHomeBannerComponentByPartialTitle(String homeBannerPartialTitle) {
+        HomeBannerComponentExample result = null;
+        for (HomeBannerComponentExample current : getHomeBannerComponents()) {
             if (current.getTitleLabelText().toLowerCase()
                     .contains(homeBannerPartialTitle.toLowerCase())) {
                 result = current;
