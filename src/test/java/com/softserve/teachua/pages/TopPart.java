@@ -1,5 +1,6 @@
 package com.softserve.teachua.pages;
 
+import com.softserve.teachua.pages.home.HomePage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

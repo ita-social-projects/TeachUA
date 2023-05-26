@@ -1,4 +1,4 @@
-package com.softserve.teachua.pages;
+package com.softserve.teachua.pages.home;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

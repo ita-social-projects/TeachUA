@@ -1,5 +1,6 @@
-package com.softserve.teachua.pages;
+package com.softserve.teachua.pages.home;
 
+import com.softserve.teachua.pages.TopPart;
 import com.softserve.teachua.tools.TextUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

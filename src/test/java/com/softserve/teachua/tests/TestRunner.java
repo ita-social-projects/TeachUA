@@ -1,6 +1,6 @@
 package com.softserve.teachua.tests;
 
-import com.softserve.teachua.pages.HomePage;
+import com.softserve.teachua.pages.home.HomePage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;

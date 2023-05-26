@@ -1,13 +1,15 @@
-package com.softserve.teachua.tests;
+package com.softserve.teachua.tests.smoke;
 
 import com.softserve.teachua.pages.*;
+import com.softserve.teachua.pages.home.HomePage;
+import com.softserve.teachua.tests.TestRunner;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SmokeTest extends TestRunner {
+public class MainMenuTest extends TestRunner {
 
     @Test
-    public void checkPages() {
+    public void checkMenu() {
         // Steps
         HomePage homePage = loadApplication();
         presentationSleep();

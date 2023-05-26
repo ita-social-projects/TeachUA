@@ -1,6 +1,8 @@
-package com.softserve.teachua.tests;
+package com.softserve.teachua.tests.service.home;
 
-import com.softserve.teachua.pages.HomePage;
+import com.softserve.teachua.data.home.BannerRepository;
+import com.softserve.teachua.pages.home.HomePage;
+import com.softserve.teachua.tests.TestRunner;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +21,7 @@ public class HomeTest extends TestRunner {
         System.out.println("HomeTest checkHome() done"); // Use Logging
     }
 
+    // TODO move to smoke
     @Test
     public void checkSlickDotsHomeBanners() {
         // Steps
@@ -44,11 +47,12 @@ public class HomeTest extends TestRunner {
         presentationSleep();
         //
         // Check
-        homePage = homePage.chooseHomeBannerComponentByNumber(8);
+        //homePage = homePage.chooseHomeBannerComponentByNumber(BannerRepository.getFirst().getNumber());
+        homePage = homePage.chooseHomeBannerComponentByNumber(BannerRepository.getSecond().getNumber());
         presentationSleep();
         //
         //takeScreenShot("check");
-        takePageSource("check");
+        //takePageSource("check");
 
         //
 //        for (int i = 0; i< homePage.getHomeBannerContainer().getHomeBannerComponentsCount(); i++) {
@@ -61,6 +65,10 @@ public class HomeTest extends TestRunner {
 //        homePage.getHomeBannerContainer()
 //                .getHomeBannerComponentByPartialTitle("Тестовий банер")
 //                .clickDetailsButton();
+        Assertions.assertEquals(BannerRepository.getSecond().getTitle(),
+                homePage.getHomeBannerContainer()
+                        .getHomeBannerComponentTitles()
+                        .get(BannerRepository.getSecond().getNumber()));
         presentationSleep();
         //
         presentationSleep();
