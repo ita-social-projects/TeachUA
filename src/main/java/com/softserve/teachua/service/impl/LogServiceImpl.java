@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.exception.CannotDeleteFileException;
 import com.softserve.teachua.exception.LogNotFoundException;
 import com.softserve.teachua.service.LogService;
@@ -11,7 +12,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class LogServiceImpl implements LogService {
+    public static final String NOT_EXIST = "Log %s does not exist";
     @Value(value = "${logs.path}")
     private String path;
 
@@ -33,7 +34,7 @@ public class LogServiceImpl implements LogService {
                     .map(Path::getFileName)
                     .map(Path::toString)
                     .sorted(Comparator.reverseOrder())
-                    .collect(Collectors.toList());
+                    .toList();
         } catch (IOException e) {
             log.error("Error occurred while walking through log files in directory: {}", path, e);
         }
@@ -47,11 +48,11 @@ public class LogServiceImpl implements LogService {
 
         if (!Files.exists(pathToFile)) {
             log.error("Tried to read a file: {}, but it does not exist", fileName);
-            throw new LogNotFoundException(String.format("Log %s does not exist", fileName));
+            throw new LogNotFoundException(String.format(NOT_EXIST, fileName));
         }
 
         try (Stream<String> lines = Files.lines(pathToFile)) {
-            return lines.collect(Collectors.toList());
+            return lines.toList();
         } catch (IOException e) {
             log.error("Error occurred while reading a log file: {}", fileName, e);
         }
@@ -64,14 +65,14 @@ public class LogServiceImpl implements LogService {
 
         if (!Files.exists(pathToFile)) {
             log.error("Tried to read a file: {}, but it does not exist", fileName);
-            throw new LogNotFoundException(String.format("Log %s does not exist", fileName));
+            throw new LogNotFoundException(String.format(NOT_EXIST, fileName));
         }
 
         try {
             return new UrlResource(pathToFile.toUri());
         } catch (MalformedURLException e) {
             log.error("Cannot create a new UrlResource", e);
-            throw new RuntimeException(e);
+            throw new BadRequestException();
         }
     }
 
@@ -81,7 +82,7 @@ public class LogServiceImpl implements LogService {
 
         if (!Files.exists(pathToFile)) {
             log.info("Tried to delete a file: {}, but it does not exist", fileName);
-            throw new LogNotFoundException(String.format("Log %s does not exist", fileName));
+            throw new LogNotFoundException(String.format(NOT_EXIST, fileName));
         }
 
         try {

@@ -9,6 +9,8 @@
 
     <property name="fileExtensions" value="java, properties, xml"/>
 
+    <module name="SuppressWarningsFilter"/>
+
     <module name="BeforeExecutionExclusionFileFilter">
         <property name="fileNamePattern" value="module\-info\.java$"/>
     </module>
@@ -45,6 +47,8 @@
             <property name="ignoreFinal" value="false"/>
             <property name="allowedAbbreviationLength" value="5"/>
         </module>
+
+        <module name="SuppressWarningsHolder"/>
 
         <module name="AnnotationLocation">
             <property name="id" value="AnnotationLocationMostCases"/>

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.location.LocationProfile;
-import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
@@ -20,11 +19,11 @@ import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.LocationService;
 import com.softserve.teachua.service.StationService;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -102,7 +101,7 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
     }
 
     @Override
-    public Set<Location> updateLocationByClub(Set<LocationResponse> locations, Club club) {
+    public Set<Location> updateLocationByClub(Set<LocationProfile> locations, Club club) {
         locationRepository.deleteAllByClub(club);
 
         if (locations == null || locations.isEmpty()) {
@@ -110,11 +109,11 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
         }
 
         return locations.stream()
-                .map(locationResponse -> locationRepository
-                        .save(dtoConverter.convertToEntity(locationResponse, new Location()).withClub(club)
-                                .withCity(cityService.getCityById(locationResponse.getCityId()))
-                                .withDistrict(districtService.getDistrictById(locationResponse.getDistrictId()))
-                                .withStation(stationService.getStationById(locationResponse.getStationId()))))
+                .map(location -> locationRepository
+                        .save(dtoConverter.convertToEntity(location, new Location()).withClub(club)
+                                .withCity(cityService.getCityById(location.getCityId()))
+                                .withDistrict(districtService.getDistrictById(location.getDistrictId()))
+                                .withStation(stationService.getStationById(location.getStationId()))))
                 .collect(Collectors.toSet());
     }
 
@@ -130,11 +129,11 @@ public class LocationServiceImpl implements LocationService, ArchiveMark<Locatio
     }
 
     @Override
-    public LocationResponse deleteLocationById(Long id) {
+    public LocationProfile deleteLocationById(Long id) {
         Location location = getLocationById(id);
 
         locationRepository.deleteById(id);
-        return dtoConverter.convertToDto(location, LocationResponse.class);
+        return dtoConverter.convertToDto(location, LocationProfile.class);
     }
 
     @Override

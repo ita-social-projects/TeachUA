@@ -1,7 +1,7 @@
 package com.softserve.teachua.service.test;
 
 import com.softserve.teachua.dto.test.question.QuestionDatabaseResponse;
-import com.softserve.teachua.dto.test.question.questionExcel.QuestionDataRequest;
+import com.softserve.teachua.dto.test.question.question_excel.QuestionDataRequest;
 import java.util.List;
 
 /**

@@ -1,7 +1,6 @@
 package com.softserve.teachua.converter;
 
 import com.softserve.teachua.dto.location.LocationProfile;
-import com.softserve.teachua.dto.location.LocationResponse;
 import com.softserve.teachua.exception.IncorrectInputException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,17 +18,9 @@ public class CoordinatesConverter {
         }
     }
 
-    public void locationResponseConverterToDb(LocationResponse location) {
-        if (location != null && location.getCoordinates() != null) {
-            double[] latitudeAndLongitude = parseLatitudeAndLongitude(location.getCoordinates());
-            location.setLatitude(latitudeAndLongitude[0]);
-            location.setLongitude(latitudeAndLongitude[1]);
-        }
-    }
-
     private double[] parseLatitudeAndLongitude(String coordinates) {
         try {
-            String[] latAndLng = coordinates.replaceAll(" ", "").split(",");
+            String[] latAndLng = coordinates.replace(" ", "").split(",");
             return new double[]{Double.parseDouble(latAndLng[0]), Double.parseDouble(latAndLng[1])};
         } catch (Exception e) {
             throw new IncorrectInputException("Parsing error. Wrong coordinates format.");

@@ -16,7 +16,6 @@ import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.QuestionService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class QuestionServiceImpl implements QuestionService, ArchiveMark<Questio
     @Override
     public Question getQuestionById(Long id) {
         Optional<Question> optionalQuestion = getOptionalQuestionById(id);
-        if (!optionalQuestion.isPresent()) {
+        if (optionalQuestion.isEmpty()) {
             throw new NotExistException(String.format(QUESTION_NOT_FOUND_BY_ID, id));
         }
 
@@ -99,7 +98,7 @@ public class QuestionServiceImpl implements QuestionService, ArchiveMark<Questio
     public List<QuestionResponse> getAllQuestions() {
         List<QuestionResponse> questionResponses = questionRepository.findAll().stream()
                 .map(question -> (QuestionResponse) dtoConverter.convertToDto(question, QuestionResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of questions = " + questionResponses);
 

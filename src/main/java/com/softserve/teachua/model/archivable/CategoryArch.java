@@ -24,7 +24,7 @@ public class CategoryArch implements Convertible, Archivable {
     private String tagTextColor;
 
     @Override
-    public Class getServiceClass() {
+    public Class<CategoryServiceImpl> getServiceClass() {
         return CategoryServiceImpl.class;
     }
 }

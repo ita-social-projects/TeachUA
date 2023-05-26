@@ -2,7 +2,6 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.model.Archive;
@@ -21,20 +20,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 public class ArchiveServiceImpl implements ArchiveService {
-    private static final String JSON_WRITE_EXCEPTION = "Model with name: %s can't be converted to json";
     private final ArchiveRepository archiveRepository;
     private final ObjectMapper objectMapper;
 
     private final ApplicationContext context;
-    private final DtoConverter dtoConverter;
 
     @Autowired
     public ArchiveServiceImpl(ArchiveRepository archiveRepository, ObjectMapper objectMapper,
-            ApplicationContext context, DtoConverter dtoConverter) {
+                              ApplicationContext context) {
         this.archiveRepository = archiveRepository;
         this.objectMapper = objectMapper;
         this.context = context;
-        this.dtoConverter = dtoConverter;
     }
 
     @Override
@@ -68,7 +64,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     public Archive restoreArchiveObject(Long id) {
         Archive archiveObject = getArchiveObjectById(id);
         try {
-            ArchiveMark archiveMark = (ArchiveMark) context.getBean(Class.forName(archiveObject.getClassName()));
+            ArchiveMark<?> archiveMark = (ArchiveMark<?>) context.getBean(Class.forName(archiveObject.getClassName()));
             archiveMark.restoreModel(archiveObject.getData());
         } catch (ClassNotFoundException exception) {
             log.error(RestoreArchiveException.CANT_FIND_CLASS, exception);
@@ -85,7 +81,7 @@ public class ArchiveServiceImpl implements ArchiveService {
     public Archive getArchiveObjectById(Long id) {
         Optional<Archive> model = archiveRepository.findById(id);
 
-        if (!model.isPresent()) {
+        if (model.isEmpty()) {
             throw new NotExistException();
         }
 

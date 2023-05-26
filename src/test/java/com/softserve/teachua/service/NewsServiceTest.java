@@ -41,7 +41,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
-public class NewsServiceTest {
+class NewsServiceTest {
     @Mock
     private DtoConverter dtoConverter;
     @Mock

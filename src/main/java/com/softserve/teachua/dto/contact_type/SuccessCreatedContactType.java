@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.contactType;
+package com.softserve.teachua.dto.contact_type;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class ContactTypeResponse implements Convertible {
+public class SuccessCreatedContactType implements Convertible {
     private Long id;
 
     private String name;

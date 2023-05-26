@@ -1,11 +1,10 @@
 package com.softserve.teachua.utils.validations;
 
 import com.softserve.teachua.exception.IncorrectInputException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import jakarta.validation.ValidationException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -15,21 +14,16 @@ public class PhoneValidation implements ConstraintValidator<Phone, String> {
 
     @Override
     public boolean isValid(String phoneNumber, ConstraintValidatorContext constraintValidatorContext) {
-        try {
-            if (phoneNumber.length() < 10) {
-                throw new IncorrectInputException("Phone number length must be 10");
-            }
-            if (phoneNumber.matches(".*[a-zA-Z]+.*")) {
-                throw new IncorrectInputException("Phone number cannot contain letters.");
-            }
-            if (phoneNumber.matches(".*[$&+,:;=?@#|'<>.-^*()%!]+.*")) {
-                throw new IncorrectInputException("Phone number contains illegal symbols");
-            }
-            Matcher matcher = PHONE_NUMBER_PATTERN.matcher(phoneNumber);
-            return matcher.matches();
-        } catch (ValidationException e) {
-            log.error("An exception occurred!");
+        if (phoneNumber.length() < 10) {
+            throw new IncorrectInputException("Phone number length must be 10");
         }
-        return false;
+        if (phoneNumber.matches(".*\\w+.*")) {
+            throw new IncorrectInputException("Phone number cannot contain letters.");
+        }
+        if (phoneNumber.matches(".*\\W+.*")) {
+            throw new IncorrectInputException("Phone number contains illegal symbols");
+        }
+        Matcher matcher = PHONE_NUMBER_PATTERN.matcher(phoneNumber);
+        return matcher.matches();
     }
 }

@@ -1,7 +1,7 @@
-package com.softserve.teachua.dto.test.question.questionExcel;
+package com.softserve.teachua.dto.test.question.question_excel;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
+import com.softserve.teachua.dto.test.answer.answer_excel.AnswerExcel;
 import java.util.List;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

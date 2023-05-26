@@ -9,8 +9,8 @@ public interface Archivable {
     /**
      * The method returns class of service which operates model.
      *
-     * @return {@Class}
+     * @return {Class}
      */
     @JsonIgnore
-    Class getServiceClass();
+    <T> Class<T> getServiceClass();
 }

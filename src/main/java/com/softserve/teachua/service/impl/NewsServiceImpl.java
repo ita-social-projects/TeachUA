@@ -18,7 +18,6 @@ import com.softserve.teachua.service.NewsService;
 import com.softserve.teachua.service.UserService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -61,7 +60,7 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
     @Override
     public News getNewsById(Long id) {
         Optional<News> optionalNews = getOptionalNewsById(id);
-        if (!optionalNews.isPresent()) {
+        if (optionalNews.isEmpty()) {
             throw new NotExistException(String.format(NEWS_NOT_FOUND_BY_ID, id));
         }
 
@@ -81,7 +80,7 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
     public List<NewsResponse> getAllNews() {
         List<NewsResponse> newsResponses = newsRepository.findAll().stream()
                 .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
-                .collect(Collectors.toList());
+                .toList();
         log.debug("get list of news = " + newsResponses);
         return newsResponses;
     }
@@ -89,14 +88,14 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
     public List<NewsResponse> getAllCurrentNews() {
         return newsRepository.getAllCurrentNews().stream()
                 .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<NewsResponse> getSimilarNewsByTitle(SimmilarNewsProfile newsProfile) {
         return newsRepository.getNewsByTitle(newsProfile.getTitle()).stream()
                 .map(news -> (NewsResponse) dtoConverter.convertToDto(news, NewsResponse.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -104,7 +103,7 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
         Page<News> newsResponses = newsRepository.findAll(pageable);
         return new PageImpl<>(newsResponses.stream()
                 .map(category -> (NewsResponse) dtoConverter.convertToDto(category, NewsResponse.class))
-                .collect(Collectors.toList()), newsResponses.getPageable(), newsResponses.getTotalElements());
+                .toList(), newsResponses.getPageable(), newsResponses.getTotalElements());
     }
 
     @Override

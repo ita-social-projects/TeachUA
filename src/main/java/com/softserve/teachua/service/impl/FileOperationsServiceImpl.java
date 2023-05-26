@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +29,7 @@ public class FileOperationsServiceImpl implements FileOperationsService {
         }
         return Arrays.stream(files)
                 .map(file -> file.isDirectory() ? (file.getName() + "/") : file.getName())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

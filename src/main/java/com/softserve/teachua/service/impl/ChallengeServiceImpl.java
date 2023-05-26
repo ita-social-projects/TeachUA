@@ -114,7 +114,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     @Override
     public ChallengeDeleteResponse deleteChallenge(Long id) {
         Challenge challenge = getChallengeById(id);
-        challenge.getTasks().forEach((task) -> {
+        challenge.getTasks().forEach(task -> {
             task.setChallenge(null);
             taskRepository.save(task);
         });
@@ -127,14 +127,13 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     @Override
     public ChallengeProfile getChallenge(Long id) {
         Challenge challenge = getChallengeById(id);
-        if (!challenge.getIsActive()) {
+        if (Boolean.FALSE.equals(challenge.getIsActive())) {
             userService.verifyIsUserAdmin();
         }
         ChallengeProfile challengeProfile = dtoConverter.convertToDto(challenge, ChallengeProfile.class);
-        Function<Task, TaskPreview> function = (task) -> dtoConverter.convertToDto(task, TaskPreview.class);
+        Function<Task, TaskPreview> function = task -> dtoConverter.convertToDto(task, TaskPreview.class);
         List<TaskPreview> tasks = taskRepository.findCurrentTasksByChallenge(challenge)
-                // .findTaskByChallengeOrderByStartDate(challenge)
-                .stream().map(function).collect(Collectors.toList());
+                .stream().map(function).toList();
         challengeProfile.setTasks(tasks);
         return challengeProfile;
     }
@@ -178,7 +177,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
 
     private void validateSortNumber(Long sortNumber) {
         List<Long> unavailableSortNumbers = challengeRepository.findAll().stream().map(Challenge::getSortNumber)
-                .collect(Collectors.toList());
+                .toList();
         ChallengeUtil.validateSortNumber(sortNumber, unavailableSortNumbers);
     }
 
@@ -186,7 +185,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     public List<SuccessUpdatedTask> cloneChallenge(Long id, UpdateChallengeDate startDate) {
         Challenge challenge = getChallengeById(id);
         List<Task> tasks = new ArrayList<>(challenge.getTasks()).stream()
-                .sorted(Comparator.comparing(Task::getStartDate)).collect(Collectors.toList());
+                .sorted(Comparator.comparing(Task::getStartDate)).toList();
         List<SuccessUpdatedTask> updatedTasks = new ArrayList<>();
         long daysBetween = DAYS.between(tasks.get(0).getStartDate(), startDate.getStartDate());
         for (Task task : tasks) {

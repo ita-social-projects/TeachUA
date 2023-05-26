@@ -21,7 +21,6 @@ import com.softserve.teachua.service.UserService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +95,7 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     public List<ComplaintResponse> getAll() {
         List<ComplaintResponse> complaintResponses = complaintRepository.findAll().stream()
                 .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("get all complaints for club: {} ", complaintResponses);
         return complaintResponses;
@@ -106,7 +105,7 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     public List<ComplaintResponse> getAllByClubId(Long clubId) {
         List<ComplaintResponse> complaintResponses = complaintRepository.getAllByClubId(clubId).stream()
                 .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("get all complaints: {} ", complaintResponses);
         return complaintResponses;

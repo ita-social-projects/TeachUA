@@ -1,7 +1,7 @@
 package com.softserve.teachua.dto.club;
 
 import com.softserve.teachua.dto.center.CenterForClub;
-import com.softserve.teachua.dto.location.LocationResponse;
+import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.GalleryPhoto;
@@ -32,7 +32,7 @@ public class SuccessCreatedClub implements Convertible {
     private User user;
     private CenterForClub center;
     private Double rating;
-    private Set<LocationResponse> locations;
+    private Set<LocationProfile> locations;
     private Boolean isApproved;
     private Boolean isOnline;
 }

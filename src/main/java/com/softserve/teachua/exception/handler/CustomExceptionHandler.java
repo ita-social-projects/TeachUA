@@ -48,8 +48,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
-    public static final String INVALID_FUTURE_DATE = "startDate Invalid future date";
-
     @ExceptionHandler(AuthenticationException.class)
     public final ResponseEntity<Object> handleAuthenticationException(AuthenticationException exception) {
         return buildExceptionBody(exception, UNAUTHORIZED);

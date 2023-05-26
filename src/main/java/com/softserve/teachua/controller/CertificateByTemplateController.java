@@ -78,13 +78,11 @@ public class CertificateByTemplateController implements Api {
                   fieldsList.add(entry.getKey());
                   fieldPropertiesList.add("date");
                   break;
-              case "hours":
-              case "course_number":
+              case "hours", "course_number":
                   fieldsList.add(entry.getKey());
                   fieldPropertiesList.add("int");
                   break;
-              case "qrCode_white":
-              case "qrCode_black":
+              case "qrCode_white", "qrCode_black":
                   break;
               case "serial_number":
                   if (!templateProperties.containsValue("course_number")) {

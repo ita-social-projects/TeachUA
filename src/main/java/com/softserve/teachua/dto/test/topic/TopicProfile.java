@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class TopicProfile extends RepresentationModel<TopicProfile> {
     @NotBlank(message = "Назва теми тесту не може бути порожньою.")
     @CheckRussian(message = "Назва теми тесту містить недопустимі символи.")

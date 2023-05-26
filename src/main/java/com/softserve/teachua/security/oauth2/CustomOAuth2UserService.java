@@ -61,7 +61,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (userOptional.isPresent()) {
             user = userOptional.get();
             Optional<AuthProvider> userProvider = Optional.ofNullable(user.getProvider());
-            if (!userProvider.isPresent()) {
+            if (userProvider.isEmpty()) {
                 throw new OAuth2AuthenticationProcessingException(USE_PASSWORD);
             }
             if (!userProvider.get().equals(AuthProvider.valueOf(

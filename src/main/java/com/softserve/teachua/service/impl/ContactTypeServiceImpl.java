@@ -3,9 +3,9 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.contactType.ContactTypeProfile;
-import com.softserve.teachua.dto.contactType.ContactTypeResponse;
-import com.softserve.teachua.dto.contactType.SuccessCreatedContactType;
+import com.softserve.teachua.dto.contact_type.ContactTypeProfile;
+import com.softserve.teachua.dto.contact_type.ContactTypeResponse;
+import com.softserve.teachua.dto.contact_type.SuccessCreatedContactType;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
@@ -17,7 +17,6 @@ import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ContactTypeService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class ContactTypeServiceImpl implements ContactTypeService, ArchiveMark<C
     public List<ContactTypeResponse> getListOfContactTypes() {
         List<ContactTypeResponse> contactTypeResponses = contactTypeRepository.findAll().stream()
                 .map(type -> (ContactTypeResponse) dtoConverter.convertToDto(type, ContactTypeResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of contact type = " + contactTypeResponses);
 
@@ -100,12 +99,11 @@ public class ContactTypeServiceImpl implements ContactTypeService, ArchiveMark<C
     @Override
     public ContactType getContactTypeById(Long id) {
         Optional<ContactType> optionalContactType = getOptionalContactTypeById(id);
-        if (!optionalContactType.isPresent()) {
+        if (optionalContactType.isEmpty()) {
             throw new NotExistException(String.format(CONTACT_TYPE_NOT_FOUND_BY_ID, id));
         }
 
-        ContactType contactType = optionalContactType.get();
-        return contactType;
+        return optionalContactType.get();
     }
 
     @Override

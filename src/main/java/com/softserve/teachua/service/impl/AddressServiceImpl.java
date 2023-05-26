@@ -1,6 +1,7 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.dto.location.AddressProfile;
+import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.City;
 import com.softserve.teachua.model.Location;
 import com.softserve.teachua.repository.CityRepository;
@@ -10,7 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,13 +35,16 @@ public class AddressServiceImpl implements AddressService {
         List<Location> locationList = locationRepository.findAll().stream()
                 .filter(location -> (hasAddressOtherCity(location.getAddress()))
                         && !location.getAddress().matches(".*(" + location.getCity().getName() + UKRAINIAN_ALPHABET)
-                ).collect(Collectors.toList());
+                ).toList();
 
         List<AddressProfile> addressProfileList = new LinkedList<>();
 
         for (Location location : locationList) {
-            addressProfileList.add(new AddressProfile().withId(location.getId()).withAddressText(location.getAddress())
-                    .withRealCity(cityRepository.getOne(location.getCity().getId()).getName()));
+            addressProfileList.add(new AddressProfile()
+                    .withId(location.getId())
+                    .withAddressText(location.getAddress())
+                    .withRealCity(cityRepository.findById(location.getCity().getId())
+                            .orElseThrow(NotExistException::new).getName()));
         }
 
         return addressProfileList;
@@ -53,7 +56,8 @@ public class AddressServiceImpl implements AddressService {
         addressProfileList.forEach(address -> cities.forEach(city -> {
             if (address.getAddressText().matches(".*(" + city.getName() + UKRAINIAN_ALPHABET)
                     || address.getAddressText().matches("^" + city.getName() + "$")) {
-                Location location = locationRepository.getOne(address.getId()).withCity(city);
+                Location location =
+                        locationRepository.findById(address.getId()).orElseThrow(NotExistException::new).withCity(city);
                 address.setRealCity(locationRepository.save(location).getCity().getName());
             }
         }));

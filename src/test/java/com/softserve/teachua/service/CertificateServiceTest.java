@@ -2,15 +2,7 @@ package com.softserve.teachua.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import static com.softserve.teachua.TestConstants.LONG_ID;
-import static com.softserve.teachua.TestConstants.SERIAL_NUMBER;
-import static com.softserve.teachua.TestConstants.UPDATE_DATE;
-import static com.softserve.teachua.TestConstants.USER_EMAIL;
-import static com.softserve.teachua.TestConstants.USER_NAME;
 import com.softserve.teachua.TestUtils;
-import static com.softserve.teachua.TestUtils.getCertificateDates;
-import static com.softserve.teachua.TestUtils.getCertificateTemplate;
-import static com.softserve.teachua.TestUtils.getCertificateVerificationResponse;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.certificate.CertificatePreview;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
@@ -20,6 +12,7 @@ import com.softserve.teachua.exception.CertificateGenerationException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.UserPermissionException;
 import com.softserve.teachua.model.Certificate;
+import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateType;
 import com.softserve.teachua.model.archivable.CertificateArch;
 import com.softserve.teachua.repository.CertificateRepository;
@@ -31,13 +24,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,28 +32,46 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.server.ResponseStatusException;
+import static com.softserve.teachua.TestConstants.LONG_ID;
+import static com.softserve.teachua.TestConstants.SERIAL_NUMBER;
+import static com.softserve.teachua.TestConstants.UPDATE_DATE;
+import static com.softserve.teachua.TestConstants.USER_EMAIL;
+import static com.softserve.teachua.TestConstants.USER_NAME;
+import static com.softserve.teachua.TestUtils.getCertificateDates;
+import static com.softserve.teachua.TestUtils.getCertificateTemplate;
+import static com.softserve.teachua.TestUtils.getCertificateVerificationResponse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateServiceTest {
     public static final String BASE_URL_FIELD = "baseUrl";
     public static final String BASE_URL = "http://localhost:8080/dev";
+    private static final String UPDATED_EMAIL = "updated@gmail.com";
+    private static final String UPDATED_NAME = "Новий Власник";
+    private final ModelMapper mapper = new ModelMapper();
     @Mock
     private CertificateRepository certificateRepository;
     @Mock
@@ -87,16 +91,40 @@ class CertificateServiceTest {
     @Spy
     @InjectMocks
     private CertificateServiceImpl certificateService;
-
-    private final ModelMapper mapper = new ModelMapper();
     private Certificate certificate;
     private CertificateUserResponse certificateUserResponse;
     private CertificatePreview certificatePreview;
     private CertificateTransfer certificateTransfer;
     private CertificateArch certificateArch;
 
-    private static final String UPDATED_EMAIL = "updated@gmail.com";
-    private static final String UPDATED_NAME = "Новий Власник";
+    private static Stream<Arguments> serialNumberSource() {
+        return Stream.of(
+                Arguments.of(3, "01", "0000000", "3010000001"),
+                Arguments.of(11, "22", "0000000", "11220000001"),
+                Arguments.of(1, "99", "7777779", "1997777780"),
+                Arguments.of(2, "23", "7999999", "2238000000"),
+                Arguments.of(1, "33", null, "1330000017"),
+                Arguments.of(2, "33", null, "2330000061"),
+                Arguments.of(4, "33", null, "4330000001")
+        );
+    }
+
+    private static Stream<Arguments> provideCertificateForDownload() {
+        Certificate certificate = Certificate.builder()
+                .id(LONG_ID)
+                .sendToEmail(USER_EMAIL)
+                .serialNumber(SERIAL_NUMBER)
+                .updateStatus(UPDATE_DATE)
+                .sendStatus(true)
+                .build();
+        return Stream.of(
+                Arguments.of(certificate),
+                Arguments.of(certificate.withSendStatus(null).withUpdateStatus(null)),
+                Arguments.of(certificate.withSendStatus(null).withUpdateStatus(LocalDate.now())),
+                Arguments.of(certificate.withSendStatus(false).withUpdateStatus(null)),
+                Arguments.of(certificate.withSendStatus(false).withUpdateStatus(LocalDate.now()))
+        );
+    }
 
     @BeforeEach
     void setUp() {
@@ -225,7 +253,8 @@ class CertificateServiceTest {
         when(certificateRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> certificateService.getCertificateById(anyLong()))
+        long id = anyLong();
+        assertThatThrownBy(() -> certificateService.getCertificateById(id))
                 .isInstanceOf(NotExistException.class);
     }
 
@@ -246,7 +275,9 @@ class CertificateServiceTest {
         when(certificateRepository.findBySerialNumber(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> certificateService.getCertificateBySerialNumber(anyLong()))
+        Long serialNumber = anyLong();
+
+        assertThatThrownBy(() -> certificateService.getCertificateBySerialNumber(serialNumber))
                 .isInstanceOf(NotExistException.class);
     }
 
@@ -281,8 +312,11 @@ class CertificateServiceTest {
                 anyString(), any()
         )).thenReturn(Optional.empty());
 
+        String userName = anyString();
+        CertificateDates dates = any();
+
         assertThatThrownBy(() -> certificateService.getByUserNameAndDates(
-                anyString(), any()
+                userName, dates
         )).isInstanceOf(NotExistException.class);
     }
 
@@ -338,18 +372,6 @@ class CertificateServiceTest {
 
         CertificateTransfer actual = certificateService.generateSerialNumber(certificateTransfer);
         assertEquals(expectedSerialNumber, actual.getSerialNumber());
-    }
-
-    private static Stream<Arguments> serialNumberSource() {
-        return Stream.of(
-                Arguments.of(3, "01", "0000000", "3010000001"),
-                Arguments.of(11, "22", "0000000", "11220000001"),
-                Arguments.of(1, "99", "7777779", "1997777780"),
-                Arguments.of(2, "23", "7999999", "2238000000"),
-                Arguments.of(1, "33", null, "1330000017"),
-                Arguments.of(2, "33", null, "2330000061"),
-                Arguments.of(4, "33", null, "4330000001")
-        );
     }
 
     @Test
@@ -492,20 +514,25 @@ class CertificateServiceTest {
         when(certificateRepository.findById(certificate.getId()))
                 .thenReturn(Optional.of(certificate));
 
+        String email = "foreign@gmail.com";
+        Long id = certificate.getId();
+
         assertThrows(UserPermissionException.class, () ->
-                certificateService.getPdfOutputForDownload("foreign@gmail.com", certificate.getId()));
+                certificateService.getPdfOutputForDownload(email, id));
     }
 
     @Test
     @DisplayName("Should throw ResponseStatusException with 406 code on download certificate with serial number null")
     void getPdfOutputForDownloadWithSerialNumberNull() {
         certificate.setSerialNumber(null);
-
         when(certificateRepository.findById(certificate.getId()))
                 .thenReturn(Optional.of(certificate));
 
+        String sendToEmail = certificate.getSendToEmail();
+        Long id = certificate.getId();
+
         ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () ->
-                certificateService.getPdfOutputForDownload(certificate.getSendToEmail(), certificate.getId()));
+                certificateService.getPdfOutputForDownload(sendToEmail, id));
         assertThat(thrown.getStatusCode()).isEqualTo(HttpStatus.NOT_ACCEPTABLE);
     }
 
@@ -523,23 +550,6 @@ class CertificateServiceTest {
 
         assertThat(certificate.getSendStatus()).isTrue();
         assertThat(certificate.getUpdateStatus()).isNotNull();
-    }
-
-    private static Stream<Arguments> provideCertificateForDownload() {
-        Certificate certificate = Certificate.builder()
-                .id(LONG_ID)
-                .sendToEmail(USER_EMAIL)
-                .serialNumber(SERIAL_NUMBER)
-                .updateStatus(UPDATE_DATE)
-                .sendStatus(true)
-                .build();
-        return Stream.of(
-                Arguments.of(certificate),
-                Arguments.of(certificate.withSendStatus(null).withUpdateStatus(null)),
-                Arguments.of(certificate.withSendStatus(null).withUpdateStatus(LocalDate.now())),
-                Arguments.of(certificate.withSendStatus(false).withUpdateStatus(null)),
-                Arguments.of(certificate.withSendStatus(false).withUpdateStatus(LocalDate.now()))
-        );
     }
 
     @Test

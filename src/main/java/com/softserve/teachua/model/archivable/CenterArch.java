@@ -30,7 +30,7 @@ public class CenterArch implements Convertible, Archivable {
     private Long clubCount;
 
     @Override
-    public Class getServiceClass() {
+    public Class<CenterServiceImpl> getServiceClass() {
         return CenterServiceImpl.class;
     }
 }

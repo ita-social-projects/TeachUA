@@ -19,7 +19,6 @@ import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.StationService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class StationServiceImpl implements StationService, ArchiveMark<Station> {
     private static final String STATION_ALREADY_EXIST = "Station already exist with name: %s";
-    private static final String STATION_NOT_FOUND_BY_ID = "Station not found by id: %s";
     private static final String STATION_NOT_FOUND_BY_NAME = "Station not found by name: %s";
     private static final String STATION_DELETING_ERROR = "Can't delete station cause of relationship";
 
@@ -61,9 +59,8 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     @Override
     public Station getStationById(Long id) {
         Optional<Station> optionalStation = id == null ? Optional.empty() : getOptionalStationById(id);
-        if (!optionalStation.isPresent()) {
+        if (optionalStation.isEmpty()) {
             return null;
-            // throw new NotExistException(String.format(STATION_NOT_FOUND_BY_ID, id));
         }
 
         Station station = optionalStation.get();
@@ -74,7 +71,7 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     @Override
     public Station getStationByName(String name) {
         Optional<Station> optionalStation = getOptionalStationByName(name);
-        if (!optionalStation.isPresent()) {
+        if (optionalStation.isEmpty()) {
             throw new NotExistException(String.format(STATION_NOT_FOUND_BY_NAME, name));
         }
 
@@ -88,7 +85,7 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
         List<StationResponse> stationList = stationRepository
                 .findAllByDistrictNameAndCityName(stationProfile.getDistrictName(), stationProfile.getCityName())
                 .stream().map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/get all stations by District = " + stationList);
 
@@ -116,7 +113,7 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     public List<StationResponse> getListOfStations() {
         List<StationResponse> stationResponses = stationRepository.findAll().stream()
                 .map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of stations = " + stationResponses);
         return stationResponses;
@@ -126,7 +123,7 @@ public class StationServiceImpl implements StationService, ArchiveMark<Station> 
     public List<StationResponse> getListOfStationsByCityName(String name) {
         List<StationResponse> stationResponses = stationRepository.findAllByCityName(name).stream()
                 .map(station -> (StationResponse) dtoConverter.convertToDto(station, StationResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of stations = " + stationResponses);
         return stationResponses;

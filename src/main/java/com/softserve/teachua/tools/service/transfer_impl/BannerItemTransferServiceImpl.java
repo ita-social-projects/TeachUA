@@ -5,7 +5,6 @@ import com.softserve.teachua.service.impl.BannerItemServiceImpl;
 import com.softserve.teachua.tools.repository.BannerInfoRepository;
 import com.softserve.teachua.tools.service.BannerItemTransferService;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +25,6 @@ public class BannerItemTransferServiceImpl implements BannerItemTransferService 
         return BannerInfoRepository.getBannersInfo().stream().map(banner -> {
             banner.setPicture(fileUtils.moveImage(banner.getPicture(), "banner"));
             return banner;
-        }).map(bannerItemService::addBannerItem).collect(Collectors.toList());
+        }).map(bannerItemService::addBannerItem).toList();
     }
 }

@@ -40,11 +40,10 @@ public class BackUpController implements Api {
      * Use this endpoint to download .zip file with backup resources
      *
      * @param response HttpServletResponse
-     * @throws IOException occurs if we cannot write a file
      */
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping(value = "/backup/download", produces = "application/.zip")
-    public void downloadBackup(HttpServletResponse response) throws IOException {
+    public void downloadBackup(HttpServletResponse response) {
         backupService.downloadBackup(response);
     }
 

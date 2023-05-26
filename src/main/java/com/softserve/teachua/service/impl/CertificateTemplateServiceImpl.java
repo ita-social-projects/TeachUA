@@ -1,6 +1,5 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.softserve.teachua.constants.MessageType;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.certificate_template.CertificateTemplatePreview;
@@ -10,7 +9,6 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.repository.CertificateTemplateRepository;
-import com.softserve.teachua.service.ArchiveMark;
 import static com.softserve.teachua.service.CertificateService.LAST_JRXML_TEMPLATE_ID;
 import com.softserve.teachua.service.CertificateTemplateService;
 import com.softserve.teachua.service.CertificateTypeService;
@@ -36,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class CertificateTemplateServiceImpl implements CertificateTemplateService, ArchiveMark<CertificateTemplate> {
+public class CertificateTemplateServiceImpl implements CertificateTemplateService {
     private static final String TEMPLATE_NOT_FOUND_BY_ID = "Certificate template not found by id: %s";
     private static final String TEMPLATE_NOT_FOUND_BY_TYPE = "Certificate template not found by type: %s";
     private static final String NAME_ALREADY_EXISTS_MESSAGE = "Шаблон із такою назвою уже існує!";
@@ -67,16 +65,6 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
             directory.mkdir();
         }
         certificateTemplateUrl = new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath();
-    }
-
-    @Override
-    public void archiveModel(CertificateTemplate certificateType) {
-        // TODO
-    }
-
-    @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        // TODO
     }
 
     @Override

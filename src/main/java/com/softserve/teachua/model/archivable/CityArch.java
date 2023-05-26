@@ -20,7 +20,7 @@ public class CityArch implements Convertible, Archivable {
     private Double longitude;
 
     @Override
-    public Class getServiceClass() {
+    public Class<CityServiceImpl> getServiceClass() {
         return CityServiceImpl.class;
     }
 }

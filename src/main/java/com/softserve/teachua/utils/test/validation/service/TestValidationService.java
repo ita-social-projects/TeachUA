@@ -8,7 +8,6 @@ import com.softserve.teachua.utils.test.validation.container.TestValidationConta
 import com.softserve.teachua.utils.test.validation.exception.TestValidationException;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +45,7 @@ public class TestValidationService {
                 .map(violation -> new Violation(
                         violation.getPropertyPath().toString(),
                         violation.getMessage()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Set<ConstraintViolation<QuestionProfile>> validateQuestion(QuestionProfile question) {

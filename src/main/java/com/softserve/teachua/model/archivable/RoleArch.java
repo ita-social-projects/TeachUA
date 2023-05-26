@@ -18,7 +18,7 @@ public class RoleArch implements Convertible, Archivable {
     private String name;
 
     @Override
-    public Class getServiceClass() {
+    public Class<RoleServiceImpl> getServiceClass() {
         return RoleServiceImpl.class;
     }
 }

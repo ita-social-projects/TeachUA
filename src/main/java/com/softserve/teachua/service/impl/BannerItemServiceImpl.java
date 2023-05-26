@@ -15,7 +15,6 @@ import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.BannerItemService;
 import java.util.List;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<Ban
     public List<BannerItemResponse> getListOfBannerItems() {
         List<BannerItemResponse> itemResponses = bannerItemRepository.findAllByOrderBySequenceNumberAsc().stream()
                 .map(item -> (BannerItemResponse) dtoConverter.convertToDto(item, BannerItemResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of cities = " + itemResponses);
         return itemResponses;

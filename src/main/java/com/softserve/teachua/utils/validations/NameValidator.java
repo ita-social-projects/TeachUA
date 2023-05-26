@@ -32,7 +32,7 @@ public class NameValidator implements ConstraintValidator<Name, String> {
         if (!text.matches("[^ЁёЪъЫыЭэ]+")) {
             throw new IncorrectInputException(String.format(RUSSIAN_EXCEPTION, fieldName));
         }
-        if (!text.matches("[^0-9]+")) {
+        if (!text.matches("\\D+")) {
             throw new IncorrectInputException(String.format(NUMBERS_EXCEPTION, fieldName));
         }
         if (!text.matches("[a-zA-Zа-яА-ЯіІєЄїЇґҐ]+")) {

@@ -24,7 +24,7 @@ public class NewsArch implements Convertible, Archivable {
     private Long userId;
 
     @Override
-    public Class getServiceClass() {
+    public Class<NewsServiceImpl> getServiceClass() {
         return NewsServiceImpl.class;
     }
 }

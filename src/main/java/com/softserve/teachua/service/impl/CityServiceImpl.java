@@ -17,7 +17,6 @@ import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CityService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +55,7 @@ public class CityServiceImpl implements CityService, ArchiveMark<City> {
     @Override
     public City getCityById(Long id) {
         Optional<City> optionalCity = getOptionalCityById(id);
-        if (!optionalCity.isPresent()) {
+        if (optionalCity.isEmpty()) {
             throw new NotExistException(String.format(CITY_NOT_FOUND_BY_ID, id));
         }
         City city = optionalCity.get();
@@ -67,7 +66,7 @@ public class CityServiceImpl implements CityService, ArchiveMark<City> {
     @Override
     public City getCityByName(String name) {
         Optional<City> optionalCity = getOptionalCityByName(name);
-        if (!optionalCity.isPresent()) {
+        if (optionalCity.isEmpty()) {
             throw new NotExistException(String.format(CITY_NOT_FOUND_BY_NAME, name));
         }
 
@@ -90,7 +89,7 @@ public class CityServiceImpl implements CityService, ArchiveMark<City> {
     public List<CityResponse> getListOfCities() {
         List<CityResponse> cityResponses = cityRepository.findAllByOrderByIdAsc().stream()
                 .map(city -> (CityResponse) dtoConverter.convertToDto(city, CityResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of cities = " + cityResponses);
         return cityResponses;

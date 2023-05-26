@@ -27,7 +27,7 @@ public class CertificateArch implements Archivable, Convertible {
     private String values;
 
     @Override
-    public Class getServiceClass() {
+    public Class<CertificateServiceImpl> getServiceClass() {
         return CertificateServiceImpl.class;
     }
 }

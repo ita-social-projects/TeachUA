@@ -22,7 +22,7 @@ public class TaskArch implements Convertible, Archivable {
     private LocalDate startDate;
 
     @Override
-    public Class getServiceClass() {
+    public Class<TaskServiceImpl> getServiceClass() {
         return TaskServiceImpl.class;
     }
 }

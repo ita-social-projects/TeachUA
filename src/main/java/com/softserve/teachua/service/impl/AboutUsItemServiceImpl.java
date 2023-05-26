@@ -13,7 +13,6 @@ import com.softserve.teachua.service.AboutUsItemService;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<AboutUsItem> {
-    private static final String ABOUT_US_ITEM_ALREADY_EXIST = "AboutUsItem with number: %s already exist";
     private static final String ABOUT_US_ITEM_NOT_FOUND_BY_ID = "AboutUsItem was not found by id: %s";
-    private static final String ABOUT_US_ITEM_NULL_FIELD_ERROR = "AboutUsItem cannot exist without \"%s\"";
     private static final String WRONG_LINK = "Youtube link should contain 'watch?v='";
     private static final String VIDEO_PARAM = "watch?v=";
     private static final String EMBED_VIDEO_URL = "https://www.youtube.com/embed/";
@@ -39,7 +36,7 @@ public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<A
 
     @Autowired
     public AboutUsItemServiceImpl(AboutUsItemRepository aboutUsItemRepository, ArchiveService archiveService,
-            DtoConverter dtoConverter, ObjectMapper objectMapper) {
+                                  DtoConverter dtoConverter, ObjectMapper objectMapper) {
         this.aboutUsItemRepository = aboutUsItemRepository;
         this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
@@ -64,10 +61,9 @@ public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<A
 
     @Override
     public List<AboutUsItemResponse> getListOfAboutUsItemResponses() {
-        List<AboutUsItemResponse> aboutUsItemResponses = aboutUsItemRepository.findAllByOrderByNumberAsc().stream()
+        return aboutUsItemRepository.findAllByOrderByNumberAsc().stream()
                 .map(item -> (AboutUsItemResponse) dtoConverter.convertToDto(item, AboutUsItemResponse.class))
-                .collect(Collectors.toList());
-        return aboutUsItemResponses;
+                .toList();
     }
 
     @Override
@@ -127,41 +123,43 @@ public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<A
     @Override
     public void changeOrder(Long id, Long position) {
         List<AboutUsItem> items = getListOfAboutUsItems();
+        if (items.size() <= 1) {
+            return;
+        }
         AboutUsItem item = getAboutUsItemById(id);
-        if (items.size() > 1) {
-            if (position == items.size() + 1) {
-                item.setNumber(items.get((int) (position - 2)).getNumber() + STEP);
-            } else if (position == 1) {
-                Long num = STEP;
+
+        if (position == items.size() + 1) {
+            item.setNumber(items.get((int) (position - 2)).getNumber() + STEP);
+        } else if (position == 1) {
+            long num = STEP;
+            for (AboutUsItem element : items) {
+                AboutUsItemProfile profile = dtoConverter.convertToDto(element, AboutUsItemProfile.class);
+                profile.setNumber(num);
+                num += STEP;
+                updateAboutUsItem(element.getId(), profile);
+            }
+            item.setNumber(1L);
+        } else {
+            Long up = items.get((int) (position - 1)).getNumber();
+            Long down = items.get(position.intValue()).getNumber();
+            if (down - up > 1) {
+                Long median = (down + up) / 2;
+                item.setNumber(median);
+            } else {
+                long num = 1L;
                 for (AboutUsItem element : items) {
                     AboutUsItemProfile profile = dtoConverter.convertToDto(element, AboutUsItemProfile.class);
                     profile.setNumber(num);
                     num += STEP;
                     updateAboutUsItem(element.getId(), profile);
                 }
-                item.setNumber(1L);
-            } else {
-                Long up = items.get((int) (position - 1)).getNumber();
-                Long down = items.get(position.intValue()).getNumber();
-                if (down - up > 1) {
-                    Long median = (down + up) / 2;
-                    item.setNumber(median);
-                } else {
-                    Long num = 1L;
-                    for (AboutUsItem element : items) {
-                        AboutUsItemProfile profile = dtoConverter.convertToDto(element, AboutUsItemProfile.class);
-                        profile.setNumber(num);
-                        num += STEP;
-                        updateAboutUsItem(element.getId(), profile);
-                    }
-                    up = items.get((int) (position - 1)).getNumber();
-                    down = items.get(position.intValue()).getNumber();
-                    Long median = (down + up) / 2;
-                    item.setNumber(median);
-                }
+                up = items.get((int) (position - 1)).getNumber();
+                down = items.get(position.intValue()).getNumber();
+                Long median = (down + up) / 2;
+                item.setNumber(median);
             }
-            updateAboutUsItem(id, dtoConverter.convertToDto(item, AboutUsItemProfile.class));
         }
+        updateAboutUsItem(id, dtoConverter.convertToDto(item, AboutUsItemProfile.class));
     }
 
     @Override

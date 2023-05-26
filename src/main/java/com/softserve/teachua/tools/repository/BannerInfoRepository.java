@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BannerInfoRepository {
+    private BannerInfoRepository() {
+    }
+
     public static List<BannerItemProfile> getBannersInfo() {
         return Arrays.asList(BannerItemProfile.builder().id(1L).link("/about").sequenceNumber(2)
                         .title("Навчай Українською")

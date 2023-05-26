@@ -26,6 +26,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
+@SuppressWarnings("squid:S1075") //Suppressed because of project's business logic.
 public class ResultSearchReportGenerationServiceImpl implements ReportGenerationService<Page<ClubResponse>> {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(ResultSearchReportGenerationServiceImpl.class.getName());

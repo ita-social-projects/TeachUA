@@ -21,7 +21,6 @@ import com.softserve.teachua.service.MessageService;
 import com.softserve.teachua.service.UserService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -104,7 +103,7 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     public List<MessageResponseDto> getMessageResponsesByUserId(Long id, boolean isSender) {
         return getMessagesByUserId(id, isSender).stream()
                 .map(message -> (MessageResponseDto) dtoConverter.convertToDto(message, MessageResponseDto.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

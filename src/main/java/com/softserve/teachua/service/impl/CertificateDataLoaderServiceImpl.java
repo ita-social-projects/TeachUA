@@ -40,6 +40,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                     + "“Українська гуманітарна платформа”.";
     private static final String COURSE_DESCRIPTION =
             "Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”";
+    @SuppressWarnings("squid:S1075") //Suppressed because of project's business logic.
     private static final String PICTURE_PATH = "/static/images/certificate/validation/jedyni_banner.png";
     private final CertificateService certificateService;
     private final CertificateDatesService certificateDatesService;

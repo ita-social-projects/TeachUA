@@ -36,7 +36,7 @@ class QuestionTypeServiceTest {
     private QuestionRepository questionRepository;
 
     @Mock
-    private ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @InjectMocks
     private QuestionTypeServiceImpl questionTypeService;

@@ -115,8 +115,10 @@ public class GroupServiceImpl implements GroupService {
     public UpdateGroup updateById(UpdateGroup updateGroup, Long groupId) {
         checkNull(updateGroup, "Group");
         checkNull(groupId, "Group ID");
-        groupRepository.findById(groupId)
-            .orElseThrow(() -> new NotExistException(String.format(NOT_EXIST_GROUP_EXCEPTION, groupId)));
+        if (!groupRepository.existsById(groupId)) {
+            throw new NotExistException(String.format(NOT_EXIST_GROUP_EXCEPTION, groupId));
+        }
+
         Group group = modelMapper.map(updateGroup, Group.class);
         group.setId(groupId);
         groupRepository.save(group);

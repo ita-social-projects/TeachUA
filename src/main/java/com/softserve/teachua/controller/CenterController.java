@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 @SecurityRequirement(name = "api")
 public class CenterController implements Api {
     private static final int CENTERS_PER_USER_PAGE = 9;
-    private static final int CLUBS_PER_CENTER_PAGE = 2;
     private final CenterService centerService;
 
     @Autowired
@@ -142,7 +141,6 @@ public class CenterController implements Api {
      * @param id - put category id.
      * @return new {@code CenterResponse}.
      */
-    // TODO
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @DeleteMapping("/center/{id}")
     public CenterResponse deleteCenter(@PathVariable Long id) {

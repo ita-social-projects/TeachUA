@@ -16,7 +16,6 @@ import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.RoleService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class RoleServiceImpl implements RoleService, ArchiveMark<Role> {
         log.debug("**/getting all roles");
         return roleRepository.findAll().stream()
                 .map(role -> (RoleResponse) dtoConverter.convertToDto(role, RoleResponse.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -62,7 +61,7 @@ public class RoleServiceImpl implements RoleService, ArchiveMark<Role> {
     @Override
     public Role getRoleById(Integer id) {
         Optional<Role> optionalRole = getOptionalRoleById(id);
-        if (!optionalRole.isPresent()) {
+        if (optionalRole.isEmpty()) {
             throw new NotExistException(String.format(ROLE_NOT_FOUND_BY_ID, id));
         }
 
@@ -82,7 +81,7 @@ public class RoleServiceImpl implements RoleService, ArchiveMark<Role> {
     @Override
     public Role findByName(String name) {
         Optional<Role> optionalRole = roleRepository.findByName(name);
-        if (!optionalRole.isPresent()) {
+        if (optionalRole.isEmpty()) {
             throw new NotExistException(String.format(ROLE_NOT_FOUND_BY_NAME, name));
         }
 

@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.databaseTransfer.model;
+package com.softserve.teachua.dto.database_transfer.model;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.utils.validations.CheckRussian;
@@ -29,13 +29,9 @@ public class CenterExcel implements Convertible {
     @Phone
     @NotBlank
     private String phone;
-    // site field can include social media too
-    private String site;
 
-    // private String city;
-    // private String address;
-    // private Double longitude;
-    // private Double latitude;
-    // private String district;
-    // private String station;
+    /**
+     * Site field can include social media too.
+     */
+    private String site;
 }

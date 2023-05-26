@@ -22,7 +22,7 @@ public class BannerItemArch implements Archivable, Convertible {
     private Integer sequenceNumber;
 
     @Override
-    public Class getServiceClass() {
+    public Class<BannerItemServiceImpl> getServiceClass() {
         return BannerItemServiceImpl.class;
     }
 }

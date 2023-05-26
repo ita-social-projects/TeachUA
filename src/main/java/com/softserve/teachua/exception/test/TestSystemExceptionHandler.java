@@ -1,6 +1,7 @@
 package com.softserve.teachua.exception.test;
 
 import com.softserve.teachua.dto.exception.ExceptionResponse;
+import com.softserve.teachua.utils.test.validation.container.ValidationContainer;
 import com.softserve.teachua.utils.test.validation.exception.TestValidationException;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
@@ -18,19 +19,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class TestSystemExceptionHandler {
     @ExceptionHandler(value = TestValidationException.class)
-    public ResponseEntity<?> handleTestValidationException(TestValidationException exception) {
+    public ResponseEntity<ValidationContainer> handleTestValidationException(TestValidationException exception) {
         log.debug(exception.getMessage());
         return new ResponseEntity<>(exception.getContainer(), exception.getStatus());
     }
 
     @ExceptionHandler(value = IllegalStateException.class)
-    public ResponseEntity<?> handleIllegalStateException(IllegalStateException exception) {
+    public ResponseEntity<String> handleIllegalStateException(IllegalStateException exception) {
         log.debug(exception.getMessage());
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = DataIntegrityViolationException.class)
-    public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
+    public ResponseEntity<ExceptionResponse> handleDataIntegrityViolationException(
+            DataIntegrityViolationException exception) {
         log.debug(exception.getMessage());
         Throwable rootCause = exception.getRootCause();
         String message = "";

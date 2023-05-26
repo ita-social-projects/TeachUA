@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.databaseTransfer.model;
+package com.softserve.teachua.dto.database_transfer.model;
 
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DistrictExcel implements Convertible {
+public class StationExcel implements Convertible {
     private String name;
     private String city;
 }

@@ -208,9 +208,7 @@ class ChallengeServiceTest {
     @Test
     @DisplayName("getChallengeByWrongId should throw NotExistException")
     void getChallengeByWrongId() {
-        assertThatThrownBy(()->{
-           challengeService.getChallengeById(CHALLENGE_WRONG_ID);
-       }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(()-> challengeService.getChallengeById(CHALLENGE_WRONG_ID)).isInstanceOf(NotExistException.class);
        verify(challengeRepository).findById(CHALLENGE_WRONG_ID);
     }
 
@@ -228,9 +226,7 @@ class ChallengeServiceTest {
     @Test
     @DisplayName("getChallengeByWrongName should throw NotExistException")
     void getChallengeByWrongName() {
-        assertThatThrownBy(()->{
-            challengeService.getChallengeByName(CHALLENGE_WRONG_NAME);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(()-> challengeService.getChallengeByName(CHALLENGE_WRONG_NAME)).isInstanceOf(NotExistException.class);
         verify(challengeRepository).findByName(CHALLENGE_WRONG_NAME);
     }
 
@@ -257,9 +253,7 @@ class ChallengeServiceTest {
     @Test
     @DisplayName("getChallengeProfileByWrongId should throw NotExistException")
     void getChallengeProfileByWrongId() {
-        assertThatThrownBy(()->{
-            challengeService.getChallenge(CHALLENGE_WRONG_ID);
-        }).isInstanceOf(NotExistException.class);
+        assertThatThrownBy(()-> challengeService.getChallenge(CHALLENGE_WRONG_ID)).isInstanceOf(NotExistException.class);
         verify(challengeService).getChallenge(CHALLENGE_WRONG_ID);
     }
 
@@ -400,7 +394,7 @@ class ChallengeServiceTest {
 
         when(taskService.getTaskById(task.getId())).thenReturn(task);
 
-        challengeArch.setTasksIds(challenge.getTasks().stream().map(task -> task.getId()).collect(Collectors.toSet()));
+        challengeArch.setTasksIds(challenge.getTasks().stream().map(Task::getId).collect(Collectors.toSet()));
 
         challengeService.restoreModel(anyString());
 

@@ -19,7 +19,7 @@ public class CertificateTemplateArch implements Convertible, Archivable {
     private String filePath;
 
     @Override
-    public Class getServiceClass() {
+    public Class<CertificateTemplateServiceImpl> getServiceClass() {
         return CertificateTemplateServiceImpl.class;
     }
 }

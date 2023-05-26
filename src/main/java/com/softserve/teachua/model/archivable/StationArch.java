@@ -19,7 +19,7 @@ public class StationArch implements Convertible, Archivable {
     private Long cityId;
 
     @Override
-    public Class getServiceClass() {
+    public Class<StationServiceImpl> getServiceClass() {
         return StationServiceImpl.class;
     }
 }

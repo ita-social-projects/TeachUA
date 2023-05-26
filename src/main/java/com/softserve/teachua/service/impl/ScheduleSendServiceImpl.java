@@ -35,6 +35,7 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
         this.certificateService = certificateService;
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     @Scheduled(fixedRate = 180000) // 1 email / 3 min
     public void sendCertificateWithScheduler() {
         CertificateTransfer certificate = certificateService.getOneUnsentCertificate();
@@ -44,9 +45,10 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
             try {
                 emailService.sendMessageWithAttachmentAndGeneratedPdf(certificate.getSendToEmail().trim(),
                         "Сертифікат проєкту \"Єдині\"",
-                        "Вітаємо! Дякуємо Вам, що долучилися до проєкту \"Єдині\"."
-                                + " Дякуємо за спільну роботу задля великої мети."
-                                + "\n\nВаш сертифікат додано у вкладенні до цього листа.",
+                        """
+                                Вітаємо! Дякуємо Вам, що долучилися до проєкту "Єдині". Дякуємо за спільну роботу задля великої мети.
+
+                                Ваш сертифікат додано у вкладенні до цього листа.""",
                         certificate);
                 certificateService.updateDateAndSendStatus(certificate.getId(), true);
             } catch (Exception e) {

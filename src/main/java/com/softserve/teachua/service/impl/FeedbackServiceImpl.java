@@ -24,7 +24,6 @@ import com.softserve.teachua.service.FeedbackService;
 import com.softserve.teachua.service.UserService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +75,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     @Override
     public Feedback getFeedbackById(Long id) {
         Optional<Feedback> optionalFeedback = getOptionalFeedbackById(id);
-        if (!optionalFeedback.isPresent()) {
+        if (optionalFeedback.isEmpty()) {
             throw new NotExistException(String.format(FEEDBACK_NOT_FOUND_BY_ID, id));
         }
 
@@ -89,7 +88,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     public List<FeedbackResponse> getAllByClubId(Long id) {
         List<FeedbackResponse> feedbackResponses = feedbackRepository.getAllByClubId(id).stream()
                 .map(feedback -> (FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("get list of feedback -" + feedbackResponses);
         return feedbackResponses;
@@ -106,9 +105,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
             throw new NotExistException("User with id " + feedbackProfile.getUserId() + " does`nt exists");
         }
         Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, new Feedback()));
-        // Long clubId = feedback.getClub().getId();
         clubService.updateRatingNewFeedback(dtoConverter.convertToDto(feedback, FeedbackResponse.class));
-        // clubRepository.updateRating(clubId, feedbackRepository.findAvgRating(clubId));
         log.debug("add new feedback - " + feedback);
         return dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
     }
@@ -117,7 +114,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     public List<FeedbackResponse> getListOfFeedback() {
         List<FeedbackResponse> feedbackResponses = feedbackRepository.findAll().stream()
                 .map(feedback -> (FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("get list of feedback -" + feedbackResponses);
         return feedbackResponses;

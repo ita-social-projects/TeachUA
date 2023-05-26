@@ -27,6 +27,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 @Service
+@SuppressWarnings("squid:S1075") //Suppressed because of project's business logic.
 public class CenterReportGenerationServiceImpl implements ReportGenerationService<CenterResponse> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CenterReportGenerationServiceImpl.class.getName());
     private static final String CENTER_TEMPLATE_PATH = "/pdf-reports/template/CenterPdfReportTemplate.jrxml";
@@ -59,7 +60,7 @@ public class CenterReportGenerationServiceImpl implements ReportGenerationServic
         return JasperFillManager.fillReport(jasperReport, getParameters(centerResponse), getDataSource(centerResponse));
     }
 
-    private Map<String, Object> getParameters(CenterResponse centerResponse) throws IOException, JRException {
+    private Map<String, Object> getParameters(CenterResponse centerResponse) throws IOException {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("CENTER", centerResponse);
         parameters.put("CLUBS_SUB_REPORT_PATH", getRealFilePath(CLUBS_SUB_REPORT_PATH));

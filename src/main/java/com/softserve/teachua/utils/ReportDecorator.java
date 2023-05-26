@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ReportDecorator {
+    private ReportDecorator() {
+    }
+
     public static String formDescription(String description) {
         final JSONObject result = new JSONObject(description);
         final JSONArray resultArray = result.getJSONArray("blocks");

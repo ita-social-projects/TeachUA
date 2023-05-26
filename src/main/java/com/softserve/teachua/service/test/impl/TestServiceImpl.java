@@ -37,7 +37,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -193,7 +192,7 @@ public class TestServiceImpl implements TestService {
                 .filter(this::isActiveSubscription)
                 .map(Subscription::getGroup)
                 .map(Group::getId)
-                .collect(Collectors.toList());
+                .toList();
         List<Group> testGroups = groupService.findAllByTestId(testId);
         return testGroups.stream()
                 .anyMatch(group -> userGroupsIds.contains(group.getId()));
@@ -258,7 +257,7 @@ public class TestServiceImpl implements TestService {
         List<Question> questions = questionService.findQuestionsByTest(test);
         return questions.stream()
                 .map(question -> modelMapper.map(question, PassingTestQuestion.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private boolean isActiveSubscription(Subscription subscription) {

@@ -1,7 +1,7 @@
 package com.softserve.teachua.repository.utils.club_test_data;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ClubAdvancedSearchRepository {
     public static ClubSearchTestEntity getClubWithCorrectAge() {
@@ -37,7 +37,7 @@ public class ClubAdvancedSearchRepository {
     }
 
     public static ClubSearchTestEntity getClubWithOneCategoryName() {
-        return ClubSearchTestEntity.builder().categoriesNames(Arrays.asList("Спортивні секції")).build();
+        return ClubSearchTestEntity.builder().categoriesNames(List.of("Спортивні секції")).build();
     }
 
     public static ClubSearchTestEntity getClubWithManyCategoryName() {
@@ -67,7 +67,7 @@ public class ClubAdvancedSearchRepository {
 
     public static ClubSearchTestEntity getClubAsListWithAllCorrectData() {
         return ClubSearchTestEntity.builder().age(7).cityName("Київ").districtName("Деснянський")
-                .stationName("Академмістечко").categoriesNames(Arrays.asList("Студії раннього розвитку")).build();
+                .stationName("Академмістечко").categoriesNames(List.of("Студії раннього розвитку")).build();
     }
 
     public static ClubSearchTestEntity getClubAsPage() {

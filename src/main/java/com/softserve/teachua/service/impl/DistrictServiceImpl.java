@@ -18,7 +18,6 @@ import com.softserve.teachua.service.CityService;
 import com.softserve.teachua.service.DistrictService;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class DistrictServiceImpl implements DistrictService, ArchiveMark<District> {
     private static final String DISTRICT_ALREADY_EXIST = "District already exist with name: %s";
-    private static final String DISTRICT_NOT_FOUND_BY_ID = "District not found by id: %s";
     private static final String DISTRICT_NOT_FOUND_BY_NAME = "District not found by name: %s";
     private static final String DISTRICT_DELETING_ERROR = "Can't delete district cause of relationship";
 
@@ -59,9 +57,8 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
     @Override
     public District getDistrictById(Long id) {
         Optional<District> optionalDistrict = id == null ? Optional.empty() : getOptionalDistrictById(id);
-        if (!optionalDistrict.isPresent()) {
+        if (optionalDistrict.isEmpty()) {
             return null;
-            // throw new NotExistException(String.format(DISTRICT_NOT_FOUND_BY_ID, id));
         }
 
         District district = optionalDistrict.get();
@@ -72,7 +69,7 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
     @Override
     public District getDistrictByName(String name) {
         Optional<District> optionalDistrict = getOptionalDistrictByName(name);
-        if (!optionalDistrict.isPresent()) {
+        if (optionalDistrict.isEmpty()) {
             throw new NotExistException(String.format(DISTRICT_NOT_FOUND_BY_NAME, name));
         }
 
@@ -103,7 +100,7 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
     public List<DistrictResponse> getListOfDistricts() {
         List<DistrictResponse> districtResponses = districtRepository.findAllByOrderByIdAsc().stream()
                 .map(district -> (DistrictResponse) dtoConverter.convertToDto(district, DistrictResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of districts = " + districtResponses);
         return districtResponses;
@@ -113,7 +110,7 @@ public class DistrictServiceImpl implements DistrictService, ArchiveMark<Distric
     public List<DistrictResponse> getListOfDistrictsByCityName(String name) {
         List<DistrictResponse> districtResponses = districtRepository.findAllByCityName(name).stream()
                 .map(district -> (DistrictResponse) dtoConverter.convertToDto(district, DistrictResponse.class))
-                .collect(Collectors.toList());
+                .toList();
 
         log.debug("**/getting list of districts = " + districtResponses);
         return districtResponses;

@@ -13,6 +13,11 @@ import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.archivable.CategoryArch;
 import com.softserve.teachua.repository.CategoryRepository;
 import com.softserve.teachua.service.impl.CategoryServiceImpl;
+import jakarta.validation.ValidationException;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,13 +28,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-
-import jakarta.validation.ValidationException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -38,12 +36,14 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CategoryServiceTest {
+class CategoryServiceTest {
     private final static Long CORRECT_ID = 1L;
     private final static Long WRONG_ID = 1000L;
     private final static String CORRECT_NAME = "Correct name";
     private final static String WRONG_NAME = "Wrong name";
     private final PageRequest pageRequest = PageRequest.of(0, 2, Sort.by("sortby"));
+    private final Category correctCategory = Category.builder().id(CORRECT_ID).name(CORRECT_NAME).build();
+    private final CategoryProfile categoryProfile = CategoryProfile.builder().id(CORRECT_ID).name(CORRECT_NAME).build();
     @Mock
     private CategoryRepository categoryRepository;
     @Mock
@@ -52,14 +52,12 @@ public class CategoryServiceTest {
     private ArchiveService archiveService;
     @InjectMocks
     private CategoryServiceImpl categoryService;
-    private Category correctCategory = Category.builder().id(CORRECT_ID).name(CORRECT_NAME).build();;
-    private CategoryProfile categoryProfile = CategoryProfile.builder().id(CORRECT_ID).name(CORRECT_NAME).build();
     private List<Category> list;
     private List<CategoryResponse> responseList;
     private CategoryArch categoryArch;
 
     @BeforeEach
-    public void setMocks() {
+    void setMocks() {
         list = new LinkedList<>();
         for (long i = 1L; i <= 3; i++) {
             list.add(Category.builder().id(i).name(i + " category").sortby((int) (i * 10)).build());
@@ -73,13 +71,13 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void getCategoryByCorrectIdShouldReturnCorrectCategory() {
+    void getCategoryByCorrectIdShouldReturnCorrectCategory() {
         setMockReturnOptionalWhenFindByCorrectId();
         assertThat(categoryService.getCategoryById(CORRECT_ID)).isEqualTo(correctCategory);
     }
 
     @Test
-    public void getCategoryByWrongIdShouldThrowNotExistException() {
+    void getCategoryByWrongIdShouldThrowNotExistException() {
         when(categoryRepository.findById(WRONG_ID)).thenReturn(Optional.empty());
         NotExistException exception = assertThrows(NotExistException.class,
                 () -> categoryService.getCategoryById(WRONG_ID));
@@ -87,13 +85,13 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void getCategoryByNameIdShouldReturnCorrectCategory() {
+    void getCategoryByNameIdShouldReturnCorrectCategory() {
         when(categoryRepository.findByName(CORRECT_NAME)).thenReturn(Optional.of(correctCategory));
         assertThat(categoryService.getCategoryByName(CORRECT_NAME)).isEqualTo(correctCategory);
     }
 
     @Test
-    public void getCategoryByWrongNameShouldThrowNotExistException() {
+    void getCategoryByWrongNameShouldThrowNotExistException() {
         when(categoryRepository.findByName(WRONG_NAME)).thenReturn(Optional.empty());
         NotExistException exception = assertThrows(NotExistException.class,
                 () -> categoryService.getCategoryByName(WRONG_NAME));
@@ -101,7 +99,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void addCategoryShouldSuccessfullyCreateCategory() {
+    void addCategoryShouldSuccessfullyCreateCategory() {
         when(categoryRepository.existsByName(categoryProfile.getName())).thenReturn(false);
         when(dtoConverter.convertToEntity(categoryProfile, new Category())).thenReturn(correctCategory);
         when(categoryRepository.save(correctCategory)).thenReturn(correctCategory);
@@ -113,7 +111,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void addCategoryWithExistingNameShouldThrowAlreadyExistException() {
+    void addCategoryWithExistingNameShouldThrowAlreadyExistException() {
         when(categoryRepository.existsByName(categoryProfile.getName())).thenReturn(true);
         AlreadyExistException exception = assertThrows(AlreadyExistException.class,
                 () -> categoryService.addCategory(categoryProfile));
@@ -121,20 +119,20 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void allCategoriesShouldBeSortedByValue() {
+    void allCategoriesShouldBeSortedByValue() {
         when(categoryRepository.findInSortedOrder()).thenReturn(list);
         setUpMocksForConvertFromCategoryToCategoryResponse();
         assertThat(categoryService.getAllCategories()).isEqualTo(responseList);
     }
 
     @Test
-    public void getAllCategoriesWhenThereAreNoCategoriesShouldReturnEmptyList() {
+    void getAllCategoriesWhenThereAreNoCategoriesShouldReturnEmptyList() {
         when(categoryRepository.findInSortedOrder()).thenReturn(Collections.emptyList());
-        assertThat(categoryService.getAllCategories()).hasSize(0);
+        assertThat(categoryService.getAllCategories()).isEmpty();
     }
 
     @Test
-    public void getListOfCategoriesShouldReturnCorrectPageable() {
+    void getListOfCategoriesShouldReturnCorrectPageable() {
         when(categoryRepository.findAll(pageRequest)).thenReturn(new PageImpl<>(list, pageRequest, list.size()));
         setUpMocksForConvertFromCategoryToCategoryResponse();
         Page<CategoryResponse> expectedPage = new PageImpl<>(responseList, pageRequest, responseList.size());
@@ -142,13 +140,13 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void getListOfCategoriesWhenThereAreNoCategoriesShouldReturnEmptyPage() {
+    void getListOfCategoriesWhenThereAreNoCategoriesShouldReturnEmptyPage() {
         when(categoryRepository.findAll(pageRequest)).thenReturn(Page.empty(pageRequest));
-        assertThat(categoryService.getListOfCategories(pageRequest)).hasSize(0);
+        assertThat(categoryService.getListOfCategories(pageRequest)).isEmpty();
     }
 
     @Test
-    public void deleteCategoryByIdShouldSuccessfullyDeleteCategory() {
+    void deleteCategoryByIdShouldSuccessfullyDeleteCategory() {
         CategoryResponse response = CategoryResponse.builder().id(correctCategory.getId())
                 .name(correctCategory.getName()).build();
         setMockReturnOptionalWhenFindByCorrectId();
@@ -159,14 +157,14 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void deleteCategoryByIdShouldThrowDatabaseRepositoryExceptionWhenAnErrorOccurred() {
+    void deleteCategoryByIdShouldThrowDatabaseRepositoryExceptionWhenAnErrorOccurred() {
         doThrow(new ValidationException()).doNothing().when(categoryRepository).deleteById(CORRECT_ID);
         setMockReturnOptionalWhenFindByCorrectId();
         assertThrows(DatabaseRepositoryException.class, () -> categoryService.deleteCategoryById(CORRECT_ID));
     }
 
     @Test
-    public void getPossibleCategoryByNameShouldReturnListWithThreeElements() {
+    void getPossibleCategoryByNameShouldReturnListWithThreeElements() {
         when(categoryRepository.findRandomTop3ByName(CORRECT_NAME)).thenReturn(list);
         List<SearchPossibleResponse> possibleResponses = new LinkedList<>();
         for (int i = 0; i < list.size(); i++) {
@@ -179,13 +177,13 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void getPossibleCategoryByNameShouldReturnEmptyListIfThereAreNoCategories() {
+    void getPossibleCategoryByNameShouldReturnEmptyListIfThereAreNoCategories() {
         when(categoryRepository.findRandomTop3ByName(CORRECT_NAME)).thenReturn(Collections.emptyList());
-        assertThat(categoryService.getPossibleCategoryByName(CORRECT_NAME)).hasSize(0);
+        assertThat(categoryService.getPossibleCategoryByName(CORRECT_NAME)).isEmpty();
     }
 
     @Test
-    public void updateCategoryShouldSuccessfullyUpdateCategoryAndSetCorrectId() {
+    void updateCategoryShouldSuccessfullyUpdateCategoryAndSetCorrectId() {
         setMockReturnOptionalWhenFindByCorrectId();
         correctCategory.setId(WRONG_ID);
         when(dtoConverter.convertToEntity(categoryProfile, correctCategory)).thenReturn(correctCategory);

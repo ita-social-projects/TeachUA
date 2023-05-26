@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.test.answer.answerExcel;
+package com.softserve.teachua.dto.test.answer.answer_excel;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

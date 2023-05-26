@@ -22,7 +22,7 @@ public class CertificateDatesArch implements Convertible, Archivable {
     private String studyForm;
 
     @Override
-    public Class getServiceClass() {
+    public Class<CertificateDatesServiceImpl> getServiceClass() {
         return CertificateDatesServiceImpl.class;
     }
 }

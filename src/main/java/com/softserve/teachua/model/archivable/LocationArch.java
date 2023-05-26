@@ -27,7 +27,7 @@ public class LocationArch implements Archivable {
     private Long centerId;
 
     @Override
-    public Class getServiceClass() {
+    public Class<LocationServiceImpl> getServiceClass() {
         return LocationServiceImpl.class;
     }
 }

@@ -51,7 +51,6 @@ public class ChallengeController implements Api {
      * @param active - Ignore this param to get all challenges, or put true/false to get active or not challenges.
      * @return {@code List<ChallengePreview>}.
      */
-    // @Operation(summary = "Get all challenges")
     @GetMapping("/challenges")
     public List<ChallengePreview> getAllChallenges(@RequestParam(required = false) Boolean active) {
         return challengeService.getAllChallenges(active);

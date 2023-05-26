@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.impl;
 
+import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.exception.FileUploadException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.model.GalleryPhoto;
@@ -89,6 +90,9 @@ public class FileUploadServiceImpl implements FileUploadService {
                 folderName = urlBackground.substring(0, ordinalIndexOf(urlBackground, "/", 4, false));
             } else if (urlGallery != null && !urlGallery.isEmpty()) {
                 String url = urlGallery.get(0).getUrl();
+                if (url == null) {
+                    throw new BadRequestException();
+                }
                 folderName = url.substring(0, ordinalIndexOf(url, "/", 4, false));
             }
         } catch (IndexOutOfBoundsException ex) {
@@ -110,7 +114,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         if (filePath.contains(UPLOAD_PLUG)) {
             return;
         }
-        if (filePath == null || filePath.isEmpty()) {
+        if (filePath.isEmpty()) {
             throw new IncorrectInputException("File path can not be null or empty");
         }
         if (!filePath.contains(UPLOAD_LOCATION)) {

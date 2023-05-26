@@ -43,7 +43,7 @@ public class DescriptionValidation implements ConstraintValidator<ClubDescriptio
             }
 
             if (!text.toString().matches("^[А-Яа-яіІєЄїЇґҐa-zA-Z0-9()"
-                    + "\\\\!\\\"\\\"#$%&'*\\n+\\r, ,\\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+$")) {
+                    + "!\"#$%&'*\\n+\\r, \\-.:;\\\\<=>—«»„”“–’‘?|@_`{}№~^/\\[\\]]+$")) {
                 throw new IncorrectInputException("Це поле може містити тільки українські та англійські літери, "
                         + "цифри та спеціальні символи");
             }

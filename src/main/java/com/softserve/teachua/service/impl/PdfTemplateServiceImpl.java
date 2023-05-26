@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
+@SuppressWarnings("squid:S1075") //Suppressed because of project's business logic.
 public class PdfTemplateServiceImpl implements PdfTemplateService {
     public static final String CERTIFICATE_TEMPLATES_FOLDER = "certificates/templates/pdf-templates";
     private final CertificateByTemplateService certificateByTemplateService;

@@ -2,7 +2,7 @@ package com.softserve.teachua.dto.center;
 
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.contact_data.ContactDataResponse;
-import com.softserve.teachua.dto.location.LocationResponse;
+import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.dto.user.UserPreview;
 import java.util.Set;
@@ -36,7 +36,7 @@ public class CenterResponse implements Convertible {
 
     private UserPreview user;
 
-    private Set<LocationResponse> locations;
+    private Set<LocationProfile> locations;
 
     private Set<ClubResponse> clubs;
 

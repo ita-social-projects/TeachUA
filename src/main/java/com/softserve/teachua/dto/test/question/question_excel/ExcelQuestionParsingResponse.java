@@ -1,7 +1,7 @@
-package com.softserve.teachua.dto.test.question.questionExcel;
+package com.softserve.teachua.dto.test.question.question_excel;
 
-import com.softserve.teachua.dto.databaseTransfer.ExcelParsingMistake;
-import com.softserve.teachua.dto.test.answer.answerExcel.AnswerExcel;
+import com.softserve.teachua.dto.database_transfer.ExcelParsingMistake;
+import com.softserve.teachua.dto.test.answer.answer_excel.AnswerExcel;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;

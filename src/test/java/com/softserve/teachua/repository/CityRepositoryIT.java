@@ -1,21 +1,18 @@
 package com.softserve.teachua.repository;
 
 import com.softserve.teachua.model.City;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @Slf4j
 @DataJpaTest
-public class CityRepositoryIT {
+class CityRepositoryIT {
     private static final String EXISTING_NAME = "Одеса";
     private static final String NOT_EXISTING_NAME = "Івано-Франківськ";
 
@@ -26,20 +23,20 @@ public class CityRepositoryIT {
     private CityRepository cityRepository;
 
     @Test
-    public void findByExistingIdShouldReturnCorrectCityEntity() {
-        assertThat(cityRepository.findById(EXISTING_ID).get().getName()).isEqualTo(EXISTING_NAME);
+    void findByExistingIdShouldReturnCorrectCityEntity() {
+        assertThat(cityRepository.findById(EXISTING_ID).orElseThrow().getName()).isEqualTo(EXISTING_NAME);
     }
 
     @Test
-    public void findByNotExistingIdShouldReturnOptionalEmpty() {
-        assertThat(cityRepository.findById(NOT_EXISTING_ID)).isEqualTo(Optional.empty());
+    void findByNotExistingIdShouldReturnOptionalEmpty() {
+        assertThat(cityRepository.findById(NOT_EXISTING_ID)).isEmpty();
     }
 
     @Test
-    public void findAllByOrderByIdAscShouldReturnSortedListByIdAsc() {
+    void findAllByOrderByIdAscShouldReturnSortedListByIdAsc() {
         List<City> cities = cityRepository.findAllByOrderByIdAsc();
 
-        assertThat(cities.size()).isGreaterThan(0);
+        assertThat(cities).isNotEmpty();
 
         for (int i = 1; i < cities.size(); i++) {
             assertThat(cities.get(i).getId()).isGreaterThan(cities.get(i - 1).getId());
@@ -47,22 +44,22 @@ public class CityRepositoryIT {
     }
 
     @Test
-    public void findByExistingNameShouldReturnCorrectCityEntity() {
-        assertThat(cityRepository.findByName(EXISTING_NAME).get().getName()).isEqualTo(EXISTING_NAME);
+    void findByExistingNameShouldReturnCorrectCityEntity() {
+        assertThat(cityRepository.findByName(EXISTING_NAME).orElseThrow().getName()).isEqualTo(EXISTING_NAME);
     }
 
     @Test
-    public void findByNotExistingNameShouldReturnOptionalEmpty() {
-        assertThat(cityRepository.findByName(NOT_EXISTING_NAME)).isEqualTo(Optional.empty());
+    void findByNotExistingNameShouldReturnOptionalEmpty() {
+        assertThat(cityRepository.findByName(NOT_EXISTING_NAME)).isEmpty();
     }
 
     @Test
-    public void existingByExistingNameShouldReturnTrue() {
+    void existingByExistingNameShouldReturnTrue() {
         assertTrue(cityRepository.existsByName(EXISTING_NAME));
     }
 
     @Test
-    public void existingByNotExistingNameShouldReturnFalse() {
+    void existingByNotExistingNameShouldReturnFalse() {
         assertFalse(cityRepository.existsByName(NOT_EXISTING_NAME));
     }
 }

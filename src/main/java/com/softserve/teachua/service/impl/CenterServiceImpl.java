@@ -147,7 +147,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         User user = null;
         if (centerProfile.getUserId() != null) {
             log.debug("CenterServiceImpl=> centerProfile.userId == " + centerProfile.getUserId());
-            user = userRepository.getOne(centerProfile.getUserId());
+            user = userRepository.findById(centerProfile.getUserId()).orElseThrow(NotExistException::new);
         } else {
             log.debug("CenterServiceImpl=> centerProfile.userId == null");
         }
@@ -174,6 +174,13 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
                             .collect(Collectors.toSet()));
         }
 
+        saveClubs(centerProfile, center);
+
+        log.debug("**/adding new center = " + centerProfile.getName());
+        return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
+    }
+
+    private void saveClubs(CenterProfile centerProfile, Center center) {
         List<Long> clubsId = centerProfile.getClubsId();
 
         if (clubsId != null && !clubsId.isEmpty()) {
@@ -184,9 +191,6 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
                 clubRepository.save(club);
             }
         }
-
-        log.debug("**/adding new center = " + centerProfile.getName());
-        return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
     }
 
     @Override
@@ -199,7 +203,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     @Override
     public Center getCenterById(Long id) {
         Optional<Center> optionalCenter = getOptionalCenterById(id);
-        if (!optionalCenter.isPresent()) {
+        if (optionalCenter.isEmpty()) {
             throw new NotExistException(String.format(CENTER_NOT_FOUND_BY_ID, id));
         }
 
@@ -228,16 +232,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
                 .withUrlBackgroundPicture(centerProfile.getUrlBackgroundPicture())
                 .withLocations(locationService.updateCenterLocation(locations, center));
 
-        List<Long> clubsId = centerProfile.getClubsId();
-
-        if (clubsId != null && !clubsId.isEmpty()) {
-            for (Long clubId : clubsId) {
-                log.debug("ID - " + clubId);
-                Club club = clubService.getClubById(clubId);
-                club.setCenter(center);
-                clubRepository.save(club);
-            }
-        }
+        saveClubs(centerProfile, center);
         log.debug("**/updating center by id = " + newCenter);
         return dtoConverter.convertToDto(centerRepository.save(newCenter), CenterProfile.class);
     }
@@ -269,7 +264,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         return new PageImpl<>(
                 centerResponses.stream()
                         .map(centerToCenterResponseConverter::convertToCenterResponse)
-                        .collect(Collectors.toList()),
+                        .toList(),
                 centerResponses.getPageable(), centerResponses.getTotalElements());
     }
 
@@ -279,7 +274,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         return new PageImpl<>(
                 clubsResponses
                         .stream().map(toClubResponseConverter::convertToClubResponse)
-                        .collect(Collectors.toList()), clubsResponses.getPageable(), clubsResponses.getTotalElements()
+                        .toList(), clubsResponses.getPageable(), clubsResponses.getTotalElements()
         );
     }
 
@@ -292,15 +287,14 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
         return new PageImpl<>(
                 centersOnPage.stream()
-                        .map(centerToCenterResponseConverter::convertToCenterResponse)
-                        .peek(centerResponse -> log.debug(centerResponse.toString())).collect(Collectors.toList()),
+                        .map(centerToCenterResponseConverter::convertToCenterResponse).toList(),
                 centersOnPage.getPageable(), centersOnPage.getTotalElements());
     }
 
     @Override
     public Center getCenterByName(String name) {
         Optional<Center> optionalCenter = getOptionalCenterByName(name);
-        if (!optionalCenter.isPresent()) {
+        if (optionalCenter.isEmpty()) {
             throw new NotExistException(String.format(CENTER_NOT_FOUND_BY_NAME, name));
         }
 
@@ -313,7 +307,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     public List<CenterResponse> getListOfCenters() {
         return centerRepository.findAll().stream()
                 .map(centerToCenterResponseConverter::convertToCenterResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private boolean isCenterExistByName(String name) {
@@ -387,7 +381,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
             updCenter.setRating(clubRepository.findAvgRating(centerResponse.getId()));
             centerRepository.save(updCenter);
             return centerResponse;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     @Override

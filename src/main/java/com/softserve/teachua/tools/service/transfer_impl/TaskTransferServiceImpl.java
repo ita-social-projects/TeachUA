@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,19 +21,18 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class TaskTransferServiceImpl implements TaskTransferService {
+    private static final String TARGET_PACKAGE = "tasks";
+    private static final String TARGET_PACKAGE_FOR_DATA = "tasks/taskData";
     private final FileUtils fileUtils;
     private final DtoConverter dtoConverter;
     private final TaskRepository taskRepository;
     private final ChallengeService challengeService;
     private final TaskDao taskDao;
-
-    private final String uaTeachChallenge = "Навчай українською челендж"; // id=1
-    private final String languageChallenge = "Мовомаратон"; // id=2
+    private static final String UA_TEACH_CHALLENGE = "Навчай українською челендж"; // id=1
+    private static final String LANGUAGE_CHALLENGE = "Мовомаратон"; // id=2
+    private final Map<String, List<String>> imageMap;
     private String uaTeachChallengeImage = "data_for_db/task_images/challengeUA.jpg";
     private String languageChallengeImage = "data_for_db/task_images/marathon_log.png";
-    private static final String TARGET_PACKAGE = "tasks";
-    private static final String TARGET_PACKAGE_FOR_DATA = "tasks/taskData";
-    private final Map imageMap;
 
     @Autowired
     public TaskTransferServiceImpl(FileUtils fileReader, DtoConverter dtoConverter, TaskRepository taskRepository,
@@ -44,12 +42,12 @@ public class TaskTransferServiceImpl implements TaskTransferService {
         this.taskRepository = taskRepository;
         this.challengeService = challengeService;
         this.taskDao = taskDao;
-        imageMap = new HashMap<String, List<String>>();
+        imageMap = new HashMap<>();
         imageMap.put("Крок 16. Рахуйте українською ",
                 Arrays.asList("data_for_db/taskData/day16_1.png", "data_for_db/taskData/day16_2.png",
                         "data_for_db/taskData/day16_3.png", "data_for_db/taskData/day16_4.png"));
-        imageMap.put("Крок 17. Мандруйте Україною ", Arrays.asList("data_for_db/taskData/day17_1.png"));
-        imageMap.put("Крок 24. Пізнавайте українське мистецтво", Arrays.asList("data_for_db/taskData/day24_1.jpg"));
+        imageMap.put("Крок 17. Мандруйте Україною ", List.of("data_for_db/taskData/day17_1.png"));
+        imageMap.put("Крок 24. Пізнавайте українське мистецтво", List.of("data_for_db/taskData/day24_1.jpg"));
     }
 
     @Override
@@ -70,20 +68,16 @@ public class TaskTransferServiceImpl implements TaskTransferService {
 
     private List<SuccessCreatedTask> createTasks(List<TaskProfile> tasks) {
         return tasks.stream().map(taskProfile -> {
-            // if(!taskProfile.getPicture().isEmpty()) {
-            // taskProfile.setPicture(fileUtils.moveImage(taskProfile.getPicture(), "tasks"));
-            // }
-            // temporary implementation (uses only once)
             if (taskProfile.getChallengeId() == 1) {
-                taskProfile.setChallengeId(challengeService.getChallengeByName(uaTeachChallenge).getId());
+                taskProfile.setChallengeId(challengeService.getChallengeByName(UA_TEACH_CHALLENGE).getId());
                 taskProfile.setPicture(uaTeachChallengeImage);
             } else {
-                taskProfile.setChallengeId(challengeService.getChallengeByName(languageChallenge).getId());
+                taskProfile.setChallengeId(challengeService.getChallengeByName(LANGUAGE_CHALLENGE).getId());
                 taskProfile.setPicture(languageChallengeImage);
             }
 
             if (imageMap.containsKey(taskProfile.getName())) {
-                ((List<String>) imageMap.get(taskProfile.getName())).stream()
+                imageMap.get(taskProfile.getName()).stream()
                         .forEach(url -> taskProfile.setDescription(taskProfile.getDescription().replace(url,
                                 System.getenv("BASE_URL") + fileUtils.moveImage(url, TARGET_PACKAGE_FOR_DATA))));
             }
@@ -93,7 +87,7 @@ public class TaskTransferServiceImpl implements TaskTransferService {
         }).map(taskRepository::save).map(task -> {
             log.info("Task: " + task);
             return (SuccessCreatedTask) dtoConverter.convertToDto(task, SuccessCreatedTask.class);
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     @Override

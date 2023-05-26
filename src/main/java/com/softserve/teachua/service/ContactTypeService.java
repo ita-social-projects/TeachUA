@@ -1,8 +1,8 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.dto.contactType.ContactTypeProfile;
-import com.softserve.teachua.dto.contactType.ContactTypeResponse;
-import com.softserve.teachua.dto.contactType.SuccessCreatedContactType;
+import com.softserve.teachua.dto.contact_type.ContactTypeProfile;
+import com.softserve.teachua.dto.contact_type.ContactTypeResponse;
+import com.softserve.teachua.dto.contact_type.SuccessCreatedContactType;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;

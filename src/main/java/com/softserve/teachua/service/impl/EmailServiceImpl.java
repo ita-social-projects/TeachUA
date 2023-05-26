@@ -28,6 +28,7 @@ public class EmailServiceImpl implements EmailService {
 
     private final CertificateService certificateService;
 
+    @SuppressWarnings("squid:S1450") //Suppressed because of project's business logic.
     private MimeBodyPart pdfBodyPart;
 
     @Autowired
@@ -49,8 +50,7 @@ public class EmailServiceImpl implements EmailService {
             pdfBodyPart.setDataHandler(new DataHandler(dataSource));
             pdfBodyPart.setFileName("certificate.pdf");
         } catch (MessagingException exception) {
-            log.warn("Problem with creation pdf certificate. Pdf body part.");
-            exception.printStackTrace();
+            log.warn("Problem with creation pdf certificate. Pdf body part. {}", exception.getMessage());
         }
 
         try {

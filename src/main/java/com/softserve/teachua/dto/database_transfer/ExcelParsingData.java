@@ -1,11 +1,11 @@
-package com.softserve.teachua.dto.databaseTransfer;
+package com.softserve.teachua.dto.database_transfer;
 
-import com.softserve.teachua.dto.databaseTransfer.model.CategoryExcel;
-import com.softserve.teachua.dto.databaseTransfer.model.CenterExcel;
-import com.softserve.teachua.dto.databaseTransfer.model.ClubExcel;
-import com.softserve.teachua.dto.databaseTransfer.model.DistrictExcel;
-import com.softserve.teachua.dto.databaseTransfer.model.LocationExcel;
-import com.softserve.teachua.dto.databaseTransfer.model.StationExcel;
+import com.softserve.teachua.dto.database_transfer.model.CategoryExcel;
+import com.softserve.teachua.dto.database_transfer.model.CenterExcel;
+import com.softserve.teachua.dto.database_transfer.model.ClubExcel;
+import com.softserve.teachua.dto.database_transfer.model.DistrictExcel;
+import com.softserve.teachua.dto.database_transfer.model.LocationExcel;
+import com.softserve.teachua.dto.database_transfer.model.StationExcel;
 import com.softserve.teachua.model.ExcelCenterEntity;
 import com.softserve.teachua.model.ExcelClubEntity;
 import java.util.ArrayList;

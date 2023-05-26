@@ -15,7 +15,6 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.service.CertificateByTemplateService;
-import static com.softserve.teachua.service.impl.PdfTemplateServiceImpl.CERTIFICATE_TEMPLATES_FOLDER;
 import com.softserve.teachua.utils.QRCodeService;
 import java.awt.Color;
 import java.io.File;
@@ -26,11 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import static com.softserve.teachua.service.impl.PdfTemplateServiceImpl.CERTIFICATE_TEMPLATES_FOLDER;
 
 @Slf4j
 @Component
@@ -61,6 +60,7 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
     }
 
     @Override
+    @SuppressWarnings("checkstyle:Indentation") //Suppressed because of unsupported switch style.
     public String createCertificateByTemplate(CertificateTransfer transfer) throws IOException {
         String targetFileName = ThreadLocalRandom.current().nextInt() + ".pdf";
 
@@ -68,7 +68,6 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
         if (!directory.exists()) {
             directory.mkdir();
         }
-        // @formatter:off
         try (PdfReader reader = new PdfReader(
                 new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath() + "/"
                         + transfer.getTemplate().getFilePath());
@@ -76,7 +75,6 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
                      new ClassPathResource("/").getFile().getPath() + "/temp/" + targetFileName);
              PdfDocument pdfDoc = new PdfDocument(reader, writer);
              Document document = new Document(pdfDoc)) {
-            // @formatter:on
             PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, true);
 
             PdfFont halvarBlk = PdfFontFactory.createFont(HALVAR_BLK_PATH, PdfEncodings.IDENTITY_H);
@@ -87,30 +85,24 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
             HashMap<String, String> values = objectMapper.readValue(transfer.getValues(), HashMap.class);
 
             for (Map.Entry<String, String> entry : templateProperties.entrySet()) {
-                // @formatter:off
                 switch (entry.getValue()) {
-                  case "serial_number":
-                      setValue(form.getField(entry.getKey()), transfer.getSerialNumber().toString(), halvarBlk,
-                              halvarMd);
-                      break;
-                  case "qrCode_white":
-                  case "qrCode_black":
-                      List<Float> position = Arrays.stream(
-                                      form.getField(entry.getKey()).getWidgets().get(0).getRectangle().toString()
-                                              .replace("[", "").replace("]", "").split(" "))
-                              .map(Float::valueOf).collect(Collectors.toList());
-
-                      float width = position.get(2) - position.get(0);
-                      float height = position.get(3) - position.get(1);
-                      Image image = getQrCodeImage(transfer.getSerialNumber(), width, height, entry.getValue());
-                      image.setFixedPosition(position.get(0), position.get(1));
-
-                      document.add(image);
-                      break;
-                  default:
-                      setValue(form.getField(entry.getKey()), values.get(entry.getKey()), halvarBlk, halvarMd);
+                    case "serial_number" ->
+                            setValue(form.getField(entry.getKey()), transfer.getSerialNumber().toString(), halvarBlk,
+                                    halvarMd);
+                    case "qrCode_white", "qrCode_black" -> {
+                        List<Float> position = Arrays.stream(
+                                        form.getField(entry.getKey()).getWidgets().get(0).getRectangle().toString()
+                                                .replace("[", "").replace("]", "")
+                                                .split(" "))
+                                .map(Float::valueOf).toList();
+                        float width = position.get(2) - position.get(0);
+                        float height = position.get(3) - position.get(1);
+                        Image image = getQrCodeImage(transfer.getSerialNumber(), width, height, entry.getValue());
+                        image.setFixedPosition(position.get(0), position.get(1));
+                        document.add(image);
+                    }
+                    default -> setValue(form.getField(entry.getKey()), values.get(entry.getKey()), halvarBlk, halvarMd);
                 }
-                // @formatter:on
             }
             form.flattenFields();
         } catch (IOException e) {
