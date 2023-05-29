@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class MainMenuTest extends TestRunner {
 
     @Test
-    public void checkMenu() {
+    public void checkMenuLinks() {
         // Steps
         HomePage homePage = loadApplication();
         presentationSleep();

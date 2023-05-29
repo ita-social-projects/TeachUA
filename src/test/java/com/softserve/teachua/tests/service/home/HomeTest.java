@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class HomeTest extends TestRunner {
 
     @Test
-    public void checkHome() {
+    public void checkSmokeHome() {
         // Steps
         HomePage homePage = loadApplication();
         presentationSleep();

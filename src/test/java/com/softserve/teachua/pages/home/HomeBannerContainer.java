@@ -9,14 +9,17 @@ import java.util.List;
 
 public class HomeBannerContainer {
 
-    private final String HOME_BANNER_DIV_ELEMENT_CSSSELECTOR = "div.about-carousel-block div.slick-slide:not(.slick-cloned)";
-    private final String SLICK_DOTS_BOTTOMS_CSSSELECTOR = "div.about-carousel-block  ul.slick-dots.slick-dots-bottom li";
+    //private final String HOME_BANNER_DIV_ELEMENT_CSS_SELECTOR = "div.about-carousel-block div.slick-slide:not(.slick-cloned)";
+    private final String HOME_BANNER_DIV_ELEMENT_CSS_SELECTOR = "div.about-carousel-block div.slick-slide.slick-active.slick-current";
+    private final String SLICK_DOTS_BOTTOMS_CSS_SELECTOR = "div.about-carousel-block  ul.slick-dots.slick-dots-bottom li";
 
+    private final String HOME_BANNERNOT_FOUND = "homeBanner not Found.";
     private final String HOME_BANNER_TITLE_NOT_FOUND = "homeBannerTitle: %s not Found.";
     //
     protected WebDriver driver;
     //
     private List<HomeBannerComponent> homeBannerComponents;
+    private int homeBannerPosition;
     private List<WebElement> slickDotsBottoms;
 
     public HomeBannerContainer(WebDriver driver) {
@@ -27,12 +30,18 @@ public class HomeBannerContainer {
     private void initElements() {
         // init elements
         homeBannerComponents = new ArrayList<>();
-        for (WebElement current : driver.findElements(By.cssSelector(HOME_BANNER_DIV_ELEMENT_CSSSELECTOR))) {
+        for (WebElement current : driver.findElements(By.cssSelector(HOME_BANNER_DIV_ELEMENT_CSS_SELECTOR))) {
             homeBannerComponents.add(new HomeBannerComponent(current));
+            homeBannerPosition = -1; //TODO++++++
         }
         slickDotsBottoms = new ArrayList<>();
-        for (WebElement current : driver.findElements(By.cssSelector(SLICK_DOTS_BOTTOMS_CSSSELECTOR))) {
+        for (WebElement current : driver.findElements(By.cssSelector(SLICK_DOTS_BOTTOMS_CSS_SELECTOR))) {
             slickDotsBottoms.add(current);
+        }
+        //
+        if (homeBannerComponents.size() == 0) {
+            // TODO Develop Custom Exception
+            throw new RuntimeException(HOME_BANNERNOT_FOUND);
         }
     }
 
@@ -56,6 +65,10 @@ public class HomeBannerContainer {
 
     public int getHomeBannerComponentsCount() {
         return getHomeBannerComponents().size();
+    }
+
+    public int getSlickDotsBottomsCount() {
+        return getSlickDotsBottoms().size();
     }
 
     public List<String> getHomeBannerComponentTitles() {
