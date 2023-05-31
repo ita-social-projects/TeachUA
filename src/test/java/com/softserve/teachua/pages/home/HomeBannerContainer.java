@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeBannerContainer {
+    private final String TAG_ATTRIBUTE_CLASS = "class";
+    private final String SLICK_ACTIVE_CLASS_TEXT = "slick-active";
 
     //private final String HOME_BANNER_DIV_ELEMENT_CSS_SELECTOR = "div.about-carousel-block div.slick-slide:not(.slick-cloned)";
     private final String HOME_BANNER_DIV_ELEMENT_CSS_SELECTOR = "div.about-carousel-block div.slick-slide.slick-active.slick-current";
@@ -19,8 +21,10 @@ public class HomeBannerContainer {
     protected WebDriver driver;
     //
     private List<HomeBannerComponent> homeBannerComponents;
-    private int homeBannerPosition;
+
     private List<WebElement> slickDotsBottoms;
+
+    private int homeBannerPosition;
 
     public HomeBannerContainer(WebDriver driver) {
         this.driver = driver;
@@ -30,13 +34,18 @@ public class HomeBannerContainer {
     private void initElements() {
         // init elements
         homeBannerComponents = new ArrayList<>();
+        homeBannerPosition = -1;
         for (WebElement current : driver.findElements(By.cssSelector(HOME_BANNER_DIV_ELEMENT_CSS_SELECTOR))) {
             homeBannerComponents.add(new HomeBannerComponent(current));
-            homeBannerPosition = -1; //TODO++++++
         }
         slickDotsBottoms = new ArrayList<>();
         for (WebElement current : driver.findElements(By.cssSelector(SLICK_DOTS_BOTTOMS_CSS_SELECTOR))) {
             slickDotsBottoms.add(current);
+            if ((current.getAttribute(TAG_ATTRIBUTE_CLASS) != null)
+                && (!current.getAttribute(TAG_ATTRIBUTE_CLASS).isEmpty())
+                && (current.getAttribute(TAG_ATTRIBUTE_CLASS).equals(SLICK_ACTIVE_CLASS_TEXT))) {
+                homeBannerPosition = slickDotsBottoms.size() - 1;
+            }
         }
         //
         if (homeBannerComponents.size() == 0) {
@@ -61,6 +70,11 @@ public class HomeBannerContainer {
         getSlickDotsBottoms().get(number).click();
     }
 
+    // homeBannerPosition
+    public int getHomeBannerPosition() {
+        return homeBannerPosition;
+    }
+
     // Functional
 
     public int getHomeBannerComponentsCount() {
@@ -75,11 +89,13 @@ public class HomeBannerContainer {
         List<String> homeBannerComponentTitles = new ArrayList<>();
         for (HomeBannerComponent current : getHomeBannerComponents()) {
             homeBannerComponentTitles.add(current.getTitleLabelText());
-            System.out.println("\ncurrent.get ... isDisplayed() " + current.getcSearchDivElement().isDisplayed());
+            //System.out.println("\ncurrent.get ... isDisplayed() " + current.getcSearchDivElement().isDisplayed());
         }
         return homeBannerComponentTitles;
     }
 
+    /*
+    // Move to test
     public int getHomeBannerComponentByTitlePosition(String homeBannerTitle) {
         int position = -1;
         for (int i = 0; i < getHomeBannerComponentTitles().size(); i++) {
@@ -94,6 +110,7 @@ public class HomeBannerContainer {
         }
         return position;
     }
+    */
 
     public HomeBannerComponent getHomeBannerComponentByTitle(String homeBannerTitle) {
         HomeBannerComponent result = null;
@@ -143,6 +160,8 @@ public class HomeBannerContainer {
 
     // Business Logic
 
+    /*
+    // Move to test
     public void chooseHomeBannerComponentByNumber(int number) {
         clickSlickDotsBottomsByNumber(number);
     }
@@ -150,5 +169,6 @@ public class HomeBannerContainer {
     public void chooseHomeBannerComponentByTitle(String homeBannerTitle) {
         clickSlickDotsBottomsByNumber(getHomeBannerComponentByTitlePosition(homeBannerTitle));
     }
+    */
 
 }

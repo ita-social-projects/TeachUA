@@ -1,5 +1,6 @@
 package com.softserve.teachua.pages.home;
 
+import com.softserve.teachua.data.home.BannerItem;
 import com.softserve.teachua.pages.TopPart;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -44,15 +45,23 @@ public class HomePage extends TopPart {
 
     // Business Logic
 
-    public HomePage chooseHomeBannerComponentByNumber(int number) {
-        getHomeBannerContainer().clickSlickDotsBottomsByNumber(number);
+    public HomePage chooseHomeBannerComponentByNumber(BannerItem bannerItem) {
+        getHomeBannerContainer().clickSlickDotsBottomsByNumber(bannerItem.getNumber());
         return this;
     }
 
+    public HomePage chooseHomeBannerComponentByNumber(int dotsNumber) {
+        getHomeBannerContainer().clickSlickDotsBottomsByNumber(dotsNumber);
+        return this;
+    }
+
+    /*
+    // Move to Test
     public HomePage chooseHomeBannerComponentByTitle(String homeBannerTitle) {
         getHomeBannerContainer().clickSlickDotsBottomsByNumber(getHomeBannerContainer()
                 .getHomeBannerComponentByTitlePosition(homeBannerTitle));
         return this;
     }
+    */
 
 }

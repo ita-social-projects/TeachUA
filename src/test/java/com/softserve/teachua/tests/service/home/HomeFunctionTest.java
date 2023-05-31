@@ -5,41 +5,43 @@ import com.softserve.teachua.pages.home.HomePage;
 import com.softserve.teachua.tests.TestRunner;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
-public class HomeTest extends TestRunner {
+import java.util.stream.Stream;
 
-    @Test
-    public void checkSmokeHome() {
-        // Steps
-        HomePage homePage = loadApplication();
-        presentationSleep();
-        //
-        // Check
-        Assertions.assertEquals(HomePage.CLUB_DIRECTION_TEXT, homePage.getClubDirectionLabelText());
-        //
-        presentationSleep();
-        System.out.println("HomeTest checkHome() done"); // Use Logging
+public class HomeFunctionTest extends TestRunner {
+
+    private static Stream<Arguments> getSlickDotsValidNumbers() {
+        return Stream.of(
+                Arguments.of(1),
+                Arguments.of(3),
+                Arguments.of(8)
+        );
     }
 
     // TODO move to smoke
-    @Test
-    public void checkSlickDotsHomeBanners() {
+    @ParameterizedTest(name = "{index} => dotsNumber={0}")
+    @MethodSource("getSlickDotsValidNumbers")
+    public void checkSlickDotsHomeBanners(int dotsNumber) {
         // Steps
         HomePage homePage = loadApplication();
         presentationSleep();
         //
+        // Step
+        homePage.chooseHomeBannerComponentByNumber(dotsNumber);
+        presentationSleep();
         // Check
-        //for (int i = 0; i< homePage.getHomeBannerContainer().getHomeBannerComponentsCount(); i++) {
-        for (int i = homePage.getHomeBannerContainer().getHomeBannerComponentsCount() - 1; i >= 0; i--) {
-            homePage.chooseHomeBannerComponentByNumber(i);
-            //Assertions.assertEquals(HomePage.CLUB_DIRECTION_TEXT, homePage.getClubDirectionLabelText());
-            presentationSleep();
-        }
+        Assertions.assertTrue(!homePage.getHomeBannerContainer().getHomeBannerComponentTitles().isEmpty());
+        presentationSleep();
         //
         presentationSleep();
         System.out.println("HomeTest checkSlickDotsHomeBanners() done"); // Use Logging
     }
 
+    /*
     @Test
     public void checkClickInvalidHomeBanner() {
         // Steps
@@ -74,7 +76,9 @@ public class HomeTest extends TestRunner {
         presentationSleep();
         System.out.println("HomeTest checkSlickDotsHomeBanners() done"); // Use Logging
     }
+    */
 
+    /*
     //@Test
     public void checkHomeBannerDescription(String homeBannerTitle, String homeBannerDescription) {
         // Steps
@@ -92,4 +96,5 @@ public class HomeTest extends TestRunner {
         presentationSleep();
         System.out.println("HomeTest checkSlickDotsHomeBanners() done"); // Use Logging
     }
+    */
 }

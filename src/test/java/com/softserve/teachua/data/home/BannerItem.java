@@ -13,6 +13,7 @@ public class BannerItem {
         this.description = description;
         this.urlButton = urlButton;
         this.urlPicture = urlPicture;
+        urlLocalPicture = "";
         number = -1;
     }
 

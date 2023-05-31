@@ -40,7 +40,8 @@ public final class BannerRepository {
     // TODO
     public static BannerBox getBannerBox() {
         return new BannerBox(9)
-                .addBanner(getFirst());
+                .addBanner(getFirst())
+                .addBanner(getSecond());
     }
 
      /*-
