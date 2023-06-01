@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 
 public abstract class TopPart {
     public static final String TAG_ATTRIBUTE_STYLE = "style";
+    public static final String TAG_ATTRIBUTE_HREF = "href";
     protected final String TAG_ATTRIBUTE_VALUE = "value";
     protected final String TAG_ATTRIBUTE_SRC = "src";
 

@@ -6,6 +6,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.lang.reflect.Constructor;
+
 public class HomePage extends TopPart {
 
     public static final String DETAILS_BUTTON_TEXT = "Детальніше";
@@ -47,13 +49,25 @@ public class HomePage extends TopPart {
 
     public HomePage chooseHomeBannerComponentByNumber(BannerItem bannerItem) {
         getHomeBannerContainer().clickSlickDotsBottomsByNumber(bannerItem.getNumber());
-        return this;
+        return new HomePage(driver);
     }
 
     public HomePage chooseHomeBannerComponentByNumber(int dotsNumber) {
         getHomeBannerContainer().clickSlickDotsBottomsByNumber(dotsNumber);
-        return this;
+        return new HomePage(driver);
     }
+
+    /*
+    public <T extends TopPart> T chooseHomeBannerButton(BannerItem bannerItem) {
+        getHomeBannerContainer().clickHomeBannerComponentDetailsButton();
+        //
+        Class<?> clazz = Class.forName("com.softserve.teachua.pages.ClubPage");
+        Constructor<?> ctor = clazz.getConstructor(WebDriver.class);
+        Object object = ctor.newInstance(new Object[] { driver });
+        //
+        return (T) object;
+    }
+    */
 
     /*
     // Move to Test

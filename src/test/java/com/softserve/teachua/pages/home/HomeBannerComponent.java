@@ -14,6 +14,7 @@ public class HomeBannerComponent {
     private WebElement titleLabel;
     private WebElement description;
     private WebElement detailsButton;
+    private WebElement detailsButtonLink;
     private WebElement pictureUrl;
 
     public HomeBannerComponent(WebElement searchDivElement) {
@@ -27,6 +28,7 @@ public class HomeBannerComponent {
          titleLabel = searchDivElement.findElement(By.cssSelector("h2"));
          description = searchDivElement.findElement(By.cssSelector("span.description"));
          detailsButton = searchDivElement.findElement(By.cssSelector("button"));
+         detailsButtonLink = detailsButton.findElement(By.xpath("./.."));
          pictureUrl = searchDivElement.findElement(By.cssSelector("div.carousel-item"));
     }
 
@@ -63,9 +65,21 @@ public class HomeBannerComponent {
     public String getDetailsButtonText() {
         return getDetailsButton().getText();
     }
+    public String getDetailsButtonUrlText() {
+        return getDetailsButtonLinkText();
+    }
 
     public void clickDetailsButton() {
         getDetailsButton().click();
+    }
+
+    // detailsButtonLink
+    public WebElement getDetailsButtonLink() {
+        return detailsButtonLink;
+    }
+
+    public String getDetailsButtonLinkText() {
+        return getDetailsButtonLink().getAttribute(TopPart.TAG_ATTRIBUTE_HREF);
     }
 
     // pictureUrl
@@ -80,8 +94,8 @@ public class HomeBannerComponent {
         return pictureUrl;
     }
 
-
     // Functional
 
     // Business Logic
+
 }

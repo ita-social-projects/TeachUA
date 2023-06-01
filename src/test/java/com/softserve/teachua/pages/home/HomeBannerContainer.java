@@ -61,6 +61,10 @@ public class HomeBannerContainer {
         return homeBannerComponents;
     }
 
+    protected void clickHomeBannerComponentDetailsButton() {
+        getHomeBannerComponents().get(0).clickDetailsButton();
+    }
+
     // slickDotsBottoms
     public List<WebElement> getSlickDotsBottoms() {
         return slickDotsBottoms;

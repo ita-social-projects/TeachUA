@@ -30,6 +30,8 @@ public abstract class TestRunner {
     private static final Long IMPLICITLY_WAIT_SECONDS = 10L;
     private final Long ONE_SECOND_DELAY = 1000L;
     private static WebDriver driver;
+    protected String testName;
+    protected boolean isTestSuccess;
 
     // Overload
     protected void presentationSleep() {
@@ -103,6 +105,7 @@ public abstract class TestRunner {
     public void beforeMethod() {
         driver.get(BASE_URL);
         presentationSleep(); // For Presentation ONLY
+        isTestSuccess = false;
         System.out.println("\t@BeforeEach executed");
     }
 
@@ -111,6 +114,10 @@ public abstract class TestRunner {
         presentationSleep(); // For Presentation ONLY
         // logout; clear cache; delete cookie; delete session;
         // Save Screen;
+        if (!isTestSuccess) {
+            takeScreenShot(testName);
+            takePageSource(testName);
+        }
         System.out.println("\t@AfterEach executed");
     }
 

@@ -32,9 +32,16 @@ public final class BannerRepository {
     public static BannerItem getSecond() {
         return new BannerItem("Гуртки українською",
                 "На нашому сайті ви можете обрати для вашої дитини гурток, де навчають українською мовою.",
-                "https://speak-ukrainian.org.ua/dev/about",
+                "https://speak-ukrainian.org.ua/dev/clubs",
                 "https://speak-ukrainian.org.ua/dev/upload/banner/2021-12-19_13-02-29_aboutClubs.jpg")
                 .setNumber(1);
+    }
+    public static BannerItem getLast() {
+        return new BannerItem("Тест Тест",
+                "Тест Тес 11",
+                "https://speak-ukrainian.org.ua/dev/challenges/234",
+                "https://speak-ukrainian.org.ua/dev/upload/banners/1Jedyni.png")
+                .setNumber(8);
     }
 
     // TODO
