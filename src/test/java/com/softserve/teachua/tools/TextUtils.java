@@ -24,4 +24,8 @@ public class TextUtils {
         }
         return resultText;
     }
+
+    public static String unpackFirstGroupSubText(String regexPattern, String text) {
+        return unpackFirstSubText(regexPattern, text, 1);
+    }
 }

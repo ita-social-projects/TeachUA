@@ -90,7 +90,7 @@ public class HomeBannerComponent {
     public String getPictureUrlText() {
         String pictureUrl = null;
         String text = getPictureUrl().getAttribute(TopPart.TAG_ATTRIBUTE_STYLE);
-        pictureUrl = TextUtils.unpackFirstSubText(URL_PATTER_TEXT, text, 1);
+        pictureUrl = TextUtils.unpackFirstGroupSubText(URL_PATTER_TEXT, text);
         return pictureUrl;
     }
 

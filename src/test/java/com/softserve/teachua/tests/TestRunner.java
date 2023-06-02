@@ -1,12 +1,11 @@
 package com.softserve.teachua.tests;
 
 import com.softserve.teachua.pages.home.HomePage;
+import com.softserve.teachua.tools.TextUtils;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -23,15 +22,19 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
 
+@ExtendWith(RunnerExtensionResult.class)
 public abstract class TestRunner {
+    private final String GET_TEST_NAME_PATTERN = ".+\\.(\\w+)\\(.+";
     private final String TIME_TEMPLATE = "yyyy-MM-dd_HH-mm-ss-S";
-
     private final String BASE_URL = "https://speak-ukrainian.org.ua/dev/";
     private static final Long IMPLICITLY_WAIT_SECONDS = 10L;
     private final Long ONE_SECOND_DELAY = 1000L;
     private static WebDriver driver;
+    protected static Boolean isTestSuccessful = false;
+    /*
     protected String testName;
     protected boolean isTestSuccess;
+    */
 
     // Overload
     protected void presentationSleep() {
@@ -90,7 +93,7 @@ public abstract class TestRunner {
     }
 
     @AfterAll
-    public static void tearDown() {
+    public static void tearDownAll() {
         System.out.println("@AfterAll start");
         //TestRunner.this.presentationSleep(); // For Presentation ONLY
         if (driver != null) {
@@ -105,16 +108,28 @@ public abstract class TestRunner {
     public void beforeMethod() {
         driver.get(BASE_URL);
         presentationSleep(); // For Presentation ONLY
+        /*
         isTestSuccess = false;
+        */
         System.out.println("\t@BeforeEach executed");
     }
 
     @AfterEach
-    public void afterMethod() {
+    public void afterMethod(TestInfo testInfo) {
         presentationSleep(); // For Presentation ONLY
         // logout; clear cache; delete cookie; delete session;
         // Save Screen;
+        /*
         if (!isTestSuccess) {
+            takeScreenShot(testName);
+            takePageSource(testName);
+        }
+        */
+        //System.out.println("\t\t\t\t\t*** testInfo.getTestMethod() = " + testInfo.getTestMethod());
+        //System.out.println("\t\t\t\t\t*** testInfo.getDisplayName() = " + testInfo.getDisplayName());
+        if (!isTestSuccessful) {
+            String testName = TextUtils.unpackFirstGroupSubText(GET_TEST_NAME_PATTERN, testInfo.getTestMethod().toString());
+            //System.out.println("\t\t\t\t\t*** testName = " + testName);
             takeScreenShot(testName);
             takePageSource(testName);
         }

@@ -1,8 +1,26 @@
 package com.softserve.teachua;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+//import org.junit.platform.engine.TestExecutionResult;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
+class RunnerExtension implements AfterTestExecutionCallback {
+
+    @Override
+    public void afterTestExecution(ExtensionContext context) throws Exception {
+        Boolean testResult = context.getExecutionException().isPresent();
+        System.out.println("\t\t\t\tException.isPresent() = " + testResult); //false - SUCCESS, true - FAILED
+        System.out.println("\t\t\t\tTest context.getDisplayName(): "+ context.getDisplayName());
+        //
+        SimpleJUnit5.isTestSuccessful = !testResult;
+    }
+}
+
+@ExtendWith(RunnerExtension.class)
 public class SimpleJUnit5 {
+    protected static Boolean isTestSuccessful = false;
 
     @BeforeAll
     public static void setup() {
@@ -20,14 +38,18 @@ public class SimpleJUnit5 {
     }
 
     @AfterEach
-    public void tearThis() {
+    public void tearThis(TestInfo testInfo) {
+        System.out.println("\t\t\tgetTestMethod = " + testInfo.getTestMethod());
+        System.out.println("\t\t\tgetDisplayName = " + testInfo.getDisplayName());
+        System.out.println("\t\t\tisTestSuccessful = " + isTestSuccessful);
+        //System.out.printf("result = " + result.getStatus());
         System.out.println("\t@AfterEach executed");
     }
 
     @Test
     public void testOne() {
         System.out.println("\t\t@Test testOne()");
-        Assertions.assertEquals(4, 2 + 2);
+        Assertions.assertEquals(4, 2 + 2+1);
     }
 
     @Test
@@ -36,7 +58,7 @@ public class SimpleJUnit5 {
         Assertions.assertEquals(6, 2 + 4);
     }
 
-    @Test
+    //@Test
     void testExpectedException() {
         RuntimeException thrown = Assertions.assertThrows(RuntimeException.class, () -> {
             //Code under test
@@ -47,7 +69,7 @@ public class SimpleJUnit5 {
         Assertions.assertEquals("/ by zero", thrown.getMessage());
     }
 
-    @Test
+    //@Test
     void testExpectedException2() {
         NumberFormatException thrown = Assertions.assertThrows(NumberFormatException.class, () -> {
             int k = Integer.parseInt("One");

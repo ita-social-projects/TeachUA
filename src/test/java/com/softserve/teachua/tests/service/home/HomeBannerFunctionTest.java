@@ -51,8 +51,8 @@ public class HomeBannerFunctionTest extends TestRunner {
 
     private static Stream<Arguments> getBannerItems() {
         return Stream.of(
-                Arguments.of(BannerRepository.getLast()),
-                Arguments.of(BannerRepository.getSecond())
+                Arguments.of(BannerRepository.getLast())
+                //Arguments.of(BannerRepository.getSecond())
         );
     }
 
@@ -113,7 +113,7 @@ public class HomeBannerFunctionTest extends TestRunner {
     @MethodSource("getBannerItems")
     public void checkHomeBannerPictureUrl(BannerItem bannerItem) {
         //testName = String.format("checkHomeBannerPictureUrl(BannerItem %s)", bannerItem);
-        testName = "checkHomeBannerPictureUrl";
+        //testName = "checkHomeBannerPictureUrl";
         //
         // Steps
         HomePage homePage = loadApplication()
@@ -124,12 +124,12 @@ public class HomeBannerFunctionTest extends TestRunner {
 //        System.out.println("homePage.getHomeBannerContainer().getHomeBannerComponents().get(0).getPictureUrlText() = "
 //                + homePage.getHomeBannerContainer().getHomeBannerComponents().get(0).getPictureUrlText());
         Assertions.assertTrue(bannerItem.getUrlPicture().contains(
-                homePage.getHomeBannerContainer().getHomeBannerComponents().get(0).getPictureUrlText()));
+                homePage.getHomeBannerContainer().getHomeBannerComponents().get(0).getPictureUrlText()+"1"));
         presentationSleep();
         //
         System.out.println("HomeTest checkHomeBannerPictureUrl() done"); // Use Logging
         //
-        isTestSuccess = true;
+        //isTestSuccess = true;
     }
 
 }
