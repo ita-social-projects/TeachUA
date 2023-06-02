@@ -1,6 +1,7 @@
 package com.softserve.teachua.repository;
 
 import com.softserve.teachua.model.CertificateType;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +11,5 @@ public interface CertificateTypeRepository extends JpaRepository<CertificateType
 
     boolean existsByNameIgnoreCase(String name);
 
-    CertificateType findCertificateTypeByCodeNumber(Integer codeNumber);
+    Optional<CertificateType> findCertificateTypeByCodeNumber(Integer codeNumber);
 }

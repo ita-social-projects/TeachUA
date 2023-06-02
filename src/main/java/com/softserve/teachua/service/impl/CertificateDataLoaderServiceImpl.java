@@ -14,11 +14,9 @@ import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.repository.CertificateTemplateRepository;
 import com.softserve.teachua.repository.CertificateTypeRepository;
 import com.softserve.teachua.service.CertificateDataLoaderService;
-import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;
 import com.softserve.teachua.service.CertificateDatesService;
 import com.softserve.teachua.service.CertificateService;
 import com.softserve.teachua.service.CertificateTemplateService;
-import com.softserve.teachua.service.CertificateTypeService;
 import com.softserve.teachua.utils.CertificateContentDecorator;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -28,6 +26,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import static com.softserve.teachua.service.CertificateDataLoaderService.getCertificateByTemplateValue;
 
 @Service
 @Slf4j
@@ -42,9 +41,10 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             "Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”";
     @SuppressWarnings("squid:S1075") //Suppressed because of project's business logic.
     private static final String PICTURE_PATH = "/static/images/certificate/validation/jedyni_banner.png";
+
+    private static final String PARTICIPANTS_CERTIFICATE_TYPE_NAME = "Учасник";
     private final CertificateService certificateService;
     private final CertificateDatesService certificateDatesService;
-    private final CertificateTypeService certificateTypeService;
     private final CertificateTemplateService templateService;
     private final CertificateRepository certificateRepository;
     private final CertificateTemplateRepository templateRepository;
@@ -55,7 +55,6 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     @Autowired
     public CertificateDataLoaderServiceImpl(CertificateService certificateService,
                                             CertificateDatesService certificateDatesService,
-                                            CertificateTypeService certificateTypeService,
                                             CertificateTemplateService templateService,
                                             CertificateRepository certificateRepository,
                                             CertificateTemplateRepository templateRepository,
@@ -63,7 +62,6 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                                             CertificateContentDecorator decorator, ObjectMapper objectMapper) {
         this.certificateService = certificateService;
         this.certificateDatesService = certificateDatesService;
-        this.certificateTypeService = certificateTypeService;
         this.templateService = templateService;
         this.certificateRepository = certificateRepository;
         this.templateRepository = templateRepository;
@@ -118,38 +116,22 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     }
 
     private CertificateTemplate saveTemplate(Integer type) {
-        checkDataBaseContent();
-        return templateService.getTemplateByType(type);
+        checkDataBaseData();
+        return templateService.getTemplateByTypeId(type);
     }
 
-    private void checkDataBaseContent() {
-        if (!certificateTypeRepository.existsById(1)) {
-            certificateTypeService.addCertificateType(
-                    CertificateType.builder().codeNumber(1).name("Тренер").build());
-        }
-        if (!certificateTypeRepository.existsById(2)) {
-            certificateTypeService.addCertificateType(
-                    CertificateType.builder().codeNumber(2).name("Модератор").build());
-        }
-        if (!certificateTypeRepository.existsById(3)) {
-            certificateTypeService.addCertificateType(
-                    CertificateType.builder().codeNumber(3).name("Учасник").build());
-        }
-        if (!certificateTypeRepository.existsById(4)) {
-            certificateTypeService.addCertificateType(
-                    CertificateType.builder().codeNumber(4).name("Учасник").build());
-        }
-        CertificateType certificateType = certificateTypeService.getCertificateTypeById(3);
-        if (!templateRepository.existsCertificateTemplateByCertificateType(certificateType)) {
-            templateService.addTemplate(CertificateTemplate.builder().name("Єдині учасник")
-                    .certificateType(certificateType)
-                    .filePath("/certificates/templates/jedyni_participant_template.jrxml")
-                    .courseDescription(COURSE_DESCRIPTION)
-                    .projectDescription(PROJECT_DESCRIPTION)
-                    .picturePath(PICTURE_PATH).build());
-        }
-        certificateType = certificateTypeService.getCertificateTypeById(1);
-        if (!templateRepository.existsCertificateTemplateByCertificateType(certificateType)) { // Trainer
+    private void checkDataBaseData() {
+        checkTrainerCertificateData();
+        checkModerCertificateData();
+        checkParticipantCertificateData();
+        checkBasicParticipantCertificateData();
+        checkBusinessParticipantCertificateData();
+    }
+
+    private void checkTrainerCertificateData() {
+        if (!templateRepository.existsCertificateTemplateByCertificateTypeId(1)) {
+            CertificateType certificateType =
+                    CertificateType.builder().codeNumber(1).name("Тренер").build();
             templateService.addTemplate(CertificateTemplate.builder().name("Єдині тренер")
                     .certificateType(certificateType)
                     .filePath("/certificates/templates/trainer_certificate.jrxml")
@@ -157,8 +139,12 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                     .projectDescription(PROJECT_DESCRIPTION)
                     .picturePath(PICTURE_PATH).build());
         }
-        certificateType = certificateTypeService.getCertificateTypeById(2);
-        if (!templateRepository.existsCertificateTemplateByCertificateType(certificateType)) { // Moderator
+    }
+
+    private void checkModerCertificateData() {
+        if (!templateRepository.existsCertificateTemplateByCertificateTypeId(2)) {
+            CertificateType certificateType =
+                    CertificateType.builder().codeNumber(2).name("Модератор").build();
             templateService.addTemplate(CertificateTemplate.builder().name("Єдині модератор")
                     .certificateType(certificateType)
                     .filePath("/certificates/templates/moderator_certificate.jrxml")
@@ -166,12 +152,43 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
                     .projectDescription(PROJECT_DESCRIPTION)
                     .picturePath(PICTURE_PATH).build());
         }
-        certificateType = certificateTypeService.getCertificateTypeById(4);
-        if (!templateRepository.existsCertificateTemplateByCertificateType(certificateType)) {
+    }
+
+    private void checkParticipantCertificateData() {
+        if (!templateRepository.existsCertificateTemplateByCertificateTypeId(3)) {
+            CertificateType certificateType =
+                    CertificateType.builder().codeNumber(3).name(PARTICIPANTS_CERTIFICATE_TYPE_NAME).build();
+            templateService.addTemplate(CertificateTemplate.builder().name("Єдині учасник")
+                    .certificateType(certificateType)
+                    .filePath("/certificates/templates/jedyni_participant_template.jrxml")
+                    .courseDescription(COURSE_DESCRIPTION)
+                    .projectDescription(PROJECT_DESCRIPTION)
+                    .picturePath(PICTURE_PATH).build());
+        }
+    }
+
+    private void checkBasicParticipantCertificateData() {
+        if (!templateRepository.existsCertificateTemplateByCertificateTypeId(4)) {
+            CertificateType certificateType =
+                    CertificateType.builder().codeNumber(4).name(PARTICIPANTS_CERTIFICATE_TYPE_NAME).build();
             templateService.addTemplate(CertificateTemplate.builder().name("Учасник базового рівня")
                     .certificateType(certificateType)
                     .filePath("/certificates/templates/jedyni_basic_participant_template.jrxml")
                     .courseDescription("Вивчення української мови базового рівня.")
+                    .projectDescription(PROJECT_DESCRIPTION)
+                    .picturePath(PICTURE_PATH).build());
+        }
+    }
+
+    private void checkBusinessParticipantCertificateData() {
+        if (!templateRepository.existsCertificateTemplateByCertificateTypeId(5)) {
+            log.info("Saving business part template");
+            CertificateType certificateType = certificateTypeRepository.saveAndFlush(
+                            CertificateType.builder().codeNumber(5).name(PARTICIPANTS_CERTIFICATE_TYPE_NAME).build());
+            templateService.addTemplate(CertificateTemplate.builder().name("Учасник бізнес-курсу")
+                    .certificateType(certificateType)
+                    .filePath("/certificates/templates/jedyni_business_participant_template.jrxml")
+                    .courseDescription("Бізнес-курс української мови.")
                     .projectDescription(PROJECT_DESCRIPTION)
                     .picturePath(PICTURE_PATH).build());
         }

@@ -84,7 +84,7 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
     }
 
     @Override
-    public CertificateTemplate getTemplateByType(Integer type) {
+    public CertificateTemplate getTemplateByTypeId(Integer type) {
         return certificateTemplateRepository.findFirstByCertificateTypeId(type)
                 .orElseThrow(() -> new NotExistException(String.format(TEMPLATE_NOT_FOUND_BY_TYPE, type)));
     }

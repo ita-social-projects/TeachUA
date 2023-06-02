@@ -48,7 +48,7 @@ public class CertificateTypeServiceImpl implements CertificateTypeService {
 
     @Override
     public CertificateType getCertificateTypeByCodeNumber(Integer id) {
-        return certificateTypeRepository.findCertificateTypeByCodeNumber(id);
+        return certificateTypeRepository.findCertificateTypeByCodeNumber(id).orElseThrow(NotExistException::new);
     }
 
     @Override
@@ -81,6 +81,12 @@ public class CertificateTypeServiceImpl implements CertificateTypeService {
     }
 
     @Override
+    public CertificateType getOrAddCertificateType(CertificateType certificateType) {
+        return certificateTypeRepository.findCertificateTypeByCodeNumber(certificateType.getCodeNumber())
+                .orElseGet(() -> certificateTypeRepository.save(certificateType));
+    }
+
+    @Override
     public CertificateTypeProcessingResponse updateCertificateType(Integer id,
                                                                    CertificateTypeProfile updatedCertificateType) {
         List<Pair<String, MessageType>> messagesList = new ArrayList<>();
@@ -103,7 +109,7 @@ public class CertificateTypeServiceImpl implements CertificateTypeService {
 
     @Override
     public void deleteCertificateType(Integer id) {
-        if (certificateTemplateRepository.existsCertificateTemplateByCertificateType(getCertificateTypeById(id))) {
+        if (certificateTemplateRepository.existsCertificateTemplateByCertificateTypeId(id)) {
             throw new EntityIsUsedException();
         }
         certificateTypeRepository.deleteById(id);
