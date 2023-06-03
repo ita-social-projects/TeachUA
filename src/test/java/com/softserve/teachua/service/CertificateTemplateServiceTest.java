@@ -107,7 +107,7 @@ class CertificateTemplateServiceTest {
         when(certificateTemplateRepository.findFirstByCertificateTypeId(
                 certificateTemplate.getCertificateType().getId())).thenReturn(Optional.ofNullable(certificateTemplate));
 
-        assertThat(certificateTemplateService.getTemplateByType(
+        assertThat(certificateTemplateService.getTemplateByTypeId(
                 certificateTemplate.getCertificateType().getId())).isNotNull().isEqualTo(certificateTemplate);
     }
 

@@ -25,7 +25,7 @@ public interface CertificateTemplateService {
      * @param type - put CertificateTemplate type
      * @return new {@code CertificateTemplate}
      */
-    CertificateTemplate getTemplateByType(Integer type);
+    CertificateTemplate getTemplateByTypeId(Integer type);
 
     /**
      * Get an entity of {@code CertificateTemplate} if template successfully added.

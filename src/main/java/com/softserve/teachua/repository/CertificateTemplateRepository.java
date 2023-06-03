@@ -1,7 +1,6 @@
 package com.softserve.teachua.repository;
 
 import com.softserve.teachua.model.CertificateTemplate;
-import com.softserve.teachua.model.CertificateType;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,7 +22,7 @@ public interface CertificateTemplateRepository extends JpaRepository<Certificate
 
     boolean existsBy();
 
-    boolean existsCertificateTemplateByCertificateType(CertificateType certificateType);
+    boolean existsCertificateTemplateByCertificateTypeId(Integer id);
 
     boolean existsByFilePath(String filePath);
 

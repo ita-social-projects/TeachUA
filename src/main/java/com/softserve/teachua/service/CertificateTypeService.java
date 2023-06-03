@@ -16,6 +16,8 @@ public interface CertificateTypeService {
 
     CertificateTypeProcessingResponse addCertificateType(CertificateTypeProfile certificateTypeProfile);
 
+    CertificateType getOrAddCertificateType(CertificateType certificateType);
+
     CertificateTypeProcessingResponse updateCertificateType(Integer id, CertificateTypeProfile certificateTypeProfile);
 
     void deleteCertificateType(Integer id);

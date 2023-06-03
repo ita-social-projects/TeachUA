@@ -72,7 +72,7 @@ class CertificateTypeServiceTest {
     @Test
     void getCertificateTypeByCodeNumber() {
         when(certificateTypeRepository.findCertificateTypeByCodeNumber(certificateType.getCodeNumber())).thenReturn(
-                certificateType);
+                Optional.of(certificateType));
 
         assertThat(certificateTypeService.getCertificateTypeByCodeNumber(certificateType.getCodeNumber())).isEqualTo(
                 certificateType);
@@ -143,9 +143,7 @@ class CertificateTypeServiceTest {
 
     @Test
     void deleteCertificateType_IfExists() {
-        when(certificateTypeRepository.findById(certificateTypeProfile.getId())).thenReturn(
-                Optional.of(certificateType));
-        when(certificateTemplateRepository.existsCertificateTemplateByCertificateType(certificateType)).thenReturn(
+        when(certificateTemplateRepository.existsCertificateTemplateByCertificateTypeId(certificateType.getCodeNumber())).thenReturn(
                 true);
         Integer certificateTypeId = certificateType.getId();
         assertThrows(EntityIsUsedException.class,
@@ -154,9 +152,7 @@ class CertificateTypeServiceTest {
 
     @Test
     void deleteCertificateType_IfDoesNotExists() {
-        when(certificateTypeRepository.findById(certificateTypeProfile.getId())).thenReturn(
-                Optional.of(certificateType));
-        when(certificateTemplateRepository.existsCertificateTemplateByCertificateType(certificateType)).thenReturn(
+        when(certificateTemplateRepository.existsCertificateTemplateByCertificateTypeId(certificateType.getCodeNumber())).thenReturn(
                 false);
 
         assertDoesNotThrow(() -> certificateTypeService.deleteCertificateType(certificateType.getId()));

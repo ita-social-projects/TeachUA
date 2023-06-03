@@ -16,7 +16,6 @@ import com.softserve.teachua.dto.certificate_by_template.CertificateByTemplateTr
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
-import com.softserve.teachua.model.CertificateType;
 import com.softserve.teachua.repository.CertificateRepository;
 import com.softserve.teachua.repository.CertificateTemplateRepository;
 import com.softserve.teachua.repository.CertificateTypeRepository;
@@ -80,7 +79,6 @@ class CertificateDataLoaderServiceTest {
     @Test
     void saveToDatabase_saveToDatabase_IfCertificateDoesNotExists() {
         mockSaveDates(false);
-        mockSaveTemplate();
         when(certificateRepository.existsByUserNameAndDates(certificate.getUserName(), certificateDates)).thenReturn(
                 false);
 
@@ -90,7 +88,6 @@ class CertificateDataLoaderServiceTest {
     @Test
     void saveToDatabase_IfCertificateExists() {
         mockSaveDates(true);
-        mockSaveTemplate();
         when(certificateRepository.existsByUserNameAndDates(certificate.getUserName(),
                 certificate.getDates())).thenReturn(
                 true);
@@ -109,14 +106,6 @@ class CertificateDataLoaderServiceTest {
         } else {
             when(certificateDatesService.getOrCreateCertificateDates(certificateDates)).thenReturn(certificateDates);
         }
-    }
-
-    private void mockSaveTemplate() {
-        when(certificateTypeRepository.existsById(any(Integer.class))).thenReturn(false);
-        when(certificateTypeService.getCertificateTypeById(any(Integer.class))).thenReturn(
-                new CertificateType());
-        when(templateRepository.existsCertificateTemplateByCertificateType(any(CertificateType.class))).thenReturn(
-                false);
     }
 
     @Test
