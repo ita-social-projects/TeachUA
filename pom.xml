@@ -33,6 +33,8 @@
     <sonar.coverage.exclusions>
       **/constants/**,**/dto/**,**/exception/**,**/model/**
     </sonar.coverage.exclusions>
+
+    <image>bnazar00/teachua_${project.artifactId}:${project.version}</image>
   </properties>
 
   <dependencyManagement>
@@ -73,6 +75,38 @@
             <execution>
               <goals>
                 <goal>repackage</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>com.google.cloud.tools</groupId>
+          <artifactId>jib-maven-plugin</artifactId>
+          <version>3.3.2</version>
+          <configuration>
+            <from>
+              <image>
+                eclipse-temurin:17
+              </image>
+              <platforms>
+                <platform>
+                  <architecture>amd64</architecture>
+                  <os>linux</os>
+                </platform>
+              </platforms>
+            </from>
+            <to>
+              <tags>
+                <tag>latest</tag>
+              </tags>
+            </to>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>build</goal>
               </goals>
             </execution>
           </executions>
