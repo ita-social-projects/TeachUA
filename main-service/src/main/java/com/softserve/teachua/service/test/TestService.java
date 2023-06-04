@@ -60,7 +60,7 @@ public interface TestService {
     Test findById(Long id);
 
     /**
-     * This method archives test by id.
+     * This method archive test by id.
      *
      * @param id - put test id.
      * @return new {@code TestProfile}

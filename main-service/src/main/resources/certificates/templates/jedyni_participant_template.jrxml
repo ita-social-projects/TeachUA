@@ -33,7 +33,7 @@
         <band height="794" splitType="Stretch">
             <image>
                 <reportElement x="0" y="0" width="300" height="794" uuid="31e6f512-28d1-47a5-9dad-21a3fa70adaf"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/challenge_logo.jpg")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.certificate.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/challenge_logo.jpg")]]></imageExpression>
             </image>
             <staticText>
                 <reportElement x="325" y="75" width="670" height="70" forecolor="#2572da" uuid="b5113369-3677-4e88-b9d9-e27152fda9ee"/>
@@ -120,20 +120,20 @@
 
             <image>
                 <reportElement x="410" y="690" width="150" height="70" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/wnis.png")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.certificate.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/wnis.png")]]></imageExpression>
             </image>
             <image>
                 <reportElement x="590" y="690" width="140" height="90" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/uhp.png")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.certificate.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/uhp.png")]]></imageExpression>
             </image>
             <image>
                 <reportElement x="750" y="690" width="180" height="90" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/logo.jpg")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.certificate.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/logo.jpg")]]></imageExpression>
             </image>
 
             <image>
                 <reportElement x="880" y="480" width="210" height="210" uuid="25ba7107-8c96-49d8-a127-46b6547b8d8c"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/stamp.jpg")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.certificate.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/stamp.jpg")]]></imageExpression>
             </image>
             <staticText>
                 <reportElement x="930" y="10" width="78" height="35" uuid="afa193c3-e74f-4b54-90f3-c2ca75ec401d"/>

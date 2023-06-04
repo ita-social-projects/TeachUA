@@ -1,7 +1,7 @@
 package com.softserve.teachua.model.archivable;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.marker.Archivable;
+import com.softserve.clients.marker.Archivable;
 import com.softserve.teachua.service.impl.ChallengeServiceImpl;
 import java.util.Set;
 import lombok.AllArgsConstructor;

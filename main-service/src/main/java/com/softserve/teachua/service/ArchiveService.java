@@ -1,9 +1,9 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.model.Archive;
-import com.softserve.teachua.model.marker.Archivable;
+import com.softserve.clients.marker.Archivable;
 import java.util.List;
 
 /**
@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface ArchiveService {
     /**
-     * The method returns list of entities {@code List<Archive>} of all existing archives found by id.
+     * The method returns list of entities {@code List<Archive>} of all existing archive found by id.
      *
      * @param className - put Archive name.
      * @return new {@code List<Archive>}.
@@ -20,7 +20,7 @@ public interface ArchiveService {
     List<Archive> findArchivesByClassName(String className);
 
     /**
-     * The method returns list of entities {@code List<Archive>} of all archives.
+     * The method returns list of entities {@code List<Archive>} of all archive.
      *
      * @return new {@code List<Archive>}.
      */

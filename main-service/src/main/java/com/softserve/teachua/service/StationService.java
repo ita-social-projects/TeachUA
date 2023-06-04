@@ -1,10 +1,10 @@
 package com.softserve.teachua.service;
 
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.dto.station.StationResponse;
 import com.softserve.teachua.dto.station.SuccessCreatedStation;
 import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Station;
 import java.util.List;
 import java.util.Optional;

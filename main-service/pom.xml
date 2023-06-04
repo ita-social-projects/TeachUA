@@ -43,6 +43,12 @@
   </profiles>
 
   <dependencies>
+    <dependency>
+      <groupId>com.softserve</groupId>
+      <artifactId>clients</artifactId>
+      <version>1.0</version>
+      <scope>compile</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -120,13 +126,6 @@
     <dependency>
       <groupId>org.apache.tomcat.embed</groupId>
       <artifactId>tomcat-embed-jasper</artifactId>
-    </dependency>
-
-
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.26</version>
     </dependency>
 
     <dependency>
@@ -207,24 +206,6 @@
       <version>5.2.3</version>
     </dependency>
 
-    <!-- Apache Commons IO library  -->
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.11.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.therapi</groupId>
-      <artifactId>therapi-runtime-javadoc-scribe</artifactId>
-      <version>0.15.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.therapi</groupId>
-      <artifactId>therapi-runtime-javadoc</artifactId>
-      <version>0.15.0</version>
-    </dependency>
-
-
     <dependency>
       <groupId>net.sf.jasperreports</groupId>
       <artifactId>jasperreports-fonts</artifactId>
@@ -235,6 +216,7 @@
       <artifactId>jasperreports</artifactId>
       <version>6.20.1</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>batik-all</artifactId>
@@ -250,35 +232,8 @@
       <artifactId>spring-boot-starter-hateoas</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.zxing</groupId>
-      <artifactId>core</artifactId>
-      <version>3.5.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.zxing</groupId>
-      <artifactId>javase</artifactId>
-      <version>3.5.1</version>
-    </dependency>
-    <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
-    </dependency>
-
-    <!-- iText  -->
-    <dependency>
-      <groupId>com.itextpdf</groupId>
-      <artifactId>kernel</artifactId>
-      <version>7.2.4</version>
-    </dependency>
-    <dependency>
-      <groupId>com.itextpdf</groupId>
-      <artifactId>forms</artifactId>
-      <version>7.2.4</version>
-    </dependency>
-    <dependency>
-      <groupId>com.itextpdf</groupId>
-      <artifactId>layout</artifactId>
-      <version>7.2.4</version>
     </dependency>
 
     <!--    GOOGLE CLIENT AND API -->
@@ -324,7 +279,6 @@
       <groupId>io.micrometer</groupId>
       <artifactId>micrometer-registry-prometheus</artifactId>
     </dependency>
-
   </dependencies>
 
 

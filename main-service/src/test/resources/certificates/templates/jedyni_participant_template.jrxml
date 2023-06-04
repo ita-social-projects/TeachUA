@@ -33,7 +33,7 @@
         <band height="794" splitType="Stretch">
             <image>
                 <reportElement x="0" y="0" width="300" height="794" uuid="31e6f512-28d1-47a5-9dad-21a3fa70adaf"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/challenge_logo.jpg")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.certificate.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/challenge_logo.jpg")]]></imageExpression>
             </image>
             <staticText>
                 <reportElement x="325" y="75" width="670" height="70" forecolor="#2572da" uuid="b5113369-3677-4e88-b9d9-e27152fda9ee"/>

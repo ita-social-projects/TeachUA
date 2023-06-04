@@ -8,7 +8,7 @@ import com.softserve.teachua.dto.contact_type.ContactTypeResponse;
 import com.softserve.teachua.dto.contact_type.SuccessCreatedContactType;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.model.ContactType;
 import com.softserve.teachua.model.archivable.ContactTypeArch;
 import com.softserve.teachua.repository.ContactTypeRepository;

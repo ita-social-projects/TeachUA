@@ -8,7 +8,7 @@ import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.city.SuccessCreatedCity;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.model.City;
 import com.softserve.teachua.model.archivable.CityArch;
 import com.softserve.teachua.repository.CityRepository;

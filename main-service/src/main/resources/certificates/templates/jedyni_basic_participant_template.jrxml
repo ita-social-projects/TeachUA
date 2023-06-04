@@ -21,7 +21,7 @@
         <band height="794" splitType="Stretch">
             <image scaleImage="FillFrame">
                 <reportElement x="0" y="0" width="1123" height="794" uuid="31e6f512-28d1-47a5-9dad-21a3fa70adaf"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/basic_participant_certificate_bg.jpg")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.certificate.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/basic_participant_certificate_bg.jpg")]]></imageExpression>
             </image>
         </band>
     </background>
@@ -38,7 +38,7 @@
         <band height="794" splitType="Stretch">
             <image>
                 <reportElement x="40" y="47" width="190" height="695" uuid="31e6f512-28d1-47a5-9dad-21a3fa70adaf"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/moderator_left_banner.png")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.certificate.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/moderator_left_banner.png")]]></imageExpression>
             </image>
             <line direction="BottomUp">
                 <reportElement x="255" y="0" width="5" height="794" forecolor="#FFFFFF"/>
@@ -119,20 +119,20 @@
             </textField>
             <image>
                 <reportElement x="390" y="680" width="150" height="100" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/western_fund.png")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.certificate.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/western_fund.png")]]></imageExpression>
             </image>
             <image>
                 <reportElement x="585" y="682" width="150" height="90" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/platforma.png")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.certificate.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/platforma.png")]]></imageExpression>
             </image>
             <image>
                 <reportElement x="780" y="690" width="160" height="95" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/speak_ukrainian.png")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.certificate.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/speak_ukrainian.png")]]></imageExpression>
             </image>
 
             <image>
                 <reportElement x="885" y="440" width="200" height="200" uuid="25ba7107-8c96-49d8-a127-46b6547b8d8c"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/stamp_bp.png")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.certificate.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/stamp_bp.png")]]></imageExpression>
             </image>
             <staticText>
                 <reportElement x="927" y="15" width="78" height="35" uuid="afa193c3-e74f-4b54-90f3-c2ca75ec401d"/>

@@ -1,7 +1,7 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.teachua.exception.BadRequestException;
-import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.clients.exception.BadRequestException;
+import com.softserve.clients.exception.FileUploadException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.service.FileUploadService;

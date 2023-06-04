@@ -1,20 +1,19 @@
 package com.softserve.teachua.exception.handler;
 
 import com.google.api.client.http.HttpResponseException;
+import com.softserve.clients.exception.BadRequestException;
+import com.softserve.clients.exception.EntityIsUsedException;
+import com.softserve.clients.exception.JsonWriteException;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.dto.exception.ExceptionResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.exception.CannotDeleteFileException;
-import com.softserve.teachua.exception.CertificateGenerationException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.teachua.exception.EntityIsUsedException;
-import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.clients.exception.FileUploadException;
 import com.softserve.teachua.exception.GoogleApisDocumentException;
 import com.softserve.teachua.exception.IncorrectInputException;
-import com.softserve.teachua.exception.JsonWriteException;
 import com.softserve.teachua.exception.LogNotFoundException;
 import com.softserve.teachua.exception.MatchingPasswordException;
-import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.exception.StreamCloseException;
 import com.softserve.teachua.exception.UpdatePasswordException;
@@ -28,7 +27,6 @@ import static org.springframework.http.HttpStatus.BAD_GATEWAY;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
@@ -151,10 +149,5 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntityIsUsedException.class)
     public ResponseEntity<Object> handleEntityInUseException(EntityIsUsedException exception) {
         return buildExceptionBody(exception, CONFLICT);
-    }
-
-    @ExceptionHandler(CertificateGenerationException.class)
-    public ResponseEntity<Object> handleEntityInUseException(CertificateGenerationException exception) {
-        return buildExceptionBody(exception, INTERNAL_SERVER_ERROR);
     }
 }

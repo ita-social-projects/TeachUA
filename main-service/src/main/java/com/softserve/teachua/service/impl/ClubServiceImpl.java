@@ -27,7 +27,7 @@ import com.softserve.teachua.dto.search.TopClubProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.IncorrectInputException;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.Center;

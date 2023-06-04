@@ -4,7 +4,7 @@ import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.database_transfer.ExcelParsingData;
 import com.softserve.teachua.dto.database_transfer.ExcelParsingResponse;
-import com.softserve.teachua.exception.FileUploadException;
+import com.softserve.clients.exception.FileUploadException;
 import com.softserve.teachua.service.DataLoaderService;
 import com.softserve.teachua.service.ExcelParserService;
 import com.softserve.teachua.service.SqlDataExportService;

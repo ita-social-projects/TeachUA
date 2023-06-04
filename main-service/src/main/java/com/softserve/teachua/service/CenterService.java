@@ -6,7 +6,7 @@ import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import java.util.List;
 import org.springframework.data.domain.Page;

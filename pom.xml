@@ -10,6 +10,8 @@
 
   <modules>
     <module>main-service</module>
+    <module>certificate</module>
+    <module>clients</module>
   </modules>
 
   <name>${project.artifactId}</name>
@@ -59,6 +61,23 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <!-- Apache Commons IO library  -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.11.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.therapi</groupId>
+      <artifactId>therapi-runtime-javadoc-scribe</artifactId>
+      <version>0.15.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.therapi</groupId>
+      <artifactId>therapi-runtime-javadoc</artifactId>
+      <version>0.15.0</version>
     </dependency>
   </dependencies>
 

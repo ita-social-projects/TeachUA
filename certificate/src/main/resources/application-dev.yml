@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: ${DEV2_DATASOURCE_URL}
+    username: ${DEV2_DATASOURCE_USER}
+    password: ${DEV2_DATASOURCE_PASSWORD}
+
+application:
+  baseURL: ${BASE_URL}

@@ -2,7 +2,7 @@ package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.controller.test.TopicController;
 import com.softserve.teachua.dto.test.topic.TopicProfile;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.model.test.Topic;
 import com.softserve.teachua.repository.test.TopicRepository;
 import com.softserve.teachua.service.test.TopicService;

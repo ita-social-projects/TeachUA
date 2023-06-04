@@ -2,8 +2,8 @@ package com.softserve.teachua.tools;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.exception.IncorrectInputException;
-import com.softserve.teachua.exception.NotExistException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URISyntaxException;

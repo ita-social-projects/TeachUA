@@ -10,7 +10,7 @@ import com.softserve.teachua.dto.challenge.SuccessUpdatedChallenge;
 import com.softserve.teachua.dto.challenge.UpdateChallenge;
 import com.softserve.teachua.dto.challenge.UpdateChallengeDate;
 import com.softserve.teachua.dto.task.SuccessUpdatedTask;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import java.util.List;
 

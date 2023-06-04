@@ -19,7 +19,7 @@ import com.softserve.teachua.dto.user.UserVerifyPassword;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.MatchingPasswordException;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
 import com.softserve.teachua.exception.UpdatePasswordException;
 import com.softserve.teachua.exception.UserAuthenticationException;

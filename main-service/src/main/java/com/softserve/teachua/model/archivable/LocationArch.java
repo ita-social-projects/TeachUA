@@ -1,6 +1,6 @@
 package com.softserve.teachua.model.archivable;
 
-import com.softserve.teachua.model.marker.Archivable;
+import com.softserve.clients.marker.Archivable;
 import com.softserve.teachua.service.impl.LocationServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

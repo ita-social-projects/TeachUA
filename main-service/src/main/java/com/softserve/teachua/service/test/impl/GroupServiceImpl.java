@@ -4,7 +4,7 @@ import com.softserve.teachua.controller.test.GroupController;
 import com.softserve.teachua.dto.test.group.GroupProfile;
 import com.softserve.teachua.dto.test.group.ResponseGroup;
 import com.softserve.teachua.dto.test.group.UpdateGroup;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.repository.test.GroupRepository;
 import com.softserve.teachua.service.test.GroupService;

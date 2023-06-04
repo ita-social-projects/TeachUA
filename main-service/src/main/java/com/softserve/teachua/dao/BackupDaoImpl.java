@@ -1,6 +1,6 @@
 package com.softserve.teachua.dao;
 
-import com.softserve.teachua.exception.BadRequestException;
+import com.softserve.clients.exception.BadRequestException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

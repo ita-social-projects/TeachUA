@@ -33,7 +33,7 @@ public class ArchiveController implements Api {
 
     /**
      * Use this endpoint to get the Archive information for all Archives. The controller returns information
-     * {@code List <Archive>} about archives.
+     * {@code List <Archive>} about archive.
      *
      * @return new {@code List <Archive>}.
      */
@@ -45,7 +45,7 @@ public class ArchiveController implements Api {
 
     /**
      * Use this endpoint to get the Archive information based on ClassName. The controller returns information
-     * {@code List <Archive>} about archives by className.
+     * {@code List <Archive>} about archive by className.
      *
      * @param className - put className here.
      * @return new {@code List <Archive>}.

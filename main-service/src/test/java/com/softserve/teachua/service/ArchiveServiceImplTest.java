@@ -2,27 +2,29 @@ package com.softserve.teachua.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.clients.exception.NotExistException;
+import com.softserve.clients.marker.Archivable;
 import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.model.Archive;
-import com.softserve.teachua.model.marker.Archivable;
 import com.softserve.teachua.repository.ArchiveRepository;
 import com.softserve.teachua.service.impl.ArchiveServiceImpl;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationContext;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationContext;
 
 @ExtendWith(MockitoExtension.class)
 class ArchiveServiceImplTest {
@@ -78,14 +80,14 @@ class ArchiveServiceImplTest {
     }
 
     @Test
-    @DisplayName("Finding archives by not existing Class name returns empty list")
+    @DisplayName("Finding archive by not existing Class name returns empty list")
     void findArchivesByWrongClassName() {
         assertThat(archiveService.findArchivesByClassName(WRONG_ARCHIVE_CLASS_NAME))
             .isEqualTo(Collections.emptyList());
     }
 
     @Test
-    @DisplayName("Finding archives by Class name returns correct list")
+    @DisplayName("Finding archive by Class name returns correct list")
     void findArchivesByCorrectClassName() {
         when(archiveRepository.findAllByClassName(RIGHT_ARCHIVE_CLASS_NAME)).thenReturn(singletonArchiveList);
         assertThat(archiveService.findArchivesByClassName(RIGHT_ARCHIVE_CLASS_NAME))
@@ -93,7 +95,7 @@ class ArchiveServiceImplTest {
     }
 
     @Test
-    @DisplayName("Finding all archives returns correct list")
+    @DisplayName("Finding all archive returns correct list")
     void findAll() {
         when(archiveRepository.findAll()).thenReturn(singletonArchiveList);
         assertThat(archiveService.findAllArchives()).isEqualTo(singletonArchiveList);

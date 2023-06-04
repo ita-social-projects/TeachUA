@@ -8,7 +8,7 @@ import com.softserve.teachua.dto.test.test.PassTest;
 import com.softserve.teachua.dto.test.test.SuccessCreatedTest;
 import com.softserve.teachua.dto.test.test.TestProfile;
 import com.softserve.teachua.dto.test.test.ViewTest;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Group;

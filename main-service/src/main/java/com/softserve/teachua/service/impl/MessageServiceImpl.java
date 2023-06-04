@@ -8,7 +8,7 @@ import com.softserve.teachua.dto.message.MessageResponseDto;
 import com.softserve.teachua.dto.message.MessageUpdateIsActive;
 import com.softserve.teachua.dto.message.MessageUpdateText;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.teachua.exception.NotExistException;
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.model.Message;
 import com.softserve.teachua.model.archivable.MessageArch;
 import com.softserve.teachua.repository.ClubRepository;

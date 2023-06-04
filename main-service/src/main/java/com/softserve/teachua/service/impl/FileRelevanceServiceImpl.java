@@ -2,7 +2,6 @@ package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.repository.AboutUsItemRepository;
 import com.softserve.teachua.repository.BannerItemRepository;
-import com.softserve.teachua.repository.CertificateTemplateRepository;
 import com.softserve.teachua.repository.ChallengeRepository;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ContactTypeRepository;
@@ -29,8 +28,8 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
     private final AboutUsItemRepository aboutUsItemRepository;
 
     private final BannerItemRepository bannerItemRepository;
-
-    private final CertificateTemplateRepository certificateTemplateRepository;
+    //todo
+    //private final CertificateTemplateRepository certificateTemplateRepository;
 
     private final ChallengeRepository challengeRepository;
 
@@ -49,7 +48,6 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
     @Autowired
     public FileRelevanceServiceImpl(AboutUsItemRepository aboutUsItemRepository,
                                     BannerItemRepository bannerItemRepository,
-                                    CertificateTemplateRepository certificateTemplateRepository,
                                     ChallengeRepository challengeRepository,
                                     ClubRepository clubRepository,
                                     ContactTypeRepository contactTypeRepository,
@@ -59,7 +57,6 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
                                     UserRepository userRepository) {
         this.aboutUsItemRepository = aboutUsItemRepository;
         this.bannerItemRepository = bannerItemRepository;
-        this.certificateTemplateRepository = certificateTemplateRepository;
         this.challengeRepository = challengeRepository;
         this.clubRepository = clubRepository;
         this.contactTypeRepository = contactTypeRepository;
@@ -75,11 +72,12 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
 
         aboutUsItemRepository.findAll().forEach(aboutUsItem -> files.add(aboutUsItem.getPicture()));
         bannerItemRepository.findAll().forEach(bannerItem -> files.add(bannerItem.getPicture()));
-        certificateTemplateRepository.findAll()
-                .forEach(certificateTemplate -> {
-                    files.add(certificateTemplate.getFilePath());
-                    files.add(certificateTemplate.getPicturePath());
-                });
+        //todo
+        //certificateTemplateRepository.findAll()
+        //        .forEach(certificateTemplate -> {
+        //            files.add(certificateTemplate.getFilePath());
+        //            files.add(certificateTemplate.getPicturePath());
+        //        });
         challengeRepository.findAll().forEach(challenge -> files.add(challenge.getPicture()));
         clubRepository.findAll().forEach(club -> files.add(club.getUrlBackground()));
         contactTypeRepository.findAll().forEach(contactType -> files.add(contactType.getUrlLogo()));

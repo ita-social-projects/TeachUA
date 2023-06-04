@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.clients.exception.NotExistException;
 import com.softserve.teachua.dto.user.SuccessLogin;
 import com.softserve.teachua.dto.user.SuccessRegistration;
 import com.softserve.teachua.dto.user.SuccessUpdatedUser;
@@ -14,7 +15,6 @@ import com.softserve.teachua.dto.user.UserUpdateProfile;
 import com.softserve.teachua.dto.user.UserVerifyPassword;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
 import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.model.User;

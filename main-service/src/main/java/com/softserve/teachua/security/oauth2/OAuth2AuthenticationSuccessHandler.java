@@ -1,7 +1,7 @@
 package com.softserve.teachua.security.oauth2;
 
+import com.softserve.clients.exception.BadRequestException;
 import com.softserve.teachua.constants.RoleData;
-import com.softserve.teachua.exception.BadRequestException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.JwtUtils;
 import static com.softserve.teachua.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
@@ -10,13 +10,13 @@ import com.softserve.teachua.security.util.CookieUtils;
 import com.softserve.teachua.service.RefreshTokenService;
 import com.softserve.teachua.service.RoleService;
 import com.softserve.teachua.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
