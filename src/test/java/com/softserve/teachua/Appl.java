@@ -12,6 +12,10 @@ class A {
         this.res = res;
     }
 
+    public void aMethod() {
+        System.out.println("Class A");
+    }
+
     @Override
     public String toString() {
         return "class A {" +
@@ -25,6 +29,10 @@ class B {
 
     public B(String res) {
         this.res = res;
+    }
+
+    public void bMethod() {
+        System.out.println("Class B");
     }
 
     @Override
@@ -74,10 +82,17 @@ public class Appl {
         System.out.println("a3 = " + a3);
         B b3 = appl.work("22_B", B.class);
         System.out.println("b3 = " + b3);
+        //
+        appl.work("11_A", A.class).aMethod();
         */
+        // /*
         A a4 = appl.work("33_A", "com.softserve.teachua.A");
         System.out.println("a4 = " + a4);
         B b4 = appl.work("44_B", "com.softserve.teachua.B");
         System.out.println("b4 = " + b4);
+        //
+        System.out.println("Res = "
+                + appl.work("33_A", "com.softserve.teachua.A").getClass().getName());
+        // */
     }
 }

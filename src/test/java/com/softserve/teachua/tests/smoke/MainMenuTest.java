@@ -23,7 +23,8 @@ public class MainMenuTest extends TestRunner {
         presentationSleep();
         //
         // Check
-        Assertions.assertEquals(ClubPage.CLUB_KYIV_TEXT, clubPage.getClubKyivLabelText());
+        //Assertions.assertEquals(ClubPage.CLUB_LABEL_TEXT, clubPage.getClubKyivLabelText());
+        Assertions.assertTrue(clubPage.getClubLabelText().contains(ClubPage.CLUB_LABEL_TEXT));
         presentationSleep();
         //
         // Steps

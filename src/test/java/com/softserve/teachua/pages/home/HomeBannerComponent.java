@@ -1,5 +1,6 @@
 package com.softserve.teachua.pages.home;
 
+import com.softserve.teachua.data.home.BannerItem;
 import com.softserve.teachua.pages.TopPart;
 import com.softserve.teachua.tools.TextUtils;
 import org.openqa.selenium.By;
@@ -9,6 +10,7 @@ import org.openqa.selenium.WebElement;
 public class HomeBannerComponent {
     private final String URL_PATTER_TEXT = "url\\(\"(https?://(\\w\\.)*\\w{2,}.*)\"\\)";
 
+    private WebDriver driver;
     private WebElement searchDivElement;
     //
     private WebElement titleLabel;
@@ -17,7 +19,8 @@ public class HomeBannerComponent {
     private WebElement detailsButtonLink;
     private WebElement pictureUrl;
 
-    public HomeBannerComponent(WebElement searchDivElement) {
+    public HomeBannerComponent(WebDriver driver, WebElement searchDivElement) {
+        this.driver = driver;
         this.searchDivElement = searchDivElement;
         initElements();
         //checkElements();
@@ -35,17 +38,17 @@ public class HomeBannerComponent {
     // Page Object
 
     // searchDivElement;
-    public WebElement getcSearchDivElement() {
+    public WebElement getSearchDivElement() {
         return searchDivElement;
     }
 
     // titleLabel;
-    public WebElement getcTitleLabel() {
+    public WebElement getTitleLabel() {
         return titleLabel;
     }
 
     public String getTitleLabelText() {
-        return getcTitleLabel().getText();
+        return getTitleLabel().getText();
     }
 
     // description;
@@ -96,6 +99,22 @@ public class HomeBannerComponent {
 
     // Functional
 
+    private <T extends TopPart> T createClazz(Class<T> clazz) {
+        T result = null;
+        try {
+            result = clazz.getConstructor(WebDriver.class).newInstance(driver);
+        } catch (Exception e) {
+            // TODO Develop Custom Exception
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
     // Business Logic
+
+    public <T extends TopPart> T pressDetailsButton(BannerItem<T> bannerItem) {
+        clickDetailsButton();
+        return createClazz(bannerItem.getClazz());
+    }
 
 }

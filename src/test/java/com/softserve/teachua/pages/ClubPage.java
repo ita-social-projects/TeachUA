@@ -5,9 +5,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class ClubPage extends TopPart {
-    public static final String CLUB_KYIV_TEXT = "Гуртки у місті Київ";
+    public static final String CLUB_LABEL_TEXT = "Гуртки у місті";
 
-    private WebElement clubKyivLabel;
+    private WebElement clubLabel;
     private WebElement showMapButton;
     public ClubPage(WebDriver driver) {
         super(driver);
@@ -15,19 +15,19 @@ public class ClubPage extends TopPart {
     }
 
     private void initElements() {
-        clubKyivLabel = driver.findElement(By.cssSelector("h2.city-name"));
+        clubLabel = driver.findElement(By.cssSelector("h2.city-name"));
         showMapButton = driver.findElement(By.cssSelector("button.show-map-button"));
     }
 
     // Page Object
 
-    // clubKyivLabel
-    public WebElement getClubKyivLabel() {
-        return clubKyivLabel;
+    // clubLabel
+    public WebElement getClubLabel() {
+        return clubLabel;
     }
 
-    public String getClubKyivLabelText() {
-        return getClubKyivLabel().getText();
+    public String getClubLabelText() {
+        return getClubLabel().getText();
     }
 
     // showMapButton

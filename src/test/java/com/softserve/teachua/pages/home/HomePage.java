@@ -47,7 +47,7 @@ public class HomePage extends TopPart {
 
     // Business Logic
 
-    public HomePage chooseHomeBannerComponentByNumber(BannerItem bannerItem) {
+    public <T> HomePage chooseHomeBannerComponentByNumber(BannerItem<T> bannerItem) {
         getHomeBannerContainer().clickSlickDotsBottomsByNumber(bannerItem.getNumber());
         return new HomePage(driver);
     }

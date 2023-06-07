@@ -1,5 +1,7 @@
 package com.softserve.teachua.pages.home;
 
+import com.softserve.teachua.data.home.BannerItem;
+import com.softserve.teachua.pages.TopPart;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -36,7 +38,7 @@ public class HomeBannerContainer {
         homeBannerComponents = new ArrayList<>();
         homeBannerPosition = -1;
         for (WebElement current : driver.findElements(By.cssSelector(HOME_BANNER_DIV_ELEMENT_CSS_SELECTOR))) {
-            homeBannerComponents.add(new HomeBannerComponent(current));
+            homeBannerComponents.add(new HomeBannerComponent(driver, current));
         }
         slickDotsBottoms = new ArrayList<>();
         for (WebElement current : driver.findElements(By.cssSelector(SLICK_DOTS_BOTTOMS_CSS_SELECTOR))) {
@@ -96,6 +98,10 @@ public class HomeBannerContainer {
             //System.out.println("\ncurrent.get ... isDisplayed() " + current.getcSearchDivElement().isDisplayed());
         }
         return homeBannerComponentTitles;
+    }
+
+    public HomeBannerComponent getDefaultHomeBannerComponent() {
+        return getHomeBannerComponents().get(0);
     }
 
     /*
@@ -164,15 +170,15 @@ public class HomeBannerContainer {
 
     // Business Logic
 
-    /*
+
     // Move to test
-    public void chooseHomeBannerComponentByNumber(int number) {
-        clickSlickDotsBottomsByNumber(number);
+    public <T extends TopPart> HomeBannerComponent chooseHomeBannerComponent(BannerItem<T> bannerItem) {
+        return getHomeBannerComponentByTitle(bannerItem.getTitle());
     }
 
-    public void chooseHomeBannerComponentByTitle(String homeBannerTitle) {
-        clickSlickDotsBottomsByNumber(getHomeBannerComponentByTitlePosition(homeBannerTitle));
+    public <T extends TopPart> T pressHomeBannerComponentDetailsButton(BannerItem<T> bannerItem) {
+        return getHomeBannerComponentByTitle(bannerItem.getTitle())
+                .pressDetailsButton(bannerItem);
     }
-    */
 
 }
