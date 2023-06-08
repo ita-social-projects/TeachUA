@@ -2,10 +2,10 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
-import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.AboutUsItem;
 import com.softserve.teachua.model.archivable.AboutUsItemArch;
 import com.softserve.teachua.repository.AboutUsItemRepository;

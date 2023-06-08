@@ -3,7 +3,7 @@ services:
     image: postgres
     container_name: teachua_postgres
     env_file:
-      - TeachUa.env
+      - TeachUa-docker.env
     volumes:
       - postgres:/data/postgres
     ports:
@@ -12,13 +12,39 @@ services:
       - teachua_postgres
     restart: unless-stopped
 
+  teachua_nginx:
+    image: nginx
+    container_name: teachua_nginx
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - spring
+    depends_on:
+      - teachua_main-service
+      - teachua_certificate
+
   teachua_main-service:
     image: bnazar00/teachua_main-service:latest
     container_name: teachua_main-service
     ports:
-      - "8080:8080"
+      - "8081:8081"
     env_file:
-      - TeachUa.env
+      - TeachUa-docker.env
+    networks:
+      - spring
+      - teachua_postgres
+    depends_on:
+      - teachua_postgres
+
+  teachua_certificate:
+    image: bnazar00/teachua_certificate:latest
+    container_name: teachua_certificate
+    ports:
+      - "8086:8086"
+    env_file:
+      - TeachUa-docker.env
     networks:
       - spring
       - teachua_postgres
