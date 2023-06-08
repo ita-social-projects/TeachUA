@@ -6,12 +6,7 @@ import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.database_transfer.ExcelConvertToFormatStringContactsData;
 import com.softserve.teachua.dto.database_transfer.ExcelParsingData;
-import com.softserve.teachua.dto.database_transfer.model.CategoryExcel;
-import com.softserve.teachua.dto.database_transfer.model.CenterExcel;
-import com.softserve.teachua.dto.database_transfer.model.ClubExcel;
-import com.softserve.teachua.dto.database_transfer.model.DistrictExcel;
-import com.softserve.teachua.dto.database_transfer.model.LocationExcel;
-import com.softserve.teachua.dto.database_transfer.model.StationExcel;
+import com.softserve.teachua.dto.database_transfer.model.*;
 import com.softserve.teachua.dto.district.DistrictProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.station.StationProfile;
@@ -19,25 +14,13 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.City;
-import com.softserve.teachua.service.CategoryService;
-import com.softserve.teachua.service.CenterService;
-import com.softserve.teachua.service.CityService;
-import com.softserve.teachua.service.ClubService;
-import com.softserve.teachua.service.DataLoaderService;
-import com.softserve.teachua.service.DistrictService;
-import com.softserve.teachua.service.LocationService;
-import com.softserve.teachua.service.StationService;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.zip.DataFormatException;
+import com.softserve.teachua.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.*;
+import java.util.zip.DataFormatException;
 
 @Service
 @Slf4j
@@ -92,7 +75,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     @Override
     public void loadToDatabase(ExcelParsingData excelParsingData) {
         log.debug("=========LOADING DATA TO DB STEP: all locations form dto =========");
-        log.debug(excelParsingData.getLocations().toString());
+        log.debug("{}", excelParsingData.getLocations().toString());
 
         loadDistricts(excelParsingData);
         loadStations(excelParsingData);
@@ -101,7 +84,66 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         loadCategories(excelParsingData, categoriesNames);
         loadCenters(excelParsingData, excelIdToDbId);
         loadClubs(excelParsingData, categoriesNames);
-        loadLocations(excelParsingData);
+        createLocations(excelParsingData.getLocations());
+        //loadLocations(excelParsingData);
+    }
+
+    private void createLocations(List<LocationExcel> locations) {
+        locations.forEach(location -> {
+            try {
+                LocationProfile locationProfile = buildLocationProfile(location);
+                locationService.addLocation(locationProfile);
+                log.debug("Location added {}", location.getName());
+            } catch (DataFormatException | AlreadyExistException | NoSuchElementException
+                     | NullPointerException | NotExistException e) {
+                log.warn("{}: {}", e.getClass().getSimpleName(), e.getMessage());
+            } catch (Exception e) {
+                log.error("Unexpected exception ", e);
+            }
+        });
+    }
+
+    private LocationProfile buildLocationProfile(LocationExcel location) throws DataFormatException, NotExistException {
+        LocationProfile locationProfile = getLocationProfile(location);
+
+        locationProfile = location.getClubExternalId() == null
+                ? setLocationProfileWithoutClubId(location, locationProfile)
+                : setLocationProfileWithClubId(location, locationProfile);
+
+        return locationProfile;
+    }
+
+    private LocationProfile setLocationProfileWithoutClubId(
+            LocationExcel location,
+            LocationProfile locationProfile
+    ) throws DataFormatException, NotExistException {
+        locationProfile = locationProfile.withClubId(null);
+
+        Long locationCenterId = Optional.ofNullable(location.getCenterExternalId())
+                .orElseThrow(() -> {
+                    String message = "Location has no ref of club or center !!!";
+                    log.warn("{}", message);
+                    return new DataFormatException(message);
+                });
+        Long centerId = centerService.getCenterByExternalId(locationCenterId).getId();
+
+        return locationProfile.withCenterId(centerId);
+    }
+
+    private LocationProfile setLocationProfileWithClubId(
+            LocationExcel location,
+            LocationProfile locationProfile
+    ) throws NotExistException {
+        while (clubService.getClubByClubExternalId(location.getClubExternalId()).isEmpty()) {
+            location.setClubExternalId(location.getClubExternalId() - 1);
+        }
+        locationProfile = locationProfile.withClubId(
+                clubService.getClubByClubExternalId(location.getClubExternalId())
+                        .get(0)
+                        .getId()
+        );
+
+        return locationProfile;
     }
 
     private void loadLocations(ExcelParsingData excelParsingData) {
@@ -138,7 +180,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 log.debug(location.getName() + " ");
             } catch (AlreadyExistException | NoSuchElementException | DataFormatException | NullPointerException e) {
                 log.debug("AlreadyExist = " + location.getClubExternalId());
-                log.error("An error occurred", e);
+                log.warn("An error occurred {}: {}", e.getClass(), e.getMessage());
             } catch (NotExistException e) {
                 log.warn("{}", e.getMessage());
             } catch (Exception e) {
@@ -147,7 +189,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         }
     }
 
-    private LocationProfile getLocationProfile(LocationExcel location) {
+    private LocationProfile getLocationProfile(LocationExcel location) throws NotExistException {
         String cityName = location.getCity();
         if (cityName == null || cityName.isEmpty()) {
             cityName = "Київ";
