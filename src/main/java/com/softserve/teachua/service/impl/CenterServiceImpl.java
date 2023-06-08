@@ -154,7 +154,8 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
         Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
                 .withUser(user)
-                .withClubCount((long) centerProfile.getClubsId().size())
+                //.withClubCount((long) centerProfile.getClubsId().size())
+                .withClubCount((long) (centerProfile.getClubsId() == null ? 0 : centerProfile.getClubsId().size()))
                 .withRating(0.0));
 
         List<LocationProfile> locations = centerProfile.getLocations();
