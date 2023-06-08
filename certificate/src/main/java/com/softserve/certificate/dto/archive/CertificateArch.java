@@ -1,8 +1,8 @@
 package com.softserve.certificate.dto.archive;
 
 import com.softserve.certificate.service.impl.CertificateServiceImpl;
-import com.softserve.commons.marker.Archivable;
-import com.softserve.commons.marker.Convertible;
+import com.softserve.commons.util.marker.Archivable;
+import com.softserve.commons.util.marker.Convertible;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

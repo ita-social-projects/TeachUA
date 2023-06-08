@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: ${DEV2_DATASOURCE_URL}
+    username: ${DEV2_DATASOURCE_USER}
+    password: ${DEV2_DATASOURCE_PASSWORD}
+
+application:
+  jwt:
+    access:
+      key: ${JWT_ACCESS_SECRET_KEY}
+      expirationInMinutes: 30
+    refresh:
+      key: ${JWT_REFRESH_SECRET_KEY}
+      expirationInDays: 3
+  baseURL: ${BASE_URL}

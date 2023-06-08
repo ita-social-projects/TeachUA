@@ -1,5 +1,6 @@
 package com.softserve.teachua.converter;
 
+import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.model.Center;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.test.test;
 
-import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.commons.util.marker.Convertible;
 import lombok.Data;
 
 @Data

@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.metric_item;
 
-import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.commons.util.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

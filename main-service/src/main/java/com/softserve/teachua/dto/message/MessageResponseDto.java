@@ -1,8 +1,8 @@
 package com.softserve.teachua.dto.message;
 
+import com.softserve.commons.user.UserPreview;
+import com.softserve.commons.util.marker.Convertible;
 import com.softserve.teachua.dto.club.MessagesClub;
-import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.dto.user.UserPreview;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

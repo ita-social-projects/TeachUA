@@ -1,11 +1,10 @@
 package com.softserve.teachua.dto.club;
 
+import com.softserve.commons.util.marker.Convertible;
 import com.softserve.teachua.dto.center.CenterForClub;
 import com.softserve.teachua.dto.location.LocationProfile;
-import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.GalleryPhoto;
-import com.softserve.teachua.model.User;
 import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -29,7 +28,8 @@ public class SuccessCreatedClub implements Convertible {
     private List<GalleryPhoto> urlGallery;
     private String workTime;
     private Set<Category> categories;
-    private User user;
+    //todo
+    //private User user;
     private CenterForClub center;
     private Double rating;
     private Set<LocationProfile> locations;

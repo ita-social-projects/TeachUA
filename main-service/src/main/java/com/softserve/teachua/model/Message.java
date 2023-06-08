@@ -1,7 +1,6 @@
 package com.softserve.teachua.model;
 
-import com.softserve.teachua.dto.marker.Convertible;
-import java.time.LocalDateTime;
+import com.softserve.commons.util.marker.Convertible;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,15 +39,13 @@ public class Message implements Convertible {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
 
-    @ManyToOne
-    @JoinColumn(name = "sender_id", referencedColumnName = "id")
+    @Column(name = "sender_id")
     @ToString.Exclude
-    private User sender;
+    private Integer senderId;
 
-    @ManyToOne
-    @JoinColumn(name = "recipient_id", referencedColumnName = "id")
+    @Column(name = "recipient_id")
     @ToString.Exclude
-    private User recipient;
+    private Integer recipientId;
 
     @Column(length = 1500)
     private String text;

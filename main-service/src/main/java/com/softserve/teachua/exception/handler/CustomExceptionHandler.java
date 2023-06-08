@@ -5,19 +5,17 @@ import com.softserve.commons.exception.BadRequestException;
 import com.softserve.commons.exception.EntityIsUsedException;
 import com.softserve.commons.exception.JsonWriteException;
 import com.softserve.commons.exception.NotExistException;
-import com.softserve.teachua.dto.exception.ExceptionResponse;
-import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.commons.exception.dto.ExceptionResponse;
+import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.teachua.exception.CannotDeleteFileException;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
+import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.FileUploadException;
 import com.softserve.teachua.exception.GoogleApisDocumentException;
-import com.softserve.teachua.exception.IncorrectInputException;
+import com.softserve.commons.exception.IncorrectInputException;
 import com.softserve.teachua.exception.LogNotFoundException;
-import com.softserve.teachua.exception.MatchingPasswordException;
 import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.exception.StreamCloseException;
-import com.softserve.teachua.exception.UpdatePasswordException;
-import com.softserve.teachua.exception.UserPermissionException;
+import com.softserve.commons.exception.UserPermissionException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -71,11 +69,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildExceptionBody(exception, CONFLICT);
     }
 
-    @ExceptionHandler(UpdatePasswordException.class)
-    public final ResponseEntity<Object> handleUpdatePasswordException(UpdatePasswordException exception) {
-        return buildExceptionBody(exception, BAD_REQUEST);
-    }
-
     @ExceptionHandler(DatabaseRepositoryException.class)
     public final ResponseEntity<Object> handleDatabaseRepositoryException(DatabaseRepositoryException exception) {
         return buildExceptionBody(exception, BAD_GATEWAY);
@@ -94,11 +87,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(FileUploadException.class)
     public final ResponseEntity<Object> handleFileUploadException(JsonWriteException exception) {
         return buildExceptionBody(exception, UNPROCESSABLE_ENTITY);
-    }
-
-    @ExceptionHandler(MatchingPasswordException.class)
-    public final ResponseEntity<Object> handleMatchingPasswordException(IllegalArgumentException exception) {
-        return buildExceptionBody(exception, NOT_FOUND);
     }
 
     @ExceptionHandler(RestoreArchiveException.class)

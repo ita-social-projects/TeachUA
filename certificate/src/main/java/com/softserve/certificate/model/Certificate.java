@@ -1,7 +1,7 @@
 package com.softserve.certificate.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.softserve.commons.marker.Convertible;
+import com.softserve.commons.util.marker.Convertible;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

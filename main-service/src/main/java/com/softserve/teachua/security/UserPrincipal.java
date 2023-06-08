@@ -1,63 +1,36 @@
 package com.softserve.teachua.security;
 
-import com.softserve.teachua.constants.RoleData;
-import com.softserve.teachua.model.User;
+import com.softserve.commons.constant.RoleData;
+import com.softserve.commons.exception.UserPermissionException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
-public class UserPrincipal implements OAuth2User, UserDetails {
-    private final Long id;
-    private final String email;
-    private final String password;
-    private final Collection<? extends GrantedAuthority> authorities;
-    private Map<String, Object> attributes;
+public class UserPrincipal implements /*OAuth2User, */UserDetails {
+    private final String username;
+    private final List<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(Long id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-    }
-
-    public static UserPrincipal create(User user) {
-        List<GrantedAuthority> authorities;
-        if (user.getRole() != null) {
-            authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getName()));
-        } else {
-            authorities = Collections.singletonList(new SimpleGrantedAuthority(RoleData.USER.getDBRoleName()));
-        }
-
-        return new UserPrincipal(user.getId(), user.getEmail(), user.getPassword(), authorities);
-    }
-
-    public static UserPrincipal create(User user, Map<String, Object> attributes) {
-        UserPrincipal userPrincipal = UserPrincipal.create(user);
-        userPrincipal.setAttributes(attributes);
-        return userPrincipal;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
+    public UserPrincipal(String username, RoleData authority) {
+        this.username = username;
+        this.authorities = Collections.singletonList(new SimpleGrantedAuthority(authority.getRoleName()));
     }
 
     @Override
     public String getUsername() {
-        return getEmail();
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        throw new UserPermissionException();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override
@@ -81,21 +54,20 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+    public String toString() {
+        return "UserPrincipal{"
+                + "username='" + username + '\''
+                + ", authorities=" + authorities
+                + '}';
     }
 
-    @Override
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
+    //@Override
+    //public Map<String, Object> getAttributes() {
+    //    return attributes;
+    //}
 
-    public void setAttributes(Map<String, Object> attributes) {
-        this.attributes = attributes;
-    }
-
-    @Override
-    public String getName() {
-        return String.valueOf(id);
-    }
+    //@Override
+    //public String getName() {
+    //    return String.valueOf(id);
+    //}
 }

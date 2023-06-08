@@ -1,6 +1,6 @@
 package com.softserve.teachua.utils.annotation;
 
-import com.softserve.teachua.constants.RoleData;
+import com.softserve.commons.constant.RoleData;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

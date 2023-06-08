@@ -2,10 +2,10 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.location.LocationProfile;
-import com.softserve.teachua.exception.IncorrectInputException;
+import com.softserve.commons.exception.IncorrectInputException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.converter.DtoConverter;
+import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;

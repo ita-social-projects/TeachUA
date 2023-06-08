@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.district;
 
-import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.commons.util.marker.Convertible;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

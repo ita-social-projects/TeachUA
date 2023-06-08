@@ -2,10 +2,7 @@ package com.softserve.teachua.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.softserve.teachua.dto.marker.Convertible;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.softserve.commons.util.marker.Convertible;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +15,9 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -96,10 +96,9 @@ public class Club implements Convertible {
     @ToString.Exclude
     private Set<Category> categories = new HashSet<>();
 
-    @ManyToOne()
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @Column(name = "user_id")
     @ToString.Exclude
-    private User user;
+    private Integer userId;
 
     @ManyToOne
     @JoinColumn(name = "center_id", referencedColumnName = "id")

@@ -1,8 +1,8 @@
 package com.softserve.teachua.dto.database_transfer.model;
 
-import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.utils.validations.CheckRussian;
-import com.softserve.teachua.utils.validations.Phone;
+import com.softserve.commons.util.marker.Convertible;
+import com.softserve.commons.util.validation.CheckRussian;
+import com.softserve.commons.util.validation.Phone;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

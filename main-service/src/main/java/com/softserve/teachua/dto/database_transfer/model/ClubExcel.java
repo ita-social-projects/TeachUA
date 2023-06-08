@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.database_transfer.model;
 
-import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.commons.util.marker.Convertible;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

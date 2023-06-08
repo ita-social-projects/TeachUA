@@ -1,8 +1,6 @@
 package com.softserve.teachua.model.archivable;
 
-import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.commons.marker.Archivable;
-import com.softserve.teachua.service.impl.UserServiceImpl;
+import com.softserve.commons.util.marker.Convertible;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +13,7 @@ import lombok.With;
 @Builder
 @With
 @Data
-public class UserArch implements Convertible, Archivable {
+public class UserArch implements Convertible/*, Archivable*/ {
     private Long id;
     private String email;
     private String password;
@@ -30,8 +28,9 @@ public class UserArch implements Convertible, Archivable {
     private String verificationCode;
     private List<Long> certificatesIds;
 
-    @Override
-    public Class<UserServiceImpl> getServiceClass() {
-        return UserServiceImpl.class;
-    }
+    //todo
+    //@Override
+    //public Class<UserServiceImpl> getServiceClass() {
+    //    return UserServiceImpl.class;
+    //}
 }

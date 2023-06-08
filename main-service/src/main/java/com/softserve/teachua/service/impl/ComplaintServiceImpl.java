@@ -2,26 +2,24 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.commons.exception.DatabaseRepositoryException;
+import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Complaint;
 import com.softserve.teachua.model.archivable.ComplaintArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
-import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.service.ComplaintService;
-import com.softserve.teachua.service.UserService;
+import jakarta.validation.ValidationException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -39,24 +37,19 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
-    private final UserService userService;
     private final ObjectMapper objectMapper;
     private final ClubService clubService;
-    private final CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     public ComplaintServiceImpl(ComplaintRepository complaintRepository, DtoConverter dtoConverter,
                                 ClubRepository clubRepository, ArchiveService archiveService,
-                                UserService userService, ObjectMapper objectMapper, ClubService clubService,
-                                CustomUserDetailsService customUserDetailsService) {
+                                ObjectMapper objectMapper, ClubService clubService) {
         this.complaintRepository = complaintRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
-        this.userService = userService;
         this.objectMapper = objectMapper;
         this.clubService = clubService;
-        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Override
@@ -78,7 +71,8 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
 
     @Override
     public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile) {
-        complaintProfile.setUserId(customUserDetailsService.getUserPrincipal().getId());
+        //todo
+        //complaintProfile.setUserId(customUserDetailsService.getUserPrincipal().getId());
 
         if (!clubRepository.existsById(complaintProfile.getClubId())) {
             throw new NotExistException("Club with id " + complaintProfile.getClubId() + " does`nt exists");
@@ -149,8 +143,10 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
         ComplaintArch complaintArch = objectMapper.readValue(archiveObject, ComplaintArch.class);
         Complaint complaint = Complaint.builder().build();
         complaint = dtoConverter.convertToEntity(complaintArch, complaint).withId(null)
-                .withClub(clubService.getClubById(complaintArch.getClubId()))
-                .withUser(userService.getUserById(complaintArch.getUserId()));
+                .withClub(clubService.getClubById(complaintArch.getClubId()));
+        //todo
+        //.withUser(userService.getUserById(complaintArch.getUserId()))
+
         complaintRepository.save(complaint);
     }
 }

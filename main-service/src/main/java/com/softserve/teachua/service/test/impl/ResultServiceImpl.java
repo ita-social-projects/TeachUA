@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.test.impl;
 
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.controller.test.ResultController;
 import com.softserve.teachua.dto.test.answer.AnswerResult;
 import com.softserve.teachua.dto.test.question.QuestionResult;
@@ -7,15 +8,12 @@ import com.softserve.teachua.dto.test.result.CreateResult;
 import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
 import com.softserve.teachua.dto.test.result.UserResult;
 import com.softserve.teachua.dto.test.test.ResultTest;
-import com.softserve.commons.exception.NotExistException;
-import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.model.test.QuestionHistory;
 import com.softserve.teachua.model.test.Result;
 import com.softserve.teachua.model.test.Test;
 import com.softserve.teachua.repository.test.ResultRepository;
-import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.AnswerService;
 import com.softserve.teachua.service.test.QuestionService;
 import com.softserve.teachua.service.test.ResultService;
@@ -50,7 +48,6 @@ public class ResultServiceImpl implements ResultService {
     private final ModelMapper modelMapper;
     private final QuestionService questionService;
     private final AnswerService answerService;
-    private final UserService userService;
 
     @Override
     @Transactional(readOnly = true)
@@ -155,9 +152,10 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public SuccessCreatedResult saveResult(CreateResult resultDto) {
         checkNull(resultDto, "Create result dto");
-        User user = userService.getAuthenticatedUser();
+        //todo
+        //User user = userService.getAuthenticatedUser();
         Result result = new Result();
-        result.setUser(user);
+        //result.setUser(user);
         result.setTest(testService.findById(resultDto.getTestId()));
         result.setTestStartTime(resultDto.getStartTime());
         result.setTestFinishTime(LocalDateTime.now());
@@ -170,7 +168,7 @@ public class ResultServiceImpl implements ResultService {
         SuccessCreatedResult successResult = new SuccessCreatedResult();
         successResult.setSelectedAnswersIds(answerIds);
         successResult.setTestId(resultDto.getTestId());
-        successResult.setUserId(user.getId());
+        //successResult.setUserId(user.getId());
         successResult.setGrade(result.getGrade());
         log.info("**/Result has been saved. {}", successResult);
         return successResult;

@@ -1,7 +1,7 @@
 package com.softserve.teachua.dto.test.group;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.softserve.teachua.utils.validations.CheckRussian;
+import com.softserve.commons.util.validation.CheckRussian;
 import java.time.LocalDate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

@@ -1,6 +1,5 @@
 package com.softserve.teachua.model.test;
 
-import com.softserve.teachua.model.User;
 import java.time.LocalDate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,9 +31,8 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @Column(name = "user_id")
+    private Integer userId;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "group_id", referencedColumnName = "id")

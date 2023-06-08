@@ -1,8 +1,6 @@
 package com.softserve.teachua.model.archivable;
 
-import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.commons.marker.Archivable;
-import com.softserve.teachua.service.impl.RoleServiceImpl;
+import com.softserve.commons.util.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,11 +12,11 @@ import lombok.With;
 @Builder
 @Data
 @With
-public class RoleArch implements Convertible, Archivable {
+public class RoleArch implements Convertible/*, Archivable*/ {
     private String name;
-
-    @Override
-    public Class<RoleServiceImpl> getServiceClass() {
-        return RoleServiceImpl.class;
-    }
+    //todo
+    //@Override
+    //public Class<RoleServiceImpl> getServiceClass() {
+    //    return RoleServiceImpl.class;
+    //}
 }

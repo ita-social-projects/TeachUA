@@ -1,7 +1,7 @@
 package com.softserve.teachua.converter;
 
 import com.softserve.teachua.dto.location.LocationProfile;
-import com.softserve.teachua.exception.IncorrectInputException;
+import com.softserve.commons.exception.IncorrectInputException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.softserve.teachua.tools.service.transfer_impl;
 
-import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.task.SuccessCreatedTask;
 import com.softserve.teachua.dto.task.TaskProfile;
 import com.softserve.teachua.model.Task;

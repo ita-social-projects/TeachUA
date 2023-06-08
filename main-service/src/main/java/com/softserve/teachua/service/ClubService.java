@@ -11,12 +11,11 @@ import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.dto.search.TopClubProfile;
-import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.teachua.exception.IncorrectInputException;
+import com.softserve.commons.exception.AlreadyExistException;
+import com.softserve.commons.exception.DatabaseRepositoryException;
+import com.softserve.commons.exception.IncorrectInputException;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.User;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -192,11 +191,6 @@ public interface ClubService {
      * @return new {@code ClubResponse}.
      */
     ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile);
-
-    /**
-     * The method checks if user is valid to own club.
-     */
-    void validateClubOwner(Long id, User user);
 
     /**
      * The method updates rating of club and returns dto {@code SuccessUpdatedClub} of updated club.

@@ -1,13 +1,13 @@
 package com.softserve.teachua.dto.news;
 
-import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.utils.validations.CheckRussian;
-import java.time.LocalDate;
+import com.softserve.commons.util.marker.Convertible;
+import com.softserve.commons.util.validation.CheckRussian;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

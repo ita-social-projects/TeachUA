@@ -1,6 +1,6 @@
 package com.softserve.teachua.exception.test;
 
-import com.softserve.teachua.dto.exception.ExceptionResponse;
+import com.softserve.commons.exception.dto.ExceptionResponse;
 import com.softserve.teachua.utils.test.validation.container.ValidationContainer;
 import com.softserve.teachua.utils.test.validation.exception.TestValidationException;
 import java.util.Objects;

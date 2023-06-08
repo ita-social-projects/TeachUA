@@ -1,7 +1,7 @@
 package com.softserve.teachua.dto.about_us_item;
 
-import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.utils.validations.CheckRussian;
+import com.softserve.commons.util.marker.Convertible;
+import com.softserve.commons.util.validation.CheckRussian;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

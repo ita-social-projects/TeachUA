@@ -13,7 +13,6 @@ import com.softserve.teachua.repository.test.AnswerRepository;
 import com.softserve.teachua.repository.test.QuestionCategoryRepository;
 import com.softserve.teachua.repository.test.QuestionRepository;
 import com.softserve.teachua.repository.test.QuestionTypeRepository;
-import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.QuestionDataLoaderService;
 import com.softserve.teachua.service.test.QuestionService;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
     private static final String ANSWERS_ALREADY_EXISTS =
             "Варіант відповіді \"%s\" для запитання \"%s\" вже було додано";
     private final QuestionService questionService;
-    private final UserService userService;
+    //private final UserService userService;
 
     private final QuestionRepository questionRepository;
     private final QuestionCategoryRepository categoryRepository;
@@ -42,14 +41,11 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
                                          QuestionRepository questionRepository,
                                          QuestionCategoryRepository categoryRepository,
                                          QuestionTypeRepository typeRepository,
-                                         UserService userService,
                                          AnswerRepository answerRepository) {
         this.questionService = questionService;
-
         this.questionRepository = questionRepository;
         this.categoryRepository = categoryRepository;
         this.typeRepository = typeRepository;
-        this.userService = userService;
         this.answerRepository = answerRepository;
     }
 
@@ -57,10 +53,12 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
     public List<QuestionDatabaseResponse> saveToDatabase(QuestionDataRequest data, Long creatorId) {
         List<QuestionDatabaseResponse> responses = new ArrayList<>();
         for (QuestionExcel questionExcel : data.getQuestionsExcelList()) {
+            //todo
             Question question = Question.builder()
                     .title(questionExcel.getTitle())
                     .description(questionExcel.getDescription())
-                    .creator(userService.getUserById(creatorId)).build();
+                    //.creator(userService.getUserById(creatorId))
+                    .build();
 
             if (categoryRepository.findByTitle(questionExcel.getCategory()).isEmpty()) {
                 categoryRepository.save(QuestionCategory.builder().title(questionExcel.getCategory()).build());

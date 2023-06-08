@@ -1,6 +1,6 @@
 package com.softserve.certificate.dto.certificate;
 
-import com.softserve.commons.marker.Convertible;
+import com.softserve.commons.util.marker.Convertible;
 import com.softserve.certificate.model.CertificateDates;
 import com.softserve.certificate.model.CertificateTemplate;
 import jakarta.validation.Valid;

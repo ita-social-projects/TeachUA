@@ -2,8 +2,8 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.question.QuestionProfile;
 import com.softserve.teachua.dto.question.QuestionResponse;
-import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
+import com.softserve.commons.exception.AlreadyExistException;
+import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.teachua.model.Question;
 import java.util.List;
 

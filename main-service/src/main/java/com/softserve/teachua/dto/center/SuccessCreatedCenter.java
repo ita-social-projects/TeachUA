@@ -1,7 +1,7 @@
 package com.softserve.teachua.dto.center;
 
+import com.softserve.commons.util.marker.Convertible;
 import com.softserve.teachua.dto.location.LocationProfile;
-import com.softserve.teachua.dto.marker.Convertible;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

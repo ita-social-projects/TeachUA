@@ -1,31 +1,23 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.commons.exception.DatabaseRepositoryException;
+import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.converter.CenterToCenterResponseConverter;
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
-import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
-import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.Location;
-import com.softserve.teachua.model.User;
-import com.softserve.teachua.model.archivable.CenterArch;
 import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.LocationRepository;
-import com.softserve.teachua.repository.UserRepository;
-import com.softserve.teachua.security.CustomUserDetailsService;
-import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CenterService;
 import com.softserve.teachua.service.CityService;
@@ -33,14 +25,13 @@ import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.LocationService;
 import com.softserve.teachua.service.StationService;
-import com.softserve.teachua.service.UserService;
+import jakarta.validation.ValidationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
@@ -53,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @Transactional
-public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
+public class CenterServiceImpl implements CenterService/*, ArchiveMark<Center>*/ {
     private static final String CENTER_ALREADY_EXIST = "Center already exist with name: %s";
     private static final String CENTER_NOT_FOUND_BY_ID = "Center not found by id: %s";
     private static final String CENTER_NOT_FOUND_BY_NAME = "Center not found by name: %s";
@@ -67,25 +58,21 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     private final DistrictService districtService;
     private final StationService stationService;
     private final ClubRepository clubRepository;
-    private final UserRepository userRepository;
-    private final UserService userService;
     private final CenterToCenterResponseConverter centerToCenterResponseConverter;
     private final ClubToClubResponseConverter toClubResponseConverter;
     private final CoordinatesConverter coordinatesConverter;
     private final ObjectMapper objectMapper;
-    private final CustomUserDetailsService customUserDetailsService;
     private ClubService clubService;
 
     @Autowired
     public CenterServiceImpl(LocationService locationService, CenterRepository centerRepository,
                              ArchiveService archiveService, DtoConverter dtoConverter,
-                             LocationRepository locationRepository,
-                             CityService cityService, DistrictService districtService, StationService stationService,
-                             ClubRepository clubRepository, UserRepository userRepository, UserService userService,
+                             LocationRepository locationRepository, CityService cityService,
+                             DistrictService districtService, StationService stationService,
+                             ClubRepository clubRepository,
                              CenterToCenterResponseConverter centerToCenterResponseConverter,
                              ClubToClubResponseConverter toClubResponseConverter,
-                             CoordinatesConverter coordinatesConverter,
-                             ObjectMapper objectMapper, CustomUserDetailsService customUserDetailsService) {
+                             CoordinatesConverter coordinatesConverter, ObjectMapper objectMapper) {
         this.locationService = locationService;
         this.centerRepository = centerRepository;
         this.archiveService = archiveService;
@@ -95,13 +82,10 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         this.districtService = districtService;
         this.stationService = stationService;
         this.clubRepository = clubRepository;
-        this.userRepository = userRepository;
-        this.userService = userService;
         this.centerToCenterResponseConverter = centerToCenterResponseConverter;
         this.toClubResponseConverter = toClubResponseConverter;
         this.coordinatesConverter = coordinatesConverter;
         this.objectMapper = objectMapper;
-        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Autowired
@@ -139,45 +123,47 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
     @Override
     public SuccessCreatedCenter addCenter(CenterProfile centerProfile) {
-        log.debug("centerName = " + centerProfile.getName());
-        if (isCenterExistByName(centerProfile.getName())) {
-            throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
-        }
-
-        User user = null;
-        if (centerProfile.getUserId() != null) {
-            log.debug("CenterServiceImpl=> centerProfile.userId == " + centerProfile.getUserId());
-            user = userRepository.findById(centerProfile.getUserId()).orElseThrow(NotExistException::new);
-        } else {
-            log.debug("CenterServiceImpl=> centerProfile.userId == null");
-        }
-
-        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
-                .withUser(user)
-                .withClubCount((long) centerProfile.getClubsId().size())
-                .withRating(0.0));
-
-        List<LocationProfile> locations = centerProfile.getLocations();
-        if (locations != null && !locations.isEmpty()) {
-            for (LocationProfile profile : locations) {
-                convertCoordinates(profile);
-            }
-            center.setLocations(
-                    locations.stream()
-                            .map(locationProfile -> locationRepository.save(dtoConverter
-                                    .convertToEntity(locationProfile, new Location()).withCenter(center)
-                                    .withCity(cityService.getCityByName(locationProfile.getCityName()))
-                                    .withDistrict(locationProfile.getDistrictName() == null ? null
-                                            : districtService.getDistrictByName(locationProfile.getDistrictName()))
-                                    .withStation(locationProfile.getStationName() == null ? null
-                                            : stationService.getStationByName(locationProfile.getStationName()))))
-                            .collect(Collectors.toSet()));
-        }
-
-        saveClubs(centerProfile, center);
-
-        log.debug("**/adding new center = " + centerProfile.getName());
-        return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
+        //todo
+        //log.debug("centerName = " + centerProfile.getName());
+        //if (isCenterExistByName(centerProfile.getName())) {
+        //    throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
+        //}
+        //
+        //User user = null;
+        //if (centerProfile.getUserId() != null) {
+        //    log.debug("CenterServiceImpl=> centerProfile.userId == " + centerProfile.getUserId());
+        //    user = userRepository.findById(centerProfile.getUserId()).orElseThrow(NotExistException::new);
+        //} else {
+        //    log.debug("CenterServiceImpl=> centerProfile.userId == null");
+        //}
+        //
+        //Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
+        //        .withUser(user)
+        //        .withClubCount((long) centerProfile.getClubsId().size())
+        //        .withRating(0.0));
+        //
+        //List<LocationProfile> locations = centerProfile.getLocations();
+        //if (locations != null && !locations.isEmpty()) {
+        //    for (LocationProfile profile : locations) {
+        //        convertCoordinates(profile);
+        //    }
+        //    center.setLocations(
+        //            locations.stream()
+        //                    .map(locationProfile -> locationRepository.save(dtoConverter
+        //                            .convertToEntity(locationProfile, new Location()).withCenter(center)
+        //                            .withCity(cityService.getCityByName(locationProfile.getCityName()))
+        //                            .withDistrict(locationProfile.getDistrictName() == null ? null
+        //                                    : districtService.getDistrictByName(locationProfile.getDistrictName()))
+        //                            .withStation(locationProfile.getStationName() == null ? null
+        //                                    : stationService.getStationByName(locationProfile.getStationName()))))
+        //                    .collect(Collectors.toSet()));
+        //}
+        //
+        //saveClubs(centerProfile, center);
+        //
+        //log.debug("**/adding new center = " + centerProfile.getName());
+        //return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
+        throw new NotImplementedException();
     }
 
     private void saveClubs(CenterProfile centerProfile, Center center) {
@@ -195,9 +181,13 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
     @Override
     public SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile) {
+        //todo
+        /*
         centerProfile.setUserId(customUserDetailsService.getUserPrincipal().getId());
 
         return addCenter(centerProfile);
+        */
+        throw new NotImplementedException();
     }
 
     @Override
@@ -251,7 +241,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
             throw new DatabaseRepositoryException(CENTER_DELETING_ERROR);
         }
 
-        archiveModel(center);
+        //archiveModel(center);
 
         log.debug("center {} was successfully deleted", center);
         return dtoConverter.convertToDto(center, CenterResponse.class);
@@ -384,6 +374,8 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         }).toList();
     }
 
+    //todo
+    /*
     @Override
     public void archiveModel(Center center) {
         CenterArch centerArch = dtoConverter.convertToDto(center, CenterArch.class);
@@ -406,4 +398,5 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
         centerArch.getClubsIds().stream().map(clubService::getClubById).forEach(club -> club.setCenter(finalCenter));
     }
+    */
 }

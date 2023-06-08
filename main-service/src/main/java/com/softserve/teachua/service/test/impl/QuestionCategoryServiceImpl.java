@@ -3,7 +3,7 @@ package com.softserve.teachua.service.test.impl;
 import com.softserve.teachua.controller.test.QuestionCategoryController;
 import com.softserve.teachua.dto.test.question_category.QuestionCategoryProfile;
 import com.softserve.teachua.dto.test.question_category.QuestionCategoryResponse;
-import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.EntityIsUsedException;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.test.QuestionCategory;

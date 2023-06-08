@@ -1,15 +1,14 @@
 package com.softserve.teachua.model;
 
-import com.softserve.teachua.dto.marker.Convertible;
-import java.time.LocalDate;
+import com.softserve.commons.util.marker.Convertible;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,8 +43,7 @@ public class News implements Convertible {
     @Column
     private Boolean isActive;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id")
     @ToString.Exclude
-    private User user;
+    private Integer userId;
 }

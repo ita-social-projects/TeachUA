@@ -1,0 +1,25 @@
+server:
+  port: 8082
+spring:
+  profiles.active: dev
+  application:
+    name: user
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  properties:
+    hibernate:
+      default_schema: user
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${USER_EMAIL}
+    password: ${SEND_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+        transport.protocol: smtp

@@ -2,7 +2,7 @@ package com.softserve.teachua.dto.test.question;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.utils.deserializers.TrimDeserialize;
-import com.softserve.teachua.utils.validations.CheckRussian;
+import com.softserve.commons.util.validation.CheckRussian;
 import java.util.List;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

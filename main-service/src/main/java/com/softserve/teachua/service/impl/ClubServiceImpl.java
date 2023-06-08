@@ -6,10 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.softserve.commons.exception.DatabaseRepositoryException;
+import com.softserve.commons.exception.IncorrectInputException;
+import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.ContactsStringConverter;
 import com.softserve.teachua.converter.CoordinatesConverter;
-import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.club.ClubOwnerProfile;
 import com.softserve.teachua.dto.club.ClubProfile;
@@ -17,25 +20,18 @@ import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
-import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchClubProfile;
 import com.softserve.teachua.dto.search.SearchClubProfile;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.dto.search.SimilarClubProfile;
 import com.softserve.teachua.dto.search.TopClubProfile;
-import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.teachua.exception.IncorrectInputException;
-import com.softserve.commons.exception.NotExistException;
-import com.softserve.teachua.exception.NotVerifiedUserException;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.model.Location;
-import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.ClubArch;
 import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
@@ -53,7 +49,6 @@ import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.FeedbackService;
 import com.softserve.teachua.service.LocationService;
 import com.softserve.teachua.service.StationService;
-import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.utils.CategoryUtil;
 import jakarta.validation.ValidationException;
 import java.util.HashSet;
@@ -63,6 +58,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -94,7 +90,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private final DistrictService districtService;
     private final StationService stationService;
     private final CategoryService categoryService;
-    private final UserService userService;
     private final CenterRepository centerRepository;
     private final LocationService locationService;
     private final CoordinatesConverter coordinatesConverter;
@@ -109,7 +104,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     public ClubServiceImpl(ClubRepository clubRepository, CenterRepository centerRepository,
                            LocationRepository locationRepository, DtoConverter dtoConverter,
                            ArchiveService archiveService, CityService cityService, DistrictService districtService,
-                           StationService stationService, CategoryService categoryService, UserService userService,
+                           StationService stationService, CategoryService categoryService,
                            ClubToClubResponseConverter toClubResponseConverter, LocationService locationService,
                            CoordinatesConverter coordinatesConverter, GalleryRepository galleryRepository,
                            CenterService centerService, FeedbackRepository feedbackRepository,
@@ -123,7 +118,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         this.districtService = districtService;
         this.stationService = stationService;
         this.categoryService = categoryService;
-        this.userService = userService;
         this.toClubResponseConverter = toClubResponseConverter;
         this.centerRepository = centerRepository;
         this.locationService = locationService;
@@ -181,8 +175,9 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Override
     @Transactional
     public SuccessUpdatedClub updateClub(Long id, ClubResponse clubResponse) {
-        User user = userService.getAuthenticatedUser();
-        validateClubOwner(id, user);
+        //todo
+        //User user = userService.getAuthenticatedUser();
+        //validateClubOwner(id, user);
         Club club = getClubById(id);
         Set<LocationProfile> locations = null;
 
@@ -240,6 +235,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
     @Override
     public SuccessCreatedClub addClub(ClubProfile clubProfile) {
+        //todo
+        /*
         if (isClubExistByName(clubProfile.getName())) {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }
@@ -285,10 +282,14 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         }
         log.debug("adding club with name : {}", clubProfile.getName());
         return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
+        */
+        throw new NotImplementedException();
     }
 
     @Override
     public Club addClubsFromExcel(ClubProfile clubProfile) {
+        //todo
+        /*
         if (clubProfile.getCenterId() == null) {
             log.debug("(row 256, ClubServiceImpl)  addClubsFromExcel => " + clubProfile.getCenterExternalId()
                     + " not found");
@@ -316,6 +317,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                                     .map(categoryService::getCategoryByName).collect(Collectors.toSet())))
                     .withUser(null).withCenter(center);
         }
+        */
+        throw new NotImplementedException();
     }
 
     @Override
@@ -339,9 +342,11 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
     @Override
     public List<ClubResponse> getListClubsByUserId(Long id) {
-        return clubRepository.findAllByUserId(id).stream()
-                .map(toClubResponseConverter::convertToClubResponse)
-                .toList();
+        //todo
+        //return clubRepository.findAllByUserId(id).stream()
+        //        .map(toClubResponseConverter::convertToClubResponse)
+        //        .toList();
+        throw new NotImplementedException();
     }
 
     @Override
@@ -435,6 +440,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
     @Override
     public ClubResponse changeClubOwner(Long clubId, ClubOwnerProfile clubOwnerProfile) {
+        //todo
+        /*
         User user = userService.getAuthenticatedUser();
         validateClubOwner(clubId, user);
         Club club = getClubById(clubId);
@@ -442,6 +449,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
         log.debug("changed club owner by id {}", club);
         return dtoConverter.convertToDto(clubRepository.save(club), ClubResponse.class);
+        */
+        throw new NotImplementedException();
     }
 
     @Override
@@ -618,8 +627,9 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     @Override
     @Transactional
     public ClubResponse deleteClubById(Long id) {
-        User user = userService.getAuthenticatedUser();
-        validateClubOwner(id, user);
+        //todo
+        //User user = userService.getAuthenticatedUser();
+        //validateClubOwner(id, user);
 
         Club club = getClubById(id);
 
@@ -665,14 +675,14 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         return clubRepository.findByName(name);
     }
 
-    @Override
-    public void validateClubOwner(Long id, User user) {
-        User userFromClub = getClubById(id).getUser();
-
-        if (!userFromClub.equals(user) && !user.getRole().getName().equalsIgnoreCase("ROLE_ADMIN")) {
-            throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);
-        }
-    }
+    //todo
+    //private void validateClubOwner(Long id, User user) {
+    //    User userFromClub = getClubById(id).getUser();
+    //
+    //    if (!userFromClub.equals(user) && !user.getRole().getName().equalsIgnoreCase("ROLE_ADMIN")) {
+    //        throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);
+    //    }
+    //}
 
     @Override
     public SuccessUpdatedClub updateRatingNewFeedback(FeedbackResponse feedbackResponse) {
@@ -773,9 +783,10 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         if (Optional.ofNullable(clubArch.getCenterId()).isPresent()) {
             club.setCenter(centerService.getCenterById(clubArch.getCenterId()));
         }
-        if (Optional.ofNullable(clubArch.getUserId()).isPresent()) {
-            club.setUser(userService.getUserById(clubArch.getUserId()));
-        }
+        //todo
+        //if (Optional.ofNullable(clubArch.getUserId()).isPresent()) {
+        //    club.setUser(userService.getUserById(clubArch.getUserId()));
+        //}
         Club finalClub = clubRepository.save(club);
         club.getLocations().forEach(location -> location.setClub(finalClub));
         club.getUrlGallery().forEach(galleryPhoto -> galleryPhoto.setClub(finalClub));

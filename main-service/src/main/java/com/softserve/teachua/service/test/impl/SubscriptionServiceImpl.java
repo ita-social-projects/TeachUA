@@ -1,33 +1,25 @@
 package com.softserve.teachua.service.test.impl;
 
-import com.softserve.teachua.controller.test.ResultController;
-import com.softserve.teachua.controller.test.SubscriptionController;
 import com.softserve.teachua.dto.test.subscription.CreateSubscription;
 import com.softserve.teachua.dto.test.subscription.SubscriptionProfile;
 import com.softserve.teachua.dto.test.user.UserResponse;
-import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.model.test.Subscription;
 import com.softserve.teachua.repository.test.SubscriptionRepository;
-import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.GroupService;
 import com.softserve.teachua.service.test.SubscriptionService;
 import static com.softserve.teachua.utils.test.Messages.INCORRECT_ENROLLMENT_KEY_MESSAGE;
 import static com.softserve.teachua.utils.test.Messages.NO_SUBSCRIPTION_MESSAGE;
-import static com.softserve.teachua.utils.test.Messages.SUBSCRIPTION_EXISTS_MESSAGE;
 import static com.softserve.teachua.utils.test.Messages.TEST_WITHOUT_GROUP_MESSAGE;
 import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
 import static com.softserve.teachua.utils.test.validation.NullValidator.checkNullIds;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.Link;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final GroupService groupService;
-    private final UserService userService;
     private final ModelMapper modelMapper;
 
     @Override
@@ -57,15 +48,16 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new NoSuchElementException(String.format(TEST_WITHOUT_GROUP_MESSAGE, testId));
         }
 
-        for (Group group : groups) {
-            if (group.getEnrollmentKey().equals(enrollmentKey)) {
-                User user = userService.getAuthenticatedUser();
-                Subscription subscription = generateSubscription(group, user);
-                subscriptionRepository.save(subscription);
-                log.info("**/Subscription has been created. {}", subscription);
-                return generateSubscriptionProfile(subscription);
-            }
-        }
+        //for (Group group : groups) {
+        //    if (group.getEnrollmentKey().equals(enrollmentKey)) {
+        //        //todo
+        //        //User user = userService.getAuthenticatedUser();
+        //        Subscription subscription = generateSubscription(group, user);
+        //        subscriptionRepository.save(subscription);
+        //        log.info("**/Subscription has been created. {}", subscription);
+        //        return generateSubscriptionProfile(subscription);
+        //    }
+        //}
         throw new IllegalArgumentException(
                 String.format(INCORRECT_ENROLLMENT_KEY_MESSAGE, enrollmentKey));
     }
@@ -73,12 +65,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public SubscriptionProfile createSubscriptionByUserIdAndGroupId(Long userId, Long groupId) {
         checkNullIds(userId, groupId);
-        User user = userService.getUserById(userId);
-        Group group = groupService.findGroupById(groupId);
-        Subscription subscription = generateSubscription(group, user);
-        subscriptionRepository.save(subscription);
-        log.info("**/Subscription has been created. {}", subscription);
-        return generateSubscriptionProfile(subscription);
+        //todo
+        //User user = userService.getUserById(userId);
+        //Group group = groupService.findGroupById(groupId);
+        //Subscription subscription = generateSubscription(group, user);
+        //subscriptionRepository.save(subscription);
+        //log.info("**/Subscription has been created. {}", subscription);
+        //return generateSubscriptionProfile(subscription);
+        throw new NotImplementedException();
     }
 
     @Override
@@ -91,7 +85,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .orElseThrow(() -> new NoSuchElementException(
                         String.format(NO_SUBSCRIPTION_MESSAGE, userId, groupId)));
         subscriptionRepository.delete(subscription);
-        return generateSubscriptionProfile(subscription);
+        //return generateSubscriptionProfile(subscription);
+        throw new NotImplementedException();
     }
 
     @Override
@@ -103,9 +98,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         for (Subscription subscription : subscriptions) {
             if (isActiveSubscription(subscription)) {
-                User user = subscription.getUser();
-                UserResponse userResponse = generateUserResponse(user, groupId);
-                userResponses.add(userResponse);
+                //todo
+                //User user = subscription.getUser();
+                //UserResponse userResponse = generateUserResponse(user, groupId);
+                //userResponses.add(userResponse);
             }
         }
         return userResponses;
@@ -115,7 +111,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         Group group = subscription.getGroup();
         return subscription.getExpirationDate().equals(group.getEndDate());
     }
-
+    //todo
+    /*
     private boolean hasActiveSubscription(User user, Group group) {
         Subscription subscription = findByUserIdAndGroupId(user.getId(), group.getId());
         return !Objects.isNull(subscription) && isActiveSubscription(subscription);
@@ -156,4 +153,5 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscriptionProfile.setGroupTitle(subscription.getGroup().getTitle());
         return subscriptionProfile;
     }
+    */
 }

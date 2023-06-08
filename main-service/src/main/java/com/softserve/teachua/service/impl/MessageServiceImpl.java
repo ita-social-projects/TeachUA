@@ -1,29 +1,24 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.commons.exception.DatabaseRepositoryException;
+import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.message.MessageProfile;
 import com.softserve.teachua.dto.message.MessageResponseDto;
 import com.softserve.teachua.dto.message.MessageUpdateIsActive;
 import com.softserve.teachua.dto.message.MessageUpdateText;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Message;
-import com.softserve.teachua.model.archivable.MessageArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.MessageRepository;
-import com.softserve.teachua.repository.UserRepository;
-import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.service.MessageService;
-import com.softserve.teachua.service.UserService;
-import java.util.List;
-import java.util.Optional;
 import jakarta.validation.ValidationException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,18 +27,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
-public class MessageServiceImpl implements MessageService, ArchiveMark<Message> {
+public class MessageServiceImpl implements MessageService/*, ArchiveMark<Message>*/ {
     private final MessageRepository messageRepository;
     private final ClubRepository clubRepository;
-    private final UserRepository userRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
     private final ObjectMapper objectMapper;
     private final ClubService clubService;
-    private final UserService userService;
 
     @Override
     public MessageResponseDto addMessage(MessageProfile messageProfile) {
+        //todo
+        /*
         if (!clubRepository.existsById(messageProfile.getClubId())) {
             log.warn("Message not added because club with id - {} doesn't exists", messageProfile.getClubId());
             throw new NotExistException(String.format("Club with id - %s doesn't exists", messageProfile.getClubId()));
@@ -63,6 +58,8 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
 
         log.debug("new message added - " + message);
         return dtoConverter.convertToDto(message, MessageResponseDto.class);
+        */
+        throw new NotImplementedException();
     }
 
     @Override
@@ -136,12 +133,14 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
                     String.format("Can't delete message with id - %s, cause of relationship", id));
         }
 
-        archiveModel(message);
+        //archiveModel(message);
         MessageResponseDto messageResponseDto = dtoConverter.convertToDto(message, MessageResponseDto.class);
         log.debug(String.format("delete message by id - %s", id));
         return messageResponseDto;
     }
 
+    //todo
+    /*
     @Override
     public void archiveModel(Message message) {
         archiveService.saveModel(dtoConverter.convertToDto(message, MessageArch.class));
@@ -163,4 +162,5 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
         }
         messageRepository.save(message);
     }
+    */
 }

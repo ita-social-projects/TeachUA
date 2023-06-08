@@ -1,6 +1,6 @@
 package com.softserve.teachua.utils;
 
-import com.softserve.teachua.exception.IncorrectInputException;
+import com.softserve.commons.exception.IncorrectInputException;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;

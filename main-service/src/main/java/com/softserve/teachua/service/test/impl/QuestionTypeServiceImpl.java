@@ -2,7 +2,7 @@ package com.softserve.teachua.service.test.impl;
 
 import com.softserve.teachua.dto.test.question_type.QuestionTypeProfile;
 import com.softserve.teachua.dto.test.question_type.QuestionTypeResponse;
-import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.EntityIsUsedException;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.test.QuestionType;

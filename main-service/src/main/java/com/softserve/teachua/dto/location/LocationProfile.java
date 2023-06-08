@@ -1,7 +1,7 @@
 package com.softserve.teachua.dto.location;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.softserve.teachua.utils.validations.CheckRussian;
+import com.softserve.commons.util.validation.CheckRussian;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

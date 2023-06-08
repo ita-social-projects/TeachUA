@@ -1,5 +1,6 @@
 package com.softserve.teachua.service.test.impl;
 
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.controller.test.TestController;
 import com.softserve.teachua.dto.test.question.PassingTestQuestion;
 import com.softserve.teachua.dto.test.question.QuestionProfile;
@@ -8,8 +9,6 @@ import com.softserve.teachua.dto.test.test.PassTest;
 import com.softserve.teachua.dto.test.test.SuccessCreatedTest;
 import com.softserve.teachua.dto.test.test.TestProfile;
 import com.softserve.teachua.dto.test.test.ViewTest;
-import com.softserve.commons.exception.NotExistException;
-import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.model.test.Question;
@@ -20,7 +19,6 @@ import com.softserve.teachua.model.test.Subscription;
 import com.softserve.teachua.model.test.Test;
 import com.softserve.teachua.repository.test.SubscriptionRepository;
 import com.softserve.teachua.repository.test.TestRepository;
-import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.GroupService;
 import com.softserve.teachua.service.test.QuestionCategoryService;
 import com.softserve.teachua.service.test.QuestionService;
@@ -55,7 +53,6 @@ public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
     private final SubscriptionRepository subscriptionRepository;
     private final TopicService topicService;
-    private final UserService userService;
     private final QuestionService questionService;
     private final QuestionTestService questionTestService;
     private final QuestionTypeService questionTypeService;
@@ -163,7 +160,8 @@ public class TestServiceImpl implements TestService {
     public ViewTest findViewTestById(Long id) {
         checkNull(id, "test id");
         Test test = findById(id);
-        User user = userService.getAuthenticatedUser();
+        //todo
+        //User user = userService.getAuthenticatedUser();
         ViewTest viewTest = modelMapper.map(test, ViewTest.class);
         Link testGroups = linkTo(methodOn(TestController.class)
                 .getGroups(id))
@@ -171,15 +169,15 @@ public class TestServiceImpl implements TestService {
         viewTest.add(testGroups);
 
         if (test.isActive()) {
-            boolean hasSubscription = hasActiveSubscription(user.getId(), test.getId());
-
-            if (hasSubscription) {
-                Link passTest = linkTo(methodOn(TestController.class)
-                        .passTest(id))
-                        .withRel("startTest");
-                viewTest.add(passTest);
-                viewTest.setAllowed(true);
-            }
+            //boolean hasSubscription = hasActiveSubscription(user.getId(), test.getId());
+            //
+            //if (hasSubscription) {
+            //    Link passTest = linkTo(methodOn(TestController.class)
+            //            .passTest(id))
+            //            .withRel("startTest");
+            //    viewTest.add(passTest);
+            //    viewTest.setAllowed(true);
+            //}
         }
         return viewTest;
     }
@@ -202,9 +200,10 @@ public class TestServiceImpl implements TestService {
     public SuccessCreatedTest addTest(CreateTest testDto) {
         checkNull(testDto, "Test");
         testValidationService.validateTest(testDto);
-        User user = userService.getAuthenticatedUser();
+        //todo
+        //User user = userService.getAuthenticatedUser();
         Test test = modelMapper.map(testDto, Test.class);
-        test.setCreator(user);
+        //test.setCreator(user);
         test.setDateOfCreation(LocalDate.now());
         test.setTopic(topicService.findByTitle(testDto.getTopicTitle()));
         setQuestions(testDto, test);
@@ -225,7 +224,8 @@ public class TestServiceImpl implements TestService {
                 String categoryTitle = questionProfile.getCategoryTitle();
                 QuestionCategory category = questionCategoryService.findByTitle(categoryTitle);
                 question.setQuestionType(findQuestionType(questionProfile));
-                question.setCreator(test.getCreator());
+                //todo
+                //question.setCreator(test.getCreator());
                 question.setQuestionCategory(category);
                 saveAnswers(questionProfile, question);
                 question = questionService.save(question);

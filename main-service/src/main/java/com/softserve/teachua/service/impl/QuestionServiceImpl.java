@@ -1,22 +1,19 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.commons.exception.AlreadyExistException;
+import com.softserve.commons.exception.DatabaseRepositoryException;
+import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.question.QuestionProfile;
 import com.softserve.teachua.dto.question.QuestionResponse;
-import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Question;
-import com.softserve.teachua.model.archivable.QuestionArch;
 import com.softserve.teachua.repository.QuestionRepository;
-import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.QuestionService;
+import jakarta.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
-import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -26,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Transactional
 @Service
-public class QuestionServiceImpl implements QuestionService, ArchiveMark<Question> {
+public class QuestionServiceImpl implements QuestionService/*, ArchiveMark<Question>*/ {
     private static final String QUESTION_NOT_FOUND_BY_ID = "Question not found by id: %s";
     private static final String QUESTION_ALREADY_EXIST = "Question already exist with name: %s";
     private static final String QUESTION_DELETING_ERROR = "Can't delete question cause of relationship";
@@ -88,7 +85,7 @@ public class QuestionServiceImpl implements QuestionService, ArchiveMark<Questio
             throw new DatabaseRepositoryException(QUESTION_DELETING_ERROR);
         }
 
-        archiveModel(deletedQuestion);
+        //archiveModel(deletedQuestion);
 
         log.debug("question {} was successfully deleted", deletedQuestion);
         return dtoConverter.convertToDto(deletedQuestion, QuestionProfile.class);
@@ -113,6 +110,8 @@ public class QuestionServiceImpl implements QuestionService, ArchiveMark<Questio
         return questionRepository.existsByTitle(title);
     }
 
+    //todo
+    /*
     @Override
     public void archiveModel(Question question) {
         QuestionArch questionArch = dtoConverter.convertToDto(question, QuestionArch.class);
@@ -124,4 +123,5 @@ public class QuestionServiceImpl implements QuestionService, ArchiveMark<Questio
         QuestionArch questionArch = objectMapper.readValue(archiveObject, QuestionArch.class);
         questionRepository.save(dtoConverter.convertToEntity(questionArch, Question.builder().build()));
     }
+    */
 }

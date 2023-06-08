@@ -8,7 +8,6 @@ import com.softserve.teachua.repository.ContactTypeRepository;
 import com.softserve.teachua.repository.GalleryRepository;
 import com.softserve.teachua.repository.NewsRepository;
 import com.softserve.teachua.repository.TaskRepository;
-import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.FileRelevanceService;
 import java.io.File;
 import java.util.Collection;
@@ -43,7 +42,6 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
 
     private final TaskRepository taskRepository;
 
-    private final UserRepository userRepository;
 
     @Autowired
     public FileRelevanceServiceImpl(AboutUsItemRepository aboutUsItemRepository,
@@ -53,8 +51,7 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
                                     ContactTypeRepository contactTypeRepository,
                                     GalleryRepository galleryRepository,
                                     NewsRepository newsRepository,
-                                    TaskRepository taskRepository,
-                                    UserRepository userRepository) {
+                                    TaskRepository taskRepository) {
         this.aboutUsItemRepository = aboutUsItemRepository;
         this.bannerItemRepository = bannerItemRepository;
         this.challengeRepository = challengeRepository;
@@ -63,7 +60,6 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
         this.galleryRepository = galleryRepository;
         this.newsRepository = newsRepository;
         this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -84,7 +80,7 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
         galleryRepository.findAll().forEach(galleryPhoto -> files.add(galleryPhoto.getUrl()));
         newsRepository.findAll().forEach(news -> files.add(news.getUrlTitleLogo()));
         taskRepository.findAll().forEach(task -> files.add(task.getPicture()));
-        userRepository.findAll().forEach(user -> files.add(user.getUrlLogo()));
+        //userRepository.findAll().forEach(user -> files.add(user.getUrlLogo()));
 
         return files;
     }

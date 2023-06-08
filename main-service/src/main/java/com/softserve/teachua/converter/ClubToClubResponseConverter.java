@@ -1,5 +1,6 @@
 package com.softserve.teachua.converter;
 
+import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.model.Club;
 import lombok.Builder;

@@ -15,7 +15,7 @@ import com.softserve.teachua.dto.database_transfer.model.StationExcel;
 import com.softserve.teachua.dto.district.DistrictProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.station.StationProfile;
-import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.City;

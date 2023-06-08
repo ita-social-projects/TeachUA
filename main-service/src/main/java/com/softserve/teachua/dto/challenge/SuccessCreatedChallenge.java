@@ -1,8 +1,8 @@
 package com.softserve.teachua.dto.challenge;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.dto.user.UserPreview;
+import com.softserve.commons.user.UserPreview;
+import com.softserve.commons.util.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,35 +1,16 @@
 package com.softserve.teachua.security.oauth2;
 
-import com.softserve.commons.exception.BadRequestException;
-import com.softserve.teachua.constants.RoleData;
-import com.softserve.teachua.model.User;
-import com.softserve.teachua.security.JwtUtils;
-import static com.softserve.teachua.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
-import static com.softserve.teachua.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.USER_ROLE_PARAMETER;
-import com.softserve.teachua.security.util.CookieUtils;
-import com.softserve.teachua.service.RefreshTokenService;
-import com.softserve.teachua.service.RoleService;
-import com.softserve.teachua.service.UserService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.URI;
-import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Component
 @Transactional
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+    //todo
+    /*
     private final JwtUtils jwtUtils;
     private final UserService userService;
     private final RoleService roleService;
@@ -52,9 +33,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         this.refreshTokenService = refreshTokenService;
     }
 
-    /**
+        */
+/**
      * The method handle OAuth2 authentication process.
-     */
+     */    /*
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
@@ -68,11 +51,13 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
-    /**
+        */
+/**
      * The retrieve cookie from request, add redirect uri.
      *
      * @return uri
-     */
+     */    /*
+
     @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) {
@@ -105,19 +90,23 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .build().toUriString();
     }
 
-    /**
+        */
+/**
      * The method clear cookie from HttpServletRequest.
-     */
+     */    /*
+
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
         super.clearAuthenticationAttributes(request);
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
     }
 
-    /**
+        */
+/**
      * The method check if redirect uri from request equals from.
      *
      * @return OAuth2AuthorizationRequest
-     */
+     */    /*
+
     private boolean isAuthorizedRedirectUri(String uri) {
         URI clientRedirectUri = URI.create(uri);
         return authorizedRedirectUris.stream().anyMatch(authorizedRedirectUri -> {
@@ -126,4 +115,5 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                     && authorizedURI.getPort() == clientRedirectUri.getPort();
         });
     }
+    */
 }

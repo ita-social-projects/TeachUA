@@ -1,11 +1,6 @@
 package com.softserve.teachua.model.test;
 
-import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.User;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import com.softserve.commons.util.marker.Convertible;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +11,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -38,9 +37,8 @@ public class Result implements Convertible {
     @JoinColumn(name = "test_id", referencedColumnName = "id")
     private Test test;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @Column(name = "user_id")
+    private Integer userId;
 
     @Column(name = "test_finish_time")
     private LocalDateTime testFinishTime;

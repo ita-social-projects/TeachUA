@@ -1,25 +1,22 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.commons.exception.DatabaseRepositoryException;
+import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SimmilarNewsProfile;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
-import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.News;
-import com.softserve.teachua.model.archivable.NewsArch;
 import com.softserve.teachua.repository.NewsRepository;
-import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.NewsService;
-import com.softserve.teachua.service.UserService;
+import jakarta.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
-import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -32,23 +29,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Transactional
 @Service
-public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
+public class NewsServiceImpl implements NewsService/*, ArchiveMark<News>*/ {
     private static final String NEWS_NOT_FOUND_BY_ID = "News not found by id: %s";
     private static final String CATEGORY_DELETING_ERROR = "Can't delete category cause of relationship";
 
     private final NewsRepository newsRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
-    private final UserService userService;
     private final ObjectMapper objectMapper;
 
     @Autowired
     NewsServiceImpl(NewsRepository newsRepository, DtoConverter dtoConverter, ArchiveService archiveService,
-                    UserService userService, ObjectMapper objectMapper) {
+                    ObjectMapper objectMapper) {
         this.newsRepository = newsRepository;
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
-        this.userService = userService;
         this.objectMapper = objectMapper;
     }
 
@@ -71,9 +66,13 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
 
     @Override
     public SuccessCreatedNews addNews(NewsProfile newsProfile) {
+        //todo
+        /*
         News news = newsRepository.save(dtoConverter.convertToEntity(newsProfile, new News())
                 .withUser(userService.getAuthenticatedUser()));
         return dtoConverter.convertToDto(news, SuccessCreatedNews.class);
+        */
+        throw new NotImplementedException();
     }
 
     @Override
@@ -123,7 +122,7 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
             throw new DatabaseRepositoryException(CATEGORY_DELETING_ERROR);
         }
 
-        archiveModel(deletedNews);
+        //archiveModel(deletedNews);
 
         log.debug("news {} were successfully deleted", deletedNews);
         return dtoConverter.convertToDto(deletedNews, NewsResponse.class);
@@ -133,6 +132,8 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
         return newsRepository.findById(id);
     }
 
+    //todo
+    /*
     @Override
     public void archiveModel(News news) {
         archiveService.saveModel(dtoConverter.convertToDto(news, NewsArch.class));
@@ -146,4 +147,5 @@ public class NewsServiceImpl implements NewsService, ArchiveMark<News> {
                         ? userService.getUserById(newsArch.getUserId()) : null);
         newsRepository.save(news);
     }
+    */
 }

@@ -1,14 +1,14 @@
 package com.softserve.teachua.dto.club;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.softserve.commons.user.UserPreview;
+import com.softserve.commons.util.marker.Convertible;
+import com.softserve.commons.util.validation.CheckRussian;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.center.CenterForClub;
 import com.softserve.teachua.dto.contact_data.ContactDataResponse;
 import com.softserve.teachua.dto.location.LocationProfile;
-import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.dto.user.UserPreview;
 import com.softserve.teachua.model.GalleryPhoto;
-import com.softserve.teachua.utils.validations.CheckRussian;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

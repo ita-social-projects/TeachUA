@@ -1,6 +1,6 @@
 package com.softserve.teachua.config;
 
-import com.softserve.teachua.constants.RoleData;
+import com.softserve.commons.constant.RoleData;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;

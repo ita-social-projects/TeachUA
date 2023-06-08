@@ -5,7 +5,7 @@ import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
-import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import java.util.List;

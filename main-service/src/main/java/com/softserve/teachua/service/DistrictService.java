@@ -3,7 +3,7 @@ package com.softserve.teachua.service;
 import com.softserve.teachua.dto.district.DistrictProfile;
 import com.softserve.teachua.dto.district.DistrictResponse;
 import com.softserve.teachua.dto.district.SuccessCreatedDistrict;
-import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.District;
 import java.util.List;

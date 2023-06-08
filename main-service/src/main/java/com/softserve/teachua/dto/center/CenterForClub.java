@@ -1,9 +1,9 @@
 package com.softserve.teachua.dto.center;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.softserve.commons.user.UserPreview;
 import com.softserve.teachua.dto.contact_data.ContactDataResponse;
 import com.softserve.teachua.dto.location.LocationProfile;
-import com.softserve.teachua.dto.user.UserPreview;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

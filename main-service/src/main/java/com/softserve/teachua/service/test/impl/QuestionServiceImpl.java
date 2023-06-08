@@ -19,7 +19,6 @@ import com.softserve.teachua.repository.test.AnswerRepository;
 import com.softserve.teachua.repository.test.QuestionCategoryRepository;
 import com.softserve.teachua.repository.test.QuestionRepository;
 import com.softserve.teachua.repository.test.QuestionTypeRepository;
-import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.test.QuestionCategoryService;
 import com.softserve.teachua.service.test.QuestionService;
 import com.softserve.teachua.service.test.QuestionTypeService;
@@ -55,7 +54,6 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionCategoryRepository categoryRepository;
     private final QuestionTypeRepository typeRepository;
     private final QuestionTypeService typeService;
-    private final UserService userService;
     private final ModelMapper modelMapper;
 
     @Override
@@ -193,8 +191,8 @@ public class QuestionServiceImpl implements QuestionService {
 
         for (Item item : itemList) {
             Question question = new Question();
-
-            question.setCreator(userService.getUserById(creatorId));
+            //todo
+            //question.setCreator(userService.getUserById(creatorId));
             question.setTitle(item.getTitle());
             question.setQuestionCategory(categoryRepository.findByTitle(categoryName)
                     .orElseThrow(NotExistException::new));

@@ -1,6 +1,6 @@
 package com.softserve.teachua.controller;
 
-import com.softserve.teachua.constants.RoleData;
+import com.softserve.commons.constant.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.LogService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;

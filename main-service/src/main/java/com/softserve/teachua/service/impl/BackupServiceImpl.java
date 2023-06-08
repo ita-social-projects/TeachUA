@@ -1,8 +1,8 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.commons.exception.FileUploadException;
-import com.softserve.teachua.exception.MethodNotSupportedException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.teachua.exception.MethodNotSupportedException;
 import com.softserve.teachua.exception.StreamCloseException;
 import com.softserve.teachua.model.AboutUsItem;
 import com.softserve.teachua.model.BannerItem;
@@ -14,7 +14,6 @@ import com.softserve.teachua.model.ContactType;
 import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.model.News;
 import com.softserve.teachua.model.Task;
-import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.AboutUsItemRepository;
 import com.softserve.teachua.repository.BannerItemRepository;
 import com.softserve.teachua.repository.CategoryRepository;
@@ -25,7 +24,6 @@ import com.softserve.teachua.repository.ContactTypeRepository;
 import com.softserve.teachua.repository.GalleryRepository;
 import com.softserve.teachua.repository.NewsRepository;
 import com.softserve.teachua.repository.TaskRepository;
-import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.BackupService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -72,15 +70,13 @@ public class BackupServiceImpl implements BackupService {
     private final GalleryRepository galleryRepository;
     private final NewsRepository newsRepository;
     private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
     private final ChallengeRepository challengeRepository;
 
     public BackupServiceImpl(AboutUsItemRepository aboutUsItemRepository, BannerItemRepository bannerItemRepository,
                              CategoryRepository categoryRepository, CenterRepository centerRepository,
                              ClubRepository clubRepository, ContactTypeRepository contactTypeRepository,
                              GalleryRepository galleryRepository, NewsRepository newsRepository,
-                             TaskRepository taskRepository, UserRepository userRepository,
-                             ChallengeRepository challengeRepository) {
+                             TaskRepository taskRepository, ChallengeRepository challengeRepository) {
         this.aboutUsItemRepository = aboutUsItemRepository;
         this.bannerItemRepository = bannerItemRepository;
         this.categoryRepository = categoryRepository;
@@ -90,7 +86,6 @@ public class BackupServiceImpl implements BackupService {
         this.galleryRepository = galleryRepository;
         this.newsRepository = newsRepository;
         this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
         this.challengeRepository = challengeRepository;
     }
 
@@ -108,7 +103,8 @@ public class BackupServiceImpl implements BackupService {
                 galleryRepository.findAll().stream().map(GalleryPhoto::getUrl).toList(),
                 newsRepository.findAll().stream().map(News::getUrlTitleLogo).toList(),
                 taskRepository.findAll().stream().map(Task::getPicture).toList(),
-                userRepository.findAll().stream().map(User::getUrlLogo).toList(),
+                //todo
+                //userRepository.findAll().stream().map(User::getUrlLogo).toList(),
                 challengeRepository.findAll().stream().map(Challenge::getPicture).toList(),
                 FileUtils.listFiles(new File(IMAGES_DIRECTORY), null, false).stream()
                         .map(File::getName).toList()

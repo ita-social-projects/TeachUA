@@ -1,6 +1,6 @@
 package com.softserve.certificate.dto.certificate;
 
-import com.softserve.commons.marker.Convertible;
+import com.softserve.commons.util.marker.Convertible;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

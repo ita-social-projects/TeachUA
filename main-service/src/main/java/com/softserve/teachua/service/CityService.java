@@ -3,7 +3,7 @@ package com.softserve.teachua.service;
 import com.softserve.teachua.dto.city.CityProfile;
 import com.softserve.teachua.dto.city.CityResponse;
 import com.softserve.teachua.dto.city.SuccessCreatedCity;
-import com.softserve.teachua.exception.AlreadyExistException;
+import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.City;
 import java.util.List;

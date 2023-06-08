@@ -1,8 +1,7 @@
 package com.softserve.teachua.dto.feedback;
 
-import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.commons.util.marker.Convertible;
 import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.User;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,8 +20,8 @@ public class FeedbackResponse implements Convertible {
     private String text;
 
     private LocalDateTime date;
-
-    private User user;
+    //todo
+    //private User user;
 
     private Club club;
 }

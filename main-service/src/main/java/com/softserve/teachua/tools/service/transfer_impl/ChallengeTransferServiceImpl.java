@@ -1,6 +1,6 @@
 package com.softserve.teachua.tools.service.transfer_impl;
 
-import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.challenge.SuccessCreatedChallenge;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.repository.ChallengeRepository;

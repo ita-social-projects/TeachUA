@@ -2,7 +2,7 @@ package com.softserve.teachua.dto.club.validation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.teachua.exception.IncorrectInputException;
+import com.softserve.commons.exception.IncorrectInputException;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.Getter;

@@ -1,25 +1,14 @@
 package com.softserve.teachua.security.oauth2;
 
-import com.softserve.teachua.exception.oauth2.OAuth2AuthenticationProcessingException;
-import com.softserve.teachua.model.AuthProvider;
-import com.softserve.teachua.model.User;
-import com.softserve.teachua.repository.UserRepository;
-import com.softserve.teachua.security.UserPrincipal;
-import com.softserve.teachua.security.oauth2.user.OAuth2UserInfo;
-import com.softserve.teachua.security.oauth2.user.OAuth2UserInfoFactory;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 @Slf4j
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+    //todo
+    /*
     private static final String NO_EMAIL = "Email not found from OAuth2 provider";
     private static final String USE_PASSWORD = "You are already sign up. Use your password to log in";
     private static final String USE_ANOTHER_PROVIDER = "You are already sign up. Use your %s to log in";
@@ -29,11 +18,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         this.userRepository = userRepository;
     }
 
-    /**
+        */
+/**
      * The method returns object OAuth2User as result of successful authentication.
      *
      * @return OAut2User
-     */
+     */    /*
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
         OAuth2User user = super.loadUser(oAuth2UserRequest);
@@ -44,11 +35,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
     }
 
-    /**
+        */
+/**
      * The method checks if user already has account, if not create new.
      *
      * @return OAut2User
-     */
+     */    /*
+
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(
                 oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
@@ -77,11 +70,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return UserPrincipal.create(user, oAuth2User.getAttributes());
     }
 
-    /**
+        */
+/**
      * The method create new user.
      *
      * @return User
-     */
+     */    /*
+
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
         User user = new User();
         user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
@@ -95,15 +90,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return userRepository.save(user);
     }
 
-    /**
+        */
+/**
      * The method update user.
      *
      * @return User
-     */
+     */    /*
+
     private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
         existingUser.setFirstName(oAuth2UserInfo.getFirstName());
         existingUser.setLastName(oAuth2UserInfo.getLastName());
         existingUser.setUrlLogo(oAuth2UserInfo.getImageUrl());
         return userRepository.save(existingUser);
     }
+    */
 }
