@@ -1,4 +1,4 @@
-package com.softserve.clients.exception;
+package com.softserve.commons.exception;
 
 /**
  * This class is custom exception for entity which not exists in Database or other data storage. The constructor accepts

@@ -3,7 +3,7 @@ package com.softserve.teachua.service;
 import com.softserve.teachua.dto.banner_item.BannerItemProfile;
 import com.softserve.teachua.dto.banner_item.BannerItemResponse;
 import com.softserve.teachua.dto.banner_item.SuccessCreatedBannerItem;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.BannerItem;
 import java.util.List;
 

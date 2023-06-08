@@ -10,8 +10,7 @@
   </parent>
 
   <packaging>jar</packaging>
-  <groupId>com.softserve</groupId>
-  <artifactId>clients</artifactId>
+  <artifactId>commons</artifactId>
 
   <dependencies>
     <dependency>

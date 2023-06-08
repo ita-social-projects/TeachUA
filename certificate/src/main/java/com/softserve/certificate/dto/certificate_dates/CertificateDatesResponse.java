@@ -1,7 +1,7 @@
 package com.softserve.certificate.dto.certificate_dates;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.softserve.clients.marker.Convertible;
+import com.softserve.commons.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

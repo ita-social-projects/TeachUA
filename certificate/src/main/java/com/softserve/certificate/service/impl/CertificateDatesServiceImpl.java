@@ -5,7 +5,7 @@ import com.softserve.certificate.converter.DtoConverter;
 import com.softserve.certificate.model.CertificateDates;
 import com.softserve.certificate.repository.CertificateDatesRepository;
 import com.softserve.certificate.service.CertificateDatesService;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

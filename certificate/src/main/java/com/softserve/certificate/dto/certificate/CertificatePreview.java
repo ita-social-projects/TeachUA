@@ -1,7 +1,7 @@
 package com.softserve.certificate.dto.certificate;
 
 import com.softserve.certificate.dto.certificate_dates.CertificateDatesResponse;
-import com.softserve.clients.marker.Convertible;
+import com.softserve.commons.marker.Convertible;
 import jakarta.validation.constraints.Email;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;

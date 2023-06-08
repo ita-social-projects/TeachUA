@@ -15,7 +15,7 @@ import com.softserve.teachua.dto.challenge.UpdateChallengeDate;
 import com.softserve.teachua.dto.task.SuccessUpdatedTask;
 import com.softserve.teachua.dto.task.TaskPreview;
 import com.softserve.teachua.dto.task.UpdateTask;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.model.archivable.ChallengeArch;

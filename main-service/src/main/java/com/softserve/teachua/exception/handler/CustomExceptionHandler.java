@@ -1,15 +1,15 @@
 package com.softserve.teachua.exception.handler;
 
 import com.google.api.client.http.HttpResponseException;
-import com.softserve.clients.exception.BadRequestException;
-import com.softserve.clients.exception.EntityIsUsedException;
-import com.softserve.clients.exception.JsonWriteException;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.BadRequestException;
+import com.softserve.commons.exception.EntityIsUsedException;
+import com.softserve.commons.exception.JsonWriteException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.dto.exception.ExceptionResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.CannotDeleteFileException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.clients.exception.FileUploadException;
+import com.softserve.commons.exception.FileUploadException;
 import com.softserve.teachua.exception.GoogleApisDocumentException;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.LogNotFoundException;

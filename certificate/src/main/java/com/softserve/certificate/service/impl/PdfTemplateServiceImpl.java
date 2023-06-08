@@ -6,7 +6,7 @@ import com.softserve.certificate.dto.certificate_template.CertificateTemplateUpl
 import com.softserve.certificate.repository.CertificateTemplateRepository;
 import com.softserve.certificate.service.CertificateByTemplateService;
 import com.softserve.certificate.service.PdfTemplateService;
-import com.softserve.clients.exception.FileUploadException;
+import com.softserve.commons.exception.FileUploadException;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;

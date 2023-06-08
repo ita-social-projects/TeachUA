@@ -2,8 +2,8 @@ package com.softserve.teachua.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.clients.exception.NotExistException;
-import com.softserve.clients.marker.Archivable;
+import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.marker.Archivable;
 import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.repository.ArchiveRepository;

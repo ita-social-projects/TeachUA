@@ -2,7 +2,7 @@ package com.softserve.certificate.service.impl;
 
 import com.softserve.certificate.constants.MessageType;
 import com.softserve.certificate.service.CertificateValidator;
-import com.softserve.clients.util.validation.CertificateUserNameValidator;
+import com.softserve.commons.util.validation.CertificateUserNameValidator;
 import java.util.List;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;

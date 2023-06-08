@@ -1,6 +1,6 @@
 package com.softserve.certificate.converter;
 
-import com.softserve.clients.marker.Convertible;
+import com.softserve.commons.marker.Convertible;
 import java.lang.reflect.Type;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

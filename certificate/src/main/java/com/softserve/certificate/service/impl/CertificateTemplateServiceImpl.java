@@ -12,7 +12,7 @@ import static com.softserve.certificate.service.CertificateService.LAST_JRXML_TE
 import com.softserve.certificate.service.CertificateTemplateService;
 import com.softserve.certificate.service.CertificateTypeService;
 import static com.softserve.certificate.service.impl.PdfTemplateServiceImpl.CERTIFICATE_TEMPLATES_FOLDER;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

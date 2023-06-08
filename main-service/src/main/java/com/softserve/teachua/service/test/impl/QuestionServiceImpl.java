@@ -9,7 +9,7 @@ import com.google.api.services.forms.v1.model.Item;
 import com.google.api.services.forms.v1.model.Option;
 import com.softserve.teachua.dto.test.question.QuestionPreview;
 import com.softserve.teachua.dto.test.question.QuestionResponse;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.model.test.QuestionCategory;

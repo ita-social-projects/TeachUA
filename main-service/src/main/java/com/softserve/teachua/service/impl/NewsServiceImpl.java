@@ -8,7 +8,7 @@ import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SimmilarNewsProfile;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.News;
 import com.softserve.teachua.model.archivable.NewsArch;
 import com.softserve.teachua.repository.NewsRepository;

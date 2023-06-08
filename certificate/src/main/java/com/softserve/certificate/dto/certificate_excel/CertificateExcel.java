@@ -1,6 +1,6 @@
 package com.softserve.certificate.dto.certificate_excel;
 
-import com.softserve.clients.util.validation.CertificateUserName;
+import com.softserve.commons.util.validation.CertificateUserName;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package com.softserve.clients.exception;
+package com.softserve.commons.exception;
 
 /**
  * This class is custom exception for interrupt Spring's BadRequest and adding own message to this exception. The

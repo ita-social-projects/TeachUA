@@ -1,4 +1,4 @@
-package com.softserve.clients.exception;
+package com.softserve.commons.exception;
 
 /**
  * This class is custom exception for impossibility of converting model to json The constructor accepts message for

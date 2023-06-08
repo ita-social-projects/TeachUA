@@ -1,6 +1,6 @@
 package com.softserve.teachua.service;
 
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.dto.station.StationResponse;
 import com.softserve.teachua.dto.station.SuccessCreatedStation;

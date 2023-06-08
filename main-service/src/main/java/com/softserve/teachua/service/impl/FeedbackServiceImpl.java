@@ -8,7 +8,7 @@ import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.exception.NotVerifiedUserException;
 import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.User;

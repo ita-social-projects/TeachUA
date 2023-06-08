@@ -17,7 +17,7 @@ import com.softserve.certificate.service.CertificateService;
 import com.softserve.certificate.service.CertificateTemplateService;
 import com.softserve.certificate.utils.CertificateContentDecorator;
 import com.softserve.certificate.utils.QRCodeService;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;

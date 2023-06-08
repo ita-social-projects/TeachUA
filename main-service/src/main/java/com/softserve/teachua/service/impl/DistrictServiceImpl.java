@@ -8,7 +8,7 @@ import com.softserve.teachua.dto.district.DistrictResponse;
 import com.softserve.teachua.dto.district.SuccessCreatedDistrict;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.District;
 import com.softserve.teachua.model.archivable.DistrictArch;
 import com.softserve.teachua.repository.DistrictRepository;

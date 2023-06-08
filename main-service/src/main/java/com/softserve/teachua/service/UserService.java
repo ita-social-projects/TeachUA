@@ -1,6 +1,6 @@
 package com.softserve.teachua.service;
 
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.dto.user.SuccessLogin;
 import com.softserve.teachua.dto.user.SuccessRegistration;
 import com.softserve.teachua.dto.user.SuccessUpdatedUser;

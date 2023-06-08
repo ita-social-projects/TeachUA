@@ -15,7 +15,7 @@ import com.softserve.certificate.service.CertificateTemplateService;
 import com.softserve.certificate.service.CertificateValidator;
 import static com.softserve.certificate.service.impl.CertificateValidatorImpl.COURSE_NUMBER_ERROR;
 import static com.softserve.certificate.service.impl.CertificateValidatorImpl.HOURS_ERROR;
-import com.softserve.clients.exception.BadRequestException;
+import com.softserve.commons.exception.BadRequestException;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -197,7 +197,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
         //Set<ConstraintViolation<CertificateExcel>> violations = validator.validate(certificateExcel);
         //for (ConstraintViolation<CertificateExcel> violation : violations) {
         //    response.getParsingMistakes().add(
-        //            new ExcelParsingMistake(violation.getMessage(), violation.getInvalidValue().toString(), rowIndex));
+        //           new ExcelParsingMistake(violation.getMessage(), violation.getInvalidValue().toString(), rowIndex));
         //}
         //todo
         throw new NotImplementedException();

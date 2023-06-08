@@ -1,4 +1,4 @@
-package com.softserve.clients.exception;
+package com.softserve.commons.exception;
 
 import lombok.extern.slf4j.Slf4j;
 

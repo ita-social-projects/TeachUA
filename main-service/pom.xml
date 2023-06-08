@@ -44,8 +44,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.softserve</groupId>
-      <artifactId>clients</artifactId>
+      <groupId>com.softserve.teachua</groupId>
+      <artifactId>commons</artifactId>
       <version>1.0</version>
       <scope>compile</scope>
     </dependency>
@@ -278,6 +278,12 @@
     <dependency>
       <groupId>io.micrometer</groupId>
       <artifactId>micrometer-registry-prometheus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.softserve.teachua</groupId>
+      <artifactId>commons</artifactId>
+      <version>1.0</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 

@@ -5,7 +5,7 @@ import com.softserve.teachua.constants.excel.QuestionExcelColumn;
 import com.softserve.teachua.dto.test.answer.answer_excel.AnswerExcel;
 import com.softserve.teachua.dto.test.question.question_excel.ExcelQuestionParsingResponse;
 import com.softserve.teachua.dto.test.question.question_excel.QuestionExcel;
-import com.softserve.clients.exception.BadRequestException;
+import com.softserve.commons.exception.BadRequestException;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.repository.test.AnswerRepository;

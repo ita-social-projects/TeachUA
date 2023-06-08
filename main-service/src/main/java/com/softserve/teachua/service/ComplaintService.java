@@ -3,7 +3,7 @@ package com.softserve.teachua.service;
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Complaint;
 import java.util.List;
 

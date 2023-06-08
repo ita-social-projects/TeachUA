@@ -7,7 +7,7 @@ import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Complaint;
 import com.softserve.teachua.model.archivable.ComplaintArch;
 import com.softserve.teachua.repository.ClubRepository;

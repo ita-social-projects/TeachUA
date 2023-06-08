@@ -1,4 +1,4 @@
-package com.softserve.clients.util.validation;
+package com.softserve.commons.util.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

@@ -1,8 +1,8 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.clients.exception.FileUploadException;
+import com.softserve.commons.exception.FileUploadException;
 import com.softserve.teachua.exception.MethodNotSupportedException;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.exception.StreamCloseException;
 import com.softserve.teachua.model.AboutUsItem;
 import com.softserve.teachua.model.BannerItem;

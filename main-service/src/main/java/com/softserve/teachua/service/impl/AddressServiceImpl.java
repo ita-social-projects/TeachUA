@@ -1,7 +1,7 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.dto.location.AddressProfile;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.City;
 import com.softserve.teachua.model.Location;
 import com.softserve.teachua.repository.CityRepository;

@@ -8,7 +8,7 @@ import com.softserve.teachua.dto.station.StationResponse;
 import com.softserve.teachua.dto.station.SuccessCreatedStation;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Station;
 import com.softserve.teachua.model.archivable.StationArch;
 import com.softserve.teachua.repository.StationRepository;

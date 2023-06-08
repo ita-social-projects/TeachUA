@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.AboutUsItem;
 import com.softserve.teachua.model.archivable.AboutUsItemArch;
 import com.softserve.teachua.repository.AboutUsItemRepository;

@@ -1,4 +1,4 @@
-package com.softserve.clients.marker;
+package com.softserve.commons.marker;
 
 /**
  * Mark interface for use DtoConverter class that helps to convert from DTO to Entity, from Entity to DTO and from DTO

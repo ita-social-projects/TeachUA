@@ -7,7 +7,7 @@ import com.softserve.teachua.dto.role.RoleProfile;
 import com.softserve.teachua.dto.role.RoleResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.archivable.RoleArch;
 import com.softserve.teachua.repository.RoleRepository;

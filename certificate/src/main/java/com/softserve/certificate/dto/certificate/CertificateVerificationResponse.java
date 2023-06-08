@@ -1,6 +1,6 @@
 package com.softserve.certificate.dto.certificate;
 
-import com.softserve.clients.marker.Convertible;
+import com.softserve.commons.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

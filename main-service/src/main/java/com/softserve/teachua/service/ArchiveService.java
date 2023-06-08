@@ -1,9 +1,9 @@
 package com.softserve.teachua.service;
 
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.model.Archive;
-import com.softserve.clients.marker.Archivable;
+import com.softserve.commons.marker.Archivable;
 import java.util.List;
 
 /**

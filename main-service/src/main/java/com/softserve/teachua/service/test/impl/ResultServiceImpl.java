@@ -7,7 +7,7 @@ import com.softserve.teachua.dto.test.result.CreateResult;
 import com.softserve.teachua.dto.test.result.SuccessCreatedResult;
 import com.softserve.teachua.dto.test.result.UserResult;
 import com.softserve.teachua.dto.test.test.ResultTest;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;

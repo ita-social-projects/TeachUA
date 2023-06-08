@@ -11,7 +11,7 @@
   <modules>
     <module>main-service</module>
     <module>certificate</module>
-    <module>clients</module>
+    <module>commons</module>
   </modules>
 
   <name>${project.artifactId}</name>

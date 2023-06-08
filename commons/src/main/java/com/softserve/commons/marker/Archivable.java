@@ -1,4 +1,4 @@
-package com.softserve.clients.marker;
+package com.softserve.commons.marker;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

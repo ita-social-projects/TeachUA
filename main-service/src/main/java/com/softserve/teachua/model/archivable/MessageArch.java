@@ -1,7 +1,7 @@
 package com.softserve.teachua.model.archivable;
 
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.clients.marker.Archivable;
+import com.softserve.commons.marker.Archivable;
 import com.softserve.teachua.service.impl.MessageServiceImpl;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

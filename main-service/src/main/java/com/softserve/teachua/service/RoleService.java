@@ -1,6 +1,6 @@
 package com.softserve.teachua.service;
 
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.dto.role.RoleProfile;
 import com.softserve.teachua.dto.role.RoleResponse;
 import com.softserve.teachua.exception.AlreadyExistException;

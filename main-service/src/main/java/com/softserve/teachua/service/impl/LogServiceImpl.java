@@ -1,6 +1,6 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.clients.exception.BadRequestException;
+import com.softserve.commons.exception.BadRequestException;
 import com.softserve.teachua.exception.CannotDeleteFileException;
 import com.softserve.teachua.exception.LogNotFoundException;
 import com.softserve.teachua.service.LogService;

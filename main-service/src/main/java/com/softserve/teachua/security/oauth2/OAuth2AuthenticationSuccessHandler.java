@@ -1,6 +1,6 @@
 package com.softserve.teachua.security.oauth2;
 
-import com.softserve.clients.exception.BadRequestException;
+import com.softserve.commons.exception.BadRequestException;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.JwtUtils;

@@ -16,7 +16,7 @@ import com.softserve.teachua.dto.district.DistrictProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.station.StationProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
-import com.softserve.clients.exception.NotExistException;
+import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.City;
 import com.softserve.teachua.service.CategoryService;
