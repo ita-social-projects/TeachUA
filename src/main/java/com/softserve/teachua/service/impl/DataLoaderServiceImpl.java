@@ -138,7 +138,11 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                 log.debug(location.getName() + " ");
             } catch (AlreadyExistException | NoSuchElementException | DataFormatException | NullPointerException e) {
                 log.debug("AlreadyExist = " + location.getClubExternalId());
-                log.error(e.getMessage());
+                log.error("An error occurred", e);
+            } catch (NotExistException e) {
+                log.warn("{}", e.getMessage());
+            } catch (Exception e) {
+                log.error("Unexpected exception ", e);
             }
         }
     }
@@ -152,18 +156,21 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         Long districtIdCheck = null;
         if (StringUtils.isNotEmpty(location.getDistrict())) {
             districtIdCheck = districtService.getOptionalDistrictByName(location.getDistrict())
-                    .orElseThrow(NotExistException::new).getId();
+                    .orElseThrow(() -> new NotExistException("District has not found -" + location.getDistrict()))
+                    .getId();
         }
 
         Long stationIdCheck = null;
         if (StringUtils.isNotEmpty(location.getStation())) {
             stationIdCheck = stationService.getOptionalStationByName(location.getStation())
-                    .orElseThrow(NotExistException::new).getId();
+                    .orElseThrow(() -> new NotExistException("Station has not found -" + location.getStation()))
+                    .getId();
         }
         return LocationProfile.builder().id(location.getId())
                 .address(location.getAddress()).latitude(location.getLatitude())
                 .longitude(location.getLongitude()).name(location.getName())
-                .cityId(cityService.getCityByName(cityName).getId()).districtId(districtIdCheck)
+                .cityId(cityService.getCityByName(cityName).getId())
+                .districtId(districtIdCheck)
                 .stationId(stationIdCheck).build();
     }
 
