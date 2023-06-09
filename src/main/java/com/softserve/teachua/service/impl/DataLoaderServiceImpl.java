@@ -19,6 +19,7 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.City;
+import com.softserve.teachua.model.District;
 import com.softserve.teachua.service.CategoryService;
 import com.softserve.teachua.service.CenterService;
 import com.softserve.teachua.service.CityService;
@@ -32,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.zip.DataFormatException;
 import lombok.extern.slf4j.Slf4j;
@@ -151,8 +153,17 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
         Long districtIdCheck = null;
         if (StringUtils.isNotEmpty(location.getDistrict())) {
+            /*
             districtIdCheck = districtService.getOptionalDistrictByName(location.getDistrict())
                     .orElseThrow(NotExistException::new).getId();
+            */
+            // TODO
+            districtIdCheck = districtService.getOptionalDistrictByName(location
+                            .getDistrict().replaceAll("’|'", "’"))
+                    .orElse(districtService.getOptionalDistrictByName(location
+                                    .getDistrict().replaceAll("’|'", "'"))
+                                    .orElseThrow(NotExistException::new)
+                    ).getId();
         }
 
         Long stationIdCheck = null;
