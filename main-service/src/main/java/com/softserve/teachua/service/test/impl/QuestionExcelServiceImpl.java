@@ -1,19 +1,20 @@
 package com.softserve.teachua.service.test.impl;
 
-import com.softserve.teachua.constants.excel.ExcelColumn;
+import com.softserve.commons.constant.excel.ExcelColumn;
+import com.softserve.commons.exception.BadRequestException;
+import com.softserve.commons.service.ExcelUtil;
 import com.softserve.teachua.constants.excel.QuestionExcelColumn;
 import com.softserve.teachua.dto.test.answer.answer_excel.AnswerExcel;
 import com.softserve.teachua.dto.test.question.question_excel.ExcelQuestionParsingResponse;
 import com.softserve.teachua.dto.test.question.question_excel.QuestionExcel;
-import com.softserve.commons.exception.BadRequestException;
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.repository.test.AnswerRepository;
 import com.softserve.teachua.repository.test.QuestionRepository;
-import com.softserve.teachua.service.ExcelParserService;
 import com.softserve.teachua.service.test.QuestionExcelService;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,41 +25,52 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @Service
 public class QuestionExcelServiceImpl implements QuestionExcelService {
+    private static final String FILE_NOT_READ_EXCEPTION = "Неможливо прочитати Excel файл";
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
-    private final ExcelParserService excelParserService;
     private final DataFormatter dataFormatter;
     private HashMap<ExcelColumn, Integer> indexes;
     private int count = 0;
 
-    public QuestionExcelServiceImpl(AnswerRepository answerRepository,
-                                    QuestionRepository questionRepository, ExcelParserService excelParserService,
+    public QuestionExcelServiceImpl(AnswerRepository answerRepository, QuestionRepository questionRepository,
                                     DataFormatter dataFormatter) {
         this.answerRepository = answerRepository;
         this.questionRepository = questionRepository;
-        this.excelParserService = excelParserService;
         this.dataFormatter = dataFormatter;
     }
 
     @Override
     public ExcelQuestionParsingResponse parseExcel(MultipartFile multipartFile) {
         ExcelQuestionParsingResponse response = new ExcelQuestionParsingResponse();
-        List<List<Cell>> rows = excelParserService.excelToList(multipartFile);
-        indexes = excelParserService.getColumnIndexes(rows.get(0), QuestionExcelColumn.values());
+        List<List<Cell>> rows = ExcelUtil.excelSheetToList(getSheetFromExcelFile(multipartFile));
+        indexes = ExcelUtil.getColumnIndexes(rows.get(0), QuestionExcelColumn.values());
         response.getQuestionParsingMistakes().addAll(
-                excelParserService.validateColumnsPresent(rows.get(0), QuestionExcelColumn.values(), indexes));
+                ExcelUtil.validateColumnsPresent(rows.get(0), QuestionExcelColumn.values(), indexes));
         if (response.getQuestionParsingMistakes().isEmpty()) {
             response.setQuestionsInfo(createQuestions(rows));
             response.setAnswersInfo(createAnswers(rows));
         }
         return response;
+    }
+
+    private Sheet getSheetFromExcelFile(MultipartFile multipartFile) {
+        try (InputStream inputStream = multipartFile.getInputStream();
+             Workbook workbook = WorkbookFactory.create(inputStream)) {
+            return workbook.getSheetAt(0);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, FILE_NOT_READ_EXCEPTION);
+        }
     }
 
     private List<Cell> createCells(Row row) {

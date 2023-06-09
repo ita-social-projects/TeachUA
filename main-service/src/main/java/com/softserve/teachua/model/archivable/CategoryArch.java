@@ -1,8 +1,6 @@
 package com.softserve.teachua.model.archivable;
 
-import com.softserve.commons.util.marker.Archivable;
 import com.softserve.commons.util.marker.Convertible;
-import com.softserve.teachua.service.impl.CategoryServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +12,7 @@ import lombok.With;
 @Builder
 @Data
 @With
-public class CategoryArch implements Convertible, Archivable {
+public class CategoryArch implements Convertible/*, Archivable*/ {
     private Integer sortBy;
     private String name;
     private String description;
@@ -23,8 +21,11 @@ public class CategoryArch implements Convertible, Archivable {
     private String tagBackgroundColor;
     private String tagTextColor;
 
+    //todo
+    /*
     @Override
     public Class<CategoryServiceImpl> getServiceClass() {
         return CategoryServiceImpl.class;
     }
+    */
 }

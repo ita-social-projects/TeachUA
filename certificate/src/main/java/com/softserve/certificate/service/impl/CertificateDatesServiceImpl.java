@@ -1,11 +1,11 @@
 package com.softserve.certificate.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.certificate.converter.DtoConverter;
 import com.softserve.certificate.model.CertificateDates;
 import com.softserve.certificate.repository.CertificateDatesRepository;
 import com.softserve.certificate.service.CertificateDatesService;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.converter.DtoConverter;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

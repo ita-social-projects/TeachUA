@@ -6,22 +6,12 @@ import com.softserve.teachua.exception.MethodNotSupportedException;
 import com.softserve.teachua.exception.StreamCloseException;
 import com.softserve.teachua.model.AboutUsItem;
 import com.softserve.teachua.model.BannerItem;
-import com.softserve.teachua.model.Category;
-import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Challenge;
-import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.ContactType;
-import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.model.News;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.repository.AboutUsItemRepository;
 import com.softserve.teachua.repository.BannerItemRepository;
-import com.softserve.teachua.repository.CategoryRepository;
-import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ChallengeRepository;
-import com.softserve.teachua.repository.ClubRepository;
-import com.softserve.teachua.repository.ContactTypeRepository;
-import com.softserve.teachua.repository.GalleryRepository;
 import com.softserve.teachua.repository.NewsRepository;
 import com.softserve.teachua.repository.TaskRepository;
 import com.softserve.teachua.service.BackupService;
@@ -63,27 +53,15 @@ public class BackupServiceImpl implements BackupService {
 
     private final AboutUsItemRepository aboutUsItemRepository;
     private final BannerItemRepository bannerItemRepository;
-    private final CategoryRepository categoryRepository;
-    private final CenterRepository centerRepository;
-    private final ClubRepository clubRepository;
-    private final ContactTypeRepository contactTypeRepository;
-    private final GalleryRepository galleryRepository;
     private final NewsRepository newsRepository;
     private final TaskRepository taskRepository;
     private final ChallengeRepository challengeRepository;
 
     public BackupServiceImpl(AboutUsItemRepository aboutUsItemRepository, BannerItemRepository bannerItemRepository,
-                             CategoryRepository categoryRepository, CenterRepository centerRepository,
-                             ClubRepository clubRepository, ContactTypeRepository contactTypeRepository,
-                             GalleryRepository galleryRepository, NewsRepository newsRepository,
-                             TaskRepository taskRepository, ChallengeRepository challengeRepository) {
+                             NewsRepository newsRepository, TaskRepository taskRepository,
+                             ChallengeRepository challengeRepository) {
         this.aboutUsItemRepository = aboutUsItemRepository;
         this.bannerItemRepository = bannerItemRepository;
-        this.categoryRepository = categoryRepository;
-        this.centerRepository = centerRepository;
-        this.clubRepository = clubRepository;
-        this.contactTypeRepository = contactTypeRepository;
-        this.galleryRepository = galleryRepository;
         this.newsRepository = newsRepository;
         this.taskRepository = taskRepository;
         this.challengeRepository = challengeRepository;
@@ -94,16 +72,16 @@ public class BackupServiceImpl implements BackupService {
         List<List<String>> filePathForBackup = List.of(
                 aboutUsItemRepository.findAll().stream().map(AboutUsItem::getPicture).toList(),
                 bannerItemRepository.findAll().stream().map(BannerItem::getPicture).toList(),
-                categoryRepository.findAll().stream().map(Category::getUrlLogo).toList(),
-                centerRepository.findAll().stream().map(Center::getUrlBackgroundPicture).toList(),
-                centerRepository.findAll().stream().map(Center::getUrlLogo).toList(),
-                clubRepository.findAll().stream().map(Club::getUrlBackground).toList(),
-                clubRepository.findAll().stream().map(Club::getUrlLogo).toList(),
-                contactTypeRepository.findAll().stream().map(ContactType::getUrlLogo).toList(),
-                galleryRepository.findAll().stream().map(GalleryPhoto::getUrl).toList(),
+                //todo
+                //categoryRepository.findAll().stream().map(Category::getUrlLogo).toList(),
+                //centerRepository.findAll().stream().map(Center::getUrlBackgroundPicture).toList(),
+                //centerRepository.findAll().stream().map(Center::getUrlLogo).toList(),
+                //clubRepository.findAll().stream().map(Club::getUrlBackground).toList(),
+                //clubRepository.findAll().stream().map(Club::getUrlLogo).toList(),
+                //contactTypeRepository.findAll().stream().map(ContactType::getUrlLogo).toList(),
+                //galleryRepository.findAll().stream().map(GalleryPhoto::getUrl).toList(),
                 newsRepository.findAll().stream().map(News::getUrlTitleLogo).toList(),
                 taskRepository.findAll().stream().map(Task::getPicture).toList(),
-                //todo
                 //userRepository.findAll().stream().map(User::getUrlLogo).toList(),
                 challengeRepository.findAll().stream().map(Challenge::getPicture).toList(),
                 FileUtils.listFiles(new File(IMAGES_DIRECTORY), null, false).stream()

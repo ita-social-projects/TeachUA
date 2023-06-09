@@ -1,7 +1,6 @@
 package com.softserve.certificate.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.certificate.converter.DtoConverter;
 import com.softserve.certificate.dto.certificate.CertificateContent;
 import com.softserve.certificate.dto.certificate.CertificatePreview;
 import com.softserve.certificate.dto.certificate.CertificateTransfer;
@@ -18,6 +17,7 @@ import com.softserve.certificate.service.CertificateTemplateService;
 import com.softserve.certificate.utils.CertificateContentDecorator;
 import com.softserve.certificate.utils.QRCodeService;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.converter.DtoConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;

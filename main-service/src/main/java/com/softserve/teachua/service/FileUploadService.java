@@ -1,7 +1,5 @@
 package com.softserve.teachua.service;
 
-import com.softserve.teachua.model.GalleryPhoto;
-import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -14,10 +12,11 @@ public interface FileUploadService {
      */
     String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile);
 
+    //todo
     /**
      * The method deletes image.
      */
-    void deleteImages(String urlLogo, String urlBackground, List<GalleryPhoto> urlGallery);
+    //void deleteImages(String urlLogo, String urlBackground, List<GalleryPhoto> urlGallery);
 
     /**
      * The method deletes file.

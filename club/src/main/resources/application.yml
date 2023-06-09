@@ -1,0 +1,11 @@
+server:
+  port: 8083
+spring:
+  profiles.active: dev
+  application:
+    name: club
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:ddl-auto: update
+    properties:hibernate:default_schema: club

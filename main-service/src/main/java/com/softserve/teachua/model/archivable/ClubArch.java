@@ -1,8 +1,6 @@
 package com.softserve.teachua.model.archivable;
 
-import com.softserve.commons.util.marker.Archivable;
 import com.softserve.commons.util.marker.Convertible;
-import com.softserve.teachua.service.impl.ClubServiceImpl;
 import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -16,7 +14,7 @@ import lombok.With;
 @Data
 @With
 @Builder
-public class ClubArch implements Convertible, Archivable {
+public class ClubArch implements Convertible/*, Archivable*/ {
     private Long id;
     private Integer ageFrom;
     private Integer ageTo;
@@ -40,8 +38,11 @@ public class ClubArch implements Convertible, Archivable {
     private Long clubExternalId;
     private Long centerExternalId;
 
+    //todo
+    /*
     @Override
     public Class<ClubServiceImpl> getServiceClass() {
         return ClubServiceImpl.class;
     }
+    */
 }

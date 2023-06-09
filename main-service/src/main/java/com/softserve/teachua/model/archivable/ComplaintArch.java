@@ -1,8 +1,6 @@
 package com.softserve.teachua.model.archivable;
 
-import com.softserve.commons.util.marker.Archivable;
 import com.softserve.commons.util.marker.Convertible;
-import com.softserve.teachua.service.impl.ComplaintServiceImpl;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,15 +13,18 @@ import lombok.With;
 @Data
 @With
 @Builder
-public class ComplaintArch implements Convertible, Archivable {
+public class ComplaintArch implements Convertible/*, Archivable*/ {
     private Long id;
     private LocalDate date;
     private Long userId;
     private Long clubId;
     private String text;
 
+    //todo
+    /*
     @Override
     public Class<ComplaintServiceImpl> getServiceClass() {
         return ComplaintServiceImpl.class;
     }
+    */
 }

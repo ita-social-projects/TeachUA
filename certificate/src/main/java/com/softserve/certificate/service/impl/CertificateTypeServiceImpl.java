@@ -1,7 +1,6 @@
 package com.softserve.certificate.service.impl;
 
 import com.softserve.certificate.constants.MessageType;
-import com.softserve.certificate.converter.DtoConverter;
 import com.softserve.certificate.dto.certificate_type.CertificateTypeProcessingResponse;
 import com.softserve.certificate.dto.certificate_type.CertificateTypeProfile;
 import com.softserve.certificate.model.CertificateType;
@@ -10,6 +9,7 @@ import com.softserve.certificate.repository.CertificateTypeRepository;
 import com.softserve.certificate.service.CertificateTypeService;
 import com.softserve.commons.exception.EntityIsUsedException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.converter.DtoConverter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;

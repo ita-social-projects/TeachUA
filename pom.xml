@@ -13,6 +13,7 @@
     <module>certificate</module>
     <module>commons</module>
     <module>user</module>
+      <module>club</module>
   </modules>
 
   <name>${project.artifactId}</name>

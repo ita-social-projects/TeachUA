@@ -1,9 +1,6 @@
 spring:
   jpa:
     open-in-view: false
-  properties:
-    hibernate:
-      default_schema: main_service
   security:
     oauth2:
       client:

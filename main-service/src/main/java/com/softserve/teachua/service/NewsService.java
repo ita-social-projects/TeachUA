@@ -1,10 +1,10 @@
 package com.softserve.teachua.service;
 
+import com.google.api.services.forms.v1.model.Feedback;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SimmilarNewsProfile;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
-import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.News;
 import java.util.List;
 import org.springframework.data.domain.Page;

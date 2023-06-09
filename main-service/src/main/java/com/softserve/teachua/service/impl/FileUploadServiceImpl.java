@@ -1,9 +1,7 @@
 package com.softserve.teachua.service.impl;
 
-import com.softserve.commons.exception.BadRequestException;
 import com.softserve.commons.exception.FileUploadException;
 import com.softserve.commons.exception.IncorrectInputException;
-import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.service.FileUploadService;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -13,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 import javax.imageio.ImageIO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -78,6 +75,8 @@ public class FileUploadServiceImpl implements FileUploadService {
         return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
     }
 
+    //todo
+    /*
     @Override
     public void deleteImages(String urlLogo, String urlBackground, List<GalleryPhoto> urlGallery) {
         // assuming that path to folder will look like target/upload/clubs/uuidv4
@@ -107,6 +106,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             }
         }
     }
+    */
 
     // filePath - '/upload/...../fileName.extension'
     @Override

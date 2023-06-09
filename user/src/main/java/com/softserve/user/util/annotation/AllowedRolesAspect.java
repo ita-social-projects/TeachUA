@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class AllowedRolesAspect {
-    @Around("@annotation(com.softserve.teachua.utils.annotation.AllowedRoles)")
+    @Around("@annotation(com.softserve.user.util.annotation.AllowedRoles)")
     public Object doSomething(ProceedingJoinPoint jp) throws Throwable {
         try {
             Set<RoleData> roleData = Arrays

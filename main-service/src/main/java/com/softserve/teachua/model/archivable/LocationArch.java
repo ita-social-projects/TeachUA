@@ -1,7 +1,5 @@
 package com.softserve.teachua.model.archivable;
 
-import com.softserve.commons.util.marker.Archivable;
-import com.softserve.teachua.service.impl.LocationServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +11,7 @@ import lombok.With;
 @Data
 @With
 @Builder
-public class LocationArch implements Archivable {
+public class LocationArch /*implements Archivable*/ {
     private Long id;
     private String name;
     private String address;
@@ -26,8 +24,9 @@ public class LocationArch implements Archivable {
     private Long clubId;
     private Long centerId;
 
-    @Override
-    public Class<LocationServiceImpl> getServiceClass() {
-        return LocationServiceImpl.class;
-    }
+    //todo
+    //@Override
+    //public Class<LocationServiceImpl> getServiceClass() {
+    //    return LocationServiceImpl.class;
+    //}
 }

@@ -1,8 +1,6 @@
 package com.softserve.teachua.model.archivable;
 
-import com.softserve.commons.util.marker.Archivable;
 import com.softserve.commons.util.marker.Convertible;
-import com.softserve.teachua.service.impl.CityServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,13 +12,16 @@ import lombok.With;
 @Data
 @With
 @Builder
-public class CityArch implements Convertible, Archivable {
+public class CityArch implements Convertible/*, Archivable*/ {
     private String name;
     private Double latitude;
     private Double longitude;
 
+    //todo
+    /*
     @Override
     public Class<CityServiceImpl> getServiceClass() {
         return CityServiceImpl.class;
     }
+    */
 }

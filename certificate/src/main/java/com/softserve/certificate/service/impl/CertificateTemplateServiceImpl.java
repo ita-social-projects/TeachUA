@@ -1,7 +1,6 @@
 package com.softserve.certificate.service.impl;
 
 import com.softserve.certificate.constants.MessageType;
-import com.softserve.certificate.converter.DtoConverter;
 import com.softserve.certificate.dto.certificate_template.CertificateTemplatePreview;
 import com.softserve.certificate.dto.certificate_template.CertificateTemplateProcessingResponse;
 import com.softserve.certificate.dto.certificate_template.CertificateTemplateProfile;
@@ -13,6 +12,7 @@ import com.softserve.certificate.service.CertificateTemplateService;
 import com.softserve.certificate.service.CertificateTypeService;
 import static com.softserve.certificate.service.impl.PdfTemplateServiceImpl.CERTIFICATE_TEMPLATES_FOLDER;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.converter.DtoConverter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

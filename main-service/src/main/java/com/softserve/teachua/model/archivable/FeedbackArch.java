@@ -1,8 +1,6 @@
 package com.softserve.teachua.model.archivable;
 
-import com.softserve.commons.util.marker.Archivable;
 import com.softserve.commons.util.marker.Convertible;
-import com.softserve.teachua.service.impl.FeedbackServiceImpl;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +13,7 @@ import lombok.With;
 @Data
 @With
 @Builder
-public class FeedbackArch implements Convertible, Archivable {
+public class FeedbackArch implements Convertible/*, Archivable*/ {
     private Long id;
     private Float rate;
     private LocalDateTime date;
@@ -23,8 +21,11 @@ public class FeedbackArch implements Convertible, Archivable {
     private Long userId;
     private Long clubId;
 
+    //todo
+    /*
     @Override
     public Class<FeedbackServiceImpl> getServiceClass() {
         return FeedbackServiceImpl.class;
     }
+    */
 }

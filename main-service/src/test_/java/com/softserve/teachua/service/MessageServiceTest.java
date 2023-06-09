@@ -75,7 +75,7 @@ class MessageServiceTest {
     private final LocalDateTime TIME_NOW = LocalDateTime.now();
     private final Message MESSAGE_ENTITY = new Message();
     private final Class<MessageResponseDto> MESSAGE_RESPONSE_DTO_CLASS = MessageResponseDto.class;
-    private final String ARCHIVE_CLASS_NAME = "com.softserve.teachua.service.impl.MessageServiceImpl";
+    private final String ARCHIVE_CLASS_NAME = "com.softserve.club.service.impl.MessageServiceImpl";
     private final String ARCHIVE_DATA = "MessageArch instance converted into String";
 
     @BeforeEach

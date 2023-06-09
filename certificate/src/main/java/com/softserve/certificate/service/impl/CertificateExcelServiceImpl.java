@@ -2,6 +2,7 @@ package com.softserve.certificate.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.certificate.constants.CertificateExcelColumn;
 import com.softserve.certificate.constants.MessageType;
 import com.softserve.certificate.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.certificate.dto.certificate_excel.CertificateByTemplateExcelParsingResponse;
@@ -13,24 +14,36 @@ import com.softserve.certificate.service.CertificateDataLoaderService;
 import com.softserve.certificate.service.CertificateExcelService;
 import com.softserve.certificate.service.CertificateTemplateService;
 import com.softserve.certificate.service.CertificateValidator;
-import static com.softserve.certificate.service.impl.CertificateValidatorImpl.COURSE_NUMBER_ERROR;
-import static com.softserve.certificate.service.impl.CertificateValidatorImpl.HOURS_ERROR;
+import com.softserve.commons.constant.excel.ExcelColumn;
+import com.softserve.commons.dto.database_transfer.ExcelParsingMistake;
 import com.softserve.commons.exception.BadRequestException;
+import com.softserve.commons.service.ExcelUtil;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.DefaultIndexedColorMap;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -39,8 +52,12 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.util.Pair;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+import static com.softserve.certificate.service.impl.CertificateValidatorImpl.COURSE_NUMBER_ERROR;
+import static com.softserve.certificate.service.impl.CertificateValidatorImpl.HOURS_ERROR;
 
 @Slf4j
 @Service
@@ -51,17 +68,18 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     private static final String WORD = "([А-ЯІЇЄ][а-яіїє']+[-–—]?){1,2}";
     private static final String INVALID_CHARACTERS_PRESENT = "Присутні недопустимі літери";
     private static final String INVALID_CHARS = "\\w";
+    private static final String FILE_NOT_READ_EXCEPTION = "Неможливо прочитати Excel файл";
     private final DataFormatter dataFormatter;
     private final CertificateTemplateService templateService;
     private final CertificateValidator certificateValidator;
-    //private final ExcelParserService excelParserService;
+    //private final ExcelUtil excelParserService;
     private final ObjectMapper objectMapper;
-    //private HashMap<ExcelColumn, Integer> indexes;
+    private HashMap<ExcelColumn, Integer> indexes;
     private ExcelParsingResponse response;
 
     public CertificateExcelServiceImpl(DataFormatter dataFormatter, CertificateTemplateService templateService,
                                        CertificateValidator certificateValidator,
-                                       //ExcelParserService excelParserService,
+                                       //ExcelUtil excelParserService,
                                        ObjectMapper objectMapper) {
         this.dataFormatter = dataFormatter;
         this.templateService = templateService;
@@ -72,50 +90,55 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
 
     @Override
     public ExcelParsingResponse parseExcel(MultipartFile multipartFile) {
-        //response = new ExcelParsingResponse();
-        //List<List<Cell>> rows = excelParserService.excelToList(multipartFile);
-        //indexes = excelParserService.getColumnIndexes(rows.get(0), CertificateExcelColumn.values());
-        //response.getParsingMistakes().addAll(
-        //        excelParserService.validateColumnsPresent(rows.get(0), CertificateExcelColumn.values(), indexes));
-        //if (response.getParsingMistakes().isEmpty()) {
-        //    response.setCertificatesInfo(createUserCertificates(rows));
-        //}
-        //return response;
-        //todo
-        throw new NotImplementedException();
+        response = new ExcelParsingResponse();
+        List<List<Cell>> rows = ExcelUtil.excelSheetToList(getSheetFromExcelFile(multipartFile));
+        indexes = ExcelUtil.getColumnIndexes(rows.get(0), CertificateExcelColumn.values());
+        response.getParsingMistakes().addAll(
+                ExcelUtil.validateColumnsPresent(rows.get(0), CertificateExcelColumn.values(), indexes));
+        if (response.getParsingMistakes().isEmpty()) {
+            response.setCertificatesInfo(createUserCertificates(rows));
+        }
+        return response;
+    }
+
+    private Sheet getSheetFromExcelFile(MultipartFile multipartFile) {
+        try (InputStream inputStream = multipartFile.getInputStream();
+             Workbook workbook = WorkbookFactory.create(inputStream)) {
+            return workbook.getSheetAt(0);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, FILE_NOT_READ_EXCEPTION);
+        }
     }
 
     @Override
     @SuppressWarnings("checkstyle:Indentation") //Suppressed because of unsupported switch style
     public CertificateByTemplateExcelParsingResponse parseFlexibleExcel(MultipartFile multipartFile) {
-        //List<List<Cell>> allCells = excelParserService.excelToList(multipartFile);
-        //List<List<String>> allConvertedCells =
-        //        allCells.stream().map(cellList ->
-        //                cellList.stream().map(element -> {
-        //                    String value = "";
-        //                    switch (element.getCellType()) {
-        //                        case CellType.STRING -> {
-        //                            return element.getRichStringCellValue().getString();
-        //                        }
-        //                        case CellType.NUMERIC -> {
-        //                            if (DateUtil.isCellDateFormatted(element)) {
-        //                                return String.valueOf(element.getDateCellValue());
-        //                            } else {
-        //                                return String.valueOf((int) element.getNumericCellValue());
-        //                            }
-        //                        }
-        //                        default -> {
-        //                            return value;
-        //                        }
-        //                    }
-        //                }).toList()
-        //        ).toList();
-        //return CertificateByTemplateExcelParsingResponse.builder()
-        //        .columnHeadersList(allConvertedCells.remove(0))
-        //        .excelContent(allConvertedCells)
-        //        .build();
-        //todo
-        throw new NotImplementedException();
+        List<List<Cell>> allCells = ExcelUtil.excelSheetToList(getSheetFromExcelFile(multipartFile));
+        List<List<String>> allConvertedCells =
+                allCells.stream().map(cellList ->
+                        cellList.stream().map(element -> {
+                            String value = "";
+                            switch (element.getCellType()) {
+                                case STRING -> {
+                                    return element.getRichStringCellValue().getString();
+                                }
+                                case NUMERIC -> {
+                                    if (DateUtil.isCellDateFormatted(element)) {
+                                        return String.valueOf(element.getDateCellValue());
+                                    } else {
+                                        return String.valueOf((int) element.getNumericCellValue());
+                                    }
+                                }
+                                default -> {
+                                    return value;
+                                }
+                            }
+                        }).toList()
+                ).toList();
+        return CertificateByTemplateExcelParsingResponse.builder()
+                .columnHeadersList(allConvertedCells.remove(0))
+                .excelContent(allConvertedCells)
+                .build();
     }
 
     private CertificateExcel createUserCertificate(List<Cell> row) {
@@ -135,38 +158,32 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     }
 
     private String getEmail(List<Cell> row) {
-        //Cell emailCell = row.get(indexes.get(CertificateExcelColumn.EMAIL));
-        //return dataFormatter.formatCellValue(emailCell).trim();
-        //todo
-        throw new NotImplementedException();
+        Cell emailCell = row.get(indexes.get(CertificateExcelColumn.EMAIL));
+        return dataFormatter.formatCellValue(emailCell).trim();
     }
 
     private LocalDate getDate(List<Cell> row, int rowIndex) {
-        //Cell dateCell = row.get(indexes.get(CertificateExcelColumn.DATE));
-        //String stringDate = dataFormatter.formatCellValue(dateCell).trim();
-        //LocalDate date = null;
-        //try {
-        //    date = LocalDate.parse(stringDate, DateTimeFormatter.ofPattern(DATE_FORMAT));
-        //} catch (DateTimeParseException e) {
-        //    response.getParsingMistakes()
-        //            .add(new ExcelParsingMistake(INCORRECT_DATE_FORMAT_ERROR, stringDate, rowIndex));
-        //}
-        //return date;
-        //todo
-        throw new NotImplementedException();
+        Cell dateCell = row.get(indexes.get(CertificateExcelColumn.DATE));
+        String stringDate = dataFormatter.formatCellValue(dateCell).trim();
+        LocalDate date = null;
+        try {
+            date = LocalDate.parse(stringDate, DateTimeFormatter.ofPattern(DATE_FORMAT));
+        } catch (DateTimeParseException e) {
+            response.getParsingMistakes()
+                    .add(new ExcelParsingMistake(INCORRECT_DATE_FORMAT_ERROR, stringDate, rowIndex));
+        }
+        return date;
     }
 
     private String getName(List<Cell> row, int rowIndex) {
-        //Cell nameCell = row.get(indexes.get(CertificateExcelColumn.SURNAME));
-        //Pattern pattern = Pattern.compile(INVALID_CHARS);
-        //Matcher matcher = pattern.matcher(nameCell.toString());
-        //if (matcher.find()) {
-        //    response.getParsingMistakes().add(
-        //            new ExcelParsingMistake(INVALID_CHARACTERS_PRESENT, nameCell.toString(), rowIndex));
-        //}
-        //return formUserName(nameCell);
-        //todo
-        throw new NotImplementedException();
+        Cell nameCell = row.get(indexes.get(CertificateExcelColumn.SURNAME));
+        Pattern pattern = Pattern.compile(INVALID_CHARS);
+        Matcher matcher = pattern.matcher(nameCell.toString());
+        if (matcher.find()) {
+            response.getParsingMistakes().add(
+                    new ExcelParsingMistake(INVALID_CHARACTERS_PRESENT, nameCell.toString(), rowIndex));
+        }
+        return formUserName(nameCell);
     }
 
     @Override
@@ -190,17 +207,15 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     }
 
     private void validateCertificateExcel(CertificateExcel certificateExcel, int rowIndex) {
-        //Validator validator;
-        //try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
-        //    validator = factory.getValidator();
-        //}
-        //Set<ConstraintViolation<CertificateExcel>> violations = validator.validate(certificateExcel);
-        //for (ConstraintViolation<CertificateExcel> violation : violations) {
-        //    response.getParsingMistakes().add(
-        //           new ExcelParsingMistake(violation.getMessage(), violation.getInvalidValue().toString(), rowIndex));
-        //}
-        //todo
-        throw new NotImplementedException();
+        Validator validator;
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            validator = factory.getValidator();
+        }
+        Set<ConstraintViolation<CertificateExcel>> violations = validator.validate(certificateExcel);
+        for (ConstraintViolation<CertificateExcel> violation : violations) {
+            response.getParsingMistakes().add(
+                    new ExcelParsingMistake(violation.getMessage(), violation.getInvalidValue().toString(), rowIndex));
+        }
     }
 
     @Override
