@@ -6,7 +6,12 @@ import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.database_transfer.ExcelConvertToFormatStringContactsData;
 import com.softserve.teachua.dto.database_transfer.ExcelParsingData;
-import com.softserve.teachua.dto.database_transfer.model.*;
+import com.softserve.teachua.dto.database_transfer.model.CategoryExcel;
+import com.softserve.teachua.dto.database_transfer.model.CenterExcel;
+import com.softserve.teachua.dto.database_transfer.model.ClubExcel;
+import com.softserve.teachua.dto.database_transfer.model.DistrictExcel;
+import com.softserve.teachua.dto.database_transfer.model.LocationExcel;
+import com.softserve.teachua.dto.database_transfer.model.StationExcel;
 import com.softserve.teachua.dto.district.DistrictProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.station.StationProfile;
@@ -14,12 +19,25 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.City;
-import com.softserve.teachua.service.*;
+import com.softserve.teachua.service.CategoryService;
+import com.softserve.teachua.service.CenterService;
+import com.softserve.teachua.service.CityService;
+import com.softserve.teachua.service.ClubService;
+import com.softserve.teachua.service.DataLoaderService;
+import com.softserve.teachua.service.DistrictService;
+import com.softserve.teachua.service.LocationService;
+import com.softserve.teachua.service.StationService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 import java.util.zip.DataFormatException;
 
 @Service
@@ -161,7 +179,8 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                             .getDistrict().replaceAll(APOSTROPHES_CHARS, APOSTROPH_CHAR_UA))
                     .orElse(districtService.getOptionalDistrictByName(location
                                     .getDistrict().replaceAll(APOSTROPHES_CHARS, APOSTROPH_CHAR_ENG))
-                                    .orElseThrow(() -> new NotExistException("District has not found -" + location.getDistrict()))
+                                    .orElseThrow(() -> new NotExistException("District has not found -"
+                                                    + location.getDistrict()))
                     ).getId();
         }
 
