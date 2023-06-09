@@ -19,7 +19,6 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.City;
-import com.softserve.teachua.model.District;
 import com.softserve.teachua.service.CategoryService;
 import com.softserve.teachua.service.CenterService;
 import com.softserve.teachua.service.CityService;
@@ -28,6 +27,10 @@ import com.softserve.teachua.service.DataLoaderService;
 import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.LocationService;
 import com.softserve.teachua.service.StationService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,16 +39,15 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.zip.DataFormatException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class DataLoaderServiceImpl implements DataLoaderService {
     private static final long DEFAULT_USER_OWNER_ID = 1L;
     private static final String CENTER_DEFAULT_URL_WEB = "#";
+    private static final String APOSTROPHES_CHARS = "[’']";
+    private static final String APOSTROPH_CHAR_ENG = "'";
+    private static final String APOSTROPH_CHAR_UA = "’";
     private static final String DEFAULT_CATEGORY_ICON_URL = "/static/images/categories/other.svg";
     private static final String DEFAULT_CATEGORY_BACKGROUND_COLOR = "#13C2C2";
     private static final String DEFAULT_CLUB_URL_LOGO = "#";
@@ -94,7 +96,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     @Override
     public void loadToDatabase(ExcelParsingData excelParsingData) {
         log.debug("=========LOADING DATA TO DB STEP: all locations form dto =========");
-        log.debug(excelParsingData.getLocations().toString());
+        log.debug("{}", excelParsingData.getLocations().toString());
 
         loadDistricts(excelParsingData);
         loadStations(excelParsingData);
@@ -103,49 +105,69 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         loadCategories(excelParsingData, categoriesNames);
         loadCenters(excelParsingData, excelIdToDbId);
         loadClubs(excelParsingData, categoriesNames);
-        loadLocations(excelParsingData);
+        createLocations(excelParsingData.getLocations());
     }
 
-    private void loadLocations(ExcelParsingData excelParsingData) {
-        log.debug("==============load locations DataLoaderService =========");
-        log.debug("locations.length : " + excelParsingData.getLocations().size());
-
-        for (LocationExcel location : excelParsingData.getLocations()) {
-            log.debug("(row 133, DataLoader : " + location.toString());
+    private void createLocations(List<LocationExcel> locations) {
+        locations.forEach(location -> {
             try {
-                LocationProfile locationProfile = getLocationProfile(location);
-                if (location.getClubExternalId() == null) {
-                    locationProfile = locationProfile.withClubId(null);
-                    if (location.getCenterExternalId() == null) {
-                        log.debug("location has no ref of club or center !!!");
-                        throw new DataFormatException();
-                    } else {
-                        log.debug("getCenterByExternalId = " + location.getCenterExternalId());
-                        locationProfile = locationProfile.withCenterId(
-                                centerService.getCenterByExternalId(location.getCenterExternalId()).getId());
-                    }
-                } else {
-                    log.debug("Review Club Location location.getClubExternalId() = " + location.getClubExternalId());
-                    while (clubService.getClubByClubExternalId(location.getClubExternalId()).isEmpty()) {
-                        location.setClubExternalId(location.getClubExternalId() - 1);
-                    }
-                    locationProfile = locationProfile.withClubId(
-                            clubService.getClubByClubExternalId(location.getClubExternalId()).get(0).getId());
-                }
-                log.debug("LocationProfile before saving : " + locationProfile);
-
+                LocationProfile locationProfile = buildLocationProfile(location);
                 locationService.addLocation(locationProfile);
-
-                log.debug("====== location added ==");
-                log.debug(location.getName() + " ");
-            } catch (AlreadyExistException | NoSuchElementException | DataFormatException | NullPointerException e) {
-                log.debug("AlreadyExist = " + location.getClubExternalId());
-                log.error(e.getMessage());
+                log.debug("Location added {}", location.getName());
+            } catch (DataFormatException | AlreadyExistException | NoSuchElementException
+                     | NullPointerException | NotExistException e) {
+                log.warn("{}: {}", e.getClass().getSimpleName(), e.getMessage());
+            } catch (Exception e) {
+                log.error("Unexpected exception ", e);
             }
-        }
+        });
     }
 
-    private LocationProfile getLocationProfile(LocationExcel location) {
+    private LocationProfile buildLocationProfile(LocationExcel location) throws DataFormatException, NotExistException {
+        LocationProfile locationProfile = getLocationProfile(location);
+
+        locationProfile = location.getClubExternalId() == null
+                ? setLocationProfileWithoutClubId(location, locationProfile)
+                : setLocationProfileWithClubId(location, locationProfile);
+
+        return locationProfile;
+    }
+
+    private LocationProfile setLocationProfileWithoutClubId(
+            LocationExcel location,
+            LocationProfile locationProfile
+    ) throws DataFormatException, NotExistException {
+        locationProfile = locationProfile.withClubId(null);
+
+        Long locationCenterId = Optional.ofNullable(location.getCenterExternalId())
+                .orElseThrow(() -> {
+                    String message = "Location has no ref of club or center !!!";
+                    log.warn("{}", message);
+                    return new DataFormatException(message);
+                });
+        Long centerId = centerService.getCenterByExternalId(locationCenterId).getId();
+
+        return locationProfile.withCenterId(centerId);
+    }
+
+    private LocationProfile setLocationProfileWithClubId(
+            LocationExcel location,
+            LocationProfile locationProfile
+    ) throws NotExistException {
+        while (clubService.getClubByClubExternalId(location.getClubExternalId()).isEmpty()) {
+            location.setClubExternalId(location.getClubExternalId() - 1);
+        }
+        locationProfile = locationProfile.withClubId(
+                clubService.getClubByClubExternalId(location.getClubExternalId())
+                        .get(0)
+                        .getId()
+        );
+
+        return locationProfile;
+    }
+
+
+    private LocationProfile getLocationProfile(LocationExcel location) throws NotExistException {
         String cityName = location.getCity();
         if (cityName == null || cityName.isEmpty()) {
             cityName = "Київ";
@@ -153,28 +175,26 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
         Long districtIdCheck = null;
         if (StringUtils.isNotEmpty(location.getDistrict())) {
-            /*
-            districtIdCheck = districtService.getOptionalDistrictByName(location.getDistrict())
-                    .orElseThrow(NotExistException::new).getId();
-            */
-            // TODO
             districtIdCheck = districtService.getOptionalDistrictByName(location
-                            .getDistrict().replaceAll("’|'", "’"))
+                            .getDistrict().replaceAll(APOSTROPHES_CHARS, APOSTROPH_CHAR_UA))
                     .orElse(districtService.getOptionalDistrictByName(location
-                                    .getDistrict().replaceAll("’|'", "'"))
-                                    .orElseThrow(NotExistException::new)
+                                    .getDistrict().replaceAll(APOSTROPHES_CHARS, APOSTROPH_CHAR_ENG))
+                                    .orElseThrow(() -> new NotExistException("District has not found -"
+                                                    + location.getDistrict()))
                     ).getId();
         }
 
         Long stationIdCheck = null;
         if (StringUtils.isNotEmpty(location.getStation())) {
             stationIdCheck = stationService.getOptionalStationByName(location.getStation())
-                    .orElseThrow(NotExistException::new).getId();
+                    .orElseThrow(() -> new NotExistException("Station has not found -" + location.getStation()))
+                    .getId();
         }
         return LocationProfile.builder().id(location.getId())
                 .address(location.getAddress()).latitude(location.getLatitude())
                 .longitude(location.getLongitude()).name(location.getName())
-                .cityId(cityService.getCityByName(cityName).getId()).districtId(districtIdCheck)
+                .cityId(cityService.getCityByName(cityName).getId())
+                .districtId(districtIdCheck)
                 .stationId(stationIdCheck).build();
     }
 
