@@ -23,6 +23,9 @@ services:
       - spring
     depends_on:
       - teachua_main-service
+      - teachua_user
+      - teachua_club
+      - teachua_question
       - teachua_certificate
 
   teachua_main-service:
@@ -38,11 +41,50 @@ services:
     depends_on:
       - teachua_postgres
 
+  teachua_user:
+    image: bnazar00/teachua_user:latest
+    container_name: teachua_user
+    ports:
+      - "8086:8086"
+    env_file:
+      - TeachUa-docker.env
+    networks:
+      - spring
+      - teachua_postgres
+    depends_on:
+      - teachua_postgres
+
+  teachua_club:
+    image: bnazar00/teachua_club:latest
+    container_name: teachua_club
+    ports:
+      - "8091:8091"
+    env_file:
+      - TeachUa-docker.env
+    networks:
+      - spring
+      - teachua_postgres
+    depends_on:
+      - teachua_postgres
+
+  teachua_question:
+    image: bnazar00/teachua_question:latest
+    container_name: teachua_question
+    ports:
+      - "8096:8096"
+    env_file:
+      - TeachUa-docker.env
+    networks:
+      - spring
+      - teachua_postgres
+    depends_on:
+      - teachua_postgres
+
   teachua_certificate:
     image: bnazar00/teachua_certificate:latest
     container_name: teachua_certificate
     ports:
-      - "8086:8086"
+      - "8101:8101"
     env_file:
       - TeachUa-docker.env
     networks:
