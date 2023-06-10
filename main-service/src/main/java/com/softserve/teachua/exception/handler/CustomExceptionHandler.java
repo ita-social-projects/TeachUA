@@ -1,23 +1,20 @@
 package com.softserve.teachua.exception.handler;
 
-import com.google.api.client.http.HttpResponseException;
+import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.BadRequestException;
+import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.EntityIsUsedException;
+import com.softserve.commons.exception.FileUploadException;
+import com.softserve.commons.exception.IncorrectInputException;
 import com.softserve.commons.exception.JsonWriteException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.exception.UserPermissionException;
 import com.softserve.commons.exception.dto.ExceptionResponse;
-import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.teachua.exception.CannotDeleteFileException;
-import com.softserve.commons.exception.DatabaseRepositoryException;
-import com.softserve.commons.exception.FileUploadException;
-import com.softserve.teachua.exception.GoogleApisDocumentException;
-import com.softserve.commons.exception.IncorrectInputException;
 import com.softserve.teachua.exception.LogNotFoundException;
 import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.exception.StreamCloseException;
-import com.softserve.commons.exception.UserPermissionException;
 import jakarta.validation.ConstraintViolationException;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -111,11 +108,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return buildExceptionBody(exception, BAD_REQUEST);
     }
 
-    @ExceptionHandler(GoogleApisDocumentException.class)
-    public final ResponseEntity<Object> handleGoogleApisDocumentException(GoogleApisDocumentException exception) {
-        return buildExceptionBody(exception, BAD_REQUEST);
-    }
-
     @ExceptionHandler(LogNotFoundException.class)
     protected ResponseEntity<Object> handleLogNotFoundException(LogNotFoundException exception) {
         return buildExceptionBody(exception, NOT_FOUND);
@@ -124,14 +116,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(CannotDeleteFileException.class)
     protected ResponseEntity<Object> handleCannotDeleteFileException(CannotDeleteFileException exception) {
         return buildExceptionBody(exception, CONFLICT);
-    }
-
-    @ExceptionHandler(HttpResponseException.class)
-    public ResponseEntity<Object> handleHttpResponseException(HttpResponseException exception) {
-        HttpStatus httpStatus = Optional.ofNullable(
-                HttpStatus.resolve(exception.getStatusCode())
-        ).orElse(BAD_REQUEST);
-        return buildExceptionBody(exception, httpStatus);
     }
 
     @ExceptionHandler(EntityIsUsedException.class)

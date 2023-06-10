@@ -1,6 +1,5 @@
 package com.softserve.teachua.service;
 
-import com.google.api.services.forms.v1.model.Feedback;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SimmilarNewsProfile;
@@ -36,7 +35,7 @@ public interface NewsService {
     News getNewsById(Long id);
 
     /**
-     * Method add and save new {@link Feedback}, returns dto {@code SuccessCreatedNews}.
+     * Method add and save new {@link NewsProfile}, returns dto {@code SuccessCreatedNews}.
      *
      * @param newsProfile
      *            - place body of dto {@code NewsProfile}.

@@ -67,7 +67,7 @@ public class CertificateGoogleFormServiceImpl implements CertificateGoogleFormSe
             throw new BadRequestException();
         }
 
-        for (int i = 0; i < /*data.getGoogleFormResults().size()*/0; i++) {
+        for (int i = 0; i < data.getGoogleFormResults().size(); i++) {
             HashMap<String, String> values = new HashMap<>(mainValues);
             CertificateDates certificateDates = new CertificateDates();
             Certificate certificate = new Certificate();
@@ -89,7 +89,7 @@ public class CertificateGoogleFormServiceImpl implements CertificateGoogleFormSe
                             data.getFieldsList().get(j));
                     if (certificateValidator.validateEmail(value, messageList,
                             String.format("Значення: \"%s\"", value))) {
-                        certificate.setSendToEmail(value);
+                        certificate.setUserEmail(value);
                     } else {
                         certificateErrors = true;
                     }
@@ -178,12 +178,12 @@ public class CertificateGoogleFormServiceImpl implements CertificateGoogleFormSe
         if (!validCertificates.isEmpty()) {
             messageList.add(0, Pair.of(
                     String.format("Збережено %d сертифікатів із %d", validCertificates.size(),
-                            /*data.getGoogleFormResults().size()*/null), MessageType.SUCCESS));
+                            data.getGoogleFormResults().size()), MessageType.SUCCESS));
         } else {
             log.warn("Detected invalid certificates {}", invalidCertificateValues);
             messageList.add(0, Pair.of(
                     String.format("Збережено %d сертифікатів із %d", validCertificates.size(),
-                            /*data.getGoogleFormResults().size()*/null), MessageType.WARNING));
+                            data.getGoogleFormResults().size()), MessageType.WARNING));
         }
         return CertificateByTemplateSavingResponse.builder()
                 .messages(messageList)

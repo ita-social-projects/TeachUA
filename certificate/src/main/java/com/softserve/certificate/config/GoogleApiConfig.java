@@ -1,4 +1,4 @@
-package com.softserve.teachua.config;
+package com.softserve.certificate.config;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -16,14 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 /**
  * Class get settings for Google API services.
  */
 @Slf4j
 @Configuration
-@PropertySource(value = "classpath:application.yaml")
 public class GoogleApiConfig {
     @Value("${application.api.credentials.service-account.clientEmail}")
     private String serviceAccountEmail;

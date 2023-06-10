@@ -1,4 +1,4 @@
-package com.softserve.teachua.exception;
+package com.softserve.certificate.exception;
 
 public class GoogleApisDocumentException extends RuntimeException {
     public GoogleApisDocumentException(String message) {

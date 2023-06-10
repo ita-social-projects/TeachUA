@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.util.Pair;
@@ -32,7 +31,6 @@ public class CertificateTypeServiceImpl implements CertificateTypeService {
     private final CertificateTypeRepository certificateTypeRepository;
     private final CertificateTemplateRepository certificateTemplateRepository;
 
-    @Autowired
     public CertificateTypeServiceImpl(DtoConverter dtoConverter, CertificateTypeRepository certificateTypeRepository,
                                       CertificateTemplateRepository certificateTemplateRepository) {
         this.dtoConverter = dtoConverter;

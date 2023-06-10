@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.googleapis;
+package com.softserve.certificate.dto.googleapis;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QuizResult {
     private String userEmail;
-
     private String fullName;
-
     private Integer totalScore;
 }

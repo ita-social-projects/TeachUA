@@ -72,19 +72,16 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     private final DataFormatter dataFormatter;
     private final CertificateTemplateService templateService;
     private final CertificateValidator certificateValidator;
-    //private final ExcelUtil excelParserService;
     private final ObjectMapper objectMapper;
     private HashMap<ExcelColumn, Integer> indexes;
     private ExcelParsingResponse response;
 
     public CertificateExcelServiceImpl(DataFormatter dataFormatter, CertificateTemplateService templateService,
                                        CertificateValidator certificateValidator,
-                                       //ExcelUtil excelParserService,
                                        ObjectMapper objectMapper) {
         this.dataFormatter = dataFormatter;
         this.templateService = templateService;
         this.certificateValidator = certificateValidator;
-        //this.excelParserService = excelParserService;
         this.objectMapper = objectMapper;
     }
 

@@ -1,6 +1,6 @@
-package com.softserve.teachua.service;
+package com.softserve.certificate.service;
 
-import com.softserve.teachua.dto.googleapis.GoogleFormsResponse;
+import com.softserve.certificate.dto.googleapis.GoogleFormsResponse;
 
 /**
  * This interface contains all methods needed to manage Google Forms responses.

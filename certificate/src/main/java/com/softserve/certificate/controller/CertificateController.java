@@ -1,6 +1,5 @@
 package com.softserve.certificate.controller;
 
-import com.softserve.certificate.constants.RoleData;
 import com.softserve.certificate.controller.marker.Api;
 import com.softserve.certificate.dto.certificate.CertificateDataRequest;
 import com.softserve.certificate.dto.certificate.CertificateDatabaseResponse;
@@ -11,6 +10,7 @@ import com.softserve.certificate.service.CertificateDataLoaderService;
 import com.softserve.certificate.service.CertificateExcelService;
 import com.softserve.certificate.service.CertificateService;
 import com.softserve.certificate.utils.annotation.AllowedRoles;
+import com.softserve.commons.constant.RoleData;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;

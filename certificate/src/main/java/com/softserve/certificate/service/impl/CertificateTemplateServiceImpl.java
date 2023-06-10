@@ -24,7 +24,6 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -45,7 +44,6 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
     private final CertificateTypeService certificateTypeService;
     private String certificateTemplateUrl;
 
-    @Autowired
     public CertificateTemplateServiceImpl(DtoConverter dtoConverter,
                                           CertificateTemplateRepository certificateTemplateRepository,
                                           CertificateRepository certificateRepository,

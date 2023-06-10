@@ -1,6 +1,5 @@
 package com.softserve.certificate.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.certificate.dto.certificate.CertificateContent;
 import com.softserve.certificate.dto.certificate.CertificatePreview;
 import com.softserve.certificate.dto.certificate.CertificateTransfer;
@@ -11,12 +10,11 @@ import com.softserve.certificate.model.Certificate;
 import com.softserve.certificate.model.CertificateDates;
 import com.softserve.certificate.repository.CertificateRepository;
 import com.softserve.certificate.service.CertificateByTemplateService;
-import com.softserve.certificate.service.CertificateDatesService;
 import com.softserve.certificate.service.CertificateService;
-import com.softserve.certificate.service.CertificateTemplateService;
 import com.softserve.certificate.utils.CertificateContentDecorator;
 import com.softserve.certificate.utils.QRCodeService;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.exception.UserPermissionException;
 import com.softserve.commons.util.converter.DtoConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,7 +38,6 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,36 +46,25 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @Transactional
 @Slf4j
-public class CertificateServiceImpl implements CertificateService/*, ArchiveMark<Certificate>*/ {
+public class CertificateServiceImpl implements CertificateService {
     private static final String CERTIFICATE_NOT_FOUND_BY_ID = "Certificate not found by id %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_SERIAL_NUMBER = "Certificate not found by serial number %s";
     private static final String CERTIFICATE_NOT_FOUND_BY_USERNAME_AND_DATES =
             "Certificate not found by username and dates: %s, %s";
 
-    private final ObjectMapper objectMapper;
     private final DtoConverter dtoConverter;
     private final QRCodeService qrCodeService;
-    //private final ArchiveService archiveService;
     private final CertificateRepository certificateRepository;
-    private final CertificateTemplateService certificateTemplateService;
-    private final CertificateDatesService certificateDatesService;
     private final CertificateContentDecorator certificateContentDecorator;
     private final CertificateByTemplateService certificateByTemplateService;
 
-    @Autowired
-    public CertificateServiceImpl(ObjectMapper objectMapper, DtoConverter dtoConverter, QRCodeService qrCodeService,
-                                  /*ArchiveService archiveService, */CertificateRepository certificateRepository,
-                                  CertificateTemplateService certificateTemplateService,
-                                  CertificateDatesService certificateDatesService,
+    public CertificateServiceImpl(DtoConverter dtoConverter, QRCodeService qrCodeService,
+                                  CertificateRepository certificateRepository,
                                   CertificateContentDecorator certificateContentDecorator,
                                   CertificateByTemplateService certificateByTemplateService) {
-        this.objectMapper = objectMapper;
         this.dtoConverter = dtoConverter;
         this.qrCodeService = qrCodeService;
-        //this.archiveService = archiveService;
         this.certificateRepository = certificateRepository;
-        this.certificateTemplateService = certificateTemplateService;
-        this.certificateDatesService = certificateDatesService;
         this.certificateContentDecorator = certificateContentDecorator;
         this.certificateByTemplateService = certificateByTemplateService;
     }
@@ -118,7 +104,7 @@ public class CertificateServiceImpl implements CertificateService/*, ArchiveMark
 
     @Override
     public List<Certificate> getSentCertificatesByEmailAndUpdateStatus(String sendToEmail, LocalDate updateStatus) {
-        return certificateRepository.findAllBySendToEmailAndUpdateStatusAndSendStatusTrue(sendToEmail, updateStatus);
+        return certificateRepository.findAllByUserEmailAndUpdateStatusAndSendStatusTrue(sendToEmail, updateStatus);
     }
 
     @Override
@@ -235,7 +221,7 @@ public class CertificateServiceImpl implements CertificateService/*, ArchiveMark
                 .withDates(certificate.getDates()).withSerialNumber(response.getSerialNumber())
                 .withTemplate(certificate.getTemplate())
                 //.withUser(certificate.getUser())
-                .withUserName(certificate.getUserName()).withSendToEmail(certificate.getSendToEmail());
+                .withUserName(certificate.getUserName()).withUserEmail(certificate.getUserEmail());
 
         log.debug("updating serial number of certificate by id {}", newCertificate);
 
@@ -295,9 +281,8 @@ public class CertificateServiceImpl implements CertificateService/*, ArchiveMark
         Certificate certificate = getCertificateById(id);
         boolean isSent = Optional.ofNullable(certificate.getSendStatus()).orElse(false);
 
-        if (!certificate.getSendToEmail().equals(userEmail)) {
-            //todo
-            //throw new UserPermissionException();
+        if (!certificate.getUserEmail().equals(userEmail)) {
+            throw new UserPermissionException();
         } else if (isSent && certificate.getSerialNumber() == null && certificate.getUpdateStatus() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Requested certificate has no serial number");
         }
@@ -350,7 +335,7 @@ public class CertificateServiceImpl implements CertificateService/*, ArchiveMark
     @Override
     public Certificate updateCertificateEmail(Long id, Certificate certificate) {
         Certificate certificateFound = getCertificateById(id);
-        certificateFound.setSendToEmail(certificate.getSendToEmail());
+        certificateFound.setUserEmail(certificate.getUserEmail());
         certificateFound.setSendStatus(certificate.getSendStatus());
         return certificateRepository.save(certificateFound);
     }
@@ -358,10 +343,10 @@ public class CertificateServiceImpl implements CertificateService/*, ArchiveMark
     @Override
     public CertificatePreview updateCertificatePreview(Long id, CertificatePreview certificatePreview) {
         Certificate certificate = getCertificateById(id);
-        if (certificatePreview.getSendToEmail().equals(certificate.getSendToEmail())) {
+        if (certificatePreview.getSendToEmail().equals(certificate.getUserEmail())) {
             certificate.setSendStatus(certificatePreview.getSendStatus());
         } else {
-            certificate.setSendToEmail(certificatePreview.getSendToEmail());
+            certificate.setUserEmail(certificatePreview.getSendToEmail());
             certificate.setSendStatus(null);
         }
         if (!certificatePreview.getUserName().equals(certificate.getUserName())) {
@@ -386,7 +371,7 @@ public class CertificateServiceImpl implements CertificateService/*, ArchiveMark
                 .toList();
     }
 
-    //todo
+    //todo@
     //@Override
     //public void archiveModel(Certificate certificate) {
     //    CertificateArch certificateArch = dtoConverter.convertToDto(certificate, CertificateArch.class);

@@ -1,4 +1,4 @@
-package com.softserve.teachua.dto.googleapis;
+package com.softserve.certificate.dto.googleapis;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 public class GoogleFormsResponse {
     private String title;
-
     private Integer totalPoints;
-
     private List<QuizResult> quizResults;
 }

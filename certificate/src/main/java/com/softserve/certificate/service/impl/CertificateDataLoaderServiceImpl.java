@@ -14,19 +14,18 @@ import com.softserve.certificate.repository.CertificateRepository;
 import com.softserve.certificate.repository.CertificateTemplateRepository;
 import com.softserve.certificate.repository.CertificateTypeRepository;
 import com.softserve.certificate.service.CertificateDataLoaderService;
+import static com.softserve.certificate.service.CertificateDataLoaderService.getCertificateByTemplateValue;
 import com.softserve.certificate.service.CertificateDatesService;
 import com.softserve.certificate.service.CertificateService;
 import com.softserve.certificate.service.CertificateTemplateService;
 import com.softserve.certificate.service.CertificateTypeService;
 import com.softserve.certificate.utils.CertificateContentDecorator;
-import static com.softserve.certificate.service.CertificateDataLoaderService.getCertificateByTemplateValue;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -52,7 +51,6 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     private final CertificateContentDecorator decorator;
     private final ObjectMapper objectMapper;
 
-    @Autowired
     public CertificateDataLoaderServiceImpl(CertificateService certificateService,
                                             CertificateDatesService certificateDatesService,
                                             CertificateTypeService certificateTypeService,
@@ -80,14 +78,14 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             CertificateDates dates = saveDates(data, index);
             CertificateTemplate template = saveTemplate(data.getType());
             Certificate certificate =
-                    Certificate.builder().userName(certificateExcel.getName()).sendToEmail(certificateExcel.getEmail())
+                    Certificate.builder().userName(certificateExcel.getName()).userEmail(certificateExcel.getEmail())
                             .template(template).dates(dates).build();
             if (!certificateRepository.existsByUserNameAndDates(certificate.getUserName(), certificate.getDates())) {
                 certificateService.addCertificate(certificate);
             } else {
                 Certificate certificateFound =
                         certificateService.getByUserNameAndDates(certificate.getUserName(), certificate.getDates());
-                if (!certificate.getSendToEmail().equals(certificateFound.getSendToEmail())) {
+                if (!certificate.getUserEmail().equals(certificateFound.getUserEmail())) {
                     certificate.setSendStatus(null);
                     certificateService.updateCertificateEmail(certificateFound.getId(), certificate);
                     response.add(new CertificateDatabaseResponse(
@@ -235,7 +233,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             certificateDates = certificateDatesService.getOrCreateCertificateDates(certificateDates);
 
             certificate.setValues(objectMapper.writeValueAsString(values));
-            certificate.setSendToEmail(
+            certificate.setUserEmail(
                     CertificateDataLoaderService.getCertificateByTemplateValue(values, data, j, "email",
                             "Електронна пошта"));
             certificate.setTemplate(certificateTemplate);

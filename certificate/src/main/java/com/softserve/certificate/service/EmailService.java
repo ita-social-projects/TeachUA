@@ -5,7 +5,6 @@ import com.softserve.certificate.dto.certificate.CertificateTransfer;
 /**
  * This interface contains methods to work with emails.
  */
-
 public interface EmailService {
     /**
      * The method handle all additional methods and send email to proper user.

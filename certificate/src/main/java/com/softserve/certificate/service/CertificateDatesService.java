@@ -6,7 +6,6 @@ import java.util.Optional;
 /**
  * This interface contains all needed methods to manage certificate dates.
  */
-
 public interface CertificateDatesService {
     boolean exists(CertificateDates certificateDates);
 

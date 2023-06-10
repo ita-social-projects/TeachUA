@@ -5,7 +5,6 @@ import com.softserve.certificate.dto.schedule.TaskSchedule;
 /**
  * This interface contains method to manage scheduling for sending certificate via email.
  */
-
 public interface ScheduleSendService {
     /**
      * The method start scheduling.

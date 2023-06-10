@@ -100,7 +100,7 @@ public class GmailServiceImpl implements GmailService {
             messageAboutUndelivered.setFlag(Flags.Flag.SEEN, true);
 
             log.info("Updated {} failed certificates for {}",
-                    certificates.size(), certificates.get(0).getSendToEmail());
+                    certificates.size(), certificates.get(0).getUserEmail());
         } else {
             log.info("Gmail has failed email for {} with date {}, but no certificate found in database",
                     sendToEmail, updateStatus);

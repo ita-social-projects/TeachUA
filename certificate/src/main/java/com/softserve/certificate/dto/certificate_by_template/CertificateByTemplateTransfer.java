@@ -1,5 +1,6 @@
 package com.softserve.certificate.dto.certificate_by_template;
 
+import com.softserve.certificate.dto.googleapis.QuizResult;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,5 @@ public class CertificateByTemplateTransfer {
     private List<String> columnHeadersList;
     private List<List<String>> excelContent;
     private List<String> excelColumnsOrder;
-    //todo
-    //private List<QuizResult> googleFormResults;
+    private List<QuizResult> googleFormResults;
 }

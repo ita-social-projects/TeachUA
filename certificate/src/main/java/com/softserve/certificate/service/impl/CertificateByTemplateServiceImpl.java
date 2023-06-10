@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +40,6 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
     private final QRCodeService qrCodeService;
     private final ObjectMapper objectMapper;
 
-    @Autowired
     public CertificateByTemplateServiceImpl(QRCodeService qrCodeService, ObjectMapper objectMapper) {
         this.qrCodeService = qrCodeService;
         this.objectMapper = objectMapper;

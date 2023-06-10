@@ -16,14 +16,9 @@ import lombok.With;
 @Setter
 public class CertificateVerificationResponse implements Convertible {
     private Long serialNumber;
-
     private String certificateTypeName;
-
     private String userName;
-
     private String courseDescription;
-
     private String projectDescription;
-
     private String picturePath;
 }

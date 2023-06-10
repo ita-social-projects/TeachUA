@@ -11,12 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class CertificateUserResponse {
     private Long id;
-
     private Long serialNumber;
-
     private String certificateTypeName;
-
     private String date;
-
     private String courseDescription;
 }

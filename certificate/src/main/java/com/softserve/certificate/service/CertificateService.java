@@ -14,7 +14,6 @@ import java.util.Map;
 /**
  * This service contains methods to manage certificates.
  */
-
 public interface CertificateService {
     /**
      * This const means the last database id of the certificate's template, which generates using Jasper .xml file.

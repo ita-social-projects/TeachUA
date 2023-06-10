@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +30,6 @@ public class PdfTemplateServiceImpl implements PdfTemplateService {
     private final CertificateByTemplateService certificateByTemplateService;
     private final CertificateTemplateRepository certificateTemplateRepository;
 
-    @Autowired
     public PdfTemplateServiceImpl(CertificateByTemplateService certificateByTemplateService,
                                   CertificateTemplateRepository certificateTemplateRepository) {
         this.certificateByTemplateService = certificateByTemplateService;

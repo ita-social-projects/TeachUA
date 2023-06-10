@@ -12,7 +12,6 @@ import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.util.ByteArrayDataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -31,7 +30,6 @@ public class EmailServiceImpl implements EmailService {
     @SuppressWarnings("squid:S1450") //Suppressed because of project's business logic.
     private MimeBodyPart pdfBodyPart;
 
-    @Autowired
     public EmailServiceImpl(ConfigureSMTPProperties emailSender, CertificateService certificateService) {
         this.emailSender = emailSender;
         this.certificateService = certificateService;

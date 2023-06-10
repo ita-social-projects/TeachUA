@@ -2,7 +2,6 @@ package com.softserve.certificate.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.certificate.constants.RoleData;
 import com.softserve.certificate.controller.marker.Api;
 import com.softserve.certificate.dto.certificate_by_template.CertificateByTemplateSavingResponse;
 import com.softserve.certificate.dto.certificate_by_template.CertificateByTemplateTransfer;
@@ -15,6 +14,7 @@ import com.softserve.certificate.service.CertificateExcelService;
 import com.softserve.certificate.service.CertificateGoogleFormService;
 import com.softserve.certificate.service.CertificateTemplateService;
 import com.softserve.certificate.utils.annotation.AllowedRoles;
+import com.softserve.commons.constant.RoleData;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

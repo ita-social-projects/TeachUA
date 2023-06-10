@@ -1,8 +1,9 @@
 package com.softserve.certificate.dto.certificate;
 
-import com.softserve.commons.util.marker.Convertible;
 import com.softserve.certificate.model.CertificateDates;
 import com.softserve.certificate.model.CertificateTemplate;
+import com.softserve.certificate.model.Messenger;
+import com.softserve.commons.util.marker.Convertible;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -32,9 +33,9 @@ public class CertificateProfile implements Convertible {
     private String sendToEmail;
 
     private String messengerUserName;
-    //todo
-    //private Messenger messenger;
-    //
+
+    private Messenger messenger;
+    //todo~
     //private User user;
 
     private Boolean sendStatus;

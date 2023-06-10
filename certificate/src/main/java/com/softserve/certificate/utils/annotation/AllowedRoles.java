@@ -1,6 +1,6 @@
 package com.softserve.certificate.utils.annotation;
 
-import com.softserve.certificate.constants.RoleData;
+import com.softserve.commons.constant.RoleData;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

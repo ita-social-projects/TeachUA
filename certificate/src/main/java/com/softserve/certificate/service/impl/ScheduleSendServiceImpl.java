@@ -7,7 +7,6 @@ import com.softserve.certificate.service.EmailService;
 import com.softserve.certificate.service.GmailService;
 import com.softserve.certificate.service.ScheduleSendService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,6 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
 
     private final CertificateService certificateService;
 
-    @Autowired
     public ScheduleSendServiceImpl(EmailService emailService, GmailService gmailService,
                                    ScheduledAnnotationBeanPostProcessor postProcessor,
                                    CertificateService certificateService) {

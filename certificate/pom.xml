@@ -61,6 +61,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <scope>runtime</scope>
@@ -117,7 +122,24 @@
       <version>6.20.1</version>
     </dependency>
 
-    <!-- iText  -->
+    <!--    GOOGLE CLIENT AND API   -->
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-forms</artifactId>
+      <version>v1-rev20220908-2.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-drive</artifactId>
+      <version>v3-rev20221023-2.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-oauth2-http</artifactId>
+      <version>1.12.1</version>
+    </dependency>
+
+    <!--    iText   -->
     <dependency>
       <groupId>com.itextpdf</groupId>
       <artifactId>kernel</artifactId>

@@ -1,8 +1,9 @@
 package com.softserve.certificate.dto.certificate;
 
-import com.softserve.commons.util.marker.Convertible;
 import com.softserve.certificate.model.CertificateDates;
 import com.softserve.certificate.model.CertificateTemplate;
+import com.softserve.certificate.model.Messenger;
+import com.softserve.commons.util.marker.Convertible;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,13 +23,12 @@ import lombok.With;
 public class CertificateTransfer implements Convertible {
     private Long id;
     private Long serialNumber;
-    //todo
+    //todo~
     //private User user;
     private String userName;
     private String sendToEmail;
     private String messengerUserName;
-    //todo
-    //private Messenger messenger;
+    private Messenger messenger;
     private Boolean sendStatus;
     private LocalDate updateStatus;
     private CertificateTemplate template;

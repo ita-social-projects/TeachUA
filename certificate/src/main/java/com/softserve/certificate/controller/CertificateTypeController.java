@@ -1,12 +1,12 @@
 package com.softserve.certificate.controller;
 
-import com.softserve.certificate.constants.RoleData;
 import com.softserve.certificate.controller.marker.Api;
 import com.softserve.certificate.dto.certificate_type.CertificateTypeProcessingResponse;
 import com.softserve.certificate.dto.certificate_type.CertificateTypeProfile;
 import com.softserve.certificate.model.CertificateType;
 import com.softserve.certificate.service.CertificateTypeService;
 import com.softserve.certificate.utils.annotation.AllowedRoles;
+import com.softserve.commons.constant.RoleData;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;

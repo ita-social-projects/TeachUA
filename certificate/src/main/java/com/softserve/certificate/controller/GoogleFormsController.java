@@ -1,10 +1,10 @@
-package com.softserve.teachua.controller;
+package com.softserve.certificate.controller;
 
+import com.softserve.certificate.controller.marker.Api;
+import com.softserve.certificate.dto.googleapis.GoogleFormsResponse;
+import com.softserve.certificate.service.GoogleFormsService;
+import com.softserve.certificate.utils.annotation.AllowedRoles;
 import com.softserve.commons.constant.RoleData;
-import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dto.googleapis.GoogleFormsResponse;
-import com.softserve.teachua.service.GoogleFormsService;
-import com.softserve.teachua.utils.annotation.AllowedRoles;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;

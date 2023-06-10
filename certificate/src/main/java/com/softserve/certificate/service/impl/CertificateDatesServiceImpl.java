@@ -1,14 +1,11 @@
 package com.softserve.certificate.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.certificate.model.CertificateDates;
 import com.softserve.certificate.repository.CertificateDatesRepository;
 import com.softserve.certificate.service.CertificateDatesService;
 import com.softserve.commons.exception.NotExistException;
-import com.softserve.commons.util.converter.DtoConverter;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,24 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class CertificateDatesServiceImpl implements CertificateDatesService/*, ArchiveMark<CertificateDates>*/ {
+public class CertificateDatesServiceImpl implements CertificateDatesService {
     private static final String DATE_NOT_FOUND_BY_ID = "Certificate dates not found by id: %s";
 
     private final CertificateDatesRepository certificateDatesRepository;
-    private final DtoConverter dtoConverter;
-    //private final ArchiveService archiveService;
-    private final ObjectMapper objectMapper;
 
-    @Autowired
-    public CertificateDatesServiceImpl(CertificateDatesRepository certificateDatesRepository, DtoConverter dtoConverter,
-                                       //ArchiveService archiveService,
-                                       ObjectMapper objectMapper) {
+    public CertificateDatesServiceImpl(CertificateDatesRepository certificateDatesRepository) {
         this.certificateDatesRepository = certificateDatesRepository;
-        this.dtoConverter = dtoConverter;
-        //this.archiveService = archiveService;
-        this.objectMapper = objectMapper;
     }
 
+    //todo@
    /* @Override
     public void archiveModel(CertificateDates certificateDates) {
         CertificateDatesArch certificateDatesArch =

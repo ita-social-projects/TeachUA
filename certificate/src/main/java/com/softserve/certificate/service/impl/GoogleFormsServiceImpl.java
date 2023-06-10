@@ -1,14 +1,14 @@
-package com.softserve.teachua.service.impl;
+package com.softserve.certificate.service.impl;
 
 import com.google.api.services.forms.v1.Forms;
 import com.google.api.services.forms.v1.model.Form;
 import com.google.api.services.forms.v1.model.Grading;
 import com.google.api.services.forms.v1.model.Item;
 import com.google.api.services.forms.v1.model.ListFormResponsesResponse;
-import com.softserve.teachua.dto.googleapis.GoogleFormsResponse;
-import com.softserve.teachua.dto.googleapis.QuizResult;
-import com.softserve.teachua.exception.GoogleApisDocumentException;
-import com.softserve.teachua.service.GoogleFormsService;
+import com.softserve.certificate.dto.googleapis.GoogleFormsResponse;
+import com.softserve.certificate.dto.googleapis.QuizResult;
+import com.softserve.certificate.exception.GoogleApisDocumentException;
+import com.softserve.certificate.service.GoogleFormsService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
