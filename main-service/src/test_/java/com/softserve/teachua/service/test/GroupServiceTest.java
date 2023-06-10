@@ -6,7 +6,7 @@ import com.softserve.teachua.dto.test.group.UpdateGroup;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.repository.test.GroupRepository;
-import com.softserve.teachua.service.test.impl.GroupServiceImpl;
+import com.softserve.question.service.impl.GroupServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

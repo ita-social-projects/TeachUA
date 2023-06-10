@@ -7,8 +7,11 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
   jpa:
-    hibernate:ddl-auto: update
-    properties:hibernate:default_schema: user
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_schema: certificate
   mail:
     host: smtp.gmail.com
     port: 587

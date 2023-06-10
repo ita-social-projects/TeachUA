@@ -4,7 +4,7 @@ import com.softserve.teachua.dto.test.topic.TopicProfile;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.Topic;
 import com.softserve.teachua.repository.test.TopicRepository;
-import com.softserve.teachua.service.test.impl.TopicServiceImpl;
+import com.softserve.question.service.impl.TopicServiceImpl;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

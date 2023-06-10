@@ -3,7 +3,7 @@ package com.softserve.teachua.service.test;
 import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.model.test.GroupTest;
 import com.softserve.teachua.repository.test.GroupTestRepository;
-import com.softserve.teachua.service.test.impl.GroupTestServiceImpl;
+import com.softserve.question.service.impl.GroupTestServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

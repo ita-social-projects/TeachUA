@@ -3,7 +3,7 @@ package com.softserve.teachua.service.test;
 import com.softserve.teachua.dto.test.question.QuestionResponse;
 import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.repository.test.QuestionRepository;
-import com.softserve.teachua.service.test.impl.QuestionServiceImpl;
+import com.softserve.question.service.impl.QuestionServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

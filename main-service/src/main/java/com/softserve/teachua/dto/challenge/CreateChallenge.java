@@ -3,7 +3,7 @@ package com.softserve.teachua.dto.challenge;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.teachua.utils.deserializers.HtmlModifyDeserialize;
-import com.softserve.teachua.utils.deserializers.TrimDeserialize;
+import com.softserve.commons.util.deserializer.TrimDeserialize;
 import com.softserve.commons.util.validation.CheckForeignLanguage;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

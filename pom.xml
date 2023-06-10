@@ -14,6 +14,7 @@
     <module>commons</module>
     <module>user</module>
       <module>club</module>
+      <module>question</module>
   </modules>
 
   <name>${project.artifactId}</name>

@@ -9,7 +9,7 @@ import com.softserve.teachua.model.test.Group;
 import com.softserve.teachua.model.test.Subscription;
 import com.softserve.teachua.repository.test.SubscriptionRepository;
 import com.softserve.teachua.service.UserService;
-import com.softserve.teachua.service.test.impl.SubscriptionServiceImpl;
+import com.softserve.question.service.impl.SubscriptionServiceImpl;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;

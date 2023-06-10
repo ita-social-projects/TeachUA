@@ -8,7 +8,7 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.test.QuestionType;
 import com.softserve.teachua.repository.test.QuestionRepository;
 import com.softserve.teachua.repository.test.QuestionTypeRepository;
-import com.softserve.teachua.service.test.impl.QuestionTypeServiceImpl;
+import com.softserve.question.service.impl.QuestionTypeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

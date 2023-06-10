@@ -9,12 +9,12 @@ import com.softserve.teachua.dto.googleapis.GoogleFormsResponse;
 import com.softserve.teachua.dto.googleapis.QuizResult;
 import com.softserve.teachua.exception.GoogleApisDocumentException;
 import com.softserve.teachua.service.GoogleFormsService;
-import static com.softserve.teachua.utils.test.validation.NullValidator.checkNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -31,7 +31,9 @@ public class GoogleFormsServiceImpl implements GoogleFormsService {
 
     @Override
     public GoogleFormsResponse getResultsFromGoogleForms(String formId) {
-        checkNull(formId, "Google Forms ID");
+        if (StringUtils.isEmpty(formId)) {
+            throw new IllegalArgumentException("Google Forms ID can't be null");
+        }
         Form form;
         ListFormResponsesResponse formResponses;
 

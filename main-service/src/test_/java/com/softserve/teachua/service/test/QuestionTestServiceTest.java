@@ -4,7 +4,7 @@ import com.softserve.teachua.model.test.Question;
 import com.softserve.teachua.model.test.QuestionTest;
 import com.softserve.teachua.model.test.Test;
 import com.softserve.teachua.repository.test.QuestionTestRepository;
-import com.softserve.teachua.service.test.impl.QuestionTestServiceImpl;
+import com.softserve.question.service.impl.QuestionTestServiceImpl;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

@@ -7,5 +7,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
   jpa:
-    hibernate:ddl-auto: update
-    properties:hibernate:default_schema: club
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_schema: club

@@ -1,0 +1,31 @@
+server:
+  port: 8084
+spring:
+  profiles.active: dev
+  application:
+    name: question
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_schema: question
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${USER_EMAIL}
+    password: ${SEND_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+        transport.protocol: smtp
+application:
+  api:
+    credentials:
+      service-account:
+        clientEmail: ${SERVICE_ACCOUNT_CLIENT_EMAIL}
+        privateKey: ${SERVICE_ACCOUNT_PRIVATE_KEY}

@@ -15,7 +15,7 @@ import com.softserve.teachua.model.test.QuestionType;
 import com.softserve.teachua.model.test.Result;
 import com.softserve.teachua.repository.test.ResultRepository;
 import com.softserve.teachua.service.UserService;
-import com.softserve.teachua.service.test.impl.ResultServiceImpl;
+import com.softserve.question.service.impl.ResultServiceImpl;
 import com.softserve.teachua.utils.test.AnswerComparator;
 import static com.softserve.teachua.utils.test.Messages.CORRECT_MESSAGE;
 import static com.softserve.teachua.utils.test.Messages.INCORRECT_MESSAGE;

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.softserve.commons.util.marker.Convertible;
 import com.softserve.commons.util.validation.CheckForeignLanguage;
 import com.softserve.teachua.utils.deserializers.HtmlModifyDeserialize;
-import com.softserve.teachua.utils.deserializers.TrimDeserialize;
+import com.softserve.commons.util.deserializer.TrimDeserialize;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

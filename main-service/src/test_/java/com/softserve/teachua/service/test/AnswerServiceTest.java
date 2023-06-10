@@ -2,7 +2,7 @@ package com.softserve.teachua.service.test;
 
 import com.softserve.teachua.model.test.Answer;
 import com.softserve.teachua.repository.test.AnswerRepository;
-import com.softserve.teachua.service.test.impl.AnswerServiceImpl;
+import com.softserve.question.service.impl.AnswerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
