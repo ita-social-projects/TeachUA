@@ -1,6 +1,5 @@
 package com.softserve.certificate.controller;
 
-import com.softserve.certificate.controller.marker.Api;
 import com.softserve.certificate.dto.certificate.CertificateDataRequest;
 import com.softserve.certificate.dto.certificate.CertificateDatabaseResponse;
 import com.softserve.certificate.dto.certificate.CertificatePreview;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,9 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * This controller is responsible for managing certificates.
  */
-@RestController
 @Slf4j
-public class CertificateController implements Api {
+@RestController
+@RequestMapping("/api/v1/certificate")
+public class CertificateController {
     private final CertificateService certificateService;
     private final CertificateExcelService excelService;
     private final CertificateDataLoaderService loaderService;
@@ -46,7 +47,7 @@ public class CertificateController implements Api {
      * @return number of unsent certificates
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/certificate/generate")
+    @GetMapping("/generate")
     public Integer getUnsentCertificates() {
         return certificateService.getListOfUnsentCertificates().size();
     }
@@ -58,7 +59,7 @@ public class CertificateController implements Api {
      * @return new {@code ExcelParsingResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/certificate/excel")
+    @PostMapping("/excel")
     public ExcelParsingResponse uploadExcel(@RequestParam("excel-file") MultipartFile multipartFile) {
         return excelService.parseExcel(multipartFile);
     }
@@ -70,7 +71,7 @@ public class CertificateController implements Api {
      * @return new {@code List<CertificateDatabaseResponse>}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/certificate/load-to-db")
+    @PostMapping
     public List<CertificateDatabaseResponse> saveExcel(@Valid @RequestBody CertificateDataRequest data) {
         log.info("Save excel " + data);
         return loaderService.saveToDatabase(data);
@@ -83,7 +84,7 @@ public class CertificateController implements Api {
      * @param serialNumber - serial number of certificate, being verified
      * @return new {@code CertificateVerificationResponse}
      */
-    @GetMapping("/certificate/{serialNumber}")
+    @GetMapping("/{serialNumber}")
     public CertificateVerificationResponse validateCertificate(@PathVariable("serialNumber") Long serialNumber) {
         return certificateService.validateCertificate(serialNumber);
     }
@@ -94,7 +95,7 @@ public class CertificateController implements Api {
      * @return {@code List<CertificatePreview>}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/certificates")
+    @GetMapping("/all")
     public List<CertificatePreview> getAllCertificates() {
         return certificateService.getListOfCertificatesPreview();
     }
@@ -104,11 +105,13 @@ public class CertificateController implements Api {
      *
      * @return {@code List<CertificateUserResponse>}
      */
+    //todo
     //@PreAuthorize("isAuthenticated()")
     //@GetMapping("/certificates/my")
-    //public List<CertificateUserResponse> getCertificatesOfAuthenticatedUser(Authentication authentication) {
-    //    UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-    //    return certificateService.getListOfCertificatesByEmail(userPrincipal.getEmail());
+    //public List<CertificateUserResponse> getCertificatesOfAuthenticatedUser() {
+    //    UserPrincipal userPrincipal =
+    //            (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    //    return certificateService.getListOfCertificatesByEmail(userPrincipal.getUsername());
     //}
 
     /**
@@ -116,12 +119,13 @@ public class CertificateController implements Api {
      *
      * @return {@code ResponseEntity<byte[]>}
      */
+    //todo
     //@PreAuthorize("isAuthenticated()")
     //@GetMapping("/certificates/download/{id}")
-    //public ResponseEntity<byte[]> downloadCertificate(Authentication authentication,
-    //                                                  @PathVariable("id") Long id) {
-    //    UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-    //    byte[] bytes = certificateService.getPdfOutputForDownload(userPrincipal.getEmail(), id);
+    //public ResponseEntity<byte[]> downloadCertificate(@PathVariable("id") Long id) {
+    //    UserPrincipal userPrincipal =
+    //            (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    //    byte[] bytes = certificateService.getPdfOutputForDownload(userPrincipal.getUsername(), id);
     //
     //    HttpHeaders headers = new HttpHeaders();
     //    headers.setContentType(MediaType.APPLICATION_PDF);
@@ -130,7 +134,7 @@ public class CertificateController implements Api {
     //}
 
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/certificate")
+    @GetMapping
     public List<CertificatePreview> searchCertificatesUser(@RequestParam(name = "userName") String userName) {
         return certificateService.getSimilarCertificatesByUserName(userName);
     }
@@ -143,7 +147,7 @@ public class CertificateController implements Api {
      * @return {@code List<CertificatePreview>}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/certificates/{id}")
+    @PutMapping("/{id}")
     public CertificatePreview updateCertificate(@PathVariable Long id,
                                                 @Valid @RequestBody CertificatePreview certificatePreview) {
         return certificateService.updateCertificatePreview(id, certificatePreview);

@@ -2,7 +2,6 @@ package com.softserve.certificate.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softserve.certificate.controller.marker.Api;
 import com.softserve.certificate.dto.certificate_by_template.CertificateByTemplateSavingResponse;
 import com.softserve.certificate.dto.certificate_by_template.CertificateByTemplateTransfer;
 import com.softserve.certificate.dto.certificate_excel.CertificateByTemplateExcelParsingResponse;
@@ -27,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,9 +34,10 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * This controller is responsible for managing certificates created by a template.
  */
-@RestController
 @Slf4j
-public class CertificateByTemplateController implements Api {
+@RestController
+@RequestMapping("/api/v1/certificate-by-template")
+public class CertificateByTemplateController {
     private final CertificateExcelService excelService;
     private final CertificateTemplateService certificateTemplateService;
     private final CertificateDataLoaderService loaderService;
@@ -59,7 +60,7 @@ public class CertificateByTemplateController implements Api {
      * @return new {@code CertificateByTemplateTransfer}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/certificate-by-template/pdf")
+    @PostMapping("/pdf")
     public CertificateByTemplateTransfer uploadPdf(@RequestBody CertificateTemplatePreview template)
             throws JsonProcessingException {
         CertificateTemplate certificateTemplate = certificateTemplateService.getTemplateByFilePath(
@@ -114,7 +115,7 @@ public class CertificateByTemplateController implements Api {
      * @return new {@code CertificateByTemplateExcelParsingResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/certificate-by-template/excel")
+    @PostMapping("/excel")
     public CertificateByTemplateExcelParsingResponse uploadExcel(
             @RequestParam("excel-file") MultipartFile multipartFile) {
         return excelService.parseFlexibleExcel(multipartFile);
@@ -126,7 +127,7 @@ public class CertificateByTemplateController implements Api {
      * @param data - {@code CertificateByTemplateTransfer} read from form.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/certificate-by-template/load-to-db")
+    @PostMapping
     public void saveCertificate(@RequestBody CertificateByTemplateTransfer data) throws IOException {
         log.info("Save certificate/certificates by template " + data);
         loaderService.saveCertificate(data);
@@ -139,7 +140,7 @@ public class CertificateByTemplateController implements Api {
      * @return new {@code CertificateByTemplateExcelValidationResult}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/certificate-by-template/validate")
+    @PostMapping("/validate")
     public CertificateByTemplateExcelValidationResult validateCertificateExcelData(
             @RequestBody CertificateByTemplateTransfer data) {
         log.info("Validate certificate/certificates by template " + data);
@@ -147,7 +148,7 @@ public class CertificateByTemplateController implements Api {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/certificate-by-template/save-gf")
+    @PostMapping("/save-gf")
     public CertificateByTemplateSavingResponse saveGoogleFormCertificateData2(
             @RequestBody CertificateByTemplateTransfer data) {
         log.info("Save Google Form certificate/certificates by template " + data);
@@ -155,7 +156,7 @@ public class CertificateByTemplateController implements Api {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/certificate-by-template/get-invalid-certificates-excel")
+    @PostMapping("/get-invalid-certificates-excel")
     public ResponseEntity<ByteArrayResource> getInvalidCertificatesExcel(@RequestBody String values) {
         log.info("Form invalid certificates excel " + values);
 

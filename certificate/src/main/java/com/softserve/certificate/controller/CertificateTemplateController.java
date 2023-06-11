@@ -1,6 +1,5 @@
 package com.softserve.certificate.controller;
 
-import com.softserve.certificate.controller.marker.Api;
 import com.softserve.certificate.dto.certificate_template.CertificateTemplateLastModificationDateSavingResponse;
 import com.softserve.certificate.dto.certificate_template.CertificateTemplateMetadataTransfer;
 import com.softserve.certificate.dto.certificate_template.CertificateTemplatePreview;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,9 +27,10 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * This controller is responsible for managing templates.
  */
-@RestController
 @Slf4j
-public class CertificateTemplateController implements Api {
+@RestController
+@RequestMapping("/api/v1/certificate/template")
+public class CertificateTemplateController {
     private final CertificateTemplateService certificateTemplateService;
     private final PdfTemplateService pdfTemplateService;
 
@@ -45,7 +46,7 @@ public class CertificateTemplateController implements Api {
      * @param createCertificateTemplate - {@code CreateCertificateTemplate} read from form.
      * @return new {@code CertificateTemplateProcessingResponse}
      */
-    @PostMapping("/template")
+    @PostMapping
     @AllowedRoles(RoleData.ADMIN)
     public CertificateTemplateProcessingResponse createTemplate(
             @Valid @RequestBody CertificateTemplateProfile createCertificateTemplate) {
@@ -57,7 +58,7 @@ public class CertificateTemplateController implements Api {
      *
      * @return {@code List<CertificateTemplatePreview>}
      */
-    @GetMapping("/templates")
+    @GetMapping("/all")
     @AllowedRoles(RoleData.ADMIN)
     public List<CertificateTemplatePreview> getAllTemplates() {
         return certificateTemplateService.getAllTemplates();
@@ -70,7 +71,7 @@ public class CertificateTemplateController implements Api {
      * @return new {@code CertificateTemplateUploadResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/template/pdf")
+    @PostMapping("/pdf")
     public CertificateTemplateUploadResponse savePdf(@RequestParam("pdf-file") MultipartFile multipartFile) {
         return pdfTemplateService.savePdf(multipartFile);
     }
@@ -81,7 +82,7 @@ public class CertificateTemplateController implements Api {
      * @return {@code String}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/template/load-metadata")
+    @PostMapping("/load-metadata")
     public CertificateTemplateLastModificationDateSavingResponse saveLastModifiedDateOfPdf(
             @RequestBody CertificateTemplateMetadataTransfer data) {
         return pdfTemplateService.saveLastModifiedDateOfPdf(data);
@@ -94,7 +95,7 @@ public class CertificateTemplateController implements Api {
      * @return {@code CertificateTemplateProfile}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/template/{id}")
+    @GetMapping("/{id}")
     public CertificateTemplatePreview getCertificateTemplate(@PathVariable Integer id) {
         return certificateTemplateService.getTemplateProfileById(id);
     }
@@ -108,7 +109,7 @@ public class CertificateTemplateController implements Api {
      * @return {@code CertificateTemplateProfile} - shows result of updating template.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/template/{id}")
+    @PutMapping("/{id}")
     public CertificateTemplateProcessingResponse updateTemplate(@PathVariable Integer id, @Valid @RequestBody
         CertificateTemplateProfile updatedTemplate) {
         return certificateTemplateService.updateTemplate(id, updatedTemplate);
@@ -122,7 +123,7 @@ public class CertificateTemplateController implements Api {
      * @return {@code boolean}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/template/{id}")
+    @DeleteMapping("/{id}")
     public boolean deleteTemplate(@PathVariable Integer id) {
         return certificateTemplateService.deleteTemplateById(id);
     }

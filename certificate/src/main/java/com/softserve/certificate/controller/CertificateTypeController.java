@@ -1,6 +1,5 @@
 package com.softserve.certificate.controller;
 
-import com.softserve.certificate.controller.marker.Api;
 import com.softserve.certificate.dto.certificate_type.CertificateTypeProcessingResponse;
 import com.softserve.certificate.dto.certificate_type.CertificateTypeProfile;
 import com.softserve.certificate.model.CertificateType;
@@ -16,14 +15,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is responsible for managing certificate types.
  */
-@RestController
 @Slf4j
-public class CertificateTypeController implements Api {
+@RestController
+@RequestMapping("/api/v1/certificate/type")
+public class CertificateTypeController {
     private final CertificateTypeService certificateTypeService;
 
     public CertificateTypeController(CertificateTypeService certificateTypeService) {
@@ -35,7 +36,7 @@ public class CertificateTypeController implements Api {
      *
      * @return {@code List<CertificateType>}
      */
-    @GetMapping("/certificate-types")
+    @GetMapping("/all")
     @AllowedRoles(RoleData.ADMIN)
     public List<CertificateType> getAllCertificateTypes() {
         return certificateTypeService.getListOfCertificateTypes();
@@ -47,7 +48,7 @@ public class CertificateTypeController implements Api {
      * @param certificateTypeProfile {@code CertificateTypeProfile} read from form.
      * @return {@code CertificateTypeProcessingResponse}
      */
-    @PostMapping("/certificate-type")
+    @PostMapping
     public CertificateTypeProcessingResponse createCertificateType(@Valid @RequestBody
                                                                    CertificateTypeProfile certificateTypeProfile) {
         return certificateTypeService.addCertificateType(certificateTypeProfile);
@@ -61,7 +62,7 @@ public class CertificateTypeController implements Api {
      * @param certificateTypeProfile put updated object here.
      * @return {@code CertificateTypeProcessingResponse} shows result of updating template.
      */
-    @PutMapping("/certificate-type/{id}")
+    @PutMapping("/{id}")
     public CertificateTypeProcessingResponse updateCertificateType(@PathVariable Integer id,
                                                                    @Valid @RequestBody
                                                                  CertificateTypeProfile certificateTypeProfile) {
@@ -74,7 +75,7 @@ public class CertificateTypeController implements Api {
      *
      * @param id put certificate type id here.
      */
-    @DeleteMapping("/certificate-type/{id}")
+    @DeleteMapping("/{id}")
     public void deleteCertificateType(@PathVariable Integer id) {
         certificateTypeService.deleteCertificateType(id);
     }
