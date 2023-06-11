@@ -1,4 +1,4 @@
-package com.softserve.commons.user;
+package com.softserve.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.commons.util.marker.Convertible;

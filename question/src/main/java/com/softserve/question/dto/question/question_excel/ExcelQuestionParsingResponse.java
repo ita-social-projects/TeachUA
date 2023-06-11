@@ -1,6 +1,6 @@
 package com.softserve.question.dto.question.question_excel;
 
-import com.softserve.commons.dto.database_transfer.ExcelParsingMistake;
+import com.softserve.commons.dto.ExcelParsingMistake;
 import com.softserve.question.dto.answer.answer_excel.AnswerExcel;
 import java.util.ArrayList;
 import java.util.List;

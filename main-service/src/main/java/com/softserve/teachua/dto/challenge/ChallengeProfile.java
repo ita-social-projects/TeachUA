@@ -1,7 +1,7 @@
 package com.softserve.teachua.dto.challenge;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.softserve.commons.user.UserPreview;
+import com.softserve.commons.dto.UserPreview;
 import com.softserve.commons.util.marker.Convertible;
 import com.softserve.teachua.dto.task.TaskPreview;
 import java.util.List;

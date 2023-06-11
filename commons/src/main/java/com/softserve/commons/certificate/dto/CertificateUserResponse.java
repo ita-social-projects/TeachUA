@@ -1,4 +1,4 @@
-package com.softserve.certificate.dto.certificate;
+package com.softserve.commons.certificate.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

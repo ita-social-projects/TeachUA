@@ -15,7 +15,7 @@ import com.softserve.certificate.service.CertificateExcelService;
 import com.softserve.certificate.service.CertificateTemplateService;
 import com.softserve.certificate.service.CertificateValidator;
 import com.softserve.commons.constant.excel.ExcelColumn;
-import com.softserve.commons.dto.database_transfer.ExcelParsingMistake;
+import com.softserve.commons.dto.ExcelParsingMistake;
 import com.softserve.commons.exception.BadRequestException;
 import com.softserve.commons.service.ExcelUtil;
 import jakarta.validation.ConstraintViolation;

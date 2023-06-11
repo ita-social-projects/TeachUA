@@ -3,6 +3,8 @@ package com.softserve.user.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.softserve.commons.util.converter.DtoConverter;
+import com.softserve.user.util.CustomRequestInterceptor;
+import feign.RequestInterceptor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,5 +26,10 @@ public class ApplicationConfig {
     @Bean
     public DtoConverter dtoConverter() {
         return new DtoConverter(modelMapper());
+    }
+
+    @Bean
+    public RequestInterceptor customRequestInterceptor() {
+        return new CustomRequestInterceptor();
     }
 }

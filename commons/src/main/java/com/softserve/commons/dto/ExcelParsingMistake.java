@@ -1,4 +1,4 @@
-package com.softserve.commons.dto.database_transfer;
+package com.softserve.commons.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

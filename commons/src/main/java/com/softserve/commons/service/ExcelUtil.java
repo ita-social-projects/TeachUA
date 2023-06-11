@@ -1,7 +1,7 @@
 package com.softserve.commons.service;
 
 import com.softserve.commons.constant.excel.ExcelColumn;
-import com.softserve.commons.dto.database_transfer.ExcelParsingMistake;
+import com.softserve.commons.dto.ExcelParsingMistake;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

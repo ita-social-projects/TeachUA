@@ -1,6 +1,6 @@
 package com.softserve.teachua.dto.news;
 
-import com.softserve.commons.user.UserPreview;
+import com.softserve.commons.dto.UserPreview;
 import com.softserve.commons.util.marker.Convertible;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;

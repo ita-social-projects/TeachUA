@@ -3,7 +3,7 @@ package com.softserve.certificate.service.impl;
 import com.softserve.certificate.dto.certificate.CertificateContent;
 import com.softserve.certificate.dto.certificate.CertificatePreview;
 import com.softserve.certificate.dto.certificate.CertificateTransfer;
-import com.softserve.certificate.dto.certificate.CertificateUserResponse;
+import com.softserve.commons.certificate.dto.CertificateUserResponse;
 import com.softserve.certificate.dto.certificate.CertificateVerificationResponse;
 import com.softserve.certificate.exception.CertificateGenerationException;
 import com.softserve.certificate.model.Certificate;
@@ -89,7 +89,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<CertificateUserResponse> getListOfCertificatesByEmail(String email) {
+    public List<CertificateUserResponse> getListOfCertificatesByUserEmail(String email) {
         return certificateRepository.findAllForDownload(email)
                 .stream()
                 .map(certificate -> CertificateUserResponse.builder()

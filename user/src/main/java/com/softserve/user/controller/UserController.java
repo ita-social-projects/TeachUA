@@ -1,16 +1,20 @@
 package com.softserve.user.controller;
 
+import com.softserve.commons.certificate.client.CertificateClient;
+import com.softserve.commons.certificate.dto.CertificateUserResponse;
 import com.softserve.user.controller.marker.Api;
 import com.softserve.user.dto.SuccessUpdatedUser;
 import com.softserve.user.dto.UserPasswordUpdate;
 import com.softserve.user.dto.UserResponse;
 import com.softserve.user.dto.UserUpdateProfile;
+import com.softserve.user.security.UserPrincipal;
 import com.softserve.user.service.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,10 +32,12 @@ import org.springframework.web.bind.annotation.RestController;
 //@SecurityRequirement(name = "api")
 public class UserController implements Api {
     private final UserService userService;
+    private final CertificateClient certificateClient;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, CertificateClient certificateClient) {
         this.userService = userService;
+        this.certificateClient = certificateClient;
     }
 
     /**
@@ -101,5 +107,13 @@ public class UserController implements Api {
     @PatchMapping("/user/{id}")
     public void changePassword(@PathVariable("id") Long id, @Valid @RequestBody UserPasswordUpdate passwordUpdate) {
         userService.updatePassword(id, passwordUpdate);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/v1/user/certificates")
+    public List<CertificateUserResponse> getCertificatesOfAuthenticatedUser() {
+        UserPrincipal userPrincipal =
+                (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return certificateClient.getListOfCertificatesByUserEmail(userPrincipal.getUsername());
     }
 }

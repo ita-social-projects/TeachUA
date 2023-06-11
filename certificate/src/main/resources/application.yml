@@ -6,6 +6,7 @@ spring:
     name: certificate
   datasource:
     driver-class-name: org.postgresql.Driver
+    default-schema: certificate
   jpa:
     hibernate:
       ddl-auto: update

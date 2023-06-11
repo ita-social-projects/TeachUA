@@ -5,14 +5,22 @@ import com.softserve.certificate.dto.certificate.CertificateDatabaseResponse;
 import com.softserve.certificate.dto.certificate.CertificatePreview;
 import com.softserve.certificate.dto.certificate.CertificateVerificationResponse;
 import com.softserve.certificate.dto.certificate_excel.ExcelParsingResponse;
+import com.softserve.certificate.security.UserPrincipal;
 import com.softserve.certificate.service.CertificateDataLoaderService;
 import com.softserve.certificate.service.CertificateExcelService;
 import com.softserve.certificate.service.CertificateService;
 import com.softserve.certificate.utils.annotation.AllowedRoles;
+import com.softserve.commons.certificate.dto.CertificateUserResponse;
 import com.softserve.commons.constant.RoleData;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -105,33 +113,29 @@ public class CertificateController {
      *
      * @return {@code List<CertificateUserResponse>}
      */
-    //todo
-    //@PreAuthorize("isAuthenticated()")
-    //@GetMapping("/certificates/my")
-    //public List<CertificateUserResponse> getCertificatesOfAuthenticatedUser() {
-    //    UserPrincipal userPrincipal =
-    //            (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    //    return certificateService.getListOfCertificatesByEmail(userPrincipal.getUsername());
-    //}
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping(value = "/all", params = {"email"})
+    public List<CertificateUserResponse> getListOfCertificatesByUserEmail(@RequestParam("email") String email) {
+        return certificateService.getListOfCertificatesByUserEmail(email);
+    }
 
     /**
      * This endpoint is used to download certificate, requested by owner.
      *
      * @return {@code ResponseEntity<byte[]>}
      */
-    //todo
-    //@PreAuthorize("isAuthenticated()")
-    //@GetMapping("/certificates/download/{id}")
-    //public ResponseEntity<byte[]> downloadCertificate(@PathVariable("id") Long id) {
-    //    UserPrincipal userPrincipal =
-    //            (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    //    byte[] bytes = certificateService.getPdfOutputForDownload(userPrincipal.getUsername(), id);
-    //
-    //    HttpHeaders headers = new HttpHeaders();
-    //    headers.setContentType(MediaType.APPLICATION_PDF);
-    //    headers.setContentDispositionFormData("attachment", "certificate.pdf");
-    //    return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
-    //}
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/download/{id}")
+    public ResponseEntity<byte[]> downloadCertificate(@PathVariable("id") Long id) {
+        UserPrincipal userPrincipal =
+                (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        byte[] bytes = certificateService.getPdfOutputForDownload(userPrincipal.getUsername(), id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "certificate.pdf");
+        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+    }
 
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping

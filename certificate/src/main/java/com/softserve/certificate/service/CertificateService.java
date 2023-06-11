@@ -3,7 +3,7 @@ package com.softserve.certificate.service;
 import com.softserve.certificate.dto.certificate.CertificateContent;
 import com.softserve.certificate.dto.certificate.CertificatePreview;
 import com.softserve.certificate.dto.certificate.CertificateTransfer;
-import com.softserve.certificate.dto.certificate.CertificateUserResponse;
+import com.softserve.commons.certificate.dto.CertificateUserResponse;
 import com.softserve.certificate.dto.certificate.CertificateVerificationResponse;
 import com.softserve.certificate.model.Certificate;
 import com.softserve.certificate.model.CertificateDates;
@@ -41,7 +41,7 @@ public interface CertificateService {
      * @param sendToEmail user's email
      * @return new {@code List<CertificateUserResponse>}
      */
-    List<CertificateUserResponse> getListOfCertificatesByEmail(String sendToEmail);
+    List<CertificateUserResponse> getListOfCertificatesByUserEmail(String sendToEmail);
 
     /**
      * Get a list of {@code Certificate}, found by sendToEmail and updateStatus with sendStatus true.

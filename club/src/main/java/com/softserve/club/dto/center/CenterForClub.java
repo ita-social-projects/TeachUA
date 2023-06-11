@@ -3,7 +3,7 @@ package com.softserve.club.dto.center;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.club.dto.contact_data.ContactDataResponse;
 import com.softserve.club.dto.location.LocationProfile;
-import com.softserve.commons.user.UserPreview;
+import com.softserve.commons.dto.UserPreview;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

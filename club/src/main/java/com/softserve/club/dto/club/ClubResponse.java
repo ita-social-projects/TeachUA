@@ -6,7 +6,7 @@ import com.softserve.club.dto.center.CenterForClub;
 import com.softserve.club.dto.contact_data.ContactDataResponse;
 import com.softserve.club.dto.location.LocationProfile;
 import com.softserve.club.model.GalleryPhoto;
-import com.softserve.commons.user.UserPreview;
+import com.softserve.commons.dto.UserPreview;
 import com.softserve.commons.util.marker.Convertible;
 import com.softserve.commons.util.validation.CheckRussian;
 import jakarta.validation.constraints.Max;

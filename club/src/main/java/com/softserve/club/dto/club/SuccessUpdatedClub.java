@@ -5,7 +5,7 @@ import com.softserve.club.dto.contact_data.ContactDataResponse;
 import com.softserve.club.dto.location.LocationProfile;
 import com.softserve.club.model.Category;
 import com.softserve.club.model.GalleryPhoto;
-import com.softserve.commons.user.UserPreview;
+import com.softserve.commons.dto.UserPreview;
 import com.softserve.commons.util.marker.Convertible;
 import java.util.List;
 import java.util.Set;

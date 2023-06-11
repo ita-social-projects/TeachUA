@@ -1,7 +1,7 @@
 package com.softserve.club.dto.message;
 
 import com.softserve.club.dto.club.MessagesClub;
-import com.softserve.commons.user.UserPreview;
+import com.softserve.commons.dto.UserPreview;
 import com.softserve.commons.util.marker.Convertible;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
