@@ -1,6 +1,5 @@
 package com.softserve.teachua.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.UserPermissionException;
 import jakarta.servlet.FilterChain;
@@ -20,23 +19,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
-    private final ObjectMapper objectMapper;
-
-    public JwtFilter(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
             String username = request.getHeader("username");
-            String roles = request.getHeader("roles");
-            if (!org.apache.commons.lang3.StringUtils.isEmpty(username) && !StringUtils.isEmpty(roles)) {
-                RoleData rolesSet = objectMapper.readValue(roles,RoleData.class);
+            String roleHeader = request.getHeader("role");
+            if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(roleHeader)) {
+                RoleData role = RoleData.valueOf(roleHeader);
 
-                UserPrincipal userPrincipal = new UserPrincipal(username,rolesSet);
+                UserPrincipal userPrincipal = new UserPrincipal(username, role);
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userPrincipal, null, userPrincipal.getAuthorities()
                 );
