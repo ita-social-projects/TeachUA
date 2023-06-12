@@ -28,6 +28,14 @@ services:
       - teachua_question
       - teachua_certificate
 
+  teachua_zipkin:
+    image: openzipkin/zipkin
+    container_name: teachua_zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - spring
+
   teachua_main-service:
     image: bnazar00/teachua_main-service:latest
     container_name: teachua_main-service
@@ -40,6 +48,7 @@ services:
       - teachua_postgres
     depends_on:
       - teachua_postgres
+      - teachua_zipkin
 
   teachua_user:
     image: bnazar00/teachua_user:latest
@@ -53,6 +62,7 @@ services:
       - teachua_postgres
     depends_on:
       - teachua_postgres
+      - teachua_zipkin
 
   teachua_club:
     image: bnazar00/teachua_club:latest
@@ -66,6 +76,7 @@ services:
       - teachua_postgres
     depends_on:
       - teachua_postgres
+      - teachua_zipkin
 
   teachua_question:
     image: bnazar00/teachua_question:latest
@@ -79,6 +90,7 @@ services:
       - teachua_postgres
     depends_on:
       - teachua_postgres
+      - teachua_zipkin
 
   teachua_certificate:
     image: bnazar00/teachua_certificate:latest
@@ -92,6 +104,7 @@ services:
       - teachua_postgres
     depends_on:
       - teachua_postgres
+      - teachua_zipkin
 
 networks:
   teachua_postgres:

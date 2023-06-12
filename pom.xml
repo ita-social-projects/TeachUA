@@ -28,7 +28,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.boot.maven.plugin.version>3.0.5</spring.boot.maven.plugin.version>
     <spring.boot.dependencies.version>3.0.5</spring.boot.dependencies.version>
-    <spring-cloud.version>2022.0.1</spring-cloud.version>
+    <spring-cloud.version>2022.0.3</spring-cloud.version>
+    <micrometer-tracing.version>1.1.1</micrometer-tracing.version>
     <skipTests>false</skipTests>
     <skipUnitTests>${skipTests}</skipUnitTests>
     <skipIntegrationTests>${skipTests}</skipIntegrationTests>
@@ -49,13 +50,20 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring.boot.dependencies.version}</version>
-        <scope>import</scope>
         <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>
         <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-tracing-bom</artifactId>
+        <version>${micrometer-tracing.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

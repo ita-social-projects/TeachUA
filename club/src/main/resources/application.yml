@@ -12,3 +12,15 @@ spring:
     properties:
       hibernate:
         default_schema: club
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  tracing:
+    sampling:
+      probability: ${TRACING_STATE:0}.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_TRACING_ENDPOINT}

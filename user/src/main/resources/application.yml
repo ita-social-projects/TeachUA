@@ -23,8 +23,21 @@ spring:
           auth: true
           starttls.enable: true
         transport.protocol: smtp
+
 api:
   gateway:
     network: ${APIGW_NETWORK}
     certificate:
       port: ${APIGW_CERTIFICATE_PORT}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  tracing:
+    sampling:
+      probability: ${TRACING_STATE:0}.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_TRACING_ENDPOINT}
