@@ -1,6 +1,5 @@
 package com.softserve.club.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.club.dto.district.DistrictProfile;
 import com.softserve.club.dto.district.DistrictResponse;
 import com.softserve.club.dto.district.SuccessCreatedDistrict;
@@ -16,7 +15,6 @@ import jakarta.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,25 +22,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class DistrictServiceImpl implements DistrictService/*, ArchiveMark<District>*/ {
+public class DistrictServiceImpl implements DistrictService {
     private static final String DISTRICT_ALREADY_EXIST = "District already exist with name: %s";
     private static final String DISTRICT_NOT_FOUND_BY_NAME = "District not found by name: %s";
     private static final String DISTRICT_DELETING_ERROR = "Can't delete district cause of relationship";
 
     private final DtoConverter dtoConverter;
-    //private final ArchiveService archiveService;
     private final CityService cityService;
     private final DistrictRepository districtRepository;
-    private final ObjectMapper objectMapper;
 
-    @Autowired
     public DistrictServiceImpl(DtoConverter dtoConverter, CityService cityService,
-            DistrictRepository districtRepository, ObjectMapper objectMapper) {
+            DistrictRepository districtRepository) {
         this.dtoConverter = dtoConverter;
-        //this.archiveService = archiveService;
         this.cityService = cityService;
         this.districtRepository = districtRepository;
-        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -147,7 +140,7 @@ public class DistrictServiceImpl implements DistrictService/*, ArchiveMark<Distr
         return districtRepository.findById(id);
     }
 
-    //todo
+    //todo@
     /*
     @Override
     public void archiveModel(District district) {

@@ -26,6 +26,13 @@ import java.util.List;
 
 public interface UserService {
     /**
+     * The method checks whether a user exists.
+     *
+     * @param id - place user id.
+     */
+    boolean existsById(Long id);
+
+    /**
      * The method returns dto {@code UserResponse} of user by id.
      *
      * @param id - put user id.

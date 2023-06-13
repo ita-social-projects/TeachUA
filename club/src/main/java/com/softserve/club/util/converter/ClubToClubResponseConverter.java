@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @NoArgsConstructor
@@ -21,7 +20,6 @@ public class ClubToClubResponseConverter {
     private ContactsStringConverter contactsStringConverter;
     private DtoConverter dtoConverter;
 
-    @Autowired
     public ClubToClubResponseConverter(ContactsStringConverter contactsStringConverter, DtoConverter dtoConverter) {
         this.contactsStringConverter = contactsStringConverter;
         this.dtoConverter = dtoConverter;

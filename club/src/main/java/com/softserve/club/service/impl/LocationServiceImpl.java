@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +39,6 @@ public class LocationServiceImpl implements LocationService/*, ArchiveMark<Locat
     private final DistrictService districtService;
     private final StationService stationService;
 
-    @Autowired
     public LocationServiceImpl(LocationRepository locationRepository, DtoConverter dtoConverter,
                                ObjectMapper objectMapper, @Lazy CenterService centerService,
                                @Lazy ClubService clubService, CityService cityService, DistrictService districtService,
@@ -130,7 +128,7 @@ public class LocationServiceImpl implements LocationService/*, ArchiveMark<Locat
         return dtoConverter.convertToDto(location, LocationProfile.class);
     }
 
-    //todo
+    //todo@
     /*
     @Override
     public void archiveModel(Location location) {

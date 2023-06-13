@@ -1,6 +1,5 @@
 package com.softserve.club.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.club.dto.station.StationProfile;
 import com.softserve.club.dto.station.StationResponse;
 import com.softserve.club.dto.station.SuccessCreatedStation;
@@ -17,13 +16,12 @@ import jakarta.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class StationServiceImpl implements StationService/*, ArchiveMark<Station>*/ {
+public class StationServiceImpl implements StationService {
     private static final String STATION_ALREADY_EXIST = "Station already exist with name: %s";
     private static final String STATION_NOT_FOUND_BY_NAME = "Station not found by name: %s";
     private static final String STATION_DELETING_ERROR = "Can't delete station cause of relationship";
@@ -32,17 +30,13 @@ public class StationServiceImpl implements StationService/*, ArchiveMark<Station
     private final StationRepository stationRepository;
     private final CityService cityService;
     private final DistrictService districtService;
-    private final ObjectMapper objectMapper;
 
-    @Autowired
     public StationServiceImpl(DtoConverter dtoConverter, StationRepository stationRepository,
-                              CityService cityService, DistrictService districtService,
-                              ObjectMapper objectMapper) {
+                              CityService cityService, DistrictService districtService) {
         this.dtoConverter = dtoConverter;
         this.stationRepository = stationRepository;
         this.cityService = cityService;
         this.districtService = districtService;
-        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -159,7 +153,7 @@ public class StationServiceImpl implements StationService/*, ArchiveMark<Station
         return stationRepository.findById(id);
     }
 
-    //todo
+    //todo@
     /*
     @Override
     public void archiveModel(Station station) {

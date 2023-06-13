@@ -1,6 +1,5 @@
 package com.softserve.club.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.club.dto.contact_type.ContactTypeProfile;
 import com.softserve.club.dto.contact_type.ContactTypeResponse;
 import com.softserve.club.dto.contact_type.SuccessCreatedContactType;
@@ -15,7 +14,6 @@ import jakarta.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,21 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class ContactTypeServiceImpl implements ContactTypeService/*, ArchiveMark<ContactType>*/ {
+public class ContactTypeServiceImpl implements ContactTypeService {
     private static final String CONTACT_TYPE_ALREADY_EXIST = "Contact type already exist with name: %s";
     private static final String CONTACT_TYPE_NOT_FOUND_BY_ID = "Contact type not found by id: %s";
     private static final String CONTACT_TYPE_DELETING_ERROR = "Can't delete contact type cause of relationship";
-
     private final DtoConverter dtoConverter;
     private final ContactTypeRepository contactTypeRepository;
-    private final ObjectMapper objectMapper;
 
-    @Autowired
-    public ContactTypeServiceImpl(DtoConverter dtoConverter, ContactTypeRepository contactTypeRepository,
-                                  ObjectMapper objectMapper) {
+    public ContactTypeServiceImpl(DtoConverter dtoConverter, ContactTypeRepository contactTypeRepository) {
         this.dtoConverter = dtoConverter;
         this.contactTypeRepository = contactTypeRepository;
-        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -113,7 +106,7 @@ public class ContactTypeServiceImpl implements ContactTypeService/*, ArchiveMark
         return contactTypeRepository.existsByName(name);
     }
 
-    //todo
+    //todo@
     /*
     @Override
     public void archiveModel(ContactType contactType) {

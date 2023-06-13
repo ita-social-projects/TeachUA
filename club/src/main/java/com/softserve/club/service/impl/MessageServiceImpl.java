@@ -1,6 +1,5 @@
 package com.softserve.club.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.club.dto.message.MessageProfile;
 import com.softserve.club.dto.message.MessageResponseDto;
 import com.softserve.club.dto.message.MessageUpdateIsActive;
@@ -8,16 +7,14 @@ import com.softserve.club.dto.message.MessageUpdateText;
 import com.softserve.club.model.Message;
 import com.softserve.club.repository.ClubRepository;
 import com.softserve.club.repository.MessageRepository;
-import com.softserve.club.service.ClubService;
 import com.softserve.club.service.MessageService;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.user.UserClient;
 import com.softserve.commons.util.converter.DtoConverter;
 import jakarta.validation.ValidationException;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,28 +22,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-@RequiredArgsConstructor
-public class MessageServiceImpl implements MessageService/*, ArchiveMark<Message>*/ {
+public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
-    private final ObjectMapper objectMapper;
-    private final ClubService clubService;
+    private final UserClient userClient;
+
+    public MessageServiceImpl(MessageRepository messageRepository, ClubRepository clubRepository,
+                              DtoConverter dtoConverter, UserClient userClient) {
+        this.messageRepository = messageRepository;
+        this.clubRepository = clubRepository;
+        this.dtoConverter = dtoConverter;
+        this.userClient = userClient;
+    }
 
     @Override
     public MessageResponseDto addMessage(MessageProfile messageProfile) {
-        //todo
-        /*
         if (!clubRepository.existsById(messageProfile.getClubId())) {
             log.warn("Message not added because club with id - {} doesn't exists", messageProfile.getClubId());
             throw new NotExistException(String.format("Club with id - %s doesn't exists", messageProfile.getClubId()));
         }
-        if (!userRepository.existsById(messageProfile.getSenderId())) {
+        if (!userClient.existsById(messageProfile.getSenderId())) {
             log.warn("Message not added because user with id - {} doesn't exists", messageProfile.getSenderId());
             throw new NotExistException(
                     String.format("User with id - %s doesn't exists", messageProfile.getSenderId()));
         }
-        if (!userRepository.existsById(messageProfile.getRecipientId())) {
+        if (!userClient.existsById(messageProfile.getRecipientId())) {
             log.warn("Message not added because user with id - {} doesn't exists", messageProfile.getRecipientId());
             throw new NotExistException(
                     String.format("User with id - %s doesn't exists", messageProfile.getRecipientId()));
@@ -56,8 +57,6 @@ public class MessageServiceImpl implements MessageService/*, ArchiveMark<Message
 
         log.debug("new message added - " + message);
         return dtoConverter.convertToDto(message, MessageResponseDto.class);
-        */
-        throw new NotImplementedException();
     }
 
     @Override
@@ -137,7 +136,7 @@ public class MessageServiceImpl implements MessageService/*, ArchiveMark<Message
         return messageResponseDto;
     }
 
-    //todo
+    //todo@
     /*
     @Override
     public void archiveModel(Message message) {

@@ -7,7 +7,6 @@ import com.softserve.club.dto.search.SearchClubProfile;
 import com.softserve.club.service.CenterService;
 import com.softserve.club.service.ClubService;
 import com.softserve.club.util.documentreport.ReportGenerationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -23,7 +22,6 @@ public class PdfGenerationController implements Api {
     private final ClubService clubService;
     private final CenterService centerService;
 
-    @Autowired
     public PdfGenerationController(ReportGenerationService<ClubResponse> clubReportGenerationService,
             ReportGenerationService<CenterResponse> centerReportGenerationService,
             ReportGenerationService<Page<ClubResponse>> resultSearchReportGenerationService, ClubService clubService,

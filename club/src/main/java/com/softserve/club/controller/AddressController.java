@@ -6,7 +6,6 @@ import com.softserve.club.service.impl.AddressServiceImpl;
 import com.softserve.club.util.annotation.AllowedRoles;
 import com.softserve.commons.constant.RoleData;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AddressController implements Api {
     private final AddressServiceImpl addressService;
 
-    @Autowired
     public AddressController(AddressServiceImpl addressService) {
         this.addressService = addressService;
     }

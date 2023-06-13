@@ -21,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,7 +33,6 @@ public class ExcelParserServiceImpl implements ExcelParserService {
     private static final String CATEGORY_SHEET_NAME = "Категорії";
     private String previousName;
 
-    @Autowired
     public ExcelParserServiceImpl() {
         previousName = "";
     }

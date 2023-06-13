@@ -9,7 +9,6 @@ import com.softserve.commons.constant.RoleData;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class LocationController implements Api {
     private final LocationService locationService;
 
-    @Autowired
     public LocationController(LocationService locationService) {
         this.locationService = locationService;
     }

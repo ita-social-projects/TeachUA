@@ -22,7 +22,6 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +35,6 @@ public class CenterReportGenerationServiceImpl implements ReportGenerationServic
 
     private final CenterService centerService;
 
-    @Autowired
     public CenterReportGenerationServiceImpl(final CenterService centerService) {
         this.centerService = centerService;
     }

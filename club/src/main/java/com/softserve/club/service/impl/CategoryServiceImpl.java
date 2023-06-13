@@ -1,6 +1,5 @@
 package com.softserve.club.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.club.dto.category.CategoryProfile;
 import com.softserve.club.dto.category.CategoryResponse;
 import com.softserve.club.dto.category.SuccessCreatedCategory;
@@ -17,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,21 +26,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @Transactional
-public class CategoryServiceImpl implements CategoryService/*, ArchiveMark<Category>*/ {
+public class CategoryServiceImpl implements CategoryService {
     private static final String CATEGORY_ALREADY_EXIST = "Category already exists with name: %s";
     private static final String CATEGORY_NOT_FOUND_BY_ID = "Category not found by id: %s";
     private static final String CATEGORY_NOT_FOUND_BY_NAME = "Category not found by name: %s";
     private static final String CATEGORY_DELETING_ERROR = "Can't delete category cause of relationship";
     private final CategoryRepository categoryRepository;
     private final DtoConverter dtoConverter;
-    private final ObjectMapper objectMapper;
 
-    @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository, DtoConverter dtoConverter,
-                               ObjectMapper objectMapper) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, DtoConverter dtoConverter) {
         this.categoryRepository = categoryRepository;
         this.dtoConverter = dtoConverter;
-        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -156,7 +150,7 @@ public class CategoryServiceImpl implements CategoryService/*, ArchiveMark<Categ
         return categoryRepository.findByName(name);
     }
 
-    //todo
+    //todo@
     /*
     @Override
     public void archiveModel(Category category) {

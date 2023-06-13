@@ -84,6 +84,11 @@ public class UserServiceImpl implements UserService/*, ArchiveMark<User>*/ {
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
+
+    @Override
     public UserResponse getUserProfileById(Long id) {
         User user = getUserById(id);
         return dtoConverter.convertToDto(user, UserResponse.class);

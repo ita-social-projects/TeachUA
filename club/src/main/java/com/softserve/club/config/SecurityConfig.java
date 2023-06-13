@@ -1,7 +1,6 @@
 package com.softserve.club.config;
 
 import com.softserve.club.security.JwtFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +21,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
     private final JwtFilter jwtFilter;
 
-    @Autowired
     public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
     }

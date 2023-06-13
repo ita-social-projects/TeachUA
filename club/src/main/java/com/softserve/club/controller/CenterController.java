@@ -12,7 +12,6 @@ import com.softserve.commons.constant.RoleData;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -38,7 +37,6 @@ public class CenterController implements Api {
     private static final int CENTERS_PER_USER_PAGE = 9;
     private final CenterService centerService;
 
-    @Autowired
     public CenterController(CenterService centerService) {
         this.centerService = centerService;
     }

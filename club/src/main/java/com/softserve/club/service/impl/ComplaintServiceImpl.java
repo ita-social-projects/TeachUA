@@ -1,13 +1,12 @@
 package com.softserve.club.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.club.dto.complaint.ComplaintProfile;
 import com.softserve.club.dto.complaint.ComplaintResponse;
 import com.softserve.club.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.club.model.Complaint;
 import com.softserve.club.repository.ClubRepository;
 import com.softserve.club.repository.ComplaintRepository;
-import com.softserve.club.service.ClubService;
+import com.softserve.club.security.UserPrincipal;
 import com.softserve.club.service.ComplaintService;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
@@ -17,32 +16,27 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
 @Slf4j
-public class ComplaintServiceImpl implements ComplaintService/*, ArchiveMark<Complaint>*/ {
+public class ComplaintServiceImpl implements ComplaintService {
     private static final String COMPLAINT_NOT_FOUND_BY_ID = "Complaint not found by id: %s";
     private static final String COMPLAINT_DELETING_ERROR = "Can't delete complaint cause of relationship";
 
     private final ComplaintRepository complaintRepository;
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
-    private final ObjectMapper objectMapper;
-    private final ClubService clubService;
 
-    @Autowired
     public ComplaintServiceImpl(ComplaintRepository complaintRepository, DtoConverter dtoConverter,
-                                ClubRepository clubRepository, ObjectMapper objectMapper, ClubService clubService) {
+                                ClubRepository clubRepository) {
         this.complaintRepository = complaintRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
-        this.objectMapper = objectMapper;
-        this.clubService = clubService;
     }
 
     @Override
@@ -64,8 +58,8 @@ public class ComplaintServiceImpl implements ComplaintService/*, ArchiveMark<Com
 
     @Override
     public SuccessCreatedComplaint addComplaint(ComplaintProfile complaintProfile) {
-        //todo
-        //complaintProfile.setUserId(customUserDetailsService.getUserPrincipal().getId());
+        complaintProfile.setUserId(((UserPrincipal)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
 
         if (!clubRepository.existsById(complaintProfile.getClubId())) {
             throw new NotExistException("Club with id " + complaintProfile.getClubId() + " does`nt exists");
@@ -126,7 +120,7 @@ public class ComplaintServiceImpl implements ComplaintService/*, ArchiveMark<Com
         return dtoConverter.convertToDto(complaint, ComplaintResponse.class);
     }
 
-    //todo
+    //todo@
     /*
     @Override
     public void archiveModel(Complaint complaint) {
@@ -139,7 +133,6 @@ public class ComplaintServiceImpl implements ComplaintService/*, ArchiveMark<Com
         Complaint complaint = Complaint.builder().build();
         complaint = dtoConverter.convertToEntity(complaintArch, complaint).withId(null)
                 .withClub(clubService.getClubById(complaintArch.getClubId()));
-        //todo
         //.withUser(userService.getUserById(complaintArch.getUserId()))
 
         complaintRepository.save(complaint);

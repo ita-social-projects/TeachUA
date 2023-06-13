@@ -42,7 +42,7 @@ public class Feedback implements Convertible {
 
     @Column(name = "user_id")
     @ToString.Exclude
-    private Integer userId;
+    private Long userId;
 
     @ManyToOne
     @JoinColumn(name = "club_id", referencedColumnName = "id")

@@ -5,7 +5,6 @@ import com.softserve.club.dto.search.CombinedPossibleResponse;
 import com.softserve.club.service.CategoryService;
 import com.softserve.club.service.ClubService;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +22,6 @@ public class SearchController implements Api {
     private final CategoryService categoryService;
     private final ClubService clubService;
 
-    @Autowired
     public SearchController(CategoryService categoryService, ClubService clubService) {
         this.categoryService = categoryService;
         this.clubService = clubService;

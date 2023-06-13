@@ -8,7 +8,6 @@ import com.softserve.club.service.ComplaintService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ComplaintController implements Api {
     private final ComplaintService complaintService;
 
-    @Autowired
     public ComplaintController(ComplaintService complaintService) {
         this.complaintService = complaintService;
     }

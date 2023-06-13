@@ -24,12 +24,6 @@ spring:
           starttls.enable: true
         transport.protocol: smtp
 
-api:
-  gateway:
-    network: ${APIGW_NETWORK}
-    certificate:
-      port: ${APIGW_CERTIFICATE_PORT}
-
 management:
   endpoints:
     web:

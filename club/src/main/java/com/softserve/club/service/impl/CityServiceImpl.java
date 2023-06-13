@@ -1,6 +1,5 @@
 package com.softserve.club.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.club.dto.city.CityProfile;
 import com.softserve.club.dto.city.CityResponse;
 import com.softserve.club.dto.city.SuccessCreatedCity;
@@ -15,7 +14,6 @@ import jakarta.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class CityServiceImpl implements CityService/*, ArchiveMark<City>*/ {
+public class CityServiceImpl implements CityService {
     private static final String CITY_ALREADY_EXIST = "City already exist with name: %s";
     private static final String CITY_NOT_FOUND_BY_ID = "City not found by id: %s";
     private static final String CITY_NOT_FOUND_BY_NAME = "City not found by name: %s";
@@ -31,14 +29,10 @@ public class CityServiceImpl implements CityService/*, ArchiveMark<City>*/ {
 
     private final DtoConverter dtoConverter;
     private final CityRepository cityRepository;
-    private final ObjectMapper objectMapper;
 
-    @Autowired
-    public CityServiceImpl(DtoConverter dtoConverter, CityRepository cityRepository,
-            ObjectMapper objectMapper) {
+    public CityServiceImpl(DtoConverter dtoConverter, CityRepository cityRepository) {
         this.dtoConverter = dtoConverter;
         this.cityRepository = cityRepository;
-        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -127,7 +121,7 @@ public class CityServiceImpl implements CityService/*, ArchiveMark<City>*/ {
         return cityRepository.findByName(name);
     }
 
-    //todo
+    //todo@
     /*
     @Override
     public void archiveModel(City city) {

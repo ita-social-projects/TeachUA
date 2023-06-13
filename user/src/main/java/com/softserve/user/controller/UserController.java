@@ -2,6 +2,7 @@ package com.softserve.user.controller;
 
 import com.softserve.commons.certificate.client.CertificateClient;
 import com.softserve.commons.certificate.dto.CertificateUserResponse;
+import com.softserve.commons.constant.RoleData;
 import com.softserve.user.controller.marker.Api;
 import com.softserve.user.dto.SuccessUpdatedUser;
 import com.softserve.user.dto.UserPasswordUpdate;
@@ -115,5 +116,17 @@ public class UserController implements Api {
         UserPrincipal userPrincipal =
                 (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return certificateClient.getListOfCertificatesByUserEmail(userPrincipal.getUsername());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("v1/user/existsById/{id}")
+    public boolean existsById(@PathVariable("id") Long id) {
+        return userService.existsById(id);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("v1/user/role/{userId}")
+    RoleData getUserRoleByUserId(@PathVariable("userId") Long id) {
+        return RoleData.valueOf(userService.getUserById(id).getRole().getName().replace("ROLE_", ""));
     }
 }

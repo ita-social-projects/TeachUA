@@ -19,6 +19,7 @@ public class TokenController {
         //todo
         System.out.println(token);
         HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("user_id", "1");
         responseHeaders.set("username", "testUsername");
         responseHeaders.set("role", String.valueOf(RoleData.ADMIN));
 

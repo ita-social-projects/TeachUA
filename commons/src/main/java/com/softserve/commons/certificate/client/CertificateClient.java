@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
         name = "certificate",
-        url = "http://${api.gateway.network}:${api.gateway.certificate.port}",
+        url = "http://${APIGW_NETWORK}:${APIGW_CERTIFICATE_PORT}",
         path = "api/v1/certificate")
 public interface CertificateClient {
     @GetMapping("/all")

@@ -1,10 +1,8 @@
 package com.softserve.club.controller;
 
 import com.softserve.club.controller.marker.Api;
-import com.softserve.club.dto.club.ClubOwnerProfile;
 import com.softserve.club.dto.club.ClubProfile;
 import com.softserve.club.dto.club.ClubResponse;
-import com.softserve.club.dto.club.SuccessCreatedClub;
 import com.softserve.club.dto.club.SuccessUpdatedClub;
 import com.softserve.club.dto.search.AdvancedSearchClubProfile;
 import com.softserve.club.dto.search.SearchClubProfile;
@@ -16,7 +14,6 @@ import com.softserve.commons.constant.RoleData;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -42,7 +39,6 @@ public class ClubController implements Api {
     private static final int CLUBS_PER_USER_PAGE = 3;
     private final ClubService clubService;
 
-    @Autowired
     public ClubController(ClubService clubService) {
         this.clubService = clubService;
     }
@@ -97,15 +93,14 @@ public class ClubController implements Api {
     }
 
     /**
-     * Use this endpoint to create club. The controller returns dto {@code SuccessCreatedClub} of created club.
+     * Use this endpoint to create club.
      *
      * @param clubProfile - Place dto with all parameters for adding new club.
-     * @return new {@code SuccessCreatedClub}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @PostMapping("/club")
-    public SuccessCreatedClub addClub(@Valid @RequestBody ClubProfile clubProfile) {
-        return clubService.addClub(clubProfile);
+    public void addClub(@Valid @RequestBody ClubProfile clubProfile) {
+        clubService.addClub(clubProfile);
     }
 
     /**
@@ -197,14 +192,15 @@ public class ClubController implements Api {
     /**
      * Use this endpoint to change owner of club by id. The controller returns {@code ClubResponse}.
      *
-     * @param id               - put club id here.
-     * @param clubOwnerProfile - New owner profile.
+     * @param id          - put club id here.
+     * @param clubOwnerId - New owner id.
      * @return new {@code ClubProfile}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @PatchMapping("/club/change-owner/{id}")
-    public ClubResponse changeClubOwner(@PathVariable Long id, @Valid @RequestBody ClubOwnerProfile clubOwnerProfile) {
-        return clubService.changeClubOwner(id, clubOwnerProfile);
+    @PatchMapping("/club/change-owner/{clubId}/{ownerId}")
+    public ClubResponse changeClubOwner(@PathVariable("clubId") Long id,
+                                        @PathVariable("ownerId") Long clubOwnerId) {
+        return clubService.changeClubOwner(id, clubOwnerId);
     }
 
     /**

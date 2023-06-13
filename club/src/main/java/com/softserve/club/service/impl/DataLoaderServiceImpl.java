@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.zip.DataFormatException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -72,7 +71,6 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     private final ExcelConvertToFormatStringContactsData contactsConverter;
     private final ExcelConvertToFormatStringContactsData excelContactsConverter;
 
-    @Autowired
     public DataLoaderServiceImpl(CategoryService categoryService, CenterService centerService, ClubService clubService,
                                  DistrictService districtService, StationService stationService,
                                  CityService cityService, LocationService locationService,

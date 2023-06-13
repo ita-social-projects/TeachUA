@@ -7,12 +7,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.softserve.club.dto.category.CategoryResponse;
-import com.softserve.club.dto.club.ClubOwnerProfile;
 import com.softserve.club.dto.club.ClubProfile;
 import com.softserve.club.dto.club.ClubResponse;
-import com.softserve.club.dto.club.SuccessCreatedClub;
 import com.softserve.club.dto.club.SuccessUpdatedClub;
 import com.softserve.club.dto.feedback.FeedbackResponse;
+import com.softserve.club.dto.gallery.GalleryPhotoProfile;
 import com.softserve.club.dto.location.LocationProfile;
 import com.softserve.club.dto.search.AdvancedSearchClubProfile;
 import com.softserve.club.dto.search.SearchClubProfile;
@@ -22,12 +21,14 @@ import com.softserve.club.dto.search.TopClubProfile;
 import com.softserve.club.model.Center;
 import com.softserve.club.model.Club;
 import com.softserve.club.model.GalleryPhoto;
+import com.softserve.club.model.Location;
 import com.softserve.club.repository.CenterRepository;
 import com.softserve.club.repository.ClubRepository;
 import com.softserve.club.repository.ComplaintRepository;
 import com.softserve.club.repository.FeedbackRepository;
 import com.softserve.club.repository.GalleryRepository;
 import com.softserve.club.repository.LocationRepository;
+import com.softserve.club.security.UserPrincipal;
 import com.softserve.club.service.CategoryService;
 import com.softserve.club.service.CenterService;
 import com.softserve.club.service.CityService;
@@ -40,9 +41,13 @@ import com.softserve.club.util.CategoryUtil;
 import com.softserve.club.util.converter.ClubToClubResponseConverter;
 import com.softserve.club.util.converter.ContactsStringConverter;
 import com.softserve.club.util.converter.CoordinatesConverter;
+import com.softserve.commons.constant.RoleData;
+import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.IncorrectInputException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.exception.NotVerifiedUserException;
+import com.softserve.commons.user.UserClient;
 import com.softserve.commons.util.converter.DtoConverter;
 import jakarta.validation.ValidationException;
 import java.util.HashSet;
@@ -52,14 +57,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +71,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation = Propagation.SUPPORTS)
 @Slf4j
-public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
+public class ClubServiceImpl implements ClubService {
     private static final String CLUB_ALREADY_EXIST = "Club already exist with name: %s";
     private static final String CLUB_NOT_FOUND_BY_ID = "Club not found by id: %s";
     private static final String CLUB_NOT_FOUND_BY_NAME = "Club not found by name: %s";
@@ -92,8 +96,8 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
     private final ObjectMapper objectMapper;
     private final ContactsStringConverter contactsStringConverter;
     private FeedbackService feedbackService;
+    private final UserClient userClient;
 
-    @Autowired
     public ClubServiceImpl(ClubRepository clubRepository, CenterRepository centerRepository,
                            LocationRepository locationRepository, DtoConverter dtoConverter,
                            CityService cityService, DistrictService districtService,
@@ -102,7 +106,7 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
                            CoordinatesConverter coordinatesConverter, GalleryRepository galleryRepository,
                            CenterService centerService, FeedbackRepository feedbackRepository,
                            ObjectMapper objectMapper, ContactsStringConverter contactsStringConverter,
-                           ComplaintRepository complaintRepository) {
+                           ComplaintRepository complaintRepository, UserClient userClient) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -120,9 +124,9 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
         this.objectMapper = objectMapper;
         this.contactsStringConverter = contactsStringConverter;
         this.complaintRepository = complaintRepository;
+        this.userClient = userClient;
     }
 
-    @Autowired
     public void setFeedbackService(FeedbackService feedbackService) {
         this.feedbackService = feedbackService;
     }
@@ -167,9 +171,8 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
     @Override
     @Transactional
     public SuccessUpdatedClub updateClub(Long id, ClubResponse clubResponse) {
-        //todo
-        //User user = userService.getAuthenticatedUser();
-        //validateClubOwner(id, user);
+        Long userId = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        validateClubOwner(id, userId);
         Club club = getClubById(id);
         Set<LocationProfile> locations = null;
 
@@ -226,9 +229,7 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
     }
 
     @Override
-    public SuccessCreatedClub addClub(ClubProfile clubProfile) {
-        //todo
-        /*
+    public void addClub(ClubProfile clubProfile) {
         if (isClubExistByName(clubProfile.getName())) {
             throw new AlreadyExistException(String.format(CLUB_ALREADY_EXIST, clubProfile.getName()));
         }
@@ -246,13 +247,13 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
             }
         }
 
-        User user = userService.getAuthenticatedUser();
-        clubProfile.setUserId(user.getId());
+        Long userId = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        clubProfile.setUserId(userId);
 
         Club club = clubRepository.save(dtoConverter
                 .convertToEntity(clubProfile, new Club()).withCategories(clubProfile.getCategoriesName().stream()
                         .map(categoryService::getCategoryByName).collect(Collectors.toSet()))
-                .withRating(0d).withUser(user).withCenter(center));
+                .withRating(0d).withUserId(userId).withCenter(center));
 
         if (locations != null && !locations.isEmpty()) {
             club.setLocations(
@@ -273,15 +274,10 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
                     .toList());
         }
         log.debug("adding club with name : {}", clubProfile.getName());
-        return dtoConverter.convertToDto(club, SuccessCreatedClub.class);
-        */
-        throw new NotImplementedException();
     }
 
     @Override
     public Club addClubsFromExcel(ClubProfile clubProfile) {
-        //todo
-        /*
         if (clubProfile.getCenterId() == null) {
             log.debug("(row 256, ClubServiceImpl)  addClubsFromExcel => " + clubProfile.getCenterExternalId()
                     + " not found");
@@ -291,7 +287,7 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
                         .save(dtoConverter.convertToEntity(clubProfile, new Club())
                                 .withCategories(clubProfile.getCategoriesName().stream()
                                         .map(categoryService::getCategoryByName).collect(Collectors.toSet())))
-                        .withUser(null).withCenter(null);
+                        .withUserId(null).withCenter(null);
             } catch (Exception e) {
                 log.debug("(row 268, ClubServiceImpl)    saving club ");
                 log.debug(e.getMessage());
@@ -307,10 +303,8 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
                     .save(dtoConverter.convertToEntity(clubProfile, new Club())
                             .withCategories(clubProfile.getCategoriesName().stream()
                                     .map(categoryService::getCategoryByName).collect(Collectors.toSet())))
-                    .withUser(null).withCenter(center);
+                    .withUserId(null).withCenter(center);
         }
-        */
-        throw new NotImplementedException();
     }
 
     @Override
@@ -334,11 +328,9 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
 
     @Override
     public List<ClubResponse> getListClubsByUserId(Long id) {
-        //todo
-        //return clubRepository.findAllByUserId(id).stream()
-        //        .map(toClubResponseConverter::convertToClubResponse)
-        //        .toList();
-        throw new NotImplementedException();
+        return clubRepository.findAllByUserId(id).stream()
+                .map(toClubResponseConverter::convertToClubResponse)
+                .toList();
     }
 
     @Override
@@ -431,18 +423,14 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
     }
 
     @Override
-    public ClubResponse changeClubOwner(Long clubId, ClubOwnerProfile clubOwnerProfile) {
-        //todo
-        /*
-        User user = userService.getAuthenticatedUser();
-        validateClubOwner(clubId, user);
+    public ClubResponse changeClubOwner(Long clubId, Long ownerId) {
+        Long userId = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        validateClubOwner(clubId, userId);
         Club club = getClubById(clubId);
-        club.setUser(clubOwnerProfile.getUser());
+        club.setUserId(ownerId);
 
         log.debug("changed club owner by id {}", club);
         return dtoConverter.convertToDto(clubRepository.save(club), ClubResponse.class);
-        */
-        throw new NotImplementedException();
     }
 
     @Override
@@ -619,9 +607,8 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
     @Override
     @Transactional
     public ClubResponse deleteClubById(Long id) {
-        //todo
-        //User user = userService.getAuthenticatedUser();
-        //validateClubOwner(id, user);
+        Long userId = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        validateClubOwner(id, userId);
 
         Club club = getClubById(id);
 
@@ -667,14 +654,13 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
         return clubRepository.findByName(name);
     }
 
-    //todo
-    //private void validateClubOwner(Long id, User user) {
-    //    User userFromClub = getClubById(id).getUser();
-    //
-    //    if (!userFromClub.equals(user) && !user.getRole().getName().equalsIgnoreCase("ROLE_ADMIN")) {
-    //        throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);
-    //    }
-    //}
+    private void validateClubOwner(Long id, Long userId) {
+        Long userFromClubId = getClubById(id).getUserId();
+
+        if (!userFromClubId.equals(userId) && userClient.getUserRoleByUserId(userId) != RoleData.ADMIN) {
+            throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);
+        }
+    }
 
     @Override
     public SuccessUpdatedClub updateRatingNewFeedback(FeedbackResponse feedbackResponse) {
@@ -748,7 +734,7 @@ public class ClubServiceImpl implements ClubService/*, ArchiveMark<Club>*/ {
         return dtoConverter.convertToDto(updClub, SuccessUpdatedClub.class);
     }
 
-    //todo
+    //todo@
     //@Override
     //public void archiveModel(Club club) {
     //    ClubArch clubArch = dtoConverter.convertToDto(club, ClubArch.class);

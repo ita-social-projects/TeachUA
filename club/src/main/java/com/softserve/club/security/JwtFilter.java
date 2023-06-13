@@ -24,12 +24,13 @@ public class JwtFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
+            String id = request.getHeader("user_id");
             String username = request.getHeader("username");
             String roleHeader = request.getHeader("role");
             if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(roleHeader)) {
                 RoleData role = RoleData.valueOf(roleHeader);
 
-                UserPrincipal userPrincipal = new UserPrincipal(username, role);
+                UserPrincipal userPrincipal = new UserPrincipal(Long.valueOf(id), username, role);
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userPrincipal, null, userPrincipal.getAuthorities()
                 );

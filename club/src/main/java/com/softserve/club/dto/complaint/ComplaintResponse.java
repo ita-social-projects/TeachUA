@@ -14,12 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class ComplaintResponse implements Convertible {
     private Long id;
-
     private String text;
-
     private LocalDate date;
-    //todo
-    //private User user;
-
     private Club club;
 }

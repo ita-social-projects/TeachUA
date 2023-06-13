@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +37,6 @@ public class DatabaseTransferController implements Api {
     private final SqlDataExportService sqlDataExportService;
     private final DataLoaderService dataLoaderService;
 
-    @Autowired
     public DatabaseTransferController(ExcelParserService excelParserService, SqlDataExportService sqlDataExportService,
             DataLoaderService dataLoaderService) {
         this.excelParserService = excelParserService;

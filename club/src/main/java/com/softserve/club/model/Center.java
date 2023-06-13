@@ -63,7 +63,7 @@ public class Center implements Convertible {
 
     @Column(name = "user_id")
     @ToString.Exclude
-    private Integer userId;
+    private Long userId;
 
     @Column(name = "center_external_id")
     private Long centerExternalId;

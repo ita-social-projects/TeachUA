@@ -1,6 +1,5 @@
 package com.softserve.club.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.club.dto.center.CenterProfile;
 import com.softserve.club.dto.center.CenterResponse;
 import com.softserve.club.dto.center.SuccessCreatedCenter;
@@ -9,9 +8,11 @@ import com.softserve.club.dto.location.LocationProfile;
 import com.softserve.club.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.club.model.Center;
 import com.softserve.club.model.Club;
+import com.softserve.club.model.Location;
 import com.softserve.club.repository.CenterRepository;
 import com.softserve.club.repository.ClubRepository;
 import com.softserve.club.repository.LocationRepository;
+import com.softserve.club.security.UserPrincipal;
 import com.softserve.club.service.CenterService;
 import com.softserve.club.service.CityService;
 import com.softserve.club.service.ClubService;
@@ -21,29 +22,31 @@ import com.softserve.club.service.StationService;
 import com.softserve.club.util.converter.CenterToCenterResponseConverter;
 import com.softserve.club.util.converter.ClubToClubResponseConverter;
 import com.softserve.club.util.converter.CoordinatesConverter;
+import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.user.UserClient;
 import com.softserve.commons.util.converter.DtoConverter;
 import jakarta.validation.ValidationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @Transactional
-public class CenterServiceImpl implements CenterService/*, ArchiveMark<Center>*/ {
+public class CenterServiceImpl implements CenterService {
     private static final String CENTER_ALREADY_EXIST = "Center already exist with name: %s";
     private static final String CENTER_NOT_FOUND_BY_ID = "Center not found by id: %s";
     private static final String CENTER_NOT_FOUND_BY_NAME = "Center not found by name: %s";
@@ -59,10 +62,9 @@ public class CenterServiceImpl implements CenterService/*, ArchiveMark<Center>*/
     private final CenterToCenterResponseConverter centerToCenterResponseConverter;
     private final ClubToClubResponseConverter toClubResponseConverter;
     private final CoordinatesConverter coordinatesConverter;
-    private final ObjectMapper objectMapper;
     private ClubService clubService;
+    private final UserClient userClient;
 
-    @Autowired
     public CenterServiceImpl(LocationService locationService, CenterRepository centerRepository,
                              DtoConverter dtoConverter,
                              LocationRepository locationRepository, CityService cityService,
@@ -70,7 +72,7 @@ public class CenterServiceImpl implements CenterService/*, ArchiveMark<Center>*/
                              ClubRepository clubRepository,
                              CenterToCenterResponseConverter centerToCenterResponseConverter,
                              ClubToClubResponseConverter toClubResponseConverter,
-                             CoordinatesConverter coordinatesConverter, ObjectMapper objectMapper) {
+                             CoordinatesConverter coordinatesConverter, UserClient userClient) {
         this.locationService = locationService;
         this.centerRepository = centerRepository;
         this.dtoConverter = dtoConverter;
@@ -82,10 +84,9 @@ public class CenterServiceImpl implements CenterService/*, ArchiveMark<Center>*/
         this.centerToCenterResponseConverter = centerToCenterResponseConverter;
         this.toClubResponseConverter = toClubResponseConverter;
         this.coordinatesConverter = coordinatesConverter;
-        this.objectMapper = objectMapper;
+        this.userClient = userClient;
     }
 
-    @Autowired
     public void setClubService(@Lazy ClubService clubService) {
         this.clubService = clubService;
     }
@@ -120,47 +121,41 @@ public class CenterServiceImpl implements CenterService/*, ArchiveMark<Center>*/
 
     @Override
     public SuccessCreatedCenter addCenter(CenterProfile centerProfile) {
-        //todo
-        //log.debug("centerName = " + centerProfile.getName());
-        //if (isCenterExistByName(centerProfile.getName())) {
-        //    throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
-        //}
-        //
-        //User user = null;
-        //if (centerProfile.getUserId() != null) {
-        //    log.debug("CenterServiceImpl=> centerProfile.userId == " + centerProfile.getUserId());
-        //    user = userRepository.findById(centerProfile.getUserId()).orElseThrow(NotExistException::new);
-        //} else {
-        //    log.debug("CenterServiceImpl=> centerProfile.userId == null");
-        //}
-        //
-        //Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
-        //        .withUser(user)
-        //        .withClubCount((long) centerProfile.getClubsId().size())
-        //        .withRating(0.0));
-        //
-        //List<LocationProfile> locations = centerProfile.getLocations();
-        //if (locations != null && !locations.isEmpty()) {
-        //    for (LocationProfile profile : locations) {
-        //        convertCoordinates(profile);
-        //    }
-        //    center.setLocations(
-        //            locations.stream()
-        //                    .map(locationProfile -> locationRepository.save(dtoConverter
-        //                            .convertToEntity(locationProfile, new Location()).withCenter(center)
-        //                            .withCity(cityService.getCityByName(locationProfile.getCityName()))
-        //                            .withDistrict(locationProfile.getDistrictName() == null ? null
-        //                                    : districtService.getDistrictByName(locationProfile.getDistrictName()))
-        //                            .withStation(locationProfile.getStationName() == null ? null
-        //                                    : stationService.getStationByName(locationProfile.getStationName()))))
-        //                    .collect(Collectors.toSet()));
-        //}
-        //
-        //saveClubs(centerProfile, center);
-        //
-        //log.debug("**/adding new center = " + centerProfile.getName());
-        //return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
-        throw new NotImplementedException();
+        log.debug("centerName = " + centerProfile.getName());
+        if (isCenterExistByName(centerProfile.getName())) {
+            throw new AlreadyExistException(String.format(CENTER_ALREADY_EXIST, centerProfile.getName()));
+        }
+
+        if (centerProfile.getUserId() == null || !userClient.existsById(centerProfile.getUserId())) {
+            throw new NotExistException();
+        }
+
+        Center center = centerRepository.save(dtoConverter.convertToEntity(centerProfile, new Center())
+                .withUserId(centerProfile.getUserId())
+                .withClubCount((long) centerProfile.getClubsId().size())
+                .withRating(0.0));
+
+        List<LocationProfile> locations = centerProfile.getLocations();
+        if (locations != null && !locations.isEmpty()) {
+            for (LocationProfile profile : locations) {
+                convertCoordinates(profile);
+            }
+            center.setLocations(
+                    locations.stream()
+                            .map(locationProfile -> locationRepository.save(dtoConverter
+                                    .convertToEntity(locationProfile, new Location()).withCenter(center)
+                                    .withCity(cityService.getCityByName(locationProfile.getCityName()))
+                                    .withDistrict(locationProfile.getDistrictName() == null ? null
+                                            : districtService.getDistrictByName(locationProfile.getDistrictName()))
+                                    .withStation(locationProfile.getStationName() == null ? null
+                                            : stationService.getStationByName(locationProfile.getStationName()))))
+                            .collect(Collectors.toSet()));
+        }
+
+        saveClubs(centerProfile, center);
+
+        log.debug("**/adding new center = " + centerProfile.getName());
+        return dtoConverter.convertToDto(center, SuccessCreatedCenter.class);
     }
 
     private void saveClubs(CenterProfile centerProfile, Center center) {
@@ -178,13 +173,10 @@ public class CenterServiceImpl implements CenterService/*, ArchiveMark<Center>*/
 
     @Override
     public SuccessCreatedCenter addCenterRequest(CenterProfile centerProfile) {
-        //todo
-        /*
-        centerProfile.setUserId(customUserDetailsService.getUserPrincipal().getId());
-
+        centerProfile.setUserId(
+                ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()
+        );
         return addCenter(centerProfile);
-        */
-        throw new NotImplementedException();
     }
 
     @Override
@@ -371,7 +363,7 @@ public class CenterServiceImpl implements CenterService/*, ArchiveMark<Center>*/
         }).toList();
     }
 
-    //todo
+    //todo@
     /*
     @Override
     public void archiveModel(Center center) {

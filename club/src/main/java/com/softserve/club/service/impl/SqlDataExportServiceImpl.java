@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 public class SqlDataExportServiceImpl implements SqlDataExportService {
     final DataSource dataSource;
 
-    @Autowired
     public SqlDataExportServiceImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }

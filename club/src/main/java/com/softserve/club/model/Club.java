@@ -98,7 +98,7 @@ public class Club implements Convertible {
 
     @Column(name = "user_id")
     @ToString.Exclude
-    private Integer userId;
+    private Long userId;
 
     @ManyToOne
     @JoinColumn(name = "center_id", referencedColumnName = "id")

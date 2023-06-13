@@ -1,9 +1,7 @@
 package com.softserve.club.service;
 
-import com.softserve.club.dto.club.ClubOwnerProfile;
 import com.softserve.club.dto.club.ClubProfile;
 import com.softserve.club.dto.club.ClubResponse;
-import com.softserve.club.dto.club.SuccessCreatedClub;
 import com.softserve.club.dto.club.SuccessUpdatedClub;
 import com.softserve.club.dto.feedback.FeedbackResponse;
 import com.softserve.club.dto.search.AdvancedSearchClubProfile;
@@ -92,14 +90,13 @@ public interface ClubService {
     ClubResponse deleteClubById(Long id);
 
     /**
-     * The method returns dto {@code SuccessCreatedClub} if club successfully added.
+     * The method creates a club.
      *
      * @param clubProfile - place dto with all params.
-     * @return new {@code SuccessCreatedClub}.
      * @throws AlreadyExistException   if club already exists.
      * @throws IncorrectInputException if mandatory fields are empty.
      */
-    SuccessCreatedClub addClub(ClubProfile clubProfile);
+    void addClub(ClubProfile clubProfile);
 
     /**
      * The method returns list of dto {@code List<ClubResponse>} of all clubs.
@@ -186,11 +183,11 @@ public interface ClubService {
     /**
      * The method changes clubs owner and returns dto {@code ClubResponse} of updated club.
      *
-     * @param id               - put club id.
-     * @param clubOwnerProfile - place body of dto {@code ClubOwnerProfile}.
+     * @param clubId      - put club id.
+     * @param clubOwnerId - place owner id.
      * @return new {@code ClubResponse}.
      */
-    ClubResponse changeClubOwner(Long id, ClubOwnerProfile clubOwnerProfile);
+    ClubResponse changeClubOwner(Long clubId, Long clubOwnerId);
 
     /**
      * The method updates rating of club and returns dto {@code SuccessUpdatedClub} of updated club.
