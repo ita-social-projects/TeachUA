@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,8 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-//@Tag(name = "center", description = "the Center API")
-//@SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/center")
 public class CenterController implements Api {
     private static final int CENTERS_PER_USER_PAGE = 9;
     private final CenterService centerService;
@@ -47,7 +47,7 @@ public class CenterController implements Api {
      * @param id - put center id.
      * @return new {@code CenterResponse}.
      */
-    @GetMapping("/center/{id}")
+    @GetMapping("/{id}")
     public CenterResponse getCenter(@PathVariable Long id) {
         return centerService.getCenterProfileById(id);
     }
@@ -59,7 +59,7 @@ public class CenterController implements Api {
      * @param id - put user id.
      * @return new {@code Page<CenterResponse>}.
      */
-    @GetMapping("centers/{id}")
+    @GetMapping("/all/user/{id}")
     public Page<CenterResponse> getCentersByUserId(@PathVariable Long id,
                                                    @PageableDefault(value = CENTERS_PER_USER_PAGE, sort = "id")
                                                    Pageable pageable) {
@@ -75,7 +75,7 @@ public class CenterController implements Api {
      *
      * @return new {@code Page<ClubResponse>}.
      */
-    @GetMapping("centers/clubs/{id}")
+    @GetMapping("/all/clubs/{id}")
     public Page<ClubResponse> getCenterClubsByCenterId(@PathVariable Long id,
                                                        @RequestParam int size, // size of pagination
                                                        @PageableDefault(sort = "id")
@@ -89,7 +89,7 @@ public class CenterController implements Api {
      * @return new {@code SuccessCreatedCenter}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @PostMapping("/center")
+    @PostMapping
     public SuccessCreatedCenter addCenter(@Valid @RequestBody CenterProfile centerProfile) {
         return centerService.addCenterRequest(centerProfile);
     }
@@ -102,7 +102,7 @@ public class CenterController implements Api {
      * @return new {@code CenterProfile}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @PutMapping("/center/{id}")
+    @PutMapping("/{id}")
     public CenterProfile updateCenter(@PathVariable Long id, @Valid @RequestBody CenterProfile centerProfile) {
         return centerService.updateCenter(id, centerProfile);
     }
@@ -112,7 +112,7 @@ public class CenterController implements Api {
      *
      * @return new {@code List <CenterResponse>}.
      */
-    @GetMapping("/centers")
+    @GetMapping("/all")
     public List<CenterResponse> getCenters() {
         return centerService.getListOfCenters();
     }
@@ -124,7 +124,7 @@ public class CenterController implements Api {
      * @param advancedSearchCenterProfile - Place dto with all parameters for searched club.
      * @return new {@code ClubProfile}.
      */
-    @GetMapping("/centers/search/advanced")
+    @GetMapping("/all/search/advanced")
     public Page<CenterResponse> getAdvancedSearchClubs(AdvancedSearchCenterProfile advancedSearchCenterProfile,
                                                        @PageableDefault(value = 6, sort = "id") Pageable pageable) {
         log.debug("===== centerController started ======");
@@ -138,7 +138,7 @@ public class CenterController implements Api {
      * @return new {@code CenterResponse}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @DeleteMapping("/center/{id}")
+    @DeleteMapping("/{id}")
     public CenterResponse deleteCenter(@PathVariable Long id) {
         return centerService.deleteCenterById(id);
     }
@@ -149,7 +149,7 @@ public class CenterController implements Api {
      * @return list of updated centers
      */
     @AllowedRoles({RoleData.ADMIN})
-    @PatchMapping("/centers/rating")
+    @PatchMapping("/all/rating")
     public List<CenterResponse> updateCentersRating() {
         return centerService.updateRatingForAllCenters();
     }

@@ -16,15 +16,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing the stations.
  */
-
 @RestController
-//@Tag(name = "station", description = "the Station API")
-//@SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/club/station")
 public class StationController implements Api {
     private final StationService stationService;
 
@@ -38,7 +37,7 @@ public class StationController implements Api {
      * @param id - put station id.
      * @return {@code StationResponse}.
      */
-    @GetMapping("/station/{id}")
+    @GetMapping("/{id}")
     public StationResponse getStation(@PathVariable long id) {
         return stationService.getStationProfileById(id);
     }
@@ -50,7 +49,7 @@ public class StationController implements Api {
      * @return new {@code SuccessCreatedStation}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/station")
+    @PostMapping
     public SuccessCreatedStation addStation(@Valid @RequestBody StationProfile stationProfile) {
         return stationService.addStation(stationProfile);
     }
@@ -63,7 +62,7 @@ public class StationController implements Api {
      * @return {@code StationProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/station/{id}")
+    @PutMapping("/{id}")
     public StationProfile updateStation(@PathVariable Long id, @Valid @RequestBody StationProfile stationProfile) {
         return stationService.updateStation(id, stationProfile);
     }
@@ -73,7 +72,7 @@ public class StationController implements Api {
      *
      * @return {@code List<StationResponse>}.
      */
-    @GetMapping("/stations")
+    @GetMapping("/all")
     public List<StationResponse> getStations() {
         return stationService.getListOfStations();
     }
@@ -84,12 +83,12 @@ public class StationController implements Api {
      * @param name - put city name.
      * @return {@code List<StationResponse>}.
      */
-    @GetMapping("/stations/{name}")
+    @GetMapping("/all/{name}")
     public List<StationResponse> getStationsByCityName(@PathVariable String name) {
         return stationService.getListOfStationsByCityName(name);
     }
 
-    @PostMapping("/district/stations")
+    @PostMapping("/all/district")
     public List<StationResponse> getStationsByDistrictNameAndCityName(@RequestBody StationProfile stationProfile) {
         return stationService.getAllByDistrictNameAndCityName(stationProfile);
     }
@@ -101,7 +100,7 @@ public class StationController implements Api {
      * @return {@code StationResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/station/{id}")
+    @DeleteMapping("/{id}")
     public StationResponse deleteStation(@PathVariable Long id) {
         return stationService.deleteStationById(id);
     }

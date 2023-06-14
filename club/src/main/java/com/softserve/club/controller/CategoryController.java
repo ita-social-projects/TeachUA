@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -26,8 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Slf4j
-//@Tag(name = "category", description = "the Category API")
-//@SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/club/category")
 public class CategoryController implements Api {
     private final CategoryService categoryService;
 
@@ -43,7 +43,7 @@ public class CategoryController implements Api {
      *
      * @return {@code CategoryResponse}.
      */
-    @GetMapping("/category/{id}")
+    @GetMapping("/{id}")
     public CategoryResponse getCategory(@PathVariable Long id) {
         return categoryService.getCategoryProfileById(id);
     }
@@ -53,7 +53,7 @@ public class CategoryController implements Api {
      *
      * @return {@code CategoryResponse}.
      */
-    @GetMapping("/categories")
+    @GetMapping("/all")
     public List<CategoryResponse> getAllCategories() {
         return categoryService.getAllCategories();
     }
@@ -67,7 +67,7 @@ public class CategoryController implements Api {
      *
      * @return {@code Page<CategoryResponse>} - all Categories with pagination.
      */
-    @GetMapping("/categories/search")
+    @GetMapping("/search")
     public Page<CategoryResponse> getListOfCategories(@PageableDefault(value = 4, sort = "id") Pageable pageable) {
         return categoryService.getListOfCategories(pageable);
     }
@@ -81,7 +81,7 @@ public class CategoryController implements Api {
      * @return new {@code SuccessCreatedCategory}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/category")
+    @PostMapping
     public SuccessCreatedCategory addCategory(@Valid @RequestBody CategoryProfile categoryProfile) {
         return categoryService.addCategory(categoryProfile);
     }
@@ -97,7 +97,7 @@ public class CategoryController implements Api {
      * @return {@code CategoryProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/category/{id}")
+    @PutMapping("/{id}")
     public CategoryProfile updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryProfile categoryProfile) {
         return categoryService.updateCategory(id, categoryProfile);
     }
@@ -111,7 +111,7 @@ public class CategoryController implements Api {
      * @return {@code CategoryResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/category/{id}")
+    @DeleteMapping("/{id}")
     public CategoryResponse deleteCategory(@PathVariable("id") Long id) {
         return categoryService.deleteCategoryById(id);
     }

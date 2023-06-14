@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -22,8 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-//@Tag(name = "city", description = "the City API")
-//@SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/club/city")
 public class CityController implements Api {
     private final CityService cityService;
 
@@ -39,7 +39,7 @@ public class CityController implements Api {
      *
      * @return new {@code CityResponse}.
      */
-    @GetMapping("/city/{id}")
+    @GetMapping("/{id}")
     public CityResponse getCity(@PathVariable long id) {
         return cityService.getCityProfileById(id);
     }
@@ -53,7 +53,7 @@ public class CityController implements Api {
      * @return new {@code SuccessCreatedCity}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/city")
+    @PostMapping
     public SuccessCreatedCity addCity(@Valid @RequestBody CityProfile cityProfile) {
         return cityService.addCity(cityProfile);
     }
@@ -69,7 +69,7 @@ public class CityController implements Api {
      * @return new {@code CityProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/city/{id}")
+    @PutMapping("/{id}")
     public CityProfile updateCity(@PathVariable Long id, @Valid @RequestBody CityProfile cityProfile) {
         return cityService.updateCity(id, cityProfile);
     }
@@ -79,7 +79,7 @@ public class CityController implements Api {
      *
      * @return new {@code List<CityResponse>}.
      */
-    @GetMapping("/cities")
+    @GetMapping("/all")
     public List<CityResponse> getCities() {
         return cityService.getListOfCities();
     }
@@ -93,7 +93,7 @@ public class CityController implements Api {
      * @return new {@code List<CityResponse>}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/city/{id}")
+    @DeleteMapping("/{id}")
     public CityResponse deleteCity(@PathVariable long id) {
         return cityService.deleteCityById(id);
     }

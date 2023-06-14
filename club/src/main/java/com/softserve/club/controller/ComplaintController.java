@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,8 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-//@Tag(name = "complaint", description = "the Complaint API")
-//@SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/club/complaint")
 public class ComplaintController implements Api {
     private final ComplaintService complaintService;
 
@@ -40,7 +40,7 @@ public class ComplaintController implements Api {
      *
      * @return {@link ComplaintResponse}
      */
-    @GetMapping("/complaint/{id}")
+    @GetMapping("/{id}")
     public ComplaintResponse getComplaintById(@PathVariable Long id) {
         return complaintService.getComplaintProfileById(id);
     }
@@ -50,7 +50,7 @@ public class ComplaintController implements Api {
      *
      * @return {@code List<ComplaintResponse>}
      */
-    @GetMapping("/complaints")
+    @GetMapping("/all")
     public List<ComplaintResponse> getAllComplaints() {
         return complaintService.getAll();
     }
@@ -63,7 +63,7 @@ public class ComplaintController implements Api {
      *
      * @return {@code List<ComplaintResponse>}
      */
-    @GetMapping("/complaints/club/{id}")
+    @GetMapping("/all/club/{id}")
     public List<ComplaintResponse> getAllComplaints(@PathVariable Long id) {
         return complaintService.getAllByClubId(id);
     }
@@ -77,7 +77,7 @@ public class ComplaintController implements Api {
      * @return new {@link SuccessCreatedComplaint}
      */
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/complaint")
+    @PostMapping
     public SuccessCreatedComplaint addComplaint(@Valid @RequestBody ComplaintProfile complaintProfile) {
         return complaintService.addComplaint(complaintProfile);
     }
@@ -93,7 +93,7 @@ public class ComplaintController implements Api {
      * @return {@code ComplaintProfile}.
      */
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/complaint/{id}")
+    @PutMapping("/{id}")
     public ComplaintProfile updateComplaint(@PathVariable Long id,
             @Valid @RequestBody ComplaintProfile complaintProfile) {
         return complaintService.updateComplaintProfileById(id, complaintProfile);
@@ -108,7 +108,7 @@ public class ComplaintController implements Api {
      * @return {@link ComplaintResponse}
      */
     @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("/complaint/{id}")
+    @DeleteMapping("/{id}")
     public ComplaintResponse deleteComplaintById(@PathVariable Long id) {
         return complaintService.deleteComplaintById(id);
     }

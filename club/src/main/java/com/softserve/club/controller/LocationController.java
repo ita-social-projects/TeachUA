@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,8 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-//@Tag(name = "location", description = "the Location API")
-//@SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/club/location")
 public class LocationController implements Api {
     private final LocationService locationService;
 
@@ -40,7 +40,7 @@ public class LocationController implements Api {
      *
      * @return new {@code Location}.
      */
-    @GetMapping("/location/{id}")
+    @GetMapping("/{id}")
     public Location getLocation(@PathVariable Long id) {
         return locationService.getLocationById(id);
     }
@@ -50,7 +50,7 @@ public class LocationController implements Api {
      *
      * @return new {@code List<Location>}.
      */
-    @GetMapping("/locations")
+    @GetMapping("/all")
     public List<Location> getLocations() {
         return locationService.getListOfAllLocations();
     }
@@ -64,7 +64,7 @@ public class LocationController implements Api {
      * @return new {@code Location}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/location")
+    @PostMapping
     public Location addLocation(@Valid @RequestBody LocationProfile locationProfile) {
         return locationService.addLocation(locationProfile);
     }
@@ -80,7 +80,7 @@ public class LocationController implements Api {
      * @return new {@code Location}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/location/{id}")
+    @PutMapping("/{id}")
     public Location updateLocation(@PathVariable Long id, @Valid @RequestBody LocationProfile locationProfile) {
         return locationService.updateLocation(id, locationProfile);
     }
@@ -94,7 +94,7 @@ public class LocationController implements Api {
      * @return new {@code LocationProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/location/{id}")
+    @DeleteMapping("/{id}")
     public LocationProfile deleteLocation(@PathVariable Long id) {
         return locationService.deleteLocationById(id);
     }

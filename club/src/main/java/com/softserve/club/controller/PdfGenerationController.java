@@ -12,9 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/v1")
 public class PdfGenerationController implements Api {
     private final ReportGenerationService<ClubResponse> clubReportGenerationService;
     private final ReportGenerationService<CenterResponse> centerReportGenerationService;
@@ -33,17 +35,17 @@ public class PdfGenerationController implements Api {
         this.centerService = centerService;
     }
 
-    @GetMapping(value = { "/pdf/club/{clubId}" }, produces = { "application/pdf" })
+    @GetMapping(value = { "/club/pdf/{clubId}" }, produces = { "application/pdf" })
     public byte[] generateClubPdfReport(@PathVariable Long clubId) {
         return clubReportGenerationService.getPdfOutput(clubService.getClubProfileById(clubId));
     }
 
-    @GetMapping(value = { "/pdf/center/{centerId}" }, produces = { "application/pdf" })
+    @GetMapping(value = { "/center/pdf/{centerId}" }, produces = { "application/pdf" })
     public byte[] generateCenterPdfReport(@PathVariable Long centerId) {
         return centerReportGenerationService.getPdfOutput(centerService.getCenterProfileById(centerId));
     }
 
-    @GetMapping(value = { "/pdf/resultsearch" }, produces = { "application/pdf" })
+    @GetMapping(value = { "/club/pdf/resultsearch" }, produces = { "application/pdf" })
     public byte[] generateResultSearchPdfReport(SearchClubProfile searchClubProfile,
                                                 @PageableDefault(sort = "id", value = 50) Pageable pageable) {
         return resultSearchReportGenerationService

@@ -7,6 +7,7 @@ import com.softserve.club.service.ClubService;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,8 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
-//@Tag(name = "search", description = "the Search API")
-//@SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/club/search")
 public class SearchController implements Api {
     private final CategoryService categoryService;
     private final ClubService clubService;
@@ -36,7 +36,7 @@ public class SearchController implements Api {
      *
      * @return {@link CombinedPossibleResponse }
      */
-    @GetMapping("/search")
+    @GetMapping
     public CombinedPossibleResponse possibleResponses(@RequestParam @Length(max = 50) String text,
             @RequestParam String cityName) {
         return CombinedPossibleResponse.builder().categories(categoryService.getPossibleCategoryByName(text))

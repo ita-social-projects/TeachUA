@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,12 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-//@Tag(name = "feedback", description = "the Feedback API")
-//@SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/club/feedback")
 public class FeedbackController implements Api {
     private final FeedbackService feedbackService;
 
-    @Autowired
     public FeedbackController(FeedbackService feedbackService) {
         this.feedbackService = feedbackService;
     }
@@ -41,7 +40,7 @@ public class FeedbackController implements Api {
      *
      * @return {@code FeedbackResponse}.
      */
-    @GetMapping("/feedback/{id}")
+    @GetMapping("/{id}")
     public FeedbackResponse getFeedbackById(@PathVariable Long id) {
         return feedbackService.getFeedbackProfileById(id);
     }
@@ -51,7 +50,7 @@ public class FeedbackController implements Api {
      *
      * @return {@code List<FeedbackResponse>}.
      */
-    @GetMapping("/feedbacks")
+    @GetMapping("/all")
     public List<FeedbackResponse> getAllFeedback() {
         return feedbackService.getListOfFeedback();
     }
@@ -61,7 +60,7 @@ public class FeedbackController implements Api {
      *
      * @return {@code List<FeedbackResponse>}
      */
-    @GetMapping("/feedbacks/{id}")
+    @GetMapping("/all/{id}")
     public List<FeedbackResponse> getAllFeedback(@PathVariable Long id) {
         return feedbackService.getAllByClubId(id);
     }
@@ -75,7 +74,7 @@ public class FeedbackController implements Api {
      * @return {@code SuccessCreatedFeedback}
      */
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/feedback")
+    @PostMapping
     public SuccessCreatedFeedback addFeedback(@Valid @RequestBody FeedbackProfile feedbackProfile) {
         return feedbackService.addFeedback(feedbackProfile);
     }
@@ -91,7 +90,7 @@ public class FeedbackController implements Api {
      * @return {@code FeedbackProfile}.
      */
     @PreAuthorize("isAuthenticated()")
-    @PutMapping("/feedback/{id}")
+    @PutMapping("/{id}")
     public FeedbackResponse updateFeedback(@PathVariable Long id, @Valid @RequestBody FeedbackProfile feedbackProfile) {
         return feedbackService.updateFeedbackProfileById(id, feedbackProfile);
     }
@@ -105,7 +104,7 @@ public class FeedbackController implements Api {
      * @return {@code FeedbackResponse}
      */
     @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("/feedback/{id}")
+    @DeleteMapping("/{id}")
     public FeedbackResponse deleteFeedbackById(@PathVariable Long id) {
         return feedbackService.deleteFeedbackById(id);
     }

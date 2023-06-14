@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,8 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-//@Tag(name = "contact", description = "the Contact API")
-//@SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/club/contact-type")
 public class ContactTypeController implements Api {
     private final ContactTypeService contactTypeService;
 
@@ -40,7 +40,7 @@ public class ContactTypeController implements Api {
      *
      * @return {@code ContactType}.
      */
-    @GetMapping("/contact-type-view/{id}")
+    @GetMapping("/{id}")
     public ContactType getContactType(@PathVariable Long id) {
         return contactTypeService.getContactTypeById(id);
     }
@@ -54,7 +54,7 @@ public class ContactTypeController implements Api {
      * @return new {@code SuccessCreatedContactType}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/contact-type")
+    @PostMapping
     public SuccessCreatedContactType addContactType(@Valid @RequestBody ContactTypeProfile contactTypeProfile) {
         return contactTypeService.addContactType(contactTypeProfile);
     }
@@ -70,7 +70,7 @@ public class ContactTypeController implements Api {
      * @return {@code ContactTypeProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/contact-type/{id}")
+    @PutMapping("/{id}")
     public ContactTypeProfile updateContactType(@PathVariable Long id,
             @Valid @RequestBody ContactTypeProfile contactTypeProfile) {
         return contactTypeService.updateContactType(id, contactTypeProfile);
@@ -85,7 +85,7 @@ public class ContactTypeController implements Api {
      * @return {@code ContactTypeResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/contact-type/{id}")
+    @DeleteMapping("/{id}")
     public ContactTypeResponse deleteContactType(@PathVariable Long id) {
         return contactTypeService.deleteContactTypeById(id);
     }
@@ -95,7 +95,7 @@ public class ContactTypeController implements Api {
      *
      * @return new {@code List<ContactTypeResponse>}.
      */
-    @GetMapping("/contact-types")
+    @GetMapping("/all")
     public List<ContactTypeResponse> getContactTypes() {
         return contactTypeService.getListOfContactTypes();
     }

@@ -15,15 +15,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing the districts.
  */
-
 @RestController
-//@Tag(name = "district", description = "the District API")
-//@SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/club/district")
 public class DistrictController implements Api {
     private final DistrictService districtService;
 
@@ -39,7 +38,7 @@ public class DistrictController implements Api {
      *
      * @return new {@code DistrictResponse}.
      */
-    @GetMapping("/district/{id}")
+    @GetMapping("/{id}")
     public DistrictResponse getDistrict(@PathVariable long id) {
         return districtService.getDistrictProfileById(id);
     }
@@ -53,7 +52,7 @@ public class DistrictController implements Api {
      * @return new {@code SuccessCreatedDistrict}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/district")
+    @PostMapping
     public SuccessCreatedDistrict addDistrict(@Valid @RequestBody DistrictProfile districtProfile) {
         return districtService.addDistrict(districtProfile);
     }
@@ -69,7 +68,7 @@ public class DistrictController implements Api {
      * @return new {@code DistrictProfile}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/district/{id}")
+    @PutMapping("/{id}")
     public DistrictProfile updateDistrict(@PathVariable Long id, @Valid @RequestBody DistrictProfile districtProfile) {
         return districtService.updateDistrict(id, districtProfile);
     }
@@ -82,7 +81,7 @@ public class DistrictController implements Api {
      *
      * @return new {@code List<DistrictResponse>}.
      */
-    @GetMapping("/districts/{name}")
+    @GetMapping("/all/{name}")
     public List<DistrictResponse> getDistrictsByCityName(@PathVariable String name) {
         return districtService.getListOfDistrictsByCityName(name);
     }
@@ -92,7 +91,7 @@ public class DistrictController implements Api {
      *
      * @return new {@code List<DistrictResponse>}.
      */
-    @GetMapping("/districts")
+    @GetMapping("/all")
     public List<DistrictResponse> getDistricts() {
         return districtService.getListOfDistricts();
     }
@@ -106,7 +105,7 @@ public class DistrictController implements Api {
      * @return new {@code List<DistrictResponse>}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/district/{id}")
+    @DeleteMapping("/{id}")
     public DistrictResponse deleteDistrict(@PathVariable Long id) {
         return districtService.deleteDistrictById(id);
     }

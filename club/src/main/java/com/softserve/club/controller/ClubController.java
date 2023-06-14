@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -32,8 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-//@Tag(name = "club", description = "the Club API")
-//@SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/club")
 public class ClubController implements Api {
     private static final int CLUBS_PER_PAGE = 8;
     private static final int CLUBS_PER_USER_PAGE = 3;
@@ -49,13 +49,13 @@ public class ClubController implements Api {
      * @param id - put club id.
      * @return {@code ClubResponse}.
      */
-    @GetMapping("/club/{id}")
+    @GetMapping("/{id}")
     public ClubResponse getClubById(@PathVariable Long id) {
         return clubService.getClubProfileById(id);
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/club/clubs-without-categories")
+    @GetMapping("/clubs-without-categories")
     public Page<ClubResponse> getClubsWithoutCategories(@PageableDefault(value = CLUBS_PER_PAGE, sort = "id")
                                                         Pageable pageable) {
         return clubService.getClubsWithoutCategories(pageable);
@@ -67,7 +67,7 @@ public class ClubController implements Api {
      * @param name - put club name.
      * @return {@code ClubResponse}.
      */
-    @GetMapping("/club/name/{name}")
+    @GetMapping("/name/{name}")
     public ClubResponse getClubByName(@PathVariable String name) {
         return clubService.getClubProfileByName(name);
     }
@@ -77,7 +77,7 @@ public class ClubController implements Api {
      *
      * @return {@code List <ClubResponse>}.
      */
-    @GetMapping("/clubs")
+    @GetMapping("/all")
     public List<ClubResponse> getClubs() {
         return clubService.getListOfClubs();
     }
@@ -87,7 +87,7 @@ public class ClubController implements Api {
      *
      * @return {@code List <ClubResponse>}.
      */
-    @GetMapping("/clubsByCenterId/{id}")
+    @GetMapping("/all/ByCenterId/{id}")
     public List<ClubResponse> getClubsByCenterId(@PathVariable Long id) {
         return clubService.getListOfClubsByCenterId(id);
     }
@@ -98,7 +98,7 @@ public class ClubController implements Api {
      * @param clubProfile - Place dto with all parameters for adding new club.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @PostMapping("/club")
+    @PostMapping
     public void addClub(@Valid @RequestBody ClubProfile clubProfile) {
         clubService.addClub(clubProfile);
     }
@@ -108,7 +108,7 @@ public class ClubController implements Api {
      *
      * @return {@code List <ClubResponse>}.
      */
-    @GetMapping("/clubs/search/similar")
+    @GetMapping("/all/search/similar")
     public List<ClubResponse> getSimilarClubs(SimilarClubProfile similarClubProfile) {
         return clubService.getSimilarClubsByCategoryName(similarClubProfile);
     }
@@ -120,7 +120,7 @@ public class ClubController implements Api {
      * @param id - put user id.
      * @return {@code Page<ClubResponse>}.
      */
-    @GetMapping("/clubs/{id}")
+    @GetMapping("/all/{id}")
     public Page<ClubResponse> getClubsByUserId(@PathVariable Long id,
                                                @PageableDefault(value = CLUBS_PER_USER_PAGE, sort = "id")
                                                Pageable pageable) {
@@ -133,7 +133,7 @@ public class ClubController implements Api {
      * @param id - put user id.
      * @return {@code List<ClubResponse>}.
      */
-    @GetMapping("/clubs/user/{id}")
+    @GetMapping("/all/user/{id}")
     public List<ClubResponse> getListClubsByUserId(@PathVariable Long id) {
         return clubService.getListClubsByUserId(id);
     }
@@ -144,7 +144,7 @@ public class ClubController implements Api {
      *
      * @return {@code Page<ClubResponse>}.
      */
-    @GetMapping("/clubs/search")
+    @GetMapping("/all/search")
     public Page<ClubResponse> getClubsListOfClubs(SearchClubProfile searchClubProfile,
                                                   @PageableDefault(value = CLUBS_PER_PAGE, sort = "id")
                                                   Pageable pageable) {
@@ -158,7 +158,7 @@ public class ClubController implements Api {
      * @param advancedSearchClubProfile - Place dto with all parameters to get possible club.
      * @return {@code ClubProfile}.
      */
-    @GetMapping("/clubs/search/advanced")
+    @GetMapping("/all/search/advanced")
     public Page<ClubResponse> getAdvancedSearchClubs(AdvancedSearchClubProfile advancedSearchClubProfile,
                                                      @PageableDefault(value = 6, sort = "id") Pageable pageable) {
         return clubService.getAdvancedSearchClubs(advancedSearchClubProfile, pageable);
@@ -171,7 +171,7 @@ public class ClubController implements Api {
      * @param searchClubProfile - Place dto with all parameters to get possible club.
      * @return {@code ClubProfile}.
      */
-    @GetMapping("/clubs/search/simple")
+    @GetMapping("/all/search/simple")
     public List<ClubResponse> getClubsByCategoryAndCity(SearchClubProfile searchClubProfile) {
         return clubService.getClubByCategoryAndCity(searchClubProfile);
     }
@@ -184,7 +184,7 @@ public class ClubController implements Api {
      * @return new {@code ClubProfile}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.USER})
-    @PutMapping("/club/{id}")
+    @PutMapping("/{id}")
     public SuccessUpdatedClub updateClub(@PathVariable Long id, @Valid @RequestBody ClubResponse clubProfile) {
         return clubService.updateClub(id, clubProfile);
     }
@@ -197,7 +197,7 @@ public class ClubController implements Api {
      * @return new {@code ClubProfile}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @PatchMapping("/club/change-owner/{clubId}/{ownerId}")
+    @PatchMapping("/change-owner/{clubId}/{ownerId}")
     public ClubResponse changeClubOwner(@PathVariable("clubId") Long id,
                                         @PathVariable("ownerId") Long clubOwnerId) {
         return clubService.changeClubOwner(id, clubOwnerId);
@@ -211,7 +211,7 @@ public class ClubController implements Api {
      * @return new {@code SuccessUpdatedClub}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @PatchMapping("/club/{id}")
+    @PatchMapping("/{id}")
     public SuccessUpdatedClub patchClub(@PathVariable Long id, @Valid @RequestBody ClubResponse clubProfile) {
         return clubService.updateClub(id, clubProfile);
     }
@@ -223,7 +223,7 @@ public class ClubController implements Api {
      * @return new {@code ClubResponse}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @DeleteMapping("/club/{id}")
+    @DeleteMapping("/{id}")
     public ClubResponse deleteClub(@PathVariable Long id) {
         return clubService.deleteClubById(id);
     }
@@ -234,7 +234,7 @@ public class ClubController implements Api {
      * @return new {@code List<ClubResponse>}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PatchMapping("/clubs/rating")
+    @PatchMapping("/all/rating")
     public List<ClubResponse> updateClubsRating() {
         return clubService.updateRatingForAllClubs();
     }
@@ -243,12 +243,12 @@ public class ClubController implements Api {
      * The controller updates contacts of club.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/club/updateContacts")
+    @GetMapping("/updateContacts")
     public void updateContacts() {
         clubService.updateContacts();
     }
 
-    @GetMapping("/clubs/top/search")
+    @GetMapping("/all/top/search")
     public List<ClubResponse> getTopClubsByCity(TopClubProfile topClubProfile) {
         return clubService.getTopClubsByCity(topClubProfile);
     }
