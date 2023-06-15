@@ -18,7 +18,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/security_filter.conf:/etc/nginx/security_filter.conf
     networks:
       - spring
     depends_on:
