@@ -74,4 +74,8 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     @Query(value = "SELECT certificates from Certificate AS certificates where LOWER(certificates.userName) LIKE LOWER(CONCAT('%', :username, '%')) ORDER BY certificates.id ASC")
     List<Certificate> findSimilarByUserName(@Param("username") String userName);
+
+    boolean existsByUserNameAndSendToEmail(String userName, String email);
+    boolean existsBySendToEmail(String email);
+    List<Certificate> findBySendToEmail(String email);
 }

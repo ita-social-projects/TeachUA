@@ -18,8 +18,8 @@ public class Messenger implements Convertible {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
-    private String name;
+    @Column(name = "user_name")
+    private String userName;
 
     @Column(name = "access_key")
     private String accessKey;

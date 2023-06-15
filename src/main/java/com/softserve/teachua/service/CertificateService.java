@@ -231,4 +231,7 @@ public interface CertificateService {
      * @return - List of Certificates
      */
     List<CertificatePreview> getSimilarCertificatesByUserName(String userName);
+    List<Certificate> getByMessengerId(String viberId);
+    boolean existByEmail(String email);
+    boolean existByEmailAndName(String email, String name);
 }

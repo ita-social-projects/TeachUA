@@ -6,7 +6,10 @@ import com.softserve.teachua.dto.certificate.*;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Certificate;
 import com.softserve.teachua.model.CertificateDates;
+import com.softserve.teachua.model.Message;
+import com.softserve.teachua.model.Messenger;
 import com.softserve.teachua.repository.CertificateRepository;
+import com.softserve.teachua.repository.MessengerRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.CertificateByTemplateService;
 import com.softserve.teachua.service.CertificateService;
@@ -46,16 +49,18 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
     private final CertificateRepository certificateRepository;
     private final CertificateContentDecorator certificateContentDecorator;
     private final CertificateByTemplateService certificateByTemplateService;
+    private final MessengerRepository messengerRepository;
 
     @Autowired
     public CertificateServiceImpl(DtoConverter dtoConverter, QRCodeService qrCodeService,
                                   CertificateRepository certificateRepository, CertificateContentDecorator certificateContentDecorator,
-                                  CertificateByTemplateService certificateByTemplateService) {
+                                  CertificateByTemplateService certificateByTemplateService, MessengerRepository messengerRepository) {
         this.dtoConverter = dtoConverter;
         this.qrCodeService = qrCodeService;
         this.certificateRepository = certificateRepository;
         this.certificateContentDecorator = certificateContentDecorator;
         this.certificateByTemplateService = certificateByTemplateService;
+        this.messengerRepository = messengerRepository;
     }
 
     @Override
@@ -365,6 +370,23 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         return certificateRepository.findSimilarByUserName(userName).stream().map(
                 certificate -> (CertificatePreview) dtoConverter.convertToDto(certificate, CertificatePreview.class))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Certificate> getByMessengerId(String id) {
+        Optional<Messenger> messenger = messengerRepository.findByAccessKey(id);
+        if (messenger.isPresent()) return certificateRepository.findByUserName(messenger.get().getUserName());
+        return new ArrayList<>();
+    }
+
+    @Override
+    public boolean existByEmail(String email) {
+        return certificateRepository.existsBySendToEmail(email);
+    }
+
+    @Override
+    public boolean existByEmailAndName(String email, String name) {
+        return certificateRepository.existsByUserNameAndSendToEmail(name, email);
     }
 
     @Override
