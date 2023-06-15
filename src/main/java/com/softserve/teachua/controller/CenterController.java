@@ -80,12 +80,16 @@ public class CenterController implements Api {
      * @return new {@code Page<ClubResponse>}.
      */
     @GetMapping("centers/clubs/{id}")
-    public Page<ClubResponse> getCenterClubsByCenterId(@PathVariable Long id,
-                                                       @RequestParam int size, // size of pagination
-                                                       @PageableDefault(sort = "id")
-                                                       Pageable pageable) {
-        return centerService.getCenterClubsByCenterId(id, pageable);
+    public Object getCenterClubsByCenterId(@PathVariable Long id,
+                                           @RequestParam(required = false) Integer size, // size of pagination
+                                           @PageableDefault(sort = "id") Pageable pageable) {
+        if (size != null) {
+            return centerService.getCenterClubsByCenterId(id, pageable);
+        } else {
+            return centerService.getAllCenterClubsByCenterId(id);
+        }
     }
+
 
     /**
      * Use this endpoint to create a center. The controller returns {@code SuccessCreatedCenter}.

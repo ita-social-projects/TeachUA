@@ -34,6 +34,8 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     Page<Club> findAllByCenterId(Long id, Pageable pageable);
 
+    List<Club> findAllByCenterId(Long id);
+
     @SuppressWarnings("squid:S107") //Suppressed because of project's business logic.
     @Query("SELECT DISTINCT club from Club AS club " + "JOIN club.categories AS category "
             + "LEFT JOIN club.locations AS locations " + "LEFT JOIN locations.city AS city "
