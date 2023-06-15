@@ -274,7 +274,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         List<Club> clubs = clubRepository.findAllByCenterId(id);
         return clubs.stream()
                 .map(toClubResponseConverter::convertToClubResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
