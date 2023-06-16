@@ -29,7 +29,6 @@ public class JwtFilter extends OncePerRequestFilter {
             String roleHeader = request.getHeader("role");
             if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(roleHeader)) {
                 RoleData role = RoleData.valueOf(roleHeader);
-
                 UserPrincipal userPrincipal = new UserPrincipal(Long.valueOf(id), username, role);
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userPrincipal, null, userPrincipal.getAuthorities()

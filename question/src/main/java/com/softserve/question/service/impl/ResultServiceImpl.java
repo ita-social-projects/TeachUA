@@ -14,6 +14,7 @@ import com.softserve.question.model.QuestionHistory;
 import com.softserve.question.model.Result;
 import com.softserve.question.model.Test;
 import com.softserve.question.repository.ResultRepository;
+import com.softserve.question.security.UserPrincipal;
 import com.softserve.question.service.AnswerService;
 import com.softserve.question.service.QuestionService;
 import com.softserve.question.service.ResultService;
@@ -29,16 +30,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.Link;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
@@ -48,6 +48,15 @@ public class ResultServiceImpl implements ResultService {
     private final ModelMapper modelMapper;
     private final QuestionService questionService;
     private final AnswerService answerService;
+
+    public ResultServiceImpl(ResultRepository resultRepository, TestService testService, ModelMapper modelMapper,
+                             QuestionService questionService, AnswerService answerService) {
+        this.resultRepository = resultRepository;
+        this.testService = testService;
+        this.modelMapper = modelMapper;
+        this.questionService = questionService;
+        this.answerService = answerService;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -152,10 +161,10 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public SuccessCreatedResult saveResult(CreateResult resultDto) {
         checkNull(resultDto, "Create result dto");
-        //todo
-        //User user = userService.getAuthenticatedUser();
+        Long userId =
+                ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         Result result = new Result();
-        //result.setUser(user);
+        result.setUserId(userId);
         result.setTest(testService.findById(resultDto.getTestId()));
         result.setTestStartTime(resultDto.getStartTime());
         result.setTestFinishTime(LocalDateTime.now());
@@ -168,7 +177,7 @@ public class ResultServiceImpl implements ResultService {
         SuccessCreatedResult successResult = new SuccessCreatedResult();
         successResult.setSelectedAnswersIds(answerIds);
         successResult.setTestId(resultDto.getTestId());
-        //successResult.setUserId(user.getId());
+        successResult.setUserId(userId);
         successResult.setGrade(result.getGrade());
         log.info("**/Result has been saved. {}", successResult);
         return successResult;

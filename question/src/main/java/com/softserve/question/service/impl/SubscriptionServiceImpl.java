@@ -2,35 +2,34 @@ package com.softserve.question.service.impl;
 
 import com.softserve.question.dto.subscription.CreateSubscription;
 import com.softserve.question.dto.subscription.SubscriptionProfile;
-import com.softserve.question.dto.user.UserResponse;
 import com.softserve.question.model.Group;
 import com.softserve.question.model.Subscription;
 import com.softserve.question.repository.SubscriptionRepository;
+import com.softserve.question.security.UserPrincipal;
 import com.softserve.question.service.GroupService;
 import com.softserve.question.service.SubscriptionService;
 import static com.softserve.question.util.Messages.INCORRECT_ENROLLMENT_KEY_MESSAGE;
 import static com.softserve.question.util.Messages.NO_SUBSCRIPTION_MESSAGE;
+import static com.softserve.question.util.Messages.SUBSCRIPTION_EXISTS_MESSAGE;
 import static com.softserve.question.util.Messages.TEST_WITHOUT_GROUP_MESSAGE;
-import static com.softserve.question.util.validation.NullValidator.checkNull;
 import static com.softserve.question.util.validation.NullValidator.checkNullIds;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import lombok.RequiredArgsConstructor;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
-import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
-@Slf4j
-@Transactional
 @Service
+@Slf4j
 public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final GroupService groupService;
-    private final ModelMapper modelMapper;
+
+    public SubscriptionServiceImpl(SubscriptionRepository subscriptionRepository, GroupService groupService) {
+        this.subscriptionRepository = subscriptionRepository;
+        this.groupService = groupService;
+    }
 
     @Override
     public Subscription findByUserIdAndGroupId(Long userId, Long groupId) {
@@ -48,16 +47,16 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new NoSuchElementException(String.format(TEST_WITHOUT_GROUP_MESSAGE, testId));
         }
 
-        //for (Group group : groups) {
-        //    if (group.getEnrollmentKey().equals(enrollmentKey)) {
-        //        //todo
-        //        //User user = userService.getAuthenticatedUser();
-        //        Subscription subscription = generateSubscription(group, user);
-        //        subscriptionRepository.save(subscription);
-        //        log.info("**/Subscription has been created. {}", subscription);
-        //        return generateSubscriptionProfile(subscription);
-        //    }
-        //}
+        for (Group group : groups) {
+            if (group.getEnrollmentKey().equals(enrollmentKey)) {
+                Long userId =
+                        ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+                Subscription subscription = generateSubscription(group, userId);
+                subscriptionRepository.save(subscription);
+                log.info("**/Subscription has been created. {}", subscription);
+                return generateSubscriptionProfile(subscription);
+            }
+        }
         throw new IllegalArgumentException(
                 String.format(INCORRECT_ENROLLMENT_KEY_MESSAGE, enrollmentKey));
     }
@@ -65,14 +64,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public SubscriptionProfile createSubscriptionByUserIdAndGroupId(Long userId, Long groupId) {
         checkNullIds(userId, groupId);
-        //todo
-        //User user = userService.getUserById(userId);
-        //Group group = groupService.findGroupById(groupId);
-        //Subscription subscription = generateSubscription(group, user);
-        //subscriptionRepository.save(subscription);
-        //log.info("**/Subscription has been created. {}", subscription);
-        //return generateSubscriptionProfile(subscription);
-        throw new NotImplementedException();
+        Group group = groupService.findGroupById(groupId);
+        Subscription subscription = generateSubscription(group, userId);
+        subscriptionRepository.save(subscription);
+        log.info("**/Subscription has been created. {}", subscription);
+        return generateSubscriptionProfile(subscription);
     }
 
     @Override
@@ -85,73 +81,39 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .orElseThrow(() -> new NoSuchElementException(
                         String.format(NO_SUBSCRIPTION_MESSAGE, userId, groupId)));
         subscriptionRepository.delete(subscription);
-        //return generateSubscriptionProfile(subscription);
-        throw new NotImplementedException();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserResponse> getUserResponsesByGroupId(Long groupId) {
-        checkNull(groupId, "Group id");
-        List<Subscription> subscriptions = subscriptionRepository.findAllByGroupId(groupId);
-        List<UserResponse> userResponses = new ArrayList<>();
-
-        for (Subscription subscription : subscriptions) {
-            if (isActiveSubscription(subscription)) {
-                //todo
-                //User user = subscription.getUser();
-                //UserResponse userResponse = generateUserResponse(user, groupId);
-                //userResponses.add(userResponse);
-            }
-        }
-        return userResponses;
+        return generateSubscriptionProfile(subscription);
     }
 
     private boolean isActiveSubscription(Subscription subscription) {
         Group group = subscription.getGroup();
         return subscription.getExpirationDate().equals(group.getEndDate());
     }
-    //todo
-    /*
-    private boolean hasActiveSubscription(User user, Group group) {
-        Subscription subscription = findByUserIdAndGroupId(user.getId(), group.getId());
+
+    private boolean hasActiveSubscription(Long userId, Group group) {
+        Subscription subscription = findByUserIdAndGroupId(userId, group.getId());
         return !Objects.isNull(subscription) && isActiveSubscription(subscription);
     }
 
-    private void checkSubscription(User user, Group group) {
-        if (hasActiveSubscription(user, group)) {
+    private void checkSubscription(Long userId, Group group) {
+        if (hasActiveSubscription(userId, group)) {
             throw new IllegalStateException(
-                    String.format(SUBSCRIPTION_EXISTS_MESSAGE, user.getFirstName(), user.getLastName()));
+                    String.format(SUBSCRIPTION_EXISTS_MESSAGE, userId));
         }
     }
 
-    private Subscription generateSubscription(Group group, User user) {
-        checkSubscription(user, group);
+    private Subscription generateSubscription(Group group, Long userId) {
+        checkSubscription(userId, group);
         Subscription subscription = new Subscription();
         subscription.setGroup(group);
-        subscription.setUser(user);
+        subscription.setUserId(userId);
         subscription.setExpirationDate(group.getEndDate());
         return subscription;
-    }
-
-    private UserResponse generateUserResponse(User user, Long groupId) {
-        UserResponse userResponse = modelMapper.map(user, UserResponse.class);
-        Link userResults = linkTo(methodOn(ResultController.class)
-                .getUserResults(groupId, user.getId()))
-                .withRel("results");
-        Link dropUser = linkTo(methodOn(SubscriptionController.class)
-                .deleteUserSubscription(groupId, user.getId()))
-                .withRel("drop");
-        userResponse.add(userResults, dropUser);
-        return userResponse;
     }
 
     private SubscriptionProfile generateSubscriptionProfile(Subscription subscription) {
         SubscriptionProfile subscriptionProfile = new SubscriptionProfile();
         subscriptionProfile.setExpirationDate(subscription.getExpirationDate());
-        subscriptionProfile.setUsername(subscription.getUser().getFirstName());
         subscriptionProfile.setGroupTitle(subscription.getGroup().getTitle());
         return subscriptionProfile;
     }
-    */
 }

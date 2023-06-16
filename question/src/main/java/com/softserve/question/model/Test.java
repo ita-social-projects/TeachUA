@@ -62,5 +62,5 @@ public class Test implements Convertible {
     private Topic topic;
 
     @Column(name = "creator_id")
-    private Integer creatorId;
+    private Long creatorId;
 }

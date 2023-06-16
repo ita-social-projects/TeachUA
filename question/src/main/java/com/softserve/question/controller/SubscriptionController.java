@@ -4,7 +4,6 @@ import com.softserve.question.controller.marker.Api;
 import com.softserve.question.dto.subscription.CreateSubscription;
 import com.softserve.question.dto.subscription.SubscriptionProfile;
 import com.softserve.question.service.SubscriptionService;
-import lombok.RequiredArgsConstructor;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,12 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing subscriptions.
- * */
-
-@RequiredArgsConstructor
+ */
 @RestController
 public class SubscriptionController implements Api {
     private final SubscriptionService subscriptionService;
+
+    public SubscriptionController(SubscriptionService subscriptionService) {
+        this.subscriptionService = subscriptionService;
+    }
 
     /**
      * Use this endpoint to create new subscription.

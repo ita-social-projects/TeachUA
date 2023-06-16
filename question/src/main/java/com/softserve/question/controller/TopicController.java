@@ -5,7 +5,6 @@ import com.softserve.question.dto.topic.TopicProfile;
 import com.softserve.question.service.TopicService;
 import jakarta.validation.Valid;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -19,12 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing topics.
- * */
-
-@RequiredArgsConstructor
+ */
 @RestController
 public class TopicController implements Api {
     private final TopicService topicService;
+
+    public TopicController(TopicService topicService) {
+        this.topicService = topicService;
+    }
 
     /**
      * Use this endpoint to get all topics.
@@ -33,7 +34,7 @@ public class TopicController implements Api {
      * @return new {@code List<TopicProfile>}.
      */
     @GetMapping(path = "/topics", produces = APPLICATION_JSON_VALUE)
-    public List<TopicProfile>  getTopics() {
+    public List<TopicProfile> getTopics() {
         return topicService.findAllTopicProfiles();
     }
 

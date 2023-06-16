@@ -3,12 +3,11 @@ package com.softserve.question.dto.user;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.hateoas.RepresentationModel;
 
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class UserResponse extends RepresentationModel<UserResponse> {
+public class UserResponse {
     private String firstName;
     private String lastName;
 }

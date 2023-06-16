@@ -8,7 +8,6 @@ import com.softserve.question.service.QuestionCategoryService;
 import com.softserve.question.util.annotation.AllowedRoles;
 import jakarta.validation.Valid;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,12 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing question categories.
- * */
-
-@RequiredArgsConstructor
+ */
 @RestController
 public class QuestionCategoryController implements Api {
     private final QuestionCategoryService questionCategoryService;
+
+    public QuestionCategoryController(QuestionCategoryService questionCategoryService) {
+        this.questionCategoryService = questionCategoryService;
+    }
 
     /**
      * Use this endpoint to get question categories pageable and search by title.

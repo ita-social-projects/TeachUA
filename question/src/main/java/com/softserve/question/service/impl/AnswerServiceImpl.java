@@ -5,18 +5,19 @@ import com.softserve.question.repository.AnswerRepository;
 import com.softserve.question.service.AnswerService;
 import static com.softserve.question.util.validation.NullValidator.checkNull;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
 public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
+
+    public AnswerServiceImpl(AnswerRepository answerRepository) {
+        this.answerRepository = answerRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)

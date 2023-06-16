@@ -32,7 +32,7 @@ public class Subscription {
     private Long id;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "group_id", referencedColumnName = "id")

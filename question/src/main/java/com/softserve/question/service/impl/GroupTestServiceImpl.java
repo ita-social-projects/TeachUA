@@ -6,12 +6,10 @@ import com.softserve.question.service.GroupService;
 import com.softserve.question.service.GroupTestService;
 import com.softserve.question.service.TestService;
 import static com.softserve.question.util.validation.NullValidator.checkNullIds;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
@@ -19,6 +17,13 @@ public class GroupTestServiceImpl implements GroupTestService {
     private final GroupTestRepository groupTestRepository;
     private final GroupService groupService;
     private final TestService testService;
+
+    public GroupTestServiceImpl(GroupTestRepository groupTestRepository, GroupService groupService,
+                                TestService testService) {
+        this.groupTestRepository = groupTestRepository;
+        this.groupService = groupService;
+        this.testService = testService;
+    }
 
     @Override
     public GroupTest addTestToGroup(Long testId, Long groupId) {

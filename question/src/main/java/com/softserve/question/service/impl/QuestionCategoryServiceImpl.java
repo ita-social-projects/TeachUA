@@ -17,7 +17,6 @@ import static com.softserve.question.util.Messages.NO_TITLE_MESSAGE;
 import static com.softserve.question.util.validation.NullValidator.checkNull;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -28,17 +27,23 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
 public class QuestionCategoryServiceImpl implements QuestionCategoryService {
-    private final QuestionCategoryRepository questionCategoryRepository;
-    private final QuestionRepository questionRepository;
-    private final ModelMapper modelMapper;
     private static final String QUESTION_CATEGORY_ID_EXCEPTION_MESSAGE = "Question category id";
     private static final String QUESTION_CATEGORY_TITLE_EXCEPTION_MESSAGE = "Question category title";
     private static final String QUESTION_CATEGORY_EXCEPTION_MESSAGE = "Question category";
+    private final QuestionCategoryRepository questionCategoryRepository;
+    private final QuestionRepository questionRepository;
+    private final ModelMapper modelMapper;
+
+    public QuestionCategoryServiceImpl(QuestionCategoryRepository questionCategoryRepository,
+                                       QuestionRepository questionRepository, ModelMapper modelMapper) {
+        this.questionCategoryRepository = questionCategoryRepository;
+        this.questionRepository = questionRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public List<QuestionCategory> findAll() {

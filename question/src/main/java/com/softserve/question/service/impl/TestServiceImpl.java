@@ -19,6 +19,7 @@ import com.softserve.question.model.Subscription;
 import com.softserve.question.model.Test;
 import com.softserve.question.repository.SubscriptionRepository;
 import com.softserve.question.repository.TestRepository;
+import com.softserve.question.security.UserPrincipal;
 import com.softserve.question.service.GroupService;
 import com.softserve.question.service.QuestionCategoryService;
 import com.softserve.question.service.QuestionService;
@@ -35,17 +36,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.Link;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
@@ -60,6 +60,23 @@ public class TestServiceImpl implements TestService {
     private final GroupService groupService;
     private final ModelMapper modelMapper;
     private final TestValidationService testValidationService;
+
+    public TestServiceImpl(TestRepository testRepository, SubscriptionRepository subscriptionRepository,
+                           TopicService topicService, QuestionService questionService,
+                           QuestionTestService questionTestService, QuestionTypeService questionTypeService,
+                           QuestionCategoryService questionCategoryService, GroupService groupService,
+                           ModelMapper modelMapper, TestValidationService testValidationService) {
+        this.testRepository = testRepository;
+        this.subscriptionRepository = subscriptionRepository;
+        this.topicService = topicService;
+        this.questionService = questionService;
+        this.questionTestService = questionTestService;
+        this.questionTypeService = questionTypeService;
+        this.questionCategoryService = questionCategoryService;
+        this.groupService = groupService;
+        this.modelMapper = modelMapper;
+        this.testValidationService = testValidationService;
+    }
 
     @Scheduled(fixedDelay = 1000 * 3600 * 24)
     public void updateTestsStatus() {
@@ -160,8 +177,8 @@ public class TestServiceImpl implements TestService {
     public ViewTest findViewTestById(Long id) {
         checkNull(id, "test id");
         Test test = findById(id);
-        //todo
-        //User user = userService.getAuthenticatedUser();
+        Long userId =
+                ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         ViewTest viewTest = modelMapper.map(test, ViewTest.class);
         Link testGroups = linkTo(methodOn(TestController.class)
                 .getGroups(id))
@@ -169,15 +186,15 @@ public class TestServiceImpl implements TestService {
         viewTest.add(testGroups);
 
         if (test.isActive()) {
-            //boolean hasSubscription = hasActiveSubscription(user.getId(), test.getId());
-            //
-            //if (hasSubscription) {
-            //    Link passTest = linkTo(methodOn(TestController.class)
-            //            .passTest(id))
-            //            .withRel("startTest");
-            //    viewTest.add(passTest);
-            //    viewTest.setAllowed(true);
-            //}
+            boolean hasSubscription = hasActiveSubscription(userId, test.getId());
+
+            if (hasSubscription) {
+                Link passTest = linkTo(methodOn(TestController.class)
+                        .passTest(id))
+                        .withRel("startTest");
+                viewTest.add(passTest);
+                viewTest.setAllowed(true);
+            }
         }
         return viewTest;
     }
@@ -200,10 +217,10 @@ public class TestServiceImpl implements TestService {
     public SuccessCreatedTest addTest(CreateTest testDto) {
         checkNull(testDto, "Test");
         testValidationService.validateTest(testDto);
-        //todo
-        //User user = userService.getAuthenticatedUser();
+        Long userId =
+                ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         Test test = modelMapper.map(testDto, Test.class);
-        //test.setCreator(user);
+        test.setCreatorId(userId);
         test.setDateOfCreation(LocalDate.now());
         test.setTopic(topicService.findByTitle(testDto.getTopicTitle()));
         setQuestions(testDto, test);
@@ -224,8 +241,7 @@ public class TestServiceImpl implements TestService {
                 String categoryTitle = questionProfile.getCategoryTitle();
                 QuestionCategory category = questionCategoryService.findByTitle(categoryTitle);
                 question.setQuestionType(findQuestionType(questionProfile));
-                //todo
-                //question.setCreator(test.getCreator());
+                question.setCreatorId(test.getCreatorId());
                 question.setQuestionCategory(category);
                 saveAnswers(questionProfile, question);
                 question = questionService.save(question);

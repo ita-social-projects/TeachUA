@@ -11,7 +11,6 @@ import static com.softserve.question.util.Messages.NO_TITLE_MESSAGE;
 import static com.softserve.question.util.validation.NullValidator.checkNull;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.Link;
@@ -20,13 +19,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
 public class TopicServiceImpl implements TopicService {
     private final TopicRepository topicRepository;
     private final ModelMapper modelMapper;
+
+    public TopicServiceImpl(TopicRepository topicRepository, ModelMapper modelMapper) {
+        this.topicRepository = topicRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)

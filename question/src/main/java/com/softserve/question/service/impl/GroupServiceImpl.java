@@ -13,7 +13,6 @@ import static com.softserve.question.util.Messages.NO_ID_MESSAGE;
 import static com.softserve.question.util.validation.NullValidator.checkNull;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.Link;
@@ -22,7 +21,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
@@ -31,6 +29,11 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
     private final ModelMapper modelMapper;
+
+    public GroupServiceImpl(GroupRepository groupRepository, ModelMapper modelMapper) {
+        this.groupRepository = groupRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -94,9 +97,6 @@ public class GroupServiceImpl implements GroupService {
 
         for (Group group : groups) {
             ResponseGroup responseGroup = modelMapper.map(group, ResponseGroup.class);
-            Link link = linkTo(methodOn(GroupController.class).findUsersByGroup(group.getId()))
-                    .withSelfRel();
-            responseGroup.add(link);
             responseGroups.add(responseGroup);
         }
         return responseGroups;

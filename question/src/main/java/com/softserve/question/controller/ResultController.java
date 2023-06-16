@@ -7,7 +7,6 @@ import com.softserve.question.dto.result.UserResult;
 import com.softserve.question.dto.test.ResultTest;
 import com.softserve.question.service.ResultService;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * This controller is for managing results.
  */
-
-@RequiredArgsConstructor
 @RestController
 public class ResultController implements Api {
     private final ResultService resultService;
+
+    public ResultController(ResultService resultService) {
+        this.resultService = resultService;
+    }
 
     /**
      * Use this endpoint to get all user results in a specific group.

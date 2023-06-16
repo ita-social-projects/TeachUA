@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SubscriptionProfile {
-    private String username;
     private String groupTitle;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate expirationDate;

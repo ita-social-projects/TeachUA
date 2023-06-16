@@ -20,9 +20,7 @@ import com.softserve.question.util.annotation.AllowedRoles;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,18 +43,24 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * This controller is responsible for managing questions.
  */
-
-@RequiredArgsConstructor
-@RestController
 @Slf4j
+@RestController
 public class QuestionsController implements Api {
     private final QuestionService questionService;
-
     private final QuestionTypeService questionTypeService;
-
     private final QuestionCategoryService questionCategoryService;
     private final QuestionExcelService questionExcelService;
     private final QuestionDataLoaderService loaderService;
+
+    public QuestionsController(QuestionService questionService, QuestionTypeService questionTypeService,
+                               QuestionCategoryService questionCategoryService,
+                               QuestionExcelService questionExcelService, QuestionDataLoaderService loaderService) {
+        this.questionService = questionService;
+        this.questionTypeService = questionTypeService;
+        this.questionCategoryService = questionCategoryService;
+        this.questionExcelService = questionExcelService;
+        this.loaderService = loaderService;
+    }
 
     @AllowedRoles(RoleData.ADMIN)
     @GetMapping("/questions/search")
@@ -92,8 +96,7 @@ public class QuestionsController implements Api {
     public void importQuestions(@RequestBody ImportProfile importProfile, Authentication authentication)
             throws IOException {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        //todo
-        //questionService.questionsImport(importProfile.getFormId(), userPrincipal.getId());
+        questionService.questionsImport(importProfile.getFormId(), userPrincipal.getId());
     }
 
     /**
@@ -131,9 +134,7 @@ public class QuestionsController implements Api {
                                                     Authentication authentication) {
         log.info("Save excel " + data);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        //return loaderService.saveToDatabase(data, userPrincipal.getId());
-        //todo
-        throw new NotImplementedException();
+        return loaderService.saveToDatabase(data, userPrincipal.getId());
     }
 
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})

@@ -44,7 +44,7 @@ public class Question implements Convertible {
     private String description;
 
     @Column(name = "creator_id")
-    private Integer creatorId;
+    private Long creatorId;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "type_id", referencedColumnName = "id")

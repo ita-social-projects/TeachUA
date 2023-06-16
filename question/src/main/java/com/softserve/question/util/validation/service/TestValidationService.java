@@ -10,14 +10,24 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import java.util.List;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class TestValidationService {
     private final Validator validator;
+
+    public TestValidationService(Validator validator) {
+        this.validator = validator;
+    }
+
+    private static <T> List<Violation> buildListViolation(Set<ConstraintViolation<T>> violations) {
+        return violations.stream()
+                .map(violation -> new Violation(
+                        violation.getPropertyPath().toString(),
+                        violation.getMessage()))
+                .toList();
+    }
 
     public void validateTest(CreateTest test) throws TestValidationException {
         TestValidationContainer testValidationContainer = new TestValidationContainer();
@@ -38,14 +48,6 @@ public class TestValidationService {
         if (!isValid) {
             throw new TestValidationException(HttpStatus.BAD_REQUEST, testValidationContainer);
         }
-    }
-
-    private static <T> List<Violation> buildListViolation(Set<ConstraintViolation<T>> violations) {
-        return violations.stream()
-                .map(violation -> new Violation(
-                        violation.getPropertyPath().toString(),
-                        violation.getMessage()))
-                .toList();
     }
 
     private Set<ConstraintViolation<QuestionProfile>> validateQuestion(QuestionProfile question) {

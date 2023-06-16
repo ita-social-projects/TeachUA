@@ -10,7 +10,6 @@ import com.softserve.question.dto.test.ViewTest;
 import com.softserve.question.service.GroupService;
 import com.softserve.question.service.TestService;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * This controller is for managing tests.
  */
-
-@RequiredArgsConstructor
 @RestController
 public class TestController implements Api {
     private final TestService testService;
     private final GroupService groupService;
+
+    public TestController(TestService testService, GroupService groupService) {
+        this.testService = testService;
+        this.groupService = groupService;
+    }
 
     /**
      * Use this endpoint to get all unarchived tests.

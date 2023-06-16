@@ -15,7 +15,6 @@ import static com.softserve.question.util.Messages.NO_ID_MESSAGE;
 import static com.softserve.question.util.Messages.NO_TITLE_MESSAGE;
 import static com.softserve.question.util.Messages.TYPE_CAN_NOT_BE_DELETED;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -23,15 +22,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service
 public class QuestionTypeServiceImpl implements QuestionTypeService {
+    private static final String QUESTION_TYPE_EXCEPTION_MESSAGE = "Question type";
     private final QuestionTypeRepository questionTypeRepository;
     private final QuestionRepository questionRepository;
     private final ModelMapper modelMapper;
-    private static final String QUESTION_TYPE_EXCEPTION_MESSAGE = "Question type";
+
+    public QuestionTypeServiceImpl(QuestionTypeRepository questionTypeRepository, QuestionRepository questionRepository,
+                                   ModelMapper modelMapper) {
+        this.questionTypeRepository = questionTypeRepository;
+        this.questionRepository = questionRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,14 +28,11 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
     private static final String ANSWERS_ALREADY_EXISTS =
             "Варіант відповіді \"%s\" для запитання \"%s\" вже було додано";
     private final QuestionService questionService;
-    //private final UserService userService;
-
     private final QuestionRepository questionRepository;
     private final QuestionCategoryRepository categoryRepository;
     private final AnswerRepository answerRepository;
     private final QuestionTypeRepository typeRepository;
 
-    @Autowired
     public QuestionDataLoaderServiceImpl(QuestionService questionService,
                                          QuestionRepository questionRepository,
                                          QuestionCategoryRepository categoryRepository,
@@ -53,11 +49,10 @@ public class QuestionDataLoaderServiceImpl implements QuestionDataLoaderService 
     public List<QuestionDatabaseResponse> saveToDatabase(QuestionDataRequest data, Long creatorId) {
         List<QuestionDatabaseResponse> responses = new ArrayList<>();
         for (QuestionExcel questionExcel : data.getQuestionsExcelList()) {
-            //todo
             Question question = Question.builder()
                     .title(questionExcel.getTitle())
                     .description(questionExcel.getDescription())
-                    //.creator(userService.getUserById(creatorId))
+                    .creatorId(creatorId)
                     .build();
 
             if (categoryRepository.findByTitle(questionExcel.getCategory()).isEmpty()) {

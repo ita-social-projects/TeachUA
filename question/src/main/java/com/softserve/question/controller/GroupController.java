@@ -3,13 +3,10 @@ package com.softserve.question.controller;
 import com.softserve.question.controller.marker.Api;
 import com.softserve.question.dto.group.GroupProfile;
 import com.softserve.question.dto.group.UpdateGroup;
-import com.softserve.question.dto.user.UserResponse;
 import com.softserve.question.service.GroupService;
 import com.softserve.question.service.GroupTestService;
-import com.softserve.question.service.SubscriptionService;
 import jakarta.validation.Valid;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,14 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing groups.
- * */
-
-@RequiredArgsConstructor
+ */
 @RestController
 public class GroupController implements Api {
     private final GroupService groupService;
     private final GroupTestService groupsTestsService;
-    private final SubscriptionService subscriptionService;
+
+    public GroupController(GroupService groupService, GroupTestService groupsTestsService) {
+        this.groupService = groupService;
+        this.groupsTestsService = groupsTestsService;
+    }
 
     /**
      * Use this endpoint to get a particular group by id.
@@ -49,18 +48,6 @@ public class GroupController implements Api {
     @GetMapping(value = "/groups", produces = APPLICATION_JSON_VALUE)
     public List<GroupProfile> getGroups() {
         return groupService.findAllGroupProfiles();
-    }
-
-    /**
-     * Use this endpoint to get all users by specific group.
-     * The controller returns list of user DTOs {@code List<UserResponse>}.
-     *
-     * @param id - put group ud here.
-     * @return new {@code List<UserResponse>}.
-     */
-    @GetMapping(value = "/groups/{id}/users", produces = APPLICATION_JSON_VALUE)
-    public List<UserResponse> findUsersByGroup(@PathVariable Long id) {
-        return subscriptionService.getUserResponsesByGroupId(id);
     }
 
     /**

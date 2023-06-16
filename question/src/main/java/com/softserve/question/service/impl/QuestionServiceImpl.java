@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import org.modelmapper.ModelMapper;
@@ -38,7 +37,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-@RequiredArgsConstructor
 @Slf4j
 @Transactional
 @Service("testQuestionService")
@@ -55,6 +53,20 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionTypeRepository typeRepository;
     private final QuestionTypeService typeService;
     private final ModelMapper modelMapper;
+
+    public QuestionServiceImpl(Forms formsService, QuestionRepository questionRepository,
+                               AnswerRepository answerRepository, QuestionCategoryService categoryService,
+                               QuestionCategoryRepository categoryRepository, QuestionTypeRepository typeRepository,
+                               QuestionTypeService typeService, ModelMapper modelMapper) {
+        this.formsService = formsService;
+        this.questionRepository = questionRepository;
+        this.answerRepository = answerRepository;
+        this.categoryService = categoryService;
+        this.categoryRepository = categoryRepository;
+        this.typeRepository = typeRepository;
+        this.typeService = typeService;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -191,8 +203,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         for (Item item : itemList) {
             Question question = new Question();
-            //todo
-            //question.setCreator(userService.getUserById(creatorId));
+            question.setCreatorId(creatorId);
             question.setTitle(item.getTitle());
             question.setQuestionCategory(categoryRepository.findByTitle(categoryName)
                     .orElseThrow(NotExistException::new));

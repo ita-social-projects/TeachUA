@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class UserPrincipal implements /*OAuth2User, */UserDetails {
+public class UserPrincipal implements UserDetails {
     private final Long id;
     private final String username;
     private final List<? extends GrantedAuthority> authorities;
@@ -72,14 +72,4 @@ public class UserPrincipal implements /*OAuth2User, */UserDetails {
                 + ", authorities=" + authorities
                 + '}';
     }
-
-    //@Override
-    //public Map<String, Object> getAttributes() {
-    //    return attributes;
-    //}
-
-    //@Override
-    //public String getName() {
-    //    return String.valueOf(id);
-    //}
 }

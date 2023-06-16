@@ -7,7 +7,6 @@ import com.softserve.question.dto.question_type.QuestionTypeResponse;
 import com.softserve.question.service.QuestionTypeService;
 import com.softserve.question.util.annotation.AllowedRoles;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,16 +26,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing question types.
- * */
-@RequiredArgsConstructor
+ */
 @RestController
 public class QuestionTypeController implements Api {
     private final QuestionTypeService questionTypeService;
 
+    public QuestionTypeController(QuestionTypeService questionTypeService) {
+        this.questionTypeService = questionTypeService;
+    }
+
     /**
      * Use this endpoint to get question types pageable and search by title.
+     *
      * @param pageable pagination configuration
-     * @param query title search query
+     * @param query    title search query
      * @return {@code Page<QuestionTypeResponse>}
      */
     @AllowedRoles(RoleData.ADMIN)
@@ -63,19 +66,20 @@ public class QuestionTypeController implements Api {
     /**
      * Use this endpoint to update the question type.
      *
-     * @param typeProfile     - put information about question type here.
-     * @param id              - put question type id here.
+     * @param typeProfile - put information about question type here.
+     * @param id          - put question type id here.
      */
     @AllowedRoles(RoleData.ADMIN)
     @ResponseStatus(value = NO_CONTENT)
     @PutMapping(path = "/question_types/{id}", consumes = APPLICATION_JSON_VALUE)
     public QuestionTypeProfile updateQuestionCategory(@Valid @RequestBody QuestionTypeProfile typeProfile,
-                                                          @PathVariable Long id) {
+                                                      @PathVariable Long id) {
         return questionTypeService.updateById(typeProfile, id);
     }
 
     /**
      * Use this endpoint to delete the question type.
+     *
      * @param id type id
      */
     @AllowedRoles(RoleData.ADMIN)

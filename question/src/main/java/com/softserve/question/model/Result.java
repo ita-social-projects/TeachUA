@@ -38,7 +38,7 @@ public class Result implements Convertible {
     private Test test;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     @Column(name = "test_finish_time")
     private LocalDateTime testFinishTime;
