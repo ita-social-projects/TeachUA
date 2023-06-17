@@ -4,35 +4,41 @@ import com.softserve.commons.constant.RoleData;
 import com.softserve.question.controller.marker.Api;
 import com.softserve.question.dto.question_type.QuestionTypeProfile;
 import com.softserve.question.dto.question_type.QuestionTypeResponse;
+import com.softserve.question.model.QuestionType;
 import com.softserve.question.service.QuestionTypeService;
 import com.softserve.question.util.annotation.AllowedRoles;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing question types.
  */
 @RestController
+@RequestMapping("/api/v1/question-type")
 public class QuestionTypeController implements Api {
     private final QuestionTypeService questionTypeService;
 
     public QuestionTypeController(QuestionTypeService questionTypeService) {
         this.questionTypeService = questionTypeService;
+    }
+
+    @AllowedRoles(RoleData.ADMIN)
+    @GetMapping("/all")
+    public List<QuestionType> getQuestionTypes() {
+        return questionTypeService.findAll();
     }
 
     /**
@@ -43,7 +49,7 @@ public class QuestionTypeController implements Api {
      * @return {@code Page<QuestionTypeResponse>}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/questions_types/search")
+    @GetMapping("/search")
     public Page<QuestionTypeResponse> searchTypesPageable(
             @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam String query
@@ -57,8 +63,7 @@ public class QuestionTypeController implements Api {
      * @param typeProfile - put information about question type here.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @ResponseStatus(value = CREATED)
-    @PostMapping(path = "/question_types", consumes = APPLICATION_JSON_VALUE)
+    @PostMapping
     public void createQuestionType(@Valid @RequestBody QuestionTypeProfile typeProfile) {
         questionTypeService.save(typeProfile);
     }
@@ -70,8 +75,7 @@ public class QuestionTypeController implements Api {
      * @param id          - put question type id here.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @ResponseStatus(value = NO_CONTENT)
-    @PutMapping(path = "/question_types/{id}", consumes = APPLICATION_JSON_VALUE)
+    @PutMapping("/{id}")
     public QuestionTypeProfile updateQuestionCategory(@Valid @RequestBody QuestionTypeProfile typeProfile,
                                                       @PathVariable Long id) {
         return questionTypeService.updateById(typeProfile, id);
@@ -83,8 +87,7 @@ public class QuestionTypeController implements Api {
      * @param id type id
      */
     @AllowedRoles(RoleData.ADMIN)
-    @ResponseStatus(value = NO_CONTENT)
-    @DeleteMapping(path = "/question_types/{id}")
+    @DeleteMapping("/{id}")
     public void deleteQuestionCategory(@PathVariable Long id) {
         questionTypeService.deleteById(id);
     }

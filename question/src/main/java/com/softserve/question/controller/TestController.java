@@ -10,19 +10,18 @@ import com.softserve.question.dto.test.ViewTest;
 import com.softserve.question.service.GroupService;
 import com.softserve.question.service.TestService;
 import java.util.List;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing tests.
  */
 @RestController
+@RequestMapping("/api/v1/test")
 public class TestController implements Api {
     private final TestService testService;
     private final GroupService groupService;
@@ -38,7 +37,7 @@ public class TestController implements Api {
      *
      * @return new {@code List<TestProfile>}.
      */
-    @GetMapping(value = "/tests", produces = APPLICATION_JSON_VALUE)
+    @GetMapping("/all")
     public List<TestProfile> getUnarchivedTests() {
         return testService.findUnarchivedTestProfiles();
     }
@@ -49,7 +48,7 @@ public class TestController implements Api {
      *
      * @return new {@code List<TestProfile>}.
      */
-    @GetMapping(value = "/tests/archived", produces = APPLICATION_JSON_VALUE)
+    @GetMapping("/all/archived")
     public List<TestProfile> getArchivedTests() {
         return testService.findArchivedTestProfiles();
     }
@@ -61,7 +60,7 @@ public class TestController implements Api {
      * @param id - put test id here.
      * @return new {@code ViewTest}.
      */
-    @GetMapping(value = "/tests/{id}", produces = APPLICATION_JSON_VALUE)
+    @GetMapping("/{id}")
     public ViewTest viewTest(@PathVariable Long id) {
         return testService.findViewTestById(id);
     }
@@ -74,7 +73,7 @@ public class TestController implements Api {
      * @param id - put test id here.
      * @return new {@code PassTest}.
      */
-    @GetMapping(value = "/tests/{id}/passing", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}/passing")
     public PassTest passTest(@PathVariable Long id) {
         return testService.findPassTestById(id);
     }
@@ -86,7 +85,7 @@ public class TestController implements Api {
      * @param id - put test id here.
      * @return new {@code List<ResponseGroup>}.
      */
-    @GetMapping(value = "/tests/{id}/groups", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}/groups")
     public List<ResponseGroup> getGroups(@PathVariable Long id) {
         return groupService.findResponseGroupsByTestId(id);
     }
@@ -99,10 +98,7 @@ public class TestController implements Api {
      * @param test - put information about the test and questions that relate to it here.
      * @return new {@code SuccessCreatedTest}.
      */
-    @ResponseStatus(value = CREATED)
-    @PostMapping(value = "/tests",
-            consumes = APPLICATION_JSON_VALUE,
-            produces = APPLICATION_JSON_VALUE)
+    @PostMapping
     public SuccessCreatedTest addTest(@RequestBody CreateTest test) {
         return testService.addTest(test);
     }
@@ -112,7 +108,7 @@ public class TestController implements Api {
      *
      * @param id - post test id here.
      */
-    @PostMapping(value = "/tests/{id}/archive")
+    @PostMapping("/{id}/archive")
     public TestProfile archiveTest(@PathVariable Long id) {
         return testService.archiveTestById(id);
     }
@@ -122,7 +118,7 @@ public class TestController implements Api {
      *
      * @param id - post test id here.
      */
-    @PostMapping(value = "/tests/{id}/restore")
+    @PostMapping("/{id}/restore")
     public TestProfile restoreTest(@PathVariable Long id) {
         return testService.restoreTestById(id);
     }

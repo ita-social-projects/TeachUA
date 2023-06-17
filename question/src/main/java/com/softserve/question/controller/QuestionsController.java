@@ -8,14 +8,10 @@ import com.softserve.question.dto.question.QuestionPreview;
 import com.softserve.question.dto.question.QuestionResponse;
 import com.softserve.question.dto.question.question_excel.ExcelQuestionParsingResponse;
 import com.softserve.question.dto.question.question_excel.QuestionDataRequest;
-import com.softserve.question.model.QuestionCategory;
-import com.softserve.question.model.QuestionType;
 import com.softserve.question.security.UserPrincipal;
-import com.softserve.question.service.QuestionCategoryService;
 import com.softserve.question.service.QuestionDataLoaderService;
 import com.softserve.question.service.QuestionExcelService;
 import com.softserve.question.service.QuestionService;
-import com.softserve.question.service.QuestionTypeService;
 import com.softserve.question.util.annotation.AllowedRoles;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -36,6 +32,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,25 +42,21 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Slf4j
 @RestController
+@RequestMapping("/api/v1/question")
 public class QuestionsController implements Api {
     private final QuestionService questionService;
-    private final QuestionTypeService questionTypeService;
-    private final QuestionCategoryService questionCategoryService;
     private final QuestionExcelService questionExcelService;
     private final QuestionDataLoaderService loaderService;
 
-    public QuestionsController(QuestionService questionService, QuestionTypeService questionTypeService,
-                               QuestionCategoryService questionCategoryService,
-                               QuestionExcelService questionExcelService, QuestionDataLoaderService loaderService) {
+    public QuestionsController(QuestionService questionService,QuestionExcelService questionExcelService,
+                               QuestionDataLoaderService loaderService) {
         this.questionService = questionService;
-        this.questionTypeService = questionTypeService;
-        this.questionCategoryService = questionCategoryService;
         this.questionExcelService = questionExcelService;
         this.loaderService = loaderService;
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/questions/search")
+    @GetMapping("/all/search")
     public Page<QuestionResponse> searchQuestionsPageable(
             @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam String query,
@@ -74,25 +67,13 @@ public class QuestionsController implements Api {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/questions/types")
-    public List<QuestionType> getQuestionTypes() {
-        return questionTypeService.findAll();
-    }
-
-    @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("questions/categories")
-    public List<QuestionCategory> getQuestionCategories() {
-        return questionCategoryService.findAll();
-    }
-
-    @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/questions/{id}")
+    @GetMapping("/{id}")
     public QuestionResponse getQuestionById(@PathVariable long id) {
         return questionService.findQuestionById(id);
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/questions-import")
+    @PostMapping("/import")
     public void importQuestions(@RequestBody ImportProfile importProfile, Authentication authentication)
             throws IOException {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
@@ -105,7 +86,7 @@ public class QuestionsController implements Api {
      * @return {@code List<CertificateUserResponse>}
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @GetMapping("/quiz/questions")
+    @GetMapping("/all")
     public List<QuestionPreview> getAllQuestions() {
         return questionService.getAllQuestions();
     }
@@ -117,7 +98,7 @@ public class QuestionsController implements Api {
      * @return new {@code ExcelQuestionParsingResponse}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @PostMapping("/questions/excel")
+    @PostMapping("/all/excel")
     public ExcelQuestionParsingResponse uploadExcel(@RequestParam("excel-file") MultipartFile multipartFile) {
         return questionExcelService.parseExcel(multipartFile);
     }
@@ -129,7 +110,7 @@ public class QuestionsController implements Api {
      * @return new {@code List<QuestionDatabaseResponse>}
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @PostMapping("/questions/load-to-db")
+    @PostMapping("/all")
     public List<QuestionDatabaseResponse> saveExcel(@Valid @RequestBody QuestionDataRequest data,
                                                     Authentication authentication) {
         log.info("Save excel " + data);
@@ -138,7 +119,7 @@ public class QuestionsController implements Api {
     }
 
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @GetMapping("/questions/export")
+    @GetMapping("/all/excel")
     public ResponseEntity<ByteArrayResource> downloadQuestions() {
         byte[] bytes = questionExcelService.exportToExcel();
         ByteArrayResource resource = new ByteArrayResource(bytes);
@@ -151,7 +132,7 @@ public class QuestionsController implements Api {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/questions/new")
+    @PostMapping
     public ResponseEntity<Long> createQuestion(@Valid @RequestBody QuestionResponse questionResponse) {
         long id = questionService
                 .save(questionResponse)
@@ -160,7 +141,7 @@ public class QuestionsController implements Api {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/questions/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> updateQuestion(@PathVariable long id,
                                                  @Valid @RequestBody QuestionResponse questionResponse) {
         questionResponse.setId(id);
@@ -171,7 +152,7 @@ public class QuestionsController implements Api {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/questions/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteQuestion(@PathVariable long id) {
         questionService.delete(id);
         return ResponseEntity

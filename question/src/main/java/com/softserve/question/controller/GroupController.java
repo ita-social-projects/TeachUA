@@ -7,20 +7,20 @@ import com.softserve.question.service.GroupService;
 import com.softserve.question.service.GroupTestService;
 import jakarta.validation.Valid;
 import java.util.List;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing groups.
  */
 @RestController
+@RequestMapping("/api/v1/group")
 public class GroupController implements Api {
     private final GroupService groupService;
     private final GroupTestService groupsTestsService;
@@ -35,7 +35,7 @@ public class GroupController implements Api {
      *
      * @return new {@code GroupProfile}.
      */
-    @GetMapping(value = "/groups/{id}", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}")
     public GroupProfile getGroup(@PathVariable Long id) {
         return groupService.findGroupProfileById(id);
     }
@@ -45,7 +45,7 @@ public class GroupController implements Api {
      *
      * @return new {@code List<GroupProfile>}.
      */
-    @GetMapping(value = "/groups", produces = APPLICATION_JSON_VALUE)
+    @GetMapping("/all")
     public List<GroupProfile> getGroups() {
         return groupService.findAllGroupProfiles();
     }
@@ -56,9 +56,9 @@ public class GroupController implements Api {
      * @param groupId - put group id here.
      * @param testId  - put test id here.
      */
-    @PostMapping(value = "/groups/{groupId}/tests/{testId}")
-    public void addTestToGroup(@PathVariable Long groupId,
-                               @PathVariable Long testId) {
+    @PostMapping(params = {"groupId", "testId"})
+    public void addTestToGroup(@RequestParam("groupId") Long groupId,
+                               @RequestParam("testId") Long testId) {
         groupsTestsService.addTestToGroup(testId, groupId);
     }
 
@@ -69,10 +69,7 @@ public class GroupController implements Api {
      * @param group - put of group parameters here.
      * @return new {@code CreateGroup} - shows the created group.
      */
-    @ResponseStatus(value = CREATED)
-    @PostMapping(value = "/groups",
-            consumes = APPLICATION_JSON_VALUE,
-            produces = APPLICATION_JSON_VALUE)
+    @PostMapping
     public GroupProfile addGroup(@Valid @RequestBody GroupProfile group) {
         return groupService.save(group);
     }
@@ -85,10 +82,7 @@ public class GroupController implements Api {
      * @param group   - put the updated group parameters here.
      * @return new {@code UpdateGroup} - shows the updated group.
      */
-
-    @PatchMapping(value = "/groups/{groupId}",
-            consumes = APPLICATION_JSON_VALUE,
-            produces = APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/{groupId}")
     public UpdateGroup updateGroup(@PathVariable Long groupId,
                                    @Valid @RequestBody UpdateGroup group) {
         return groupService.updateById(group, groupId);

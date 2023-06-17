@@ -7,19 +7,19 @@ import com.softserve.question.dto.result.UserResult;
 import com.softserve.question.dto.test.ResultTest;
 import com.softserve.question.service.ResultService;
 import java.util.List;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This controller is for managing results.
  */
 @RestController
+@RequestMapping("/api/v1/result")
 public class ResultController implements Api {
     private final ResultService resultService;
 
@@ -35,10 +35,9 @@ public class ResultController implements Api {
      * @param userId  - put user id here.
      * @return new {@code List<UserResult>}
      */
-    @GetMapping(value = "/results/groups/{groupId}/users/{userId}",
-            produces = APPLICATION_JSON_VALUE)
-    public List<UserResult> getUserResults(@PathVariable Long groupId,
-                                           @PathVariable Long userId) {
+    @GetMapping(value = "/all", params = {"groupId", "userId"})
+    public List<UserResult> getUserResults(@RequestParam("groupId") Long groupId,
+                                           @RequestParam("userId") Long userId) {
         return resultService.findUserResultsByGroupIdAndUserId(groupId, userId);
     }
 
@@ -51,11 +50,10 @@ public class ResultController implements Api {
      * @param testId  - put test id here.
      * @return new {@code List<UserResult>}
      */
-    @GetMapping(value = "/results/groups/{groupId}/users/{userId}/tests/{testId}",
-            produces = APPLICATION_JSON_VALUE)
-    public List<UserResult> getUserResultsByTest(@PathVariable Long groupId,
-                                                 @PathVariable Long userId,
-                                                 @PathVariable Long testId) {
+    @GetMapping(value = "/all", params = {"groupId", "userId", "testId"})
+    public List<UserResult> getUserResultsByTest(@RequestParam("groupId") Long groupId,
+                                                 @RequestParam("userId") Long userId,
+                                                 @RequestParam("testId") Long testId) {
         return resultService.findUserResultsByGroupIdAndUserIdAndTestId(groupId, userId, testId);
     }
 
@@ -66,8 +64,7 @@ public class ResultController implements Api {
      * @param resultId - put result id here.
      * @return new {@code ResultTest}.
      */
-    @GetMapping(value = "/results/{resultId}",
-            produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{resultId}")
     public ResultTest getTestResult(@PathVariable Long resultId) {
         return resultService.getDetailedResultById(resultId);
     }
@@ -80,10 +77,7 @@ public class ResultController implements Api {
      * @param result - put result details here.
      * @return new {@code SuccessCreatedResult}.
      */
-    @ResponseStatus(value = CREATED)
-    @PostMapping(value = "/results",
-            consumes = APPLICATION_JSON_VALUE,
-            produces = APPLICATION_JSON_VALUE)
+    @PostMapping
     public SuccessCreatedResult saveResult(@RequestBody CreateResult result) {
         return resultService.saveResult(result);
     }
