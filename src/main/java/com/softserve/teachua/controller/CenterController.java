@@ -87,11 +87,6 @@ public class CenterController implements Api {
         return centerService.getCenterClubsByCenterId(id, pageable);
     }
 
-    @GetMapping(value = "centers/clubs", params = "centerId")
-    public List<ClubResponse> getAllCenterClubsByCenterId(@RequestParam("centerId") Long id) {
-        return centerService.getAllCenterClubsByCenterId(id);
-    }
-
     /**
      * Use this endpoint to create a center. The controller returns {@code SuccessCreatedCenter}.
      *

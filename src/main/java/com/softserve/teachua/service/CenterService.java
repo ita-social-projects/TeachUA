@@ -142,8 +142,6 @@ public interface CenterService {
      */
     Page<ClubResponse> getCenterClubsByCenterId(Long id, Pageable pageable);
 
-    List<ClubResponse> getAllCenterClubsByCenterId(Long id);
-
     /**
      * The method returns page of dto {@code Page<CenterResponse>} of all centers by advancedSearchCenterProfile.
      *

@@ -270,14 +270,6 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     }
 
     @Override
-    public List<ClubResponse> getAllCenterClubsByCenterId(Long id) {
-        List<Club> clubs = clubRepository.findAllByCenterId(id);
-        return clubs.stream()
-                .map(toClubResponseConverter::convertToClubResponse)
-                .toList();
-    }
-
-    @Override
     public Page<ClubResponse> getCenterClubsByCenterId(Long id, Pageable pageable) {
         Page<Club> clubsResponses = clubRepository.findAllByCenterId(id, pageable);
         return new PageImpl<>(
