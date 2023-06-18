@@ -87,8 +87,8 @@ public class CenterController implements Api {
         return centerService.getCenterClubsByCenterId(id, pageable);
     }
 
-    @GetMapping("centers/allclubs/{id}")
-    public Object getAllCenterClubsByCenterId(@PathVariable Long id) {
+    @GetMapping(value = "centers/clubs", params = "centerId")
+    public List<ClubResponse> getAllCenterClubsByCenterId(@RequestParam("centerId") Long id) {
         return centerService.getAllCenterClubsByCenterId(id);
     }
 
