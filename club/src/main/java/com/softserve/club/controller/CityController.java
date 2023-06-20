@@ -79,7 +79,7 @@ public class CityController implements Api {
      *
      * @return new {@code List<CityResponse>}.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<CityResponse> getCities() {
         return cityService.getListOfCities();
     }

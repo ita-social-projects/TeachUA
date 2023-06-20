@@ -58,7 +58,7 @@ public class CertificateTemplateController {
      *
      * @return {@code List<CertificateTemplatePreview>}
      */
-    @GetMapping("/all")
+    @GetMapping
     @AllowedRoles(RoleData.ADMIN)
     public List<CertificateTemplatePreview> getAllTemplates() {
         return certificateTemplateService.getAllTemplates();

@@ -59,7 +59,7 @@ public class CenterController implements Api {
      * @param id - put user id.
      * @return new {@code Page<CenterResponse>}.
      */
-    @GetMapping("/all/user/{id}")
+    @GetMapping("/user/{id}")
     public Page<CenterResponse> getCentersByUserId(@PathVariable Long id,
                                                    @PageableDefault(value = CENTERS_PER_USER_PAGE, sort = "id")
                                                    Pageable pageable) {
@@ -75,7 +75,7 @@ public class CenterController implements Api {
      *
      * @return new {@code Page<ClubResponse>}.
      */
-    @GetMapping("/all/clubs/{id}")
+    @GetMapping("/clubs/{id}")
     public Page<ClubResponse> getCenterClubsByCenterId(@PathVariable Long id,
                                                        @RequestParam int size, // size of pagination
                                                        @PageableDefault(sort = "id")
@@ -112,7 +112,7 @@ public class CenterController implements Api {
      *
      * @return new {@code List <CenterResponse>}.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<CenterResponse> getCenters() {
         return centerService.getListOfCenters();
     }
@@ -124,7 +124,7 @@ public class CenterController implements Api {
      * @param advancedSearchCenterProfile - Place dto with all parameters for searched club.
      * @return new {@code ClubProfile}.
      */
-    @GetMapping("/all/search/advanced")
+    @GetMapping("/search/advanced")
     public Page<CenterResponse> getAdvancedSearchClubs(AdvancedSearchCenterProfile advancedSearchCenterProfile,
                                                        @PageableDefault(value = 6, sort = "id") Pageable pageable) {
         log.debug("===== centerController started ======");
@@ -149,7 +149,7 @@ public class CenterController implements Api {
      * @return list of updated centers
      */
     @AllowedRoles({RoleData.ADMIN})
-    @PatchMapping("/all/rating")
+    @PatchMapping("/rating")
     public List<CenterResponse> updateCentersRating() {
         return centerService.updateRatingForAllCenters();
     }

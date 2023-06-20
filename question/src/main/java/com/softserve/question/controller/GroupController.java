@@ -45,7 +45,7 @@ public class GroupController implements Api {
      *
      * @return new {@code List<GroupProfile>}.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<GroupProfile> getGroups() {
         return groupService.findAllGroupProfiles();
     }

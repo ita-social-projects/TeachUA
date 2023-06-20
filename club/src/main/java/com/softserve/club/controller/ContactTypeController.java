@@ -95,7 +95,7 @@ public class ContactTypeController implements Api {
      *
      * @return new {@code List<ContactTypeResponse>}.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<ContactTypeResponse> getContactTypes() {
         return contactTypeService.getListOfContactTypes();
     }

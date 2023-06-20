@@ -36,7 +36,7 @@ public class QuestionTypeController implements Api {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/all")
+    @GetMapping
     public List<QuestionType> getQuestionTypes() {
         return questionTypeService.findAll();
     }

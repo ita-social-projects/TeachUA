@@ -50,7 +50,7 @@ public class LocationController implements Api {
      *
      * @return new {@code List<Location>}.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<Location> getLocations() {
         return locationService.getListOfAllLocations();
     }

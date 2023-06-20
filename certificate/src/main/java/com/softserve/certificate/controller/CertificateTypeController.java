@@ -36,7 +36,7 @@ public class CertificateTypeController {
      *
      * @return {@code List<CertificateType>}
      */
-    @GetMapping("/all")
+    @GetMapping
     @AllowedRoles(RoleData.ADMIN)
     public List<CertificateType> getAllCertificateTypes() {
         return certificateTypeService.getListOfCertificateTypes();

@@ -63,7 +63,7 @@ public class MessageController implements Api {
      * @return {@code List<MessageResponseDto>}.
      */
     @PreAuthorize("isAuthenticated() and authentication.principal.id = #id")
-    @GetMapping("/all/sender/{id}")
+    @GetMapping("/sender/{id}")
     public List<MessageResponseDto> getMessagesBySenderId(@PathVariable Long id) {
         return messageService.getMessageResponsesByUserId(id, true);
     }
@@ -76,7 +76,7 @@ public class MessageController implements Api {
      * @return {@code List<MessageResponseDto>}.
      */
     @PreAuthorize("isAuthenticated() and authentication.principal.id == #id")
-    @GetMapping("/all/{id}")
+    @GetMapping("/{id}")
     public List<MessageResponseDto> getMessagesByRecipientId(@PathVariable Long id) {
         return messageService.getMessageResponsesByUserId(id, false);
     }

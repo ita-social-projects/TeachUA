@@ -42,7 +42,7 @@ public class QuestionCategoryController implements Api {
      * @return {@code Page<QuestionCategoryResponse>}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/all/search")
+    @GetMapping("/search")
     public Page<QuestionCategoryResponse> searchCategoriesPageable(
             @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam String query
@@ -51,7 +51,7 @@ public class QuestionCategoryController implements Api {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/all")
+    @GetMapping
     public List<QuestionCategory> getQuestionCategories() {
         return questionCategoryService.findAll();
     }

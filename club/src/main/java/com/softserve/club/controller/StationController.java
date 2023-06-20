@@ -72,7 +72,7 @@ public class StationController implements Api {
      *
      * @return {@code List<StationResponse>}.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<StationResponse> getStations() {
         return stationService.getListOfStations();
     }
@@ -83,12 +83,12 @@ public class StationController implements Api {
      * @param name - put city name.
      * @return {@code List<StationResponse>}.
      */
-    @GetMapping("/all/{name}")
+    @GetMapping("/{name}")
     public List<StationResponse> getStationsByCityName(@PathVariable String name) {
         return stationService.getListOfStationsByCityName(name);
     }
 
-    @PostMapping("/all/district")
+    @PostMapping("/district")
     public List<StationResponse> getStationsByDistrictNameAndCityName(@RequestBody StationProfile stationProfile) {
         return stationService.getAllByDistrictNameAndCityName(stationProfile);
     }

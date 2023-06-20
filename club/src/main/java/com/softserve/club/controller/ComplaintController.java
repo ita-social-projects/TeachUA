@@ -50,7 +50,7 @@ public class ComplaintController implements Api {
      *
      * @return {@code List<ComplaintResponse>}
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<ComplaintResponse> getAllComplaints() {
         return complaintService.getAll();
     }
@@ -63,7 +63,7 @@ public class ComplaintController implements Api {
      *
      * @return {@code List<ComplaintResponse>}
      */
-    @GetMapping("/all/club/{id}")
+    @GetMapping("/club/{id}")
     public List<ComplaintResponse> getAllComplaints(@PathVariable Long id) {
         return complaintService.getAllByClubId(id);
     }

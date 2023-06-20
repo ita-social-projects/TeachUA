@@ -56,7 +56,7 @@ public class QuestionsController implements Api {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/all/search")
+    @GetMapping("/search")
     public Page<QuestionResponse> searchQuestionsPageable(
             @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam String query,
@@ -86,7 +86,7 @@ public class QuestionsController implements Api {
      * @return {@code List<CertificateUserResponse>}
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @GetMapping("/all")
+    @GetMapping
     public List<QuestionPreview> getAllQuestions() {
         return questionService.getAllQuestions();
     }
@@ -98,7 +98,7 @@ public class QuestionsController implements Api {
      * @return new {@code ExcelQuestionParsingResponse}.
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @PostMapping("/all/excel")
+    @PostMapping(value = "/excel", params = {"excel-file"})
     public ExcelQuestionParsingResponse uploadExcel(@RequestParam("excel-file") MultipartFile multipartFile) {
         return questionExcelService.parseExcel(multipartFile);
     }
@@ -110,7 +110,7 @@ public class QuestionsController implements Api {
      * @return new {@code List<QuestionDatabaseResponse>}
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @PostMapping("/all")
+    @PostMapping("/excel")
     public List<QuestionDatabaseResponse> saveExcel(@Valid @RequestBody QuestionDataRequest data,
                                                     Authentication authentication) {
         log.info("Save excel " + data);
@@ -119,7 +119,7 @@ public class QuestionsController implements Api {
     }
 
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
-    @GetMapping("/all/excel")
+    @GetMapping("/excel")
     public ResponseEntity<ByteArrayResource> downloadQuestions() {
         byte[] bytes = questionExcelService.exportToExcel();
         ByteArrayResource resource = new ByteArrayResource(bytes);

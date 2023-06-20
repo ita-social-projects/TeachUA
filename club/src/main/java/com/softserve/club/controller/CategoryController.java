@@ -53,7 +53,7 @@ public class CategoryController implements Api {
      *
      * @return {@code CategoryResponse}.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<CategoryResponse> getAllCategories() {
         return categoryService.getAllCategories();
     }

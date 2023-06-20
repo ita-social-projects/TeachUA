@@ -37,7 +37,7 @@ public class TestController implements Api {
      *
      * @return new {@code List<TestProfile>}.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<TestProfile> getUnarchivedTests() {
         return testService.findUnarchivedTestProfiles();
     }
@@ -48,7 +48,7 @@ public class TestController implements Api {
      *
      * @return new {@code List<TestProfile>}.
      */
-    @GetMapping("/all/archived")
+    @GetMapping("/archived")
     public List<TestProfile> getArchivedTests() {
         return testService.findArchivedTestProfiles();
     }

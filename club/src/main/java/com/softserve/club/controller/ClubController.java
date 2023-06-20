@@ -77,7 +77,7 @@ public class ClubController implements Api {
      *
      * @return {@code List <ClubResponse>}.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<ClubResponse> getClubs() {
         return clubService.getListOfClubs();
     }
@@ -87,7 +87,7 @@ public class ClubController implements Api {
      *
      * @return {@code List <ClubResponse>}.
      */
-    @GetMapping("/all/ByCenterId/{id}")
+    @GetMapping("/ByCenterId/{id}")
     public List<ClubResponse> getClubsByCenterId(@PathVariable Long id) {
         return clubService.getListOfClubsByCenterId(id);
     }
@@ -108,7 +108,7 @@ public class ClubController implements Api {
      *
      * @return {@code List <ClubResponse>}.
      */
-    @GetMapping("/all/search/similar")
+    @GetMapping("/search/similar")
     public List<ClubResponse> getSimilarClubs(SimilarClubProfile similarClubProfile) {
         return clubService.getSimilarClubsByCategoryName(similarClubProfile);
     }
@@ -120,7 +120,7 @@ public class ClubController implements Api {
      * @param id - put user id.
      * @return {@code Page<ClubResponse>}.
      */
-    @GetMapping("/all/{id}")
+    @GetMapping("/{id}")
     public Page<ClubResponse> getClubsByUserId(@PathVariable Long id,
                                                @PageableDefault(value = CLUBS_PER_USER_PAGE, sort = "id")
                                                Pageable pageable) {
@@ -133,7 +133,7 @@ public class ClubController implements Api {
      * @param id - put user id.
      * @return {@code List<ClubResponse>}.
      */
-    @GetMapping("/all/user/{id}")
+    @GetMapping("/user/{id}")
     public List<ClubResponse> getListClubsByUserId(@PathVariable Long id) {
         return clubService.getListClubsByUserId(id);
     }
@@ -144,7 +144,7 @@ public class ClubController implements Api {
      *
      * @return {@code Page<ClubResponse>}.
      */
-    @GetMapping("/all/search")
+    @GetMapping("/search")
     public Page<ClubResponse> getClubsListOfClubs(SearchClubProfile searchClubProfile,
                                                   @PageableDefault(value = CLUBS_PER_PAGE, sort = "id")
                                                   Pageable pageable) {
@@ -158,7 +158,7 @@ public class ClubController implements Api {
      * @param advancedSearchClubProfile - Place dto with all parameters to get possible club.
      * @return {@code ClubProfile}.
      */
-    @GetMapping("/all/search/advanced")
+    @GetMapping("/search/advanced")
     public Page<ClubResponse> getAdvancedSearchClubs(AdvancedSearchClubProfile advancedSearchClubProfile,
                                                      @PageableDefault(value = 6, sort = "id") Pageable pageable) {
         return clubService.getAdvancedSearchClubs(advancedSearchClubProfile, pageable);
@@ -171,7 +171,7 @@ public class ClubController implements Api {
      * @param searchClubProfile - Place dto with all parameters to get possible club.
      * @return {@code ClubProfile}.
      */
-    @GetMapping("/all/search/simple")
+    @GetMapping("/search/simple")
     public List<ClubResponse> getClubsByCategoryAndCity(SearchClubProfile searchClubProfile) {
         return clubService.getClubByCategoryAndCity(searchClubProfile);
     }
@@ -234,7 +234,7 @@ public class ClubController implements Api {
      * @return new {@code List<ClubResponse>}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PatchMapping("/all/rating")
+    @PatchMapping("/rating")
     public List<ClubResponse> updateClubsRating() {
         return clubService.updateRatingForAllClubs();
     }
@@ -248,7 +248,7 @@ public class ClubController implements Api {
         clubService.updateContacts();
     }
 
-    @GetMapping("/all/top/search")
+    @GetMapping("/top/search")
     public List<ClubResponse> getTopClubsByCity(TopClubProfile topClubProfile) {
         return clubService.getTopClubsByCity(topClubProfile);
     }

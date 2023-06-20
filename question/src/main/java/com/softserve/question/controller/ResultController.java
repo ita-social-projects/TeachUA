@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * This controller is for managing results.
  */
 @RestController
-@RequestMapping("/api/v1/result")
+@RequestMapping("/api/v1/test/result")
 public class ResultController implements Api {
     private final ResultService resultService;
 
@@ -35,7 +35,7 @@ public class ResultController implements Api {
      * @param userId  - put user id here.
      * @return new {@code List<UserResult>}
      */
-    @GetMapping(value = "/all", params = {"groupId", "userId"})
+    @GetMapping(params = {"groupId", "userId"})
     public List<UserResult> getUserResults(@RequestParam("groupId") Long groupId,
                                            @RequestParam("userId") Long userId) {
         return resultService.findUserResultsByGroupIdAndUserId(groupId, userId);
@@ -50,7 +50,7 @@ public class ResultController implements Api {
      * @param testId  - put test id here.
      * @return new {@code List<UserResult>}
      */
-    @GetMapping(value = "/all", params = {"groupId", "userId", "testId"})
+    @GetMapping(params = {"groupId", "userId", "testId"})
     public List<UserResult> getUserResultsByTest(@RequestParam("groupId") Long groupId,
                                                  @RequestParam("userId") Long userId,
                                                  @RequestParam("testId") Long testId) {

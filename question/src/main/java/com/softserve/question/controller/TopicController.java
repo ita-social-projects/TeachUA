@@ -31,7 +31,7 @@ public class TopicController implements Api {
      *
      * @return new {@code List<TopicProfile>}.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<TopicProfile> getTopics() {
         return topicService.findAllTopicProfiles();
     }

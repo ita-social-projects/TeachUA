@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
         url = "http://${APIGW_NETWORK}:${APIGW_CERTIFICATE_PORT}",
         path = "api/v1/certificate")
 public interface CertificateClient {
-    @GetMapping("/all")
+    @GetMapping
     List<CertificateUserResponse> getListOfCertificatesByUserEmail(@RequestParam("email") String email);
 }

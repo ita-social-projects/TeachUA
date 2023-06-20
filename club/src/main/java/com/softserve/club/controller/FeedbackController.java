@@ -50,7 +50,7 @@ public class FeedbackController implements Api {
      *
      * @return {@code List<FeedbackResponse>}.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<FeedbackResponse> getAllFeedback() {
         return feedbackService.getListOfFeedback();
     }
@@ -60,7 +60,7 @@ public class FeedbackController implements Api {
      *
      * @return {@code List<FeedbackResponse>}
      */
-    @GetMapping("/all/{id}")
+    @GetMapping("/{id}")
     public List<FeedbackResponse> getAllFeedback(@PathVariable Long id) {
         return feedbackService.getAllByClubId(id);
     }

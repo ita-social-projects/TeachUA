@@ -81,7 +81,7 @@ public class DistrictController implements Api {
      *
      * @return new {@code List<DistrictResponse>}.
      */
-    @GetMapping("/all/{name}")
+    @GetMapping("/{name}")
     public List<DistrictResponse> getDistrictsByCityName(@PathVariable String name) {
         return districtService.getListOfDistrictsByCityName(name);
     }
@@ -91,7 +91,7 @@ public class DistrictController implements Api {
      *
      * @return new {@code List<DistrictResponse>}.
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<DistrictResponse> getDistricts() {
         return districtService.getListOfDistricts();
     }

@@ -103,7 +103,7 @@ public class CertificateController {
      * @return {@code List<CertificatePreview>}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/all")
+    @GetMapping
     public List<CertificatePreview> getAllCertificates() {
         return certificateService.getListOfCertificatesPreview();
     }
@@ -114,7 +114,7 @@ public class CertificateController {
      * @return {@code List<CertificateUserResponse>}
      */
     @PreAuthorize("isAuthenticated()")
-    @GetMapping(value = "/all", params = {"email"})
+    @GetMapping(params = {"email"})
     public List<CertificateUserResponse> getListOfCertificatesByUserEmail(@RequestParam("email") String email) {
         return certificateService.getListOfCertificatesByUserEmail(email);
     }
