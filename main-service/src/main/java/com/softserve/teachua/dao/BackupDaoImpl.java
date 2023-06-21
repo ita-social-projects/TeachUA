@@ -8,7 +8,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 public class BackupDaoImpl implements BackupDao {
     private final DataSource dataSource;
 
-    @Autowired
     public BackupDaoImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }

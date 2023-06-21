@@ -22,7 +22,7 @@ public class MessageArch implements Convertible/*, Archivable*/ {
     private String text;
     private Boolean isActive;
 
-    //todo
+    //todo@
     /*
     @Override
     public Class<MessageServiceImpl> getServiceClass() {

@@ -45,5 +45,5 @@ public class News implements Convertible {
 
     @JoinColumn(name = "user_id")
     @ToString.Exclude
-    private Integer userId;
+    private Long userId;
 }

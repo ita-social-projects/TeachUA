@@ -6,7 +6,6 @@ import com.softserve.teachua.service.LogService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.Hidden;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,13 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * This controller is for managing the logs.
  */
-
 @RestController
 @Hidden
 public class LogController implements Api {
     private final LogService logService;
 
-    @Autowired
     public LogController(LogService logService) {
         this.logService = logService;
     }

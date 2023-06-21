@@ -2,20 +2,19 @@ package com.softserve.teachua.tools.service.transfer_impl;
 
 import com.softserve.teachua.dto.banner_item.SuccessCreatedBannerItem;
 import com.softserve.teachua.service.impl.BannerItemServiceImpl;
+import com.softserve.teachua.tools.FileUtils;
 import com.softserve.teachua.tools.repository.BannerInfoRepository;
 import com.softserve.teachua.tools.service.BannerItemTransferService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BannerItemTransferServiceImpl implements BannerItemTransferService {
     private final BannerItemServiceImpl bannerItemService;
-    private final com.softserve.teachua.tools.FileUtils fileUtils;
+    private final FileUtils fileUtils;
 
-    @Autowired
     public BannerItemTransferServiceImpl(BannerItemServiceImpl bannerItemService,
-                                         com.softserve.teachua.tools.FileUtils fileUtils) {
+                                         FileUtils fileUtils) {
         this.bannerItemService = bannerItemService;
         this.fileUtils = fileUtils;
     }

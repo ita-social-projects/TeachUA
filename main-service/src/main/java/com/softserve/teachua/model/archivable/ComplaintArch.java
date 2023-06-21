@@ -20,7 +20,7 @@ public class ComplaintArch implements Convertible/*, Archivable*/ {
     private Long clubId;
     private String text;
 
-    //todo
+    //todo@
     /*
     @Override
     public Class<ComplaintServiceImpl> getServiceClass() {

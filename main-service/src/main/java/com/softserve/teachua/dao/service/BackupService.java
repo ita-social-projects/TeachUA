@@ -1,14 +1,12 @@
 package com.softserve.teachua.dao.service;
 
 import com.softserve.teachua.dao.BackupDaoImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BackupService {
     private final BackupDaoImpl backupDao;
 
-    @Autowired
     public BackupService(BackupDaoImpl backupDao) {
         this.backupDao = backupDao;
     }

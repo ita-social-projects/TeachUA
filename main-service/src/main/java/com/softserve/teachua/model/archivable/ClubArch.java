@@ -38,7 +38,7 @@ public class ClubArch implements Convertible/*, Archivable*/ {
     private Long clubExternalId;
     private Long centerExternalId;
 
-    //todo
+    //todo@
     /*
     @Override
     public Class<ClubServiceImpl> getServiceClass() {

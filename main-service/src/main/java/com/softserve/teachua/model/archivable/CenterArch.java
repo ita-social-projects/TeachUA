@@ -27,7 +27,7 @@ public class CenterArch implements Convertible/*, Archivable*/ {
     private Double rating;
     private Long clubCount;
 
-    //todo
+    //todo@
     /*
     @Override
     public Class<CenterServiceImpl> getServiceClass() {

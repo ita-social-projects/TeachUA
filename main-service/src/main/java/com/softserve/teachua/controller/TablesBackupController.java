@@ -6,7 +6,6 @@ import com.softserve.teachua.dao.BackupDaoImpl;
 import com.softserve.teachua.dao.service.BackupService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import java.io.ByteArrayInputStream;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TablesBackupController implements Api {
     private final BackupService backupService;
 
-    @Autowired
     public TablesBackupController(BackupDaoImpl backupDaoImpl, BackupService backupService) {
         this.backupService = backupService;
     }

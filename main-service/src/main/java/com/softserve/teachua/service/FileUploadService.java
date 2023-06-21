@@ -12,7 +12,7 @@ public interface FileUploadService {
      */
     String uploadImage(String uploadDir, String fileName, MultipartFile multipartFile);
 
-    //todo
+    //todo FileManagement
     /**
      * The method deletes image.
      */

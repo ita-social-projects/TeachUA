@@ -2,7 +2,9 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.exception.UserPermissionException;
 import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.task.CreateTask;
 import com.softserve.teachua.dto.task.SuccessCreatedTask;
@@ -14,17 +16,20 @@ import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.model.archivable.TaskArch;
 import com.softserve.teachua.repository.TaskRepository;
+import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ChallengeService;
 import com.softserve.teachua.service.TaskService;
 import com.softserve.teachua.utils.HtmlUtils;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,10 +88,12 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
     @Override
     public TaskProfile getTask(Long taskId) {
         Task task = getTaskById(taskId);
-        //todo
-        //if (task.getStartDate().isAfter(LocalDate.now())) {
-        //    userService.verifyIsUserAdmin();
-        //}
+
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (task.getStartDate().isAfter(LocalDate.now()) && principal.getRole() == RoleData.ADMIN) {
+            throw new UserPermissionException();
+        }
+
         TaskProfile taskProfile = dtoConverter.convertToDto(task, TaskProfile.class);
         taskProfile.setChallengeId(task.getChallenge().getId());
         return taskProfile;

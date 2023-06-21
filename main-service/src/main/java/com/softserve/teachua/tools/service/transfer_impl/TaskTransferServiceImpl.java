@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,7 +33,6 @@ public class TaskTransferServiceImpl implements TaskTransferService {
     private String uaTeachChallengeImage = "data_for_db/task_images/challengeUA.jpg";
     private String languageChallengeImage = "data_for_db/task_images/marathon_log.png";
 
-    @Autowired
     public TaskTransferServiceImpl(FileUtils fileReader, DtoConverter dtoConverter, TaskRepository taskRepository,
                                    ChallengeService challengeService, TaskDao taskDao) {
         this.fileUtils = fileReader;

@@ -10,7 +10,6 @@ import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,14 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * This controller is for managing the questions.
  */
-
 @RestController
 @Tag(name = "question", description = "the Question API")
 @SecurityRequirement(name = "api")
 public class QuestionController implements Api {
     private final QuestionService questionService;
 
-    @Autowired
     public QuestionController(QuestionService questionService) {
         this.questionService = questionService;
     }

@@ -5,7 +5,6 @@ import com.softserve.teachua.service.impl.FileUploadServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Objects;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -19,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * This controller is for managing the upload process.
  */
-
 @RestController
 @Tag(name = "upload", description = "the Image Upload API")
 @SecurityRequirement(name = "api")
@@ -28,7 +26,6 @@ public class UploadController implements Api {
     private String uploadDirectory;
     private final FileUploadServiceImpl fileUploadServiceImpl;
 
-    @Autowired
     public UploadController(FileUploadServiceImpl fileUploadServiceImpl) {
         this.fileUploadServiceImpl = fileUploadServiceImpl;
     }

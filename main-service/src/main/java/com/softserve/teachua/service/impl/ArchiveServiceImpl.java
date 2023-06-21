@@ -3,16 +3,15 @@ package com.softserve.teachua.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.marker.Archivable;
 import com.softserve.teachua.exception.RestoreArchiveException;
 import com.softserve.teachua.model.Archive;
-import com.softserve.commons.util.marker.Archivable;
 import com.softserve.teachua.repository.ArchiveRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +24,6 @@ public class ArchiveServiceImpl implements ArchiveService {
 
     private final ApplicationContext context;
 
-    @Autowired
     public ArchiveServiceImpl(ArchiveRepository archiveRepository, ObjectMapper objectMapper,
                               ApplicationContext context) {
         this.archiveRepository = archiveRepository;

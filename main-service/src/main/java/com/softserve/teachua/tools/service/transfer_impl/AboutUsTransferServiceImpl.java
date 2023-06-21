@@ -7,7 +7,6 @@ import com.softserve.teachua.tools.repository.AboutUsInfoRepository;
 import com.softserve.teachua.tools.service.AboutUsTransferService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +15,6 @@ public class AboutUsTransferServiceImpl implements AboutUsTransferService {
     private final AboutUsItemService aboutUsItemService;
     private final FileUtils fileUtils;
 
-    @Autowired
     public AboutUsTransferServiceImpl(AboutUsItemService aboutUsItemService,
                                       FileUtils fileUtils) {
         this.aboutUsItemService = aboutUsItemService;

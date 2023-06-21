@@ -75,7 +75,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         return actualPath.substring(actualPath.indexOf(UPLOAD_LOCATION));
     }
 
-    //todo
+    //todo FileManagement
     /*
     @Override
     public void deleteImages(String urlLogo, String urlBackground, List<GalleryPhoto> urlGallery) {

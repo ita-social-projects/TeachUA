@@ -16,7 +16,7 @@ public class StationArch implements Convertible/*, Archivable*/ {
     private String name;
     private Long cityId;
 
-    //todo
+    //todo@
     /*
     @Override
     public Class<StationServiceImpl> getServiceClass() {

@@ -17,7 +17,7 @@ public class CityArch implements Convertible/*, Archivable*/ {
     private Double latitude;
     private Double longitude;
 
-    //todo
+    //todo@
     /*
     @Override
     public Class<CityServiceImpl> getServiceClass() {

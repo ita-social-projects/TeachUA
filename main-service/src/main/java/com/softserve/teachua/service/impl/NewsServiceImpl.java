@@ -10,19 +10,20 @@ import com.softserve.teachua.dto.news.SimmilarNewsProfile;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.model.News;
 import com.softserve.teachua.repository.NewsRepository;
+import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.NewsService;
 import jakarta.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,13 +67,10 @@ public class NewsServiceImpl implements NewsService/*, ArchiveMark<News>*/ {
 
     @Override
     public SuccessCreatedNews addNews(NewsProfile newsProfile) {
-        //todo
-        /*
+        Long userId = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         News news = newsRepository.save(dtoConverter.convertToEntity(newsProfile, new News())
-                .withUser(userService.getAuthenticatedUser()));
+                .withUserId(userId));
         return dtoConverter.convertToDto(news, SuccessCreatedNews.class);
-        */
-        throw new NotImplementedException();
     }
 
     @Override
@@ -132,7 +130,7 @@ public class NewsServiceImpl implements NewsService/*, ArchiveMark<News>*/ {
         return newsRepository.findById(id);
     }
 
-    //todo
+    //todo@
     /*
     @Override
     public void archiveModel(News news) {

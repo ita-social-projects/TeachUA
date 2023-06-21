@@ -9,10 +9,9 @@ import com.softserve.teachua.service.AboutUsItemService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * This controller is for managing the ABOUT US page.
  */
-
 @Slf4j
 @RestController
 @Tag(name = "about us", description = "the About Us API")
@@ -33,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AboutUsItemController implements Api {
     private final AboutUsItemService aboutUsItemService;
 
-    @Autowired
     public AboutUsItemController(AboutUsItemService aboutUsItemService) {
         this.aboutUsItemService = aboutUsItemService;
     }

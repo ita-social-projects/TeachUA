@@ -1,8 +1,8 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.exception.UserPermissionException;
 import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.challenge.ChallengeDeleteResponse;
 import com.softserve.teachua.dto.challenge.ChallengePreview;
@@ -18,11 +18,9 @@ import com.softserve.teachua.dto.task.TaskPreview;
 import com.softserve.teachua.dto.task.UpdateTask;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
-import com.softserve.teachua.model.archivable.ChallengeArch;
 import com.softserve.teachua.repository.ChallengeRepository;
 import com.softserve.teachua.repository.TaskRepository;
-import com.softserve.teachua.service.ArchiveMark;
-import com.softserve.teachua.service.ArchiveService;
+import com.softserve.teachua.security.UserPrincipal;
 import com.softserve.teachua.service.ChallengeService;
 import com.softserve.teachua.service.TaskService;
 import com.softserve.teachua.utils.ChallengeUtil;
@@ -34,38 +32,30 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @Transactional
-public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Challenge> {
+public class ChallengeServiceImpl implements ChallengeService {
     private final ChallengeRepository challengeRepository;
     private final DtoConverter dtoConverter;
-    private final ArchiveService archiveService;
     private final TaskRepository taskRepository;
-    private final ObjectMapper objectMapper;
     private TaskService taskService;
 
-    @Autowired
     public ChallengeServiceImpl(ChallengeRepository challengeRepository, DtoConverter dtoConverter,
-                                ArchiveService archiveService, TaskRepository taskRepository,
-                                ObjectMapper objectMapper,TaskService taskService) {
+                                TaskRepository taskRepository, TaskService taskService) {
         this.challengeRepository = challengeRepository;
         this.dtoConverter = dtoConverter;
-        this.archiveService = archiveService;
         this.taskRepository = taskRepository;
-        this.objectMapper = objectMapper;
         this.taskService = taskService;
     }
 
-    @Autowired
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
     }
@@ -91,8 +81,8 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         HtmlUtils.validateDescription(createChallenge.getDescription());
         validateSortNumber(createChallenge.getSortNumber());
         Challenge challenge = dtoConverter.convertToEntity(createChallenge, new Challenge());
-        //todo
-        //challenge.setUser(userService.getAuthenticatedUser());
+        Long userId = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        challenge.setUserId(userId);
         challenge.setIsActive(true);
         return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessCreatedChallenge.class);
     }
@@ -117,17 +107,19 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         });
         challengeRepository.deleteById(id);
         challengeRepository.flush();
-        archiveModel(challenge);
+        //archiveModel(challenge);
         return dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class);
     }
 
     @Override
     public ChallengeProfile getChallenge(Long id) {
         Challenge challenge = getChallengeById(id);
-        //todo
-        //if (Boolean.FALSE.equals(challenge.getIsActive())) {
-        //    userService.verifyIsUserAdmin();
-        //}
+
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (Boolean.FALSE.equals(challenge.getIsActive()) && principal.getRole() == RoleData.ADMIN) {
+            throw new UserPermissionException();
+        }
+
         ChallengeProfile challengeProfile = dtoConverter.convertToDto(challenge, ChallengeProfile.class);
         Function<Task, TaskPreview> function = task -> dtoConverter.convertToDto(task, TaskPreview.class);
         List<TaskPreview> tasks = taskRepository.findCurrentTasksByChallenge(challenge)
@@ -138,7 +130,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
 
     @Override
     public SuccessUpdateChallengePreview updateChallengePreview(Long id,
-            SuccessUpdateChallengePreview updateChallengePreview) {
+                                                                SuccessUpdateChallengePreview updateChallengePreview) {
         Challenge challenge = getChallengeById(id);
         if (!challengeRepository.getReferenceById(id).getSortNumber().equals(updateChallengePreview.getSortNumber())) {
             validateSortNumber(updateChallengePreview.getSortNumber());
@@ -147,6 +139,8 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdateChallengePreview.class);
     }
 
+    //todo@
+    /*
     @Override
     public void archiveModel(Challenge challenge) {
         ChallengeArch challengeArch = dtoConverter.convertToDto(challenge, ChallengeArch.class);
@@ -159,14 +153,14 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         ChallengeArch challengeArch = objectMapper.readValue(archiveObject, ChallengeArch.class);
         Challenge challenge = Challenge.builder().build();
         challenge = dtoConverter.convertToEntity(challengeArch, challenge).withId(null);
-        //todo
-        //if (Optional.ofNullable(challengeArch.getUserId()).isPresent()) {
-        //    challenge.setUser(userService.getUserById(challengeArch.getUserId()));
-        //}
+        if (Optional.ofNullable(challengeArch.getUserId()).isPresent()) {
+            challenge.setUser(userService.getUserById(challengeArch.getUserId()));
+        }
         Challenge finalChallenge = challengeRepository.save(challenge);
         challengeArch.getTasksIds().stream().map(taskService::getTaskById)
                 .forEach(task -> task.setChallenge(finalChallenge));
     }
+    */
 
     @Override
     public Challenge getChallengeByName(String name) {

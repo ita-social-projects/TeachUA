@@ -16,7 +16,7 @@ public class ContactTypeArch implements Convertible/*, Archivable*/ {
     private String name;
     private String urlLogo;
 
-    //todo
+    //todo@
     /*
     @Override
     public Class<ContactTypeServiceImpl> getServiceClass() {

@@ -2,7 +2,6 @@ package com.softserve.teachua.tools.dao.jdbc;
 
 import com.softserve.teachua.tools.dao.ChallengeDao;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 public class ChallengeDaoImpl implements ChallengeDao {
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public ChallengeDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

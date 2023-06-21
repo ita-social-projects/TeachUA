@@ -17,7 +17,6 @@ import com.softserve.teachua.service.BannerItemService;
 import jakarta.validation.ValidationException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +33,6 @@ public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<Ban
     private final DtoConverter dtoConverter;
     private final ObjectMapper objectMapper;
 
-    @Autowired
     public BannerItemServiceImpl(BannerItemRepository bannerItemRepository, ArchiveService archiveService,
             DtoConverter dtoConverter, ObjectMapper objectMapper) {
         this.bannerItemRepository = bannerItemRepository;

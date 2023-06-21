@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Application Controller.
  */
-
 @RestController
 @Hidden
 public class ApplicationController implements Api {

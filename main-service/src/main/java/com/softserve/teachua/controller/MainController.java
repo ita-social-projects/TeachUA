@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 /**
  * This controller returns frontend page when application is built as one.
  */
-
 @Controller
 public class MainController {
     /**

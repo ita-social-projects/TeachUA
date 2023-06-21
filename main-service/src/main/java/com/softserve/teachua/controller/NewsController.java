@@ -10,9 +10,8 @@ import com.softserve.teachua.service.NewsService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * This controller is for managing the news.
  */
-
 @RestController
 @Tag(name = "news", description = "the News API")
 @SecurityRequirement(name = "api")
@@ -36,7 +34,6 @@ public class NewsController implements Api {
 
     public static final int NEWS_PER_PAGE = 4;
 
-    @Autowired
     public NewsController(NewsService newsService) {
         this.newsService = newsService;
     }

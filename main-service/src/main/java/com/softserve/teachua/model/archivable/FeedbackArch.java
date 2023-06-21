@@ -21,7 +21,7 @@ public class FeedbackArch implements Convertible/*, Archivable*/ {
     private Long userId;
     private Long clubId;
 
-    //todo
+    //todo@
     /*
     @Override
     public Class<FeedbackServiceImpl> getServiceClass() {

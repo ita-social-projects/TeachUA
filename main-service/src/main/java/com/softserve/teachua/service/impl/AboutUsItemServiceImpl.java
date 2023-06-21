@@ -15,7 +15,6 @@ import com.softserve.teachua.service.ArchiveService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +33,6 @@ public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<A
     private final DtoConverter dtoConverter;
     private final ObjectMapper objectMapper;
 
-    @Autowired
     public AboutUsItemServiceImpl(AboutUsItemRepository aboutUsItemRepository, ArchiveService archiveService,
                                   DtoConverter dtoConverter, ObjectMapper objectMapper) {
         this.aboutUsItemRepository = aboutUsItemRepository;

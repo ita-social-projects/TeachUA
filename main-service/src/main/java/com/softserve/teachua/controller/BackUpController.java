@@ -4,10 +4,9 @@ import com.softserve.commons.constant.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.service.BackupService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class BackUpController implements Api {
     private final BackupService backupService;
 
-    @Autowired
     public BackUpController(BackupService backupService) {
         this.backupService = backupService;
     }

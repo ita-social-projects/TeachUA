@@ -12,35 +12,21 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FileRelevanceServiceImpl implements FileRelevanceService {
     private static final String ORPHANED_FILES_SEARCH_PATH = "upload";
-
     private static final String[] ORPHANED_FILES_EXTENSIONS = {"png", "jpg"};
-
     private final AboutUsItemRepository aboutUsItemRepository;
-
     private final BannerItemRepository bannerItemRepository;
-    //todo
+    //todo FileManagement
     //private final CertificateTemplateRepository certificateTemplateRepository;
-
     private final ChallengeRepository challengeRepository;
-
-    //private final ClubRepository clubRepository;
-    //
-    //private final ContactTypeRepository contactTypeRepository;
-    //
-    //private final GalleryRepository galleryRepository;
-
     private final NewsRepository newsRepository;
 
     private final TaskRepository taskRepository;
 
-
-    @Autowired
     public FileRelevanceServiceImpl(AboutUsItemRepository aboutUsItemRepository,
                                     BannerItemRepository bannerItemRepository,
                                     ChallengeRepository challengeRepository,
@@ -59,7 +45,7 @@ public class FileRelevanceServiceImpl implements FileRelevanceService {
 
         aboutUsItemRepository.findAll().forEach(aboutUsItem -> files.add(aboutUsItem.getPicture()));
         bannerItemRepository.findAll().forEach(bannerItem -> files.add(bannerItem.getPicture()));
-        //todo
+        //todo FileManagement
         //certificateTemplateRepository.findAll()
         //        .forEach(certificateTemplate -> {
         //            files.add(certificateTemplate.getFilePath());

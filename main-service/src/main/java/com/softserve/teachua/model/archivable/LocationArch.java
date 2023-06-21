@@ -24,7 +24,7 @@ public class LocationArch /*implements Archivable*/ {
     private Long clubId;
     private Long centerId;
 
-    //todo
+    //todo@
     //@Override
     //public Class<LocationServiceImpl> getServiceClass() {
     //    return LocationServiceImpl.class;

@@ -28,7 +28,7 @@ public class UserArch implements Convertible/*, Archivable*/ {
     private String verificationCode;
     private List<Long> certificatesIds;
 
-    //todo
+    //todo@
     //@Override
     //public Class<UserServiceImpl> getServiceClass() {
     //    return UserServiceImpl.class;

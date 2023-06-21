@@ -50,7 +50,7 @@ public class Challenge implements Convertible {
     @Column(name = "user_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Integer userId;
+    private Long userId;
 
     @Column(nullable = false)
     private Boolean isActive;
