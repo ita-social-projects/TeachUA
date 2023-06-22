@@ -282,7 +282,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     @Override
     public Page<CenterResponse> getAdvancedSearchCenters(AdvancedSearchCenterProfile advancedSearchCenterProfile,
                                                          Pageable pageable) {
-        Page<Center> centersOnPage = centerRepository.findAllBylAdvancedSearch(
+        Page<Center> centersOnPage = centerRepository.findAllBylAdvancedSearch(advancedSearchCenterProfile.getCenterName(),
                 advancedSearchCenterProfile.getCityName(), advancedSearchCenterProfile.getDistrictName(),
                 advancedSearchCenterProfile.getStationName(), pageable);
 
