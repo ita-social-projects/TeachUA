@@ -3,6 +3,7 @@ package com.softserve.teachua.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+//todo
 /**
  * This controller returns frontend page when application is built as one.
  */

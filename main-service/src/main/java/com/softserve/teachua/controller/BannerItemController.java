@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "banner", description = "the BannerItem API")
 @SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/banner")
 public class BannerItemController implements Api {
     private final BannerItemService bannerItemService;
 
@@ -42,7 +44,7 @@ public class BannerItemController implements Api {
      *
      * @return new {@code BannerItemResponse}.
      */
-    @GetMapping("/banner/{id}")
+    @GetMapping("/{id}")
     public BannerItemResponse getBannerItem(@PathVariable Long id) {
         return bannerItemService.getBannerItemProfileById(id);
     }
@@ -52,7 +54,7 @@ public class BannerItemController implements Api {
      *
      * @return new {@code List<BannerItemResponse>}.
      */
-    @GetMapping("/banners")
+    @GetMapping
     public List<BannerItemResponse> getBunnerItems() {
         return bannerItemService.getListOfBannerItems();
     }
@@ -66,7 +68,7 @@ public class BannerItemController implements Api {
      * @return new {@code SuccessCreatedBannerItem}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/banner")
+    @PostMapping
     public SuccessCreatedBannerItem addBannerItem(@Valid @RequestBody BannerItemProfile bannerItemProfile) {
         return bannerItemService.addBannerItem(bannerItemProfile);
     }
@@ -82,7 +84,7 @@ public class BannerItemController implements Api {
      * @return new {@code BannerItemResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/banner/{id}")
+    @PutMapping("/{id}")
     public BannerItemResponse updateBannerItem(@PathVariable Long id,
             @Valid @RequestBody BannerItemProfile bannerItemProfile) {
         return bannerItemService.updateBannerItem(id, bannerItemProfile);
@@ -97,7 +99,7 @@ public class BannerItemController implements Api {
      * @return new {@code BannerItemResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/banner/{id}")
+    @DeleteMapping("/{id}")
     public BannerItemResponse deleteBannerItem(@PathVariable Long id) {
         return bannerItemService.deleteBannerItemById(id);
     }

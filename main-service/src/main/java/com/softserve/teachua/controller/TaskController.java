@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Tag(name = "task", description = "the Task API")
 @SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/challenge/task")
 public class TaskController implements Api {
     private final TaskService taskService;
 
@@ -47,8 +50,8 @@ public class TaskController implements Api {
      * @return {@code List<TaskPreview>}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/challenge/{id}/tasks")
-    public List<TaskPreview> getTasksByChallenge(@PathVariable Long id) {
+    @GetMapping(params = {"challengeId"})
+    public List<TaskPreview> getTasksByChallenge(@RequestParam("challengeId") Long id) {
         return taskService.getTasksByChallengeId(id);
     }
 
@@ -58,7 +61,7 @@ public class TaskController implements Api {
      * @return new {@code List<TaskPreview>}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/tasks")
+    @GetMapping
     public List<TaskPreview> getTasks() {
         return taskService.getListOfTasks();
     }
@@ -71,7 +74,7 @@ public class TaskController implements Api {
      *
      * @return {@code TaskProfile}
      */
-    @GetMapping("/challenge/task/{id}")
+    @GetMapping("/{id}")
     public TaskProfile getTask(@PathVariable("id") Long id) {
         return taskService.getTask(id);
     }
@@ -88,8 +91,9 @@ public class TaskController implements Api {
      * @return {@code SuccessCreatedTask}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/challenge/{id}/task")
-    public SuccessCreatedTask createTask(@PathVariable Long id, @Valid @RequestBody CreateTask createTask) {
+    @PostMapping(params = {"challengeId"})
+    public SuccessCreatedTask createTask(@RequestParam("challengeId") Long id,
+                                         @Valid @RequestBody CreateTask createTask) {
         return taskService.createTask(id, createTask);
     }
 
@@ -105,7 +109,7 @@ public class TaskController implements Api {
      * @return {@code SuccessUpdatedTask} - shows result of updating task.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/challenge/task/{id}")
+    @PutMapping("/{id}")
     public SuccessUpdatedTask updateTask(@PathVariable Long id, @Valid @RequestBody UpdateTask updateTask) {
         return taskService.updateTask(id, updateTask);
     }
@@ -120,7 +124,7 @@ public class TaskController implements Api {
      * @return {@code TaskProfile} - shows which task was removed.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/challenge/task/{id}")
+    @DeleteMapping("/{id}")
     public TaskProfile deleteTask(@PathVariable Long id) {
         return taskService.deleteTask(id);
     }

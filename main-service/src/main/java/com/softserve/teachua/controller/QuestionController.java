@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "question", description = "the Question API")
 @SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/news/question")
 public class QuestionController implements Api {
     private final QuestionService questionService;
 
@@ -39,7 +41,7 @@ public class QuestionController implements Api {
      *
      * @return {@code Question}
      */
-    @GetMapping("/question/{id}")
+    @GetMapping("/{id}")
     public Question getNews(@PathVariable Long id) {
         return questionService.getQuestionById(id);
     }
@@ -53,7 +55,7 @@ public class QuestionController implements Api {
      * @return new {@code QuestionResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/question")
+    @PostMapping
     public QuestionResponse addNews(@RequestBody QuestionProfile questionProfile) {
         return questionService.addQuestion(questionProfile);
     }
@@ -69,7 +71,7 @@ public class QuestionController implements Api {
      * @return {@code QuestionProfile}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/question/{id}")
+    @PutMapping("/{id}")
     public QuestionProfile updateNewsById(@PathVariable Long id, @RequestBody QuestionProfile questionProfile) {
         return questionService.updateQuestionById(id, questionProfile);
     }
@@ -83,7 +85,7 @@ public class QuestionController implements Api {
      * @return {@code QuestionProfile}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/question/{id}")
+    @DeleteMapping("/{id}")
     public QuestionProfile deleteNews(@PathVariable Long id) {
         return questionService.deleteQuestionById(id);
     }
@@ -93,7 +95,7 @@ public class QuestionController implements Api {
      *
      * @return {@code List<QuestionResponse>}
      */
-    @GetMapping("/questions")
+    @GetMapping
     public List<QuestionResponse> getAllNews() {
         return questionService.getAllQuestions();
     }

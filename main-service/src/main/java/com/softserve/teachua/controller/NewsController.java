@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "news", description = "the News API")
 @SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/news")
 public class NewsController implements Api {
     private final NewsService newsService;
 
@@ -46,7 +48,7 @@ public class NewsController implements Api {
      *
      * @return {@code NewsResponse}
      */
-    @GetMapping("/news/{id}")
+    @GetMapping("/{id}")
     public NewsResponse getNews(@PathVariable Long id) {
         return newsService.getNewsProfileById(id);
     }
@@ -60,7 +62,7 @@ public class NewsController implements Api {
      * @return new {@code SuccessCreatedNews}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/news")
+    @PostMapping
     public SuccessCreatedNews addNews(@Valid @RequestBody NewsProfile newsProfile) {
         return newsService.addNews(newsProfile);
     }
@@ -76,7 +78,7 @@ public class NewsController implements Api {
      * @return {@code NewsProfile}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/news/{id}")
+    @PutMapping("/{id}")
     public SuccessCreatedNews updateNewsById(@PathVariable Long id, @Valid @RequestBody NewsProfile newsProfile) {
         return newsService.updateNewsProfileById(id, newsProfile);
     }
@@ -90,7 +92,7 @@ public class NewsController implements Api {
      * @return NewsResponse {@code NewsResponse}
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/news/{id}")
+    @DeleteMapping("/{id}")
     public NewsResponse deleteNews(@PathVariable Long id) {
         return newsService.deleteNewsById(id);
     }
@@ -100,7 +102,7 @@ public class NewsController implements Api {
      *
      * @return {@code List<NewsResponse>}
      */
-    @GetMapping("/newslist")
+    @GetMapping
     public List<NewsResponse> getAllNews() {
         return newsService.getAllNews();
     }
@@ -110,7 +112,7 @@ public class NewsController implements Api {
      *
      * @return {@code Page<NewsResponse>}
      */
-    @GetMapping("/newslist/search")
+    @GetMapping("/search")
     public Page<NewsResponse> getListOfNews(@PageableDefault(value = NEWS_PER_PAGE, sort = "id") Pageable pageable) {
         return newsService.getListOfNews(pageable);
     }
@@ -121,12 +123,12 @@ public class NewsController implements Api {
      *
      * @return {@code List<NewsResponse>}
      */
-    @GetMapping("/newslist/current")
+    @GetMapping("/current")
     public List<NewsResponse> getLisCurrentNews() {
         return newsService.getAllCurrentNews();
     }
 
-    @GetMapping("/newslist/search/similar")
+    @GetMapping("/search/similar")
     public List<NewsResponse> getSimilarNewsByTitle(SimmilarNewsProfile newsProfile) {
         return newsService.getSimilarNewsByTitle(newsProfile);
     }

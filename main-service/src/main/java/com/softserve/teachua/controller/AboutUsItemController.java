@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "about us", description = "the About Us API")
 @SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/about")
 public class AboutUsItemController implements Api {
     private final AboutUsItemService aboutUsItemService;
 
@@ -40,7 +42,7 @@ public class AboutUsItemController implements Api {
      *
      * @return {@code List<AboutUsItemResponse>}.
      */
-    @GetMapping("/about")
+    @GetMapping
     public List<AboutUsItemResponse> getAboutUsItems() {
         return aboutUsItemService.getListOfAboutUsItemResponses();
     }
@@ -53,7 +55,7 @@ public class AboutUsItemController implements Api {
      *
      * @return {@code AboutUsItemResponse}.
      */
-    @GetMapping("/about/{id}")
+    @GetMapping("/{id}")
     public AboutUsItemResponse getAboutUsItems(@PathVariable Long id) {
         return aboutUsItemService.getAboutUsItemResponseById(id);
     }
@@ -67,7 +69,7 @@ public class AboutUsItemController implements Api {
      * @return {@code AboutUsItemResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/about")
+    @PostMapping
     public AboutUsItemResponse addAboutUsItem(@Valid @RequestBody AboutUsItemProfile aboutUsItemProfile) {
         return aboutUsItemService.addAboutUsItem(aboutUsItemProfile);
     }
@@ -83,8 +85,7 @@ public class AboutUsItemController implements Api {
      * @return {@code AboutUsItemResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/about/{id}")
-
+    @PutMapping("/{id}")
     public AboutUsItemResponse updateAboutUsItem(@PathVariable Long id,
             @Valid @RequestBody AboutUsItemProfile aboutUsItemProfile) {
         return aboutUsItemService.updateAboutUsItem(id, aboutUsItemProfile);
@@ -99,7 +100,7 @@ public class AboutUsItemController implements Api {
      * @return {@code AboutUsItemResponse}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/about/{id}")
+    @DeleteMapping("/{id}")
     public AboutUsItemResponse deleteAboutUsItem(@PathVariable Long id) {
         return aboutUsItemService.deleteAboutUsItemById(id);
     }
@@ -115,7 +116,7 @@ public class AboutUsItemController implements Api {
      * @return {@code "success"}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PatchMapping("/about/{id}")
+    @PatchMapping("/{id}")
     public String changeOrder(@PathVariable Long id, @RequestBody NumberDto number) {
         aboutUsItemService.changeOrder(id, number.getNumber());
         return "success";

@@ -9,11 +9,13 @@ import java.io.IOException;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@RequestMapping("/api/v1/backup")
 public class BackUpController implements Api {
     private final BackupService backupService;
 
@@ -28,7 +30,7 @@ public class BackUpController implements Api {
      * @return a list of the files
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/backup/files")
+    @GetMapping("/files")
     public List<String> getAllFileForBackUp(
             @RequestParam(value = "fileName", required = false, defaultValue = "all") String fileName) {
         return backupService.getAllBackupFiles(fileName);
@@ -40,7 +42,7 @@ public class BackUpController implements Api {
      * @param response HttpServletResponse
      */
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping(value = "/backup/download", produces = "application/.zip")
+    @GetMapping(value = "/download", produces = "application/.zip")
     public void downloadBackup(HttpServletResponse response) {
         backupService.downloadBackup(response);
     }
@@ -53,7 +55,7 @@ public class BackUpController implements Api {
      * @throws IOException can occur while I/O operations
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping(value = "/backup/upload")
+    @PostMapping(value = "/upload")
     public List<String> uploadBackUp(@RequestParam("file") MultipartFile file) throws IOException {
         return backupService.uploadBackup(file);
     }

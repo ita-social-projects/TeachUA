@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "challenge", description = "the Challenge API")
 @SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/challenge")
 public class ChallengeController implements Api {
     private final ChallengeService challengeService;
 
@@ -49,7 +51,7 @@ public class ChallengeController implements Api {
      * @param active - Ignore this param to get all challenges, or put true/false to get active or not challenges.
      * @return {@code List<ChallengePreview>}.
      */
-    @GetMapping("/challenges")
+    @GetMapping
     public List<ChallengePreview> getAllChallenges(@RequestParam(required = false) Boolean active) {
         return challengeService.getAllChallenges(active);
     }
@@ -61,7 +63,7 @@ public class ChallengeController implements Api {
      * @param id - put challenge id here.
      * @return {@code ChallengeProfile}.
      */
-    @GetMapping("/challenge/{id}")
+    @GetMapping("/{id}")
     public ChallengeProfile getChallenge(@PathVariable Long id) {
         return challengeService.getChallenge(id);
     }
@@ -74,7 +76,7 @@ public class ChallengeController implements Api {
      * @return {@code SuccessCreatedChallenge}.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PostMapping("/challenge")
+    @PostMapping
     public SuccessCreatedChallenge createChallenge(@Valid @RequestBody CreateChallenge createChallenge) {
         return challengeService.createChallenge(createChallenge);
     }
@@ -88,7 +90,7 @@ public class ChallengeController implements Api {
      * @return {@code SuccessUpdatedChallenge} - shows result of updating challenge.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/challenge/{id}")
+    @PutMapping("/{id}")
     public SuccessUpdatedChallenge updateChallenge(@PathVariable Long id,
                                                    @Valid @RequestBody UpdateChallenge updateChallenge) {
         return challengeService.updateChallenge(id, updateChallenge);
@@ -102,7 +104,7 @@ public class ChallengeController implements Api {
      * @return {@code ChallengeDeleteResponse} - shows which challenge and tasks was removed.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @DeleteMapping("/challenge/{id}")
+    @DeleteMapping("/{id}")
     public ChallengeDeleteResponse deleteChallenge(@PathVariable Long id) {
         return challengeService.deleteChallenge(id);
     }
@@ -116,7 +118,7 @@ public class ChallengeController implements Api {
      * @return {@code SuccessUpdateChallengePreview} - shows result of updating challenge.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PatchMapping("/challenge/{id}")
+    @PatchMapping("/{id}")
     public SuccessUpdateChallengePreview updateChallengePreview(@PathVariable Long id,
                                                                 @Valid @RequestBody
                                                                 SuccessUpdateChallengePreview updateChallengePreview) {
@@ -132,7 +134,7 @@ public class ChallengeController implements Api {
      * @return {@code List<SuccessUpdatedTask>} - shows result of updating tasks.
      */
     @AllowedRoles(RoleData.ADMIN)
-    @PutMapping("/challenge/{id}/clone")
+    @PutMapping("/{id}/clone")
     public List<SuccessUpdatedTask> cloneChallenge(@PathVariable Long id,
                                                    @Valid @RequestBody UpdateChallengeDate startDate) {
         return challengeService.cloneChallenge(id, startDate);

@@ -2,7 +2,6 @@ package com.softserve.teachua.controller;
 
 import com.softserve.commons.constant.RoleData;
 import com.softserve.teachua.controller.marker.Api;
-import com.softserve.teachua.dao.BackupDaoImpl;
 import com.softserve.teachua.dao.service.BackupService;
 import com.softserve.teachua.utils.annotation.AllowedRoles;
 import java.io.ByteArrayInputStream;
@@ -13,25 +12,27 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/v1/backup")
 public class TablesBackupController implements Api {
     private final BackupService backupService;
 
-    public TablesBackupController(BackupDaoImpl backupDaoImpl, BackupService backupService) {
+    public TablesBackupController(BackupService backupService) {
         this.backupService = backupService;
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/backup/{tableName}")
+    @GetMapping("/{tableName}")
     public String getTable(@PathVariable String tableName) {
         return backupService.getTable(tableName);
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping("/backup")
+    @GetMapping
     public String getAllTables(@RequestParam String tableNames) {
         return backupService.getAllTables(tableNames);
     }
