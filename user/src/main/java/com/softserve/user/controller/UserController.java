@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 //@Tag(name = "user", description = "the User API")
 //@SecurityRequirement(name = "api")
+@RequestMapping("/api/v1/user")
 public class UserController implements Api {
     private final UserService userService;
     private final CertificateClient certificateClient;
@@ -48,7 +50,7 @@ public class UserController implements Api {
      * @return {@code UserResponse}.
      */
     @PreAuthorize("hasRole('ADMIN') or (isAuthenticated() and authentication.principal.id == #id)")
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     public UserResponse getUserById(@PathVariable("id") Long id) {
         return userService.getUserProfileById(id);
     }
@@ -60,7 +62,7 @@ public class UserController implements Api {
      * @return {@code List<UserResponse>}.
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/users/{role}")
+    @GetMapping("/{role}")
     public List<UserResponse> getUsersByRole(@PathVariable("role") String roleName) {
         return userService.getUserResponsesByRole(roleName);
     }
@@ -71,7 +73,7 @@ public class UserController implements Api {
      * @return new {@code List <UserResponse>}.
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/users")
+    @GetMapping
     public List<UserResponse> findAllUsers() {
         return userService.getListOfUsers();
     }
@@ -84,7 +86,7 @@ public class UserController implements Api {
      * @return {@code SuccessUpdatedUser}.
      */
     @PreAuthorize("hasRole('ADMIN') or (isAuthenticated() and authentication.principal.id == #id)")
-    @PutMapping("/user/{id}")
+    @PutMapping("/{id}")
     public SuccessUpdatedUser updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateProfile userProfile) {
         return userService.updateUser(id, userProfile);
     }
@@ -93,7 +95,7 @@ public class UserController implements Api {
      * Use this endpoint to delete user by id. Only accessible for ADMIN or profile owner.
      */
     @PreAuthorize("hasRole('ADMIN') or (isAuthenticated() and authentication.principal.id == #id)")
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/{id}")
     public UserResponse deleteUser(@PathVariable Long id) {
         return userService.deleteUserById(id);
     }
@@ -105,13 +107,13 @@ public class UserController implements Api {
      * @param id             - id
      */
     @PreAuthorize("hasRole('ADMIN') or (isAuthenticated() and authentication.principal.id == #id)")
-    @PatchMapping("/user/{id}")
+    @PatchMapping("/{id}")
     public void changePassword(@PathVariable("id") Long id, @Valid @RequestBody UserPasswordUpdate passwordUpdate) {
         userService.updatePassword(id, passwordUpdate);
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/v1/user/certificates")
+    @GetMapping("/certificates")
     public List<CertificateUserResponse> getCertificatesOfAuthenticatedUser() {
         UserPrincipal userPrincipal =
                 (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -119,13 +121,13 @@ public class UserController implements Api {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("v1/user/existsById/{id}")
+    @GetMapping("/existsById/{id}")
     public boolean existsById(@PathVariable("id") Long id) {
         return userService.existsById(id);
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("v1/user/role/{userId}")
+    @GetMapping("/role/{userId}")
     RoleData getUserRoleByUserId(@PathVariable("userId") Long id) {
         return RoleData.valueOf(userService.getUserById(id).getRole().getName().replace("ROLE_", ""));
     }

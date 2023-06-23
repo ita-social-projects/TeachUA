@@ -256,7 +256,6 @@ public class UserServiceImpl implements UserService/*, ArchiveMark<User>*/ {
             throw new DatabaseRepositoryException(USER_DELETING_ERROR);
         }
 
-        //todo
         //archiveModel(user);
 
         log.debug("user {} was successfully deleted", user);
@@ -422,7 +421,7 @@ public class UserServiceImpl implements UserService/*, ArchiveMark<User>*/ {
         return userResetPassword;
     }
 
-    //todo
+    //todo@
     //@Override
     //public void archiveModel(User user) {
     //    archiveService.saveModel(dtoConverter.convertToDto(user, UserArch.class));
