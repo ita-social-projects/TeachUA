@@ -10,12 +10,20 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserPrincipal implements UserDetails {
+    private final Long id;
     private final String username;
     private final List<? extends GrantedAuthority> authorities;
+    private final RoleData role;
 
-    public UserPrincipal(String username, RoleData authority) {
+    public UserPrincipal(Long id, String username, RoleData authority) {
+        this.id = id;
         this.username = username;
+        this.role = authority;
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority(authority.getRoleName()));
+    }
+
+    public Long getId() {
+        return id;
     }
 
     @Override
@@ -31,6 +39,10 @@ public class UserPrincipal implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+    public RoleData getRole() {
+        return role;
     }
 
     @Override

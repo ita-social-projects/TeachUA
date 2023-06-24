@@ -27,14 +27,22 @@ public class TokenController {
     }
 
     @GetMapping("/parse")
-    public ResponseEntity<Void> parseJwtForNginx(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Void> parseJwtForNginx(
+            @RequestHeader(value = "Authorization", defaultValue = "") String token) {
         log.info("Parsing token request");
         //todo
         System.out.println(token);
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("user_id", "1");
-        responseHeaders.set("username", "testUsername");
-        responseHeaders.set("role", String.valueOf(RoleData.ADMIN));
+        //todo
+        if (token.isEmpty()) {
+            responseHeaders.set("user_id", "");
+            responseHeaders.set("username", "");
+            responseHeaders.set("role", "");
+        } else {
+            responseHeaders.set("user_id", "1");
+            responseHeaders.set("username", "testUsername");
+            responseHeaders.set("role", String.valueOf(RoleData.ADMIN));
+        }
 
         return ResponseEntity.ok()
                 .headers(responseHeaders)
