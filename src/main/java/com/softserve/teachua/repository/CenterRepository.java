@@ -22,9 +22,12 @@ public interface CenterRepository extends JpaRepository<Center, Long> {
 
     @Query("SELECT DISTINCT center from Center AS center " + "LEFT JOIN center.locations AS locations "
             + "LEFT JOIN locations.city AS city " + "LEFT JOIN locations.district AS district "
-            + "LEFT JOIN locations.station AS station WHERE " + "(:center_name IS NULL OR " + "LOWER(center.name) LIKE LOWER(CONCAT('%', :center_name, '%'))) AND" + "(:city IS NULL OR city.name = :city) AND "
+            + "LEFT JOIN locations.station AS station WHERE " + "(:center_name IS NULL OR "
+            + "LOWER(center.name) LIKE LOWER(CONCAT('%', :center_name, '%'))) AND"
+            + "(:city IS NULL OR city.name = :city) AND "
             + "(:district IS NULL OR district.name = :district) AND " + "(:station IS NULL OR station.name = :station)")
-    Page<Center> findAllBylAdvancedSearch(@Param("center_name") String centerName, @Param("city") String cityName, @Param("district") String districtName,
+    Page<Center> findAllBylAdvancedSearch(@Param("center_name") String centerName, @Param("city") String cityName,
+                                          @Param("district") String districtName,
                                           @Param("station") String stationName, Pageable pageable);
 
     Center findCenterByCenterExternalId(Long id);
