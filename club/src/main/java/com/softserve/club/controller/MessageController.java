@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 //todo
@@ -76,8 +77,8 @@ public class MessageController implements Api {
      * @return {@code List<MessageResponseDto>}.
      */
     @PreAuthorize("isAuthenticated() and authentication.principal.id == #id")
-    @GetMapping("/{id}")
-    public List<MessageResponseDto> getMessagesByRecipientId(@PathVariable Long id) {
+    @GetMapping(params = {"recipientId"})
+    public List<MessageResponseDto> getMessagesByRecipientId(@RequestParam("recipientId") Long id) {
         return messageService.getMessageResponsesByUserId(id, false);
     }
 

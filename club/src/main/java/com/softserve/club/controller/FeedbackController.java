@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -60,8 +61,8 @@ public class FeedbackController implements Api {
      *
      * @return {@code List<FeedbackResponse>}
      */
-    @GetMapping("/{id}")
-    public List<FeedbackResponse> getAllFeedback(@PathVariable Long id) {
+    @GetMapping(params = {"clubId"})
+    public List<FeedbackResponse> getAllFeedback(@RequestParam("clubId") Long id) {
         return feedbackService.getAllByClubId(id);
     }
 

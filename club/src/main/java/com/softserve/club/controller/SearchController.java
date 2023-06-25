@@ -36,7 +36,7 @@ public class SearchController implements Api {
      *
      * @return {@link CombinedPossibleResponse }
      */
-    @GetMapping
+    @GetMapping(params = {"text", "cityName"})
     public CombinedPossibleResponse possibleResponses(@RequestParam @Length(max = 50) String text,
             @RequestParam String cityName) {
         return CombinedPossibleResponse.builder().categories(categoryService.getPossibleCategoryByName(text))

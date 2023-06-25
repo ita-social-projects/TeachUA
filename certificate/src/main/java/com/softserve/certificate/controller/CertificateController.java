@@ -138,7 +138,7 @@ public class CertificateController {
     }
 
     @AllowedRoles(RoleData.ADMIN)
-    @GetMapping
+    @GetMapping(params = {"userName"})
     public List<CertificatePreview> searchCertificatesUser(@RequestParam(name = "userName") String userName) {
         return certificateService.getSimilarCertificatesByUserName(userName);
     }

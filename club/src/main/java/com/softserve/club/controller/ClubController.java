@@ -120,7 +120,7 @@ public class ClubController implements Api {
      * @param id - put user id.
      * @return {@code Page<ClubResponse>}.
      */
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", params = {"page"})
     public Page<ClubResponse> getClubsByUserId(@PathVariable Long id,
                                                @PageableDefault(value = CLUBS_PER_USER_PAGE, sort = "id")
                                                Pageable pageable) {
