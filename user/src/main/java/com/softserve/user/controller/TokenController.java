@@ -35,12 +35,12 @@ public class TokenController {
         HttpHeaders responseHeaders = new HttpHeaders();
         //todo
         if (token.isEmpty()) {
-            responseHeaders.set("user_id", "");
-            responseHeaders.set("username", "");
+            responseHeaders.set("uid", "");
+            responseHeaders.set("uname", "");
             responseHeaders.set("role", "");
         } else {
-            responseHeaders.set("user_id", "1");
-            responseHeaders.set("username", "testUsername");
+            responseHeaders.set("uid", "1");
+            responseHeaders.set("uname", "testUsername");
             responseHeaders.set("role", String.valueOf(RoleData.ADMIN));
         }
 

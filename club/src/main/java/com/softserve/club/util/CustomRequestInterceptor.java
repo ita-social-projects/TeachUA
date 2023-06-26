@@ -13,7 +13,8 @@ public class CustomRequestInterceptor implements RequestInterceptor {
         UserPrincipal userPrincipal =
                 (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        requestTemplate.header("username", userPrincipal.getUsername());
+        requestTemplate.header("uid", String.valueOf(userPrincipal.getId()));
+        requestTemplate.header("uname", userPrincipal.getUsername());
 
         Iterator<? extends GrantedAuthority> iterator = userPrincipal.getAuthorities().iterator();
         if (iterator.hasNext()) {

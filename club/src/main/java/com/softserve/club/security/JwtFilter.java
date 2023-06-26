@@ -24,8 +24,8 @@ public class JwtFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            String id = request.getHeader("user_id");
-            String username = request.getHeader("username");
+            String id = request.getHeader("uid");
+            String username = request.getHeader("uname");
             String roleHeader = request.getHeader("role");
             if (!StringUtils.isEmpty(id) && !StringUtils.isEmpty(username)
                     && !StringUtils.isEmpty(roleHeader)) {
