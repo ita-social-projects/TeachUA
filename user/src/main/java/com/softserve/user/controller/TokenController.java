@@ -1,11 +1,14 @@
 package com.softserve.user.controller;
 
 import com.softserve.commons.constant.RoleData;
+import com.softserve.commons.exception.UserPermissionException;
 import com.softserve.user.dto.security.RefreshTokenRequest;
 import com.softserve.user.dto.security.RefreshTokenResponse;
+import com.softserve.user.security.HttpSessionBean;
 import com.softserve.user.service.RefreshTokenService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,13 +20,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/jwt")
 @Slf4j
+@RequestMapping("/api/v1/jwt")
 public class TokenController {
     private final RefreshTokenService refreshTokenService;
+    private final HttpSessionBean httpSessionBean;
 
-    public TokenController(RefreshTokenService refreshTokenService) {
+    public TokenController(RefreshTokenService refreshTokenService, HttpSessionBean httpSessionBean) {
         this.refreshTokenService = refreshTokenService;
+        this.httpSessionBean = httpSessionBean;
     }
 
     @GetMapping("/parse")
@@ -47,6 +52,22 @@ public class TokenController {
         return ResponseEntity.ok()
                 .headers(responseHeaders)
                 .build();
+    }
+
+    @GetMapping
+    public void saveJwt(@RequestHeader("jwt") String jwt) {
+        if (StringUtils.isEmpty(jwt)) {
+            throw new IllegalArgumentException();
+        }
+        httpSessionBean.setJwt(jwt);
+    }
+
+    @GetMapping("/admin")
+    public void authorizeAdmin() {
+        //todo
+        if (StringUtils.isEmpty(httpSessionBean.getJwt())) {
+            throw new UserPermissionException();
+        }
     }
 
     /**

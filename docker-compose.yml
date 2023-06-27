@@ -20,6 +20,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/security_filter.conf:/etc/nginx/security_filter.conf
+      - ./nginx/security_admin_filter.conf:/etc/nginx/security_admin_filter.conf
     networks:
       - spring
     depends_on:
