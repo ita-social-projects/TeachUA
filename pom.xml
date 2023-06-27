@@ -331,6 +331,13 @@
       <artifactId>micrometer-registry-prometheus</artifactId>
     </dependency>
 
+    <!--  Map types for Hibernate need update to currently Hibernate version-->
+    <dependency>
+      <groupId>io.hypersistence</groupId>
+      <artifactId>hypersistence-utils-hibernate-62</artifactId>
+      <version>3.4.3</version>
+    </dependency>
+
   </dependencies>
 
 

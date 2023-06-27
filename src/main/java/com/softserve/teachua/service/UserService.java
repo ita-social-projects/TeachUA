@@ -135,6 +135,8 @@ public interface UserService {
      */
     void updateUser(User user);
 
+    User getAuthenticatedUserWithChildren();
+
     /**
      * The method checks if user is admin.
      */
