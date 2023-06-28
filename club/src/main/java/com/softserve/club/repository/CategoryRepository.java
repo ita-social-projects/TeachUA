@@ -25,7 +25,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("from Category c order by c.sortby")
     List<Category> findInSortedOrder();
 
-    @Query(value = "SELECT *  FROM categories AS c " + "WHERE LOWER(c.name) LIKE LOWER('%' || :text || '%')"
-            + " ORDER BY RANDOM() LIMIT 3", nativeQuery = true)
+    @Query("""
+        FROM Category AS c
+        WHERE LOWER(c.name) LIKE LOWER('%' || :text || '%')
+        ORDER BY RANDOM() LIMIT 3
+        """)
     List<Category> findRandomTop3ByName(@Param("text") String enteredText);
 }

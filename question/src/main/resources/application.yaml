@@ -6,6 +6,7 @@ spring:
     name: question
   datasource:
     driver-class-name: org.postgresql.Driver
+    default-schema: question
   jpa:
     hibernate:
       ddl-auto: update
