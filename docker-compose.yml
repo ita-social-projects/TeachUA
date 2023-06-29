@@ -108,6 +108,18 @@ services:
       - teachua_postgres
       - teachua_zipkin
 
+  teachua_rabbitmq:
+    image: rabbitmq:3.12.1-management-alpine
+    container_name: teachua_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    networks:
+      - spring
+
 networks:
   teachua_postgres:
     driver: bridge
