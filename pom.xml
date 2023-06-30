@@ -16,6 +16,7 @@
     <module>club</module>
     <module>question</module>
     <module>amqp</module>
+    <module>archive</module>
   </modules>
 
   <name>${project.artifactId}</name>

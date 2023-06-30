@@ -1,0 +1,18 @@
+server:
+  port: 8082
+spring:
+  profiles.active: dev
+  application:
+    name: archive
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  tracing:
+    sampling:
+      probability: ${TRACING_STATE:0}.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_TRACING_ENDPOINT}
