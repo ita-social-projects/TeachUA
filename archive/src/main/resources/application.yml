@@ -4,6 +4,10 @@ spring:
   profiles.active: dev
   application:
     name: archive
+  rabbitmq:
+    addresses: ${RABBITMQ_NETWORK}:${RABBITMQ_PORT}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
 
 management:
   endpoints:

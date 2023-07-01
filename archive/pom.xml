@@ -40,10 +40,23 @@
       </build>
     </profile>
   </profiles>
+
   <dependencies>
+    <dependency>
+      <groupId>com.softserve.teachua</groupId>
+      <artifactId>amqp</artifactId>
+      <version>1.0</version>
+      <scope>compile</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-amqp</artifactId>
+    </dependency>
   </dependencies>
+
 </project>
