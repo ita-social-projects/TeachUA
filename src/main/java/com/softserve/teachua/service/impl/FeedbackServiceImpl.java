@@ -20,6 +20,7 @@ import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ClubService;
+import com.softserve.teachua.service.CenterService;
 import com.softserve.teachua.service.FeedbackService;
 import com.softserve.teachua.service.UserService;
 import java.util.List;
@@ -47,6 +48,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     private final UserRepository userRepository;
     private final UserService userService;
     private final ClubService clubService;
+    private final CenterService centerService;
     private final ObjectMapper objectMapper;
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -54,7 +56,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter,
                                ClubRepository clubRepository, ArchiveService archiveService,
                                UserRepository userRepository, UserService userService,
-                               @Lazy ClubService clubService, ObjectMapper objectMapper,
+                               @Lazy ClubService clubService, CenterService centerService, ObjectMapper objectMapper,
                                CustomUserDetailsService customUserDetailsService) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
@@ -63,6 +65,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
         this.userRepository = userRepository;
         this.userService = userService;
         this.clubService = clubService;
+        this.centerService = centerService;
         this.objectMapper = objectMapper;
         this.customUserDetailsService = customUserDetailsService;
     }
@@ -106,6 +109,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
         }
         Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, new Feedback()));
         clubService.updateRatingNewFeedback(dtoConverter.convertToDto(feedback, FeedbackResponse.class));
+        centerService.updateRatingNewFeedback(dtoConverter.convertToDto(feedback, FeedbackResponse.class));
         log.debug("add new feedback - " + feedback);
         return dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
     }

@@ -4,6 +4,7 @@ import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.club.ClubResponse;
+import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
@@ -156,6 +157,8 @@ public interface CenterService {
      */
     Page<CenterResponse> getAdvancedSearchCenters(AdvancedSearchCenterProfile advancedSearchCenterProfile,
             Pageable pageable);
+
+    CenterResponse updateRatingNewFeedback(FeedbackResponse feedbackResponse);
 
     /**
      * The method updates rating of club and returns dto {@code CenterResponse} of updated club.
