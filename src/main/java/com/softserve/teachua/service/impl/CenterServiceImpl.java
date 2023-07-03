@@ -348,6 +348,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
         return dtoConverter.convertToDto(updCenter, CenterResponse.class);
     }
+
     @Override
     public CenterResponse updateRatingUpdateClub(ClubResponse previousClub, ClubResponse updatedClub) {
         Center center = getCenterById(previousClub.getCenter().getId());
