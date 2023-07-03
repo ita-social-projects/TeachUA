@@ -339,7 +339,8 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         }
 
         long newFeedbackCount = center.getFeedbackCount() + 1;
-        Double newRating = (center.getRating() * center.getFeedbackCount() + feedbackResponse.getRate()) / newFeedbackCount;
+        Double newRating = (center.getRating() * center.getFeedbackCount() + feedbackResponse.getRate())
+                / newFeedbackCount;
 
         center.setRating(newRating);
         center.setFeedbackCount(newFeedbackCount);
@@ -347,7 +348,6 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
         return dtoConverter.convertToDto(updCenter, CenterResponse.class);
     }
-
     @Override
     public CenterResponse updateRatingUpdateClub(ClubResponse previousClub, ClubResponse updatedClub) {
         Center center = getCenterById(previousClub.getCenter().getId());

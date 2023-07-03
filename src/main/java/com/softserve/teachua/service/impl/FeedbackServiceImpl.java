@@ -56,8 +56,8 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter,
                                ClubRepository clubRepository, ArchiveService archiveService,
                                UserRepository userRepository, UserService userService,
-                               @Lazy ClubService clubService, @Lazy CenterService centerService, ObjectMapper objectMapper,
-                               CustomUserDetailsService customUserDetailsService) {
+                               @Lazy ClubService clubService, @Lazy CenterService centerService,
+                               ObjectMapper objectMapper, CustomUserDetailsService customUserDetailsService) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
