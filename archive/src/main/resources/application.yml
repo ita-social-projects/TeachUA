@@ -4,6 +4,14 @@ spring:
   profiles.active: dev
   application:
     name: archive
+  data:
+    mongodb:
+      port: ${MONGODB_PORT}
+      host: ${MONGODB_HOST}
+      authentication-database: ${MONGODB_AUTHENTICATION_DB}
+      username: ${MONGODB_USER}
+      password: ${MONGODB_PASSWORD}
+      database: ${MONGODB_DATABASE}
   rabbitmq:
     addresses: ${RABBITMQ_NETWORK}:${RABBITMQ_PORT}
     username: ${RABBITMQ_USER}
