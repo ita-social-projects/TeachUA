@@ -85,7 +85,7 @@ public class Club implements Convertible {
     @ToString.Exclude
     private Set<Location> locations;
 
-    @OneToMany(mappedBy = "club")
+    @OneToMany(mappedBy = "club", fetch = FetchType.EAGER)
     @ToString.Exclude
     private Set<Feedback> feedbacks;
 

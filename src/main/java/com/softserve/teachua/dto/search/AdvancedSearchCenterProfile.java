@@ -10,6 +10,9 @@ import org.springframework.lang.Nullable;
 @Data
 public class AdvancedSearchCenterProfile {
     @Nullable
+    private String centerName;
+
+    @Nullable
     private String districtName;
 
     @Nullable
