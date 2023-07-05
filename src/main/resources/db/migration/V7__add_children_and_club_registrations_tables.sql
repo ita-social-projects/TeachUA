@@ -1,12 +1,12 @@
-CREATE TYPE sex_enum AS ENUM ('MALE', 'FEMALE');
+create type gender_enum as ENUM ('MALE', 'FEMALE');
 
 CREATE TABLE children (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     parent_id BIGINT NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     age SMALLINT NOT NULL CHECK (age >= 2 AND age <= 18),
-    sex sex_enum NOT NULL
+    gender gender_enum NOT NULL
 );
 
 CREATE TABLE club_registrations (

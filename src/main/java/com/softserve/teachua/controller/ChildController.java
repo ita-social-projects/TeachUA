@@ -2,17 +2,21 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.child.ChildProfile;
-import com.softserve.teachua.dto.child.SuccessCreatedChild;
+import com.softserve.teachua.dto.child.ChildResponse;
 import com.softserve.teachua.service.ChildService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -22,15 +26,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChildController implements Api {
     private final ChildService childService;
 
-    @GetMapping("/child")
-    public String test() {
-        return "Test";
-    }
-    @PostMapping("/child")
-    public SuccessCreatedChild addChild(@Valid @RequestBody ChildProfile childProfile) {
-        log.debug("Add child {}", childProfile);
+    @GetMapping("/children/{parentId}")
+    public ResponseEntity<List<ChildResponse>> getChildrenByParentId(@PathVariable Long parentId) {
+        List<ChildResponse> children = childService.getAllByParentId(parentId);
 
-        return childService.create(childProfile);
+        return ResponseEntity.ok(children);
+    }
+
+
+    @PostMapping("/child")
+    public ResponseEntity<ChildResponse> addChild(@Valid @RequestBody ChildProfile childProfile) {
+        log.debug("Add child {}", childProfile);
+        ChildResponse createdChild = childService.create(childProfile);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(createdChild);
     }
 }
 

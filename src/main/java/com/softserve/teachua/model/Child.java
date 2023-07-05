@@ -1,6 +1,6 @@
 package com.softserve.teachua.model;
 
-import com.softserve.teachua.constants.Sex;
+import com.softserve.teachua.constants.Gender;
 import com.softserve.teachua.dto.marker.Convertible;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
 import jakarta.persistence.Column;
@@ -31,7 +31,7 @@ public class Child implements Convertible {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "parent_id", updatable = false)
+    @JoinColumn(name = "parent_id", nullable = false)
     private User parent;
 
     @Column(name = "first_name", nullable = false)
@@ -46,6 +46,6 @@ public class Child implements Convertible {
     @Enumerated(EnumType.STRING)
     @Type(PostgreSQLEnumType.class)
     @Column(name = "sex", nullable = false)
-    private Sex sex;
+    private Gender gender;
 
 }

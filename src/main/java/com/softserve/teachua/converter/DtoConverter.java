@@ -62,6 +62,12 @@ public class DtoConverter {
         return modelMapper.map(entity, dtoClass);
     }
 
+    public <T, D extends Convertible> D convertToDto(T entity, D dto) {
+        return modelMapper.map(entity, (Type) dto.getClass());
+    }
+
+
+
     /**
      * Convert from one DTO to another.
      *
