@@ -107,24 +107,57 @@ services:
     depends_on:
       - teachua_postgres
       - teachua_zipkin
+      - teachua_archive
+      - teachua_rabbitmq
+
+  teachua_archive:
+    image: bnazar00/teachua_archive:latest
+    container_name: teachua_archive
+    ports:
+      - "8082:8082"
+    env_file:
+      - TeachUa-docker.env
+    networks:
+      - spring
+      - teachua_mongodb
+    depends_on:
+      - teachua_mongodb
+      - teachua_rabbitmq
 
   teachua_rabbitmq:
     image: rabbitmq:3.12.1-management-alpine
     container_name: teachua_rabbitmq
+    env_file:
+      - TeachUa-docker.env
     ports:
       - "5672:5672"
       - "15672:15672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=admin
     networks:
       - spring
+
+  teachua_mongodb:
+    image: mongo
+    container_name: teachua_mongodb
+    env_file:
+      - TeachUa-docker.env
+    volumes:
+      - mongo:/data
+    ports:
+      - "26017:27017"
+    networks:
+      - teachua_mongodb
+    restart: unless-stopped
+
 
 networks:
   teachua_postgres:
     driver: bridge
   spring:
     driver: bridge
+  teachua_mongodb:
+    driver: bridge
 
 volumes:
   postgres:
+  mongo:
+#  kafka:

@@ -6,16 +6,15 @@ spring:
     name: archive
   data:
     mongodb:
-      port: ${MONGODB_PORT}
       host: ${MONGODB_HOST}
       authentication-database: ${MONGODB_AUTHENTICATION_DB}
-      username: ${MONGODB_USER}
-      password: ${MONGODB_PASSWORD}
+      username: ${MONGO_INITDB_ROOT_PASSWORD}
+      password: ${MONGO_INITDB_ROOT_PASSWORD}
       database: ${MONGODB_DATABASE}
   rabbitmq:
     addresses: ${RABBITMQ_NETWORK}:${RABBITMQ_PORT}
-    username: ${RABBITMQ_USER}
-    password: ${RABBITMQ_PASSWORD}
+    username: ${RABBITMQ_DEFAULT_USER}
+    password: ${RABBITMQ_DEFAULT_PASS}
 
 management:
   endpoints:

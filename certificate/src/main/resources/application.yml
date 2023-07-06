@@ -26,8 +26,8 @@ spring:
         transport.protocol: smtp
   rabbitmq:
     addresses: ${RABBITMQ_NETWORK}:${RABBITMQ_PORT}
-    username: ${RABBITMQ_USER}
-    password: ${RABBITMQ_PASSWORD}
+    username: ${RABBITMQ_DEFAULT_USER}
+    password: ${RABBITMQ_DEFAULT_PASS}
 
 application:
   api:
