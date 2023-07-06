@@ -37,20 +37,18 @@ public class ChildServiceImpl implements ChildService {
     }
 
     @Override
-    public ChildResponse getById(Long id) {
-        Child child = childRepository.findById(id)
+    public Child getById(Long id) {
+        return childRepository.findById(id)
                 .orElseThrow(() -> new NotExistException("Child has not found by id" + id));
-
-        return dtoConverter.convertToDto(child, ChildResponse.class);
     }
 
     @Override
     public List<ChildResponse> getAllByParentId(Long parentId) {
         List<Child> children = childRepository.getAllByParentId(parentId);
-        new ChildResponse();
+        ChildResponse cr = new ChildResponse();
 
         return children.stream()
-                .map(c -> dtoConverter.convertToDto(c, new ChildResponse()))
+                .map(c -> dtoConverter.convertToDto(c, cr))
                 .toList();
     }
 }

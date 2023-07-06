@@ -14,7 +14,7 @@ CREATE TABLE club_registrations (
     user_id BIGINT,
     child_id BIGINT,
     club_id BIGINT NOT NULL,
-    registration_date TIMESTAMP(0) DEFAULT NOW(),
+    registration_date TIMESTAMP(0) DEFAULT NOW() NOT NULL,
     is_approved BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (child_id) REFERENCES children(id),

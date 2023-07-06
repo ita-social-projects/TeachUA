@@ -1,9 +1,11 @@
 package com.softserve.teachua.controller;
 
+import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.child.ChildProfile;
 import com.softserve.teachua.dto.child.ChildResponse;
 import com.softserve.teachua.service.ChildService;
+import com.softserve.teachua.utils.annotation.AllowedRoles;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -34,6 +36,7 @@ public class ChildController implements Api {
     }
 
 
+    @AllowedRoles(RoleData.USER)
     @PostMapping("/child")
     public ResponseEntity<ChildResponse> addChild(@Valid @RequestBody ChildProfile childProfile) {
         log.debug("Add child {}", childProfile);

@@ -45,7 +45,7 @@ public class Child implements Convertible {
 
     @Enumerated(EnumType.STRING)
     @Type(PostgreSQLEnumType.class)
-    @Column(name = "sex", nullable = false)
+    @Column(name = "gender", nullable = false)
     private Gender gender;
 
 }
