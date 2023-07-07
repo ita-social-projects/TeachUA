@@ -2,7 +2,7 @@ package com.softserve.question.util.annotation;
 
 import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.UserPermissionException;
-import com.softserve.question.security.UserPrincipal;
+import com.softserve.commons.security.UserPrincipal;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;

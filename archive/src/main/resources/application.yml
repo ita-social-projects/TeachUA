@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: ${ARCHIVE_PORT}
 spring:
   profiles.active: dev
   application:
@@ -12,7 +12,7 @@ spring:
       password: ${MONGO_INITDB_ROOT_PASSWORD}
       database: ${MONGODB_DATABASE}
   rabbitmq:
-    addresses: ${RABBITMQ_NETWORK}:${RABBITMQ_PORT}
+    addresses: ${RABBITMQ_HOST}:${RABBITMQ_PORT}
     username: ${RABBITMQ_DEFAULT_USER}
     password: ${RABBITMQ_DEFAULT_PASS}
 

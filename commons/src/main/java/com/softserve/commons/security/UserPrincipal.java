@@ -1,4 +1,4 @@
-package com.softserve.user.security;
+package com.softserve.commons.security;
 
 import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.UserPermissionException;

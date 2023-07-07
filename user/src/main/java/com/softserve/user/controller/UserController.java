@@ -1,14 +1,14 @@
 package com.softserve.user.controller;
 
-import com.softserve.commons.certificate.client.CertificateClient;
-import com.softserve.commons.certificate.dto.CertificateUserResponse;
+import com.softserve.commons.client.CertificateClient;
+import com.softserve.commons.dto.certificate.CertificateUserResponse;
 import com.softserve.commons.constant.RoleData;
 import com.softserve.user.controller.marker.Api;
 import com.softserve.user.dto.SuccessUpdatedUser;
 import com.softserve.user.dto.UserPasswordUpdate;
 import com.softserve.user.dto.UserResponse;
 import com.softserve.user.dto.UserUpdateProfile;
-import com.softserve.user.security.UserPrincipal;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.user.service.UserService;
 import jakarta.validation.Valid;
 import java.util.List;

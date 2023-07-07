@@ -1,6 +1,6 @@
-package com.softserve.commons.certificate.client;
+package com.softserve.commons.client;
 
-import com.softserve.commons.certificate.dto.CertificateUserResponse;
+import com.softserve.commons.dto.certificate.CertificateUserResponse;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
         name = "certificate",
-        url = "http://${APIGW_NETWORK}:${APIGW_CERTIFICATE_PORT}",
-        path = "api/v1/certificate")
+        url = "http://${APIGW_HOST}:${APIGW_CERTIFICATE_PORT}",
+        path = "/api/v1/certificate")
 public interface CertificateClient {
     @GetMapping
     List<CertificateUserResponse> getListOfCertificatesByUserEmail(@RequestParam("email") String email);

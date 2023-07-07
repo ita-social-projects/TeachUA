@@ -8,7 +8,7 @@ import com.softserve.question.dto.question.QuestionPreview;
 import com.softserve.question.dto.question.QuestionResponse;
 import com.softserve.question.dto.question.question_excel.ExcelQuestionParsingResponse;
 import com.softserve.question.dto.question.question_excel.QuestionDataRequest;
-import com.softserve.question.security.UserPrincipal;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.question.service.QuestionDataLoaderService;
 import com.softserve.question.service.QuestionExcelService;
 import com.softserve.question.service.QuestionService;

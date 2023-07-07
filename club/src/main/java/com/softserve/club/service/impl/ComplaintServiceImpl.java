@@ -6,7 +6,7 @@ import com.softserve.club.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.club.model.Complaint;
 import com.softserve.club.repository.ClubRepository;
 import com.softserve.club.repository.ComplaintRepository;
-import com.softserve.club.security.UserPrincipal;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.club.service.ComplaintService;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;

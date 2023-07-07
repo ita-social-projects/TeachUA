@@ -10,7 +10,7 @@ import com.softserve.club.repository.MessageRepository;
 import com.softserve.club.service.MessageService;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
-import com.softserve.commons.user.UserClient;
+import com.softserve.commons.client.UserClient;
 import com.softserve.commons.util.converter.DtoConverter;
 import jakarta.validation.ValidationException;
 import java.util.List;

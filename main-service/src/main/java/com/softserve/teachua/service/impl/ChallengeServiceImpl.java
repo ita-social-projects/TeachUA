@@ -20,7 +20,7 @@ import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.repository.ChallengeRepository;
 import com.softserve.teachua.repository.TaskRepository;
-import com.softserve.teachua.security.UserPrincipal;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.teachua.service.ChallengeService;
 import com.softserve.teachua.service.TaskService;
 import com.softserve.teachua.utils.ChallengeUtil;

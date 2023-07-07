@@ -14,7 +14,7 @@ import com.softserve.question.model.QuestionHistory;
 import com.softserve.question.model.Result;
 import com.softserve.question.model.Test;
 import com.softserve.question.repository.ResultRepository;
-import com.softserve.question.security.UserPrincipal;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.question.service.AnswerService;
 import com.softserve.question.service.QuestionService;
 import com.softserve.question.service.ResultService;

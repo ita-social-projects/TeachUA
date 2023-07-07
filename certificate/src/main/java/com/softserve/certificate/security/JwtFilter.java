@@ -2,6 +2,7 @@ package com.softserve.certificate.security;
 
 import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.UserPermissionException;
+import com.softserve.commons.security.UserPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

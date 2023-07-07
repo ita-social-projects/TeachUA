@@ -1,6 +1,6 @@
 package com.softserve.certificate.utils.annotation;
 
-import com.softserve.certificate.security.UserPrincipal;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.UserPermissionException;
 import java.util.Arrays;

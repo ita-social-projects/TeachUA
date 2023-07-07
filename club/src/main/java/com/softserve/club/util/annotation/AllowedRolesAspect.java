@@ -1,6 +1,6 @@
 package com.softserve.club.util.annotation;
 
-import com.softserve.club.security.UserPrincipal;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.UserPermissionException;
 import java.util.Arrays;

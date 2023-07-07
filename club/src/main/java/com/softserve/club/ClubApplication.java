@@ -1,13 +1,12 @@
 package com.softserve.club;
 
+import com.softserve.commons.config.FeignConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@EnableFeignClients(
-        basePackages = "com.softserve.commons"
-)
+@Import(FeignConfig.class)
 public class ClubApplication {
     public static void main(String[] args) {
         SpringApplication.run(ClubApplication.class, args);

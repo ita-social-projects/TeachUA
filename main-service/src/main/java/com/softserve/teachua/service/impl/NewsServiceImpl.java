@@ -10,7 +10,7 @@ import com.softserve.teachua.dto.news.SimmilarNewsProfile;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.model.News;
 import com.softserve.teachua.repository.NewsRepository;
-import com.softserve.teachua.security.UserPrincipal;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.NewsService;
 import jakarta.validation.ValidationException;

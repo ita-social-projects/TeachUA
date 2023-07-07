@@ -16,7 +16,7 @@ import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.model.archivable.TaskArch;
 import com.softserve.teachua.repository.TaskRepository;
-import com.softserve.teachua.security.UserPrincipal;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ChallengeService;

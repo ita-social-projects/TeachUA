@@ -19,7 +19,7 @@ import com.softserve.question.model.Subscription;
 import com.softserve.question.model.Test;
 import com.softserve.question.repository.SubscriptionRepository;
 import com.softserve.question.repository.TestRepository;
-import com.softserve.question.security.UserPrincipal;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.question.service.GroupService;
 import com.softserve.question.service.QuestionCategoryService;
 import com.softserve.question.service.QuestionService;

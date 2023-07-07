@@ -5,7 +5,7 @@ import com.softserve.question.dto.subscription.SubscriptionProfile;
 import com.softserve.question.model.Group;
 import com.softserve.question.model.Subscription;
 import com.softserve.question.repository.SubscriptionRepository;
-import com.softserve.question.security.UserPrincipal;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.question.service.GroupService;
 import com.softserve.question.service.SubscriptionService;
 import static com.softserve.question.util.Messages.INCORRECT_ENROLLMENT_KEY_MESSAGE;
