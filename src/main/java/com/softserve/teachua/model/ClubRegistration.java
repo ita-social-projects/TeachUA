@@ -57,4 +57,11 @@ public class ClubRegistration implements Convertible {
     @Column(name = "is_approved", nullable = false)
     private Boolean isApproved = false;
 
+    @Builder.Default
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
+
+    @Column
+    private String comment;
+
 }

@@ -1,5 +1,6 @@
 package com.softserve.teachua.dto.club_registration;
 
+import com.softserve.teachua.utils.validations.CheckRussian;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,5 +19,7 @@ public class ClubRegistrationRequest {
     @NotNull
     @Min(0)
     private Long clubId;
+    @CheckRussian
+    private String comment;
 
 }

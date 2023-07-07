@@ -17,4 +17,6 @@ public class UserClubRegistrationResponse implements Convertible {
     private Long clubId;
     private LocalDateTime registrationDate;
     private boolean isApproved;
+    private boolean isActive;
+    private String comment;
 }

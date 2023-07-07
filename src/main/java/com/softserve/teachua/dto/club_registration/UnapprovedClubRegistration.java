@@ -21,4 +21,6 @@ public class UnapprovedClubRegistration implements Convertible {
     private ChildResponse child;
     private MessagesClub club;
     private String registrationDate;
+    private boolean isActive;
+    private String comment;
 }

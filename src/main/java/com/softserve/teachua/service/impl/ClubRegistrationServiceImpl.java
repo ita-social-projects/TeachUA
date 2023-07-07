@@ -37,7 +37,7 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
         Club club = clubService.getClubById(clubRegistrationRequest.getClubId());
 
         List<ClubRegistration> registered = clubRegistrationRequest.getChildIds().stream()
-                .map(createFunction(club))
+                .map(createFunction(club, clubRegistrationRequest.getComment()))
                 .toList();
         ClubRegistrationResponse crr = new ClubRegistrationResponse();
 
@@ -53,6 +53,7 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
         ClubRegistration cr = ClubRegistration.builder()
                 .club(club)
+                .comment(userClubRegistrationRequest.getComment())
                 .user(user)
                 .build();
         cr = clubRegistrationRepository.save(cr);
@@ -78,11 +79,12 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
     }
 
     @NotNull
-    private Function<Long, ClubRegistration> createFunction(Club club) {
+    private Function<Long, ClubRegistration> createFunction(Club club, String comment) {
         return childId -> {
             Child child = childService.getById(childId);
             ClubRegistration clubRegistration = ClubRegistration.builder()
                     .club(club)
+                    .comment(comment)
                     .child(child)
                     .build();
 
