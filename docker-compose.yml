@@ -160,4 +160,3 @@ networks:
 volumes:
   postgres:
   mongo:
-#  kafka:

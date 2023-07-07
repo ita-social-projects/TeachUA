@@ -38,7 +38,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    ObservationRegistryCustomizer<ObservationRegistry> observationRegistryCustomizer() {
+    public ObservationRegistryCustomizer<ObservationRegistry> observationRegistryCustomizer() {
         return registry -> registry.observationConfig()
                 .observationPredicate(ObservationPredicates.noSpringSecurity())
                 .observationPredicate((name, context) -> {
