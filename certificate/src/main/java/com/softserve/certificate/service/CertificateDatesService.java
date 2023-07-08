@@ -1,12 +1,13 @@
 package com.softserve.certificate.service;
 
 import com.softserve.certificate.model.CertificateDates;
+import com.softserve.commons.util.marker.Archiver;
 import java.util.Optional;
 
 /**
  * This interface contains all needed methods to manage certificate dates.
  */
-public interface CertificateDatesService {
+public interface CertificateDatesService extends Archiver<Integer> {
     boolean exists(CertificateDates certificateDates);
 
     /**

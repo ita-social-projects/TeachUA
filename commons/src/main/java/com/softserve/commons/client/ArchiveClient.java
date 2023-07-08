@@ -12,5 +12,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface ArchiveClient {
     @GetMapping(params = {"className", "id"})
     Map<String, String> restoreModel(@RequestParam("className") String className,
-                                            @RequestParam("id") Long id);
+                                            @RequestParam("id") Number id);
 }

@@ -3,10 +3,11 @@ package com.softserve.certificate.service;
 import com.softserve.certificate.dto.certificate.CertificateContent;
 import com.softserve.certificate.dto.certificate.CertificatePreview;
 import com.softserve.certificate.dto.certificate.CertificateTransfer;
-import com.softserve.commons.dto.certificate.CertificateUserResponse;
 import com.softserve.certificate.dto.certificate.CertificateVerificationResponse;
 import com.softserve.certificate.model.Certificate;
 import com.softserve.certificate.model.CertificateDates;
+import com.softserve.commons.dto.certificate.CertificateUserResponse;
+import com.softserve.commons.util.marker.Archiver;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.Map;
 /**
  * This service contains methods to manage certificates.
  */
-public interface CertificateService {
+public interface CertificateService extends Archiver<Long> {
     /**
      * This const means the last database id of the certificate's template, which generates using Jasper .xml file.
      */

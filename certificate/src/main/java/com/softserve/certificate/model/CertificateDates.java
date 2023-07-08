@@ -1,5 +1,6 @@
 package com.softserve.certificate.model;
 
+import com.softserve.amqp.marker.Archivable;
 import com.softserve.commons.util.marker.Convertible;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +21,7 @@ import lombok.With;
 @Table(name = "certificate_dates")
 @With
 @Builder
-public class CertificateDates implements Convertible {
+public class CertificateDates implements Convertible, Archivable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

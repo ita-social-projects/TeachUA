@@ -1,8 +1,11 @@
 package com.softserve.certificate.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.certificate.model.CertificateDates;
 import com.softserve.certificate.repository.CertificateDatesRepository;
 import com.softserve.certificate.service.CertificateDatesService;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.NotExistException;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -17,25 +20,32 @@ public class CertificateDatesServiceImpl implements CertificateDatesService {
     private static final String DATE_NOT_FOUND_BY_ID = "Certificate dates not found by id: %s";
 
     private final CertificateDatesRepository certificateDatesRepository;
+    private final ArchiveMQMessageProducer<CertificateDates> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
 
-    public CertificateDatesServiceImpl(CertificateDatesRepository certificateDatesRepository) {
+
+    public CertificateDatesServiceImpl(CertificateDatesRepository certificateDatesRepository,
+                                       ArchiveMQMessageProducer<CertificateDates> archiveMQMessageProducer,
+                                       ArchiveClient archiveClient, ObjectMapper objectMapper) {
         this.certificateDatesRepository = certificateDatesRepository;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
+        this.objectMapper = objectMapper;
     }
 
-    //todo@
-   /* @Override
-    public void archiveModel(CertificateDates certificateDates) {
-        CertificateDatesArch certificateDatesArch =
-                dtoConverter.convertToDto(certificateDates, CertificateDatesArch.class);
-        archiveService.saveModel(certificateDatesArch);
+    private void archiveModel(CertificateDates certificateDates) {
+        archiveMQMessageProducer.publish(certificateDates);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        CertificateDatesArch certificateDatesArch = objectMapper.readValue(archiveObject, CertificateDatesArch.class);
-        certificateDatesRepository.save(
-                dtoConverter.convertToEntity(certificateDatesArch, CertificateDates.builder().build()));
-    }*/
+    public void restoreModel(Integer id) {
+        var certificateDates = objectMapper.convertValue(
+                archiveClient.restoreModel(CertificateDates.class.getName(), id),
+                CertificateDates.class);
+
+        certificateDatesRepository.save(certificateDates);
+    }
 
     @Override
     public boolean exists(CertificateDates certificateDates) {

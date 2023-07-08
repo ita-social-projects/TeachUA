@@ -1,9 +1,10 @@
 package com.softserve.certificate.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.certificate.dto.certificate.CertificateContent;
 import com.softserve.certificate.dto.certificate.CertificatePreview;
 import com.softserve.certificate.dto.certificate.CertificateTransfer;
-import com.softserve.commons.dto.certificate.CertificateUserResponse;
 import com.softserve.certificate.dto.certificate.CertificateVerificationResponse;
 import com.softserve.certificate.exception.CertificateGenerationException;
 import com.softserve.certificate.model.Certificate;
@@ -13,6 +14,8 @@ import com.softserve.certificate.service.CertificateByTemplateService;
 import com.softserve.certificate.service.CertificateService;
 import com.softserve.certificate.utils.CertificateContentDecorator;
 import com.softserve.certificate.utils.QRCodeService;
+import com.softserve.commons.client.ArchiveClient;
+import com.softserve.commons.dto.certificate.CertificateUserResponse;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.commons.exception.UserPermissionException;
 import com.softserve.commons.util.converter.DtoConverter;
@@ -57,16 +60,24 @@ public class CertificateServiceImpl implements CertificateService {
     private final CertificateRepository certificateRepository;
     private final CertificateContentDecorator certificateContentDecorator;
     private final CertificateByTemplateService certificateByTemplateService;
+    private final ArchiveMQMessageProducer<Certificate> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
 
     public CertificateServiceImpl(DtoConverter dtoConverter, QRCodeService qrCodeService,
                                   CertificateRepository certificateRepository,
                                   CertificateContentDecorator certificateContentDecorator,
-                                  CertificateByTemplateService certificateByTemplateService) {
+                                  CertificateByTemplateService certificateByTemplateService,
+                                  ArchiveMQMessageProducer<Certificate> archiveMQMessageProducer,
+                                  ArchiveClient archiveClient, ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.qrCodeService = qrCodeService;
         this.certificateRepository = certificateRepository;
         this.certificateContentDecorator = certificateContentDecorator;
         this.certificateByTemplateService = certificateByTemplateService;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -371,26 +382,18 @@ public class CertificateServiceImpl implements CertificateService {
                 .toList();
     }
 
-    //todo@
-    //@Override
-    //public void archiveModel(Certificate certificate) {
-    //    CertificateArch certificateArch = dtoConverter.convertToDto(certificate, CertificateArch.class);
-    //    archiveService.saveModel(certificateArch);
-    //}
-    //
-    //@Override
-    //public void restoreModel(String archiveObject) throws JsonProcessingException {
-    //    CertificateArch certificateArch = objectMapper.readValue(archiveObject, CertificateArch.class);
-    //    Certificate certificate = Certificate.builder().build();
-    //    certificate = dtoConverter.convertToEntity(certificateArch, certificate).withId(null);
-    //    if (Optional.ofNullable(certificateArch.getTemplateId()).isPresent()) {
-    //        certificate.setTemplate(certificateTemplateService.getTemplateById(certificateArch.getTemplateId()));
-    //    }
-    //    if (Optional.ofNullable(certificateArch.getDatesId()).isPresent()) {
-    //        certificate.setDates(certificateDatesService.getCertificateDatesById(certificateArch.getDatesId()));
-    //    }
-    //    certificateRepository.save(certificate);
-    //}
+    private void archiveModel(Certificate certificate) {
+        archiveMQMessageProducer.publish(certificate);
+    }
+
+    @Override
+    public void restoreModel(Long id) {
+        var certificate = objectMapper.convertValue(
+                archiveClient.restoreModel(Certificate.class.getName(), id),
+                Certificate.class);
+
+        certificateRepository.save(certificate);
+    }
 
     @Override
     public boolean existsByUserNameAndDates(String name, CertificateDates dates) {
