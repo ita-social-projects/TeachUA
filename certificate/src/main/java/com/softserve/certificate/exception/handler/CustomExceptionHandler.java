@@ -4,6 +4,7 @@ import com.google.api.client.http.HttpResponseException;
 import com.softserve.certificate.dto.exception.ExceptionResponse;
 import com.softserve.certificate.exception.CertificateGenerationException;
 import com.softserve.certificate.exception.GoogleApisDocumentException;
+import feign.FeignException;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,5 +43,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.resolve(exception.getStatusCode())
         ).orElse(BAD_REQUEST);
         return buildExceptionBody(exception, httpStatus);
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public final ResponseEntity<Object> handleFeignException(FeignException exception) {
+        return buildExceptionBody(exception, HttpStatus.valueOf(exception.status()));
     }
 }
