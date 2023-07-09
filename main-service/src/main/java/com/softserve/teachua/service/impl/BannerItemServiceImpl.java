@@ -1,7 +1,8 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.commons.util.converter.DtoConverter;
@@ -9,10 +10,7 @@ import com.softserve.teachua.dto.banner_item.BannerItemProfile;
 import com.softserve.teachua.dto.banner_item.BannerItemResponse;
 import com.softserve.teachua.dto.banner_item.SuccessCreatedBannerItem;
 import com.softserve.teachua.model.BannerItem;
-import com.softserve.teachua.model.archivable.BannerItemArch;
 import com.softserve.teachua.repository.BannerItemRepository;
-import com.softserve.teachua.service.ArchiveMark;
-import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.BannerItemService;
 import jakarta.validation.ValidationException;
 import java.util.List;
@@ -24,21 +22,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<BannerItem> {
+public class BannerItemServiceImpl implements BannerItemService {
     private static final String BANNER_ITEM_NOT_FOUND_BY_ID = "Banner Item not found by id: %s";
     private static final String BANNER_ITEM_DELETING_ERROR = "Banner Item can`t be deleted by id: %s";
 
     private final BannerItemRepository bannerItemRepository;
-    private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
     private final ObjectMapper objectMapper;
+    private final ArchiveMQMessageProducer<BannerItem> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
 
-    public BannerItemServiceImpl(BannerItemRepository bannerItemRepository, ArchiveService archiveService,
-            DtoConverter dtoConverter, ObjectMapper objectMapper) {
+    public BannerItemServiceImpl(BannerItemRepository bannerItemRepository, DtoConverter dtoConverter,
+                                 ObjectMapper objectMapper,
+                                 ArchiveMQMessageProducer<BannerItem> archiveMQMessageProducer,
+                                 ArchiveClient archiveClient) {
         this.bannerItemRepository = bannerItemRepository;
-        this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
         this.objectMapper = objectMapper;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
     }
 
     @Override
@@ -97,15 +99,18 @@ public class BannerItemServiceImpl implements BannerItemService, ArchiveMark<Ban
         return dtoConverter.convertToDto(bannerItem, BannerItemResponse.class);
     }
 
-    @Override
-    public void archiveModel(BannerItem bannerItem) {
-        archiveService.saveModel(dtoConverter.convertToDto(bannerItem, BannerItemArch.class));
+    private void archiveModel(BannerItem bannerItem) {
+        archiveMQMessageProducer.publish(bannerItem);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        BannerItemArch bannerItemArh = objectMapper.readValue(archiveObject, BannerItemArch.class);
-        BannerItem bannerItem = dtoConverter.convertToEntity(bannerItemArh, BannerItem.builder().build());
-        bannerItemRepository.save(bannerItem);
+    public void restoreModel(Long id) {
+        var aboutUsItem = objectMapper.convertValue(
+                archiveClient.restoreModel(BannerItem.class.getName(), id),
+                BannerItem.class);
+
+        bannerItemRepository.save(aboutUsItem);
     }
+
+
 }

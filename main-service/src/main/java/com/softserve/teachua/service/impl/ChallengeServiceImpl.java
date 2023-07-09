@@ -1,8 +1,12 @@
 package com.softserve.teachua.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.commons.exception.UserPermissionException;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.challenge.ChallengeDeleteResponse;
 import com.softserve.teachua.dto.challenge.ChallengePreview;
@@ -20,13 +24,11 @@ import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
 import com.softserve.teachua.repository.ChallengeRepository;
 import com.softserve.teachua.repository.TaskRepository;
-import com.softserve.commons.security.UserPrincipal;
 import com.softserve.teachua.service.ChallengeService;
 import com.softserve.teachua.service.TaskService;
 import com.softserve.teachua.utils.ChallengeUtil;
 import com.softserve.teachua.utils.HtmlUtils;
 import java.time.LocalDate;
-import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -38,6 +40,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Slf4j
@@ -46,18 +49,22 @@ public class ChallengeServiceImpl implements ChallengeService {
     private final ChallengeRepository challengeRepository;
     private final DtoConverter dtoConverter;
     private final TaskRepository taskRepository;
-    private TaskService taskService;
+    private final TaskService taskService;
+    private final ArchiveMQMessageProducer<Challenge> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
 
     public ChallengeServiceImpl(ChallengeRepository challengeRepository, DtoConverter dtoConverter,
-                                TaskRepository taskRepository, TaskService taskService) {
+                                TaskRepository taskRepository,
+                                ArchiveMQMessageProducer<Challenge> archiveMQMessageProducer,
+                                ArchiveClient archiveClient, TaskService taskService, ObjectMapper objectMapper) {
         this.challengeRepository = challengeRepository;
         this.dtoConverter = dtoConverter;
         this.taskRepository = taskRepository;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
         this.taskService = taskService;
-    }
-
-    public void setTaskService(TaskService taskService) {
-        this.taskService = taskService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -107,7 +114,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         });
         challengeRepository.deleteById(id);
         challengeRepository.flush();
-        //archiveModel(challenge);
+        archiveModel(challenge);
         return dtoConverter.convertToDto(challenge, ChallengeDeleteResponse.class);
     }
 
@@ -139,28 +146,18 @@ public class ChallengeServiceImpl implements ChallengeService {
         return dtoConverter.convertToDto(challengeRepository.save(challenge), SuccessUpdateChallengePreview.class);
     }
 
-    //todo@
-    /*
-    @Override
-    public void archiveModel(Challenge challenge) {
-        ChallengeArch challengeArch = dtoConverter.convertToDto(challenge, ChallengeArch.class);
-        challengeArch.setTasksIds(challenge.getTasks().stream().map(Task::getId).collect(Collectors.toSet()));
-        archiveService.saveModel(challengeArch);
+    private void archiveModel(Challenge challenge) {
+        archiveMQMessageProducer.publish(challenge);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        ChallengeArch challengeArch = objectMapper.readValue(archiveObject, ChallengeArch.class);
-        Challenge challenge = Challenge.builder().build();
-        challenge = dtoConverter.convertToEntity(challengeArch, challenge).withId(null);
-        if (Optional.ofNullable(challengeArch.getUserId()).isPresent()) {
-            challenge.setUser(userService.getUserById(challengeArch.getUserId()));
-        }
-        Challenge finalChallenge = challengeRepository.save(challenge);
-        challengeArch.getTasksIds().stream().map(taskService::getTaskById)
-                .forEach(task -> task.setChallenge(finalChallenge));
+    public void restoreModel(Long id) {
+        var challenge = objectMapper.convertValue(
+                archiveClient.restoreModel(Challenge.class.getName(), id),
+                Challenge.class);
+
+        challengeRepository.save(challenge);
     }
-    */
 
     @Override
     public Challenge getChallengeByName(String name) {

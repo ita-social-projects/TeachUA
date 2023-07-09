@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.commons.util.marker.Archiver;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
 import com.softserve.teachua.dto.news.SimmilarNewsProfile;
@@ -13,7 +14,7 @@ import org.springframework.data.domain.Pageable;
  * This interface contains all needed methods to manage news.
  */
 
-public interface NewsService {
+public interface NewsService extends Archiver<Long> {
     /**
      * Method finds {@code News}, and converts it to object of DTO class {@code NewsResponce}.
      *

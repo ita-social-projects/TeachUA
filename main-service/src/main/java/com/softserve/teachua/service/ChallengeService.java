@@ -1,5 +1,7 @@
 package com.softserve.teachua.service;
 
+import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.marker.Archiver;
 import com.softserve.teachua.dto.challenge.ChallengeDeleteResponse;
 import com.softserve.teachua.dto.challenge.ChallengePreview;
 import com.softserve.teachua.dto.challenge.ChallengeProfile;
@@ -10,7 +12,6 @@ import com.softserve.teachua.dto.challenge.SuccessUpdatedChallenge;
 import com.softserve.teachua.dto.challenge.UpdateChallenge;
 import com.softserve.teachua.dto.challenge.UpdateChallengeDate;
 import com.softserve.teachua.dto.task.SuccessUpdatedTask;
-import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.model.Challenge;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
  * This interface contains all needed methods to manage about us items using AboutUsItemRepository.
  */
 
-public interface ChallengeService {
+public interface ChallengeService extends Archiver<Long> {
     /**
      * The method returns list of entities {@code List<ChallengePreview>} of all challenges.
      *

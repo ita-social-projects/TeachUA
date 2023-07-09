@@ -10,7 +10,6 @@ import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Location;

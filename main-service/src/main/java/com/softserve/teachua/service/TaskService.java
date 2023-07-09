@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.commons.util.marker.Archiver;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.teachua.dto.task.CreateTask;
 import com.softserve.teachua.dto.task.SuccessCreatedTask;
@@ -14,7 +15,7 @@ import java.util.List;
  * This interface contains all needed methods to manage tasks.
  */
 
-public interface TaskService {
+public interface TaskService extends Archiver<Long> {
     /**
      * The method deletes entity {@code Task} returns dto {@code TaskProfile} of deleted task by id.
      *

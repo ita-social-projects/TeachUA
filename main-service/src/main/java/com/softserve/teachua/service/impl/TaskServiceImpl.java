@@ -1,10 +1,12 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.commons.exception.UserPermissionException;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.task.CreateTask;
 import com.softserve.teachua.dto.task.SuccessCreatedTask;
@@ -14,11 +16,7 @@ import com.softserve.teachua.dto.task.TaskProfile;
 import com.softserve.teachua.dto.task.UpdateTask;
 import com.softserve.teachua.model.Challenge;
 import com.softserve.teachua.model.Task;
-import com.softserve.teachua.model.archivable.TaskArch;
 import com.softserve.teachua.repository.TaskRepository;
-import com.softserve.commons.security.UserPrincipal;
-import com.softserve.teachua.service.ArchiveMark;
-import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.ChallengeService;
 import com.softserve.teachua.service.TaskService;
 import com.softserve.teachua.utils.HtmlUtils;
@@ -36,21 +34,24 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @Transactional
-public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
+public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
-    private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
     private final ChallengeService challengeService;
     private final ObjectMapper objectMapper;
+    private final ArchiveMQMessageProducer<Task> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, ArchiveService archiveService, DtoConverter dtoConverter,
-                           @Lazy ChallengeService challengeService, ObjectMapper objectMapper) {
+    public TaskServiceImpl(TaskRepository taskRepository, DtoConverter dtoConverter,
+                           @Lazy ChallengeService challengeService, ObjectMapper objectMapper,
+                           ArchiveMQMessageProducer<Task> archiveMQMessageProducer, ArchiveClient archiveClient) {
         this.taskRepository = taskRepository;
-        this.archiveService = archiveService;
         this.dtoConverter = dtoConverter;
         this.challengeService = challengeService;
         this.objectMapper = objectMapper;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
     }
 
     @Override
@@ -129,16 +130,16 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
         return dtoConverter.convertToDto(taskRepository.save(task), SuccessUpdatedTask.class);
     }
 
-    @Override
-    public void archiveModel(Task task) {
-        archiveService.saveModel(dtoConverter.convertToDto(task, TaskArch.class));
+    private void archiveModel(Task task) {
+        archiveMQMessageProducer.publish(task);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        TaskArch taskArch = objectMapper.readValue(archiveObject, TaskArch.class);
-        Task task = dtoConverter.convertToEntity(taskArch, Task.builder().build()).withId(null)
-                .withChallenge(challengeService.getChallengeById(taskArch.getChallengeId()));
+    public void restoreModel(Long id) {
+        var task = objectMapper.convertValue(
+                archiveClient.restoreModel(Task.class.getName(), id),
+                Task.class);
+
         taskRepository.save(task);
     }
 }

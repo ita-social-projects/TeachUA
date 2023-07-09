@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.commons.util.marker.Archiver;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
 import com.softserve.commons.exception.NotExistException;
@@ -10,7 +11,7 @@ import java.util.List;
  * This interface contains all needed methods to manage about us items using AboutUsItemRepository.
  */
 
-public interface AboutUsItemService {
+public interface AboutUsItemService extends Archiver<Long> {
     /**
      * The method returns entity {@code AboutUsItem} of about us item by id.
      *

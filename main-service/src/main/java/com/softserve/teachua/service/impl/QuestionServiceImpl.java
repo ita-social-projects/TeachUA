@@ -1,6 +1,8 @@
 package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
@@ -9,7 +11,6 @@ import com.softserve.teachua.dto.question.QuestionProfile;
 import com.softserve.teachua.dto.question.QuestionResponse;
 import com.softserve.teachua.model.Question;
 import com.softserve.teachua.repository.QuestionRepository;
-import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.QuestionService;
 import jakarta.validation.ValidationException;
 import java.util.List;
@@ -23,23 +24,26 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Transactional
 @Service
-public class QuestionServiceImpl implements QuestionService/*, ArchiveMark<Question>*/ {
+public class QuestionServiceImpl implements QuestionService {
     private static final String QUESTION_NOT_FOUND_BY_ID = "Question not found by id: %s";
     private static final String QUESTION_ALREADY_EXIST = "Question already exist with name: %s";
     private static final String QUESTION_DELETING_ERROR = "Can't delete question cause of relationship";
 
     private final QuestionRepository questionRepository;
     private final DtoConverter dtoConverter;
-    private final ArchiveService archiveService;
     private final ObjectMapper objectMapper;
+    private final ArchiveMQMessageProducer<Question> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
 
     @Autowired
-    QuestionServiceImpl(QuestionRepository questionRepository, DtoConverter dtoConverter, ArchiveService archiveService,
-            ObjectMapper objectMapper) {
+    QuestionServiceImpl(QuestionRepository questionRepository, DtoConverter dtoConverter,
+                        ObjectMapper objectMapper, ArchiveMQMessageProducer<Question> archiveMQMessageProducer,
+                        ArchiveClient archiveClient) {
         this.questionRepository = questionRepository;
         this.dtoConverter = dtoConverter;
-        this.archiveService = archiveService;
         this.objectMapper = objectMapper;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
     }
 
     @Override
@@ -85,7 +89,7 @@ public class QuestionServiceImpl implements QuestionService/*, ArchiveMark<Quest
             throw new DatabaseRepositoryException(QUESTION_DELETING_ERROR);
         }
 
-        //archiveModel(deletedQuestion);
+        archiveModel(deletedQuestion);
 
         log.debug("question {} was successfully deleted", deletedQuestion);
         return dtoConverter.convertToDto(deletedQuestion, QuestionProfile.class);
@@ -110,18 +114,16 @@ public class QuestionServiceImpl implements QuestionService/*, ArchiveMark<Quest
         return questionRepository.existsByTitle(title);
     }
 
-    //todo@
-    /*
-    @Override
-    public void archiveModel(Question question) {
-        QuestionArch questionArch = dtoConverter.convertToDto(question, QuestionArch.class);
-        archiveService.saveModel(questionArch);
+    private void archiveModel(Question question) {
+        archiveMQMessageProducer.publish(question);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        QuestionArch questionArch = objectMapper.readValue(archiveObject, QuestionArch.class);
-        questionRepository.save(dtoConverter.convertToEntity(questionArch, Question.builder().build()));
+    public void restoreModel(Long id) {
+        var question = objectMapper.convertValue(
+                archiveClient.restoreModel(Question.class.getName(), id),
+                Question.class);
+
+        questionRepository.save(question);
     }
-    */
 }

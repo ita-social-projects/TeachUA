@@ -20,7 +20,6 @@ import com.softserve.teachua.exception.NotVerifiedUserException;
 import com.softserve.teachua.exception.UserAuthenticationException;
 import com.softserve.teachua.exception.UpdatePasswordException;
 import com.softserve.teachua.exception.UserPermissionException;
-import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.UserArch;

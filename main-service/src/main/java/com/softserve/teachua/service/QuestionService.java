@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.commons.util.marker.Archiver;
 import com.softserve.teachua.dto.question.QuestionProfile;
 import com.softserve.teachua.dto.question.QuestionResponse;
 import com.softserve.commons.exception.AlreadyExistException;
@@ -11,7 +12,7 @@ import java.util.List;
  * This interface contains all needed methods to manage questions.
  */
 
-public interface QuestionService {
+public interface QuestionService extends Archiver<Long> {
     /**
      * Method find {@link Question}.
      *

@@ -1,17 +1,15 @@
 package com.softserve.teachua.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemProfile;
 import com.softserve.teachua.dto.about_us_item.AboutUsItemResponse;
 import com.softserve.teachua.model.AboutUsItem;
-import com.softserve.teachua.model.archivable.AboutUsItemArch;
 import com.softserve.teachua.repository.AboutUsItemRepository;
 import com.softserve.teachua.service.AboutUsItemService;
-import com.softserve.teachua.service.ArchiveMark;
-import com.softserve.teachua.service.ArchiveService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -21,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<AboutUsItem> {
+public class AboutUsItemServiceImpl implements AboutUsItemService {
     private static final String ABOUT_US_ITEM_NOT_FOUND_BY_ID = "AboutUsItem was not found by id: %s";
     private static final String WRONG_LINK = "Youtube link should contain 'watch?v='";
     private static final String VIDEO_PARAM = "watch?v=";
@@ -29,16 +27,20 @@ public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<A
     private static final Long STEP = 20L;
 
     private final AboutUsItemRepository aboutUsItemRepository;
-    private final ArchiveService archiveService;
     private final DtoConverter dtoConverter;
     private final ObjectMapper objectMapper;
+    private final ArchiveMQMessageProducer<AboutUsItem> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
 
-    public AboutUsItemServiceImpl(AboutUsItemRepository aboutUsItemRepository, ArchiveService archiveService,
-                                  DtoConverter dtoConverter, ObjectMapper objectMapper) {
+    public AboutUsItemServiceImpl(AboutUsItemRepository aboutUsItemRepository, DtoConverter dtoConverter,
+                                  ObjectMapper objectMapper,
+                                  ArchiveMQMessageProducer<AboutUsItem> archiveMQMessageProducer,
+                                  ArchiveClient archiveClient) {
         this.aboutUsItemRepository = aboutUsItemRepository;
-        this.archiveService = archiveService;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
         this.dtoConverter = dtoConverter;
         this.objectMapper = objectMapper;
+        this.archiveClient = archiveClient;
     }
 
     @Override
@@ -160,15 +162,16 @@ public class AboutUsItemServiceImpl implements AboutUsItemService, ArchiveMark<A
         updateAboutUsItem(id, dtoConverter.convertToDto(item, AboutUsItemProfile.class));
     }
 
-    @Override
-    public void archiveModel(AboutUsItem aboutUsItem) {
-        archiveService.saveModel(dtoConverter.convertToDto(aboutUsItem, AboutUsItemArch.class));
+    private void archiveModel(AboutUsItem aboutUsItem) {
+        archiveMQMessageProducer.publish(aboutUsItem);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        AboutUsItemArch aboutUsItemArch = objectMapper.readValue(archiveObject, AboutUsItemArch.class);
-        AboutUsItem aboutUsItem = dtoConverter.convertToEntity(aboutUsItemArch, AboutUsItem.builder().build());
+    public void restoreModel(Long id) {
+        var aboutUsItem = objectMapper.convertValue(
+                archiveClient.restoreModel(AboutUsItem.class.getName(), id),
+                AboutUsItem.class);
+
         aboutUsItemRepository.save(aboutUsItem);
     }
 }

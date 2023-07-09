@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import com.softserve.commons.util.marker.Archiver;
 import com.softserve.teachua.dto.banner_item.BannerItemProfile;
 import com.softserve.teachua.dto.banner_item.BannerItemResponse;
 import com.softserve.teachua.dto.banner_item.SuccessCreatedBannerItem;
@@ -11,7 +12,7 @@ import java.util.List;
  * This interface contains all needed methods to manage banner items using BannerItemRepository.
  */
 
-public interface BannerItemService {
+public interface BannerItemService extends Archiver<Long> {
     /**
      * The method returns dto {@code BannerItemResponse} of banner item by id.
      *

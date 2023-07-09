@@ -8,7 +8,6 @@ import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
-import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.archivable.CategoryArch;
 import com.softserve.teachua.repository.CategoryRepository;

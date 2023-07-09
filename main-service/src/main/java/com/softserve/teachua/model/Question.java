@@ -1,5 +1,6 @@
 package com.softserve.teachua.model;
 
+import com.softserve.amqp.marker.Archivable;
 import com.softserve.commons.util.marker.Convertible;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +21,7 @@ import lombok.With;
 @Entity
 @Builder
 @Table(name = "question")
-public class Question implements Convertible {
+public class Question implements Convertible, Archivable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

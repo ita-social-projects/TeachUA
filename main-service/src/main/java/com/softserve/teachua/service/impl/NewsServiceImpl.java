@@ -1,8 +1,11 @@
 package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.commons.util.converter.DtoConverter;
 import com.softserve.teachua.dto.news.NewsProfile;
 import com.softserve.teachua.dto.news.NewsResponse;
@@ -10,8 +13,6 @@ import com.softserve.teachua.dto.news.SimmilarNewsProfile;
 import com.softserve.teachua.dto.news.SuccessCreatedNews;
 import com.softserve.teachua.model.News;
 import com.softserve.teachua.repository.NewsRepository;
-import com.softserve.commons.security.UserPrincipal;
-import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.NewsService;
 import jakarta.validation.ValidationException;
 import java.util.List;
@@ -30,22 +31,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Transactional
 @Service
-public class NewsServiceImpl implements NewsService/*, ArchiveMark<News>*/ {
+public class NewsServiceImpl implements NewsService {
     private static final String NEWS_NOT_FOUND_BY_ID = "News not found by id: %s";
     private static final String CATEGORY_DELETING_ERROR = "Can't delete category cause of relationship";
 
     private final NewsRepository newsRepository;
     private final DtoConverter dtoConverter;
-    private final ArchiveService archiveService;
     private final ObjectMapper objectMapper;
+    private final ArchiveMQMessageProducer<News> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
 
     @Autowired
-    NewsServiceImpl(NewsRepository newsRepository, DtoConverter dtoConverter, ArchiveService archiveService,
-                    ObjectMapper objectMapper) {
+    public NewsServiceImpl(NewsRepository newsRepository, DtoConverter dtoConverter,
+                           ObjectMapper objectMapper, ArchiveMQMessageProducer<News> archiveMQMessageProducer,
+                           ArchiveClient archiveClient) {
         this.newsRepository = newsRepository;
         this.dtoConverter = dtoConverter;
-        this.archiveService = archiveService;
         this.objectMapper = objectMapper;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
     }
 
     @Override
@@ -120,7 +124,7 @@ public class NewsServiceImpl implements NewsService/*, ArchiveMark<News>*/ {
             throw new DatabaseRepositoryException(CATEGORY_DELETING_ERROR);
         }
 
-        //archiveModel(deletedNews);
+        archiveModel(deletedNews);
 
         log.debug("news {} were successfully deleted", deletedNews);
         return dtoConverter.convertToDto(deletedNews, NewsResponse.class);
@@ -130,20 +134,16 @@ public class NewsServiceImpl implements NewsService/*, ArchiveMark<News>*/ {
         return newsRepository.findById(id);
     }
 
-    //todo@
-    /*
-    @Override
-    public void archiveModel(News news) {
-        archiveService.saveModel(dtoConverter.convertToDto(news, NewsArch.class));
+    private void archiveModel(News news) {
+        archiveMQMessageProducer.publish(news);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        NewsArch newsArch = objectMapper.readValue(archiveObject, NewsArch.class);
-        News news = dtoConverter.convertToEntity(newsArch, News.builder().build()).withId(null)
-                .withUser(Optional.ofNullable(newsArch.getUserId()).isPresent()
-                        ? userService.getUserById(newsArch.getUserId()) : null);
+    public void restoreModel(Long id) {
+        var news = objectMapper.convertValue(
+                archiveClient.restoreModel(News.class.getName(), id),
+                News.class);
+
         newsRepository.save(news);
     }
-    */
 }
