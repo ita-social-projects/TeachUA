@@ -5,13 +5,14 @@ import com.softserve.club.dto.message.MessageResponseDto;
 import com.softserve.club.dto.message.MessageUpdateIsActive;
 import com.softserve.club.dto.message.MessageUpdateText;
 import com.softserve.club.model.Message;
+import com.softserve.commons.util.marker.Archiver;
 import java.util.List;
 
 /**
  * This interface contains all needed methods to manage messages.
  */
 
-public interface MessageService {
+public interface MessageService extends Archiver<Long> {
     /**
      * Add message.
      *

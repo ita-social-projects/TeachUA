@@ -6,6 +6,7 @@ import com.softserve.club.dto.district.SuccessCreatedDistrict;
 import com.softserve.club.model.District;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.marker.Archiver;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
  * This interface contains all needed methods to manage districs.
  */
 
-public interface DistrictService {
+public interface DistrictService extends Archiver<Long> {
     /**
      * The method returns dto {@code DistrictResponse} of district by id.
      *

@@ -1,5 +1,7 @@
 package com.softserve.club.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.club.dto.center.CenterProfile;
 import com.softserve.club.dto.center.CenterResponse;
 import com.softserve.club.dto.center.SuccessCreatedCenter;
@@ -12,7 +14,6 @@ import com.softserve.club.model.Location;
 import com.softserve.club.repository.CenterRepository;
 import com.softserve.club.repository.ClubRepository;
 import com.softserve.club.repository.LocationRepository;
-import com.softserve.commons.security.UserPrincipal;
 import com.softserve.club.service.CenterService;
 import com.softserve.club.service.CityService;
 import com.softserve.club.service.ClubService;
@@ -22,10 +23,12 @@ import com.softserve.club.service.StationService;
 import com.softserve.club.util.converter.CenterToCenterResponseConverter;
 import com.softserve.club.util.converter.ClubToClubResponseConverter;
 import com.softserve.club.util.converter.CoordinatesConverter;
+import com.softserve.commons.client.ArchiveClient;
+import com.softserve.commons.client.UserClient;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
-import com.softserve.commons.client.UserClient;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.commons.util.converter.DtoConverter;
 import jakarta.validation.ValidationException;
 import java.util.HashSet;
@@ -62,8 +65,11 @@ public class CenterServiceImpl implements CenterService {
     private final CenterToCenterResponseConverter centerToCenterResponseConverter;
     private final ClubToClubResponseConverter toClubResponseConverter;
     private final CoordinatesConverter coordinatesConverter;
-    private ClubService clubService;
     private final UserClient userClient;
+    private final ArchiveMQMessageProducer<Center> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
+    private ClubService clubService;
 
     public CenterServiceImpl(LocationService locationService, CenterRepository centerRepository,
                              DtoConverter dtoConverter,
@@ -72,7 +78,9 @@ public class CenterServiceImpl implements CenterService {
                              ClubRepository clubRepository,
                              CenterToCenterResponseConverter centerToCenterResponseConverter,
                              ClubToClubResponseConverter toClubResponseConverter,
-                             CoordinatesConverter coordinatesConverter, UserClient userClient) {
+                             CoordinatesConverter coordinatesConverter, UserClient userClient,
+                             ArchiveMQMessageProducer<Center> archiveMQMessageProducer, ArchiveClient archiveClient,
+                             ObjectMapper objectMapper) {
         this.locationService = locationService;
         this.centerRepository = centerRepository;
         this.dtoConverter = dtoConverter;
@@ -85,6 +93,9 @@ public class CenterServiceImpl implements CenterService {
         this.toClubResponseConverter = toClubResponseConverter;
         this.coordinatesConverter = coordinatesConverter;
         this.userClient = userClient;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
+        this.objectMapper = objectMapper;
     }
 
     public void setClubService(@Lazy ClubService clubService) {
@@ -230,7 +241,7 @@ public class CenterServiceImpl implements CenterService {
             throw new DatabaseRepositoryException(CENTER_DELETING_ERROR);
         }
 
-        //archiveModel(center);
+        archiveModel(center);
 
         log.debug("center {} was successfully deleted", center);
         return dtoConverter.convertToDto(center, CenterResponse.class);
@@ -363,29 +374,15 @@ public class CenterServiceImpl implements CenterService {
         }).toList();
     }
 
-    //todo@
-    /*
-    @Override
-    public void archiveModel(Center center) {
-        CenterArch centerArch = dtoConverter.convertToDto(center, CenterArch.class);
-        centerArch.setClubsIds(center.getClubs().stream().map(Club::getId).collect(Collectors.toSet()));
-        centerArch.setLocationsIds(
-                center.getLocations().stream().map(Location::getId).collect(Collectors.toSet()));
-        archiveService.saveModel(centerArch);
+    private void archiveModel(Center center) {
+        archiveMQMessageProducer.publish(center);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        CenterArch centerArch = objectMapper.readValue(archiveObject, CenterArch.class);
-        Center center = Center.builder().build();
-        center = dtoConverter.convertToEntity(centerArch, center).withId(null)
-                .withUser(userService.getUserById(centerArch.getUserId()));
-
-        Center finalCenter = centerRepository.save(center);
-        centerArch.getLocationsIds().stream().map(locationService::getLocationById)
-                .forEach(location -> location.setCenter(finalCenter));
-
-        centerArch.getClubsIds().stream().map(clubService::getClubById).forEach(club -> club.setCenter(finalCenter));
+    public void restoreModel(Long id) {
+        var center = objectMapper.convertValue(
+                archiveClient.restoreModel(Center.class.getName(), id),
+                Center.class);
+        centerRepository.save(center);
     }
-    */
 }

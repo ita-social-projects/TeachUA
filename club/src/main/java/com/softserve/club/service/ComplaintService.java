@@ -5,13 +5,14 @@ import com.softserve.club.dto.complaint.ComplaintResponse;
 import com.softserve.club.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.club.model.Complaint;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.marker.Archiver;
 import java.util.List;
 
 /**
  * This interface contains all needed methods to manage complaints.
  */
 
-public interface ComplaintService {
+public interface ComplaintService extends Archiver<Long> {
     /**
      * Method to find {@link Complaint}, and convert it to object of DTO class.
      *

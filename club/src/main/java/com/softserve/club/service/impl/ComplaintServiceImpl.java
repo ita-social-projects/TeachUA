@@ -1,15 +1,18 @@
 package com.softserve.club.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.club.dto.complaint.ComplaintProfile;
 import com.softserve.club.dto.complaint.ComplaintResponse;
 import com.softserve.club.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.club.model.Complaint;
 import com.softserve.club.repository.ClubRepository;
 import com.softserve.club.repository.ComplaintRepository;
-import com.softserve.commons.security.UserPrincipal;
 import com.softserve.club.service.ComplaintService;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.commons.util.converter.DtoConverter;
 import jakarta.validation.ValidationException;
 import java.time.LocalDate;
@@ -31,12 +34,20 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
+    private final ArchiveMQMessageProducer<Complaint> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
 
     public ComplaintServiceImpl(ComplaintRepository complaintRepository, DtoConverter dtoConverter,
-                                ClubRepository clubRepository) {
+                                ClubRepository clubRepository,
+                                ArchiveMQMessageProducer<Complaint> archiveMQMessageProducer,
+                                ArchiveClient archiveClient, ObjectMapper objectMapper) {
         this.complaintRepository = complaintRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -114,28 +125,21 @@ public class ComplaintServiceImpl implements ComplaintService {
             throw new DatabaseRepositoryException(COMPLAINT_DELETING_ERROR);
         }
 
-        //archiveModel(complaint);
+        archiveModel(complaint);
 
         log.debug("complaint {} was successfully deleted", complaint);
         return dtoConverter.convertToDto(complaint, ComplaintResponse.class);
     }
 
-    //todo@
-    /*
-    @Override
-    public void archiveModel(Complaint complaint) {
-        archiveService.saveModel(dtoConverter.convertToDto(complaint, ComplaintArch.class));
+    private void archiveModel(Complaint complaint) {
+        archiveMQMessageProducer.publish(complaint);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        ComplaintArch complaintArch = objectMapper.readValue(archiveObject, ComplaintArch.class);
-        Complaint complaint = Complaint.builder().build();
-        complaint = dtoConverter.convertToEntity(complaintArch, complaint).withId(null)
-                .withClub(clubService.getClubById(complaintArch.getClubId()));
-        //.withUser(userService.getUserById(complaintArch.getUserId()))
-
+    public void restoreModel(Long id) {
+        var complaint = objectMapper.convertValue(
+                archiveClient.restoreModel(Complaint.class.getName(), id),
+                Complaint.class);
         complaintRepository.save(complaint);
     }
-    */
 }

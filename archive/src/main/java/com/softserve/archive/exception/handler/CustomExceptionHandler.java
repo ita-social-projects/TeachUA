@@ -28,7 +28,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(IncorrectResultSizeDataAccessException.class)
-    public ResponseEntity<Object> handleIncorrectResultSizeDataAccessException(IncorrectResultSizeDataAccessException exception) {
+    public ResponseEntity<Object> handleIncorrectResultSizeDataAccessException(
+            IncorrectResultSizeDataAccessException exception) {
         return buildExceptionBody(exception, BAD_REQUEST);
     }
 }

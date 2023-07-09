@@ -6,6 +6,7 @@ import com.softserve.club.dto.station.SuccessCreatedStation;
 import com.softserve.club.model.Station;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.marker.Archiver;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
  * This interface contains all needed methods to manage stations.
  */
 
-public interface StationService {
+public interface StationService extends Archiver<Long> {
     /**
      * The method returns dto {@code StationResponse} of Station by id.
      *

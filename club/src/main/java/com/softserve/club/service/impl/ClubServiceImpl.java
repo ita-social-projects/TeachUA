@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.club.dto.category.CategoryResponse;
 import com.softserve.club.dto.club.ClubProfile;
 import com.softserve.club.dto.club.ClubResponse;
@@ -28,26 +29,26 @@ import com.softserve.club.repository.ComplaintRepository;
 import com.softserve.club.repository.FeedbackRepository;
 import com.softserve.club.repository.GalleryRepository;
 import com.softserve.club.repository.LocationRepository;
-import com.softserve.commons.security.UserPrincipal;
 import com.softserve.club.service.CategoryService;
 import com.softserve.club.service.CenterService;
 import com.softserve.club.service.CityService;
 import com.softserve.club.service.ClubService;
 import com.softserve.club.service.DistrictService;
-import com.softserve.club.service.FeedbackService;
 import com.softserve.club.service.LocationService;
 import com.softserve.club.service.StationService;
 import com.softserve.club.util.CategoryUtil;
 import com.softserve.club.util.converter.ClubToClubResponseConverter;
 import com.softserve.club.util.converter.ContactsStringConverter;
 import com.softserve.club.util.converter.CoordinatesConverter;
+import com.softserve.commons.client.ArchiveClient;
+import com.softserve.commons.client.UserClient;
 import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.IncorrectInputException;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.commons.exception.NotVerifiedUserException;
-import com.softserve.commons.client.UserClient;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.commons.util.converter.DtoConverter;
 import jakarta.validation.ValidationException;
 import java.util.HashSet;
@@ -95,8 +96,9 @@ public class ClubServiceImpl implements ClubService {
     private final FeedbackRepository feedbackRepository;
     private final ObjectMapper objectMapper;
     private final ContactsStringConverter contactsStringConverter;
-    private FeedbackService feedbackService;
     private final UserClient userClient;
+    private final ArchiveMQMessageProducer<Club> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
 
     public ClubServiceImpl(ClubRepository clubRepository, CenterRepository centerRepository,
                            LocationRepository locationRepository, DtoConverter dtoConverter,
@@ -106,7 +108,8 @@ public class ClubServiceImpl implements ClubService {
                            CoordinatesConverter coordinatesConverter, GalleryRepository galleryRepository,
                            CenterService centerService, FeedbackRepository feedbackRepository,
                            ObjectMapper objectMapper, ContactsStringConverter contactsStringConverter,
-                           ComplaintRepository complaintRepository, UserClient userClient) {
+                           ComplaintRepository complaintRepository, UserClient userClient,
+                           ArchiveMQMessageProducer<Club> archiveMQMessageProducer, ArchiveClient archiveClient) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -125,10 +128,8 @@ public class ClubServiceImpl implements ClubService {
         this.contactsStringConverter = contactsStringConverter;
         this.complaintRepository = complaintRepository;
         this.userClient = userClient;
-    }
-
-    public void setFeedbackService(FeedbackService feedbackService) {
-        this.feedbackService = feedbackService;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
     }
 
     @Override
@@ -636,7 +637,7 @@ public class ClubServiceImpl implements ClubService {
             throw new DatabaseRepositoryException(CLUB_DELETING_ERROR);
         }
 
-        //archiveModel(club);
+        archiveModel(club);
 
         log.debug("club {} was successfully deleted", club);
         return toClubResponseConverter.convertToClubResponse(club);
@@ -734,40 +735,15 @@ public class ClubServiceImpl implements ClubService {
         return dtoConverter.convertToDto(updClub, SuccessUpdatedClub.class);
     }
 
-    //todo@
-    //@Override
-    //public void archiveModel(Club club) {
-    //    ClubArch clubArch = dtoConverter.convertToDto(club, ClubArch.class);
-    //    clubArch.setUrlGalleriesIds(
-    //            club.getUrlGallery().stream().map(GalleryPhoto::getId).toList());
-    //    clubArch.setLocationsIds(club.getLocations().stream().map(Location::getId).collect(Collectors.toSet()));
-    //    clubArch.setCategoriesIds(club.getCategories().stream().map(Category::getId).collect(Collectors.toSet()));
-    //    clubArch.setFeedbacksIds(club.getFeedbacks().stream().map(Feedback::getId).collect(Collectors.toSet()));
-    //    archiveService.saveModel(clubArch);
-    //}
-    //
-    //@Override
-    //public void restoreModel(String archiveObject) throws JsonProcessingException {
-    //    ClubArch clubArch = objectMapper.readValue(archiveObject, ClubArch.class);
-    //    Club club = Club.builder().build();
-    //    club = dtoConverter.convertToEntity(clubArch, club).withId(null)
-    //            .withCategories(clubArch.getCategoriesIds().stream().map(categoryService::getCategoryById)
-    //                    .collect(Collectors.toSet()))
-    //            .withLocations(clubArch.getLocationsIds().stream().map(locationService::getLocationById)
-    //                    .collect(Collectors.toSet()))
-    //            .withUrlGallery(clubArch.getUrlGalleriesIds().stream().map(galleryRepository::findById)
-    //                    .filter(Optional::isPresent).map(Optional::get).toList())
-    //            .withFeedbacks(clubArch.getFeedbacksIds().stream().map(feedbackService::getFeedbackById)
-    //                    .collect(Collectors.toSet()));
-    //    if (Optional.ofNullable(clubArch.getCenterId()).isPresent()) {
-    //        club.setCenter(centerService.getCenterById(clubArch.getCenterId()));
-    //    }
-    //    if (Optional.ofNullable(clubArch.getUserId()).isPresent()) {
-    //        club.setUser(userService.getUserById(clubArch.getUserId()));
-    //    }
-    //    Club finalClub = clubRepository.save(club);
-    //    club.getLocations().forEach(location -> location.setClub(finalClub));
-    //    club.getUrlGallery().forEach(galleryPhoto -> galleryPhoto.setClub(finalClub));
-    //    club.getFeedbacks().forEach(feedback -> feedback.setClub(finalClub));
-    //}
+    private void archiveModel(Club club) {
+        archiveMQMessageProducer.publish(club);
+    }
+
+    @Override
+    public void restoreModel(Long id) {
+        var club = objectMapper.convertValue(
+                archiveClient.restoreModel(Club.class.getName(), id),
+                Club.class);
+        clubRepository.save(club);
+    }
 }

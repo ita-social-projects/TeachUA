@@ -14,6 +14,7 @@ import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.IncorrectInputException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.marker.Archiver;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ import org.springframework.data.domain.Pageable;
  * This interface contains all needed methods to manage clubs.
  */
 
-public interface ClubService {
+public interface ClubService extends Archiver<Long> {
     /**
      * The method returns dto {@code ClubResponse} of club by id.
      *

@@ -4,13 +4,14 @@ import com.softserve.club.dto.feedback.FeedbackProfile;
 import com.softserve.club.dto.feedback.FeedbackResponse;
 import com.softserve.club.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.club.model.Feedback;
+import com.softserve.commons.util.marker.Archiver;
 import java.util.List;
 
 /**
  * This interface contains all needed methods to manage feedbacks.
  */
 
-public interface FeedbackService {
+public interface FeedbackService extends Archiver<Long> {
     /**
      * Method find {@link Feedback}, and convert it to object of DTO class.
      *

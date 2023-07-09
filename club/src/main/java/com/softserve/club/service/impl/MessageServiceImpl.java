@@ -1,5 +1,7 @@
 package com.softserve.club.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.club.dto.message.MessageProfile;
 import com.softserve.club.dto.message.MessageResponseDto;
 import com.softserve.club.dto.message.MessageUpdateIsActive;
@@ -8,9 +10,10 @@ import com.softserve.club.model.Message;
 import com.softserve.club.repository.ClubRepository;
 import com.softserve.club.repository.MessageRepository;
 import com.softserve.club.service.MessageService;
+import com.softserve.commons.client.ArchiveClient;
+import com.softserve.commons.client.UserClient;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
-import com.softserve.commons.client.UserClient;
 import com.softserve.commons.util.converter.DtoConverter;
 import jakarta.validation.ValidationException;
 import java.util.List;
@@ -27,13 +30,21 @@ public class MessageServiceImpl implements MessageService {
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
     private final UserClient userClient;
+    private final ArchiveMQMessageProducer<Message> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
 
     public MessageServiceImpl(MessageRepository messageRepository, ClubRepository clubRepository,
-                              DtoConverter dtoConverter, UserClient userClient) {
+                              DtoConverter dtoConverter, UserClient userClient,
+                              ArchiveMQMessageProducer<Message> archiveMQMessageProducer, ArchiveClient archiveClient,
+                              ObjectMapper objectMapper) {
         this.messageRepository = messageRepository;
         this.clubRepository = clubRepository;
         this.dtoConverter = dtoConverter;
         this.userClient = userClient;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -130,34 +141,21 @@ public class MessageServiceImpl implements MessageService {
                     String.format("Can't delete message with id - %s, cause of relationship", id));
         }
 
-        //archiveModel(message);
+        archiveModel(message);
         MessageResponseDto messageResponseDto = dtoConverter.convertToDto(message, MessageResponseDto.class);
         log.debug(String.format("delete message by id - %s", id));
         return messageResponseDto;
     }
 
-    //todo@
-    /*
-    @Override
-    public void archiveModel(Message message) {
-        archiveService.saveModel(dtoConverter.convertToDto(message, MessageArch.class));
+    private void archiveModel(Message message) {
+        archiveMQMessageProducer.publish(message);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        MessageArch messageArch = objectMapper.readValue(archiveObject, MessageArch.class);
-        Message message = dtoConverter.convertToEntity(messageArch, new Message()).withId(null);
-
-        if (Optional.ofNullable(messageArch.getClubId()).isPresent()) {
-            message.setClub(clubService.getClubById(messageArch.getClubId()));
-        }
-        if (Optional.ofNullable(messageArch.getSenderId()).isPresent()) {
-            message.setSender(userService.getUserById(messageArch.getSenderId()));
-        }
-        if (Optional.ofNullable(messageArch.getRecipientId()).isPresent()) {
-            message.setRecipient(userService.getUserById(messageArch.getRecipientId()));
-        }
+    public void restoreModel(Long id) {
+        var message = objectMapper.convertValue(
+                archiveClient.restoreModel(Message.class.getName(), id),
+                Message.class);
         messageRepository.save(message);
     }
-    */
 }

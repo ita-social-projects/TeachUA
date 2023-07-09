@@ -1,5 +1,7 @@
 package com.softserve.club.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.club.dto.station.StationProfile;
 import com.softserve.club.dto.station.StationResponse;
 import com.softserve.club.dto.station.SuccessCreatedStation;
@@ -8,6 +10,7 @@ import com.softserve.club.repository.StationRepository;
 import com.softserve.club.service.CityService;
 import com.softserve.club.service.DistrictService;
 import com.softserve.club.service.StationService;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
@@ -30,13 +33,21 @@ public class StationServiceImpl implements StationService {
     private final StationRepository stationRepository;
     private final CityService cityService;
     private final DistrictService districtService;
+    private final ArchiveMQMessageProducer<Station> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
 
     public StationServiceImpl(DtoConverter dtoConverter, StationRepository stationRepository,
-                              CityService cityService, DistrictService districtService) {
+                              CityService cityService, DistrictService districtService,
+                              ArchiveMQMessageProducer<Station> archiveMQMessageProducer, ArchiveClient archiveClient,
+                              ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.stationRepository = stationRepository;
         this.cityService = cityService;
         this.districtService = districtService;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -139,7 +150,7 @@ public class StationServiceImpl implements StationService {
             throw new DatabaseRepositoryException(STATION_DELETING_ERROR);
         }
 
-        //archiveModel(station);
+        archiveModel(station);
 
         log.debug("station {} was successfully deleted", station);
         return dtoConverter.convertToDto(station, StationResponse.class);
@@ -153,20 +164,15 @@ public class StationServiceImpl implements StationService {
         return stationRepository.findById(id);
     }
 
-    //todo@
-    /*
-    @Override
-    public void archiveModel(Station station) {
-        archiveService.saveModel(dtoConverter.convertToDto(station, StationArch.class));
+    private void archiveModel(Station station) {
+        archiveMQMessageProducer.publish(station);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        StationArch stationArch = objectMapper.readValue(archiveObject, StationArch.class);
-        Station station = Station.builder().build();
-        station = dtoConverter.convertToEntity(stationArch, station).withId(null)
-                .withCity(cityService.getCityById(stationArch.getCityId()));
+    public void restoreModel(Long id) {
+        var station = objectMapper.convertValue(
+                archiveClient.restoreModel(Station.class.getName(), id),
+                Station.class);
         stationRepository.save(station);
     }
-    */
 }

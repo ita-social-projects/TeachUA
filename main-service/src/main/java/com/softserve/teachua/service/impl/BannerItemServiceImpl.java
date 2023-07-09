@@ -111,6 +111,4 @@ public class BannerItemServiceImpl implements BannerItemService {
 
         bannerItemRepository.save(aboutUsItem);
     }
-
-
 }

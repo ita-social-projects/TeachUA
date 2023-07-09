@@ -8,6 +8,7 @@ import com.softserve.club.model.Category;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.marker.Archiver;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ import org.springframework.data.domain.Pageable;
  * This interface contains all needed methods to manage about us items using AboutUsItemRepository.
  */
 
-public interface CategoryService {
+public interface CategoryService extends Archiver<Long> {
     /**
      * The method returns dto {@code CategoryResponse} of category by id.
      *

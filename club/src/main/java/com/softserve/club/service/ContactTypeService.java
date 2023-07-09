@@ -7,13 +7,14 @@ import com.softserve.club.model.ContactType;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.marker.Archiver;
 import java.util.List;
 
 /**
  * This interface contains all needed methods to manage contact types.
  */
 
-public interface ContactTypeService {
+public interface ContactTypeService extends Archiver<Long> {
     /**
      * The method returns list of dto {@code List<ContactTypeResponse>} of all contact types.
      *

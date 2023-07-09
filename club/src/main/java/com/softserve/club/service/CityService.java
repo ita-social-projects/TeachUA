@@ -6,13 +6,14 @@ import com.softserve.club.dto.city.SuccessCreatedCity;
 import com.softserve.club.model.City;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.marker.Archiver;
 import java.util.List;
 
 /**
  * This interface contains all needed methods to manage cities using CityRepository.
  */
 
-public interface CityService {
+public interface CityService extends Archiver<Long> {
     /**
      * The method returns dto {@code CityResponse} of city by id.
      *

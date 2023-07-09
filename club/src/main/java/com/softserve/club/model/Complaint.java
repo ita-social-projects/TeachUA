@@ -1,5 +1,6 @@
 package com.softserve.club.model;
 
+import com.softserve.amqp.marker.Archivable;
 import com.softserve.commons.util.marker.Convertible;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,7 +27,7 @@ import lombok.With;
 @Builder
 @Entity
 @Table(name = "complaints")
-public class Complaint implements Convertible {
+public class Complaint implements Convertible, Archivable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,19 +1,22 @@
 package com.softserve.club.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.club.dto.feedback.FeedbackProfile;
 import com.softserve.club.dto.feedback.FeedbackResponse;
 import com.softserve.club.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.club.model.Feedback;
 import com.softserve.club.repository.ClubRepository;
 import com.softserve.club.repository.FeedbackRepository;
-import com.softserve.commons.security.UserPrincipal;
 import com.softserve.club.service.ClubService;
 import com.softserve.club.service.FeedbackService;
+import com.softserve.commons.client.ArchiveClient;
+import com.softserve.commons.client.UserClient;
 import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.commons.exception.NotVerifiedUserException;
-import com.softserve.commons.client.UserClient;
+import com.softserve.commons.security.UserPrincipal;
 import com.softserve.commons.util.converter.DtoConverter;
 import jakarta.validation.ValidationException;
 import java.util.List;
@@ -38,14 +41,22 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final DtoConverter dtoConverter;
     private final ClubService clubService;
     private final UserClient userClient;
+    private final ArchiveMQMessageProducer<Feedback> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
 
     public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter,
-                               ClubRepository clubRepository, @Lazy ClubService clubService, UserClient userClient) {
+                               ClubRepository clubRepository, @Lazy ClubService clubService, UserClient userClient,
+                               ArchiveMQMessageProducer<Feedback> archiveMQMessageProducer, ArchiveClient archiveClient,
+                               ObjectMapper objectMapper) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.clubService = clubService;
         this.userClient = userClient;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -113,7 +124,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             throw new DatabaseRepositoryException(FEEDBACK_DELETING_ERROR);
         }
 
-        //archiveModel(feedback);
+        archiveModel(feedback);
 
         FeedbackResponse feedbackResponse = dtoConverter.convertToDto(feedback, FeedbackResponse.class);
 
@@ -158,24 +169,15 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
     }
 
-    //todo@
-    //@Override
-    //public void archiveModel(Feedback feedback) {
-    //    archiveService.saveModel(dtoConverter.convertToDto(feedback, FeedbackArch.class));
-    //}
-    //
-    //@Override
-    //public void restoreModel(String archiveObject) throws JsonProcessingException {
-    //    FeedbackArch feedbackArch = objectMapper.readValue(archiveObject, FeedbackArch.class);
-    //    Feedback feedback = Feedback.builder().build();
-    //    feedback = dtoConverter.convertToEntity(feedbackArch, feedback).withId(null);
-    //    if (Optional.ofNullable(feedbackArch.getClubId()).isPresent()) {
-    //        feedback.setClub(clubService.getClubById(feedbackArch.getClubId()));
-    //    }
-    //    if (Optional.ofNullable(feedbackArch.getUserId()).isPresent()) {
-    //        feedback.setUser(userService.getUserById(feedbackArch.getUserId()));
-    //    }
-    //
-    //    feedbackRepository.save(feedback);
-    //}
+    private void archiveModel(Feedback feedback) {
+        archiveMQMessageProducer.publish(feedback);
+    }
+
+    @Override
+    public void restoreModel(Long id) {
+        var feedback = objectMapper.convertValue(
+                archiveClient.restoreModel(Feedback.class.getName(), id),
+                Feedback.class);
+        feedbackRepository.save(feedback);
+    }
 }

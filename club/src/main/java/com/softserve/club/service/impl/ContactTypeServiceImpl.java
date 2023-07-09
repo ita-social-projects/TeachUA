@@ -1,11 +1,14 @@
 package com.softserve.club.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.club.dto.contact_type.ContactTypeProfile;
 import com.softserve.club.dto.contact_type.ContactTypeResponse;
 import com.softserve.club.dto.contact_type.SuccessCreatedContactType;
 import com.softserve.club.model.ContactType;
 import com.softserve.club.repository.ContactTypeRepository;
 import com.softserve.club.service.ContactTypeService;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
@@ -27,10 +30,18 @@ public class ContactTypeServiceImpl implements ContactTypeService {
     private static final String CONTACT_TYPE_DELETING_ERROR = "Can't delete contact type cause of relationship";
     private final DtoConverter dtoConverter;
     private final ContactTypeRepository contactTypeRepository;
+    private final ArchiveMQMessageProducer<ContactType> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
 
-    public ContactTypeServiceImpl(DtoConverter dtoConverter, ContactTypeRepository contactTypeRepository) {
+    public ContactTypeServiceImpl(DtoConverter dtoConverter, ContactTypeRepository contactTypeRepository,
+                                  ArchiveMQMessageProducer<ContactType> archiveMQMessageProducer,
+                                  ArchiveClient archiveClient, ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.contactTypeRepository = contactTypeRepository;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -77,7 +88,7 @@ public class ContactTypeServiceImpl implements ContactTypeService {
             throw new DatabaseRepositoryException(CONTACT_TYPE_DELETING_ERROR);
         }
 
-        //archiveModel(contactType);
+        archiveModel(contactType);
 
         log.debug("contact type {} was successfully deleted", contactType);
         return dtoConverter.convertToDto(contactType, ContactTypeResponse.class);
@@ -106,18 +117,15 @@ public class ContactTypeServiceImpl implements ContactTypeService {
         return contactTypeRepository.existsByName(name);
     }
 
-    //todo@
-    /*
-    @Override
-    public void archiveModel(ContactType contactType) {
-        archiveService.saveModel(dtoConverter.convertToDto(contactType, ContactTypeArch.class));
+    private void archiveModel(ContactType contactType) {
+        archiveMQMessageProducer.publish(contactType);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        ContactTypeArch contactTypeArch = objectMapper.readValue(archiveObject, ContactTypeArch.class);
-        ContactType contactType = dtoConverter.convertToEntity(contactTypeArch, ContactType.builder().build());
+    public void restoreModel(Long id) {
+        var contactType = objectMapper.convertValue(
+                archiveClient.restoreModel(ContactType.class.getName(), id),
+                ContactType.class);
         contactTypeRepository.save(contactType);
     }
-    */
 }

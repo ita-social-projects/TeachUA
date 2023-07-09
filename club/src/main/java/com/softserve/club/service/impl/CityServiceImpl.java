@@ -1,11 +1,14 @@
 package com.softserve.club.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.club.dto.city.CityProfile;
 import com.softserve.club.dto.city.CityResponse;
 import com.softserve.club.dto.city.SuccessCreatedCity;
 import com.softserve.club.model.City;
 import com.softserve.club.repository.CityRepository;
 import com.softserve.club.service.CityService;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
@@ -29,10 +32,18 @@ public class CityServiceImpl implements CityService {
 
     private final DtoConverter dtoConverter;
     private final CityRepository cityRepository;
+    private final ArchiveMQMessageProducer<City> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
 
-    public CityServiceImpl(DtoConverter dtoConverter, CityRepository cityRepository) {
+    public CityServiceImpl(DtoConverter dtoConverter, CityRepository cityRepository,
+                           ArchiveMQMessageProducer<City> archiveMQMessageProducer, ArchiveClient archiveClient,
+                           ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.cityRepository = cityRepository;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -103,7 +114,7 @@ public class CityServiceImpl implements CityService {
             throw new DatabaseRepositoryException(CITY_DELETING_ERROR);
         }
 
-        //archiveModel(city);
+        archiveModel(city);
 
         log.debug("city {} was successfully deleted", city);
         return dtoConverter.convertToDto(city, CityResponse.class);
@@ -121,18 +132,15 @@ public class CityServiceImpl implements CityService {
         return cityRepository.findByName(name);
     }
 
-    //todo@
-    /*
-    @Override
-    public void archiveModel(City city) {
-        archiveService.saveModel(dtoConverter.convertToDto(city, CityArch.class));
+    private void archiveModel(City city) {
+        archiveMQMessageProducer.publish(city);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        CityArch cityArch = objectMapper.readValue(archiveObject, CityArch.class);
-        City city = dtoConverter.convertToEntity(cityArch, City.builder().build());
-        cityRepository.save(city);
+    public void restoreModel(Long id) {
+        var station = objectMapper.convertValue(
+                archiveClient.restoreModel(City.class.getName(), id),
+                City.class);
+        cityRepository.save(station);
     }
-    */
 }

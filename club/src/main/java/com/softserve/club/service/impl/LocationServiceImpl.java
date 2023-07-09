@@ -1,17 +1,17 @@
 package com.softserve.club.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.club.dto.location.LocationProfile;
 import com.softserve.club.model.Center;
 import com.softserve.club.model.Club;
 import com.softserve.club.model.Location;
 import com.softserve.club.repository.LocationRepository;
-import com.softserve.club.service.CenterService;
 import com.softserve.club.service.CityService;
-import com.softserve.club.service.ClubService;
 import com.softserve.club.service.DistrictService;
 import com.softserve.club.service.LocationService;
 import com.softserve.club.service.StationService;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.IncorrectInputException;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.commons.util.converter.DtoConverter;
@@ -21,36 +21,36 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 @Transactional
-public class LocationServiceImpl implements LocationService/*, ArchiveMark<Location>*/ {
+public class LocationServiceImpl implements LocationService {
     private static final String NOT_EXIST_EXCEPTION = "Location with %d id not exists";
 
     private final LocationRepository locationRepository;
     private final DtoConverter dtoConverter;
     private final ObjectMapper objectMapper;
-    private final CenterService centerService;
-    private final ClubService clubService;
     private final CityService cityService;
     private final DistrictService districtService;
     private final StationService stationService;
+    private final ArchiveMQMessageProducer<Location> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
 
     public LocationServiceImpl(LocationRepository locationRepository, DtoConverter dtoConverter,
-                               ObjectMapper objectMapper, @Lazy CenterService centerService,
-                               @Lazy ClubService clubService, CityService cityService, DistrictService districtService,
-                               StationService stationService) {
+                               ObjectMapper objectMapper, CityService cityService, DistrictService districtService,
+                               StationService stationService,
+                               ArchiveMQMessageProducer<Location> archiveMQMessageProducer,
+                               ArchiveClient archiveClient) {
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
         this.objectMapper = objectMapper;
-        this.centerService = centerService;
-        this.clubService = clubService;
         this.cityService = cityService;
         this.districtService = districtService;
         this.stationService = stationService;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
     }
 
     @Override
@@ -123,38 +123,21 @@ public class LocationServiceImpl implements LocationService/*, ArchiveMark<Locat
     @Override
     public LocationProfile deleteLocationById(Long id) {
         Location location = getLocationById(id);
-
+        archiveModel(location);
         locationRepository.deleteById(id);
         return dtoConverter.convertToDto(location, LocationProfile.class);
     }
 
-    //todo@
-    /*
-    @Override
-    public void archiveModel(Location location) {
-        archiveService.saveModel(dtoConverter.convertToDto(location, LocationArch.class));
+    private void archiveModel(Location location) {
+        archiveMQMessageProducer.publish(location);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        LocationArch locationArch = objectMapper.readValue(archiveObject, LocationArch.class);
-        Location location = dtoConverter.convertToEntity(locationArch, Location.builder().build()).withId(null);
-        if (Optional.ofNullable(locationArch.getCityId()).isPresent()) {
-            location.setCity(cityService.getCityById(locationArch.getCityId()));
-        }
-        if (Optional.ofNullable(locationArch.getClubId()).isPresent()) {
-            location.setClub(clubService.getClubById(locationArch.getClubId()));
-        }
-        if (Optional.ofNullable(locationArch.getCenterId()).isPresent()) {
-            location.setCenter(centerService.getCenterById(locationArch.getCenterId()));
-        }
-        if (Optional.ofNullable(locationArch.getDistrictId()).isPresent()) {
-            location.setDistrict(districtService.getDistrictById(locationArch.getDistrictId()));
-        }
-        if (Optional.ofNullable(locationArch.getStationId()).isPresent()) {
-            location.setStation(stationService.getStationById(locationArch.getStationId()));
-        }
+    public void restoreModel(Long id) {
+        var location = objectMapper.convertValue(
+                archiveClient.restoreModel(Location.class.getName(), id),
+                Location.class);
+
         locationRepository.save(location);
     }
-    */
 }

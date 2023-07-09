@@ -1,6 +1,7 @@
 package com.softserve.club.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.softserve.amqp.marker.Archivable;
 import com.softserve.commons.util.marker.Convertible;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +28,7 @@ import lombok.With;
 @With
 @Entity
 @Table(name = "categories")
-public class Category implements Convertible {
+public class Category implements Convertible, Archivable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include

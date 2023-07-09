@@ -1,5 +1,7 @@
 package com.softserve.club.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.club.dto.category.CategoryProfile;
 import com.softserve.club.dto.category.CategoryResponse;
 import com.softserve.club.dto.category.SuccessCreatedCategory;
@@ -7,6 +9,7 @@ import com.softserve.club.dto.search.SearchPossibleResponse;
 import com.softserve.club.model.Category;
 import com.softserve.club.repository.CategoryRepository;
 import com.softserve.club.service.CategoryService;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
@@ -33,10 +36,18 @@ public class CategoryServiceImpl implements CategoryService {
     private static final String CATEGORY_DELETING_ERROR = "Can't delete category cause of relationship";
     private final CategoryRepository categoryRepository;
     private final DtoConverter dtoConverter;
+    private final ArchiveMQMessageProducer<Category> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, DtoConverter dtoConverter) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, DtoConverter dtoConverter,
+                               ArchiveMQMessageProducer<Category> archiveMQMessageProducer, ArchiveClient archiveClient,
+                               ObjectMapper objectMapper) {
         this.categoryRepository = categoryRepository;
         this.dtoConverter = dtoConverter;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -112,7 +123,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new DatabaseRepositoryException(CATEGORY_DELETING_ERROR);
         }
 
-        //archiveModel(category);
+        archiveModel(category);
 
         log.debug("Category {} was successfully deleted", category);
         return dtoConverter.convertToDto(category, CategoryResponse.class);
@@ -150,18 +161,16 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findByName(name);
     }
 
-    //todo@
-    /*
-    @Override
-    public void archiveModel(Category category) {
-        archiveService.saveModel(dtoConverter.convertToDto(category, CategoryArch.class));
+
+    private void archiveModel(Category category) {
+        archiveMQMessageProducer.publish(category);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        CategoryArch categoryArch = objectMapper.readValue(archiveObject, CategoryArch.class);
-        Category category = dtoConverter.convertToEntity(categoryArch, Category.builder().build());
+    public void restoreModel(Long id) {
+        var category = objectMapper.convertValue(
+                archiveClient.restoreModel(Category.class.getName(), id),
+                Category.class);
         categoryRepository.save(category);
     }
-    */
 }

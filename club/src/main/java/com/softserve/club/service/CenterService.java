@@ -8,6 +8,7 @@ import com.softserve.club.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.club.model.Center;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.marker.Archiver;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ import org.springframework.data.domain.Pageable;
  * This interface contains all needed methods to manage centers.
  */
 
-public interface CenterService {
+public interface CenterService extends Archiver<Long> {
     /**
      * The method returns dto {@code CenterResponse} of center by id.
      *

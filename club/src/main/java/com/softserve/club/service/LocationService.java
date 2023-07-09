@@ -5,6 +5,7 @@ import com.softserve.club.model.Center;
 import com.softserve.club.model.Club;
 import com.softserve.club.model.Location;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.marker.Archiver;
 import java.util.List;
 import java.util.Set;
 
@@ -12,7 +13,7 @@ import java.util.Set;
  * This interface contains all needed methods to manage locations.
  */
 
-public interface LocationService {
+public interface LocationService extends Archiver<Long> {
     /**
      * The method returns {@code Location} entity.
      *

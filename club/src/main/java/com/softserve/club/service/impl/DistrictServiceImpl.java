@@ -1,5 +1,7 @@
 package com.softserve.club.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
 import com.softserve.club.dto.district.DistrictProfile;
 import com.softserve.club.dto.district.DistrictResponse;
 import com.softserve.club.dto.district.SuccessCreatedDistrict;
@@ -7,6 +9,7 @@ import com.softserve.club.model.District;
 import com.softserve.club.repository.DistrictRepository;
 import com.softserve.club.service.CityService;
 import com.softserve.club.service.DistrictService;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
@@ -30,12 +33,20 @@ public class DistrictServiceImpl implements DistrictService {
     private final DtoConverter dtoConverter;
     private final CityService cityService;
     private final DistrictRepository districtRepository;
+    private final ArchiveMQMessageProducer<District> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
 
     public DistrictServiceImpl(DtoConverter dtoConverter, CityService cityService,
-            DistrictRepository districtRepository) {
+                               DistrictRepository districtRepository,
+                               ArchiveMQMessageProducer<District> archiveMQMessageProducer, ArchiveClient archiveClient,
+                               ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.cityService = cityService;
         this.districtRepository = districtRepository;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -126,7 +137,7 @@ public class DistrictServiceImpl implements DistrictService {
             throw new DatabaseRepositoryException(DISTRICT_DELETING_ERROR);
         }
 
-        //archiveModel(district);
+        archiveModel(district);
 
         log.debug("district {} was successfully deleted", district);
         return dtoConverter.convertToDto(district, DistrictResponse.class);
@@ -140,19 +151,16 @@ public class DistrictServiceImpl implements DistrictService {
         return districtRepository.findById(id);
     }
 
-    //todo@
-    /*
-    @Override
-    public void archiveModel(District district) {
-        archiveService.saveModel(dtoConverter.convertToDto(district, DistrictArch.class));
+    private void archiveModel(District district) {
+        archiveMQMessageProducer.publish(district);
     }
 
     @Override
-    public void restoreModel(String archiveObject) throws JsonProcessingException {
-        DistrictArch districtArch = objectMapper.readValue(archiveObject, DistrictArch.class);
-        District district = dtoConverter.convertToEntity(districtArch, District.builder().build()).withId(null)
-                .withCity(cityService.getCityById(districtArch.getCityId()));
+    public void restoreModel(Long id) {
+        var district = objectMapper.convertValue(
+                archiveClient.restoreModel(District.class.getName(), id),
+                District.class);
+
         districtRepository.save(district);
     }
-    */
 }
