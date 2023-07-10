@@ -2,6 +2,7 @@ package com.softserve.user.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.softserve.amqp.marker.Archivable;
 import com.softserve.commons.util.marker.Convertible;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -28,7 +29,7 @@ import lombok.With;
 @Data
 @Entity
 @Table(name = "users")
-public class User implements Convertible {
+public class User implements Convertible, Archivable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

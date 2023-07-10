@@ -1,5 +1,8 @@
 package com.softserve.user.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.IncorrectInputException;
@@ -35,7 +38,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
@@ -49,7 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService/*, ArchiveMark<User>*/ {
+public class UserServiceImpl implements UserService {
     private static final String EMAIL_ALREADY_EXIST = "Email %s already exist";
     private static final String EMAIL_UPDATING_ERROR = "Email can`t be updated";
     private static final String USER_NOT_FOUND_BY_ID = "User not found by id %s";
@@ -67,13 +69,18 @@ public class UserServiceImpl implements UserService/*, ArchiveMark<User>*/ {
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenService refreshTokenService;
+    private final ArchiveMQMessageProducer<User> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
+    private final ObjectMapper objectMapper;
+
     @Value("${application.baseURL}")
     private String baseUrl;
 
-    @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleService roleService, DtoConverter dtoConverter,
                            JwtUtils jwtUtils, JavaMailSender javaMailSender, @Lazy PasswordEncoder passwordEncoder,
-                           RefreshTokenService refreshTokenService) {
+                           RefreshTokenService refreshTokenService,
+                           ArchiveMQMessageProducer<User> archiveMQMessageProducer, ArchiveClient archiveClient,
+                           ObjectMapper objectMapper) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.dtoConverter = dtoConverter;
@@ -81,6 +88,9 @@ public class UserServiceImpl implements UserService/*, ArchiveMark<User>*/ {
         this.javaMailSender = javaMailSender;
         this.passwordEncoder = passwordEncoder;
         this.refreshTokenService = refreshTokenService;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -256,7 +266,7 @@ public class UserServiceImpl implements UserService/*, ArchiveMark<User>*/ {
             throw new DatabaseRepositoryException(USER_DELETING_ERROR);
         }
 
-        //archiveModel(user);
+        archiveModel(user);
 
         log.debug("user {} was successfully deleted", user);
         return dtoConverter.convertToDto(user, UserResponse.class);
@@ -421,19 +431,15 @@ public class UserServiceImpl implements UserService/*, ArchiveMark<User>*/ {
         return userResetPassword;
     }
 
-    //todo@
-    //@Override
-    //public void archiveModel(User user) {
-    //    archiveService.saveModel(dtoConverter.convertToDto(user, UserArch.class));
-    //}
-    //
-    //@Override
-    //public void restoreModel(String archiveObject) throws JsonProcessingException {
-    //    UserArch userArch = objectMapper.readValue(archiveObject, UserArch.class);
-    //    User user = dtoConverter.convertToEntity(userArch, User.builder().build()).withId(null)
-    //            .withRole(roleService.getRoleById(userArch.getRoleId()))
-    //            .withProvider(Optional.ofNullable(userArch.getProvider()).isPresent()
-    //                    ? AuthProvider.valueOf(userArch.getProvider()) : null);
-    //    userRepository.save(user);
-    //}
+    private void archiveModel(User user) {
+        archiveMQMessageProducer.publish(user);
+    }
+
+    @Override
+    public void restoreModel(Long id) {
+        var user = objectMapper.convertValue(
+                archiveClient.restoreModel(User.class.getName(), id),
+                User.class);
+        userRepository.save(user);
+    }
 }

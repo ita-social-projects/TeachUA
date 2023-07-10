@@ -3,6 +3,7 @@ package com.softserve.user.service;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
+import com.softserve.commons.util.marker.Archiver;
 import com.softserve.user.dto.role.RoleProfile;
 import com.softserve.user.dto.role.RoleResponse;
 import com.softserve.user.model.Role;
@@ -12,7 +13,7 @@ import java.util.List;
  * This interface contains all needed methods to manage roles.
  */
 
-public interface RoleService {
+public interface RoleService extends Archiver<Integer> {
     /**
      * The method returns list of existing roles {@code List<RoleResponse>}.
      *

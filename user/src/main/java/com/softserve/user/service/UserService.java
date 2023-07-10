@@ -4,6 +4,7 @@ import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
 import com.softserve.commons.exception.NotVerifiedUserException;
+import com.softserve.commons.util.marker.Archiver;
 import com.softserve.user.dto.SuccessLogin;
 import com.softserve.user.dto.SuccessRegistration;
 import com.softserve.user.dto.SuccessUpdatedUser;
@@ -24,7 +25,7 @@ import java.util.List;
  * This interface contains all needed methods to manage users.
  */
 
-public interface UserService {
+public interface UserService extends Archiver<Long> {
     /**
      * The method checks whether a user exists.
      *

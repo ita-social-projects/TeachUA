@@ -1,6 +1,7 @@
 package com.softserve.user.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.softserve.amqp.marker.Archivable;
 import com.softserve.commons.util.marker.Convertible;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +25,7 @@ import lombok.With;
 @With
 @Entity
 @Table(name = "roles")
-public class Role implements Convertible {
+public class Role implements Convertible, Archivable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

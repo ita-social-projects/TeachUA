@@ -38,7 +38,7 @@ public class TokenController {
         //todo
         System.out.println(token);
         HttpHeaders responseHeaders = new HttpHeaders();
-        //todo
+
         if (token.isEmpty()) {
             responseHeaders.set("uid", "");
             responseHeaders.set("uname", "");
@@ -60,11 +60,13 @@ public class TokenController {
             throw new IllegalArgumentException();
         }
         httpSessionBean.setJwt(jwt);
+        System.out.println("set header jwt " + jwt);
     }
 
     @GetMapping("/admin")
     public void authorizeAdmin() {
         //todo
+        System.out.println("get jwt " + httpSessionBean.getJwt());
         if (StringUtils.isEmpty(httpSessionBean.getJwt())) {
             throw new UserPermissionException();
         }

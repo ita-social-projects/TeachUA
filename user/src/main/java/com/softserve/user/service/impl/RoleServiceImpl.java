@@ -1,6 +1,8 @@
 package com.softserve.user.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.softserve.amqp.message_producer.impl.ArchiveMQMessageProducer;
+import com.softserve.commons.client.ArchiveClient;
 import com.softserve.commons.exception.AlreadyExistException;
 import com.softserve.commons.exception.DatabaseRepositoryException;
 import com.softserve.commons.exception.NotExistException;
@@ -14,7 +16,6 @@ import jakarta.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @Slf4j
-public class RoleServiceImpl implements RoleService/*, ArchiveMark<Role>*/ {
+public class RoleServiceImpl implements RoleService {
     private static final String ROLE_ALREADY_EXIST = "Role already exist with name: %s";
     private static final String ROLE_NOT_FOUND_BY_ID = "Role not found by id: %s";
     private static final String ROLE_NOT_FOUND_BY_NAME = "Role not found by name: %s";
@@ -30,13 +31,17 @@ public class RoleServiceImpl implements RoleService/*, ArchiveMark<Role>*/ {
     private final RoleRepository roleRepository;
     private final DtoConverter dtoConverter;
     private final ObjectMapper objectMapper;
+    private final ArchiveMQMessageProducer<Role> archiveMQMessageProducer;
+    private final ArchiveClient archiveClient;
 
-    @Autowired
     public RoleServiceImpl(RoleRepository roleRepository, DtoConverter dtoConverter,
-            ObjectMapper objectMapper) {
+                           ObjectMapper objectMapper, ArchiveMQMessageProducer<Role> archiveMQMessageProducer,
+                           ArchiveClient archiveClient) {
         this.roleRepository = roleRepository;
         this.dtoConverter = dtoConverter;
         this.objectMapper = objectMapper;
+        this.archiveMQMessageProducer = archiveMQMessageProducer;
+        this.archiveClient = archiveClient;
     }
 
     @Override
@@ -105,7 +110,7 @@ public class RoleServiceImpl implements RoleService/*, ArchiveMark<Role>*/ {
             throw new DatabaseRepositoryException(ROLE_DELETING_ERROR);
         }
 
-        //archiveModel(role);
+        archiveModel(role);
 
         log.debug("role {} was successfully deleted", role);
         return dtoConverter.convertToDto(role, RoleResponse.class);
@@ -119,16 +124,15 @@ public class RoleServiceImpl implements RoleService/*, ArchiveMark<Role>*/ {
         return roleRepository.findById(id);
     }
 
-    //todo@
-    //@Override
-    //public void archiveModel(Role role) {
-    //    RoleArch roleArch = dtoConverter.convertToDto(role, RoleArch.class);
-    //    archiveService.saveModel(roleArch);
-    //}
-    //
-    //@Override
-    //public void restoreModel(String archiveObject) throws JsonProcessingException {
-    //    RoleArch roleArch = objectMapper.readValue(archiveObject, RoleArch.class);
-    //    roleRepository.save(dtoConverter.convertToEntity(roleArch, Role.builder().build()));
-    //}
+    private void archiveModel(Role role) {
+        archiveMQMessageProducer.publish(role);
+    }
+
+    @Override
+    public void restoreModel(Integer id) {
+        var role = objectMapper.convertValue(
+                archiveClient.restoreModel(Role.class.getName(), id),
+                Role.class);
+        roleRepository.save(role);
+    }
 }
