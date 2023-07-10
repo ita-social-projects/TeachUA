@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -106,8 +107,10 @@ public class ClubController implements Api {
      */
     @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @PostMapping("/club")
-    public SuccessCreatedClub addClub(@Valid @RequestBody ClubProfile clubProfile) {
-        return clubService.addClub(clubProfile);
+    public ResponseEntity<SuccessCreatedClub> addClub(@Valid @RequestBody ClubProfile clubProfile) {
+        SuccessCreatedClub club = clubService.addClub(clubProfile);
+
+        return ResponseEntity.ok(club);
     }
 
     /**
