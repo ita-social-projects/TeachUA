@@ -118,7 +118,8 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
             messages = messageRepository.findAllByRecipientIdAndIsActiveOrderByDateDesc(id, true)
                     .orElseThrow(() -> {
                         log.warn("Messages with recipient id - {} doesn't exist", id);
-                        return new NotExistException(String.format("Messages with recipient id - %s doesn't exist", id));
+                        return new NotExistException(String.format("Messages with recipient id - %s "
+                                + "doesn't exist", id));
                     });
             log.debug("get active messages by recipient id - {}", id);
         }
