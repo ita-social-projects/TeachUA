@@ -343,7 +343,8 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         }
 
         long newFeedbackCount = center.getFeedbackCount() + 1;
-        Double newRating = (center.getRating() * center.getFeedbackCount() + feedbackResponse.getRate()) / newFeedbackCount;
+        Double newRating = (center.getRating() * center.getFeedbackCount() + feedbackResponse.getRate())
+                / newFeedbackCount;
 
         center.setRating(newRating);
         center.setFeedbackCount(newFeedbackCount);
