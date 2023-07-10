@@ -76,6 +76,16 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    public Message getNewMessageById(Long id) {
+        Message message = messageRepository.findByIdAndIsActive(id, true).orElseThrow(() -> {
+            log.warn("Active message with id - {} doesn't exist", id);
+            return new NotExistException(String.format("Active message with id - %s doesn't exist", id));
+        });
+        log.debug("Get active message by id - {}", id);
+        return message;
+    }
+
+    @Override
     public List<Message> getMessagesByUserId(Long id, boolean isSender) {
         List<Message> messages;
         if (isSender) {
@@ -95,6 +105,27 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    public List<Message> getNewMessagesByUserId(Long id, boolean isSender) {
+        List<Message> messages;
+        if (isSender) {
+            messages = messageRepository.findAllBySenderIdAndIsActiveOrderByDateDesc(id, true)
+                    .orElseThrow(() -> {
+                        log.warn("Messages with sender id - {} doesn't exist", id);
+                        return new NotExistException(String.format("Messages with sender id - %s doesn't exist", id));
+                    });
+            log.debug("get active messages by sender id - {}", id);
+        } else {
+            messages = messageRepository.findAllByRecipientIdAndIsActiveOrderByDateDesc(id, true)
+                    .orElseThrow(() -> {
+                        log.warn("Messages with recipient id - {} doesn't exist", id);
+                        return new NotExistException(String.format("Messages with recipient id - %s doesn't exist", id));
+                    });
+            log.debug("get active messages by recipient id - {}", id);
+        }
+        return messages;
+    }
+
+    @Override
     public MessageResponseDto getMessageResponseById(Long id) {
         return dtoConverter.convertToDto(getMessageById(id), MessageResponseDto.class);
     }
@@ -102,6 +133,18 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     @Override
     public List<MessageResponseDto> getMessageResponsesByUserId(Long id, boolean isSender) {
         return getMessagesByUserId(id, isSender).stream()
+                .map(message -> (MessageResponseDto) dtoConverter.convertToDto(message, MessageResponseDto.class))
+                .toList();
+    }
+
+    @Override
+    public MessageResponseDto getNewMessageResponseById(Long id) {
+        return dtoConverter.convertToDto(getNewMessageById(id), MessageResponseDto.class);
+    }
+
+    @Override
+    public List<MessageResponseDto> getNewMessageResponsesByUserId(Long id, boolean isSender) {
+        return getNewMessagesByUserId(id, isSender).stream()
                 .map(message -> (MessageResponseDto) dtoConverter.convertToDto(message, MessageResponseDto.class))
                 .toList();
     }

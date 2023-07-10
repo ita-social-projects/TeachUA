@@ -89,6 +89,21 @@ public class MessageController implements Api {
     }
 
     /**
+     * Use this endpoint to get new MessageResponses by recipient id. The controller returns
+     * {@code List<MessageResponseDto>}.
+     *
+     * @param id
+     *            put {@code User} recipient id here.
+     *
+     * @return {@code List<MessageResponseDto>}.
+     */
+    @PreAuthorize("isAuthenticated() and authentication.principal.id == #id")
+    @GetMapping("/messages/recipient_new/{id}")
+    public List<MessageResponseDto> getNewMessagesByRecipientId(@PathVariable Long id) {
+        return messageService.getNewMessageResponsesByUserId(id, false);
+    }
+
+    /**
      * Use this endpoint to update Message text by id. The controller returns {@code MessageResponseDto}.
      *
      * @param id
