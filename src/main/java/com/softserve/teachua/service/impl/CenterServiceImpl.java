@@ -328,9 +328,13 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
     }
 
     @Override
-    public CenterResponse updateRatingNewFeedback(FeedbackResponse feedbackResponse) {
+    public void updateRatingNewFeedback(FeedbackResponse feedbackResponse) {
         Club club = clubRepository.findById(feedbackResponse.getClub().getId()).orElse(new Club());
         Center center = club.getCenter();
+        if (center == null) {
+           return;
+        }
+
         if (center.getFeedbackCount() == null) {
             center.setFeedbackCount(0L);
         }
@@ -343,9 +347,7 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
         center.setRating(newRating);
         center.setFeedbackCount(newFeedbackCount);
-        Center updCenter = centerRepository.save(center);
-
-        return dtoConverter.convertToDto(updCenter, CenterResponse.class);
+        centerRepository.save(center);
     }
 
     @Override

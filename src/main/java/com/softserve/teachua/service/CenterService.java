@@ -158,7 +158,7 @@ public interface CenterService {
     Page<CenterResponse> getAdvancedSearchCenters(AdvancedSearchCenterProfile advancedSearchCenterProfile,
             Pageable pageable);
 
-    CenterResponse updateRatingNewFeedback(FeedbackResponse feedbackResponse);
+    void updateRatingNewFeedback(FeedbackResponse feedbackResponse);
 
     /**
      * The method updates rating of club and returns dto {@code CenterResponse} of updated club.
