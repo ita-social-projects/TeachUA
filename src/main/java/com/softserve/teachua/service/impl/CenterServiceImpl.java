@@ -332,9 +332,8 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
         Club club = clubRepository.findById(feedbackResponse.getClub().getId()).orElse(new Club());
         Center center = club.getCenter();
         if (center == null) {
-           return;
+            return;
         }
-
         if (center.getFeedbackCount() == null) {
             center.setFeedbackCount(0L);
         }
