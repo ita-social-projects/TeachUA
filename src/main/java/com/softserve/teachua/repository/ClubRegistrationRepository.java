@@ -11,8 +11,9 @@ public interface ClubRegistrationRepository extends JpaRepository<ClubRegistrati
     @Query("""
             SELECT cr
             FROM ClubRegistration cr
-            WHERE cr.isApproved = false AND cr.club.user.id = :managerId""")
-    List<ClubRegistration> findAllUnapprovedByManagerId(@Param("managerId") Long managerId);
+            WHERE cr.isApproved = false AND cr.club.user.id = :managerId AND cr.isActive = true
+            ORDER BY cr.registrationDate ASC""")
+    List<ClubRegistration> findAllUnapprovedByManagerIdOrderByRegistrationDateAsc(@Param("managerId") Long managerId);
 
     @Modifying
     @Query("""
@@ -20,4 +21,10 @@ public interface ClubRegistrationRepository extends JpaRepository<ClubRegistrati
             SET cr.isApproved = true
             WHERE cr.id = :clubRegistrationId""")
     void approveClubRegistration(@Param("clubRegistrationId") Long clubRegistrationId);
+
+    @Query("""
+            SELECT COUNT(cr) > 0
+            FROM ClubRegistration cr
+            WHERE cr.club.id = :clubId AND cr.child.id = :childId AND cr.isActive = true""")
+    boolean existsActiveRegistration(@Param("clubId") Long clubId, @Param("childId") Long childId);
 }

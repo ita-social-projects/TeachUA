@@ -3,7 +3,7 @@ package com.softserve.teachua.dto.club_registration;
 import com.softserve.teachua.dto.child.ChildResponse;
 import com.softserve.teachua.dto.club.MessagesClub;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.dto.user.UserResponse;
+import com.softserve.teachua.dto.user.ParentResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +17,9 @@ import lombok.ToString;
 @ToString
 public class UnapprovedClubRegistration implements Convertible {
     private Long id;
-    private UserResponse user;
+    private ParentResponse user;
     private ChildResponse child;
     private MessagesClub club;
     private String registrationDate;
-    private boolean isActive;
     private String comment;
 }

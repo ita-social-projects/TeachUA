@@ -14,7 +14,8 @@ public class ChildResponse implements Convertible {
     private Long id;
     private String firstName;
     private String lastName;
-    private ParentResponse parentId;
+    private ParentResponse parent;
     private Short age;
     private Gender gender;
+    private boolean isDisabled = false;
 }

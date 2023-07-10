@@ -2,6 +2,7 @@ package com.softserve.teachua.controller;
 
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.child.ChildResponse;
 import com.softserve.teachua.dto.club_registration.RegistrationApprovedSuccess;
 import com.softserve.teachua.dto.club_registration.UnapprovedClubRegistration;
 import com.softserve.teachua.dto.club_registration.UserClubRegistrationRequest;
@@ -32,6 +33,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClubRegistrationController implements Api {
     private final ClubRegistrationService clubRegistrationService;
 
+    @GetMapping("/club-registration/user-children/{clubId}")
+    public ResponseEntity<List<ChildResponse>> getChildrenByParentId(@PathVariable Long clubId) {
+        List<ChildResponse> children = clubRegistrationService.getChildrenForCurrentUserAndCheckIsDisabledByClubId(clubId);
+
+        return ResponseEntity.ok(children);
+    }
+
     @AllowedRoles(RoleData.USER)
     @PostMapping("/club-registration")
     public ResponseEntity<List<ClubRegistrationResponse>> addClubRegistration(
@@ -59,6 +67,7 @@ public class ClubRegistrationController implements Api {
         return ResponseEntity.ok(unapprovedClubRegistrations);
     }
 
+    @AllowedRoles(RoleData.MANAGER)
     @PatchMapping("/club-registration/approve/{clubRegistrationId}")
     public ResponseEntity<RegistrationApprovedSuccess> approveRegistration(@PathVariable Long clubRegistrationId) {
         RegistrationApprovedSuccess approved = clubRegistrationService.approve(clubRegistrationId);

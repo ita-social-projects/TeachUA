@@ -1,6 +1,7 @@
 package com.softserve.teachua.service.impl;
 
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.child.ChildResponse;
 import com.softserve.teachua.dto.club_registration.ClubRegistrationRequest;
 import com.softserve.teachua.dto.club_registration.ClubRegistrationResponse;
 import com.softserve.teachua.dto.club_registration.RegistrationApprovedSuccess;
@@ -16,6 +17,7 @@ import com.softserve.teachua.service.ChildService;
 import com.softserve.teachua.service.ClubRegistrationService;
 import com.softserve.teachua.service.ClubService;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import com.softserve.teachua.service.UserService;
 import jakarta.transaction.Transactional;
@@ -63,7 +65,7 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
     @Override
     public List<UnapprovedClubRegistration> getAllUnapprovedByManagerId(Long managerId) {
-        var unapprovedClubRegistrations = clubRegistrationRepository.findAllUnapprovedByManagerId(managerId);
+        var unapprovedClubRegistrations = clubRegistrationRepository.findAllUnapprovedByManagerIdOrderByRegistrationDateAsc(managerId);
         var dto = new UnapprovedClubRegistration();
         return unapprovedClubRegistrations.stream()
                 .map(ucr -> dtoConverter.convertToDto(ucr, dto))
@@ -78,6 +80,11 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
         return new RegistrationApprovedSuccess(clubRegistrationId, true);
     }
 
+    @Override
+    public boolean existsActiveRegistration(Long clubId, Long childId) {
+        return clubRegistrationRepository.existsActiveRegistration(clubId, childId);
+    }
+
     @NotNull
     private Function<Long, ClubRegistration> createFunction(Club club, String comment) {
         return childId -> {
@@ -90,5 +97,25 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
             return clubRegistrationRepository.save(clubRegistration);
         };
+    }
+
+    @Override
+    public List<ChildResponse> getChildrenForCurrentUserAndCheckIsDisabledByClubId(Long clubId) {
+        User user = userService.getAuthenticatedUserWithChildren();
+        Set<Child> children = user.getChildren();
+        ChildResponse cr = new ChildResponse();
+
+        return children.stream()
+                .map(c -> createChildResponseWithRegistrationCheck(clubId, cr, c))
+                .toList();
+    }
+
+    private ChildResponse createChildResponseWithRegistrationCheck(
+            Long clubId, ChildResponse cr, Child c) {
+        ChildResponse childResponse = dtoConverter.convertToDto(c, cr);
+        if (existsActiveRegistration(clubId, c.getId())) {
+            childResponse.setDisabled(true);
+        }
+        return childResponse;
     }
 }
