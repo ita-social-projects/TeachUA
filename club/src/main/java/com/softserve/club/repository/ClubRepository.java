@@ -92,8 +92,7 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
                                      @Param("cityName") String cityName, Pageable pageable);
 
     @Modifying
-    @Query(value = "UPDATE clubs SET rating=:rating, feedback_count = :feedbackCount WHERE id = :clubId",
-            nativeQuery = true)
+    @Query(value = "UPDATE Club SET rating=:rating, feedbackCount = :feedbackCount WHERE id = :clubId")
     void updateRating(@Param("clubId") Long clubId, @Param("rating") double rating,
                       @Param("feedbackCount") Long feedbackCount);
 
@@ -105,9 +104,11 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
             + " WHERE club.center.id = :centerId and club.feedbackCount > 0")
     Double findAvgRating(@Param("centerId") Long centerId);
 
-    @Query(value = "SELECT c.* from clubs as c left join locations as l on l.club_id = c.id "
-            + "left join cities as ct on ct.id = l.city_id "
-            + "where ct.name = :city order by c.rating desc limit :amount", nativeQuery = true)
+    @Query(value = """
+            SELECT c.* from club.clubs as c left join club.locations as l on l.club_id = c.id
+            left join club.cities as ct on ct.id = l.city_id
+            where ct.name = :city order by c.rating desc limit :amount
+            """, nativeQuery = true)
     List<Club> findTopClubsByCity(@Param("city") String cityName, @Param("amount") int amount);
 
     @Query(value = "SELECT club from Club as club LEFT JOIN club.categories as categories WHERE categories.id is NULL")

@@ -24,13 +24,11 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     List<Certificate> findAllByOrderByIdAsc();
 
     @Query(value = """
-            SELECT *
-            FROM certificate.certificates
-            WHERE user_email = :email
-            AND NOT (serial_number IS NULL AND update_status IS NOT NULL)
-            ORDER BY update_status DESC
-            """,
-            nativeQuery = true)
+            FROM Certificate
+            WHERE userEmail = :email
+            AND NOT (serialNumber IS NULL AND updateStatus IS NOT NULL)
+            ORDER BY updateStatus DESC
+            """)
     List<Certificate> findAllForDownload(@Param("email") String email);
 
     List<Certificate> findAllByUserEmailAndUpdateStatusAndSendStatusTrue(String sendToEmail, LocalDate updateDate);

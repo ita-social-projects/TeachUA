@@ -30,8 +30,7 @@ public interface CenterRepository extends JpaRepository<Center, Long> {
     Center findCenterByCenterExternalId(Long id);
 
     @Modifying
-    @Query(value = "UPDATE centers SET rating=:rating, club_count = :club_count WHERE id = :center_id",
-            nativeQuery = true)
+    @Query(value = "UPDATE Center SET rating=:rating, clubCount = :club_count WHERE id = :center_id")
     void updateRating(@Param("center_id") Long centerId, @Param("rating") double rating,
                       @Param("club_count") Long clubCount);
 }
