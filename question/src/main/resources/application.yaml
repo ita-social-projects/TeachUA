@@ -24,6 +24,10 @@ spring:
           auth: true
           starttls.enable: true
         transport.protocol: smtp
+  rabbitmq:
+    addresses: ${RABBITMQ_HOST}:${RABBITMQ_PORT}
+    username: ${RABBITMQ_DEFAULT_USER}
+    password: ${RABBITMQ_DEFAULT_PASS}
 
 application:
   api:
