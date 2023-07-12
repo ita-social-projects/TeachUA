@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   teachua_nginx:
-    image: nginx
+    image: bnazar00/teachua_nginx:latest
     container_name: teachua_nginx
     ports:
       - "8080:8080"
