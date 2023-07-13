@@ -2,7 +2,9 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.child.ChildResponse;
 import com.softserve.teachua.dto.club_registration.RegistrationApprovedSuccess;
+import com.softserve.teachua.dto.club_registration.RegistrationCanceledSuccess;
 import com.softserve.teachua.dto.club_registration.UnapprovedClubRegistration;
+import com.softserve.teachua.dto.club_registration.FullClubRegistration;
 import com.softserve.teachua.dto.club_registration.UserClubRegistrationRequest;
 import com.softserve.teachua.dto.club_registration.ClubRegistrationRequest;
 import com.softserve.teachua.dto.club_registration.ClubRegistrationResponse;
@@ -22,4 +24,10 @@ public interface ClubRegistrationService {
     boolean existsActiveRegistration(Long clubId, Long childId);
 
     List<ChildResponse> getChildrenForCurrentUserAndCheckIsDisabledByClubId(Long clubId);
+
+    List<FullClubRegistration> getApplicationsByUserId(Long userId);
+
+    RegistrationCanceledSuccess cancel(Long clubRegistrationId);
+
+    List<FullClubRegistration> getAllByManagerId(Long managerId);
 }

@@ -15,8 +15,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -77,13 +75,6 @@ public class User implements Convertible {
     private String verificationCode;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "parent",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
     private Set<Child> children;
-
-    public void addChild(Child child) {
-        Optional.ofNullable(children)
-                .orElseGet(() -> children = new HashSet<>())
-                .add(child);
-    }
-
 }

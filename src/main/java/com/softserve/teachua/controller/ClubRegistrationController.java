@@ -4,7 +4,9 @@ import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.child.ChildResponse;
 import com.softserve.teachua.dto.club_registration.RegistrationApprovedSuccess;
+import com.softserve.teachua.dto.club_registration.RegistrationCanceledSuccess;
 import com.softserve.teachua.dto.club_registration.UnapprovedClubRegistration;
+import com.softserve.teachua.dto.club_registration.FullClubRegistration;
 import com.softserve.teachua.dto.club_registration.UserClubRegistrationRequest;
 import com.softserve.teachua.dto.club_registration.ClubRegistrationRequest;
 import com.softserve.teachua.dto.club_registration.ClubRegistrationResponse;
@@ -39,6 +41,12 @@ public class ClubRegistrationController implements Api {
 
         return ResponseEntity.ok(children);
     }
+    @GetMapping("/club-registration/user-applications/{userId}")
+    public ResponseEntity<List<FullClubRegistration>> getUserApplications(@PathVariable Long userId) {
+        List<FullClubRegistration> applications = clubRegistrationService.getApplicationsByUserId(userId);
+
+        return ResponseEntity.ok(applications);
+    }
 
     @AllowedRoles(RoleData.USER)
     @PostMapping("/club-registration")
@@ -58,8 +66,8 @@ public class ClubRegistrationController implements Api {
     }
 
     @AllowedRoles(RoleData.MANAGER)
-    @GetMapping("/club-registration/{managerId}")
-    public ResponseEntity<List<UnapprovedClubRegistration>> getUnapprovedClubRegistrations(
+    @GetMapping("/club-registration/unapproved/{managerId}")
+    public ResponseEntity<List<UnapprovedClubRegistration>> getUnapprovedClubRegistrationsByManagerId(
             @PathVariable Long managerId) {
         var unapprovedClubRegistrations = clubRegistrationService.getAllUnapprovedByManagerId(managerId);
         log.debug("got unapproved registrations list {}", unapprovedClubRegistrations);
@@ -68,10 +76,27 @@ public class ClubRegistrationController implements Api {
     }
 
     @AllowedRoles(RoleData.MANAGER)
+    @GetMapping("/club-registration/{managerId}")
+    public ResponseEntity<List<FullClubRegistration>> getClubRegistrationsByManagerId(
+            @PathVariable Long managerId) {
+        var clubRegistrations = clubRegistrationService.getAllByManagerId(managerId);
+        log.debug("got registrations list {}", clubRegistrations);
+
+        return ResponseEntity.ok(clubRegistrations);
+    }
+
+    @AllowedRoles(RoleData.MANAGER)
     @PatchMapping("/club-registration/approve/{clubRegistrationId}")
     public ResponseEntity<RegistrationApprovedSuccess> approveRegistration(@PathVariable Long clubRegistrationId) {
         RegistrationApprovedSuccess approved = clubRegistrationService.approve(clubRegistrationId);
 
         return ResponseEntity.ok(approved);
+    }
+    @AllowedRoles({RoleData.USER, RoleData.MANAGER})
+    @PatchMapping("/club-registration/cancel/{clubRegistrationId}")
+    public ResponseEntity<RegistrationCanceledSuccess> cancelRegistration(@PathVariable Long clubRegistrationId) {
+        RegistrationCanceledSuccess canceled = clubRegistrationService.cancel(clubRegistrationId);
+
+        return ResponseEntity.ok(canceled);
     }
 }

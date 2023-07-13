@@ -15,6 +15,7 @@ public interface ClubRegistrationRepository extends JpaRepository<ClubRegistrati
             ORDER BY cr.registrationDate ASC""")
     List<ClubRegistration> findAllUnapprovedByManagerIdOrderByRegistrationDateAsc(@Param("managerId") Long managerId);
 
+    List<ClubRegistration> findAllByClubUserIdOrderByRegistrationDateAsc(Long managerId);
     @Modifying
     @Query("""
             UPDATE ClubRegistration cr
@@ -22,9 +23,23 @@ public interface ClubRegistrationRepository extends JpaRepository<ClubRegistrati
             WHERE cr.id = :clubRegistrationId""")
     void approveClubRegistration(@Param("clubRegistrationId") Long clubRegistrationId);
 
+    @Modifying
+    @Query("""
+            UPDATE ClubRegistration cr
+            SET cr.isActive = false
+            WHERE cr.id = :clubRegistrationId""")
+    void cancelClubRegistration(Long clubRegistrationId);
+
     @Query("""
             SELECT COUNT(cr) > 0
             FROM ClubRegistration cr
             WHERE cr.club.id = :clubId AND cr.child.id = :childId AND cr.isActive = true""")
     boolean existsActiveRegistration(@Param("clubId") Long clubId, @Param("childId") Long childId);
+
+    @Query("""
+            SELECT cr
+            FROM ClubRegistration cr
+            WHERE (cr.user.id = :userId OR cr.child.parent.id = :userId)
+            ORDER BY cr.registrationDate DESC""")
+    List<ClubRegistration> findRegistrationsByUserIdOrChildParentId(@Param("userId") Long userId);
 }

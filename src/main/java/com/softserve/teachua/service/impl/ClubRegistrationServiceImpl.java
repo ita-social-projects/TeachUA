@@ -5,7 +5,9 @@ import com.softserve.teachua.dto.child.ChildResponse;
 import com.softserve.teachua.dto.club_registration.ClubRegistrationRequest;
 import com.softserve.teachua.dto.club_registration.ClubRegistrationResponse;
 import com.softserve.teachua.dto.club_registration.RegistrationApprovedSuccess;
+import com.softserve.teachua.dto.club_registration.RegistrationCanceledSuccess;
 import com.softserve.teachua.dto.club_registration.UnapprovedClubRegistration;
+import com.softserve.teachua.dto.club_registration.FullClubRegistration;
 import com.softserve.teachua.dto.club_registration.UserClubRegistrationRequest;
 import com.softserve.teachua.dto.club_registration.UserClubRegistrationResponse;
 import com.softserve.teachua.model.Child;
@@ -65,10 +67,23 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
     @Override
     public List<UnapprovedClubRegistration> getAllUnapprovedByManagerId(Long managerId) {
-        var unapprovedClubRegistrations = clubRegistrationRepository.findAllUnapprovedByManagerIdOrderByRegistrationDateAsc(managerId);
+        var unapprovedClubRegistrations = clubRegistrationRepository
+                .findAllUnapprovedByManagerIdOrderByRegistrationDateAsc(managerId);
         var dto = new UnapprovedClubRegistration();
+
         return unapprovedClubRegistrations.stream()
                 .map(ucr -> dtoConverter.convertToDto(ucr, dto))
+                .toList();
+    }
+
+    @Override
+    public List<FullClubRegistration> getAllByManagerId(Long managerId) {
+        var clubRegistrations =clubRegistrationRepository
+                .findAllByClubUserIdOrderByRegistrationDateAsc(managerId);
+        var dto = new FullClubRegistration();
+
+        return clubRegistrations.stream()
+                .map(cr -> dtoConverter.convertToDto(cr, dto))
                 .toList();
     }
 
@@ -78,6 +93,14 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
         clubRegistrationRepository.approveClubRegistration(clubRegistrationId);
 
         return new RegistrationApprovedSuccess(clubRegistrationId, true);
+    }
+
+    @Override
+    @Transactional
+    public RegistrationCanceledSuccess cancel(Long clubRegistrationId) {
+        clubRegistrationRepository.cancelClubRegistration(clubRegistrationId);
+
+        return new RegistrationCanceledSuccess(clubRegistrationId, false);
     }
 
     @Override
@@ -107,6 +130,16 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
         return children.stream()
                 .map(c -> createChildResponseWithRegistrationCheck(clubId, cr, c))
+                .toList();
+    }
+
+    @Override
+    public List<FullClubRegistration> getApplicationsByUserId(Long userId) {
+        FullClubRegistration ua = new FullClubRegistration();
+
+        return clubRegistrationRepository.findRegistrationsByUserIdOrChildParentId(userId)
+                .stream()
+                .map(cr -> dtoConverter.convertToDto(cr, ua))
                 .toList();
     }
 
