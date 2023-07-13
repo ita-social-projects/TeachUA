@@ -33,9 +33,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CertificateByTemplateServiceImpl implements CertificateByTemplateService {
     private static final String HALVAR_BLK_PATH =
-            "./src/main/resources/certificates/fonts/Halvar Breitschrift Medium.ttf";
+            "./certificate/src/main/resources/certificates/fonts/Halvar Breitschrift Medium.ttf";
     private static final String HALVAR_MD_PATH =
-            "./src/main/resources/certificates/fonts/Halvar Breitschrift Medium.ttf";
+            "./certificate/src/main/resources/certificates/fonts/Halvar Breitschrift Medium.ttf";
 
     private final QRCodeService qrCodeService;
     private final ObjectMapper objectMapper;
@@ -73,6 +73,7 @@ public class CertificateByTemplateServiceImpl implements CertificateByTemplateSe
              PdfDocument pdfDoc = new PdfDocument(reader, writer);
              Document document = new Document(pdfDoc)) {
             PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, true);
+
 
             PdfFont halvarBlk = PdfFontFactory.createFont(HALVAR_BLK_PATH, PdfEncodings.IDENTITY_H);
             PdfFont halvarMd = PdfFontFactory.createFont(HALVAR_MD_PATH, PdfEncodings.IDENTITY_H);

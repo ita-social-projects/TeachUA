@@ -112,7 +112,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
     public CertificateByTemplateExcelParsingResponse parseFlexibleExcel(MultipartFile multipartFile) {
         List<List<Cell>> allCells = ExcelUtil.excelSheetToList(getSheetFromExcelFile(multipartFile));
         List<List<String>> allConvertedCells =
-                allCells.stream().map(cellList ->
+                new ArrayList<>(allCells.stream().map(cellList ->
                         cellList.stream().map(element -> {
                             String value = "";
                             switch (element.getCellType()) {
@@ -131,7 +131,7 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
                                 }
                             }
                         }).toList()
-                ).toList();
+                ).toList());
         return CertificateByTemplateExcelParsingResponse.builder()
                 .columnHeadersList(allConvertedCells.remove(0))
                 .excelContent(allConvertedCells)
