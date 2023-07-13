@@ -89,7 +89,7 @@ public class CertificateGoogleFormServiceImpl implements CertificateGoogleFormSe
                             data.getFieldsList().get(j));
                     if (certificateValidator.validateEmail(value, messageList,
                             String.format("Значення: \"%s\"", value))) {
-                        certificate.setUserEmail(value);
+                        certificate.setSendToEmail(value);
                     } else {
                         certificateErrors = true;
                     }

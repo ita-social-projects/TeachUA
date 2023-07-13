@@ -78,14 +78,14 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             CertificateDates dates = saveDates(data, index);
             CertificateTemplate template = saveTemplate(data.getType());
             Certificate certificate =
-                    Certificate.builder().userName(certificateExcel.getName()).userEmail(certificateExcel.getEmail())
+                    Certificate.builder().userName(certificateExcel.getName()).sendToEmail(certificateExcel.getEmail())
                             .template(template).dates(dates).build();
             if (!certificateRepository.existsByUserNameAndDates(certificate.getUserName(), certificate.getDates())) {
                 certificateService.addCertificate(certificate);
             } else {
                 Certificate certificateFound =
                         certificateService.getByUserNameAndDates(certificate.getUserName(), certificate.getDates());
-                if (!certificate.getUserEmail().equals(certificateFound.getUserEmail())) {
+                if (!certificate.getSendToEmail().equals(certificateFound.getSendToEmail())) {
                     certificate.setSendStatus(null);
                     certificateService.updateCertificateEmail(certificateFound.getId(), certificate);
                     response.add(new CertificateDatabaseResponse(
@@ -233,7 +233,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             certificateDates = certificateDatesService.getOrCreateCertificateDates(certificateDates);
 
             certificate.setValues(objectMapper.writeValueAsString(values));
-            certificate.setUserEmail(
+            certificate.setSendToEmail(
                     CertificateDataLoaderService.getCertificateByTemplateValue(values, data, j, "email",
                             "Електронна пошта"));
             certificate.setTemplate(certificateTemplate);

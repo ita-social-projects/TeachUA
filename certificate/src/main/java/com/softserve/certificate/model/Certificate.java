@@ -45,7 +45,7 @@ public class Certificate implements Convertible, Archivable {
     private String userName;
 
     @Column(name = "user_email")
-    private String userEmail;
+    private String sendToEmail;
 
     @Column(name = "messenger_name")
     private String messengerUserName;

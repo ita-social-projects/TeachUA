@@ -115,7 +115,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public List<Certificate> getSentCertificatesByEmailAndUpdateStatus(String sendToEmail, LocalDate updateStatus) {
-        return certificateRepository.findAllByUserEmailAndUpdateStatusAndSendStatusTrue(sendToEmail, updateStatus);
+        return certificateRepository.findAllBySendToEmailAndUpdateStatusAndSendStatusTrue(sendToEmail, updateStatus);
     }
 
     @Override
@@ -232,7 +232,7 @@ public class CertificateServiceImpl implements CertificateService {
                 .withDates(certificate.getDates()).withSerialNumber(response.getSerialNumber())
                 .withTemplate(certificate.getTemplate())
                 //.withUser(certificate.getUser())
-                .withUserName(certificate.getUserName()).withUserEmail(certificate.getUserEmail());
+                .withUserName(certificate.getUserName()).withSendToEmail(certificate.getSendToEmail());
 
         log.debug("updating serial number of certificate by id {}", newCertificate);
 
@@ -292,7 +292,7 @@ public class CertificateServiceImpl implements CertificateService {
         Certificate certificate = getCertificateById(id);
         boolean isSent = Optional.ofNullable(certificate.getSendStatus()).orElse(false);
 
-        if (!certificate.getUserEmail().equals(userEmail)) {
+        if (!certificate.getSendToEmail().equals(userEmail)) {
             throw new UserPermissionException();
         } else if (isSent && certificate.getSerialNumber() == null && certificate.getUpdateStatus() != null) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Requested certificate has no serial number");
@@ -346,7 +346,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public Certificate updateCertificateEmail(Long id, Certificate certificate) {
         Certificate certificateFound = getCertificateById(id);
-        certificateFound.setUserEmail(certificate.getUserEmail());
+        certificateFound.setSendToEmail(certificate.getSendToEmail());
         certificateFound.setSendStatus(certificate.getSendStatus());
         return certificateRepository.save(certificateFound);
     }
@@ -354,10 +354,10 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public CertificatePreview updateCertificatePreview(Long id, CertificatePreview certificatePreview) {
         Certificate certificate = getCertificateById(id);
-        if (certificatePreview.getSendToEmail().equals(certificate.getUserEmail())) {
+        if (certificatePreview.getSendToEmail().equals(certificate.getSendToEmail())) {
             certificate.setSendStatus(certificatePreview.getSendStatus());
         } else {
-            certificate.setUserEmail(certificatePreview.getSendToEmail());
+            certificate.setSendToEmail(certificatePreview.getSendToEmail());
             certificate.setSendStatus(null);
         }
         if (!certificatePreview.getUserName().equals(certificate.getUserName())) {

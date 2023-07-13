@@ -25,13 +25,13 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     @Query(value = """
             FROM Certificate
-            WHERE userEmail = :email
+            WHERE sendToEmail = :email
             AND NOT (serialNumber IS NULL AND updateStatus IS NOT NULL)
             ORDER BY updateStatus DESC
             """)
     List<Certificate> findAllForDownload(@Param("email") String email);
 
-    List<Certificate> findAllByUserEmailAndUpdateStatusAndSendStatusTrue(String sendToEmail, LocalDate updateDate);
+    List<Certificate> findAllBySendToEmailAndUpdateStatusAndSendStatusTrue(String sendToEmail, LocalDate updateDate);
 
     Optional<Certificate> findBySerialNumber(Long serialNumber);
 
