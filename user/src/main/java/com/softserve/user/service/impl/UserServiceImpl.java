@@ -230,7 +230,7 @@ public class UserServiceImpl implements UserService {
                 .id(user.getId())
                 .email(user.getEmail())
                 .roleName(user.getRole().getName())
-                .accessToken(jwtUtils.generateAccessToken(userLogin.getEmail()))
+                .accessToken(jwtUtils.generateAccessToken(user))
                 .refreshToken(refreshTokenService.assignRefreshToken(user))
                 .build();
     }

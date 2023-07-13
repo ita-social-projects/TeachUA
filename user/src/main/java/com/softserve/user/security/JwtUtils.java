@@ -1,5 +1,9 @@
 package com.softserve.user.security;
 
+import com.softserve.commons.constant.RoleData;
+import com.softserve.commons.exception.UserPermissionException;
+import com.softserve.commons.security.UserPrincipal;
+import com.softserve.user.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +44,15 @@ public class JwtUtils {
     /**
      * Method for generating access token.
      */
-    public String generateAccessToken(String email) {
+    public String generateAccessToken(User user) {
+        var extraClaims = Map.of("role", user.getRole().getName());
+
         Calendar calendar = getCalendar();
         calendar.add(Calendar.MINUTE, accessExpirationTimeInMinutes);
         return Jwts.builder()
-                .setSubject(email)
+                .setClaims(extraClaims)
+                .setId(String.valueOf(user.getId()))
+                .setSubject(user.getEmail())
                 .setExpiration(calendar.getTime())
                 .signWith(getSignInKey(accessTokenSecret), SignatureAlgorithm.HS512)
                 .compact();
@@ -147,6 +156,17 @@ public class JwtUtils {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public UserPrincipal getUserPrincipal(String token) {
+        if (!isAccessTokenValid(token)) {
+            throw new UserPermissionException();
+        }
+
+        Claims claims = extractAllClaims(token, accessTokenSecret);
+        System.out.println(RoleData.getRoleByDBName(claims.get("role", String.class)));
+        return new UserPrincipal(Long.valueOf(claims.getId()), claims.getSubject(),
+                RoleData.getRoleByDBName(claims.get("role", String.class)));
     }
 
     private Key getSignInKey(String secret) {

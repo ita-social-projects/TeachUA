@@ -55,7 +55,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         refreshToken.setToken(passwordEncoder.encode(newRefreshToken));
 
         return RefreshTokenResponse.builder()
-                .accessToken(jwtUtils.generateAccessToken(refreshToken.getUser().getEmail()))
+                .accessToken(jwtUtils.generateAccessToken(refreshToken.getUser()))
                 .refreshToken(newRefreshToken)
                 .build();
     }

@@ -20,11 +20,22 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
+    private final JwtUtils jwtUtils;
+
+    public JwtFilter(JwtUtils jwtUtils) {
+        this.jwtUtils = jwtUtils;
+    }
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
+            if (request.getRequestURI().equals("/api/v1/jwt/parse")) {
+                parseJwt(request.getHeader("Authorization"), response);
+                return;
+            }
+
             String id = request.getHeader("uid");
             String username = request.getHeader("uname");
             String roleHeader = request.getHeader("role");
@@ -45,5 +56,22 @@ public class JwtFilter extends OncePerRequestFilter {
             throw new UserPermissionException();
         }
         filterChain.doFilter(request, response);
+    }
+
+    private void parseJwt(String token, HttpServletResponse response) {
+        log.info("Parsing token");
+
+        if (StringUtils.isEmpty(token)) {
+            response.setHeader("uid", "");
+            response.setHeader("uname", "");
+            response.setHeader("role", "");
+        } else {
+            token = token.substring(7);
+            UserPrincipal principal = jwtUtils.getUserPrincipal(token);
+            //UserPrincipal principal = new UserPrincipal(1L, "Name", RoleData.ADMIN);
+            response.setHeader("uid", String.valueOf(principal.getId()));
+            response.setHeader("uname", principal.getUsername());
+            response.setHeader("role", String.valueOf(principal.getRole()));
+        }
     }
 }

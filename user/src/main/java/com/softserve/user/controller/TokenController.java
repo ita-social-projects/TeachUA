@@ -1,6 +1,5 @@
 package com.softserve.user.controller;
 
-import com.softserve.commons.constant.RoleData;
 import com.softserve.commons.exception.UserPermissionException;
 import com.softserve.user.dto.security.RefreshTokenRequest;
 import com.softserve.user.dto.security.RefreshTokenResponse;
@@ -9,8 +8,6 @@ import com.softserve.user.service.RefreshTokenService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,29 +26,6 @@ public class TokenController {
     public TokenController(RefreshTokenService refreshTokenService, HttpSessionBean httpSessionBean) {
         this.refreshTokenService = refreshTokenService;
         this.httpSessionBean = httpSessionBean;
-    }
-
-    @GetMapping("/parse")
-    public ResponseEntity<Void> parseJwtForNginx(
-            @RequestHeader(value = "Authorization", defaultValue = "") String token) {
-        log.info("Parsing token request");
-        //todo
-        System.out.println(token);
-        HttpHeaders responseHeaders = new HttpHeaders();
-
-        if (token.isEmpty()) {
-            responseHeaders.set("uid", "");
-            responseHeaders.set("uname", "");
-            responseHeaders.set("role", "");
-        } else {
-            responseHeaders.set("uid", "1");
-            responseHeaders.set("uname", "testUsername");
-            responseHeaders.set("role", String.valueOf(RoleData.ADMIN));
-        }
-
-        return ResponseEntity.ok()
-                .headers(responseHeaders)
-                .build();
     }
 
     @GetMapping

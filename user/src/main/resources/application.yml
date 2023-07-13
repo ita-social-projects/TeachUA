@@ -13,6 +13,10 @@ spring:
     properties:
       hibernate:
         default_schema: user_schema
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
   mail:
     host: smtp.gmail.com
     port: 587

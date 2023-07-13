@@ -62,7 +62,7 @@ public class UserController implements Api {
      * @return {@code List<UserResponse>}.
      */
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/{role}")
+    @GetMapping("/role/{role}")
     public List<UserResponse> getUsersByRole(@PathVariable("role") String roleName) {
         return userService.getUserResponsesByRole(roleName);
     }

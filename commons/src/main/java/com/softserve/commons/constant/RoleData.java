@@ -13,6 +13,10 @@ public enum RoleData {
         this.name = name;
     }
 
+    public static RoleData getRoleByDBName(String name) {
+        return RoleData.valueOf(name.substring(5));
+    }
+
     /**
      * Returns name of the role.
      *
