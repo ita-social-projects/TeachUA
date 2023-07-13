@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DtoConverter {
-        private final ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public DtoConverter(ModelMapper modelMapper) {

@@ -47,5 +47,4 @@ public class Child implements Convertible {
     @Type(PostgreSQLEnumType.class)
     @Column(name = "gender", nullable = false)
     private Gender gender;
-
 }

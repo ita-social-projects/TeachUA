@@ -63,5 +63,4 @@ public class ClubRegistration implements Convertible {
 
     @Column
     private String comment;
-
 }

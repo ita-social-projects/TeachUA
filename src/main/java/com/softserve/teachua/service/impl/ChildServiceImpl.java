@@ -8,13 +8,11 @@ import com.softserve.teachua.model.Child;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.ChildRepository;
 import com.softserve.teachua.service.ChildService;
-import com.softserve.teachua.service.ClubRegistrationService;
 import com.softserve.teachua.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -23,6 +21,7 @@ public class ChildServiceImpl implements ChildService {
     private final ChildRepository childRepository;
     private final DtoConverter dtoConverter;
     private final UserService userService;
+
     @Override
     public ChildResponse create(ChildProfile childProfile) {
         User user = userService.getAuthenticatedUserWithChildren();
@@ -53,5 +52,4 @@ public class ChildServiceImpl implements ChildService {
                 .map(c -> dtoConverter.convertToDto(c, cr))
                 .toList();
     }
-
 }

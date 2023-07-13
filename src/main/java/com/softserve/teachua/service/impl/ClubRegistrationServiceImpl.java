@@ -78,7 +78,7 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
     @Override
     public List<FullClubRegistration> getAllByManagerId(Long managerId) {
-        var clubRegistrations =clubRegistrationRepository
+        var clubRegistrations = clubRegistrationRepository
                 .findAllByClubUserIdOrderByRegistrationDateAsc(managerId);
         var dto = new FullClubRegistration();
 

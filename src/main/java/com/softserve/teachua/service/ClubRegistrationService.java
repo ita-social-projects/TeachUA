@@ -12,7 +12,6 @@ import com.softserve.teachua.dto.club_registration.UserClubRegistrationResponse;
 import java.util.List;
 
 public interface ClubRegistrationService {
-
     List<ClubRegistrationResponse> create(ClubRegistrationRequest clubRegistrationRequest);
 
     UserClubRegistrationResponse create(UserClubRegistrationRequest userClubRegistrationRequest);

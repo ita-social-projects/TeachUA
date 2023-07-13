@@ -21,5 +21,4 @@ public class ClubRegistrationRequest {
     private Long clubId;
     @CheckRussian
     private String comment;
-
 }

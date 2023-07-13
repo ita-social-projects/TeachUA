@@ -37,10 +37,12 @@ public class ClubRegistrationController implements Api {
 
     @GetMapping("/club-registration/user-children/{clubId}")
     public ResponseEntity<List<ChildResponse>> getChildrenByParentId(@PathVariable Long clubId) {
-        List<ChildResponse> children = clubRegistrationService.getChildrenForCurrentUserAndCheckIsDisabledByClubId(clubId);
+        List<ChildResponse> children = clubRegistrationService
+                .getChildrenForCurrentUserAndCheckIsDisabledByClubId(clubId);
 
         return ResponseEntity.ok(children);
     }
+
     @GetMapping("/club-registration/user-applications/{userId}")
     public ResponseEntity<List<FullClubRegistration>> getUserApplications(@PathVariable Long userId) {
         List<FullClubRegistration> applications = clubRegistrationService.getApplicationsByUserId(userId);
@@ -56,6 +58,7 @@ public class ClubRegistrationController implements Api {
 
         return ResponseEntity.ok(response);
     }
+
     @AllowedRoles(RoleData.USER)
     @PostMapping("/club-registration/user")
     public ResponseEntity<UserClubRegistrationResponse> addClubRegistrationForUser(
@@ -92,6 +95,7 @@ public class ClubRegistrationController implements Api {
 
         return ResponseEntity.ok(approved);
     }
+
     @AllowedRoles({RoleData.USER, RoleData.MANAGER})
     @PatchMapping("/club-registration/cancel/{clubRegistrationId}")
     public ResponseEntity<RegistrationCanceledSuccess> cancelRegistration(@PathVariable Long clubRegistrationId) {

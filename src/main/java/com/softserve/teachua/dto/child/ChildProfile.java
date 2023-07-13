@@ -16,7 +16,6 @@ import org.hibernate.validator.constraints.Range;
 @ToString
 @NoArgsConstructor
 public class ChildProfile implements Convertible {
-
     @NotBlank
     @CheckRussian
     private String firstName;
