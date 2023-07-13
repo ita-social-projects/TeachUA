@@ -190,7 +190,7 @@ public class ClubController implements Api {
      * @param clubProfile - Place dto with all parameters for updating existing club.
      * @return new {@code ClubProfile}.
      */
-    @AllowedRoles({RoleData.ADMIN, RoleData.USER})
+    @AllowedRoles({RoleData.ADMIN, RoleData.MANAGER})
     @PutMapping("/club/{id}")
     public SuccessUpdatedClub updateClub(@PathVariable Long id, @Valid @RequestBody ClubResponse clubProfile) {
         return clubService.updateClub(id, clubProfile);
