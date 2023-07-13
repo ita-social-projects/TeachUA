@@ -4,6 +4,7 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.category.CategoryProfile;
 import com.softserve.teachua.dto.category.CategoryResponse;
 import com.softserve.teachua.dto.category.SuccessCreatedCategory;
+import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.dto.search.SearchPossibleResponse;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
@@ -14,6 +15,7 @@ import com.softserve.teachua.model.archivable.CategoryArch;
 import com.softserve.teachua.repository.CategoryRepository;
 import com.softserve.teachua.service.impl.CategoryServiceImpl;
 import jakarta.validation.ValidationException;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -188,7 +190,7 @@ class CategoryServiceTest {
         correctCategory.setId(WRONG_ID);
         when(dtoConverter.convertToEntity(categoryProfile, correctCategory)).thenReturn(correctCategory);
         CategoryProfile profileWithId = categoryProfile.withId(CORRECT_ID);
-        when(dtoConverter.convertToDto(any(), any())).thenReturn(profileWithId);
+        when(dtoConverter.convertToDto( any(), (Type) any())).thenReturn(profileWithId);
         assertThat(categoryService.updateCategory(CORRECT_ID, categoryProfile)).isEqualTo(profileWithId);
     }
 
