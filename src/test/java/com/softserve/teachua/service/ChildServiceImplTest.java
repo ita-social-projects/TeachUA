@@ -34,7 +34,7 @@ class ChildServiceImplTest {
     private ChildServiceImpl childService;
 
     @Test
-    void testCreateChild() {
+    void create() {
         ChildProfile childProfile = new ChildProfile();
         User user = new User();
         Child child = new Child();
@@ -54,7 +54,7 @@ class ChildServiceImplTest {
     }
 
     @Test
-    void testGetAllByParentId() {
+    void getAllByParentId() {
         Child child1 = new Child();
         Child child2 = new Child();
         ChildResponse childResponse1 = new ChildResponse();
@@ -72,7 +72,7 @@ class ChildServiceImplTest {
     }
 
     @Test
-    void testGetChildById() {
+    void getById() {
         Child child = new Child();
         child.setId(1L);
 
@@ -84,7 +84,7 @@ class ChildServiceImplTest {
     }
 
     @Test
-    void testGetChildByIdNotExist() {
+    void getById_NotExist() {
         when(childRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(NotExistException.class, () -> childService.getById(1L));

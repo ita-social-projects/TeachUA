@@ -55,7 +55,7 @@ class ClubRegistrationServiceImplTest {
     }
 
     @Test
-    void createClubRegistration() {
+    void create_ClubRegistration() {
         ClubRegistrationRequest request = new ClubRegistrationRequest(Arrays.asList(1L, 2L), 1L, "Comment");
         Club club = new Club();
         ClubRegistration clubRegistration = new ClubRegistration();
@@ -104,7 +104,7 @@ class ClubRegistrationServiceImplTest {
 
 
     @Test
-    void approveTest() {
+    void approve() {
         Long clubRegistrationId = 1L;
 
         clubRegistrationService.approve(clubRegistrationId);
@@ -113,7 +113,7 @@ class ClubRegistrationServiceImplTest {
     }
 
     @Test
-    void cancelTest() {
+    void cancel() {
         Long clubRegistrationId = 1L;
 
         clubRegistrationService.cancel(clubRegistrationId);
@@ -122,7 +122,7 @@ class ClubRegistrationServiceImplTest {
     }
 
     @Test
-    void existsActiveRegistrationTest() {
+    void existsActiveRegistration() {
         Long clubId = 1L;
         Long childId = 1L;
 
@@ -136,7 +136,7 @@ class ClubRegistrationServiceImplTest {
     }
 
     @Test
-    void getChildrenForCurrentUserAndCheckIsDisabledByClubIdTest() {
+    void getChildrenForCurrentUserAndCheckIsDisabledByClubId() {
         Long clubId = 1L;
         Child child1 = new Child();
         child1.setId(1L);
@@ -161,7 +161,7 @@ class ClubRegistrationServiceImplTest {
     }
 
     @Test
-    void getApplicationsByUserIdTest() {
+    void getApplicationsByUserId() {
         Long userId = 1L;
         List<ClubRegistration> registrations = Arrays.asList(new ClubRegistration(), new ClubRegistration());
         FullClubRegistration fullClubRegistration = new FullClubRegistration();
