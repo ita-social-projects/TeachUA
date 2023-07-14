@@ -139,11 +139,13 @@ public class ChallengeController implements Api {
                                                              @Valid @RequestBody UpdateChallengeDate startDate) {
         return challengeService.updateChallengeStartDate(id, startDate);
     }
+
     /**
-     * Use this endpoint to fully copy challenge and tasks related to it. The controller returns {@code List<SuccessCreatedTask>}.
+     * Use this endpoint to fully copy challenge and tasks related to it.
+     * The controller returns {@code List<SuccessCreatedTask>}.
      * This feature available only for admins.
      *
-     * @param id        - put challenge id here.
+     * @param id - put challenge id here.
      * @return {@code List<SuccessCreatedTask>} - shows result of copy.
      */
     @AllowedRoles(RoleData.ADMIN)

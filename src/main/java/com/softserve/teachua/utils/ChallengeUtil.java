@@ -13,6 +13,7 @@ public class ChallengeUtil {
             throw new IncorrectInputException("Sort number must be unique and greater than 0");
         }
     }
+
     public static long generateUniqueSortNumber(List<Long> unavailableSortNumbers, long start) {
         int max = Integer.MAX_VALUE;
         return LongStream.range(start, max)

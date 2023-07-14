@@ -206,7 +206,8 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
         BeanUtils.copyProperties(challenge, cloneChallenge);
         cloneChallenge.setName(cloneChallenge.getName() + namePostfix);
         cloneChallenge.setSortNumber(ChallengeUtil.generateUniqueSortNumber(
-                challengeRepository.findAll().stream().map(Challenge::getSortNumber).toList(), challenge.getSortNumber()));
+                challengeRepository.findAll().stream().map(Challenge::getSortNumber).toList(),
+                challenge.getSortNumber()));
         var createdChallenge = deactivateChallenge(createChallenge(cloneChallenge).getId());
         List<Task> tasks = challenge.getTasks().stream().toList();
         if (!tasks.isEmpty()) {
