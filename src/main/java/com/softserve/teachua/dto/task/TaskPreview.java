@@ -19,4 +19,5 @@ public class TaskPreview implements Convertible {
     private String headerText;
     private String picture;
     private LocalDate startDate;
+    private Boolean isActive;
 }

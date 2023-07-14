@@ -3,6 +3,7 @@ package com.softserve.teachua.dto.task;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.softserve.teachua.dto.marker.Convertible;
 import java.time.LocalDate;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,4 +22,5 @@ public class SuccessCreatedTask implements Convertible {
     private String picture;
     private LocalDate startDate;
     private Long challengeId;
+    private Boolean isActive;
 }

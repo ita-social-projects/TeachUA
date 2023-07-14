@@ -44,4 +44,6 @@ public class UpdateTask implements Convertible {
     private LocalDate startDate;
     @NotNull
     private Long challengeId;
+    @NotNull
+    private Boolean isActive;
 }
