@@ -46,5 +46,5 @@ public class CreateTask implements Convertible {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
     @NotNull
-    private Boolean isActive;
+    private Boolean isActive = true;
 }
