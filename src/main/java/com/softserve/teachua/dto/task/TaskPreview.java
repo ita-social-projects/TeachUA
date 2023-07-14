@@ -17,7 +17,9 @@ public class TaskPreview implements Convertible {
     private Long id;
     private String name;
     private String headerText;
+    private String description;
     private String picture;
     private LocalDate startDate;
+    private Long challengeId;
     private Boolean isActive;
 }
