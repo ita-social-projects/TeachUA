@@ -68,7 +68,7 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
     @Override
     public List<UnapprovedClubRegistration> getAllUnapprovedByManagerId(Long managerId) {
         var unapprovedClubRegistrations = clubRegistrationRepository
-                .findAllUnapprovedByManagerIdOrderByRegistrationDateAsc(managerId);
+                .findAllUnapprovedByManagerId(managerId);
         var dto = new UnapprovedClubRegistration();
 
         return unapprovedClubRegistrations.stream()

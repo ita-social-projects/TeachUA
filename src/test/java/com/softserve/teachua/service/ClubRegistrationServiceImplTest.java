@@ -62,14 +62,14 @@ class ClubRegistrationServiceImplTest {
         List<ClubRegistration> clubRegistrations = List.of(new ClubRegistration(), new ClubRegistration());
         UnapprovedClubRegistration dto = new UnapprovedClubRegistration();
 
-        when(clubRegistrationRepository.findAllUnapprovedByManagerIdOrderByRegistrationDateAsc(managerId)).thenReturn(clubRegistrations);
+        when(clubRegistrationRepository.findAllUnapprovedByManagerId(managerId)).thenReturn(clubRegistrations);
         when(dtoConverter.convertToDto(any(ClubRegistration.class), any(UnapprovedClubRegistration.class))).thenReturn(dto);
 
         // When
         List<UnapprovedClubRegistration> result = clubRegistrationService.getAllUnapprovedByManagerId(managerId);
 
         // Then
-        verify(clubRegistrationRepository, times(1)).findAllUnapprovedByManagerIdOrderByRegistrationDateAsc(managerId);
+        verify(clubRegistrationRepository, times(1)).findAllUnapprovedByManagerId(managerId);
         verify(dtoConverter, times(2)).convertToDto(any(ClubRegistration.class), any(UnapprovedClubRegistration.class));
         assertNotNull(result);
         assertEquals(2, result.size());
