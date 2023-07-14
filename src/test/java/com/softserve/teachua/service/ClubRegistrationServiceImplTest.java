@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.child.ChildResponse;
 import com.softserve.teachua.dto.club_registration.ClubRegistrationRequest;
 import com.softserve.teachua.dto.club_registration.ClubRegistrationResponse;
 import com.softserve.teachua.dto.club_registration.FullClubRegistration;
+import com.softserve.teachua.dto.club_registration.UnapprovedClubRegistration;
 import com.softserve.teachua.dto.club_registration.UserClubRegistrationRequest;
 import com.softserve.teachua.dto.club_registration.UserClubRegistrationResponse;
 import com.softserve.teachua.model.Child;
@@ -53,6 +54,46 @@ class ClubRegistrationServiceImplTest {
     void setup() {
         MockitoAnnotations.openMocks(this);
     }
+
+    @Test
+    void shouldGetAllUnapprovedByManagerId() {
+        // Given
+        Long managerId = 1L;
+        List<ClubRegistration> clubRegistrations = List.of(new ClubRegistration(), new ClubRegistration());
+        UnapprovedClubRegistration dto = new UnapprovedClubRegistration();
+
+        when(clubRegistrationRepository.findAllUnapprovedByManagerIdOrderByRegistrationDateAsc(managerId)).thenReturn(clubRegistrations);
+        when(dtoConverter.convertToDto(any(ClubRegistration.class), any(UnapprovedClubRegistration.class))).thenReturn(dto);
+
+        // When
+        List<UnapprovedClubRegistration> result = clubRegistrationService.getAllUnapprovedByManagerId(managerId);
+
+        // Then
+        verify(clubRegistrationRepository, times(1)).findAllUnapprovedByManagerIdOrderByRegistrationDateAsc(managerId);
+        verify(dtoConverter, times(2)).convertToDto(any(ClubRegistration.class), any(UnapprovedClubRegistration.class));
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertTrue(result.contains(dto));
+    }
+
+    @Test
+    void shouldGetAllByManagerId() {
+        Long managerId = 1L;
+        List<ClubRegistration> clubRegistrations = List.of(new ClubRegistration(), new ClubRegistration());
+        FullClubRegistration dto = new FullClubRegistration();
+
+        when(clubRegistrationRepository.findAllByClubUserIdOrderByRegistrationDateAsc(managerId)).thenReturn(clubRegistrations);
+        when(dtoConverter.convertToDto(any(ClubRegistration.class), any(FullClubRegistration.class))).thenReturn(dto);
+
+        List<FullClubRegistration> result = clubRegistrationService.getAllByManagerId(managerId);
+
+        verify(clubRegistrationRepository, times(1)).findAllByClubUserIdOrderByRegistrationDateAsc(managerId);
+        verify(dtoConverter, times(2)).convertToDto(any(ClubRegistration.class), any(FullClubRegistration.class));
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertTrue(result.contains(dto));
+    }
+
 
     @Test
     void create_ClubRegistration() {

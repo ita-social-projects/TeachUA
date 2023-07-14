@@ -42,6 +42,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyLong;
@@ -119,6 +120,36 @@ class UserServiceTest {
         passwordUpdate =
                 UserPasswordUpdate.builder().oldPassword("password").newPassword(PASSWORD).newPasswordVerify(PASSWORD)
                         .build();
+    }
+
+    @Test
+    void getAuthenticatedUserWithChildren_UserExists_ReturnsUserWithChildren() {
+        UserPrincipal userPrincipal = getUserPrincipal(user);
+        when(userDetailsService.getUserPrincipal()).thenReturn(userPrincipal);
+        when(userRepository.findByIdFetchChildren(user.getId())).thenReturn(Optional.of(user));
+
+        User authenticatedUser = userService.getAuthenticatedUserWithChildren();
+
+        assertEquals(user, authenticatedUser);
+        verify(userDetailsService, times(1)).getUserPrincipal();
+        verify(userRepository, times(1)).findByIdFetchChildren(user.getId());
+    }
+
+    @Test
+
+    void getAuthenticatedUserWithChildren_UserDoesNotExist_ThrowsNotExistException() {
+        User user1 = new User();
+        user1.setId(NOT_EXISTING_ID);
+        UserPrincipal userPrincipal = getUserPrincipal(user1);
+        when(userDetailsService.getUserPrincipal()).thenReturn(userPrincipal);
+        when(userRepository.findByIdFetchChildren(anyLong())).thenReturn(Optional.empty());
+
+        NotExistException exception = assertThrows(NotExistException.class,
+                () -> userService.getAuthenticatedUserWithChildren());
+
+        assertEquals(String.format("User not found by id %s", NOT_EXISTING_ID), exception.getMessage());
+        verify(userDetailsService, times(1)).getUserPrincipal();
+        verify(userRepository, times(1)).findByIdFetchChildren(NOT_EXISTING_ID);
     }
 
     @Test
