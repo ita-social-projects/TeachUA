@@ -12,6 +12,7 @@ import com.softserve.teachua.dto.challenge.SuccessUpdateChallengePreview;
 import com.softserve.teachua.dto.challenge.SuccessUpdatedChallenge;
 import com.softserve.teachua.dto.challenge.UpdateChallenge;
 import com.softserve.teachua.dto.challenge.UpdateChallengeDate;
+import com.softserve.teachua.dto.task.CreateTask;
 import com.softserve.teachua.dto.task.SuccessUpdatedTask;
 import com.softserve.teachua.dto.task.TaskPreview;
 import com.softserve.teachua.dto.task.UpdateTask;
@@ -59,7 +60,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     @Autowired
     public ChallengeServiceImpl(ChallengeRepository challengeRepository, DtoConverter dtoConverter,
                                 UserService userService, ArchiveService archiveService, TaskRepository taskRepository,
-                                ObjectMapper objectMapper,TaskService taskService) {
+                                ObjectMapper objectMapper, TaskService taskService) {
         this.challengeRepository = challengeRepository;
         this.dtoConverter = dtoConverter;
         this.userService = userService;
@@ -140,7 +141,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
 
     @Override
     public SuccessUpdateChallengePreview updateChallengePreview(Long id,
-            SuccessUpdateChallengePreview updateChallengePreview) {
+                                                                SuccessUpdateChallengePreview updateChallengePreview) {
         Challenge challenge = getChallengeById(id);
         if (!challengeRepository.getReferenceById(id).getSortNumber().equals(updateChallengePreview.getSortNumber())) {
             validateSortNumber(updateChallengePreview.getSortNumber());
@@ -182,7 +183,7 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
     }
 
     @Override
-    public List<SuccessUpdatedTask> cloneChallenge(Long id, UpdateChallengeDate startDate) {
+    public List<SuccessUpdatedTask> updateChallengeStartDate(Long id, UpdateChallengeDate startDate) {
         Challenge challenge = getChallengeById(id);
         List<Task> tasks = new ArrayList<>(challenge.getTasks()).stream()
                 .sorted(Comparator.comparing(Task::getStartDate)).toList();
@@ -195,5 +196,39 @@ public class ChallengeServiceImpl implements ChallengeService, ArchiveMark<Chall
             updatedTasks.add(taskService.updateTask(task.getId(), updateTask));
         }
         return updatedTasks;
+    }
+
+    @Override
+    public SuccessCreatedChallenge cloneChallenge(Long id) {
+        String namePostfix = "_копія";
+        Challenge challenge = getChallengeById(id);
+        CreateChallenge cloneChallenge = new CreateChallenge();
+        BeanUtils.copyProperties(challenge, cloneChallenge);
+        cloneChallenge.setName(cloneChallenge.getName() + namePostfix);
+        cloneChallenge.setSortNumber(ChallengeUtil.generateUniqueSortNumber(
+                challengeRepository.findAll().stream().map(Challenge::getSortNumber).toList(), challenge.getSortNumber()));
+        var createdChallenge = deactivateChallenge(createChallenge(cloneChallenge).getId());
+        List<Task> tasks = challenge.getTasks().stream().toList();
+        if (!tasks.isEmpty()) {
+            for (Task task : tasks) {
+                CreateTask createTask = dtoConverter.convertFromDtoToDto(task, new CreateTask());
+                createTask.setName(createTask.getName() + namePostfix);
+                taskService.createTask(createdChallenge.getId(), createTask);
+            }
+        }
+        return dtoConverter.convertToDto(createdChallenge, SuccessCreatedChallenge.class);
+    }
+
+    @Override
+    public SuccessUpdatedChallenge deactivateChallenge(Long id) {
+        return dtoConverter.convertToDto(
+                challengeRepository.findById(id)
+                        .map(challenge -> {
+                            challenge.setIsActive(false);
+                            return challengeRepository.save(challenge);
+                        })
+                        .orElseThrow(() -> new NotExistException(String.format("Challenge not found by id: %s", id))),
+                SuccessUpdatedChallenge.class
+        );
     }
 }

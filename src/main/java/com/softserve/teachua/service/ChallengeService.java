@@ -120,5 +120,24 @@ public interface ChallengeService {
      *
      * @return {@code List<SuccessUpdatedTask>}.
      */
-    List<SuccessUpdatedTask> cloneChallenge(Long id, UpdateChallengeDate startDate);
+    List<SuccessUpdatedTask> updateChallengeStartDate(Long id, UpdateChallengeDate startDate);
+
+    /**
+     * The method creates full copy of challenge and tasks related to it
+     *
+     * @param id
+     *            - put Challenge id.
+     *
+     * @return {@code List<SuccessUpdatedTask>}.
+     */
+    SuccessCreatedChallenge cloneChallenge(Long id);
+    /**
+     * The method deactivates challenge
+     *
+     * @param id
+     *            - put Challenge id.
+     *
+     * @return {@code List<SuccessUpdatedChallenge>}.
+     */
+    SuccessUpdatedChallenge deactivateChallenge(Long id);
 }

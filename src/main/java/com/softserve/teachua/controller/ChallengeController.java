@@ -134,9 +134,21 @@ public class ChallengeController implements Api {
      * @return {@code List<SuccessUpdatedTask>} - shows result of updating tasks.
      */
     @AllowedRoles(RoleData.ADMIN)
+    @PutMapping("/challenge/{id}/start/date")
+    public List<SuccessUpdatedTask> updateChallengeStartDate(@PathVariable Long id,
+                                                             @Valid @RequestBody UpdateChallengeDate startDate) {
+        return challengeService.updateChallengeStartDate(id, startDate);
+    }
+    /**
+     * Use this endpoint to fully copy challenge and tasks related to it. The controller returns {@code List<SuccessCreatedTask>}.
+     * This feature available only for admins.
+     *
+     * @param id        - put challenge id here.
+     * @return {@code List<SuccessCreatedTask>} - shows result of copy.
+     */
+    @AllowedRoles(RoleData.ADMIN)
     @PutMapping("/challenge/{id}/clone")
-    public List<SuccessUpdatedTask> cloneChallenge(@PathVariable Long id,
-                                                   @Valid @RequestBody UpdateChallengeDate startDate) {
-        return challengeService.cloneChallenge(id, startDate);
+    public SuccessCreatedChallenge cloneChallenge(@PathVariable Long id) {
+        return challengeService.cloneChallenge(id);
     }
 }
