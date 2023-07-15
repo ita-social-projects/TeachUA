@@ -43,6 +43,7 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     private final UserService userService;
 
     @Override
+    @Transactional
     public MessageResponseDto addMessage(MessageProfile messageProfile) {
         if (!clubRepository.existsById(messageProfile.getClubId())) {
             log.warn("Message not added because club with id - {} doesn't exists", messageProfile.getClubId());
@@ -66,6 +67,7 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    @Transactional
     public Message getMessageById(Long id) {
         Message message = messageRepository.findById(id).orElseThrow(() -> {
             log.warn("Message with id - {} doesn't exist", id);
@@ -76,6 +78,7 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    @Transactional
     public Message getNewMessageById(Long id) {
         Message message = messageRepository.findByIdAndIsActive(id, true).orElseThrow(() -> {
             log.warn("Active message with id - {} doesn't exist", id);
@@ -86,6 +89,7 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    @Transactional
     public List<Message> getMessagesByUserId(Long id, boolean isSender) {
         List<Message> messages;
         if (isSender) {
@@ -105,6 +109,7 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    @Transactional
     public List<Message> getNewMessagesByUserId(Long id, boolean isSender) {
         List<Message> messages;
         if (isSender) {
@@ -127,11 +132,13 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    @Transactional
     public MessageResponseDto getMessageResponseById(Long id) {
         return dtoConverter.convertToDto(getMessageById(id), MessageResponseDto.class);
     }
 
     @Override
+    @Transactional
     public List<MessageResponseDto> getMessageResponsesByUserId(Long id, boolean isSender) {
         return getMessagesByUserId(id, isSender).stream()
                 .map(message -> (MessageResponseDto) dtoConverter.convertToDto(message, MessageResponseDto.class))
@@ -139,11 +146,13 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    @Transactional
     public MessageResponseDto getNewMessageResponseById(Long id) {
         return dtoConverter.convertToDto(getNewMessageById(id), MessageResponseDto.class);
     }
 
     @Override
+    @Transactional
     public List<MessageResponseDto> getNewMessageResponsesByUserId(Long id, boolean isSender) {
         return getNewMessagesByUserId(id, isSender).stream()
                 .map(message -> (MessageResponseDto) dtoConverter.convertToDto(message, MessageResponseDto.class))
@@ -151,6 +160,7 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    @Transactional
     public MessageResponseDto updateMessageTextById(Long id, MessageUpdateText messageUpdateText) {
         Message updatedMessage = getMessageById(id).withText(messageUpdateText.getText());
         MessageResponseDto messageResponseDto = dtoConverter.convertToDto(messageRepository.save(updatedMessage),
@@ -160,6 +170,7 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    @Transactional
     public MessageResponseDto updateMessageIsActiveById(Long id, MessageUpdateIsActive messageUpdateIsActive) {
         Message updatedMessage = getMessageById(id).withIsActive(messageUpdateIsActive.getIsActive());
         MessageResponseDto messageResponseDto = dtoConverter.convertToDto(messageRepository.save(updatedMessage),
@@ -169,6 +180,7 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    @Transactional
     public MessageResponseDto deleteMessageById(Long id) {
         Message message = getMessageById(id);
 
@@ -187,11 +199,13 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     @Override
+    @Transactional
     public void archiveModel(Message message) {
         archiveService.saveModel(dtoConverter.convertToDto(message, MessageArch.class));
     }
 
     @Override
+    @Transactional
     public void restoreModel(String archiveObject) throws JsonProcessingException {
         MessageArch messageArch = objectMapper.readValue(archiveObject, MessageArch.class);
         Message message = dtoConverter.convertToEntity(messageArch, new Message()).withId(null);
