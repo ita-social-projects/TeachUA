@@ -25,6 +25,7 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,19 +114,19 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     public List<Message> getNewMessagesByUserId(Long id, boolean isSender) {
         List<Message> messages;
         if (isSender) {
-            messages = messageRepository.findAllBySenderIdAndIsActiveOrderByDateDesc(id, true)
-                    .orElseThrow(() -> {
-                        log.warn("Messages with sender id - {} doesn't exist", id);
-                        return new NotExistException(String.format("Messages with sender id - %s doesn't exist", id));
-                    });
+            messages = messageRepository.findAllBySenderIdAndIsActiveOrderByDate(id, true, Sort.by(Sort.Direction.DESC,"date"));
+            if (messages.isEmpty()) {
+                log.warn("Messages with sender id - {} doesn't exist", id);
+                throw new NotExistException(String.format("Messages with sender id - %s doesn't exist", id));
+            }
             log.debug("get active messages by sender id - {}", id);
         } else {
-            messages = messageRepository.findAllByRecipientIdAndIsActiveOrderByDateDesc(id, true)
-                    .orElseThrow(() -> {
+            messages = messageRepository.findAllByRecipientIdAndIsActiveOrderByDate(id, true, Sort.by(Sort.Direction.DESC,"date"));
+                    if (messages.isEmpty()){
                         log.warn("Messages with recipient id - {} doesn't exist", id);
-                        return new NotExistException(String.format("Messages with recipient id - %s "
+                        throw new NotExistException(String.format("Messages with recipient id - %s "
                                 + "doesn't exist", id));
-                    });
+                    }
             log.debug("get active messages by recipient id - {}", id);
         }
         return messages;
