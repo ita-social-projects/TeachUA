@@ -104,6 +104,7 @@ public class MessageController implements Api {
         List<MessageResponseDto> messages = messageService.getNewMessageResponsesByUserId(id, false);
         return ResponseEntity.ok(messages);
     }
+
     /**
      * Use this endpoint to update Message text by id. The controller returns {@code MessageResponseDto}.
      *
