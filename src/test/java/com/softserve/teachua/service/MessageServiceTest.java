@@ -26,12 +26,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import jakarta.validation.ValidationException;
+import org.springframework.data.domain.Sort;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -152,11 +156,74 @@ class MessageServiceTest {
     }
 
     @Test
+    void getNewMessageById() {
+        when(messageRepository.findByIdAndIsActive(eq(EXISTING_ID), eq(true))).thenReturn(Optional.of(message));
+
+        assertEquals(message, messageService.getNewMessageById(EXISTING_ID));
+    }
+
+    @Test
+    void getNewMessageByIdMessageNotExist() {
+        when(messageRepository.findByIdAndIsActive(eq(EXISTING_ID), eq(true))).thenReturn(Optional.empty());
+
+        assertThrows(NotExistException.class, () -> messageService.getNewMessageById(EXISTING_ID));
+    }
+
+    @Test
+    void getNewMessagesByUserIdForSender() {
+        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(eq(SENDER_ID), eq(true),
+                eq(Sort.by(Sort.Direction.DESC, "date")))).thenReturn(List.of(message));
+
+        assertEquals(List.of(message), messageService.getNewMessagesByUserId(SENDER_ID, true));
+    }
+
+    @Test
+    void getNewMessagesByUserIdForSenderListIsEmpty() {
+        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(eq(SENDER_ID), eq(true),
+                eq(Sort.by(Sort.Direction.DESC, "date")))).thenReturn(Collections.emptyList());
+
+        assertThrows(NotExistException.class, () -> messageService.getNewMessagesByUserId(SENDER_ID, true));
+    }
+
+    @Test
+    void getNewMessagesByUserIdForRecipient() {
+        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(eq(RECIPIENT_ID), eq(true),
+                eq(Sort.by(Sort.Direction.DESC, "date")))).thenReturn(List.of(message));
+
+        assertEquals(List.of(message), messageService.getNewMessagesByUserId(RECIPIENT_ID, true));
+    }
+
+    @Test
+    void getNewMessagesByUserIdForRecipientListIsEmpty() {
+        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(eq(RECIPIENT_ID), eq(true),
+                eq(Sort.by(Sort.Direction.DESC, "date")))).thenReturn(Collections.emptyList());
+
+        assertThrows(NotExistException.class, () -> messageService.getNewMessagesByUserId(RECIPIENT_ID, true));
+    }
+
+    @Test
     void getMessageResponseById() {
         when(messageRepository.findById(EXISTING_ID)).thenReturn(Optional.of(message));
         when(dtoConverter.convertToDto(message, MESSAGE_RESPONSE_DTO_CLASS)).thenReturn(messageResponseDto);
 
         assertEquals(messageResponseDto, messageService.getMessageResponseById(EXISTING_ID));
+    }
+
+    @Test
+    void getNewMessageResponseById() {
+        when(messageRepository.findByIdAndIsActive(eq(EXISTING_ID), eq(true))).thenReturn(Optional.of(message));
+        when(dtoConverter.convertToDto(message, MESSAGE_RESPONSE_DTO_CLASS)).thenReturn(messageResponseDto);
+
+        assertEquals(messageResponseDto, messageService.getNewMessageResponseById(EXISTING_ID));
+    }
+
+    @Test
+    void getNewMessageResponsesByUserId() {
+        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(eq(SENDER_ID), eq(true),
+                eq(Sort.by(Sort.Direction.DESC, "date")))).thenReturn(List.of(message));
+        when(dtoConverter.convertToDto(message, MESSAGE_RESPONSE_DTO_CLASS)).thenReturn(messageResponseDto);
+
+        assertEquals(List.of(messageResponseDto), messageService.getNewMessageResponsesByUserId(SENDER_ID, true));
     }
 
     @Test
