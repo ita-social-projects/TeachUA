@@ -157,46 +157,46 @@ class MessageServiceTest {
 
     @Test
     void getNewMessageById() {
-        when(messageRepository.findByIdAndIsActive(eq(EXISTING_ID), eq(true))).thenReturn(Optional.of(message));
+        when(messageRepository.findByIdAndIsActive(EXISTING_ID, true)).thenReturn(Optional.of(message));
 
         assertEquals(message, messageService.getNewMessageById(EXISTING_ID));
     }
 
     @Test
     void getNewMessageByIdMessageNotExist() {
-        when(messageRepository.findByIdAndIsActive(eq(EXISTING_ID), eq(true))).thenReturn(Optional.empty());
+        when(messageRepository.findByIdAndIsActive(EXISTING_ID, true)).thenReturn(Optional.empty());
 
         assertThrows(NotExistException.class, () -> messageService.getNewMessageById(EXISTING_ID));
     }
 
     @Test
     void getNewMessagesByUserIdForSender() {
-        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(eq(SENDER_ID), eq(true),
-                eq(Sort.by(Sort.Direction.DESC, "date")))).thenReturn(List.of(message));
+        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(SENDER_ID, true,
+                Sort.by(Sort.Direction.DESC, "date"))).thenReturn(List.of(message));
 
         assertEquals(List.of(message), messageService.getNewMessagesByUserId(SENDER_ID, true));
     }
 
     @Test
     void getNewMessagesByUserIdForSenderListIsEmpty() {
-        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(eq(SENDER_ID), eq(true),
-                eq(Sort.by(Sort.Direction.DESC, "date")))).thenReturn(Collections.emptyList());
+        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(SENDER_ID, true,
+                Sort.by(Sort.Direction.DESC, "date"))).thenReturn(Collections.emptyList());
 
         assertThrows(NotExistException.class, () -> messageService.getNewMessagesByUserId(SENDER_ID, true));
     }
 
     @Test
     void getNewMessagesByUserIdForRecipient() {
-        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(eq(RECIPIENT_ID), eq(true),
-                eq(Sort.by(Sort.Direction.DESC, "date")))).thenReturn(List.of(message));
+        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(RECIPIENT_ID, true,
+                Sort.by(Sort.Direction.DESC, "date"))).thenReturn(List.of(message));
 
         assertEquals(List.of(message), messageService.getNewMessagesByUserId(RECIPIENT_ID, true));
     }
 
     @Test
     void getNewMessagesByUserIdForRecipientListIsEmpty() {
-        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(eq(RECIPIENT_ID), eq(true),
-                eq(Sort.by(Sort.Direction.DESC, "date")))).thenReturn(Collections.emptyList());
+        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(RECIPIENT_ID, true,
+                Sort.by(Sort.Direction.DESC, "date"))).thenReturn(Collections.emptyList());
 
         assertThrows(NotExistException.class, () -> messageService.getNewMessagesByUserId(RECIPIENT_ID, true));
     }
@@ -211,7 +211,7 @@ class MessageServiceTest {
 
     @Test
     void getNewMessageResponseById() {
-        when(messageRepository.findByIdAndIsActive(eq(EXISTING_ID), eq(true))).thenReturn(Optional.of(message));
+        when(messageRepository.findByIdAndIsActive(EXISTING_ID, true)).thenReturn(Optional.of(message));
         when(dtoConverter.convertToDto(message, MESSAGE_RESPONSE_DTO_CLASS)).thenReturn(messageResponseDto);
 
         assertEquals(messageResponseDto, messageService.getNewMessageResponseById(EXISTING_ID));
@@ -219,8 +219,8 @@ class MessageServiceTest {
 
     @Test
     void getNewMessageResponsesByUserId() {
-        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(eq(SENDER_ID), eq(true),
-                eq(Sort.by(Sort.Direction.DESC, "date")))).thenReturn(List.of(message));
+        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(SENDER_ID, true,
+                Sort.by(Sort.Direction.DESC, "date"))).thenReturn(List.of(message));
         when(dtoConverter.convertToDto(message, MESSAGE_RESPONSE_DTO_CLASS)).thenReturn(messageResponseDto);
 
         assertEquals(List.of(messageResponseDto), messageService.getNewMessageResponsesByUserId(SENDER_ID, true));
