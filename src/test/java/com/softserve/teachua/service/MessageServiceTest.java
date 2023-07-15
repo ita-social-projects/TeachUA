@@ -35,7 +35,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -187,18 +186,18 @@ class MessageServiceTest {
 
     @Test
     void getNewMessagesByUserIdForRecipient() {
-        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(RECIPIENT_ID, true,
+        when(messageRepository.findAllByRecipientIdAndIsActiveOrderByDate(RECIPIENT_ID, true,
                 Sort.by(Sort.Direction.DESC, "date"))).thenReturn(List.of(message));
 
-        assertEquals(List.of(message), messageService.getNewMessagesByUserId(RECIPIENT_ID, true));
+        assertEquals(List.of(message), messageService.getNewMessagesByUserId(RECIPIENT_ID, false));
     }
 
     @Test
     void getNewMessagesByUserIdForRecipientListIsEmpty() {
-        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(RECIPIENT_ID, true,
+        when(messageRepository.findAllByRecipientIdAndIsActiveOrderByDate(RECIPIENT_ID, true,
                 Sort.by(Sort.Direction.DESC, "date"))).thenReturn(Collections.emptyList());
 
-        assertThrows(NotExistException.class, () -> messageService.getNewMessagesByUserId(RECIPIENT_ID, true));
+        assertThrows(NotExistException.class, () -> messageService.getNewMessagesByUserId(RECIPIENT_ID, false));
     }
 
     @Test
