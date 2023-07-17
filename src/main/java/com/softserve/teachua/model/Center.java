@@ -75,6 +75,10 @@ public class Center implements Convertible {
     @ColumnDefault(value = "0")
     private Double rating;
 
+    @Column(name = "feedback_count")
+    @ColumnDefault(value = "0")
+    private Long feedbackCount;
+
     @Column(name = "club_count")
     @ColumnDefault(value = "0")
     private Long clubCount;

@@ -66,6 +66,8 @@ class FeedbackServiceTest {
     private UserRepository userRepository;
     @Mock
     private ClubService clubService;
+    @Mock
+    private CenterService centerService;
     @InjectMocks
     private FeedbackServiceImpl feedbackService;
     private Feedback feedback;

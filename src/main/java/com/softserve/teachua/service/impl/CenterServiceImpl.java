@@ -10,6 +10,7 @@ import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 import com.softserve.teachua.dto.club.ClubResponse;
+import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.search.AdvancedSearchCenterProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
@@ -325,6 +326,29 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
     private Optional<Center> getOptionalCenterByName(String name) {
         return centerRepository.findByName(name);
+    }
+
+    @Override
+    public void updateRatingNewFeedback(FeedbackResponse feedbackResponse) {
+        Club club = clubRepository.findById(feedbackResponse.getClub().getId()).orElse(new Club());
+        Center center = club.getCenter();
+        if (center == null) {
+            return;
+        }
+        if (center.getFeedbackCount() == null) {
+            center.setFeedbackCount(0L);
+        }
+        if (center.getRating() == null) {
+            center.setRating(0.0);
+        }
+
+        long newFeedbackCount = center.getFeedbackCount() + 1;
+        Double newRating = (center.getRating() * center.getFeedbackCount() + feedbackResponse.getRate())
+                / newFeedbackCount;
+
+        center.setRating(newRating);
+        center.setFeedbackCount(newFeedbackCount);
+        centerRepository.save(center);
     }
 
     @Override
