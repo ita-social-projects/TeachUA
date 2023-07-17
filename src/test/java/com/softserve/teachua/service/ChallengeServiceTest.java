@@ -302,8 +302,8 @@ class ChallengeServiceTest {
     }
 
     @Test
-    @DisplayName("cloneChallenge should return lost of SuccessUpdatedTask")
-    void cloneChallenge() {
+    @DisplayName("updateChallengeStartDate should return list of SuccessUpdatedTask")
+    void updateChallengeStartDate() {
         when(challengeRepository.findById(challenge.getId()))
             .thenReturn(Optional.of(challenge));
         when(dtoConverter.convertFromDtoToDto(task, new UpdateTask()))
@@ -311,7 +311,7 @@ class ChallengeServiceTest {
         when(taskService.updateTask(task.getId(), updateTask)).thenReturn(successUpdatedTask);
 
 
-        assertThat(challengeService.cloneChallenge(challenge.getId(), updateChallengeDate))
+        assertThat(challengeService.updateChallengeStartDate(challenge.getId(), updateChallengeDate))
             .isEqualTo(Collections.singletonList(successUpdatedTask));
 
     }
