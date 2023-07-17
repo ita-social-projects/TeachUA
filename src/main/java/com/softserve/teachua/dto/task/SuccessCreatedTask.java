@@ -21,4 +21,5 @@ public class SuccessCreatedTask implements Convertible {
     private String picture;
     private LocalDate startDate;
     private Long challengeId;
+    private Boolean isActive = true;
 }

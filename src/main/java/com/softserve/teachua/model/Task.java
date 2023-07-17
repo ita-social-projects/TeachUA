@@ -50,4 +50,7 @@ public class Task implements Convertible {
 
     @Column
     private LocalDate startDate;
+
+    @Column
+    private Boolean isActive = true;
 }

@@ -45,4 +45,6 @@ public class CreateTask implements Convertible {
     @Future(message = "дата має бути в майбутньому")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
+    @NotNull
+    private Boolean isActive = true;
 }
