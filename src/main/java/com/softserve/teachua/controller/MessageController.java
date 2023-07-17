@@ -12,6 +12,7 @@ import java.util.List;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -86,6 +87,22 @@ public class MessageController implements Api {
     @GetMapping("/messages/recipient/{id}")
     public List<MessageResponseDto> getMessagesByRecipientId(@PathVariable Long id) {
         return messageService.getMessageResponsesByUserId(id, false);
+    }
+
+    /**
+     * Use this endpoint to get new MessageResponses by recipient id. The controller returns
+     * {@code List<MessageResponseDto>}.
+     *
+     * @param id
+     *            put {@code User} recipient id here.
+     *
+     * @return {@code List<MessageResponseDto>}.
+     */
+    @PreAuthorize("isAuthenticated() and authentication.principal.id == #id")
+    @GetMapping("/messages/recipient-new/{id}")
+    public ResponseEntity<List<MessageResponseDto>> getNewMessagesByRecipientId(@PathVariable Long id) {
+        List<MessageResponseDto> messages = messageService.getNewMessageResponsesByUserId(id, false);
+        return ResponseEntity.ok(messages);
     }
 
     /**
