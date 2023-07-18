@@ -218,8 +218,8 @@ class CenterServiceTest {
                 .build();
         when(clubRepository.findById(anyLong())).thenReturn(Optional.of(feedbackResponse.getClub()));
         centerService.updateRatingNewFeedback(feedbackResponse);
-        assertEquals(correctCenter.getRating(), 4.5f);
-        assertEquals(correctCenter.getFeedbackCount(), 1);
+        assertEquals(4.5f, correctCenter.getRating());
+        assertEquals(1, correctCenter.getFeedbackCount());
     }
 
     @Test
