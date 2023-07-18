@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -220,6 +221,15 @@ class CenterServiceTest {
         centerService.updateRatingNewFeedback(feedbackResponse);
         assertEquals(4.5f, correctCenter.getRating());
         assertEquals(1, correctCenter.getFeedbackCount());
+    }
+
+    @Test
+    void testUpdateRatingNewFeedbackWhenRateIsIncorrect() {
+        FeedbackResponse feedbackResponse = FeedbackResponse.builder()
+                .club(Club.builder().id(1L).center(correctCenter).build())
+                .rate(-6.0f)
+                .build();
+        assertThrows(ValidationException.class, () -> centerService.updateRatingNewFeedback(feedbackResponse));
     }
 
     @Test
