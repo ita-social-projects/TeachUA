@@ -22,12 +22,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import com.softserve.teachua.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ClubRegistrationServiceImpl implements ClubRegistrationService {
     private final ClubRegistrationRepository clubRegistrationRepository;
@@ -37,6 +38,7 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
     private final DtoConverter dtoConverter;
 
     @Override
+    @Transactional
     public List<ClubRegistrationResponse> create(ClubRegistrationRequest clubRegistrationRequest) {
         Club club = clubService.getClubById(clubRegistrationRequest.getClubId());
 
@@ -51,6 +53,7 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
     }
 
     @Override
+    @Transactional
     public UserClubRegistrationResponse create(UserClubRegistrationRequest userClubRegistrationRequest) {
         Club club = clubService.getClubById(userClubRegistrationRequest.getClubId());
         User user = userService.getUserById(userClubRegistrationRequest.getUserId());
@@ -67,9 +70,9 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
     @Override
     public List<UnapprovedClubRegistration> getAllUnapprovedByManagerId(Long managerId) {
-        var unapprovedClubRegistrations = clubRegistrationRepository
+        List<ClubRegistration> unapprovedClubRegistrations = clubRegistrationRepository
                 .findAllUnapprovedByManagerId(managerId);
-        var dto = new UnapprovedClubRegistration();
+        UnapprovedClubRegistration dto = new UnapprovedClubRegistration();
 
         return unapprovedClubRegistrations.stream()
                 .map(ucr -> dtoConverter.convertToDto(ucr, dto))
@@ -78,9 +81,9 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
     @Override
     public List<FullClubRegistration> getAllByManagerId(Long managerId) {
-        var clubRegistrations = clubRegistrationRepository
-                .findAllByClubUserIdOrderByRegistrationDateAsc(managerId);
-        var dto = new FullClubRegistration();
+        List<ClubRegistration> clubRegistrations = clubRegistrationRepository
+                .findAllByClubUserIdOrderByRegistrationDateDesc(managerId);
+        FullClubRegistration dto = new FullClubRegistration();
 
         return clubRegistrations.stream()
                 .map(cr -> dtoConverter.convertToDto(cr, dto))

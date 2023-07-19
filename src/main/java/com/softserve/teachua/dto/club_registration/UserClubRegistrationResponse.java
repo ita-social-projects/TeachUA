@@ -1,6 +1,5 @@
 package com.softserve.teachua.dto.club_registration;
 
-import java.time.LocalDateTime;
 import com.softserve.teachua.dto.marker.Convertible;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +14,7 @@ public class UserClubRegistrationResponse implements Convertible {
     private Long id;
     private Long userId;
     private Long clubId;
-    private LocalDateTime registrationDate;
+    private String registrationDate;
     private boolean isApproved;
     private boolean isActive;
     private String comment;

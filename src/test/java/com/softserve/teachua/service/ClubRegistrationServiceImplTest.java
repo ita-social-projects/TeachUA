@@ -82,12 +82,12 @@ class ClubRegistrationServiceImplTest {
         List<ClubRegistration> clubRegistrations = List.of(new ClubRegistration(), new ClubRegistration());
         FullClubRegistration dto = new FullClubRegistration();
 
-        when(clubRegistrationRepository.findAllByClubUserIdOrderByRegistrationDateAsc(managerId)).thenReturn(clubRegistrations);
+        when(clubRegistrationRepository.findAllByClubUserIdOrderByRegistrationDateDesc(managerId)).thenReturn(clubRegistrations);
         when(dtoConverter.convertToDto(any(ClubRegistration.class), any(FullClubRegistration.class))).thenReturn(dto);
 
         List<FullClubRegistration> result = clubRegistrationService.getAllByManagerId(managerId);
 
-        verify(clubRegistrationRepository, times(1)).findAllByClubUserIdOrderByRegistrationDateAsc(managerId);
+        verify(clubRegistrationRepository, times(1)).findAllByClubUserIdOrderByRegistrationDateDesc(managerId);
         verify(dtoConverter, times(2)).convertToDto(any(ClubRegistration.class), any(FullClubRegistration.class));
         assertNotNull(result);
         assertEquals(2, result.size());

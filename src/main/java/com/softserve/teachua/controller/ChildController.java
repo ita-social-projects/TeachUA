@@ -42,9 +42,7 @@ public class ChildController implements Api {
         log.debug("Add child {}", childProfile);
         ChildResponse createdChild = childService.create(childProfile);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(createdChild);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdChild);
     }
 }
 

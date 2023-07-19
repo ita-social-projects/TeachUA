@@ -15,7 +15,7 @@ public interface ClubRegistrationRepository extends JpaRepository<ClubRegistrati
             ORDER BY cr.registrationDate ASC""")
     List<ClubRegistration> findAllUnapprovedByManagerId(@Param("managerId") Long managerId);
 
-    List<ClubRegistration> findAllByClubUserIdOrderByRegistrationDateAsc(Long managerId);
+    List<ClubRegistration> findAllByClubUserIdOrderByRegistrationDateDesc(Long managerId);
 
     @Modifying
     @Query("""
