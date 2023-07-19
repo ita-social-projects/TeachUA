@@ -23,10 +23,12 @@ import java.util.Set;
 import java.util.function.Function;
 import com.softserve.teachua.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -40,6 +42,8 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
     @Override
     @Transactional
     public List<ClubRegistrationResponse> create(ClubRegistrationRequest clubRegistrationRequest) {
+        log.info("Creating club registration with request: {}", clubRegistrationRequest);
+
         Club club = clubService.getClubById(clubRegistrationRequest.getClubId());
 
         List<ClubRegistration> registered = clubRegistrationRequest.getChildIds().stream()
@@ -55,6 +59,8 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
     @Override
     @Transactional
     public UserClubRegistrationResponse create(UserClubRegistrationRequest userClubRegistrationRequest) {
+        log.info("Creating user club registration with request: {}", userClubRegistrationRequest);
+
         Club club = clubService.getClubById(userClubRegistrationRequest.getClubId());
         User user = userService.getUserById(userClubRegistrationRequest.getUserId());
 
@@ -70,6 +76,8 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
     @Override
     public List<UnapprovedClubRegistration> getAllUnapprovedByManagerId(Long managerId) {
+        log.info("Getting all unapproved club registrations by manager id: {}", managerId);
+
         List<ClubRegistration> unapprovedClubRegistrations = clubRegistrationRepository
                 .findAllUnapprovedByManagerId(managerId);
         UnapprovedClubRegistration dto = new UnapprovedClubRegistration();
@@ -81,6 +89,8 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
     @Override
     public List<FullClubRegistration> getAllByManagerId(Long managerId) {
+        log.info("Getting all club registrations by manager id: {}", managerId);
+
         List<ClubRegistration> clubRegistrations = clubRegistrationRepository
                 .findAllByClubUserIdOrderByRegistrationDateDesc(managerId);
         FullClubRegistration dto = new FullClubRegistration();
@@ -93,6 +103,8 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
     @Override
     @Transactional
     public RegistrationApprovedSuccess approve(Long clubRegistrationId) {
+        log.info("Approving club registration with id: {}", clubRegistrationId);
+
         clubRegistrationRepository.approveClubRegistration(clubRegistrationId);
 
         return new RegistrationApprovedSuccess(clubRegistrationId, true);
@@ -101,6 +113,8 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
     @Override
     @Transactional
     public RegistrationCanceledSuccess cancel(Long clubRegistrationId) {
+        log.info("Cancelling club registration with id: {}", clubRegistrationId);
+
         clubRegistrationRepository.cancelClubRegistration(clubRegistrationId);
 
         return new RegistrationCanceledSuccess(clubRegistrationId, false);
@@ -108,6 +122,8 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
     @Override
     public boolean existsActiveRegistration(Long clubId, Long childId) {
+        log.info("Checking if active registration exists for club ID {} and child ID {}", clubId, childId);
+
         return clubRegistrationRepository.existsActiveRegistration(clubId, childId);
     }
 
@@ -127,6 +143,8 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
     @Override
     public List<ChildResponse> getChildrenForCurrentUserAndCheckIsDisabledByClubId(Long clubId) {
+        log.info("Getting children for current user and checking if disabled by club ID {}", clubId);
+
         User user = userService.getAuthenticatedUserWithChildren();
         Set<Child> children = user.getChildren();
         ChildResponse cr = new ChildResponse();
@@ -138,6 +156,7 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
     @Override
     public List<FullClubRegistration> getApplicationsByUserId(Long userId) {
+        log.info("Getting applications by user ID {}", userId);
         FullClubRegistration ua = new FullClubRegistration();
 
         return clubRegistrationRepository.findRegistrationsByUserIdOrChildParentId(userId)
@@ -148,6 +167,8 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
 
     private ChildResponse createChildResponseWithRegistrationCheck(
             Long clubId, ChildResponse cr, Child c) {
+        log.info("Creating child response with registration check for club ID {} and child ID {}", clubId, c.getId());
+
         ChildResponse childResponse = dtoConverter.convertToDto(c, cr);
         if (existsActiveRegistration(clubId, c.getId())) {
             childResponse.setDisabled(true);
