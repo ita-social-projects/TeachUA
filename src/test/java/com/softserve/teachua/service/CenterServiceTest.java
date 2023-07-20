@@ -7,6 +7,7 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
@@ -28,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,10 +41,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -193,6 +198,38 @@ class CenterServiceTest {
         when(centerRepository.existsByName(centerProfile.getName())).thenReturn(true);
 
         assertThatThrownBy(() -> centerService.addCenter(centerProfile)).isInstanceOf(AlreadyExistException.class);
+    }
+
+    @Test
+    void testUpdateRatingNewFeedbackWhenCenterIsNull() {
+        FeedbackResponse feedbackResponse = FeedbackResponse.builder()
+                .club(Club.builder().id(1L).center(null).build())
+                .rate(4.5f)
+                .build();
+        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(feedbackResponse.getClub()));
+        centerService.updateRatingNewFeedback(feedbackResponse);
+        verify(centerRepository, never()).save(any(Center.class));
+    }
+
+    @Test
+    void testUpdateRatingNewFeedbackWhenCenterIsNotNull() {
+        FeedbackResponse feedbackResponse = FeedbackResponse.builder()
+                .club(Club.builder().id(1L).center(correctCenter).build())
+                .rate(4.5f)
+                .build();
+        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(feedbackResponse.getClub()));
+        centerService.updateRatingNewFeedback(feedbackResponse);
+        assertEquals(4.5f, correctCenter.getRating());
+        assertEquals(1, correctCenter.getFeedbackCount());
+    }
+
+    @Test
+    void testUpdateRatingNewFeedbackWhenRateIsIncorrect() {
+        FeedbackResponse feedbackResponse = FeedbackResponse.builder()
+                .club(Club.builder().id(1L).center(correctCenter).build())
+                .rate(-6.0f)
+                .build();
+        assertThrows(ValidationException.class, () -> centerService.updateRatingNewFeedback(feedbackResponse));
     }
 
     @Test

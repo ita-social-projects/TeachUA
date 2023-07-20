@@ -330,6 +330,10 @@ public class CenterServiceImpl implements CenterService, ArchiveMark<Center> {
 
     @Override
     public void updateRatingNewFeedback(FeedbackResponse feedbackResponse) {
+        Float rating = feedbackResponse.getRate();
+        if (rating == null || rating < 0 || rating > 5) {
+            throw new ValidationException("Invalid rating value: " + rating);
+        }
         Club club = clubRepository.findById(feedbackResponse.getClub().getId()).orElse(new Club());
         Center center = club.getCenter();
         if (center == null) {
