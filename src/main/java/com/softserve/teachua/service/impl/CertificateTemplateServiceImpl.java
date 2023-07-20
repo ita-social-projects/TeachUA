@@ -59,12 +59,16 @@ public class CertificateTemplateServiceImpl implements CertificateTemplateServic
     }
 
     private void setCertificateTemplateUrl() throws IOException {
-        File directory =
-                new File(new ClassPathResource("/").getFile().getPath() + "/certificates/templates/pdf-templates");
-        if (!directory.exists()) {
-            directory.mkdir();
+        try {
+            File directory =
+                    new File(new ClassPathResource("/").getFile().getPath() + "/certificates/templates/pdf-templates");
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+            certificateTemplateUrl = new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath();
+        } catch (IOException e) {
+            System.out.println("********************************"); // TODO
         }
-        certificateTemplateUrl = new ClassPathResource(CERTIFICATE_TEMPLATES_FOLDER).getFile().getPath();
     }
 
     @Override
