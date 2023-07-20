@@ -338,6 +338,15 @@ public class UserServiceImpl implements UserService, ArchiveMark<User> {
     }
 
     @Override
+    public User getAuthenticatedUserWithChildren() {
+        Long userId = userDetailsService.getUserPrincipal().getId();
+        return userRepository
+                .findByIdFetchChildren(userId)
+                .orElseThrow(() ->
+                        new NotExistException(String.format(USER_NOT_FOUND_BY_ID, userId)));
+    }
+
+    @Override
     public void verifyIsUserAdmin() {
         if (!userDetailsService.getUserPrincipal().getAuthorities()
                 .contains(new SimpleGrantedAuthority(RoleData.ADMIN.getDBRoleName()))) {

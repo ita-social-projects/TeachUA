@@ -260,10 +260,12 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         User user = userService.getAuthenticatedUser();
         clubProfile.setUserId(user.getId());
 
-        Club club = clubRepository.save(dtoConverter
-                .convertToEntity(clubProfile, new Club()).withCategories(clubProfile.getCategoriesName().stream()
-                        .map(categoryService::getCategoryByName).collect(Collectors.toSet()))
-                .withRating(0d).withUser(user).withCenter(center));
+        Club club = clubRepository.save(
+                dtoConverter.convertToEntity(clubProfile, new Club())
+                        .withCategories(clubProfile.getCategoriesName().stream()
+                                .map(categoryService::getCategoryByName)
+                                .collect(Collectors.toSet()))
+                        .withRating(0d).withUser(user).withCenter(center));
 
         if (locations != null && !locations.isEmpty()) {
             club.setLocations(
