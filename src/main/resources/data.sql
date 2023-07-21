@@ -70,5 +70,6 @@ values (1,'Телефон', '/static/images/contacts/phone.svg'),
        (5,'Skype', '/static/images/contacts/skype.svg'),
        (6,'Site', '/static/images/contacts/website-link-icon.svg');
 
+CREATE TYPE gender_enum AS ENUM ('MALE', 'FEMALE');
 
 

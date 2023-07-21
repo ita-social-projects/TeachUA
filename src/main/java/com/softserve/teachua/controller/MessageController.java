@@ -149,9 +149,7 @@ public class MessageController implements Api {
      *
      * @return {@code MessageResponseDto}.
      */
-    @PreAuthorize("isAuthenticated() and "
-            + "authentication.principal.id == @messageServiceImpl.getMessageById(#id).sender.id or "
-            + "hasRole('ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/message/{id}")
     public MessageResponseDto deleteMessageById(@PathVariable Long id) {
         return messageService.deleteMessageById(id);
