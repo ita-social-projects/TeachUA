@@ -112,6 +112,16 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     }
 
     @Override
+    public List<ComplaintResponse> getAllByRecipientId(Long recipientId) {
+        List<ComplaintResponse> complaintResponses = complaintRepository.getAllByRecipientId(recipientId).stream()
+                .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
+                .toList();
+
+        log.debug("get all complaints: {} ", complaintResponses);
+        return complaintResponses;
+    }
+
+    @Override
     public ComplaintProfile updateComplaintProfileById(Long id, ComplaintProfile complaintProfile) {
         Complaint complaint = getComplaintById(id);
         Complaint newComplaint = dtoConverter.convertToEntity(complaintProfile, complaint).withId(id);

@@ -73,6 +73,19 @@ public class ComplaintController implements Api {
     }
 
     /**
+     * Use this endpoint to get all Complaints by recipient id The controller returns {@code List<ComplaintResponse>}.
+     *
+     * @param id
+     *            - put recipient id here.
+     *
+     * @return {@code List<ComplaintResponse>}
+     */
+    @GetMapping("/complaints/recipient/{id}")
+    public List<ComplaintResponse> getAllComplaintsByRecipientId(@PathVariable Long id) {
+        return complaintService.getAllByRecipientId(id);
+    }
+
+    /**
      * Use this endpoint to create a new Complaint The controller returns {@code SuccessCreatedComplaint}.
      *
      * @param complaintProfile

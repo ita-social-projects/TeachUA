@@ -1,6 +1,8 @@
 package com.softserve.teachua.dto.complaint;
 
+import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.dto.user.UserPreview;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
 import java.time.LocalDate;
@@ -20,7 +22,11 @@ public class ComplaintResponse implements Convertible {
 
     private LocalDate date;
 
-    private User user;
+    private UserPreview user;
 
-    private Club club;
+    private ClubResponse club;
+
+    private UserPreview recipient;
+
+    private Boolean isActive;
 }

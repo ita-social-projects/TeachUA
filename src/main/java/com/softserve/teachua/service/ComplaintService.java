@@ -75,6 +75,19 @@ public interface ComplaintService {
     List<ComplaintResponse> getAllByClubId(Long clubId);
 
     /**
+     * Method get all {@link Complaint}s by recipient id.
+     *
+     * @param recipientId
+     *            - recipient id
+     *
+     * @return new {@code List<ComplaintResponse>}
+     *
+     * @throws NotExistException
+     *             if complaint not exists.
+     */
+    List<ComplaintResponse> getAllByRecipientId(Long recipientId);
+
+    /**
      * Method updates complaint and returns dto {@code ComplaintProfile} of updated complaint.
      *
      * @param id
