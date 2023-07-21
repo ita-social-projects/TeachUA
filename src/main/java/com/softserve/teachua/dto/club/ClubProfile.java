@@ -68,7 +68,7 @@ public class ClubProfile implements Convertible {
 
     private Boolean isApproved;
 
-    public Long userId;
+    private Long userId;
 
     private Long clubExternalId;
 

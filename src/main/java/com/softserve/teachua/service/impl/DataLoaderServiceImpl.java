@@ -19,7 +19,6 @@ import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Center;
 import com.softserve.teachua.model.City;
-import com.softserve.teachua.model.User;
 import com.softserve.teachua.service.CategoryService;
 import com.softserve.teachua.service.CenterService;
 import com.softserve.teachua.service.CityService;
@@ -28,7 +27,6 @@ import com.softserve.teachua.service.DataLoaderService;
 import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.LocationService;
 import com.softserve.teachua.service.StationService;
-import com.softserve.teachua.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +68,6 @@ public class DataLoaderServiceImpl implements DataLoaderService {
 
     private final CategoryService categoryService;
     private final CenterService centerService;
-    private final UserService userService;
     private final ClubService clubService;
     private final DistrictService districtService;
     private final StationService stationService;
@@ -80,15 +77,13 @@ public class DataLoaderServiceImpl implements DataLoaderService {
     private final ExcelConvertToFormatStringContactsData excelContactsConverter;
 
     @Autowired
-    public DataLoaderServiceImpl(CategoryService categoryService, CenterService centerService, UserService userService,
-                                 ClubService clubService,
+    public DataLoaderServiceImpl(CategoryService categoryService, CenterService centerService, ClubService clubService,
                                  DistrictService districtService, StationService stationService,
                                  CityService cityService, LocationService locationService,
                                  ExcelConvertToFormatStringContactsData contactsConverter,
                                  ExcelConvertToFormatStringContactsData excelContactsConverter) {
         this.categoryService = categoryService;
         this.centerService = centerService;
-        this.userService = userService;
         this.clubService = clubService;
         this.districtService = districtService;
         this.stationService = stationService;
@@ -235,9 +230,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
             }
             try {
                 Center center = centerService.getCenterByExternalId(club.getCenterExternalId());
-                User user = userService.getUserById(club.getUserId());
-                System.out.println(club.getUserId());
-                ClubProfile clubProfile = getClubProfile(categories, club, center, user);
+                ClubProfile clubProfile = getClubProfile(categories, club, center);
                 if (club.getCenterExternalId() == null) {
                     clubProfile = clubProfile.withCenterId(null);
                 } else {
@@ -262,14 +255,10 @@ public class DataLoaderServiceImpl implements DataLoaderService {
         }
     }
 
-    private ClubProfile getClubProfile(Set<String> categories, ClubExcel club, Center center, User user) {
+    private ClubProfile getClubProfile(Set<String> categories, ClubExcel club, Center center) {
         Long realCenterId = null;
         if (center != null) {
             realCenterId = center.getId();
-        }
-        Long realUserId = null;
-        if (user != null) {
-            realUserId = user.getId();
         }
         return ClubProfile.builder().ageFrom(club.getAgeFrom()).ageTo(club.getAgeTo())
                 .centerId(realCenterId).centerExternalId(club.getCenterExternalId())
@@ -282,9 +271,7 @@ public class DataLoaderServiceImpl implements DataLoaderService {
                                 + DESCRIPTION_JSON_RIGHT)
                 .name(club.getName()).urlBackground(DEFAULT_CLUB_URL_BACKGROUND).urlLogo(DEFAULT_CLUB_URL_LOGO)
                 .categoriesName(getFullCategoryName(categories, club.getCategories()))
-                .contacts(contactsConverter.collectAllContactsData(club.getSite(), club.getPhone()))
-                .userId(realUserId)
-                .build();
+                .contacts(contactsConverter.collectAllContactsData(club.getSite(), club.getPhone())).build();
     }
 
     private void loadDistricts(ExcelParsingData excelParsingData) {

@@ -24,5 +24,4 @@ public class ClubExcel implements Convertible {
     private String phone;
     private Long clubExternalId;
     private Long centerExternalId;
-    private Long userId;
 }
