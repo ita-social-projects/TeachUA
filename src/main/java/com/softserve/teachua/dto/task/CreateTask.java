@@ -39,7 +39,7 @@ public class CreateTask implements Convertible {
     @Size(min = 40, max = 10000, message = "must contain a minimum of 40 and a maximum of 10000 letters")
     private String description;
     @NotBlank
-    @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.png")
+    @Pattern(regexp = "^/upload/(?:[^/]+/)*[^/]+\\.[A-Za-z]+$", message = "Incorrect file path. It must be like /upload/*/*.png")
     private String picture;
     @NotNull
     @Future(message = "дата має бути в майбутньому")
