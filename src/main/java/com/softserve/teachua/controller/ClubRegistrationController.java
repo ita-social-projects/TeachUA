@@ -36,14 +36,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClubRegistrationController implements Api {
     private final ClubRegistrationService clubRegistrationService;
 
-    @GetMapping("/club-registration/user-children/{clubId}")
-    public ResponseEntity<List<ChildResponse>> getChildrenByParentId(@PathVariable Long clubId) {
+    @AllowedRoles(RoleData.USER)
+    @GetMapping("/club-registration/user-children/{parentId}")
+    public ResponseEntity<List<ChildResponse>> getChildrenByParentId(@PathVariable Long parentId) {
         List<ChildResponse> children = clubRegistrationService
-                .getChildrenForCurrentUserAndCheckIsDisabledByClubId(clubId);
+                .getChildrenForCurrentUserAndCheckIsDisabledByClubId(parentId);
 
         return ResponseEntity.ok(children);
     }
 
+    @AllowedRoles(RoleData.USER)
     @GetMapping("/club-registration/user-applications/{userId}")
     public ResponseEntity<List<FullClubRegistration>> getUserApplications(@PathVariable Long userId) {
         List<FullClubRegistration> applications = clubRegistrationService.getApplicationsByUserId(userId);

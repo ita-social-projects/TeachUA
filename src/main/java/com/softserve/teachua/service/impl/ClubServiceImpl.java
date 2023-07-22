@@ -459,7 +459,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
     private List<Center> getUpdatedCenters(List<Center> centers) {
         return centers.stream().filter(center -> center.getContacts() != null)
-                .filter(center -> !this.isValidJSON(center.getContacts())).map(center -> {
+                .filter(center -> this.isInvalidJSON(center.getContacts()))
+                .map(center -> {
                     JsonNodeFactory factory = JsonNodeFactory.instance;
                     if (center.getContacts().startsWith("{")) {
                         String contacts = center.getContacts().replace("::", ":");
@@ -504,7 +505,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
     private List<Club> getUpdatedClubs(List<Club> clubs) {
         return clubs.stream().filter(club -> club.getContacts() != null)
-                .filter(club -> !this.isValidJSON(club.getContacts())).map(club -> {
+                .filter(club -> this.isInvalidJSON(club.getContacts())).map(club -> {
                     JsonNodeFactory factory = JsonNodeFactory.instance;
                     if (club.getContacts().startsWith("{")) {
                         String contacts = club.getContacts().replace("::", ":");
@@ -594,9 +595,9 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         }
     }
 
-    private boolean isValidJSON(final String json) {
+    private boolean isInvalidJSON(final String json) {
         JsonNode jsonNode = toJSON(json);
-        return jsonNode != null;
+        return jsonNode == null;
     }
 
     private String convert(String value) {
@@ -718,13 +719,16 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
 
     @Override
     public List<ClubResponse> updateRatingForAllClubs() {
-        return getListOfClubs().stream().map(clubResponse -> {
-            Club updClub = getClubById(clubResponse.getId());
-            updClub.setRating(feedbackRepository.findAvgRating(clubResponse.getId()));
-            updClub.setFeedbackCount((long) feedbackRepository.getAllByClubId(clubResponse.getId()).size());
-            clubRepository.save(updClub);
-            return clubResponse;
-        }).toList();
+        return getListOfClubs().stream()
+                .map(clubResponse -> {
+                    Club updClub = getClubById(clubResponse.getId());
+                    updClub.setRating(feedbackRepository.findAvgRating(clubResponse.getId()));
+                    updClub.setFeedbackCount(feedbackRepository
+                            .countFeedbackByClubIdAndParentCommentIsNull(clubResponse.getId()));
+                    clubRepository.save(updClub);
+                    return clubResponse;
+                })
+                .toList();
     }
 
     @Override

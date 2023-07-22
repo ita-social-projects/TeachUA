@@ -4,8 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.SortAndPageDto;
 import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
+import com.softserve.teachua.dto.feedback.ReplyRequest;
+import com.softserve.teachua.dto.feedback.ReplyResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
@@ -30,6 +33,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,8 +96,10 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
 
     @Override
     public List<FeedbackResponse> getAllByClubId(Long id) {
-        List<FeedbackResponse> feedbackResponses = feedbackRepository.getAllByClubId(id).stream()
-                .map(feedback -> (FeedbackResponse) dtoConverter.convertToDto(feedback, FeedbackResponse.class))
+        FeedbackResponse fr = new FeedbackResponse();
+        List<FeedbackResponse> feedbackResponses = feedbackRepository
+                .getAllByClubIdAndParentCommentIsNull(id).stream()
+                .map(feedback -> dtoConverter.convertToDto(feedback, fr))
                 .toList();
 
         log.debug("get list of feedback -" + feedbackResponses);
@@ -98,7 +107,26 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     }
 
     @Override
-    public SuccessCreatedFeedback addFeedback(FeedbackProfile feedbackProfile) {
+    public Page<FeedbackResponse> getPageByClubId(Long id, SortAndPageDto sortAndPageDto) {
+        Pageable pageable = PageRequest.of(sortAndPageDto.getPage(), sortAndPageDto.getSize());
+        FeedbackResponse fr = new FeedbackResponse();
+
+        Page<Feedback> feedbackResponses = feedbackRepository
+                .getAllByClubIdAndParentCommentIsNull(id, pageable);
+
+        log.debug("get list of feedback {} \n Total pages {}", feedbackResponses,
+                feedbackResponses.getTotalPages());
+        return new PageImpl<>(
+                feedbackResponses.stream()
+                        .map(feedback -> dtoConverter.convertToDto(feedback, fr))
+                        .toList(),
+                feedbackResponses.getPageable(),
+                feedbackResponses.getTotalElements()
+        );
+    }
+
+    @Override
+    public SuccessCreatedFeedback createFeedback(FeedbackProfile feedbackProfile) {
         feedbackProfile.setUserId(customUserDetailsService.getUserPrincipal().getId());
 
         if (!clubRepository.existsById(feedbackProfile.getClubId())) {
@@ -179,6 +207,31 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
         if (!(userFromRequest != null && userFromRequest.equals(userFromFeedback))) {
             throw new NotVerifiedUserException(ACCESS_TO_FEEDBACK_DENIED);
         }
+    }
+
+    @Override
+    public ReplyResponse createReply(ReplyRequest replyRequest) {
+        Feedback parentComment = getFeedbackById(replyRequest.getParentCommentId());
+        Feedback reply = dtoConverter.convertToEntity(replyRequest, new Feedback());
+        User user = userService.getUserById(replyRequest.getUserId());
+
+        reply.setUser(user);
+        parentComment.addReply(reply);
+
+        Feedback savedReply = feedbackRepository.save(reply);
+        log.info("reply created {}", savedReply);
+
+        return dtoConverter.convertToDto(savedReply, new ReplyResponse());
+    }
+
+    @Override
+    public long countByClubId(Long clubId) {
+        return feedbackRepository.countByClubIdAndParentCommentIsNull(clubId);
+    }
+
+    @Override
+    public float ratingByClubId(Long clubId) {
+        return feedbackRepository.findAverageRateByClubId(clubId).orElse(0f);
     }
 
     @Override

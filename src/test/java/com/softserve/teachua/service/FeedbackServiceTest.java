@@ -3,12 +3,12 @@ package com.softserve.teachua.service;
 import com.softserve.teachua.TestUtils;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.club.MessagesClub;
+import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
-import com.softserve.teachua.dto.user.UserResponse;
+import com.softserve.teachua.dto.user.UserPreview;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Feedback;
@@ -78,19 +78,19 @@ class FeedbackServiceTest {
     private FeedbackResponse updFeedbackResponse;
     private FeedbackResponse feedbackResponse;
     private User user;
-    private UserResponse userDto;
+    private UserPreview userDto;
     private Club club;
-    private MessagesClub clubDto;
+    private ClubResponse clubDto;
     private Role role;
 
 
     @BeforeEach
     void setMocks() {
         club = Club.builder().id(EXISTING_CLUB_ID).build();
-        clubDto = new MessagesClub(EXISTING_ID, "");
+        clubDto = ClubResponse.builder().id(1L).center(null).build();
         role = Role.builder().id(ROLE_ID).name(RoleData.ADMIN.getDBRoleName()).build();
         user = User.builder().id(EXISTING_USER_ID).email(USER_EMAIL).role(role).build();
-        userDto = UserResponse.builder().id(EXISTING_USER_ID).email(USER_EMAIL).roleName(role.getName()).build();
+        userDto = UserPreview.builder().id(EXISTING_USER_ID).firstName("S").lastName("W").build();
         feedback = Feedback.builder().id(EXISTING_ID).text(EXISTING_TEXT).club(club).user(user).build();
         feedbackProfile = FeedbackProfile.builder().id(EXISTING_ID).text(NEW_TEXT).userId(USER_ID).clubId(club.getId())
                 .build();
@@ -117,11 +117,11 @@ class FeedbackServiceTest {
 
     @Test
     void getAllByExistingClubIdShouldReturnListOfFeedbackResponse() {
+        FeedbackResponse fr = new FeedbackResponse();
         List<Feedback> feedbackList = new ArrayList<>();
         feedbackList.add(feedback);
-        // final long EXISTING_CLUB_ID = 3L;
-        when(feedbackRepository.getAllByClubId(EXISTING_CLUB_ID)).thenReturn(feedbackList);
-        when(dtoConverter.convertToDto(feedback, FeedbackResponse.class)).thenReturn(feedbackResponse);
+        when(feedbackRepository.getAllByClubIdAndParentCommentIsNull(EXISTING_CLUB_ID)).thenReturn(feedbackList);
+        when(dtoConverter.convertToDto(feedback, fr)).thenReturn(feedbackResponse);
 
         List<FeedbackResponse> actual = feedbackService.getAllByClubId(EXISTING_CLUB_ID);
         assertEquals(feedbackResponse, actual.get(0));
@@ -179,7 +179,7 @@ class FeedbackServiceTest {
                 .thenReturn(SuccessCreatedFeedback.builder().text(NEW_TEXT).build());
         when(userDetailsService.getUserPrincipal()).thenReturn(TestUtils.getUserPrincipal(user));
 
-        SuccessCreatedFeedback actual = feedbackService.addFeedback(feedbackProfile);
+        SuccessCreatedFeedback actual = feedbackService.createFeedback(feedbackProfile);
         assertEquals(feedbackProfile.getText(), actual.getText());
     }
 
