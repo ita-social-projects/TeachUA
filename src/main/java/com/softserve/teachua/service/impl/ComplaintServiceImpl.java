@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
+import com.softserve.teachua.dto.complaint.ComplaintUpdateIsActive;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
@@ -112,6 +113,14 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     }
 
     @Override
+    public List<ComplaintResponse> getAllByUserId(Long userId, boolean isSender) {
+        if (isSender) {
+            return getAllBySenderId(userId);
+        }
+        return getAllByRecipientId(userId);
+    }
+
+    @Override
     public List<ComplaintResponse> getAllByRecipientId(Long recipientId) {
         List<ComplaintResponse> complaintResponses = complaintRepository.getAllByRecipientId(recipientId).stream()
                 .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
@@ -119,6 +128,25 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
 
         log.debug("get all complaints: {} ", complaintResponses);
         return complaintResponses;
+    }
+
+    @Override
+    public List<ComplaintResponse> getAllBySenderId(Long senderId) {
+        List<ComplaintResponse> complaintResponses = complaintRepository.getAllByUserId(senderId).stream()
+                .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
+                .toList();
+
+        log.debug("get all complaints: {} ", complaintResponses);
+        return complaintResponses;
+    }
+
+    @Override
+    public ComplaintResponse updateComplaintIsActive(Long id, ComplaintUpdateIsActive complaintUpdateIsActive) {
+        Complaint updatedComplaint = complaintRepository.getById(id).withIsActive(complaintUpdateIsActive.getIsActive());
+        ComplaintResponse complaintResponseDTO = dtoConverter.convertToDto(complaintRepository.save(updatedComplaint),
+                ComplaintResponse.class);
+        log.debug("update message text by id - {}", id);
+        return complaintResponseDTO;
     }
 
     @Override

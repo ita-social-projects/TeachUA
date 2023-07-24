@@ -2,6 +2,7 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
+import com.softserve.teachua.dto.complaint.ComplaintUpdateIsActive;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Complaint;
@@ -74,6 +75,8 @@ public interface ComplaintService {
      */
     List<ComplaintResponse> getAllByClubId(Long clubId);
 
+    List<ComplaintResponse> getAllByUserId(Long userId, boolean isSender);
+
     /**
      * Method get all {@link Complaint}s by recipient id.
      *
@@ -86,6 +89,19 @@ public interface ComplaintService {
      *             if complaint not exists.
      */
     List<ComplaintResponse> getAllByRecipientId(Long recipientId);
+
+    /**
+     * Method get all {@link Complaint}s by sender id.
+     *
+     * @param senderId
+     *            - sender id
+     *
+     * @return new {@code List<ComplaintResponse>}
+     *
+     * @throws NotExistException
+     *             if complaint not exists.
+     */
+    List<ComplaintResponse> getAllBySenderId(Long senderId);
 
     /**
      * Method updates complaint and returns dto {@code ComplaintProfile} of updated complaint.
@@ -101,6 +117,8 @@ public interface ComplaintService {
      *             if complaint not exists.
      */
     ComplaintProfile updateComplaintProfileById(Long id, ComplaintProfile complaintProfile);
+
+    ComplaintResponse updateComplaintIsActive(Long id, ComplaintUpdateIsActive complaintUpdateIsActive);
 
     /**
      * Method deletes complaint and returns dto {@code ComplaintResponse} of deleted complaint.

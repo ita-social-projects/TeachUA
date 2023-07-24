@@ -23,4 +23,6 @@ public class SuccessCreatedComplaint implements Convertible {
     private Long recipientId;
 
     private Boolean isActive;
+
+    private Boolean hasAnswer;
 }

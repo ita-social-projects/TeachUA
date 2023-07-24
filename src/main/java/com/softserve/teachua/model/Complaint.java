@@ -54,6 +54,10 @@ public class Complaint implements Convertible {
     @ColumnDefault(value = "true")
     private Boolean isActive;
 
+    @Column(name = "has_answer")
+    @ColumnDefault(value = "false")
+    private Boolean hasAnswer;
+
     @Column(nullable = false)
     private String text;
 }

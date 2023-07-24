@@ -29,4 +29,6 @@ public class ComplaintResponse implements Convertible {
     private UserPreview recipient;
 
     private Boolean isActive;
+
+    private Boolean hasAnswer;
 }

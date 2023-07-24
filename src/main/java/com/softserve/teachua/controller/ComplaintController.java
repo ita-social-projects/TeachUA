@@ -3,6 +3,7 @@ package com.softserve.teachua.controller;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
+import com.softserve.teachua.dto.complaint.ComplaintUpdateIsActive;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.service.ComplaintService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -82,7 +83,20 @@ public class ComplaintController implements Api {
      */
     @GetMapping("/complaints/recipient/{id}")
     public List<ComplaintResponse> getAllComplaintsByRecipientId(@PathVariable Long id) {
-        return complaintService.getAllByRecipientId(id);
+        return complaintService.getAllByUserId(id, false);
+    }
+
+    /**
+     * Use this endpoint to get all Complaints by sender id The controller returns {@code List<ComplaintResponse>}.
+     *
+     * @param id
+     *            - put sender id here.
+     *
+     * @return {@code List<ComplaintResponse>}
+     */
+    @GetMapping("/complaints/sender/{id}")
+    public List<ComplaintResponse> getAllComplaintsBySenderId(@PathVariable Long id) {
+        return complaintService.getAllByUserId(id, true);
     }
 
     /**
@@ -114,6 +128,23 @@ public class ComplaintController implements Api {
     public ComplaintProfile updateComplaint(@PathVariable Long id,
             @Valid @RequestBody ComplaintProfile complaintProfile) {
         return complaintService.updateComplaintProfileById(id, complaintProfile);
+    }
+
+    /**
+     * Use this endpoint to update Complaint isActive status. The controller returns {@code ComplaintResponse}.
+     *
+     * @param id
+     *            Complaint id
+     * @param complaintUpdateIsActive
+     *            Complaint profile with new data
+     *
+     * @return {@code ComplaintResponse}.
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/complaint/isActive/{id}")
+    public ComplaintResponse updateComplaintIsActive(@PathVariable Long id,
+                                            @RequestBody ComplaintUpdateIsActive complaintUpdateIsActive) {
+        return complaintService.updateComplaintIsActive(id, complaintUpdateIsActive);
     }
 
     /**
