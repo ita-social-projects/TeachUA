@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.message.MessageProfile;
 import com.softserve.teachua.dto.message.MessageResponseDto;
+import com.softserve.teachua.dto.message.MessageUpdateIsAnswered;
 import com.softserve.teachua.dto.message.MessageUpdateIsActive;
 import com.softserve.teachua.dto.message.MessageUpdateText;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
@@ -61,6 +62,7 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
                     String.format("User with id - %s doesn't exists", messageProfile.getRecipientId()));
         }
         messageProfile.setIsActive(true);
+        messageProfile.setIsAnswered(false);
         Message message = messageRepository.save(dtoConverter.convertToEntity(messageProfile, new Message()));
 
         log.debug("new message added - " + message);
@@ -120,9 +122,9 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     private List<Message> getNewMessagesForRecipient(Long id) {
-        List<Message> messages = messageRepository.findAllByRecipientIdAndIsActiveOrderByDate(id, true,
+        List<Message> messages = messageRepository.findAllByRecipientIdAndIsActive(id, true,
                 Sort.by(Sort.Direction.DESC, "date"));
-        if (messages.isEmpty()) {
+        if (messages==null) {
             log.warn("Messages with recipient id - {} doesn't exist", id);
             throw new NotExistException(String.format("Messages with recipient id - %s "
                     + "doesn't exist", id));
@@ -132,7 +134,7 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     }
 
     private List<Message> getNewMessagesForSender(Long id) {
-        List<Message> messages = messageRepository.findAllBySenderIdAndIsActiveOrderByDate(id, true,
+        List<Message> messages = messageRepository.findAllBySenderIdAndIsActive(id, true,
                 Sort.by(Sort.Direction.DESC, "date"));
         if (messages.isEmpty()) {
             log.warn("Messages with sender id - {} doesn't exist", id);
@@ -187,6 +189,16 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
         MessageResponseDto messageResponseDto = dtoConverter.convertToDto(messageRepository.save(updatedMessage),
                 MessageResponseDto.class);
         log.debug("update message isActive by id - {}", id);
+        return messageResponseDto;
+    }
+
+    @Override
+    @Transactional
+    public MessageResponseDto updateMessageIsAnsweredById(Long id, MessageUpdateIsAnswered messageUpdateIsAnswered) {
+        Message updatedMessage = getMessageById(id).withIsAnswered(messageUpdateIsAnswered.getIsAnswered());
+        MessageResponseDto messageResponseDto = dtoConverter.convertToDto(messageRepository.save(updatedMessage),
+                MessageResponseDto.class);
+        log.debug("update message isAnswered by id - {}", id);
         return messageResponseDto;
     }
 
