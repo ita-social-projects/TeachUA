@@ -136,8 +136,8 @@ public class MessageController implements Api {
     @PreAuthorize("isAuthenticated() and "
             + "authentication.principal.id == @messageServiceImpl.getMessageById(#id).recipient.id")
     @PutMapping("/message/answered/{id}")
-    public MessageResponseDto updateMessageIsAnsweredById
-    (@PathVariable Long id, @Valid @RequestBody MessageUpdateIsAnswered updateIsAnswered) {
+    public MessageResponseDto updateMessageIsAnsweredById(
+            @PathVariable Long id, @Valid @RequestBody MessageUpdateIsAnswered updateIsAnswered) {
         return messageService.updateMessageIsAnsweredById(id, updateIsAnswered);
     }
 
