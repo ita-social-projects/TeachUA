@@ -124,7 +124,7 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     private List<Message> getNewMessagesForRecipient(Long id) {
         List<Message> messages = messageRepository.findAllByRecipientIdAndIsActive(id, true,
                 Sort.by(Sort.Direction.DESC, "date"));
-        if (messages == null) {
+        if (messages.isEmpty()) {
             log.warn("Messages with recipient id - {} doesn't exist", id);
             throw new NotExistException(String.format("Messages with recipient id - %s "
                     + "doesn't exist", id));
