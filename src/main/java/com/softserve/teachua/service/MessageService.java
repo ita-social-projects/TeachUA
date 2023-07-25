@@ -92,7 +92,6 @@ public interface MessageService {
      **/
     List<MessageResponseDto> getNewMessageResponsesByUserId(Long id, boolean isSender);
 
-
     /**
      * This method searches for a {@link Message} by id, update text in it with {@link MessageUpdateText} data, and
      * returns {@link MessageResponseDto}.
@@ -114,10 +113,11 @@ public interface MessageService {
     MessageResponseDto updateMessageIsActiveById(Long id, MessageUpdateIsActive messageUpdateIsActive);
 
     /**
-     * This method searches for a {@link Message} by id, update text in it with {@link MessageUpdateIsAnswered} data, and
+     * This method searches for a {@link Message} by id, update text in it with
+     * {@link MessageUpdateIsAnswered} data, and
      * returns {@link MessageResponseDto}.
      *
-     * @param id                    put {@code Message} id here
+     * @param id                      put {@code Message} id here
      * @param messageUpdateIsAnswered put {@code MessageUpdateIsAnswered} dto here.
      * @return {@code MessageResponseDto}.
      **/

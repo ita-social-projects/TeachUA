@@ -34,9 +34,7 @@ public class MessageController implements Api {
     /**
      * Use this endpoint to create a new Message. The controller returns {@link MessageResponseDto}.
      *
-     * @param messageProfile
-     *            put {@code MessageProfile} dto here.
-     *
+     * @param messageProfile put {@code MessageProfile} dto here.
      * @return {@code MessageResponseDto}.
      */
     @PreAuthorize("isAuthenticated()")
@@ -48,9 +46,7 @@ public class MessageController implements Api {
     /**
      * Use this endpoint to get Message by id. The controller returns {@link MessageResponseDto}.
      *
-     * @param id
-     *            put {@code Message} id here.
-     *
+     * @param id put {@code Message} id here.
      * @return {@code MessageResponseDto}.
      */
     @PreAuthorize("isAuthenticated() and "
@@ -64,9 +60,7 @@ public class MessageController implements Api {
     /**
      * Use this endpoint to get MessageResponses by sender id. The controller returns {@code List<MessageResponseDto>}.
      *
-     * @param id
-     *            put {@code User} sender id here.
-     *
+     * @param id put {@code User} sender id here.
      * @return {@code List<MessageResponseDto>}.
      */
     @PreAuthorize("isAuthenticated() and authentication.principal.id = #id")
@@ -79,9 +73,7 @@ public class MessageController implements Api {
      * Use this endpoint to get MessageResponses by recipient id. The controller returns
      * {@code List<MessageResponseDto>}.
      *
-     * @param id
-     *            put {@code User} recipient id here.
-     *
+     * @param id put {@code User} recipient id here.
      * @return {@code List<MessageResponseDto>}.
      */
     @PreAuthorize("isAuthenticated() and authentication.principal.id == #id")
@@ -94,9 +86,7 @@ public class MessageController implements Api {
      * Use this endpoint to get new MessageResponses by recipient id. The controller returns
      * {@code List<MessageResponseDto>}.
      *
-     * @param id
-     *            put {@code User} recipient id here.
-     *
+     * @param id put {@code User} recipient id here.
      * @return {@code List<MessageResponseDto>}.
      */
     @PreAuthorize("isAuthenticated() and authentication.principal.id == #id")
@@ -109,47 +99,38 @@ public class MessageController implements Api {
     /**
      * Use this endpoint to update Message text by id. The controller returns {@code MessageResponseDto}.
      *
-     * @param id
-     *            put {@code Message} id here.
-     * @param updateText
-     *            put {@code MessageUpdateText} dto here.
-     *
+     * @param id         put {@code Message} id here.
+     * @param updateText put {@code MessageUpdateText} dto here.
      * @return {@code MessageResponseDto}.
      */
     @PreAuthorize("isAuthenticated() and "
             + "authentication.principal.id == @messageServiceImpl.getMessageById(#id).sender.id")
     @PutMapping("/message/text/{id}")
     public MessageResponseDto updateMessageTextById(@PathVariable Long id,
-            @Valid @RequestBody MessageUpdateText updateText) {
+                                                    @Valid @RequestBody MessageUpdateText updateText) {
         return messageService.updateMessageTextById(id, updateText);
     }
 
     /**
      * Use this endpoint to update Message isActive by id. The controller returns {@code MessageResponseDto}.
      *
-     * @param id
-     *            put {@code Message} id here.
-     * @param updateIsActive
-     *            put {@code MessageUpdateIsActive} dto here.
-     *
+     * @param id             put {@code Message} id here.
+     * @param updateIsActive put {@code MessageUpdateIsActive} dto here.
      * @return {@code MessageResponseDto}.
      */
     @PreAuthorize("isAuthenticated() and "
             + "authentication.principal.id == @messageServiceImpl.getMessageById(#id).recipient.id")
     @PutMapping("/message/active/{id}")
     public MessageResponseDto updateMessageIsActiveById(@PathVariable Long id,
-            @Valid @RequestBody MessageUpdateIsActive updateIsActive) {
+                                                        @Valid @RequestBody MessageUpdateIsActive updateIsActive) {
         return messageService.updateMessageIsActiveById(id, updateIsActive);
     }
 
     /**
      * Use this endpoint to update Message isAnswered by id. The controller returns {@code MessageResponseDto}.
      *
-     * @param id
-     *            put {@code Message} id here.
-     * @param updateIsAnswered
-     *            put {@code MessageUpdateAnswered} dto here.
-     *
+     * @param id               put {@code Message} id here.
+     * @param updateIsAnswered put {@code MessageUpdateAnswered} dto here.
      * @return {@code MessageResponseDto}.
      */
     @PreAuthorize("isAuthenticated() and "
@@ -163,9 +144,7 @@ public class MessageController implements Api {
     /**
      * Use this endpoint to delete Message by id. The controller returns {@code MessageResponseDto}.
      *
-     * @param id
-     *            - put {@code Message} id here.
-     *
+     * @param id - put {@code Message} id here.
      * @return {@code MessageResponseDto}.
      */
     @PreAuthorize("isAuthenticated()")
