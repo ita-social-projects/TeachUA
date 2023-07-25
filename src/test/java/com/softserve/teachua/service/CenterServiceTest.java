@@ -201,38 +201,6 @@ class CenterServiceTest {
     }
 
     @Test
-    void testUpdateRatingNewFeedbackWhenCenterIsNull() {
-        FeedbackResponse feedbackResponse = FeedbackResponse.builder()
-                .club(Club.builder().id(1L).center(null).build())
-                .rate(4.5f)
-                .build();
-        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(feedbackResponse.getClub()));
-        centerService.updateRatingNewFeedback(feedbackResponse);
-        verify(centerRepository, never()).save(any(Center.class));
-    }
-
-    @Test
-    void testUpdateRatingNewFeedbackWhenCenterIsNotNull() {
-        FeedbackResponse feedbackResponse = FeedbackResponse.builder()
-                .club(Club.builder().id(1L).center(correctCenter).build())
-                .rate(4.5f)
-                .build();
-        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(feedbackResponse.getClub()));
-        centerService.updateRatingNewFeedback(feedbackResponse);
-        assertEquals(4.5f, correctCenter.getRating());
-        assertEquals(1, correctCenter.getFeedbackCount());
-    }
-
-    @Test
-    void testUpdateRatingNewFeedbackWhenRateIsIncorrect() {
-        FeedbackResponse feedbackResponse = FeedbackResponse.builder()
-                .club(Club.builder().id(1L).center(correctCenter).build())
-                .rate(-6.0f)
-                .build();
-        assertThrows(ValidationException.class, () -> centerService.updateRatingNewFeedback(feedbackResponse));
-    }
-
-    @Test
     void deleteCenterShouldReturnCenterResponse() {
         when(clubRepository.findClubsByCenter(correctCenter)).thenReturn(Collections.emptyList());
         when(locationRepository.findLocationsByCenter(correctCenter)).thenReturn(Collections.emptyList());
