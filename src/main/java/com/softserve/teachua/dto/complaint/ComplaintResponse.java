@@ -31,4 +31,6 @@ public class ComplaintResponse implements Convertible {
     private Boolean isActive;
 
     private Boolean hasAnswer;
+
+    private String answerText;
 }

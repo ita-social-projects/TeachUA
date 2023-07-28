@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
+import com.softserve.teachua.dto.complaint.ComplaintUpdateAnswer;
 import com.softserve.teachua.dto.complaint.ComplaintUpdateIsActive;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
@@ -145,7 +146,16 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
         Complaint updatedComplaint = complaintRepository.getById(id).withIsActive(complaintUpdateIsActive.getIsActive());
         ComplaintResponse complaintResponseDTO = dtoConverter.convertToDto(complaintRepository.save(updatedComplaint),
                 ComplaintResponse.class);
-        log.debug("update message text by id - {}", id);
+        log.debug("update isActive by id - {}", id);
+        return complaintResponseDTO;
+    }
+
+    @Override
+    public ComplaintResponse updateComplaintAnswer(Long id, ComplaintUpdateAnswer updateComplaintAnswer) {
+        Complaint updatedComplaint = complaintRepository.getById(id).withAnswerText(updateComplaintAnswer.getAnswerText()).withHasAnswer(true);
+        ComplaintResponse complaintResponseDTO = dtoConverter.convertToDto(complaintRepository.save(updatedComplaint),
+                ComplaintResponse.class);
+        log.debug("update answer text by id - {}", id);
         return complaintResponseDTO;
     }
 

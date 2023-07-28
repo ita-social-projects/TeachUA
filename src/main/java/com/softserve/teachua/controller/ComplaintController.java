@@ -3,6 +3,7 @@ package com.softserve.teachua.controller;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
+import com.softserve.teachua.dto.complaint.ComplaintUpdateAnswer;
 import com.softserve.teachua.dto.complaint.ComplaintUpdateIsActive;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.service.ComplaintService;
@@ -145,6 +146,23 @@ public class ComplaintController implements Api {
     public ComplaintResponse updateComplaintIsActive(@PathVariable Long id,
                                             @RequestBody ComplaintUpdateIsActive complaintUpdateIsActive) {
         return complaintService.updateComplaintIsActive(id, complaintUpdateIsActive);
+    }
+
+    /**
+     * Use this endpoint to update Complaint add answer The controller returns {@code ComplaintResponse}.
+     *
+     * @param id
+     *            Complaint id
+     * @param complaintUpdateAnswer
+     *            Complaint profile with new data
+     *
+     * @return {@code ComplaintResponse}.
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/complaint/{id}/answer")
+    public ComplaintResponse updateComplaintAnswer(@PathVariable Long id,
+                                                     @RequestBody ComplaintUpdateAnswer complaintUpdateAnswer) {
+        return complaintService.updateComplaintAnswer(id, complaintUpdateAnswer);
     }
 
     /**

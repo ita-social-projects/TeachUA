@@ -2,6 +2,7 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
+import com.softserve.teachua.dto.complaint.ComplaintUpdateAnswer;
 import com.softserve.teachua.dto.complaint.ComplaintUpdateIsActive;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.NotExistException;
@@ -118,7 +119,35 @@ public interface ComplaintService {
      */
     ComplaintProfile updateComplaintProfileById(Long id, ComplaintProfile complaintProfile);
 
+    /**
+     * Method updates complaint isActive field and returns dto {@code ComplaintProfile} of updated complaint.
+     *
+     * @param id
+     *            - complaint id
+     * @param complaintUpdateIsActive
+     *            - profile with data for Complaint
+     *
+     * @return new {@code ComplaintProfile}
+     *
+     * @throws NotExistException
+     *             if complaint not exists.
+     */
     ComplaintResponse updateComplaintIsActive(Long id, ComplaintUpdateIsActive complaintUpdateIsActive);
+
+    /**
+     * Method updates complaint answerText field and returns dto {@code ComplaintProfile} of updated complaint.
+     *
+     * @param id
+     *            - complaint id
+     * @param updateComplaintAnswer
+     *            - profile with data for Complaint
+     *
+     * @return new {@code ComplaintProfile}
+     *
+     * @throws NotExistException
+     *             if complaint not exists.
+     */
+    ComplaintResponse updateComplaintAnswer(Long id, ComplaintUpdateAnswer updateComplaintAnswer);
 
     /**
      * Method deletes complaint and returns dto {@code ComplaintResponse} of deleted complaint.
