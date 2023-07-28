@@ -15,7 +15,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
-    Optional<Feedback> findById(Long id);
 
     List<Feedback> getAllByClubId(Long clubId);
 
@@ -23,9 +22,8 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     List<Feedback> getAllByClubIdAndParentCommentIsNull(Long clubId);
 
-    Page<Feedback> getAllByClubIdAndParentCommentIsNull(Long clubId, Pageable pageable);
+    Page<Feedback> getAllByClubIdAndParentCommentIsNullOrderByDateDesc(Long clubId, Pageable pageable);
 
-    void deleteById(Long id);
 
     /**
      * Method to get average rating by club id.

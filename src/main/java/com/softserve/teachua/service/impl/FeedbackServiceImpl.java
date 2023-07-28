@@ -18,7 +18,6 @@ import com.softserve.teachua.model.User;
 import com.softserve.teachua.model.archivable.FeedbackArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
-import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
@@ -52,7 +51,6 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     private final ClubRepository clubRepository;
     private final DtoConverter dtoConverter;
     private final ArchiveService archiveService;
-    private final UserRepository userRepository;
     private final UserService userService;
     private final ClubService clubService;
     private final CenterService centerService;
@@ -62,14 +60,13 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
     @Autowired
     public FeedbackServiceImpl(FeedbackRepository feedbackRepository, DtoConverter dtoConverter,
                                ClubRepository clubRepository, ArchiveService archiveService,
-                               UserRepository userRepository, UserService userService,
-                               @Lazy ClubService clubService, @Lazy CenterService centerService,
-                               ObjectMapper objectMapper, CustomUserDetailsService customUserDetailsService) {
+                               UserService userService, @Lazy ClubService clubService,
+                               @Lazy CenterService centerService, ObjectMapper objectMapper,
+                               CustomUserDetailsService customUserDetailsService) {
         this.feedbackRepository = feedbackRepository;
         this.dtoConverter = dtoConverter;
         this.clubRepository = clubRepository;
         this.archiveService = archiveService;
-        this.userRepository = userRepository;
         this.userService = userService;
         this.clubService = clubService;
         this.centerService = centerService;
@@ -112,7 +109,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
         FeedbackResponse fr = new FeedbackResponse();
 
         Page<Feedback> feedbackResponses = feedbackRepository
-                .getAllByClubIdAndParentCommentIsNull(id, pageable);
+                .getAllByClubIdAndParentCommentIsNullOrderByDateDesc(id, pageable);
 
         log.debug("get list of feedback {} \n Total pages {}", feedbackResponses,
                 feedbackResponses.getTotalPages());
@@ -132,13 +129,16 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
         if (!clubRepository.existsById(feedbackProfile.getClubId())) {
             throw new NotExistException("Club with id " + feedbackProfile.getClubId() + " does`nt exists");
         }
-        if (!userRepository.existsById(feedbackProfile.getUserId())) {
-            throw new NotExistException("User with id " + feedbackProfile.getUserId() + " does`nt exists");
-        }
+
+        User user = userService.getUserById(feedbackProfile.getUserId());
         Feedback feedback = feedbackRepository.save(dtoConverter.convertToEntity(feedbackProfile, new Feedback()));
+        feedback.setUser(user);
+
         clubService.updateRatingNewFeedback(dtoConverter.convertToDto(feedback, FeedbackResponse.class));
         centerService.updateRatingNewFeedback(dtoConverter.convertToDto(feedback, FeedbackResponse.class));
+
         log.debug("add new feedback - " + feedback);
+        log.debug("user = {}", feedback.getUser());
         return dtoConverter.convertToDto(feedback, SuccessCreatedFeedback.class);
     }
 
