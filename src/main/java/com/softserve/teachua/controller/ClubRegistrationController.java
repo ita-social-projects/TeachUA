@@ -36,14 +36,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClubRegistrationController implements Api {
     private final ClubRegistrationService clubRegistrationService;
 
+    @AllowedRoles(RoleData.USER)
     @GetMapping("/club-registration/user-children/{clubId}")
     public ResponseEntity<List<ChildResponse>> getChildrenByParentId(@PathVariable Long clubId) {
         List<ChildResponse> children = clubRegistrationService
-                .getChildrenForCurrentUserAndCheckIsDisabledByClubId(clubId);
+                .getChildrenForCurrentUserAndCheckIsAlreadyRegistered(clubId);
+        if (children.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
 
         return ResponseEntity.ok(children);
     }
 
+    @AllowedRoles(RoleData.USER)
+    @GetMapping("club-registration/{clubId}/{userId}")
+    public ResponseEntity<Boolean> isUserAlreadyRegistered(@PathVariable Long clubId,
+                                                           @PathVariable Long userId) {
+        boolean isRegistered = clubRegistrationService.isUserAlreadyRegisteredToClub(clubId, userId);
+
+        return ResponseEntity.ok(isRegistered);
+    }
+
+    @AllowedRoles(RoleData.USER)
     @GetMapping("/club-registration/user-applications/{userId}")
     public ResponseEntity<List<FullClubRegistration>> getUserApplications(@PathVariable Long userId) {
         List<FullClubRegistration> applications = clubRegistrationService.getApplicationsByUserId(userId);

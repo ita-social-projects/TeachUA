@@ -167,11 +167,11 @@ class ClubRegistrationServiceImplTest {
         Long clubId = 1L;
         Long childId = 1L;
 
-        when(clubRegistrationRepository.existsActiveRegistration(clubId, childId)).thenReturn(true);
+        when(clubRegistrationRepository.existsActiveRegistrationByChildId(clubId, childId)).thenReturn(true);
 
         boolean result = clubRegistrationService.existsActiveRegistration(clubId, childId);
 
-        verify(clubRegistrationRepository, times(1)).existsActiveRegistration(clubId, childId);
+        verify(clubRegistrationRepository, times(1)).existsActiveRegistrationByChildId(clubId, childId);
 
         assertTrue(result);
     }
@@ -189,13 +189,13 @@ class ClubRegistrationServiceImplTest {
 
         when(userService.getAuthenticatedUserWithChildren()).thenReturn(user);
         when(dtoConverter.convertToDto(any(Child.class), any(ChildResponse.class))).thenReturn(childResponse);
-        when(clubRegistrationRepository.existsActiveRegistration(anyLong(), anyLong())).thenReturn(false);
+        when(clubRegistrationRepository.existsActiveRegistrationByChildId(anyLong(), anyLong())).thenReturn(false);
 
-        List<ChildResponse> result = clubRegistrationService.getChildrenForCurrentUserAndCheckIsDisabledByClubId(clubId);
+        List<ChildResponse> result = clubRegistrationService.getChildrenForCurrentUserAndCheckIsAlreadyRegistered(clubId);
 
         verify(userService, times(1)).getAuthenticatedUserWithChildren();
         verify(dtoConverter, times(2)).convertToDto(any(Child.class), any(ChildResponse.class));
-        verify(clubRegistrationRepository, times(2)).existsActiveRegistration(anyLong(), anyLong());
+        verify(clubRegistrationRepository, times(2)).existsActiveRegistrationByChildId(anyLong(), anyLong());
 
         assertNotNull(result);
         assertEquals(2, result.size());
