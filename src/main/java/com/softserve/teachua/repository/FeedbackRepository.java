@@ -15,7 +15,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
-
     List<Feedback> getAllByClubId(Long clubId);
 
     long countFeedbackByClubIdAndParentCommentIsNull(Long clubId);

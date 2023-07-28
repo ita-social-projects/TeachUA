@@ -37,12 +37,24 @@ public class ClubRegistrationController implements Api {
     private final ClubRegistrationService clubRegistrationService;
 
     @AllowedRoles(RoleData.USER)
-    @GetMapping("/club-registration/user-children/{parentId}")
-    public ResponseEntity<List<ChildResponse>> getChildrenByParentId(@PathVariable Long parentId) {
+    @GetMapping("/club-registration/user-children/{clubId}")
+    public ResponseEntity<List<ChildResponse>> getChildrenByParentId(@PathVariable Long clubId) {
         List<ChildResponse> children = clubRegistrationService
-                .getChildrenForCurrentUserAndCheckIsDisabledByClubId(parentId);
+                .getChildrenForCurrentUserAndCheckIsAlreadyRegistered(clubId);
+        if (children.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
 
         return ResponseEntity.ok(children);
+    }
+
+    @AllowedRoles(RoleData.USER)
+    @GetMapping("club-registration/{clubId}/{userId}")
+    public ResponseEntity<Boolean> isUserAlreadyRegistered(@PathVariable Long clubId,
+                                                           @PathVariable Long userId) {
+        boolean isRegistered = clubRegistrationService.isUserAlreadyRegisteredToClub(clubId, userId);
+
+        return ResponseEntity.ok(isRegistered);
     }
 
     @AllowedRoles(RoleData.USER)
