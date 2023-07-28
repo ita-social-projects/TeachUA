@@ -87,7 +87,7 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
         }
 
         Complaint complaint = complaintRepository
-                .save(dtoConverter.convertToEntity(complaintProfile, new Complaint()).withDate(LocalDate.now()));
+                .save(dtoConverter.convertToEntity(complaintProfile, new Complaint()).withDate(LocalDate.now()).withHasAnswer(false));
 
         log.debug("add new complaint {}", complaint);
         return dtoConverter.convertToDto(complaint, SuccessCreatedComplaint.class);
