@@ -61,6 +61,6 @@ public class Complaint implements Convertible {
     @Column(nullable = false)
     private String text;
 
-    @Column(name="answer_text")
+    @Column(name = "answer_text")
     private String answerText;
 }

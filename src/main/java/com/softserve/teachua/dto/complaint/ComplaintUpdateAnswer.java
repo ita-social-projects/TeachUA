@@ -15,7 +15,7 @@ import lombok.With;
 @With
 @Getter
 @Setter
-public class ComplaintUpdateAnswer  implements Convertible {
+public class ComplaintUpdateAnswer implements Convertible {
     @NotNull(message = "can't be null")
     private String answerText;
 }

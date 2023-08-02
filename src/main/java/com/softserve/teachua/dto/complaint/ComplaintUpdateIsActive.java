@@ -18,5 +18,4 @@ import lombok.With;
 public class ComplaintUpdateIsActive implements Convertible {
     @NotNull(message = "can't be null")
     private Boolean isActive;
-
 }
