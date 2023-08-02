@@ -4,6 +4,8 @@ import com.softserve.teachua.TestUtils;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
+import com.softserve.teachua.dto.complaint.ComplaintUpdateAnswer;
+import com.softserve.teachua.dto.complaint.ComplaintUpdateIsActive;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
@@ -43,7 +45,7 @@ class ComplaintServiceTest {
     private static final Long WRONG_COMPLAINT_ID = 2L;
     private static final Long CLUB_ID = 100L;
     private static final Long USER_ID = 1000L;
-
+    private static final Long RECIPIENT_ID = 1L;
     @Mock
     private ComplaintRepository complaintRepository;
     @Mock
@@ -171,5 +173,55 @@ class ComplaintServiceTest {
         ComplaintProfile expectedComplaintProfile = complaintService.updateComplaintProfileById(CORRECT_COMPLAINT_ID,
                 correctComplaintProfile);
         assertThat(expectedComplaintProfile).isEqualTo(correctComplaintProfile);
+    }
+
+    @Test
+    void getAllByUserIdMustReturnListOfComplaintResponse() {
+        boolean isSender = true;
+        when(complaintRepository.getAllByUserId(USER_ID)).thenReturn(complaintList);
+        when(dtoConverter.convertToDto(correctComplaint, ComplaintResponse.class)).thenReturn(correctComplaintResponse);
+        List<ComplaintResponse> expectedList = complaintService.getAllByUserId(USER_ID, isSender);
+        assertThat(expectedList).isEqualTo(complaintResponseList);
+    }
+
+    @Test
+    void getAllByRecipientIdMustReturnListOfComplaintResponse() {
+        when(complaintRepository.getAllByRecipientId(RECIPIENT_ID)).thenReturn(complaintList);
+        when(dtoConverter.convertToDto(correctComplaint, ComplaintResponse.class)).thenReturn(correctComplaintResponse);
+        List<ComplaintResponse> expectedList = complaintService.getAllByRecipientId(RECIPIENT_ID);
+        assertThat(expectedList).isEqualTo(complaintResponseList);
+    }
+
+    @Test
+    void getAllBySenderIdMustReturnListOfComplaintResponse() {
+        when(complaintRepository.getAllByUserId(USER_ID)).thenReturn(complaintList);
+        when(dtoConverter.convertToDto(correctComplaint, ComplaintResponse.class)).thenReturn(correctComplaintResponse);
+        List<ComplaintResponse> expectedList = complaintService.getAllBySenderId(USER_ID);
+        assertThat(expectedList).isEqualTo(complaintResponseList);
+    }
+
+    @Test
+    void updateComplaintIsActiveMustReturnComplaintResponse() {
+        ComplaintUpdateIsActive updateIsActive = new ComplaintUpdateIsActive();
+        updateIsActive.setIsActive(true);
+        when(complaintRepository.findById(CORRECT_COMPLAINT_ID)).thenReturn(Optional.of(correctComplaint));
+        when(dtoConverter.convertToDto(complaintRepository.save(correctComplaint), ComplaintResponse.class))
+                .thenReturn(correctComplaintResponse);
+
+        ComplaintResponse expectedResponse = complaintService.updateComplaintIsActive(CORRECT_COMPLAINT_ID, updateIsActive);
+        assertThat(expectedResponse).isEqualTo(correctComplaintResponse);
+    }
+
+    @Test
+    void updateComplaintAnswerMustReturnComplaintResponse() {
+        ComplaintUpdateAnswer updateAnswer = new ComplaintUpdateAnswer();
+        updateAnswer.setAnswerText("Test answer");
+
+        when(complaintRepository.findById(CORRECT_COMPLAINT_ID)).thenReturn(Optional.of(correctComplaint));
+        when(dtoConverter.convertToDto(complaintRepository.save(correctComplaint), ComplaintResponse.class))
+                .thenReturn(correctComplaintResponse);
+
+        ComplaintResponse expectedResponse = complaintService.updateComplaintAnswer(CORRECT_COMPLAINT_ID, updateAnswer);
+        assertThat(expectedResponse).isEqualTo(correctComplaintResponse);
     }
 }
