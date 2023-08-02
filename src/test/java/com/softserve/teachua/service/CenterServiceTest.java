@@ -7,6 +7,7 @@ import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
+import com.softserve.teachua.dto.club.MessagesClub;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
@@ -95,6 +96,8 @@ class CenterServiceTest {
     private Center createCenter;
     private SuccessCreatedCenter successCreatedCenter;
     private Club club;
+
+    private Club clubWithoutCenter;
     private User user;
     private CenterArch centerArch;
 
@@ -117,6 +120,7 @@ class CenterServiceTest {
                 .clubs(CLUBS).build();
         successCreatedCenter = SuccessCreatedCenter.builder().id(1L).name(centerProfile.getName()).build();
         club = Club.builder().id(CLUB_ID).center(correctCenter).build();
+        clubWithoutCenter = Club.builder().id(2L).center(null).build();
 
         user = User.builder().id(USER_ID).email(USER_EMAIL).build();
 
@@ -203,10 +207,10 @@ class CenterServiceTest {
     @Test
     void testUpdateRatingNewFeedbackWhenCenterIsNull() {
         FeedbackResponse feedbackResponse = FeedbackResponse.builder()
-                .club(Club.builder().id(1L).center(null).build())
+                .club(MessagesClub.builder().id(clubWithoutCenter.getId()).build())
                 .rate(4.5f)
                 .build();
-        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(feedbackResponse.getClub()));
+        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(clubWithoutCenter));
         centerService.updateRatingNewFeedback(feedbackResponse);
         verify(centerRepository, never()).save(any(Center.class));
     }
@@ -214,10 +218,10 @@ class CenterServiceTest {
     @Test
     void testUpdateRatingNewFeedbackWhenCenterIsNotNull() {
         FeedbackResponse feedbackResponse = FeedbackResponse.builder()
-                .club(Club.builder().id(1L).center(correctCenter).build())
+                .club(MessagesClub.builder().id(club.getId()).build())
                 .rate(4.5f)
                 .build();
-        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(feedbackResponse.getClub()));
+        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(clubWithoutCenter));
         centerService.updateRatingNewFeedback(feedbackResponse);
         assertEquals(4.5f, correctCenter.getRating());
         assertEquals(1, correctCenter.getFeedbackCount());
@@ -226,7 +230,7 @@ class CenterServiceTest {
     @Test
     void testUpdateRatingNewFeedbackWhenRateIsIncorrect() {
         FeedbackResponse feedbackResponse = FeedbackResponse.builder()
-                .club(Club.builder().id(1L).center(correctCenter).build())
+                .club(MessagesClub.builder().id(club.getId()).build())
                 .rate(-6.0f)
                 .build();
         assertThrows(ValidationException.class, () -> centerService.updateRatingNewFeedback(feedbackResponse));
