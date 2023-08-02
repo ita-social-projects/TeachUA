@@ -87,7 +87,8 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
         }
 
         Complaint complaint = complaintRepository
-                .save(dtoConverter.convertToEntity(complaintProfile, new Complaint()).withDate(LocalDate.now()).withHasAnswer(false));
+                .save(dtoConverter.convertToEntity(complaintProfile, new Complaint()).withDate(LocalDate.now())
+                        .withHasAnswer(false));
 
         log.debug("add new complaint {}", complaint);
         return dtoConverter.convertToDto(complaint, SuccessCreatedComplaint.class);
@@ -143,7 +144,8 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
 
     @Override
     public ComplaintResponse updateComplaintIsActive(Long id, ComplaintUpdateIsActive complaintUpdateIsActive) {
-        Complaint updatedComplaint = complaintRepository.getById(id).withIsActive(complaintUpdateIsActive.getIsActive());
+        Complaint updatedComplaint = complaintRepository.getById(id).withIsActive(complaintUpdateIsActive
+                .getIsActive());
         ComplaintResponse complaintResponseDTO = dtoConverter.convertToDto(complaintRepository.save(updatedComplaint),
                 ComplaintResponse.class);
         log.debug("update isActive by id - {}", id);
@@ -152,7 +154,8 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
 
     @Override
     public ComplaintResponse updateComplaintAnswer(Long id, ComplaintUpdateAnswer updateComplaintAnswer) {
-        Complaint updatedComplaint = complaintRepository.getById(id).withAnswerText(updateComplaintAnswer.getAnswerText()).withHasAnswer(true);
+        Complaint updatedComplaint = complaintRepository.getById(id).withAnswerText(updateComplaintAnswer
+                .getAnswerText()).withHasAnswer(true);
         ComplaintResponse complaintResponseDTO = dtoConverter.convertToDto(complaintRepository.save(updatedComplaint),
                 ComplaintResponse.class);
         log.debug("update answer text by id - {}", id);
