@@ -221,7 +221,7 @@ class CenterServiceTest {
                 .club(MessagesClub.builder().id(club.getId()).build())
                 .rate(4.5f)
                 .build();
-        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(clubWithoutCenter));
+        when(clubRepository.findById(anyLong())).thenReturn(Optional.of(club));
         centerService.updateRatingNewFeedback(feedbackResponse);
         assertEquals(4.5f, correctCenter.getRating());
         assertEquals(1, correctCenter.getFeedbackCount());
