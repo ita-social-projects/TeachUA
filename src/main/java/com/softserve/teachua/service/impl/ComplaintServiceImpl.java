@@ -69,7 +69,7 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     @Override
     public Complaint getComplaintById(Long id) {
         Optional<Complaint> optionalComplaint = complaintRepository.findById(id);
-        if (!optionalComplaint.isPresent()) {
+        if (optionalComplaint.isEmpty()) {
             throw new NotExistException(String.format(COMPLAINT_NOT_FOUND_BY_ID, id));
         }
 
@@ -128,7 +128,7 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
                 .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
                 .toList();
 
-        log.debug("get all complaints: {} ", complaintResponses);
+        log.debug("get all complaints by recipient id: {} ", complaintResponses);
         return complaintResponses;
     }
 
@@ -138,13 +138,17 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
                 .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
                 .toList();
 
-        log.debug("get all complaints: {} ", complaintResponses);
+        log.debug("get all complaints by sender id: {} ", complaintResponses);
         return complaintResponses;
     }
 
     @Override
     public ComplaintResponse updateComplaintIsActive(Long id, ComplaintUpdateIsActive complaintUpdateIsActive) {
-        Complaint updatedComplaint = complaintRepository.getById(id).withIsActive(complaintUpdateIsActive
+        Optional<Complaint> optionalComplaint = complaintRepository.findById(id);
+        if (optionalComplaint.isEmpty()) {
+            throw new NotExistException(String.format(COMPLAINT_NOT_FOUND_BY_ID, id));
+        }
+        Complaint updatedComplaint = optionalComplaint.get().withIsActive(complaintUpdateIsActive
                 .getIsActive());
         ComplaintResponse complaintResponseDTO = dtoConverter.convertToDto(complaintRepository.save(updatedComplaint),
                 ComplaintResponse.class);
@@ -154,7 +158,11 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
 
     @Override
     public ComplaintResponse updateComplaintAnswer(Long id, ComplaintUpdateAnswer updateComplaintAnswer) {
-        Complaint updatedComplaint = complaintRepository.getById(id).withAnswerText(updateComplaintAnswer
+        Optional<Complaint> optionalComplaint = complaintRepository.findById(id);
+        if (optionalComplaint.isEmpty()) {
+            throw new NotExistException(String.format(COMPLAINT_NOT_FOUND_BY_ID, id));
+        }
+        Complaint updatedComplaint = optionalComplaint.get().withAnswerText(updateComplaintAnswer
                 .getAnswerText()).withHasAnswer(true);
         ComplaintResponse complaintResponseDTO = dtoConverter.convertToDto(complaintRepository.save(updatedComplaint),
                 ComplaintResponse.class);
