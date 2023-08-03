@@ -10,7 +10,7 @@ import com.softserve.teachua.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -24,21 +24,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
 @EnableWebSecurity
-@Order(1)
 @EnableMethodSecurity
 public class SecurityConfig {
     private static final String ADMIN = RoleData.ADMIN.getRoleName();
-    private static final String USER = RoleData.USER.getRoleName();
-    private static final String MANAGER = RoleData.MANAGER.getRoleName();
     private final JwtFilter jwtFilter;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Autowired
     public SecurityConfig(JwtFilter jwtFilter, CustomOAuth2UserService customOAuth2UserService,
@@ -50,10 +48,6 @@ public class SecurityConfig {
         this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
     }
 
-    @Autowired
-    public void setHttpCookieOAuth2Authorization(HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth) {
-        this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth;
-    }
 
     @Bean
     public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
@@ -71,44 +65,34 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    @Scope("prototype")
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+        return new MvcRequestMatcher.Builder(introspector);
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/main", "/index.html").permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**",
-                                "/swagger", "/swagger-resources/**", "/swagger-resources").permitAll()
-                        .requestMatchers("/static/**").permitAll()
-                        .requestMatchers("/manifest.json").permitAll()
-                        .requestMatchers("/favicon**").permitAll()
-                        .requestMatchers("/upload/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/club/*", "/clubs", "/challenge",
-                                "/challenge/*", "/challenge/**", "/challenges/task/**", "/challenge/task/**",
-                                "/marathon", "/marathon/*", "/marathon/task/*", "/about", "/banners",
-                                "/banner/*", "/centers", "/center/*", "/service").permitAll()
-                        .requestMatchers("/api/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/challengeUA",
-                                "/challengeUA/registration", "/challengeUA/task/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/user/*").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/user/**").hasAnyRole(USER, ADMIN, MANAGER)
-                        .requestMatchers("/verify", "/verifyreset").permitAll()
-                        .requestMatchers("/roles").hasRole(ADMIN)
-                        .requestMatchers("/index").permitAll()
-                        .requestMatchers("/oauth2/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/logs").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/logs")
-                        .permitAll()
+                        .requestMatchers(mvc.pattern("/**")).permitAll()
+                        .requestMatchers(mvc.pattern("/index.html")).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole(ADMIN)
+                        .requestMatchers(HttpMethod.PUT, "/api/user/**").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
                         .authorizationEndpoint(authEndpoint -> authEndpoint
                                 .baseUri("/oauth2/authorize")
-                                .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
+                                .authorizationRequestRepository(cookieAuthorizationRequestRepository()))
                         .redirectionEndpoint(redirectionEndpoint -> redirectionEndpoint
-                                .baseUri("/oauth2/callback/*"))
+                                .baseUri("/oauth2/callback/**"))
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
                                 .userService(customOAuth2UserService))
                         .successHandler(oAuth2AuthenticationSuccessHandler)
@@ -119,6 +103,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/signout"))
                         .logoutSuccessUrl("/signin"));
+
         return http.build();
     }
 }
