@@ -34,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
@@ -283,6 +284,32 @@ class FeedbackServiceTest {
         assertEquals(feedbackList.size(), result.getTotalElements());
     }
 
+    @Test
+    void testCreateReply() {
+        ReplyRequest replyRequest = new ReplyRequest();
+        replyRequest.setParentCommentId(EXISTING_ID);
+        replyRequest.setUserId(user.getId());
+        replyRequest.setText("Sample reply text");
+
+        Feedback parentComment = new Feedback();
+        parentComment.setId(1L);
+        Feedback expectedReply = new Feedback();
+        expectedReply.setText("Sample reply text");
+
+        ReplyResponse expectedReplyResponse = new ReplyResponse();
+        expectedReplyResponse.setText("Sample reply text");
+
+        when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(parentComment));
+        when(dtoConverter.convertToEntity(any(ReplyRequest.class), any(Feedback.class))).thenReturn(expectedReply);
+        when(userService.getUserById(replyRequest.getUserId())).thenReturn(user);
+        when(feedbackRepository.save(any(Feedback.class))).thenReturn(expectedReply);
+        when(dtoConverter.convertToDto(any(Feedback.class), any(ReplyResponse.class))).thenReturn(expectedReplyResponse);
+
+        ReplyResponse actualReplyResponse = feedbackService.createReply(replyRequest);
+
+        assertEquals(expectedReplyResponse, actualReplyResponse);
+        verify(feedbackRepository).save(any(Feedback.class));
+    }
     @Test
     void createReply_throwsException_whenParentCommentNotFound() {
         ReplyRequest replyRequest = new ReplyRequest();
