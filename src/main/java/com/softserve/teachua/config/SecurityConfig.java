@@ -29,16 +29,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
-            "/",
-            "/index.html",
-            "/error",
-            "/*.json",
-            "/api/**",
-            "/oauth2/**",
-            "/static/**",
-            "/upload/**",
-            "/v3/api-docs/**",
-            "/swagger-ui/**"
+        "/",
+        "/index.html",
+        "/error",
+        "/*.json",
+        "/api/**",
+        "/oauth2/**",
+        "/static/**",
+        "/upload/**",
+        "/v3/api-docs/**",
+        "/swagger-ui/**"
     };
     private final JwtFilter jwtFilter;
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -48,9 +48,12 @@ public class SecurityConfig {
     private final HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
     @Autowired
-    public SecurityConfig(JwtFilter jwtFilter, ReactRouterForwardingFilter reactRouterForwardingFilter, CustomOAuth2UserService customOAuth2UserService,
+    public SecurityConfig(JwtFilter jwtFilter,
+                          ReactRouterForwardingFilter reactRouterForwardingFilter,
+                          CustomOAuth2UserService customOAuth2UserService,
                           OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
-                          OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler, HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository) {
+                          OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
+                          HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository) {
         this.jwtFilter = jwtFilter;
         this.customOAuth2UserService = customOAuth2UserService;
         this.reactRouterForwardingFilter = reactRouterForwardingFilter;
@@ -95,8 +98,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
                                 .userService(customOAuth2UserService))
                         .successHandler(oAuth2AuthenticationSuccessHandler)
-                        .failureHandler(oAuth2AuthenticationFailureHandler)
-                );
+                        .failureHandler(oAuth2AuthenticationFailureHandler));
 
         return http.build();
     }

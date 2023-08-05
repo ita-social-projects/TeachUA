@@ -13,7 +13,6 @@ import java.util.Set;
 
 @Component
 public class ReactRouterForwardingFilter extends OncePerRequestFilter {
-
     private static final Set<String> NOT_CLIENT_PATHS = Set.of(
             "/api/",
             "/oauth2/",
