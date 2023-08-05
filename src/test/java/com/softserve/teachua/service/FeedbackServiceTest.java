@@ -10,6 +10,7 @@ import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
 import com.softserve.teachua.dto.feedback.ReplyRequest;
+import com.softserve.teachua.dto.feedback.ReplyResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.dto.user.UserPreview;
 import com.softserve.teachua.exception.NotExistException;
@@ -36,8 +37,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -94,10 +95,8 @@ class FeedbackServiceTest {
     private ClubResponse clubDto;
     private Role role;
 
-
     @BeforeEach
     void setMocks() {
-        MockitoAnnotations.openMocks(this);
         club = Club.builder().id(EXISTING_CLUB_ID).build();
         clubDto = ClubResponse.builder().id(1L).center(null).build();
         role = Role.builder().id(ROLE_ID).name(RoleData.ADMIN.getDBRoleName()).build();
@@ -301,7 +300,7 @@ class FeedbackServiceTest {
 
     @Test
     void countByClubIdShouldReturnCorrectCount() {
-        when(feedbackRepository.countByClubIdAndParentCommentIsNull(EXISTING_CLUB_ID)).thenReturn(5L); // Assuming there are 5 feedbacks for this club ID
+        when(feedbackRepository.countByClubIdAndParentCommentIsNull(EXISTING_CLUB_ID)).thenReturn(5L);
 
         long actualCount = feedbackService.countByClubId(EXISTING_CLUB_ID);
 
@@ -316,5 +315,4 @@ class FeedbackServiceTest {
 
         assertEquals(0f, actualRating, 0.01f);
     }
-
 }
