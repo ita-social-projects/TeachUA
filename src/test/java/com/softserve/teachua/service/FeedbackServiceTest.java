@@ -1,12 +1,17 @@
 package com.softserve.teachua.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.TestUtils;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
+import com.softserve.teachua.dto.SortAndPageDto;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
+import com.softserve.teachua.dto.feedback.ReplyRequest;
+import com.softserve.teachua.dto.feedback.ReplyResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.dto.user.UserPreview;
 import com.softserve.teachua.exception.NotExistException;
@@ -14,28 +19,44 @@ import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.Role;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.archivable.FeedbackArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.security.CustomUserDetailsService;
 import com.softserve.teachua.service.impl.FeedbackServiceImpl;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -52,6 +73,8 @@ class FeedbackServiceTest {
     private final Long USER_ID = 12L;
     private final String USER_EMAIL = "test@gmail.com";
     private final Integer ROLE_ID = 3;
+    @Mock
+    private ObjectMapper objectMapper;
     @Mock
     private FeedbackRepository feedbackRepository;
     @Mock
@@ -86,6 +109,7 @@ class FeedbackServiceTest {
 
     @BeforeEach
     void setMocks() {
+        MockitoAnnotations.openMocks(this);
         club = Club.builder().id(EXISTING_CLUB_ID).build();
         clubDto = ClubResponse.builder().id(1L).center(null).build();
         role = Role.builder().id(ROLE_ID).name(RoleData.ADMIN.getDBRoleName()).build();
@@ -246,4 +270,63 @@ class FeedbackServiceTest {
         Optional<Feedback> actual = feedbackRepository.findById(NOT_EXISTING_ID);
         assertEquals(Optional.empty(), actual);
     }
+
+    @Test
+    void getPageByClubIdShouldReturnPagedFeedbackResponses() {
+        SortAndPageDto sortAndPageDto = new SortAndPageDto();
+        sortAndPageDto.setPage(0);
+        sortAndPageDto.setSize(5);
+
+        Pageable pageable = PageRequest.of(sortAndPageDto.getPage(), sortAndPageDto.getSize());
+
+        List<Feedback> feedbackList = new ArrayList<>();
+        feedbackList.add(feedback);
+
+        Page<Feedback> feedbackPage = new PageImpl<>(feedbackList, pageable, feedbackList.size());
+        FeedbackResponse fr = new FeedbackResponse();
+
+        when(feedbackRepository.getAllByClubIdAndParentCommentIsNullOrderByDateDesc(EXISTING_CLUB_ID, pageable))
+                .thenReturn(feedbackPage);
+        when(dtoConverter.convertToDto(feedback, fr)).thenReturn(feedbackResponse);
+
+        Page<FeedbackResponse> result = feedbackService.getPageByClubId(EXISTING_CLUB_ID, sortAndPageDto);
+
+        assertEquals(1, result.getContent().size());
+        assertEquals(feedbackResponse, result.getContent().get(0));
+        assertEquals(feedbackList.size(), result.getTotalElements());
+    }
+
+    @Test
+    void createReply_throwsException_whenParentCommentNotFound() {
+        ReplyRequest replyRequest = new ReplyRequest();
+        replyRequest.setParentCommentId(NOT_EXISTING_ID);
+
+        when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
+
+        NotExistException thrown = assertThrows(
+                NotExistException.class,
+                () -> feedbackService.createReply(replyRequest)
+        );
+
+        assertEquals("Feedback not found by id: " + NOT_EXISTING_ID, thrown.getMessage());
+    }
+
+    @Test
+    void countByClubIdShouldReturnCorrectCount() {
+        when(feedbackRepository.countByClubIdAndParentCommentIsNull(EXISTING_CLUB_ID)).thenReturn(5L); // Assuming there are 5 feedbacks for this club ID
+
+        long actualCount = feedbackService.countByClubId(EXISTING_CLUB_ID);
+
+        assertEquals(5L, actualCount);
+    }
+
+    @Test
+    void ratingByClubIdShouldReturnZeroWhenNoRating() {
+        when(feedbackRepository.findAverageRateByClubId(NOT_EXISTING_CLUB_ID)).thenReturn(Optional.empty());
+
+        float actualRating = feedbackService.ratingByClubId(NOT_EXISTING_CLUB_ID);
+
+        assertEquals(0f, actualRating, 0.01f);
+    }
+
 }

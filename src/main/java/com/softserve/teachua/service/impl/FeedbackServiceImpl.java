@@ -81,12 +81,9 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
 
     @Override
     public Feedback getFeedbackById(Long id) {
-        Optional<Feedback> optionalFeedback = getOptionalFeedbackById(id);
-        if (optionalFeedback.isEmpty()) {
-            throw new NotExistException(String.format(FEEDBACK_NOT_FOUND_BY_ID, id));
-        }
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new NotExistException(String.format(FEEDBACK_NOT_FOUND_BY_ID, id)));
 
-        Feedback feedback = optionalFeedback.get();
         log.debug("get feedback by id - " + feedback);
         return feedback;
     }
@@ -175,10 +172,6 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
         return feedbackResponse;
     }
 
-    private Optional<Feedback> getOptionalFeedbackById(Long id) {
-        return feedbackRepository.findById(id);
-    }
-
     @Override
     public FeedbackResponse updateFeedbackProfileById(Long id, FeedbackProfile feedbackProfile) {
         User user = userService.getAuthenticatedUser();
@@ -219,7 +212,7 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
         parentComment.addReply(reply);
 
         Feedback savedReply = feedbackRepository.save(reply);
-        log.info("reply created {}", savedReply);
+        log.debug("reply created {}", savedReply);
 
         return dtoConverter.convertToDto(savedReply, new ReplyResponse());
     }
@@ -253,4 +246,5 @@ public class FeedbackServiceImpl implements FeedbackService, ArchiveMark<Feedbac
 
         feedbackRepository.save(feedback);
     }
+
 }
