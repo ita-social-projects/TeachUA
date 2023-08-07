@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +22,6 @@ public class SuccessCreatedFeedback implements Convertible {
     private UserPreview user;
 
     private Long clubId;
+
+    private List<ReplyResponse> replies;
 }

@@ -76,20 +76,6 @@ public class FeedbackController implements Api {
         return ResponseEntity.ok(feedbackPage);
     }
 
-    @GetMapping("/feedbacks/count/{clubId}")
-    public ResponseEntity<Long> countForClub(@PathVariable Long clubId) {
-        long count = feedbackService.countByClubId(clubId);
-
-        return ResponseEntity.ok(count);
-    }
-
-    @GetMapping("/feedbacks/rating/{clubId}")
-    public ResponseEntity<Float> ratingForClub(@PathVariable Long clubId) {
-        Float count = feedbackService.ratingByClubId(clubId);
-
-        return ResponseEntity.ok(count);
-    }
-
     /**
      * Use this endpoint to create a new Feedback. The controller returns {@code SuccessCreatedFeedback}.
      *
