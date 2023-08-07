@@ -1,8 +1,11 @@
 package com.softserve.teachua.controller;
 
 import com.softserve.teachua.controller.marker.Api;
+import com.softserve.teachua.dto.SortAndPageDto;
 import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
+import com.softserve.teachua.dto.feedback.ReplyRequest;
+import com.softserve.teachua.dto.feedback.ReplyResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
 import com.softserve.teachua.service.FeedbackService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -11,6 +14,9 @@ import java.util.List;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,9 +45,7 @@ public class FeedbackController implements Api {
     /**
      * Use this endpoint to get Feedback by id. The controller returns {@code FeedbackResponse}.
      *
-     * @param id
-     *            - put id of Feedback here.
-     *
+     * @param id - put id of Feedback here.
      * @return {@code FeedbackResponse}.
      */
     @GetMapping("/feedback/{id}")
@@ -65,32 +69,57 @@ public class FeedbackController implements Api {
      * @return {@code List<FeedbackResponse>}
      */
     @GetMapping("/feedbacks/{id}")
-    public List<FeedbackResponse> getAllFeedback(@PathVariable Long id) {
-        return feedbackService.getAllByClubId(id);
+    public ResponseEntity<Page<FeedbackResponse>> getAllFeedbackByClubId(
+            @PathVariable Long id,
+            @Valid SortAndPageDto sortAndPageDto) {
+        Page<FeedbackResponse> feedbackPage = feedbackService.getPageByClubId(id, sortAndPageDto);
+        return ResponseEntity.ok(feedbackPage);
+    }
+
+    @GetMapping("/feedbacks/count/{clubId}")
+    public ResponseEntity<Long> countForClub(@PathVariable Long clubId) {
+        long count = feedbackService.countByClubId(clubId);
+
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/feedbacks/rating/{clubId}")
+    public ResponseEntity<Float> ratingForClub(@PathVariable Long clubId) {
+        Float count = feedbackService.ratingByClubId(clubId);
+
+        return ResponseEntity.ok(count);
     }
 
     /**
      * Use this endpoint to create a new Feedback. The controller returns {@code SuccessCreatedFeedback}.
      *
-     * @param feedbackProfile
-     *            - object of DTO class.
-     *
+     * @param feedbackProfile - object of DTO class.
      * @return {@code SuccessCreatedFeedback}
      */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/feedback")
     public SuccessCreatedFeedback addFeedback(@Valid @RequestBody FeedbackProfile feedbackProfile) {
-        return feedbackService.addFeedback(feedbackProfile);
+        return feedbackService.createFeedback(feedbackProfile);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/feedback/{id}/reply")
+    public ResponseEntity<ReplyResponse> addReply(
+            @PathVariable Long id,
+            @Valid @RequestBody ReplyRequest replyRequest) {
+        replyRequest.setParentCommentId(id);
+        log.debug("got request to create new reply {}", replyRequest);
+
+        ReplyResponse reply = feedbackService.createReply(replyRequest);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(reply);
     }
 
     /**
      * Use this endpoint to update Feedback by id. The controller returns {@code FeedbackProfile}.
      *
-     * @param id
-     *            - put feedback id here.
-     * @param feedbackProfile
-     *            - put feedback information here.
-     *
+     * @param id              - put feedback id here.
+     * @param feedbackProfile - put feedback information here.
      * @return {@code FeedbackProfile}.
      */
     @PreAuthorize("isAuthenticated()")
@@ -102,9 +131,7 @@ public class FeedbackController implements Api {
     /**
      * Use this endpoint to delete Feedback by id. The controller returns {@code FeedbackResponse}.
      *
-     * @param id
-     *            - put feedback id here.
-     *
+     * @param id - put feedback id here.
      * @return {@code FeedbackResponse}
      */
     @PreAuthorize("isAuthenticated()")

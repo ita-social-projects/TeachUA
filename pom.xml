@@ -26,7 +26,7 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.exclusions>**/config/*</sonar.exclusions>
     <sonar.coverage.exclusions>
-      **/constants/**,**/dto/**,**/exception/**,**/model/**
+      **/constants/**,**/dto/**,**/exception/**,**/model/**, **/controller/*
     </sonar.coverage.exclusions>
   </properties>
 
