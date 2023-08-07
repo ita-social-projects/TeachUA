@@ -34,4 +34,6 @@ public class MessageProfile implements Convertible {
     private Long recipientId;
 
     private Boolean isActive;
+
+    private Boolean isAnswered;
 }

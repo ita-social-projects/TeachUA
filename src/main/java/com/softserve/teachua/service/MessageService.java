@@ -2,9 +2,11 @@ package com.softserve.teachua.service;
 
 import com.softserve.teachua.dto.message.MessageProfile;
 import com.softserve.teachua.dto.message.MessageResponseDto;
+import com.softserve.teachua.dto.message.MessageUpdateIsAnswered;
 import com.softserve.teachua.dto.message.MessageUpdateIsActive;
 import com.softserve.teachua.dto.message.MessageUpdateText;
 import com.softserve.teachua.model.Message;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
@@ -90,7 +92,6 @@ public interface MessageService {
      **/
     List<MessageResponseDto> getNewMessageResponsesByUserId(Long id, boolean isSender);
 
-
     /**
      * This method searches for a {@link Message} by id, update text in it with {@link MessageUpdateText} data, and
      * returns {@link MessageResponseDto}.
@@ -112,10 +113,23 @@ public interface MessageService {
     MessageResponseDto updateMessageIsActiveById(Long id, MessageUpdateIsActive messageUpdateIsActive);
 
     /**
+     * This method searches for a {@link Message} by id, update text in it with
+     * {@link MessageUpdateIsAnswered} data, and
+     * returns {@link MessageResponseDto}.
+     *
+     * @param id                      put {@code Message} id here
+     * @param messageUpdateIsAnswered put {@code MessageUpdateIsAnswered} dto here.
+     * @return {@code MessageResponseDto}.
+     **/
+    @Transactional
+    MessageResponseDto updateMessageIsAnsweredById(Long id, MessageUpdateIsAnswered messageUpdateIsAnswered);
+
+    /**
      * This method delete {@link Message}.
      *
      * @param id put {@code Message} id here.
      * @return {@code MessageResponseDto}.
      **/
+    @Transactional
     MessageResponseDto deleteMessageById(Long id);
 }

@@ -31,4 +31,6 @@ public class MessageResponseDto implements Convertible {
     private UserPreview recipient;
 
     private Boolean isActive;
+
+    private Boolean isAnswered;
 }

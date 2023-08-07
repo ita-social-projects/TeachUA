@@ -5,6 +5,7 @@ import com.softserve.teachua.dto.club.MessagesClub;
 import com.softserve.teachua.dto.message.MessageProfile;
 import com.softserve.teachua.dto.message.MessageResponseDto;
 import com.softserve.teachua.dto.message.MessageUpdateIsActive;
+import com.softserve.teachua.dto.message.MessageUpdateIsAnswered;
 import com.softserve.teachua.dto.message.MessageUpdateText;
 import com.softserve.teachua.dto.user.UserPreview;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
@@ -63,6 +64,7 @@ class MessageServiceTest {
     private MessageProfile messageProfile;
     private MessageUpdateText updateTextDto;
     private MessageUpdateIsActive updateIsActiveDto;
+    private MessageUpdateIsAnswered updateIsAnsweredDto;
     private MessageResponseDto messageResponseDto;
     private MessageArch messageArch;
     private Archive archiveMessage;
@@ -97,6 +99,7 @@ class MessageServiceTest {
                 .sender(senderPrev).recipient(recipientPrev).text(TEXT).isActive(ACTIVE).build();
         updateTextDto = MessageUpdateText.builder().text(UPDATED_TEXT).build();
         updateIsActiveDto = MessageUpdateIsActive.builder().isActive(false).build();
+        updateIsAnsweredDto = MessageUpdateIsAnswered.builder().isAnswered(false).build();
         messageArch = MessageArch.builder().id(EXISTING_ID).clubId(EXISTING_ID).date(TIME_NOW).senderId(SENDER_ID)
                 .recipientId(RECIPIENT_ID).text(TEXT).isActive(ACTIVE).build();
         archiveMessage = Archive.builder().id(EXISTING_ID).className(ARCHIVE_CLASS_NAME).data(ARCHIVE_DATA).build();
@@ -170,7 +173,7 @@ class MessageServiceTest {
 
     @Test
     void getNewMessagesByUserIdForSender() {
-        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(SENDER_ID, true,
+        when(messageRepository.findAllBySenderIdAndIsActive(SENDER_ID, true,
                 Sort.by(Sort.Direction.DESC, "date"))).thenReturn(List.of(message));
 
         assertEquals(List.of(message), messageService.getNewMessagesByUserId(SENDER_ID, true));
@@ -178,7 +181,7 @@ class MessageServiceTest {
 
     @Test
     void getNewMessagesByUserIdForSenderListIsEmpty() {
-        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(SENDER_ID, true,
+        when(messageRepository.findAllBySenderIdAndIsActive(SENDER_ID, true,
                 Sort.by(Sort.Direction.DESC, "date"))).thenReturn(Collections.emptyList());
 
         assertThrows(NotExistException.class, () -> messageService.getNewMessagesByUserId(SENDER_ID, true));
@@ -186,7 +189,7 @@ class MessageServiceTest {
 
     @Test
     void getNewMessagesByUserIdForRecipient() {
-        when(messageRepository.findAllByRecipientIdAndIsActiveOrderByDate(RECIPIENT_ID, true,
+        when(messageRepository.findAllByRecipientIdAndIsActive(RECIPIENT_ID, true,
                 Sort.by(Sort.Direction.DESC, "date"))).thenReturn(List.of(message));
 
         assertEquals(List.of(message), messageService.getNewMessagesByUserId(RECIPIENT_ID, false));
@@ -194,7 +197,7 @@ class MessageServiceTest {
 
     @Test
     void getNewMessagesByUserIdForRecipientListIsEmpty() {
-        when(messageRepository.findAllByRecipientIdAndIsActiveOrderByDate(RECIPIENT_ID, true,
+        when(messageRepository.findAllByRecipientIdAndIsActive(RECIPIENT_ID, true,
                 Sort.by(Sort.Direction.DESC, "date"))).thenReturn(Collections.emptyList());
 
         assertThrows(NotExistException.class, () -> messageService.getNewMessagesByUserId(RECIPIENT_ID, false));
@@ -218,7 +221,7 @@ class MessageServiceTest {
 
     @Test
     void getNewMessageResponsesByUserId() {
-        when(messageRepository.findAllBySenderIdAndIsActiveOrderByDate(SENDER_ID, true,
+        when(messageRepository.findAllBySenderIdAndIsActive(SENDER_ID, true,
                 Sort.by(Sort.Direction.DESC, "date"))).thenReturn(List.of(message));
         when(dtoConverter.convertToDto(message, MESSAGE_RESPONSE_DTO_CLASS)).thenReturn(messageResponseDto);
 
@@ -248,6 +251,19 @@ class MessageServiceTest {
                 .thenReturn(messageResponseDto);
 
         assertEquals(messageResponseDto, messageService.updateMessageIsActiveById(EXISTING_ID, updateIsActiveDto));
+    }
+
+    @Test
+    void updateMessageIsAnsweredById() {
+        Message messageUpdatedIsAnswered = message.withIsAnswered(false);
+        messageResponseDto.setIsAnswered(false);
+
+        when(messageRepository.findById(EXISTING_ID)).thenReturn(Optional.of(message));
+        when(messageRepository.save(messageUpdatedIsAnswered)).thenReturn(messageUpdatedIsAnswered);
+        when(dtoConverter.convertToDto(messageUpdatedIsAnswered, MESSAGE_RESPONSE_DTO_CLASS))
+                .thenReturn(messageResponseDto);
+
+        assertEquals(messageResponseDto, messageService.updateMessageIsAnsweredById(EXISTING_ID, updateIsAnsweredDto));
     }
 
     @Test
