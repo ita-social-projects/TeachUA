@@ -20,6 +20,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -167,13 +168,42 @@ class ClubRegistrationServiceImplTest {
         Long clubId = 1L;
         Long childId = 1L;
 
-        when(clubRegistrationRepository.existsActiveRegistration(clubId, childId)).thenReturn(true);
+        when(clubRegistrationRepository.existsActiveRegistrationByChildId(clubId, childId)).thenReturn(true);
 
         boolean result = clubRegistrationService.existsActiveRegistration(clubId, childId);
 
-        verify(clubRegistrationRepository, times(1)).existsActiveRegistration(clubId, childId);
+        verify(clubRegistrationRepository, times(1)).existsActiveRegistrationByChildId(clubId, childId);
 
         assertTrue(result);
+    }
+
+    @Test
+    void existsUserActiveRegistration() {
+        Long clubId = 1L;
+        Long userId = 1L;
+
+        when(clubRegistrationRepository
+                .existsActiveRegistrationByUserId(anyLong(), anyLong())).thenReturn(true);
+
+        boolean result = clubRegistrationService.isUserAlreadyRegisteredToClub(anyLong(), anyLong());
+
+        verify(clubRegistrationRepository, times(1))
+                .existsActiveRegistrationByUserId(anyLong(), anyLong());
+
+        assertTrue(result);
+    }
+
+    @Test
+    void notExistsUserActiveRegistration() {
+        when(clubRegistrationRepository
+                .existsActiveRegistrationByUserId(anyLong(), anyLong())).thenReturn(false);
+
+        boolean result = clubRegistrationService.isUserAlreadyRegisteredToClub(anyLong(), anyLong());
+
+        verify(clubRegistrationRepository, times(1))
+                .existsActiveRegistrationByUserId(anyLong(), anyLong());
+
+        assertFalse(result);
     }
 
     @Test
@@ -189,13 +219,13 @@ class ClubRegistrationServiceImplTest {
 
         when(userService.getAuthenticatedUserWithChildren()).thenReturn(user);
         when(dtoConverter.convertToDto(any(Child.class), any(ChildResponse.class))).thenReturn(childResponse);
-        when(clubRegistrationRepository.existsActiveRegistration(anyLong(), anyLong())).thenReturn(false);
+        when(clubRegistrationRepository.existsActiveRegistrationByChildId(anyLong(), anyLong())).thenReturn(false);
 
-        List<ChildResponse> result = clubRegistrationService.getChildrenForCurrentUserAndCheckIsDisabledByClubId(clubId);
+        List<ChildResponse> result = clubRegistrationService.getChildrenForCurrentUserAndCheckIsAlreadyRegistered(clubId);
 
         verify(userService, times(1)).getAuthenticatedUserWithChildren();
         verify(dtoConverter, times(2)).convertToDto(any(Child.class), any(ChildResponse.class));
-        verify(clubRegistrationRepository, times(2)).existsActiveRegistration(anyLong(), anyLong());
+        verify(clubRegistrationRepository, times(2)).existsActiveRegistrationByChildId(anyLong(), anyLong());
 
         assertNotNull(result);
         assertEquals(2, result.size());

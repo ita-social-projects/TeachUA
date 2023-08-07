@@ -1,10 +1,13 @@
 package com.softserve.teachua.security.util;
 
-import java.util.Base64;
-import java.util.Optional;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Optional;
 import org.springframework.util.SerializationUtils;
 
 public class CookieUtils {
@@ -13,10 +16,11 @@ public class CookieUtils {
 
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
-
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name)) {
+                    String decodedValue = URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8);
+                    cookie.setValue(decodedValue);
                     return Optional.of(cookie);
                 }
             }
@@ -26,11 +30,14 @@ public class CookieUtils {
     }
 
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(maxAge);
-        response.addCookie(cookie);
+        if (value != null) {
+            String encodedValue = URLEncoder.encode(value, StandardCharsets.UTF_8);
+            Cookie cookie = new Cookie(name, encodedValue);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(maxAge);
+            response.addCookie(cookie);
+        }
     }
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
