@@ -22,11 +22,13 @@ public interface ClubRegistrationService {
 
     boolean existsActiveRegistration(Long clubId, Long childId);
 
-    List<ChildResponse> getChildrenForCurrentUserAndCheckIsDisabledByClubId(Long clubId);
+    List<ChildResponse> getChildrenForCurrentUserAndCheckIsAlreadyRegistered(Long clubId);
 
     List<FullClubRegistration> getApplicationsByUserId(Long userId);
 
     RegistrationCanceledSuccess cancel(Long clubRegistrationId);
 
     List<FullClubRegistration> getAllByManagerId(Long managerId);
+
+    boolean isUserAlreadyRegisteredToClub(Long clubId, Long userId);
 }

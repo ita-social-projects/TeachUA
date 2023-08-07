@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,8 +20,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -49,8 +48,7 @@ public class ClubRegistration implements Convertible {
     private Club club;
 
     @CreatedDate
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "registration_date", nullable = false)
+    @Column(name = "registration_date", nullable = false, columnDefinition = "TIMESTAMP(0)")
     private LocalDateTime registrationDate;
 
     @Builder.Default

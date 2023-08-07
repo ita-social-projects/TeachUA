@@ -3,6 +3,8 @@ package com.softserve.teachua.controller;
 import com.softserve.teachua.controller.marker.Api;
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
+import com.softserve.teachua.dto.complaint.ComplaintUpdateAnswer;
+import com.softserve.teachua.dto.complaint.ComplaintUpdateIsActive;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.service.ComplaintService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -39,9 +41,7 @@ public class ComplaintController implements Api {
     /**
      * Use this endpoint to get Complaint by id. The controller returns {@code ComplaintResponse}.
      *
-     * @param id
-     *            - put complaint id here.
-     *
+     * @param id - put complaint id here.
      * @return {@link ComplaintResponse}
      */
     @GetMapping("/complaint/{id}")
@@ -62,9 +62,7 @@ public class ComplaintController implements Api {
     /**
      * Use this endpoint to get all Complaints by club id The controller returns {@code List<ComplaintResponse>}.
      *
-     * @param id
-     *            - put club id here.
-     *
+     * @param id - put club id here.
      * @return {@code List<ComplaintResponse>}
      */
     @GetMapping("/complaints/club/{id}")
@@ -73,11 +71,31 @@ public class ComplaintController implements Api {
     }
 
     /**
+     * Use this endpoint to get all Complaints by recipient id The controller returns {@code List<ComplaintResponse>}.
+     *
+     * @param id - put recipient id here.
+     * @return {@code List<ComplaintResponse>}
+     */
+    @GetMapping("/complaints/recipient/{id}")
+    public List<ComplaintResponse> getAllComplaintsByRecipientId(@PathVariable Long id) {
+        return complaintService.getAllByUserId(id, false);
+    }
+
+    /**
+     * Use this endpoint to get all Complaints by sender id The controller returns {@code List<ComplaintResponse>}.
+     *
+     * @param id - put sender id here.
+     * @return {@code List<ComplaintResponse>}
+     */
+    @GetMapping("/complaints/sender/{id}")
+    public List<ComplaintResponse> getAllComplaintsBySenderId(@PathVariable Long id) {
+        return complaintService.getAllByUserId(id, true);
+    }
+
+    /**
      * Use this endpoint to create a new Complaint The controller returns {@code SuccessCreatedComplaint}.
      *
-     * @param complaintProfile
-     *            - put complaint information here.
-     *
+     * @param complaintProfile - put complaint information here.
      * @return new {@link SuccessCreatedComplaint}
      */
     @PreAuthorize("isAuthenticated()")
@@ -89,26 +107,49 @@ public class ComplaintController implements Api {
     /**
      * Use this endpoint to update Complaint. The controller returns {@code ComplaintProfile}.
      *
-     * @param id
-     *            Complaint id
-     * @param complaintProfile
-     *            Complaint profile with new data
-     *
+     * @param id               Complaint id
+     * @param complaintProfile Complaint profile with new data
      * @return {@code ComplaintProfile}.
      */
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/complaint/{id}")
     public ComplaintProfile updateComplaint(@PathVariable Long id,
-            @Valid @RequestBody ComplaintProfile complaintProfile) {
+                                            @Valid @RequestBody ComplaintProfile complaintProfile) {
         return complaintService.updateComplaintProfileById(id, complaintProfile);
+    }
+
+    /**
+     * Use this endpoint to update Complaint isActive status. The controller returns {@code ComplaintResponse}.
+     *
+     * @param id                      Complaint id
+     * @param complaintUpdateIsActive Complaint profile with new data
+     * @return {@code ComplaintResponse}.
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/complaint/isActive/{id}")
+    public ComplaintResponse updateComplaintIsActive(@PathVariable Long id,
+                                                     @RequestBody ComplaintUpdateIsActive complaintUpdateIsActive) {
+        return complaintService.updateComplaintIsActive(id, complaintUpdateIsActive);
+    }
+
+    /**
+     * Use this endpoint to update Complaint add answer The controller returns {@code ComplaintResponse}.
+     *
+     * @param id                    Complaint id
+     * @param complaintUpdateAnswer Complaint profile with new data
+     * @return {@code ComplaintResponse}.
+     */
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/complaint/{id}/answer")
+    public ComplaintResponse updateComplaintAnswer(@PathVariable Long id,
+                                                   @RequestBody ComplaintUpdateAnswer complaintUpdateAnswer) {
+        return complaintService.updateComplaintAnswer(id, complaintUpdateAnswer);
     }
 
     /**
      * Use this endpoint to delete Complaint The controller returns {@code ComplaintResponse}.
      *
-     * @param id
-     *            - put complaint id here.
-     *
+     * @param id - put complaint id here.
      * @return {@link ComplaintResponse}
      */
     @PreAuthorize("isAuthenticated()")

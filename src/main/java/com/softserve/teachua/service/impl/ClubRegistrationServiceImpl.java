@@ -101,6 +101,11 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
     }
 
     @Override
+    public boolean isUserAlreadyRegisteredToClub(Long clubId, Long userId) {
+        return clubRegistrationRepository.existsActiveRegistrationByUserId(clubId, userId);
+    }
+
+    @Override
     @Transactional
     public RegistrationApprovedSuccess approve(Long clubRegistrationId) {
         log.info("Approving club registration with id: {}", clubRegistrationId);
@@ -124,7 +129,7 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
     public boolean existsActiveRegistration(Long clubId, Long childId) {
         log.info("Checking if active registration exists for club ID {} and child ID {}", clubId, childId);
 
-        return clubRegistrationRepository.existsActiveRegistration(clubId, childId);
+        return clubRegistrationRepository.existsActiveRegistrationByChildId(clubId, childId);
     }
 
     @NotNull
@@ -142,7 +147,7 @@ public class ClubRegistrationServiceImpl implements ClubRegistrationService {
     }
 
     @Override
-    public List<ChildResponse> getChildrenForCurrentUserAndCheckIsDisabledByClubId(Long clubId) {
+    public List<ChildResponse> getChildrenForCurrentUserAndCheckIsAlreadyRegistered(Long clubId) {
         log.info("Getting children for current user and checking if disabled by club ID {}", clubId);
 
         User user = userService.getAuthenticatedUserWithChildren();

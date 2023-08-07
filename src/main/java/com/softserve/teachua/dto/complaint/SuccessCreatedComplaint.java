@@ -18,4 +18,10 @@ public class SuccessCreatedComplaint implements Convertible {
     private Long userId;
 
     private Long clubId;
+
+    private Long recipientId;
+
+    private Boolean isActive;
+
+    private Boolean hasAnswer;
 }

@@ -35,13 +35,19 @@ public interface ClubRegistrationRepository extends JpaRepository<ClubRegistrati
             SELECT COUNT(cr) > 0
             FROM ClubRegistration cr
             WHERE cr.club.id = :clubId AND cr.child.id = :childId AND cr.isActive = true""")
-    boolean existsActiveRegistration(@Param("clubId") Long clubId, @Param("childId") Long childId);
+    boolean existsActiveRegistrationByChildId(@Param("clubId") Long clubId, @Param("childId") Long childId);
 
     @Query("""
-    SELECT cr
-    FROM ClubRegistration cr
-    LEFT JOIN cr.child c
-    WHERE cr.user.id = :userId OR c.parent.id = :userId
-    ORDER BY cr.registrationDate DESC""")
+            SELECT COUNT(cr) > 0
+            FROM ClubRegistration cr
+            WHERE cr.club.id = :clubId AND cr.user.id = :userId AND cr.isActive = true""")
+    boolean existsActiveRegistrationByUserId(@Param("clubId") Long clubId, @Param("userId") Long userId);
+
+    @Query("""
+            SELECT cr
+            FROM ClubRegistration cr
+            LEFT JOIN cr.child c
+            WHERE cr.user.id = :userId OR c.parent.id = :userId
+            ORDER BY cr.registrationDate DESC""")
     List<ClubRegistration> findRegistrationsByUserIdOrChildParentId(@Param("userId") Long userId);
 }

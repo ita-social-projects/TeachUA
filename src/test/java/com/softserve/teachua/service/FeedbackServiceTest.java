@@ -1,14 +1,18 @@
 package com.softserve.teachua.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.TestUtils;
 import com.softserve.teachua.constants.RoleData;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.club.MessagesClub;
+import com.softserve.teachua.dto.SortAndPageDto;
+import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
 import com.softserve.teachua.dto.feedback.FeedbackProfile;
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
+import com.softserve.teachua.dto.feedback.ReplyRequest;
+import com.softserve.teachua.dto.feedback.ReplyResponse;
 import com.softserve.teachua.dto.feedback.SuccessCreatedFeedback;
-import com.softserve.teachua.dto.user.UserResponse;
+import com.softserve.teachua.dto.user.UserPreview;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.Feedback;
@@ -25,17 +29,24 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -52,6 +63,8 @@ class FeedbackServiceTest {
     private final Long USER_ID = 12L;
     private final String USER_EMAIL = "test@gmail.com";
     private final Integer ROLE_ID = 3;
+    @Mock
+    private ObjectMapper objectMapper;
     @Mock
     private FeedbackRepository feedbackRepository;
     @Mock
@@ -78,19 +91,18 @@ class FeedbackServiceTest {
     private FeedbackResponse updFeedbackResponse;
     private FeedbackResponse feedbackResponse;
     private User user;
-    private UserResponse userDto;
+    private UserPreview userDto;
     private Club club;
-    private MessagesClub clubDto;
+    private ClubResponse clubDto;
     private Role role;
-
 
     @BeforeEach
     void setMocks() {
         club = Club.builder().id(EXISTING_CLUB_ID).build();
-        clubDto = new MessagesClub(EXISTING_ID, "");
+        clubDto = ClubResponse.builder().id(1L).center(null).build();
         role = Role.builder().id(ROLE_ID).name(RoleData.ADMIN.getDBRoleName()).build();
         user = User.builder().id(EXISTING_USER_ID).email(USER_EMAIL).role(role).build();
-        userDto = UserResponse.builder().id(EXISTING_USER_ID).email(USER_EMAIL).roleName(role.getName()).build();
+        userDto = UserPreview.builder().id(EXISTING_USER_ID).firstName("S").lastName("W").build();
         feedback = Feedback.builder().id(EXISTING_ID).text(EXISTING_TEXT).club(club).user(user).build();
         feedbackProfile = FeedbackProfile.builder().id(EXISTING_ID).text(NEW_TEXT).userId(USER_ID).clubId(club.getId())
                 .build();
@@ -117,11 +129,11 @@ class FeedbackServiceTest {
 
     @Test
     void getAllByExistingClubIdShouldReturnListOfFeedbackResponse() {
+        FeedbackResponse fr = new FeedbackResponse();
         List<Feedback> feedbackList = new ArrayList<>();
         feedbackList.add(feedback);
-        // final long EXISTING_CLUB_ID = 3L;
-        when(feedbackRepository.getAllByClubId(EXISTING_CLUB_ID)).thenReturn(feedbackList);
-        when(dtoConverter.convertToDto(feedback, FeedbackResponse.class)).thenReturn(feedbackResponse);
+        when(feedbackRepository.getAllByClubIdAndParentCommentIsNull(EXISTING_CLUB_ID)).thenReturn(feedbackList);
+        when(dtoConverter.convertToDto(feedback, fr)).thenReturn(feedbackResponse);
 
         List<FeedbackResponse> actual = feedbackService.getAllByClubId(EXISTING_CLUB_ID);
         assertEquals(feedbackResponse, actual.get(0));
@@ -179,7 +191,7 @@ class FeedbackServiceTest {
                 .thenReturn(SuccessCreatedFeedback.builder().text(NEW_TEXT).build());
         when(userDetailsService.getUserPrincipal()).thenReturn(TestUtils.getUserPrincipal(user));
 
-        SuccessCreatedFeedback actual = feedbackService.addFeedback(feedbackProfile);
+        SuccessCreatedFeedback actual = feedbackService.createFeedback(feedbackProfile);
         assertEquals(feedbackProfile.getText(), actual.getText());
     }
 
@@ -245,5 +257,89 @@ class FeedbackServiceTest {
         when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
         Optional<Feedback> actual = feedbackRepository.findById(NOT_EXISTING_ID);
         assertEquals(Optional.empty(), actual);
+    }
+
+    @Test
+    void getPageByClubIdShouldReturnPagedFeedbackResponses() {
+        SortAndPageDto sortAndPageDto = new SortAndPageDto();
+        sortAndPageDto.setPage(0);
+        sortAndPageDto.setSize(5);
+
+        Pageable pageable = PageRequest.of(sortAndPageDto.getPage(), sortAndPageDto.getSize());
+
+        List<Feedback> feedbackList = new ArrayList<>();
+        feedbackList.add(feedback);
+
+        Page<Feedback> feedbackPage = new PageImpl<>(feedbackList, pageable, feedbackList.size());
+        FeedbackResponse fr = new FeedbackResponse();
+
+        when(feedbackRepository.getAllByClubIdAndParentCommentIsNullOrderByDateDesc(EXISTING_CLUB_ID, pageable))
+                .thenReturn(feedbackPage);
+        when(dtoConverter.convertToDto(feedback, fr)).thenReturn(feedbackResponse);
+
+        Page<FeedbackResponse> result = feedbackService.getPageByClubId(EXISTING_CLUB_ID, sortAndPageDto);
+
+        assertEquals(1, result.getContent().size());
+        assertEquals(feedbackResponse, result.getContent().get(0));
+        assertEquals(feedbackList.size(), result.getTotalElements());
+    }
+
+    @Test
+    void testCreateReply() {
+        ReplyRequest replyRequest = new ReplyRequest();
+        replyRequest.setParentCommentId(EXISTING_ID);
+        replyRequest.setUserId(user.getId());
+        replyRequest.setText("Sample reply text");
+
+        Feedback parentComment = new Feedback();
+        parentComment.setId(1L);
+        Feedback expectedReply = new Feedback();
+        expectedReply.setText("Sample reply text");
+
+        ReplyResponse expectedReplyResponse = new ReplyResponse();
+        expectedReplyResponse.setText("Sample reply text");
+
+        when(feedbackRepository.findById(EXISTING_ID)).thenReturn(Optional.of(parentComment));
+        when(dtoConverter.convertToEntity(any(ReplyRequest.class), any(Feedback.class))).thenReturn(expectedReply);
+        when(userService.getUserById(replyRequest.getUserId())).thenReturn(user);
+        when(feedbackRepository.save(any(Feedback.class))).thenReturn(expectedReply);
+        when(dtoConverter.convertToDto(any(Feedback.class), any(ReplyResponse.class))).thenReturn(expectedReplyResponse);
+
+        ReplyResponse actualReplyResponse = feedbackService.createReply(replyRequest);
+
+        assertEquals(expectedReplyResponse, actualReplyResponse);
+        verify(feedbackRepository).save(any(Feedback.class));
+    }
+    @Test
+    void createReply_throwsException_whenParentCommentNotFound() {
+        ReplyRequest replyRequest = new ReplyRequest();
+        replyRequest.setParentCommentId(NOT_EXISTING_ID);
+
+        when(feedbackRepository.findById(NOT_EXISTING_ID)).thenReturn(Optional.empty());
+
+        NotExistException thrown = assertThrows(
+                NotExistException.class,
+                () -> feedbackService.createReply(replyRequest)
+        );
+
+        assertEquals("Feedback not found by id: " + NOT_EXISTING_ID, thrown.getMessage());
+    }
+
+    @Test
+    void countByClubIdShouldReturnCorrectCount() {
+        when(feedbackRepository.countByClubIdAndParentCommentIsNull(EXISTING_CLUB_ID)).thenReturn(5L);
+
+        long actualCount = feedbackService.countByClubId(EXISTING_CLUB_ID);
+
+        assertEquals(5L, actualCount);
+    }
+
+    @Test
+    void ratingByClubIdShouldReturnZeroWhenNoRating() {
+        when(feedbackRepository.findAverageRateByClubId(NOT_EXISTING_CLUB_ID)).thenReturn(Optional.empty());
+
+        float actualRating = feedbackService.ratingByClubId(NOT_EXISTING_CLUB_ID);
+
+        assertEquals(0f, actualRating, 0.01f);
     }
 }

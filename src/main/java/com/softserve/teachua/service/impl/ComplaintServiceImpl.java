@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.complaint.ComplaintProfile;
 import com.softserve.teachua.dto.complaint.ComplaintResponse;
+import com.softserve.teachua.dto.complaint.ComplaintUpdateAnswer;
+import com.softserve.teachua.dto.complaint.ComplaintUpdateIsActive;
 import com.softserve.teachua.dto.complaint.SuccessCreatedComplaint;
 import com.softserve.teachua.exception.DatabaseRepositoryException;
 import com.softserve.teachua.exception.NotExistException;
@@ -67,7 +69,7 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
     @Override
     public Complaint getComplaintById(Long id) {
         Optional<Complaint> optionalComplaint = complaintRepository.findById(id);
-        if (!optionalComplaint.isPresent()) {
+        if (optionalComplaint.isEmpty()) {
             throw new NotExistException(String.format(COMPLAINT_NOT_FOUND_BY_ID, id));
         }
 
@@ -85,7 +87,8 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
         }
 
         Complaint complaint = complaintRepository
-                .save(dtoConverter.convertToEntity(complaintProfile, new Complaint()).withDate(LocalDate.now()));
+                .save(dtoConverter.convertToEntity(complaintProfile, new Complaint()).withDate(LocalDate.now())
+                        .withHasAnswer(false));
 
         log.debug("add new complaint {}", complaint);
         return dtoConverter.convertToDto(complaint, SuccessCreatedComplaint.class);
@@ -109,6 +112,62 @@ public class ComplaintServiceImpl implements ComplaintService, ArchiveMark<Compl
 
         log.debug("get all complaints: {} ", complaintResponses);
         return complaintResponses;
+    }
+
+    @Override
+    public List<ComplaintResponse> getAllByUserId(Long userId, boolean isSender) {
+        if (isSender) {
+            return getAllBySenderId(userId);
+        }
+        return getAllByRecipientId(userId);
+    }
+
+    @Override
+    public List<ComplaintResponse> getAllByRecipientId(Long recipientId) {
+        List<ComplaintResponse> complaintResponses = complaintRepository.getAllByRecipientId(recipientId).stream()
+                .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
+                .toList();
+
+        log.debug("get all complaints by recipient id: {} ", complaintResponses);
+        return complaintResponses;
+    }
+
+    @Override
+    public List<ComplaintResponse> getAllBySenderId(Long senderId) {
+        List<ComplaintResponse> complaintResponses = complaintRepository.getAllByUserId(senderId).stream()
+                .map(complaint -> (ComplaintResponse) dtoConverter.convertToDto(complaint, ComplaintResponse.class))
+                .toList();
+
+        log.debug("get all complaints by sender id: {} ", complaintResponses);
+        return complaintResponses;
+    }
+
+    @Override
+    public ComplaintResponse updateComplaintIsActive(Long id, ComplaintUpdateIsActive complaintUpdateIsActive) {
+        Optional<Complaint> optionalComplaint = complaintRepository.findById(id);
+        if (optionalComplaint.isEmpty()) {
+            throw new NotExistException(String.format(COMPLAINT_NOT_FOUND_BY_ID, id));
+        }
+        Complaint updatedComplaint = optionalComplaint.get().withIsActive(complaintUpdateIsActive
+                .getIsActive());
+        ComplaintResponse complaintResponseDTO = dtoConverter.convertToDto(complaintRepository.save(updatedComplaint),
+                ComplaintResponse.class);
+        log.debug("update isActive by id - {}", id);
+        return complaintResponseDTO;
+    }
+
+    @Override
+    public ComplaintResponse updateComplaintAnswer(Long id, ComplaintUpdateAnswer updateComplaintAnswer) {
+        Optional<Complaint> optionalComplaint = complaintRepository.findById(id);
+        if (optionalComplaint.isEmpty()) {
+            throw new NotExistException(String.format(COMPLAINT_NOT_FOUND_BY_ID, id));
+        }
+        Complaint updatedComplaint = optionalComplaint.get().withAnswerText(updateComplaintAnswer
+                .getAnswerText()).withHasAnswer(true);
+        ComplaintResponse complaintResponseDTO = dtoConverter.convertToDto(complaintRepository.save(updatedComplaint),
+                ComplaintResponse.class);
+        log.debug("update answer text by id - {}", id);
+        return complaintResponseDTO;
     }
 
     @Override
