@@ -1,6 +1,14 @@
 version: "3.8"
 
 services:
+  frontend:
+    build: ../TeachUAClient
+    container_name: teachUA_client
+    ports:
+      - "3000:80"
+    depends_on:
+      - teachua
+
   teachua:
     build: .
     container_name: teachUA
