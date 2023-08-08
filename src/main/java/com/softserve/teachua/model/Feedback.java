@@ -34,7 +34,7 @@ public class Feedback implements Convertible {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private Float rate;
 
     @CreationTimestamp
