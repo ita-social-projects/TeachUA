@@ -6,23 +6,20 @@
               name="Certificate_template_1" pageWidth="1123" pageHeight="794" columnWidth="1103"
               leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" uuid="89117ad6-3c84-4403-a7cf-a658d34ec888">
 
-    <style name="Default" isDefault="true" pdfFontName="/certificates/fonts/Halvar Breitschrift Medium.ttf" fontSize="24" pdfEncoding="Cp1251" isPdfEmbedded="true" forecolor="#FFFFFF"/>
+    <style name="Default" isDefault="true" pdfFontName="/certificates/fonts/Halvar Breitschrift Medium.ttf" fontSize="24" pdfEncoding="Cp1251" isPdfEmbedded="true"/>
 
     <field name="userName" class="java.lang.String"/>
     <field name="issuanceDate" class="java.lang.String"/>
     <field name="qrCode" class="java.io.ByteArrayInputStream"/>
+<!--            SERIAL NUMBER           -->
     <field name="serialNumber" class="java.lang.Long"/>
+<!--            SERIAL NUMBER DONE           -->
     <field name="studyDuration" class="java.lang.String"/>
     <field name="studyHours" class="java.lang.String"/>
     <field name="studyForm" class="java.lang.String"/>
 
     <background>
-        <band height="794" splitType="Stretch">
-            <image scaleImage="FillFrame">
-                <reportElement x="0" y="0" width="1123" height="794" uuid="31e6f512-28d1-47a5-9dad-21a3fa70adaf"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/moderator_certificate_bg.png")]]></imageExpression>
-            </image>
-        </band>
+        <band splitType="Stretch"/>
     </background>
     <title>
         <band splitType="Stretch"/>
@@ -36,18 +33,11 @@
     <detail>
         <band height="794" splitType="Stretch">
             <image>
-                <reportElement x="40" y="47" width="190" height="690" uuid="31e6f512-28d1-47a5-9dad-21a3fa70adaf"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/moderator_left_banner.png")]]></imageExpression>
+                <reportElement x="0" y="0" width="300" height="794" uuid="31e6f512-28d1-47a5-9dad-21a3fa70adaf"/>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/course_moderetor_2.png")]]></imageExpression>
             </image>
-            <line direction="BottomUp">
-                <reportElement x="255" y="0" width="5" height="794" forecolor="#FFFFFF"/>
-                <graphicElement>
-                    <pen lineWidth="8"/>
-                </graphicElement>
-            </line>
-
             <staticText>
-                <reportElement x="325" y="75" width="670" height="70" uuid="b5113369-3677-4e88-b9d9-e27152fda9ee"/>
+                <reportElement x="325" y="75" width="670" height="70" forecolor="#2572da" uuid="b5113369-3677-4e88-b9d9-e27152fda9ee"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
                     <font size="50"/>
                 </textElement>
@@ -68,7 +58,7 @@
                 <text>підтверджує, що</text>
             </staticText>
             <textField>
-                <reportElement x="330" y="264" width="670" height="35" uuid="67df464f-36c7-4834-983f-dc6a00170e6e"/>
+                <reportElement x="330" y="265" width="670" height="35" uuid="67df464f-36c7-4834-983f-dc6a00170e6e"/>
 
                 <textElement textAlignment="Center">
                     <font pdfFontName="/certificates/fonts/Halvar Breitschrift Black.ttf" size="24" pdfEncoding="cp1251" isPdfEmbedded="true"/>
@@ -77,107 +67,109 @@
             </textField>
             <line>
                 <reportElement x="290" y="295"  width="740" height="1" forecolor="#E6E227" uuid="7a11bd36-f0ef-433d-b1be-3064b9bb690b"/>
-                <graphicElement>
-                    <pen lineWidth="2"/>
-                </graphicElement>
             </line>
             <textField>
-                <reportElement x="325" y="305" width="710" height="90" uuid="94d5fdfa-9439-4090-b1c5-312832d23b36"/>
+                <reportElement x="320" y="305" width="740" height="90" uuid="94d5fdfa-9439-4090-b1c5-312832d23b36"/>
                 <textElement textAlignment="Center">
-                    <font size="20"/>
-                </textElement>
-                <textFieldExpression>"успішно закінчив(-ла) навчання у проєкті \"Єдині\", здобув(-ла) кваліфікацію\nмодератора(-ки) розмовних клубів."</textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="290" y="410" width="500" height="35" uuid="cc8ec782-950d-4f13-ba7c-cadf15587a3e"/>
-                <textElement>
                     <font size="21"/>
                 </textElement>
-                <textFieldExpression>"Форма навчання - " + <![CDATA[$F{studyForm}]]> + "."</textFieldExpression>
+                <textFieldExpression>"успішно закінчив(-ла) навчання у проєкті &#171;Єдині&#187;,\nздобув(-ла) кваліфікацію\nмодератора(-ки) розмовних клубів."</textFieldExpression>
             </textField>
-            <textField>
-                <reportElement x="290" y="435" width="500" height="35" uuid="cc8ec782-950d-4f13-ba7c-cadf15587a3e"/>
-                <textElement>
-                    <font size="21"/>
-                </textElement>
-                <textFieldExpression>"Кількість годин - " + <![CDATA[$F{studyHours}]]> + "."</textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="290" y="493" width="630" height="60" uuid="8d5ebb5d-34ad-40d2-a66f-8046c287bdcf"/>
-                <textElement>
-                    <font size="16"/>
-                </textElement>
-                <textFieldExpression>"Проєкт реалізований ініціативою \"Навчай українською\","</textFieldExpression>
-            </textField>
+            <!--
             <staticText>
-                <reportElement x="290" y="513" width="630" height="50" uuid="8d5ebb5d-34ad-40d2-a66f-8046c287bdcf"/>
-                <textElement>
-                    <font size="16"/>
+                <reportElement x="315" y="330" width="680" height="70" uuid="94d5fdfa-9439-4090-b1c5-312832d23b36"/>
+                <textElement textAlignment="Center">
+                    <font size="21"/>
                 </textElement>
-                <text>до якої належить "Українська гуманітарна платформа".</text>
+                <text>та успішно закінчив(-ла) 28-денний курс підтримки у переході на українську мову.</text>
             </staticText>
+            -->
+            <textField>
+                <reportElement x="290" y="408" width="500" height="65" uuid="cc8ec782-950d-4f13-ba7c-cadf15587a3e"/>
+                <textElement>
+                    <font size="21"/>
+                </textElement>
+                <textFieldExpression>"Форма навчання - " + <![CDATA[$F{studyForm}]]> + ".\nКількість годин - " + <![CDATA[$F{studyHours}]]> + "."</textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="290" y="488" width="680" height="120" uuid="8d5ebb5d-34ad-40d2-a66f-8046c287bdcf"/>
+                <textElement>
+                    <font size="15"/>
+                </textElement>
+                <!--
+                <textFieldExpression>"Проєкт реалізований у період "+<![CDATA[$F{studyDuration}]]> + " \nініціативою \"Навчай українською\",\nдо якої належить \"Українська гуманітарна платформа\"."</textFieldExpression>
+                -->
+                <textFieldExpression>"Проєкт реалізований ініціативою &#171;Навчай українською&#187;,\nдо якої належить &#171;Українська гуманітарна платформа&#187;,\nза підтримки ІСАР Єднання у межах проєкту\n&#171;Ініціатива секторальної підтримки громадянського суспільства&#187;."</textFieldExpression>
+            </textField>
             <staticText>
-                <reportElement x="290" y="558" width="300" height="35" uuid="cb540382-6575-4a56-928c-d44f2058a024"/>
+                <reportElement x="290" y="590" width="300" height="35" uuid="cb540382-6575-4a56-928c-d44f2058a024"/>
                 <textElement>
                     <font pdfFontName="/certificates/fonts/Halvar Breitschrift Bold.ttf" size="24" pdfEncoding="cp1251" isPdfEmbedded="true"/>
                 </textElement>
                 <text>Наталка Федечко</text>
             </staticText>
             <staticText>
-                <reportElement x="290" y="583" width="240" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
+                <reportElement x="290" y="625" width="500" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
                 <textElement>
-                    <font size="20"/>
+                    <font size="15"/>
                 </textElement>
-                <text>голова</text>
+                <text>голова громадської організації</text>
             </staticText>
             <staticText>
-                <reportElement x="290" y="603" width="500" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
+                <reportElement x="290" y="645" width="500" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
                 <textElement>
-                    <font size="20"/>
+                    <font size="15"/>
                 </textElement>
-                <text>ГО "Українська гуманітарна платформа"</text>
+                <text>&#171;Українська гуманітарна платформа&#187;</text>
             </staticText>
 
             <image>
-                <reportElement x="400" y="690" width="150" height="70" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/western_fund.png")]]></imageExpression>
-            </image>
-            <image>
-                <reportElement x="580" y="690" width="140" height="90" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/platforma.png")]]></imageExpression>
-            </image>
-            <image>
-                <reportElement x="760" y="690" width="180" height="90" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/speak_ukrainian.png")]]></imageExpression>
+                <reportElement x="200" y="730" width="900" height="40" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/all_logo.png")]]></imageExpression>
             </image>
 
+            <!--
             <image>
-                <reportElement x="900" y="480" width="200" height="200" uuid="25ba7107-8c96-49d8-a127-46b6547b8d8c"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_moderator_trainer/pechatka.png")]]></imageExpression>
+                <reportElement x="410" y="690" width="150" height="70" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/wnis.png")]]></imageExpression>
+            </image>
+            <image>
+                <reportElement x="590" y="690" width="140" height="90" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/uhp.png")]]></imageExpression>
+            </image>
+            <image>
+                <reportElement x="750" y="690" width="180" height="90" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/logo.jpg")]]></imageExpression>
+            </image>
+            -->
+
+            <image>
+                <reportElement x="890" y="510" width="200" height="200" uuid="25ba7107-8c96-49d8-a127-46b6547b8d8c"/>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/stamp.jpg")]]></imageExpression>
             </image>
             <staticText>
-                <reportElement x="940" y="15" width="78" height="35" uuid="afa193c3-e74f-4b54-90f3-c2ca75ec401d"/>
+                <reportElement x="925" y="10" width="78" height="35" uuid="afa193c3-e74f-4b54-90f3-c2ca75ec401d"/>
                 <textElement>
-                    <font size="14"/>
+                    <font size="14" isBold="false"/>
                 </textElement>
                 <text>Виданий</text>
             </staticText>
             <textField>
-                <reportElement x="1013" y="15" width="100" height="35" uuid="81313113-97ec-4c10-84d9-185edd021fca"/>
+                <reportElement x="1003" y="10" width="100" height="35" uuid="81313113-97ec-4c10-84d9-185edd021fca"/>
                 <textElement textAlignment="Right">
-                    <font size="14"/>
+                    <font size="14" isBold="false"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{issuanceDate}]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="923" y="30" width="190" height="35" uuid="450dfb92-c02e-46b1-a552-93517e4668c0"/>
+                <reportElement x="913" y="25" width="190" height="35" uuid="450dfb92-c02e-46b1-a552-93517e4668c0"/>
                 <textElement textAlignment="Right">
-                    <font size="14"/>
+                    <font size="14" isBold="false"/>
                 </textElement>
                 <text>speak-ukrainian.org.ua</text>
             </staticText>
             <image>
-                <reportElement x="953" y="42" width="150" height="150" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
+                <reportElement x="947" y="35" width="150" height="150" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
                 <imageExpression><![CDATA[$F{qrCode}]]></imageExpression>
             </image>
         </band>

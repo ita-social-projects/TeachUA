@@ -9,7 +9,6 @@ import com.softserve.teachua.dto.center.CenterProfile;
 import com.softserve.teachua.dto.center.CenterResponse;
 import com.softserve.teachua.dto.center.SuccessCreatedCenter;
 //
-import com.softserve.teachua.dto.club.MessagesClub;
 import com.softserve.teachua.dto.club.ClubResponse;
 //
 import com.softserve.teachua.dto.feedback.FeedbackResponse;
