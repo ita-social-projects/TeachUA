@@ -14,5 +14,9 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
     List<Complaint> getAllByClubId(Long clubId);
 
+    List<Complaint> getAllByRecipientId(Long recipientId);
+
+    List<Complaint> getAllByUserId(Long senderId);
+
     void deleteById(Long id);
 }

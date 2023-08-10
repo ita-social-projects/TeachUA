@@ -27,4 +27,9 @@ public class ComplaintProfile implements Convertible {
 
     @NotNull(message = "cannot be null")
     private Long clubId;
+
+    @NotNull(message = "cannot be null")
+    private Long recipientId;
+
+    private Boolean isActive;
 }

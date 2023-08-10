@@ -22,6 +22,7 @@ import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.utils.HtmlUtils;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -57,7 +58,8 @@ public class TaskServiceImpl implements TaskService, ArchiveMark<Task> {
     public TaskProfile deleteTask(Long id) {
         Task task = getTaskById(id);
         TaskProfile taskProfile = dtoConverter.convertToDto(task, TaskProfile.class);
-        taskProfile.setChallengeId(task.getChallenge().getId());
+        Long challengeId = task.getChallenge() != null ? task.getChallenge().getId() : null;
+        taskProfile.setChallengeId(Objects.requireNonNullElse(challengeId, 0L));
         taskRepository.deleteById(id);
         taskRepository.flush();
         archiveModel(task);

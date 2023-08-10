@@ -17,6 +17,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.With;
+import org.hibernate.annotations.ColumnDefault;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,6 +45,22 @@ public class Complaint implements Convertible {
     @ToString.Exclude
     private Club club;
 
+    @ManyToOne
+    @JoinColumn(name = "recipient_id", referencedColumnName = "id", nullable = false)
+    @ToString.Exclude
+    private User recipient;
+
+    @Column(name = "is_active")
+    @ColumnDefault(value = "true")
+    private Boolean isActive;
+
+    @Column(name = "has_answer")
+    @ColumnDefault(value = "false")
+    private Boolean hasAnswer;
+
     @Column(nullable = false)
     private String text;
+
+    @Column(name = "answer_text")
+    private String answerText;
 }

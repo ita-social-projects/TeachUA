@@ -8,6 +8,7 @@ import com.softserve.teachua.utils.deserializers.HtmlModifyDeserialize;
 import com.softserve.teachua.utils.deserializers.TrimDeserialize;
 import com.softserve.teachua.utils.validations.CheckForeignLanguage;
 import java.time.LocalDate;
+import com.softserve.teachua.utils.validations.PhotoExtension;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -40,6 +41,7 @@ public class CreateTask implements Convertible {
     private String description;
     @NotBlank
     @Pattern(regexp = "/upload/\\b.+/[^/]+\\.[A-z]+", message = "Incorrect file path. It must be like /upload/*/*.png")
+    @PhotoExtension
     private String picture;
     @NotNull
     @Future(message = "дата має бути в майбутньому")

@@ -33,7 +33,7 @@
         <band height="794" splitType="Stretch">
             <image>
                 <reportElement x="0" y="0" width="300" height="794" uuid="31e6f512-28d1-47a5-9dad-21a3fa70adaf"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/challenge_logo.jpg")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/course_support_3.png")]]></imageExpression>
             </image>
             <staticText>
                 <reportElement x="325" y="75" width="670" height="70" forecolor="#2572da" uuid="b5113369-3677-4e88-b9d9-e27152fda9ee"/>
@@ -72,7 +72,7 @@
                 <textElement textAlignment="Center">
                     <font size="21"/>
                 </textElement>
-                <text>брав(-ла) участь у проєкті "Єдині"</text>
+                <text>брав(-ла) участь у проєкті &#171;Єдині&#187;</text>
             </staticText>
             <staticText>
                 <reportElement x="315" y="330" width="680" height="70" uuid="94d5fdfa-9439-4090-b1c5-312832d23b36"/>
@@ -92,9 +92,12 @@
             <textField>
                 <reportElement x="290" y="458" width="680" height="120" uuid="8d5ebb5d-34ad-40d2-a66f-8046c287bdcf"/>
                 <textElement>
-                    <font size="16"/>
+                    <font size="15"/>
                 </textElement>
+                <!--
                 <textFieldExpression>"Проєкт реалізований у період "+<![CDATA[$F{studyDuration}]]> + " \nініціативою \"Навчай українською\",\nдо якої належить \"Українська гуманітарна платформа\"."</textFieldExpression>
+                -->
+                <textFieldExpression>"Проєкт реалізований ініціативою &#171;Навчай українською&#187;,\nдо якої належить &#171;Українська гуманітарна платформа&#187;,\nза підтримки ІСАР Єднання у межах проєкту\n&#171;Ініціатива секторальної підтримки громадянського суспільства&#187;."</textFieldExpression>
             </textField>
             <staticText>
                 <reportElement x="290" y="558" width="300" height="35" uuid="cb540382-6575-4a56-928c-d44f2058a024"/>
@@ -104,20 +107,26 @@
                 <text>Наталка Федечко</text>
             </staticText>
             <staticText>
-                <reportElement x="290" y="583" width="240" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
+                <reportElement x="290" y="588" width="500" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
                 <textElement>
-                    <font size="20"/>
+                    <font size="15"/>
                 </textElement>
-                <text>голова</text>
+                <text>голова громадської організації</text>
             </staticText>
             <staticText>
-                <reportElement x="290" y="603" width="500" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
+                <reportElement x="290" y="608" width="500" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
                 <textElement>
-                    <font size="20"/>
+                    <font size="15"/>
                 </textElement>
-                <text>ГО "Українська гуманітарна платформа"</text>
+                <text>&#171;Українська гуманітарна платформа&#187;</text>
             </staticText>
 
+            <image>
+                <reportElement x="200" y="730" width="900" height="40" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/all_logo.png")]]></imageExpression>
+            </image>
+
+            <!--
             <image>
                 <reportElement x="410" y="690" width="150" height="70" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
                 <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/wnis.png")]]></imageExpression>
@@ -130,13 +139,14 @@
                 <reportElement x="750" y="690" width="180" height="90" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
                 <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/logo.jpg")]]></imageExpression>
             </image>
+            -->
 
             <image>
-                <reportElement x="880" y="480" width="210" height="210" uuid="25ba7107-8c96-49d8-a127-46b6547b8d8c"/>
+                <reportElement x="890" y="510" width="200" height="200" uuid="25ba7107-8c96-49d8-a127-46b6547b8d8c"/>
                 <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/stamp.jpg")]]></imageExpression>
             </image>
             <staticText>
-                <reportElement x="930" y="10" width="78" height="35" uuid="afa193c3-e74f-4b54-90f3-c2ca75ec401d"/>
+                <reportElement x="925" y="10" width="78" height="35" uuid="afa193c3-e74f-4b54-90f3-c2ca75ec401d"/>
                 <textElement>
                     <font size="14" isBold="false"/>
                 </textElement>

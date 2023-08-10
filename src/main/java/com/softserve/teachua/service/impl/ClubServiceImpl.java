@@ -672,6 +672,10 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     public void validateClubOwner(Long id, User user) {
         User userFromClub = getClubById(id).getUser();
 
+        if (userFromClub == null) {
+            return;
+        }
+
         if (!userFromClub.equals(user) && !user.getRole().getName().equalsIgnoreCase("ROLE_ADMIN")) {
             throw new NotVerifiedUserException(CLUB_CANT_BE_MANAGE_BY_USER);
         }

@@ -16,9 +16,9 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     Optional<List<Message>> findAllByRecipientIdOrderByDateDesc(Long id);
 
-    List<Message> findAllBySenderIdAndIsActiveOrderByDate(Long senderId, boolean isActive, Sort sort);
+    List<Message> findAllBySenderIdAndIsActive(Long senderId, boolean isActive, Sort sort);
 
-    List<Message> findAllByRecipientIdAndIsActiveOrderByDate(Long senderId, boolean isActive, Sort sort);
+    List<Message> findAllByRecipientIdAndIsActive(Long senderId, boolean isActive, Sort sort);
 
     Optional<Message> findByIdAndIsActive(Long id, boolean isActive);
 }
