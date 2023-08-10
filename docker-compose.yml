@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   frontend:
-    build: ../TeachUAClient
+    image: ghcr.io/mikhalov/teachuaclient:latest
     container_name: teachUA_client
     ports:
       - "3000:80"
@@ -10,7 +10,7 @@ services:
       - teachua
 
   teachua:
-    build: .
+    image: ghcr.io/mikhalov/teachua:latest
     container_name: teachUA
     env_file:
       - environment.env
