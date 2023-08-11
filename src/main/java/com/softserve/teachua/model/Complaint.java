@@ -50,11 +50,11 @@ public class Complaint implements Convertible {
     @ToString.Exclude
     private User recipient;
 
-    @Column(name = "is_active")
+    @Column(name = "is_active", nullable = false)
     @ColumnDefault(value = "true")
     private Boolean isActive;
 
-    @Column(name = "has_answer")
+    @Column(name = "has_answer", nullable = false)
     @ColumnDefault(value = "false")
     private Boolean hasAnswer;
 

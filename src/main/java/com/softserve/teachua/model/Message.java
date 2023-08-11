@@ -16,6 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.With;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 @NoArgsConstructor
@@ -55,6 +56,7 @@ public class Message implements Convertible {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @Column(name = "is_answered")
+    @Column(name = "is_answered", nullable = false)
+    @ColumnDefault("false")
     private Boolean isAnswered;
 }
