@@ -99,7 +99,8 @@ public class QRCodeService {
     // @formatter:off
     private MatrixToImageConfig getColorConfig(Long serialNumber) {
         return switch (Long.toString(serialNumber).charAt(0)) {
-          case '1', '2', '4' -> new MatrixToImageConfig(
+          //case '1', '2', '4' -> new MatrixToImageConfig(
+            case '1' -> new MatrixToImageConfig(
                   new Color(255, 255, 255).getRGB(),
                   new Color(0, 0, 0, 0).getRGB());
           default -> new MatrixToImageConfig(
