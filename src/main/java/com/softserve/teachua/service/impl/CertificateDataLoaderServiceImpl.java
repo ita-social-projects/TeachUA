@@ -174,7 +174,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             templateService.addTemplate(CertificateTemplate.builder().name("Учасник базового рівня")
                     .certificateType(certificateType)
                     .filePath("/certificates/templates/jedyni_basic_participant_template.jrxml")
-                    .courseDescription("Вивчення української мови базового рівня.")
+                    .courseDescription("Граматичний курс української мови.")
                     .projectDescription(PROJECT_DESCRIPTION)
                     .picturePath(PICTURE_PATH).build());
         }
