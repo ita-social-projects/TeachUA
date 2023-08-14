@@ -35,7 +35,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
     private static final String ALREADY_EXISTS = "Сертифікат для учасника %s вже згенеровано %s";
     private static final String DATE_FORMAT = "dd.MM.yyyy";
     private static final String PROJECT_DESCRIPTION =
-            "Курс створений та реалізований у рамках проєкту “Єдині” ініціативи “Навчай українською”, до якої належить "
+            "Курс створений та реалізований у межах проєкту “Єдині” ініціативи “Навчай українською”, до якої належить "
                     + "“Українська гуманітарна платформа”.";
     private static final String COURSE_DESCRIPTION =
             "Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”";
