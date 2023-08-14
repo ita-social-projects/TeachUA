@@ -26,9 +26,8 @@ public class UserUpdateProfile implements Convertible {
     private String lastName;
 
     @NotBlank
-    @Pattern(regexp = "^0\\d{9}$",
+    @Pattern(regexp = "^\\+?\\d{10,12}$",
             message = "Phone number must contain 10 numbers and can`t contain other symbols")
-
     private String phone;
 
     private String urlLogo;
