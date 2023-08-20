@@ -124,11 +124,6 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     private List<Message> getNewMessagesForRecipient(Long id) {
         List<Message> messages = messageRepository.findAllByRecipientIdAndIsActive(id, true,
                 Sort.by(Sort.Direction.DESC, "date"));
-        if (messages.isEmpty()) {
-            log.warn("Messages with recipient id - {} doesn't exist", id);
-            throw new NotExistException(String.format("Messages with recipient id - %s "
-                    + "doesn't exist", id));
-        }
         log.debug("get active messages by recipient id - {}", id);
         return messages;
     }
@@ -136,10 +131,6 @@ public class MessageServiceImpl implements MessageService, ArchiveMark<Message> 
     private List<Message> getNewMessagesForSender(Long id) {
         List<Message> messages = messageRepository.findAllBySenderIdAndIsActive(id, true,
                 Sort.by(Sort.Direction.DESC, "date"));
-        if (messages.isEmpty()) {
-            log.warn("Messages with sender id - {} doesn't exist", id);
-            throw new NotExistException(String.format("Messages with sender id - %s doesn't exist", id));
-        }
         log.debug("get active messages by sender id - {}", id);
         return messages;
     }
