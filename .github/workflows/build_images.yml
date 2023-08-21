@@ -1,0 +1,61 @@
+name: Create_Docker_Images
+
+on:
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-and-push-backend-image:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+        with:
+          ref: rest
+
+      - name: Login to GitHub Packages
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image for backend
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/teachua:latest
+
+  build-and-push-client-image:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - name: Checkout external repo
+        uses: actions/checkout@v3
+        with:
+          repository: ita-social-projects/TeachUAClient
+          ref: develop
+
+      - name: Login to GitHub Packages
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image for frontend
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/teachuaclient:latest
