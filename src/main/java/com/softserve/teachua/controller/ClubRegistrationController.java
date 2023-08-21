@@ -49,7 +49,7 @@ public class ClubRegistrationController implements Api {
     }
 
     @AllowedRoles(RoleData.USER)
-    @GetMapping("club-registration/{clubId}/{userId}")
+    @GetMapping("/club-registration/{clubId}/{userId}")
     public ResponseEntity<Boolean> isUserAlreadyRegistered(@PathVariable Long clubId,
                                                            @PathVariable Long userId) {
         boolean isRegistered = clubRegistrationService.isUserAlreadyRegisteredToClub(clubId, userId);

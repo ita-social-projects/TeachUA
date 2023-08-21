@@ -16,8 +16,7 @@ public interface ChallengeRegistrationRepository extends JpaRepository<Challenge
             ORDER BY cr.registrationDate ASC""")
     List<ChallengeRegistration> findAllUnapprovedByManagerId(@Param("managerId") Long managerId);
 
-    List<ChallengeRegistration> findAllByChallengeUserIdOrderByRegistrationDateDesc(Long managerId);
-    List<ChallengeRegistration> findChallengeRegistrationsByUser_Id(Long userId);
+    List<ChallengeRegistration> findByChallenge_User_Id(Long id);
 
     @Modifying
     @Query("""
@@ -37,7 +36,8 @@ public interface ChallengeRegistrationRepository extends JpaRepository<Challenge
             SELECT COUNT(cr) > 0
             FROM ChallengeRegistration cr
             WHERE cr.challenge.id = :challengeId AND cr.child.id = :childId AND cr.isActive = true""")
-    boolean existsActiveRegistration(@Param("challengeId") Long challengeId, @Param("childId") Long childId);
+    boolean existsActiveRegistrationByChildIdAndChallengeId(@Param("challengeId") Long challengeId, @Param("childId") Long childId);
+    boolean existsByChallenge_IdAndUser_Id(@Param("challengeId") Long challengeId, @Param("userId") Long userId);
 
     @Query("""
     SELECT cr

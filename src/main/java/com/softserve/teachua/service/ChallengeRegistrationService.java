@@ -14,9 +14,9 @@ import com.softserve.teachua.dto.child.ChildResponse;
 import java.util.List;
 
 public interface ChallengeRegistrationService {
-    List<ChildrenChallengeRegistrationResponse> create(ChildrenChallengeRegistrationRequest childrenChallengeRegistrationRequest);
+    List<ChildrenChallengeRegistrationResponse> register(ChildrenChallengeRegistrationRequest childrenChallengeRegistrationRequest);
 
-    UserChallengeRegistrationResponse create(UserChallengeRegistrationRequest userChallengeRegistrationRequest);
+    UserChallengeRegistrationResponse register(UserChallengeRegistrationRequest userChallengeRegistrationRequest);
 
     List<UnapprovedChallengeRegistration> getAllUnapprovedByManagerId(Long managerId);
 
@@ -30,5 +30,7 @@ public interface ChallengeRegistrationService {
 
     ChallengeRegistrationCanceledSuccess cancel(Long challengeRegistrationId);
 
-    List<FullChallengeRegistration> getAllChallengesByUserId(Long managerId);
+    List<FullChallengeRegistration> getAllChallengeRegistrationsByManagerId(Long managerId);
+
+    boolean isUserAlreadyRegisteredToChallenge(Long challenge, Long userId);
 }

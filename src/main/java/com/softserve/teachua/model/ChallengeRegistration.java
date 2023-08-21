@@ -1,6 +1,7 @@
 package com.softserve.teachua.model;
 
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.utils.validations.CheckRussian;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -63,5 +64,6 @@ public class ChallengeRegistration implements Convertible {
     private Boolean isActive = true;
 
     @Column
+    @CheckRussian
     private String comment;
 }

@@ -41,7 +41,7 @@ public class ChallengeRegistrationServiceImpl implements ChallengeRegistrationSe
 
     @Override
     @Transactional
-    public List<ChildrenChallengeRegistrationResponse> create(ChildrenChallengeRegistrationRequest childrenChallengeRegistrationRequest) {
+    public List<ChildrenChallengeRegistrationResponse> register(ChildrenChallengeRegistrationRequest childrenChallengeRegistrationRequest) {
         log.info("Creating challenge registration with request: {}", childrenChallengeRegistrationRequest);
         Challenge challenge = challengeService.getChallengeById(childrenChallengeRegistrationRequest.getChallengeId());
         List<ChallengeRegistration> registered = childrenChallengeRegistrationRequest.getChildIds().stream()
@@ -55,7 +55,7 @@ public class ChallengeRegistrationServiceImpl implements ChallengeRegistrationSe
 
     @Override
     @Transactional
-    public UserChallengeRegistrationResponse create(UserChallengeRegistrationRequest userChallengeRegistrationRequest) {
+    public UserChallengeRegistrationResponse register(UserChallengeRegistrationRequest userChallengeRegistrationRequest) {
         log.info("Creating user challenge registration with request: {}", userChallengeRegistrationRequest);
         Challenge challenge = challengeService.getChallengeById(userChallengeRegistrationRequest.getChallengeId());
         User user = userService.getUserById(userChallengeRegistrationRequest.getUserId());
@@ -91,7 +91,7 @@ public class ChallengeRegistrationServiceImpl implements ChallengeRegistrationSe
     @Transactional
     public boolean existsActiveRegistrationForChildren(Long challengeId, Long childId) {
         log.info("Checking if active registration exists for challenge ID {} and child ID {}", challengeId, childId);
-        return challengeRegistrationRepository.existsActiveRegistration(challengeId, childId);
+        return challengeRegistrationRepository.existsActiveRegistrationByChildIdAndChallengeId(challengeId, childId);
     }
 
     @Override
@@ -124,14 +124,19 @@ public class ChallengeRegistrationServiceImpl implements ChallengeRegistrationSe
     }
 
     @Override
-    public List<FullChallengeRegistration> getAllChallengesByUserId(Long userId) {
-        log.info("getAllChallengesByUserId: {}", userId);
+    public List<FullChallengeRegistration> getAllChallengeRegistrationsByManagerId(Long managerId) {
+        log.info("getAllChallengesByUserId: {}", managerId);
         List<ChallengeRegistration> challengeRegistrations = challengeRegistrationRepository
-                .findChallengeRegistrationsByUser_Id(userId);
+                .findByChallenge_User_Id(managerId);
         FullChallengeRegistration dto = new FullChallengeRegistration();
         return challengeRegistrations.stream()
                 .map(cr -> dtoConverter.convertToDto(cr, dto))
                 .toList();
+    }
+
+    @Override
+    public boolean isUserAlreadyRegisteredToChallenge(Long challenge, Long userId) {
+        return challengeRegistrationRepository.existsByChallenge_IdAndUser_Id(challenge, userId);
     }
 
     @NotNull

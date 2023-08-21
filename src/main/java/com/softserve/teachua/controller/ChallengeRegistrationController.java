@@ -36,25 +36,37 @@ import java.util.List;
 public class ChallengeRegistrationController implements Api {
     private final ChallengeRegistrationService challengeRegistrationService;
 
-    @GetMapping("/challenge-registration/user-children/{clubId}")
-    public ResponseEntity<List<ChildResponse>> getChildrenForCurrentUserByClubId(@PathVariable Long clubId) {
+    @AllowedRoles(RoleData.USER)
+    @GetMapping("/challenge-registration/user-children/{challengeId}")
+    public ResponseEntity<List<ChildResponse>> getChildrenForCurrentUserByChallengeId(@PathVariable Long challengeId) {
         List<ChildResponse> children = challengeRegistrationService
-                .getChildrenForCurrentUserAndCheckIsDisabledByChallengeId(clubId);
+                .getChildrenForCurrentUserAndCheckIsDisabledByChallengeId(challengeId);
+        if (children.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(children);
     }
 
+    @AllowedRoles(RoleData.USER)
     @GetMapping("/challenge-registration/user-applications/{userId}")
     public ResponseEntity<List<FullChallengeRegistration>> getUserAndChildrenApplications(@PathVariable Long userId) {
         List<FullChallengeRegistration> applications = challengeRegistrationService.getApplicationsForUserAndChildrenByUserId(userId);
         return ResponseEntity.ok(applications);
     }
-
+    @AllowedRoles(RoleData.USER)
+    @GetMapping("/challenge-registration/{challenge}/{userId}")
+    public ResponseEntity<Boolean> isUserAlreadyRegistered(@PathVariable Long challenge,
+                                                           @PathVariable Long userId) {
+        boolean isRegistered = challengeRegistrationService.isUserAlreadyRegisteredToChallenge(challenge, userId);
+        log.info("isUserAlreadyRegistered({},{}) ==> "+ isRegistered,challenge, userId);
+        return ResponseEntity.ok(isRegistered);
+    }
     @AllowedRoles(RoleData.USER)
     @PostMapping("/challenge-registration")
     public ResponseEntity<UserChallengeRegistrationResponse> challengeRegistrationUser(
             @Valid @RequestBody UserChallengeRegistrationRequest userChallengeRegistrationRequest) {
         log.info("challengeRegistrationUser - {}", userChallengeRegistrationRequest);
-        UserChallengeRegistrationResponse response = challengeRegistrationService.create(userChallengeRegistrationRequest);
+        UserChallengeRegistrationResponse response = challengeRegistrationService.register(userChallengeRegistrationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -63,7 +75,7 @@ public class ChallengeRegistrationController implements Api {
     public ResponseEntity<List<ChildrenChallengeRegistrationResponse>> challengeRegistrationChildren(
             @Valid @RequestBody ChildrenChallengeRegistrationRequest childrenChallengeRegistrationRequest) {
         log.info("challengeRegistrationChildren - {}", childrenChallengeRegistrationRequest);
-        List<ChildrenChallengeRegistrationResponse> response = challengeRegistrationService.create(childrenChallengeRegistrationRequest);
+        List<ChildrenChallengeRegistrationResponse> response = challengeRegistrationService.register(childrenChallengeRegistrationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -71,17 +83,17 @@ public class ChallengeRegistrationController implements Api {
     @GetMapping("/challenge-registration/unapproved/{managerId}")
     public ResponseEntity<List<UnapprovedChallengeRegistration>> getUnapprovedChallengeRegistrationsByManagerId(
             @PathVariable Long managerId) {
-        var unapprovedClubRegistrations = challengeRegistrationService.getAllUnapprovedByManagerId(managerId);
-        log.debug("got unapproved registrations list {}", unapprovedClubRegistrations);
-        return ResponseEntity.ok(unapprovedClubRegistrations);
+        var unapprovedChallengeRegistrations = challengeRegistrationService.getAllUnapprovedByManagerId(managerId);
+        log.debug("got unapproved registrations list {}", unapprovedChallengeRegistrations);
+        return ResponseEntity.ok(unapprovedChallengeRegistrations);
     }
 
-    @AllowedRoles(RoleData.USER)
-    @GetMapping("/challenge-registration/{userId}")
-    public ResponseEntity<List<FullChallengeRegistration>> getUsersChallengeRegistrations(
-            @PathVariable Long userId) {
-        log.info("getUsersChallengeRegistrations - {}", userId);
-        var challengeRegistrations = challengeRegistrationService.getAllChallengesByUserId(userId);
+    @AllowedRoles(RoleData.MANAGER)
+    @GetMapping("/challenge-registration/{managerId}")
+    public ResponseEntity<List<FullChallengeRegistration>> getUsersChallengeRegistrationsByManagerId(
+            @PathVariable Long managerId) {
+        log.info("getUsersChallengeRegistrations - {}", managerId);
+        var challengeRegistrations = challengeRegistrationService.getAllChallengeRegistrationsByManagerId(managerId);
         log.debug("got registrations list {}", challengeRegistrations);
         return ResponseEntity.ok(challengeRegistrations);
     }
