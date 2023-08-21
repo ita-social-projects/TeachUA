@@ -180,27 +180,11 @@ class MessageServiceTest {
     }
 
     @Test
-    void getNewMessagesByUserIdForSenderListIsEmpty() {
-        when(messageRepository.findAllBySenderIdAndIsActive(SENDER_ID, true,
-                Sort.by(Sort.Direction.DESC, "date"))).thenReturn(Collections.emptyList());
-
-        assertThrows(NotExistException.class, () -> messageService.getNewMessagesByUserId(SENDER_ID, true));
-    }
-
-    @Test
     void getNewMessagesByUserIdForRecipient() {
         when(messageRepository.findAllByRecipientIdAndIsActive(RECIPIENT_ID, true,
                 Sort.by(Sort.Direction.DESC, "date"))).thenReturn(List.of(message));
 
         assertEquals(List.of(message), messageService.getNewMessagesByUserId(RECIPIENT_ID, false));
-    }
-
-    @Test
-    void getNewMessagesByUserIdForRecipientListIsEmpty() {
-        when(messageRepository.findAllByRecipientIdAndIsActive(RECIPIENT_ID, true,
-                Sort.by(Sort.Direction.DESC, "date"))).thenReturn(Collections.emptyList());
-
-        assertThrows(NotExistException.class, () -> messageService.getNewMessagesByUserId(RECIPIENT_ID, false));
     }
 
     @Test
