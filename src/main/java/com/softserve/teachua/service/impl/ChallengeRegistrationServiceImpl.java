@@ -41,25 +41,29 @@ public class ChallengeRegistrationServiceImpl implements ChallengeRegistrationSe
 
     @Override
     @Transactional
-    public List<ChildrenChallengeRegistrationResponse> register(ChildrenChallengeRegistrationRequest childrenChallengeRegistrationRequest) {
+    public List<ChildrenChallengeRegistrationResponse> register(
+            ChildrenChallengeRegistrationRequest childrenChallengeRegistrationRequest) {
         log.info("Creating challenge registration with request: {}", childrenChallengeRegistrationRequest);
         Challenge challenge = challengeService.getChallengeById(childrenChallengeRegistrationRequest.getChallengeId());
-        List<ChallengeRegistration> registered = childrenChallengeRegistrationRequest.getChildIds().stream()
-                .map(createAndSaveChallengeWithChildIdFunction(challenge, childrenChallengeRegistrationRequest.getComment()))
+        List<ChallengeRegistration> registered = childrenChallengeRegistrationRequest
+                .getChildIds()
+                .stream()
+                .map(createAndSaveChallengeWithChildIdFunction(challenge,
+                        childrenChallengeRegistrationRequest.getComment()))
                 .toList();
         ChildrenChallengeRegistrationResponse crr = new ChildrenChallengeRegistrationResponse();
-        return registered.stream()
-                .map(cr -> dtoConverter.convertToDto(cr, crr))
-                .toList();
+        return registered.stream().map(cr -> dtoConverter.convertToDto(cr, crr)).toList();
     }
 
     @Override
     @Transactional
-    public UserChallengeRegistrationResponse register(UserChallengeRegistrationRequest userChallengeRegistrationRequest) {
+    public UserChallengeRegistrationResponse register(
+            UserChallengeRegistrationRequest userChallengeRegistrationRequest) {
         log.info("Creating user challenge registration with request: {}", userChallengeRegistrationRequest);
         Challenge challenge = challengeService.getChallengeById(userChallengeRegistrationRequest.getChallengeId());
         User user = userService.getUserById(userChallengeRegistrationRequest.getUserId());
-        ChallengeRegistration cr = ChallengeRegistration.builder()
+        ChallengeRegistration cr = ChallengeRegistration
+                .builder()
                 .challenge(challenge)
                 .comment(userChallengeRegistrationRequest.getComment())
                 .user(user)
@@ -74,9 +78,7 @@ public class ChallengeRegistrationServiceImpl implements ChallengeRegistrationSe
         List<ChallengeRegistration> unapprovedChallengesRegistrations = challengeRegistrationRepository
                 .findAllUnapprovedByManagerId(managerId);
         UnapprovedChallengeRegistration dto = new UnapprovedChallengeRegistration();
-        return unapprovedChallengesRegistrations.stream()
-                .map(ucr -> dtoConverter.convertToDto(ucr, dto))
-                .toList();
+        return unapprovedChallengesRegistrations.stream().map(ucr -> dtoConverter.convertToDto(ucr, dto)).toList();
     }
 
     @Override
@@ -100,17 +102,15 @@ public class ChallengeRegistrationServiceImpl implements ChallengeRegistrationSe
         User user = userService.getAuthenticatedUserWithChildren();
         Set<Child> children = user.getChildren();
         ChildResponse cr = new ChildResponse();
-        return children.stream()
-                .map(c -> createChildResponseWithRegistrationCheck(challengeId, cr, c))
-                .toList();
+        return children.stream().map(c -> createChildResponseWithRegistrationCheck(challengeId, cr, c)).toList();
     }
 
     @Override
     public List<FullChallengeRegistration> getApplicationsForUserAndChildrenByUserId(Long userId) {
         log.info("Getting applications by user ID {}", userId);
         FullChallengeRegistration ua = new FullChallengeRegistration();
-        return challengeRegistrationRepository.findRegistrationsByUserIdOrChildParentId(userId)
-                .stream()
+        return challengeRegistrationRepository.findRegistrationsByUserIdOrChildParentId(userId).
+                stream()
                 .map(cr -> dtoConverter.convertToDto(cr, ua))
                 .toList();
     }
@@ -129,9 +129,7 @@ public class ChallengeRegistrationServiceImpl implements ChallengeRegistrationSe
         List<ChallengeRegistration> challengeRegistrations = challengeRegistrationRepository
                 .findByChallenge_User_Id(managerId);
         FullChallengeRegistration dto = new FullChallengeRegistration();
-        return challengeRegistrations.stream()
-                .map(cr -> dtoConverter.convertToDto(cr, dto))
-                .toList();
+        return challengeRegistrations.stream().map(cr -> dtoConverter.convertToDto(cr, dto)).toList();
     }
 
     @Override
@@ -140,10 +138,12 @@ public class ChallengeRegistrationServiceImpl implements ChallengeRegistrationSe
     }
 
     @NotNull
-    private Function<Long, ChallengeRegistration> createAndSaveChallengeWithChildIdFunction(Challenge challenge, String comment) {
+    private Function<Long, ChallengeRegistration> createAndSaveChallengeWithChildIdFunction(
+            Challenge challenge, String comment) {
         return childId -> {
             Child child = childService.getById(childId);
-            ChallengeRegistration challengeRegistration = ChallengeRegistration.builder()
+            ChallengeRegistration challengeRegistration = ChallengeRegistration
+                    .builder()
                     .challenge(challenge)
                     .comment(comment)
                     .child(child)
@@ -152,9 +152,9 @@ public class ChallengeRegistrationServiceImpl implements ChallengeRegistrationSe
         };
     }
 
-    private ChildResponse createChildResponseWithRegistrationCheck(
-            Long challengeId, ChildResponse cr, Child c) {
-        log.info("Creating child response with registration check for challenge ID {} and child ID {}", challengeId, c.getId());
+    private ChildResponse createChildResponseWithRegistrationCheck(Long challengeId, ChildResponse cr, Child c) {
+        log.info("Creating child response with registration check for challenge ID {} and child ID {}"
+                , challengeId, c.getId());
         ChildResponse childResponse = dtoConverter.convertToDto(c, cr);
         if (existsActiveRegistrationForChildren(challengeId, c.getId())) {
             childResponse.setDisabled(true);

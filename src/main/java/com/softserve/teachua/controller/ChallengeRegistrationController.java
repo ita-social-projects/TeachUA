@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @Slf4j
@@ -50,23 +51,26 @@ public class ChallengeRegistrationController implements Api {
     @AllowedRoles(RoleData.USER)
     @GetMapping("/challenge-registration/user-applications/{userId}")
     public ResponseEntity<List<FullChallengeRegistration>> getUserAndChildrenApplications(@PathVariable Long userId) {
-        List<FullChallengeRegistration> applications = challengeRegistrationService.getApplicationsForUserAndChildrenByUserId(userId);
+        List<FullChallengeRegistration> applications = challengeRegistrationService
+                .getApplicationsForUserAndChildrenByUserId(userId);
         return ResponseEntity.ok(applications);
     }
+
     @AllowedRoles(RoleData.USER)
     @GetMapping("/challenge-registration/{challenge}/{userId}")
-    public ResponseEntity<Boolean> isUserAlreadyRegistered(@PathVariable Long challenge,
-                                                           @PathVariable Long userId) {
+    public ResponseEntity<Boolean> isUserAlreadyRegistered(@PathVariable Long challenge, @PathVariable Long userId) {
         boolean isRegistered = challengeRegistrationService.isUserAlreadyRegisteredToChallenge(challenge, userId);
-        log.info("isUserAlreadyRegistered({},{}) ==> "+ isRegistered,challenge, userId);
+        log.info("isUserAlreadyRegistered({},{}) ==> " + isRegistered, challenge, userId);
         return ResponseEntity.ok(isRegistered);
     }
+
     @AllowedRoles(RoleData.USER)
     @PostMapping("/challenge-registration")
     public ResponseEntity<UserChallengeRegistrationResponse> challengeRegistrationUser(
             @Valid @RequestBody UserChallengeRegistrationRequest userChallengeRegistrationRequest) {
         log.info("challengeRegistrationUser - {}", userChallengeRegistrationRequest);
-        UserChallengeRegistrationResponse response = challengeRegistrationService.register(userChallengeRegistrationRequest);
+        UserChallengeRegistrationResponse response = challengeRegistrationService
+                .register(userChallengeRegistrationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -75,7 +79,8 @@ public class ChallengeRegistrationController implements Api {
     public ResponseEntity<List<ChildrenChallengeRegistrationResponse>> challengeRegistrationChildren(
             @Valid @RequestBody ChildrenChallengeRegistrationRequest childrenChallengeRegistrationRequest) {
         log.info("challengeRegistrationChildren - {}", childrenChallengeRegistrationRequest);
-        List<ChildrenChallengeRegistrationResponse> response = challengeRegistrationService.register(childrenChallengeRegistrationRequest);
+        List<ChildrenChallengeRegistrationResponse> response = challengeRegistrationService
+                .register(childrenChallengeRegistrationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -100,14 +105,16 @@ public class ChallengeRegistrationController implements Api {
 
     @AllowedRoles(RoleData.MANAGER)
     @PatchMapping("/challenge-registration/approve/{challengeRegistrationId}")
-    public ResponseEntity<ChallengeRegistrationApprovedSuccess> approveRegistration(@PathVariable Long challengeRegistrationId) {
+    public ResponseEntity<ChallengeRegistrationApprovedSuccess> approveRegistration(
+            @PathVariable Long challengeRegistrationId) {
         ChallengeRegistrationApprovedSuccess approved = challengeRegistrationService.approve(challengeRegistrationId);
         return ResponseEntity.ok(approved);
     }
 
     @AllowedRoles({RoleData.USER, RoleData.MANAGER})
     @PatchMapping("/challenge-registration/cancel/{challengeRegistrationId}")
-    public ResponseEntity<ChallengeRegistrationCanceledSuccess> cancelRegistration(@PathVariable Long challengeRegistrationId) {
+    public ResponseEntity<ChallengeRegistrationCanceledSuccess> cancelRegistration(
+            @PathVariable Long challengeRegistrationId) {
         ChallengeRegistrationCanceledSuccess canceled = challengeRegistrationService.cancel(challengeRegistrationId);
         return ResponseEntity.ok(canceled);
     }

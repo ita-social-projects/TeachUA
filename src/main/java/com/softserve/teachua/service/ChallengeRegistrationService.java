@@ -9,12 +9,11 @@ import com.softserve.teachua.dto.challenge_registration.UnapprovedChallengeRegis
 import com.softserve.teachua.dto.challenge_registration.UserChallengeRegistrationRequest;
 import com.softserve.teachua.dto.challenge_registration.UserChallengeRegistrationResponse;
 import com.softserve.teachua.dto.child.ChildResponse;
-
-
 import java.util.List;
 
 public interface ChallengeRegistrationService {
-    List<ChildrenChallengeRegistrationResponse> register(ChildrenChallengeRegistrationRequest childrenChallengeRegistrationRequest);
+    List<ChildrenChallengeRegistrationResponse> register(
+            ChildrenChallengeRegistrationRequest childrenChallengeRegistrationRequest);
 
     UserChallengeRegistrationResponse register(UserChallengeRegistrationRequest userChallengeRegistrationRequest);
 
