@@ -109,10 +109,10 @@ public class ChallengeRegistrationServiceImpl implements ChallengeRegistrationSe
     public List<FullChallengeRegistration> getApplicationsForUserAndChildrenByUserId(Long userId) {
         log.info("Getting applications by user ID {}", userId);
         FullChallengeRegistration ua = new FullChallengeRegistration();
-        return challengeRegistrationRepository.findRegistrationsByUserIdOrChildParentId(userId).
-                stream()
-                .map(cr -> dtoConverter.convertToDto(cr, ua))
-                .toList();
+        return challengeRegistrationRepository.findRegistrationsByUserIdOrChildParentId(userId)
+                        .stream()
+                        .map(cr -> dtoConverter.convertToDto(cr, ua))
+                        .toList();
     }
 
     @Override
@@ -153,8 +153,8 @@ public class ChallengeRegistrationServiceImpl implements ChallengeRegistrationSe
     }
 
     private ChildResponse createChildResponseWithRegistrationCheck(Long challengeId, ChildResponse cr, Child c) {
-        log.info("Creating child response with registration check for challenge ID {} and child ID {}"
-                , challengeId, c.getId());
+        log.info("Creating child response with registration check for challenge ID {} and child ID {}",
+                challengeId, c.getId());
         ChildResponse childResponse = dtoConverter.convertToDto(c, cr);
         if (existsActiveRegistrationForChildren(challengeId, c.getId())) {
             childResponse.setDisabled(true);
