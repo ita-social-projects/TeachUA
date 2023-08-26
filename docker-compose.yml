@@ -10,7 +10,6 @@ services:
       - "5332:5432"
     networks:
       - teachua_postgres
-    restart: unless-stopped
 
   teachua_nginx:
     image: bnazar00/teachua_nginx:latest
@@ -29,6 +28,7 @@ services:
       - teachua_club
       - teachua_question
       - teachua_certificate
+      - teachua_archive
 
   teachua_zipkin:
     image: openzipkin/zipkin
@@ -114,13 +114,14 @@ services:
     image: bnazar00/teachua_archive:latest
     container_name: teachua_archive
     ports:
-      - "8082:8082"
+      - "8083:8083"
     env_file:
       - TeachUa-docker.env
     networks:
       - spring
       - teachua_mongodb
     depends_on:
+      - teachua_zipkin
       - teachua_mongodb
       - teachua_rabbitmq
 
@@ -146,7 +147,6 @@ services:
       - "26017:27017"
     networks:
       - teachua_mongodb
-    restart: unless-stopped
 
 
 networks:
