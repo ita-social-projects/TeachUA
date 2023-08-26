@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
         name = "archive",
-        url = "http://${ARCHIVE_HOST}:${ARCHIVE_PORT}",
+        url = "http://${APIGW_HOST}:${APIGW_ARCHIVE_PORT}",
         path = "/api/v1/archive")
 public interface ArchiveClient {
     @GetMapping(params = {"className", "id"})

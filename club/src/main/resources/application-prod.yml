@@ -1,5 +1,5 @@
 spring:
   datasource:
-    url: ${PROD_DATASOURCE_URL}
+    url: ${PROD_DATASOURCE_URL}?currentSchema=club
     username: ${PROD_DATASOURCE_USER}
     password: ${PROD_DATASOURCE_PASSWORD}

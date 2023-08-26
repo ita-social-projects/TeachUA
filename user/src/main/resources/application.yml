@@ -6,13 +6,9 @@ spring:
     name: user
   datasource:
     driver-class-name: org.postgresql.Driver
-    default-schema: user_schema
   jpa:
     hibernate:
       ddl-auto: update
-    properties:
-      hibernate:
-        default_schema: user_schema
   servlet:
     multipart:
       max-file-size: -1

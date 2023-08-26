@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ${PROD_DATASOURCE_URL}
+    url: ${PROD_DATASOURCE_URL}?currentSchema=question
     username: ${PROD_DATASOURCE_USER}
     password: ${PROD_DATASOURCE_PASSWORD}
 
