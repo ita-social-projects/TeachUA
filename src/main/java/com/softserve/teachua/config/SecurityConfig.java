@@ -10,6 +10,7 @@ import com.softserve.teachua.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -23,6 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -38,8 +41,10 @@ public class SecurityConfig {
         "/static/**",
         "/upload/**",
         "/v3/api-docs/**",
-        "/swagger-ui/**"
+        "/swagger-ui/**",
+        "/swagger-ui.html"
     };
+    private final Environment environment;
     private final JwtFilter jwtFilter;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final ReactRouterForwardingFilter reactRouterForwardingFilter;
@@ -48,12 +53,13 @@ public class SecurityConfig {
     private final HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
     @Autowired
-    public SecurityConfig(JwtFilter jwtFilter,
+    public SecurityConfig(Environment environment, JwtFilter jwtFilter,
                           ReactRouterForwardingFilter reactRouterForwardingFilter,
                           CustomOAuth2UserService customOAuth2UserService,
                           OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
                           OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
                           HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository) {
+        this.environment = environment;
         this.jwtFilter = jwtFilter;
         this.customOAuth2UserService = customOAuth2UserService;
         this.reactRouterForwardingFilter = reactRouterForwardingFilter;
@@ -75,11 +81,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        List<String> activeProfiles = Arrays.asList(environment.getActiveProfiles());
+        if (!activeProfiles.contains("docker")) {
+            http.addFilterBefore(reactRouterForwardingFilter, ChannelProcessingFilter.class);
+        }
         http
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .addFilterBefore(reactRouterForwardingFilter, ChannelProcessingFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
