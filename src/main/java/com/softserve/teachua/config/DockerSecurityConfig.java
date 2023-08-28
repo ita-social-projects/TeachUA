@@ -69,6 +69,15 @@ public class DockerSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        System.out.println("""
+                _________________________
+
+
+                docker security
+
+
+
+                __________________________""");
         http
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
