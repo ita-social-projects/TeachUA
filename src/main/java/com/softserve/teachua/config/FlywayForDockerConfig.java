@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class FlywayForDockerConfig {
     private final DataSource dataSource;
-    @Value("${flyway.for.docker.enabled}")
+    @Value("${flyway.for.docker.enabled:false}")
     private boolean isEnabled;
 
     @EventListener(ContextRefreshedEvent.class)
