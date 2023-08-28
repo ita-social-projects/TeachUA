@@ -70,6 +70,21 @@ values (1,'Телефон', '/static/images/contacts/phone.svg'),
        (5,'Skype', '/static/images/contacts/skype.svg'),
        (6,'Site', '/static/images/contacts/website-link-icon.svg');
 
-CREATE TYPE gender_enum AS ENUM ('MALE', 'FEMALE');
+insert into public.certificate_types(id, code_number, name)
+values (1, 1, 'Тренер'),
+       (2, 2, 'Модератор'),
+       (3, 3, 'Учасник'),
+       (4, 4, 'Учасник'),
+       (5, 5, 'Учасник');
+
+insert into public.certificate_templates(id, certificate_type, course_description, file_path, name, picture_path, project_description, properties)
+values (1, 3, 'Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”', '/certificates/templates/jedyni_participant_template.jrxml', 'Єдині учасник', '/static/images/certificate/validation/jedyni_banner.png', 'Курс створений та реалізований у межах проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.', null),
+       (2, 1, 'Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”', '/certificates/templates/trainer_certificate.jrxml', 'Єдині тренер', '/static/images/certificate/validation/jedyni_banner.png', 'Курс створений та реалізований у межах проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.', null),
+       (3, 2, 'Всеукраїнський курс “Єдині. 28 днів підтримки в переході на українську мову”', '/certificates/templates/moderator_certificate.jrxml', 'Єдині модератор', '/static/images/certificate/validation/jedyni_banner.png', 'Курс створений та реалізований у межах проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.', null),
+       (4, 4, 'Вивчення української мови базового рівня.', '/certificates/templates/jedyni_basic_participant_template.jrxml', 'Учасник базового рівня', '/static/images/certificate/validation/jedyni_banner.png', 'Курс створений та реалізований у межах проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.', null),
+       (5, 5, 'Бізнес-курс української мови.', '/certificates/templates/jedyni_business_participant_template.jrxml', 'Учасник бізнес-курсу', '/static/images/certificate/validation/jedyni_banner.png', 'Курс створений та реалізований у межах проєкту “Єдині” ініціативи “Навчай українською”, до якої належить “Українська гуманітарна платформа”.', null);
+
+
+--CREATE TYPE gender_enum AS ENUM ('MALE', 'FEMALE');
 
 
