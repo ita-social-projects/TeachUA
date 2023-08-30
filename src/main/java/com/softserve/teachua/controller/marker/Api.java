@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
         description = "API for major TeachUA endpoints. For DataTransfer and Logs endpoints, please contact dev team.",
         version = "v0.1"), servers = {
             @Server(description = "localhost", url = "http://localhost:8080/dev"),
-            @Server(description = "dev server", url = "https://speak-ukrainian.org.ua/dev/")})
+            @Server(description = "dev server", url = "http://speak-ukrainian.eastus2.cloudapp.azure.com/")})
 @SecurityScheme(name = "api", scheme = "bearer", bearerFormat = "JWT",
                 type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 public interface Api {
