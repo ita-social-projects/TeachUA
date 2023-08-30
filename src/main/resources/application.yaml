@@ -28,7 +28,7 @@ spring:
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: dev, docker
   security:
     oauth2:
       client:

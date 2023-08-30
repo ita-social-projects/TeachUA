@@ -18,6 +18,7 @@ public class ReactRouterForwardingFilter extends OncePerRequestFilter {
             "/oauth2/",
             "/upload/",
             "/swagger-ui.html",
+            "/swagger-ui/**",
             "/swagger-resources/",
             "/v3/api-docs"
     );

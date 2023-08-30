@@ -1,7 +1,6 @@
 package com.softserve.teachua.config;
 
 import com.softserve.teachua.security.JwtFilter;
-import com.softserve.teachua.security.ReactRouterForwardingFilter;
 import com.softserve.teachua.security.RestAuthenticationEntryPoint;
 import com.softserve.teachua.security.oauth2.CustomOAuth2UserService;
 import com.softserve.teachua.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
@@ -22,22 +21,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@Profile({"dev", "prod"})
-public class SecurityConfig {
+@Profile("docker")
+public class DockerSecurityConfig {
     private static final String[] AUTH_WHITELIST = {
-        "/",
-        "/index.html",
         "/error",
-        "/*.json",
         "/api/**",
         "/oauth2/**",
-        "/static/**",
         "/upload/**",
         "/v3/api-docs/**",
         "/swagger-ui/**",
@@ -45,21 +39,18 @@ public class SecurityConfig {
     };
     private final JwtFilter jwtFilter;
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final ReactRouterForwardingFilter reactRouterForwardingFilter;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
     @Autowired
-    public SecurityConfig(JwtFilter jwtFilter,
-                          ReactRouterForwardingFilter reactRouterForwardingFilter,
-                          CustomOAuth2UserService customOAuth2UserService,
-                          OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
-                          OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
-                          HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository) {
+    public DockerSecurityConfig(JwtFilter jwtFilter,
+                                CustomOAuth2UserService customOAuth2UserService,
+                                OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
+                                OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
+                                HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository) {
         this.jwtFilter = jwtFilter;
         this.customOAuth2UserService = customOAuth2UserService;
-        this.reactRouterForwardingFilter = reactRouterForwardingFilter;
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
         this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
         this.cookieAuthorizationRequestRepository = cookieAuthorizationRequestRepository;
@@ -82,7 +73,6 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .addFilterBefore(reactRouterForwardingFilter, ChannelProcessingFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
