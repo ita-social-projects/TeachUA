@@ -122,7 +122,7 @@ public class TestUtils {
 
     public static CertificateDates getCertificateDates() {
         return CertificateDates.builder()
-                .id(INTEGER_ID)
+                .id(LONG_ID)
                 .date(STRING_DATE)
                 .studyForm(STUDY_FORM)
                 .courseNumber(COURSE_NUMBER)

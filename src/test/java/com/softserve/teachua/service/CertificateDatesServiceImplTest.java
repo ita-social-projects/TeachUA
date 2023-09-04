@@ -17,9 +17,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Example;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateDatesServiceImplTest {
@@ -127,9 +129,7 @@ class CertificateDatesServiceImplTest {
 
     @Test
     void getOrCreateCertificateDates_IfExists() {
-        when(certificateDatesRepository.findFirstByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
-                certificateDates.getDate(), certificateDates.getHours(), certificateDates.getDuration(),
-                certificateDates.getCourseNumber(), certificateDates.getStudyForm())).thenReturn(
+        when(certificateDatesRepository.findOne(any(Example.class))).thenReturn(
                 Optional.ofNullable(certificateDates));
 
         assertThat(certificateDatesService.getOrCreateCertificateDates(certificateDates)).isEqualTo(certificateDates);
@@ -137,9 +137,7 @@ class CertificateDatesServiceImplTest {
 
     @Test
     void getOrCreateCertificateDates_IfDoesNotExist() {
-        when(certificateDatesRepository.findFirstByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
-                certificateDates.getDate(), certificateDates.getHours(), certificateDates.getDuration(),
-                certificateDates.getCourseNumber(), certificateDates.getStudyForm())).thenReturn(
+        when(certificateDatesRepository.findOne(any(Example.class))).thenReturn(
                 Optional.empty());
         when(certificateDatesRepository.save(certificateDates)).thenReturn(certificateDates);
 
