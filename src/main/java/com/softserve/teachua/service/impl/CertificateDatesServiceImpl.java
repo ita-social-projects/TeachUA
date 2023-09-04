@@ -13,6 +13,8 @@ import com.softserve.teachua.service.CertificateDatesService;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,13 +60,13 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
     }
 
     @Override
-    public CertificateDates getCertificateDatesById(Integer id) {
+    public CertificateDates getCertificateDatesById(Long id) {
         return certificateDatesRepository.findById(id)
                 .orElseThrow(() -> new NotExistException(String.format(DATE_NOT_FOUND_BY_ID, id)));
     }
 
     @Override
-    public CertificateDates addCertificateDates(CertificateDates dates) {
+    public CertificateDates create(CertificateDates dates) {
         return certificateDatesRepository.save(dates);
     }
 
@@ -78,7 +80,15 @@ public class CertificateDatesServiceImpl implements CertificateDatesService, Arc
     @Override
     @Transactional
     public CertificateDates getOrCreateCertificateDates(CertificateDates certificateDates) {
-        return findCertificateDates(certificateDates).orElseGet(() ->
+        return findByExample(certificateDates).orElseGet(() ->
                 certificateDatesRepository.save(certificateDates));
+    }
+
+    private Optional<CertificateDates> findByExample(CertificateDates certificateDates) {
+        ExampleMatcher datesMatcher = ExampleMatcher.matchingAll()
+                .withIgnorePaths("id");
+
+        Example<CertificateDates> datesExample = Example.of(certificateDates, datesMatcher);
+        return certificateDatesRepository.findOne(datesExample);
     }
 }

@@ -23,7 +23,7 @@ public class CertificateArch implements Archivable, Convertible {
     private boolean sendStatus;
     private LocalDate updateStatus;
     private Integer templateId;
-    private Integer datesId;
+    private Long datesId;
     private String values;
 
     @Override

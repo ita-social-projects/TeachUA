@@ -7,10 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CertificateDatesRepository extends JpaRepository<CertificateDates, Integer> {
+public interface CertificateDatesRepository extends JpaRepository<CertificateDates, Long> {
     List<CertificateDates> findAll();
 
-    Optional<CertificateDates> findById(Integer integer);
 
     boolean existsByDateAndHoursAndDurationAndCourseNumberAndStudyForm(String date, Integer hours,
                                                                        String duration,

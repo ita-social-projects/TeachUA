@@ -16,7 +16,7 @@ public interface CertificateDatesService {
      * @param id put CertificateDates id
      * @return new {@code CertificateDates}
      */
-    CertificateDates getCertificateDatesById(Integer id);
+    CertificateDates getCertificateDatesById(Long id);
 
     /**
      * The method returns {@code CertificateDates} if dates successfully added.
@@ -24,7 +24,7 @@ public interface CertificateDatesService {
      * @param dates put body of {@code CertificateDates}
      * @return new {@code CertificateDates}
      */
-    CertificateDates addCertificateDates(CertificateDates dates);
+    CertificateDates create(CertificateDates dates);
 
     /**
      * The method returns entity of {@code CertificateDates} found by all fields excluding the {@code id}.
