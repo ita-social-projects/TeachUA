@@ -17,15 +17,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Example;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateDatesServiceImplTest {
-    private static final int CORRECT_ID = 1;
-    private static final int WRONG_ID = 15;
-    private static final int CERTIFICATE_DATES_ID = 1;
+    private static final Long CORRECT_ID = 1L;
+    private static final Long WRONG_ID = 15L;
+    private static final Long CERTIFICATE_DATES_ID = 1L;
     private static final String CERTIFICATE_DATES_DATE = "date sample";
     private static final int CERTIFICATE_DATES_HOURS = 40;
     private static final String CERTIFICATE_DATES_DURATION = "duration sample";
@@ -74,7 +76,7 @@ class CertificateDatesServiceImplTest {
     @Test
     void addCertificateDates() {
         when(certificateDatesRepository.save(certificateDates)).thenReturn(certificateDates);
-        assertThat(certificateDatesService.addCertificateDates(certificateDates)).isEqualTo(certificateDates);
+        assertThat(certificateDatesService.create(certificateDates)).isEqualTo(certificateDates);
     }
 
     @Test
@@ -127,9 +129,7 @@ class CertificateDatesServiceImplTest {
 
     @Test
     void getOrCreateCertificateDates_IfExists() {
-        when(certificateDatesRepository.findFirstByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
-                certificateDates.getDate(), certificateDates.getHours(), certificateDates.getDuration(),
-                certificateDates.getCourseNumber(), certificateDates.getStudyForm())).thenReturn(
+        when(certificateDatesRepository.findOne(any(Example.class))).thenReturn(
                 Optional.ofNullable(certificateDates));
 
         assertThat(certificateDatesService.getOrCreateCertificateDates(certificateDates)).isEqualTo(certificateDates);
@@ -137,9 +137,7 @@ class CertificateDatesServiceImplTest {
 
     @Test
     void getOrCreateCertificateDates_IfDoesNotExist() {
-        when(certificateDatesRepository.findFirstByDateAndHoursAndDurationAndCourseNumberAndStudyForm(
-                certificateDates.getDate(), certificateDates.getHours(), certificateDates.getDuration(),
-                certificateDates.getCourseNumber(), certificateDates.getStudyForm())).thenReturn(
+        when(certificateDatesRepository.findOne(any(Example.class))).thenReturn(
                 Optional.empty());
         when(certificateDatesRepository.save(certificateDates)).thenReturn(certificateDates);
 

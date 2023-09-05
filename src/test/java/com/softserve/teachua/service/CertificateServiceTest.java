@@ -8,6 +8,7 @@ import com.softserve.teachua.dto.certificate.CertificatePreview;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
+import com.softserve.teachua.dto.certificate_dates.CertificateDatesResponse;
 import com.softserve.teachua.exception.CertificateGenerationException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.UserPermissionException;
@@ -476,6 +477,10 @@ class CertificateServiceTest {
 
         when(certificateRepository.findById(certificate.getId()))
                 .thenReturn(Optional.of(certificate));
+        when(certificateDatesService.getCertificateDatesById(anyLong()))
+                .thenReturn(new CertificateDates());
+        when(dtoConverter.convertToEntity(any(CertificateDatesResponse.class), any (CertificateDates.class)))
+                .thenReturn(new CertificateDates());
 
         certificateService.updateCertificatePreview(certificate.getId(), certificatePreview);
 
@@ -497,6 +502,10 @@ class CertificateServiceTest {
 
         when(certificateRepository.findById(certificate.getId()))
                 .thenReturn(Optional.of(certificate));
+        when(certificateDatesService.getCertificateDatesById(anyLong()))
+                .thenReturn(new CertificateDates());
+        when(dtoConverter.convertToEntity(any(CertificateDatesResponse.class), any (CertificateDates.class)))
+                .thenReturn(new CertificateDates());
 
         certificateService.updateCertificatePreview(certificate.getId(), certificatePreview);
 

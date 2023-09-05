@@ -8,6 +8,7 @@ import com.softserve.teachua.dto.certificate.CertificatePreview;
 import com.softserve.teachua.dto.certificate.CertificateTransfer;
 import com.softserve.teachua.dto.certificate.CertificateUserResponse;
 import com.softserve.teachua.dto.certificate.CertificateVerificationResponse;
+import com.softserve.teachua.dto.certificate_dates.CertificateDatesResponse;
 import com.softserve.teachua.exception.CertificateGenerationException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.exception.UserPermissionException;
@@ -370,7 +371,23 @@ public class CertificateServiceImpl implements CertificateService, ArchiveMark<C
         if (!certificatePreview.getUserName().equals(certificate.getUserName())) {
             certificate.setUserName(certificatePreview.getUserName());
         }
+
+        updateDatesIfNeeded(certificatePreview, certificate);
+
         return dtoConverter.convertToDto(certificateRepository.save(certificate), CertificatePreview.class);
+    }
+
+    private void updateDatesIfNeeded(CertificatePreview certificatePreview, Certificate certificate) {
+        CertificateDatesResponse datesDto = certificatePreview.getDates();
+
+        CertificateDates dates = certificateDatesService.getCertificateDatesById(datesDto.getId());
+        CertificateDates datesToUpdate = dtoConverter.convertToEntity(datesDto, new CertificateDates());
+
+        if (!dates.equals(datesToUpdate)) {
+            datesToUpdate.setId(null);
+            dates = certificateDatesService.getOrCreateCertificateDates(datesToUpdate);
+            certificate.setDates(dates);
+        }
     }
 
     @Override
