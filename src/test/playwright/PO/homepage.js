@@ -1,6 +1,7 @@
 import { expect} from "@playwright/test";
-import { apiUrl, adminLogin, adminPassword, userLogin, userPassword } from "../constants/general";
-import { successLoginMessage } from "../constants/messages";
+import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
+import {apiUrl} from "../constants/api.constants";
+import { successLoginMessage } from "../constants/messages.constants.js";
 import BasePage from "../PO/basepage";
 
 class HomePage extends BasePage{
@@ -20,15 +21,15 @@ class HomePage extends BasePage{
         await this.page.goto(apiUrl)
     }
 
-    async loginAs(role){
+    async uiLoginAs(role){
         await this.userDropdown.click();
         await this.registerButton.click();
         if(role === 'admin'){
-            await this.emailField.fill(adminLogin)
-            await this.passwordField.fill(adminPassword)
+            await this.emailField.fill(ADMIN_EMAIL)
+            await this.passwordField.fill(ADMIN_PASSWORD)
         } else if (role === 'user'){
-            await this.emailField.fill(userLogin)
-            await this.passwordField.fill(userPassword)
+            await this.emailField.fill(USER_EMAIL)
+            await this.passwordField.fill(USER_PASSWORD)
         }
         await this.loginButton.click();
         await this.elementHaveText(this.loginSuccessMessage, successLoginMessage);
