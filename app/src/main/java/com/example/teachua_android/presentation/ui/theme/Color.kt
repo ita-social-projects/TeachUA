@@ -1,4 +1,4 @@
-package com.example.teachua_android.ui.theme
+package com.example.teachua_android.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

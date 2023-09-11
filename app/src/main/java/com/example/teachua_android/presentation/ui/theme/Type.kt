@@ -1,4 +1,4 @@
-package com.example.teachua_android.ui.theme
+package com.example.teachua_android.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
