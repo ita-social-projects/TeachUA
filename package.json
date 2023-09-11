@@ -1,0 +1,15 @@
+{
+  "name": "teachua",
+  "version": "1.0.0",
+  "description": "![TeachUA](images/logo.png)",
+  "main": "index.js",
+  "scripts": {
+    "playDebug": "npx playwright test ./playwright/tests/smoke-test.spec.js --headed"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.37.1"
+  }
+}

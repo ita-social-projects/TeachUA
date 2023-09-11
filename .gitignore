@@ -132,3 +132,6 @@ workspace.xml
 
 # Visual Studio Code
 /.vscode/
+/test-results/
+/playwright-report/
+/playwright/.cache/

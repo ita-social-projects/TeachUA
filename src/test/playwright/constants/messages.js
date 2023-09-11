@@ -1,0 +1,1 @@
+export const successLoginMessage = 'Ви успішно залогувалися!';
