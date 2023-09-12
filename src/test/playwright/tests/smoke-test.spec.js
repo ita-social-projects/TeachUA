@@ -1,34 +1,30 @@
-import { expect, test} from "@playwright/test";
+import { chromium, expect, test} from "@playwright/test";
 import HomePage from "../PO/homepage";
 import BasePage from "../PO/basepage";
+import UserPage from "../PO/userpage";
 
-let homepage, basepage;
+let homepage, basepage, userpage;
 
     test.beforeEach(async({page})=>{
         homepage = new HomePage(page);
-        basepage = new BasePage(page);
-
-        basepage.apiLoginAs('admin');
-
         await homepage.gotoHomepage();
-        //await homepage.gotoHomepage();
     })
 
-    test('Go to admin page', async ({page})=>{
-        await page.goto('http://localhost:3000/dev/logs');
-        console.log('Opened adin page')
+    test('Verify API login works', async ({page})=>{
+        basepage = new BasePage(page);
+        homepage = new HomePage(page);
+        userpage = new UserPage(page);
+
+        await basepage.apiLoginAs('admin');
+        await userpage.gotoUserPage();
+        await userpage.verifyTitleVisible(true);
     })
 
-
-    test('Open homepage and verify that cities are present in the dropdown menu @smoke', async ({page}) =>{
-        await homepage.clickOnDropdown();
-    })
-
-    test('Open homepage and verify that you can log in', async ({page}) =>{
+    test('Verify UI login works', async ({page}) =>{
         await homepage.uiLoginAs('admin');
     })
 
     test.afterEach(async({page})=>{
-        await page.close();
+        page.close();
     })
 

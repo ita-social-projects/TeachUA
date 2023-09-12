@@ -21,23 +21,23 @@ class HomePage extends BasePage{
         await this.page.goto(apiUrl)
     }
 
-    async uiLoginAs(role){
+    async uiLoginAs(userType){
+        const userData = {
+            admin: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
+            user: { email: USER_EMAIL, password: USER_PASSWORD },
+        };
         await this.userDropdown.click();
         await this.registerButton.click();
-        if(role === 'admin'){
-            await this.emailField.fill(ADMIN_EMAIL)
-            await this.passwordField.fill(ADMIN_PASSWORD)
-        } else if (role === 'user'){
-            await this.emailField.fill(USER_EMAIL)
-            await this.passwordField.fill(USER_PASSWORD)
+
+        if (!userData[userType]) {
+            throw new Error("Invalid user type: " + userType);
         }
+
+        await this.emailField.fill(userData[userType].email);
+        await this.passwordField.fill(userData[userType].password);
+
         await this.loginButton.click();
         await this.elementHaveText(this.loginSuccessMessage, successLoginMessage);
-    }
-
-    async clickOnDropdown(){
-        await this.citiesDropdown.click();
-        await this.harkivItem.click();
     }
 }
 

@@ -23,6 +23,8 @@ class BasePage {
             headers: { "Content-Type": "application/json" },
         });
 
+        await expect(response.status).toBe(200);
+
         let jsonResponse = await response.json();
         const { accessToken, id, roleName, refreshToken } = jsonResponse;
         
@@ -42,6 +44,9 @@ class BasePage {
     }
 
     async elementToBeVisible(element, isVisible) {
+        if(!(typeof isVisible === 'boolean')){
+          throw new Error('Second paramenter should be boolean');
+        }
         if (isVisible === true) {
             await expect(element).toBeVisible();
         } else if (isVisible === false) {
