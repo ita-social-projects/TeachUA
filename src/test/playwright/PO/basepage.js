@@ -1,46 +1,19 @@
 import { expect} from "@playwright/test";
-import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
 import {signInUrl} from "../constants/api.constants";
 
 class BasePage {
     constructor(page) {
         this.page = page;
+        this.navBarCityDropdown = page.locator('header > div.right-side-menu div.city')
+        this.navBarCityDropdownList = page.locator('body > div:last-child ul')
     }
 
-    async apiLoginAs(userType) {
-        const userData = {
-            admin: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
-            user: { email: USER_EMAIL, password: USER_PASSWORD },
-        };
-
-        if(!userData[userType]){throw new Error('Invalid user type: ' + userType)}
-
-        const { email, password } = userData[userType];
-
-        const response = await fetch(signInUrl, {
-            method: "POST",
-            body: JSON.stringify({email, password}),
-            headers: { "Content-Type": "application/json" },
-        });
-
-        await expect(response.status).toBe(200);
-
-        let jsonResponse = await response.json();
-        const { accessToken, id, roleName, refreshToken } = jsonResponse;
-        
-        await this.page.addInitScript(
-            ({ id, accessToken, roleName, refreshToken}) => {
-                window.localStorage.setItem("id", id);
-                window.localStorage.setItem("accessToken", accessToken);
-                window.localStorage.setItem("role", roleName);
-                window.localStorage.setItem("refreshToken", refreshToken);
-            },
-            { id, accessToken, roleName, refreshToken }
-        );
-    }
-
-    async elementHaveText(element, text) {
+    async expectElementToHaveText(element, text) {
         await expect(element).toHaveText(text);
+    }
+
+    async expectElementToContainText(element, text) {
+        await expect(element).toContainText(text);
     }
 
     async elementToBeVisible(element, isVisible) {
@@ -52,6 +25,11 @@ class BasePage {
         } else if (isVisible === false) {
             await expect(element).not.toBeVisible();
         }
+    }
+
+    async selectCityInNavBar(city){
+        await this.navBarCityDropdown.click();
+        await (await this.navBarCityDropdownList.getByText(city)).click();
     }
 }
 

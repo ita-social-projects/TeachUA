@@ -2,7 +2,7 @@ import { expect} from "@playwright/test";
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
 import {apiUrl} from "../constants/api.constants";
 import { successLoginMessage } from "../constants/messages.constants.js";
-import BasePage from "../PO/basepage";
+import BasePage from "./basePage";
 
 class HomePage extends BasePage{
     constructor(page){

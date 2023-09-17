@@ -1,26 +1,25 @@
 import { chromium, expect, test} from "@playwright/test";
-import HomePage from "../PO/homepage";
-import BasePage from "../PO/basepage";
-import UserPage from "../PO/userpage";
+import HomePage from "../PO/homePage";
+import UserPage from "../PO/userPage";
+import ApiService from "../services/apiService";
 
-let homepage, basepage, userpage;
+let homepage, apiservice, userpage;
 
     test.beforeEach(async({page})=>{
         homepage = new HomePage(page);
         await homepage.gotoHomepage();
     })
 
-    test('Verify API login works', async ({page})=>{
-        basepage = new BasePage(page);
-        homepage = new HomePage(page);
+    test('Verify successful login via API', async ({page})=>{
+        apiservice = new ApiService(page);
         userpage = new UserPage(page);
 
-        await basepage.apiLoginAs('admin');
+        await apiservice.apiLoginAs('admin');
         await userpage.gotoUserPage();
-        await userpage.verifyTitleVisible(true);
+        await userpage.verifyTitleIsVisible(true);
     })
 
-    test('Verify UI login works', async ({page}) =>{
+    test('Verify successful login via UI', async () =>{
         await homepage.uiLoginAs('admin');
     })
 

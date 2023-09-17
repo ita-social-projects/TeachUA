@@ -1,6 +1,6 @@
 import { expect} from "@playwright/test";
 import {apiUrl} from "../constants/api.constants";
-import BasePage from "../PO/basepage";
+import BasePage from "./basePage";
 
 class UserPage extends BasePage{
     constructor(page) {
@@ -9,14 +9,13 @@ class UserPage extends BasePage{
     }
 
     async gotoUserPage(){
-        await this.page.reload();
         const idValue = await this.page.evaluate(() => {
             return window.localStorage.getItem('id');
         });
-        await this.page.goto(`${apiUrl}/user/${idValue}/page`);
+        await this.page.goto(`${apiUrl}/clubs`);
     }
 
-    async verifyTitleVisible(isVisible){
+    async verifyTitleIsVisible(isVisible){
         await this.elementToBeVisible(this.userPageTitle, isVisible);
     }
 }
