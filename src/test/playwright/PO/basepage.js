@@ -31,6 +31,14 @@ class BasePage {
         await this.navBarCityDropdown.click();
         await (await this.navBarCityDropdownList.getByText(city)).click();
     }
+
+    async sortElementsAsc([...elements]) {
+        return elements.sort();
+    }
+
+    async sortElementsDesc([...elements]) {
+        return elements.sort((a, b) => b - a);
+    }
 }
 
 module.exports = BasePage;
