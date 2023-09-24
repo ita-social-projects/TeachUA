@@ -221,7 +221,7 @@ fun UnderlinedTextInput(
                     onValueChange = {
                         textValue = it
                     },
-                    textStyle = TextStyle(color = Color.Black, fontSize = 16.sp),
+                    textStyle = textStyle,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = androidx.compose.ui.text.input.ImeAction.Done
                     ),
@@ -229,7 +229,8 @@ fun UnderlinedTextInput(
                         onDone = {
                             onSearch(textValue)
                         }
-                    )
+                    ),
+                    singleLine = true
                 )
             }
 
