@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TeachUA_android</string>
+    <string name="which_club_are_you_searching">Який гурток шукаєте?</string>
+
 </resources>

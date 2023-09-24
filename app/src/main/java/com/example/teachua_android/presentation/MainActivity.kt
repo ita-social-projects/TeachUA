@@ -11,7 +11,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TeachUA_androidTheme {
-               MainHeader()
+               MainHeader(onLocationChange = {}, onAddClubsButtonClick = {}, onMenuButtonClick = {}, onSearch = {})
             }
         }
     }
