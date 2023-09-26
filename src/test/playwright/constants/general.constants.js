@@ -10,3 +10,6 @@ export const cities = {
     ZAPORIZHZHIA: "Запоріжжя",
     NO_LOCATION: "Без локації",
 }
+
+
+export const imagesPath = './src/test/playwright/imagesToUpload/';

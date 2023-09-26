@@ -1,6 +1,6 @@
 import { expect} from "@playwright/test";
 import {clubsUrl} from "../constants/api.constants";
-import BasePage from "./basePage";
+import BasePage from "./BasePage";
 
 class ClubsPage extends BasePage {
     constructor(page) {

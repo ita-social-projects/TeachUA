@@ -4,7 +4,7 @@
   "description": "![TeachUA](images/logo.png)",
   "main": "index.js",
   "scripts": {
-    "playDebug": "npx playwright test ./playwright/tests/clubsPage-test.spec.js --headed"
+    "playDebug": "npx playwright test ./playwright/tests/addClub-test.spec.js --headed"
   },
   "keywords": [],
   "author": "",

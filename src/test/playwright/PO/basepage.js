@@ -16,7 +16,7 @@ class BasePage {
         await expect(element).toContainText(text);
     }
 
-    async elementToBeVisible(element, isVisible) {
+    async verifyElementVisibility(element, isVisible = true) {
         if(!(typeof isVisible === 'boolean')){
           throw new Error('Second paramenter should be boolean');
         }
@@ -24,6 +24,17 @@ class BasePage {
             await expect(element).toBeVisible();
         } else if (isVisible === false) {
             await expect(element).not.toBeVisible();
+        }
+    }
+
+    //this method can be used to check whether the element is present and has the required text, or not visible
+    //I combined it in order to reduce code duplication when verifying error messages presence/absence
+    async verifyElementVisibilityAndText(element, isVisible=true, text){
+        if(isVisible===true){
+            await this.verifyElementVisibility(element, isVisible);
+            await this.expectElementToHaveText(element,text);
+        } else {
+            await this.verifyElementVisibility(element, isVisible);
         }
     }
 
@@ -38,6 +49,13 @@ class BasePage {
 
     async sortElementsDesc([...elements]) {
         return elements.sort((a, b) => b - a);
+    }
+
+    async verifyTooltipAppearsOnHover(selector,message){
+        await selector.hover();
+        const tooltip = this.page.locator('div.ant-tooltip-inner');
+        await this.verifyElementVisibility(tooltip, true);
+        await this.expectElementToHaveText(tooltip, message);
     }
 }
 
