@@ -22,15 +22,25 @@ export const newLocationCorrectDetails = {
     LOCATION_PHONE: '0671834956'
 }
 
+export const newLocationIncorrectDetails = {
+    LOCATION_NAME: 'Auto',
+    LOCATION_ADDRESS: 'Volo',
+    LOCATION_COORDINATES: '41232,12321',
+    LOCATION_COORDINATES_WITH_LETTERS: '49.790387, sdfd24.028195',
+    LOCATION_PHONE: '067183495612321d'
+}
+
 export const newClubCorrectDetails = {
     CLUB_TITLE: 'Test Automation club',
     CLUB_ENTER_AGE: '10',
     CLUB_CLOSING_AGE: '18',
-    CLUB_RELATED_CENTER: 'Jerome IT School'
+    CLUB_RELATED_CENTER: 'Jerome IT School',
+    CLUB_DESCRIPTION: 'This is a test description for a new club. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
 }
 
 export const newClubIncorrectDetails = {
     CLUB_TITLE: 'Test',
+    CLUB_DESCRIPTION: 'not enough characters'
 }
 
 export const newClubCorrectContactDetails = {
@@ -42,5 +52,8 @@ export const newClubCorrectContactDetails = {
     WEB_PAGE: 'testWebPage.com',
 }
 
-export const newClubDescription =
-    "This is a test description for a new club. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+export const newClubIncorrectContactDetails = {
+    PHONE_NUMBER_INCORRECT_FORMAT: '123',
+    PHONE_NUMBER_INCORRECT_FORMAT_WITH_LETTERS: '123abc',
+    EMAIL: 'incorrectformat',
+}

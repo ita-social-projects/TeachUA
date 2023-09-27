@@ -38,6 +38,13 @@ class BasePage {
         }
     }
 
+
+    async fillInputField(element, value){
+        await element.waitFor({timeout: 5000});
+        await element.clear();
+        await element.fill(value);
+    }
+
     async selectCityInNavBar(city){
         await this.navBarCityDropdown.click();
         await (await this.navBarCityDropdownList.getByText(city)).click();
