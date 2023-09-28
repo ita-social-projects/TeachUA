@@ -1,4 +1,4 @@
-package com.example.teachua_android.presentation.main.components
+package com.example.teachua_android.presentation.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -281,6 +281,7 @@ fun MainHeader2Preview() {
         onAddClubsButtonClick = {},
         location = "Київ",
         onLocationChange = {},
-        onSearch = {})
+        onSearch = {},
+        modifier = Modifier)
 }
 

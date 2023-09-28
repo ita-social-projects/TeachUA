@@ -1,4 +1,4 @@
-package com.example.teachua_android.presentation.main
+package com.example.teachua_android.presentation.home
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

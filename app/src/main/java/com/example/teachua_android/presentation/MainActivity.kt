@@ -3,7 +3,7 @@ package com.example.teachua_android.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.teachua_android.presentation.main.HomePage
+import com.example.teachua_android.presentation.home.HomePage
 import com.example.teachua_android.presentation.ui.theme.TeachUA_androidTheme
 
 class MainActivity : ComponentActivity() {

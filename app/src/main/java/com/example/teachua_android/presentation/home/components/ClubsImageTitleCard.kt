@@ -1,13 +1,19 @@
-package com.example.teachua_android.presentation.main.components
+package com.example.teachua_android.presentation.home.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -25,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.teachua_android.R
+import com.example.teachua_android.presentation.ui.theme.GreyPrimary
 import com.example.teachua_android.presentation.ui.theme.OrangePrimary
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -95,23 +102,52 @@ fun ClubsImageTitleCard(
 @Composable
 fun ClubsImageTitleCardPager(modifier: Modifier = Modifier) {
     val pagerState = rememberPagerState()
-    HorizontalPager(
-        count = 4,
-        state = pagerState,
-        modifier = modifier
+    val pageCount = 4
+    Column(
+        modifier = modifier.wrapContentSize()
     ) {
-        ClubsImageTitleCard(
-            image = R.drawable.homepage_moreinfo_img1,
-            title = "Про гуртки українською",
-            subText = "На нашому сайті ви можете обрати для вашої дитини гурток, де навчають українською мовою.\n",
-            onClick = {},
-            modifier = Modifier.padding(top = 16.dp, bottom = 24.dp, start = 16.dp, end = 16.dp)
-        )
+        HorizontalPager(
+            count = pageCount,
+            state = pagerState,
+            modifier = Modifier
+        ) {
+            ClubsImageTitleCard(
+                image = R.drawable.homepage_moreinfo_img1,
+                title = "Про гуртки українською",
+                subText = "На нашому сайті ви можете обрати для вашої дитини гурток, де навчають українською мовою.\n",
+                onClick = {},
+                modifier = Modifier.padding(bottom = 24.dp)
+            )
+        }
+        Row(
+            Modifier
+                .height(50.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            repeat(pageCount) { iteration ->
+                val color =
+                    if (pagerState.currentPage == iteration) OrangePrimary else GreyPrimary
+                Box(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clip(CircleShape)
+                        .background(color)
+                        .size(8.dp)
+                )
+            }
+        }
     }
 }
 
+@Preview(showBackground = true, showSystemUi = true, backgroundColor = 0xFF090101)
+@Composable
+fun ClubsImageTitleCardPagerPreview() {
+    ClubsImageTitleCardPager()
+}
 
-@Preview
+
+@Preview()
 @Composable
 fun ClubsImageTitleCardPreview() {
     ClubsImageTitleCard(
