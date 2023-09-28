@@ -3,7 +3,7 @@ package com.example.teachua_android.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.teachua_android.presentation.main.MainHeader
+import com.example.teachua_android.presentation.main.HomePage
 import com.example.teachua_android.presentation.ui.theme.TeachUA_androidTheme
 
 class MainActivity : ComponentActivity() {
@@ -11,7 +11,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TeachUA_androidTheme {
-               MainHeader(onLocationChange = {}, onAddClubsButtonClick = {}, onMenuButtonClick = {}, onSearch = {})
+                HomePage()
             }
         }
     }

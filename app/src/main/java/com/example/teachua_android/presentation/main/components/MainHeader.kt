@@ -1,4 +1,4 @@
-package com.example.teachua_android.presentation.main
+package com.example.teachua_android.presentation.main.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

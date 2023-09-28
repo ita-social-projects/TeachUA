@@ -1,4 +1,4 @@
-package com.example.teachua_android.presentation.main
+package com.example.teachua_android.presentation.main.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -28,9 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.teachua_android.R
 import com.example.teachua_android.presentation.ui.theme.OrangePrimary
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 
 @Composable
-fun HomePageClubsImageTitleCard(
+fun ClubsImageTitleCard(
     @DrawableRes image: Int,
     title: String,
     subText: String,
@@ -91,10 +94,30 @@ fun HomePageClubsImageTitleCard(
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun ClubsImageTitleCardPager(modifier: Modifier = Modifier) {
+    val pagerState = rememberPagerState()
+    HorizontalPager(
+        count = 4,
+        state = pagerState,
+        modifier = modifier
+    ) {
+        ClubsImageTitleCard(
+            image = R.drawable.homepage_moreinfo_img1,
+            title = "Про гуртки українською",
+            subText = "На нашому сайті ви можете обрати для вашої дитини гурток, де навчають українською мовою.\n",
+            onClick = {},
+            modifier = Modifier.padding(top = 16.dp, bottom = 24.dp)
+        )
+    }
+}
+
+
 @Preview
 @Composable
-fun HomePageClubsImageTitleCardPreview() {
-    HomePageClubsImageTitleCard(
+fun ClubsImageTitleCardPreview() {
+    ClubsImageTitleCard(
         image = R.drawable.homepage_moreinfo_img1,
         title = "Про гуртки українською",
         subText = "На нашому сайті ви можете обрати для вашої дитини гурток, де навчають українською мовою.\n",
