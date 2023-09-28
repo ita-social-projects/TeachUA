@@ -5,11 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -40,18 +38,17 @@ fun ClubsImageTitleCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     Box(
-        modifier = modifier
-            .width(343.dp)
-            .height(460.dp),
+        modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
         Image(
             painter = painterResource(id = image),
             contentDescription = null,
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .clip(
                     shape = RoundedCornerShape(
                         size = 8.dp
@@ -59,15 +56,15 @@ fun ClubsImageTitleCard(
                 )
         )
 
-
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 58.dp)
+            modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             Text(
                 text = title,
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 36.sp,
                 fontWeight = FontWeight(700),
+                lineHeight = 54.sp,
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
@@ -108,7 +105,7 @@ fun ClubsImageTitleCardPager(modifier: Modifier = Modifier) {
             title = "Про гуртки українською",
             subText = "На нашому сайті ви можете обрати для вашої дитини гурток, де навчають українською мовою.\n",
             onClick = {},
-            modifier = Modifier.padding(top = 16.dp, bottom = 24.dp)
+            modifier = Modifier.padding(top = 16.dp, bottom = 24.dp, start = 16.dp, end = 16.dp)
         )
     }
 }
