@@ -1,8 +1,12 @@
 export const successLoginMessage = 'Ви успішно залогувалися!';
 
 export const clubOnlineSliderTooltip = 'Якщо не додано жодної локації буде автоматично онлайн';
+export const locationNameTooltip = "Це поле може містити українські та англійські символи довжиною від 5-100. також цифри і спец.символи (!#$%&'()*+,-./:;<=>?@[]^_`{}~)";
+export const locationPhoneTooltip = "Телефон не може містити літери, спеціальні символи та пробіли";
+
 export const noLocationClubOnlineMessage = 'Ви не додали жодної локації, гурток автоматично є онлайн';
 export const successClubCreationMessage = 'Гурток успішно створено';
+export const clubAlreadyExistMessage = 'Гурток успішно створено';
 
 //All the error messages should be reviewed once the correct ones has been implemented.
 export const addClubValidationErrorMessages = {

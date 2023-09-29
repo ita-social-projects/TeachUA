@@ -60,9 +60,8 @@ class BasePage {
 
     async verifyTooltipAppearsOnHover(selector,message){
         await selector.hover();
-        const tooltip = this.page.locator('div.ant-tooltip-inner');
+        const tooltip = this.page.locator('div.ant-tooltip-inner').filter({ hasText: `${message}`});;
         await this.verifyElementVisibility(tooltip, true);
-        await this.expectElementToHaveText(tooltip, message);
     }
 }
 

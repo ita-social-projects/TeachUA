@@ -4,7 +4,7 @@ import AddClubPage from "../PO/AddClubPage";
 import HomePage from "../PO/HomePage";
 import UserPage from "../PO/UserPage";
 import {clubCategories, newLocationCorrectDetails, newClubCorrectContactDetails, newClubIncorrectContactDetails, newClubCorrectDetails, newClubIncorrectDetails, newLocationIncorrectDetails} from "../constants/clubInformation.constants";
-import {addClubValidationErrorMessages,addLocationValidationErrorMessages} from "../constants/messages.constants";
+import {addClubValidationErrorMessages,addLocationValidationErrorMessages,clubAlreadyExistMessage, successClubCreationMessage,noLocationClubOnlineMessage} from "../constants/messages.constants";
 
 let apiservice, addclubpage, homepage, userpage;
 
@@ -43,7 +43,6 @@ let apiservice, addclubpage, homepage, userpage;
 
         await addclubpage.verifyLocationListContainsItem(newLocationCorrectDetails.LOCATION_NAME)
         await addclubpage.verifyLocationListContainsItem(newLocationCorrectDetails.LOCATION_ADDRESS)
-        await addclubpage.verifyAvailableOnlineTooltipAppearsOnHover();
         
         await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, newClubCorrectContactDetails.PHONE_NUMBER);
         await addclubpage.fillInputField(addclubpage.clubFacebookField, newClubCorrectContactDetails.FACEBOOK);
@@ -60,10 +59,12 @@ let apiservice, addclubpage, homepage, userpage;
         await addclubpage.fillInputField(addclubpage.descriptionTextArea, newClubCorrectDetails.CLUB_DESCRIPTION);
         await addclubpage.completeClubCreation();
 
-        await addclubpage.verifyClubCreationSuccessMessageDisplayed();
+        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubCreatedSuccessMessage, true, successClubCreationMessage);
         
         await userpage.gotoUserPage();
-        await userpage.verifyClubExistsByTitle(newClubCorrectDetails.clubTitle);  
+        await userpage.verifyClubExistsByTitle(newClubCorrectDetails.CLUB_TITLE);  
+
+        await userpage.removeClubByTitle(newClubCorrectDetails.CLUB_TITLE);
     });
 
     test("Verify validation error messages appearence/disappearence on the first step", async ({ page }) => {
@@ -183,6 +184,48 @@ let apiservice, addclubpage, homepage, userpage;
         await addclubpage.fillInputField(addclubpage.descriptionTextArea, newClubCorrectDetails.CLUB_DESCRIPTION);
         await addclubpage.verifyElementVisibilityAndText(addclubpage.clubDescriptionErrorMessage, false); 
 
+
+    });
+
+
+    test("Verify that tooltips and warning messages appear", async ({ page }) => {
+        //await addclubpage.fillClubNameField(newClubCorrectDetails.CLUB_TITLE);
+        await addclubpage.fillInputField(addclubpage.clubNameField, newClubCorrectDetails.CLUB_TITLE);
+        await addclubpage.toggleStatedCheckboxes(
+            clubCategories.ACTING,
+        );
+        await addclubpage.setAcceptableChildAge(newClubCorrectDetails.CLUB_ENTER_AGE, newClubCorrectDetails.CLUB_CLOSING_AGE);
+        await addclubpage.proceedToNextStep();
+        await addclubpage.openAddLocationWindow();
+
+        await addclubpage.verifyLocationNameTooltipAppearsOnHover();
+        await addclubpage.verifyLocationPhoneTooltipAppearsOnHover();
+        await addclubpage.closeAddLocationWindow();
+
+        await addclubpage.verifyAvailableOnlineTooltipAppearsOnHover();
+
+        await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, newClubCorrectContactDetails.PHONE_NUMBER);
+        await addclubpage.proceedToNextStep();
+
+        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubIsAutomaticallyOnlineMessage, true, noLocationClubOnlineMessage);
+        await addclubpage.fillInputField(addclubpage.descriptionTextArea, newClubCorrectDetails.CLUB_DESCRIPTION);
+
+        //complete club creation and go through the creation steps again to verify that
+        //'this club already exists' message appears
+        await addclubpage.completeClubCreation();
+        await addclubpage.gotoAddClubPage();
+        await addclubpage.fillInputField(addclubpage.clubNameField, newClubCorrectDetails.CLUB_TITLE);
+        await addclubpage.toggleStatedCheckboxes(
+            clubCategories.ACTING,
+        );
+        await addclubpage.setAcceptableChildAge(newClubCorrectDetails.CLUB_ENTER_AGE, newClubCorrectDetails.CLUB_CLOSING_AGE);
+        await addclubpage.proceedToNextStep();
+        await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, newClubCorrectContactDetails.PHONE_NUMBER);
+        await addclubpage.proceedToNextStep();
+        await addclubpage.fillInputField(addclubpage.descriptionTextArea, newClubCorrectDetails.CLUB_DESCRIPTION);
+
+        await addclubpage.completeClubCreation();
+        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubAlreadyExistMessage, true, clubAlreadyExistMessage); 
 
     });
 

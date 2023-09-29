@@ -18,7 +18,7 @@ class ClubsPage extends BasePage {
         this.paginationNextPageButton = page.locator('ul > li[title="Next Page"]');
         this.paginationFirstPageButton = page.locator('ul > li[title="1"]');
         this.advancedSearchButton = page.locator('span[title="Розширений пошук"]');
-        this.firstCardTitle = page.locator("div.content-clubs-list > div:first-child div.title");
+        this.firstCardTitle = page.locator("div.content-clubs-list > div:first-child div.name");
     }
 
     async gotoClubsPage() {
@@ -33,12 +33,23 @@ class ClubsPage extends BasePage {
     async getAllClubsTitles() {
         let allClubsTitles = [];
         while (true) {
-            const pageTitlesText = await this.page.locator("div.title").allTextContents();
-            allClubsTitles = allClubsTitles.concat(pageTitlesText);
-            console.log(pageTitlesText);
-            if (await this.isNextPageAvailable()) {
-                await this.goToNextPage();
-            } else {
+            try {
+                //getting the title of first card
+                const firstTitle = await this.firstCardTitle.textContent();
+                //getting the first card locator using it's title so that we can later on wait for it to be hidded
+                const firstTitleLocator = await this.page.getByRole("div", { name: firstTitle });
+                const pageTitlesText = await this.page.locator("div.title").allTextContents();
+                allClubsTitles = allClubsTitles.concat(pageTitlesText);
+                console.log(pageTitlesText);
+                if (await this.isNextPageAvailable()) {
+                    await this.goToNextPage();
+                    //waiting for the cards update by waiting for the previous card to be hidden
+                    await firstTitleLocator.waitFor({ state: "hidden", timeout: 10000 });
+                } else {
+                    break;
+                }
+            } catch (e) {
+                console.error("Error" + e);
                 break;
             }
         }
@@ -62,8 +73,6 @@ class ClubsPage extends BasePage {
 
     async goToNextPage() {
         await this.paginationNextPageButton.click();
-        //waiting for cards to update on a new page
-        await this.page.waitForTimeout(500);
     }
 
     async verifyTitleToHaveText(text) {
@@ -81,7 +90,7 @@ class ClubsPage extends BasePage {
         if (await this.isNextPageAvailable()) {
             await this.goToNextPage();
             await actionsOnThePage();
-        } 
+        }
     }
 
     async openCardDetailsPopUp(card) {
@@ -119,7 +128,7 @@ class ClubsPage extends BasePage {
             await expect(card.includes(text)).toBe(true);
         }
         console.log(`Page of ${text} search query is done-----------------------------------------`);
-        await this.goToNextPageIfAvailabe(async()=>{
+        await this.goToNextPageIfAvailabe(async () => {
             await this.verifyClubCardsContainText(text);
         });
     }

@@ -1,7 +1,13 @@
 import { expect} from "@playwright/test";
-import {apiUrl} from "../constants/api.constants";
-import {clubOnlineSliderTooltip, successClubCreationMessage,addClubValidationErrorMessages, addLocationValidationErrorMessages} from "../constants/messages.constants";
-import {imagesPath} from "../constants/general.constants";
+import { apiUrl } from "../constants/api.constants";
+import {
+    clubOnlineSliderTooltip,
+    successClubCreationMessage,
+    locationNameTooltip,
+    locationPhoneTooltip,
+    noLocationClubOnlineMessage,
+} from "../constants/messages.constants";
+import { imagesPath } from "../constants/general.constants";
 import BasePage from "./BasePage";
 
 class AddClubPage extends BasePage {
@@ -32,6 +38,11 @@ class AddClubPage extends BasePage {
         this.locationPhoneNumberField = this.page.locator("input#phone");
         this.locationAddButton = this.page.locator('button[type="submit"]').filter({ hasText: "Додати" });
 
+        this.locationNameInfoSign = this.page.locator('input#name + span svg');
+        this.locationPhoneInfoSign = this.page.locator('input#phone + span svg');
+
+        this.locationCloseButton = this.page.locator('button[aria-label="Close"]').nth(1);
+
         this.locationsList = this.page.locator('div.add-club-location-list ul.ant-list-items');
 
         this.isOnlineSlider = this.page.locator('button[role="switch"]');
@@ -61,12 +72,14 @@ class AddClubPage extends BasePage {
         this.descriptionTextArea = this.page.locator("textarea[placeholder='Додайте опис гуртка']");
         this.completeButton = this.page.getByRole("button", { name: "Завершити" });
         this.clubCreatedSuccessMessage = this.page.locator("div.ant-message-success");
+        this.clubAlreadyExistMessage = this.page.locator("div.ant-message-notice-content");
         //Error messages
         this.clubDescriptionErrorMessage = this.page.locator("div#basic_description_help");
 
     }
 
     async gotoAddClubPage() {
+        await this.page.goto(apiUrl);
         await this.addClubButton.click();
     }
 
@@ -133,45 +146,17 @@ class AddClubPage extends BasePage {
         await this.locationAddButton.click();
     }
 
-    //Location addition window: Error messages handling
-
-    //to be updated on a valid error message (currently only one error message for both mandatory validation and incorrect input)
-    //Name field
-    async verifyDisplayOfLocationNameIsIncorrectErrorMessage(isDisplayed){
-        await this.verifyElementVisibilityAndText(this.locationNameFieldErrorMessage, isDisplayed, addLocationValidationErrorMessages.LOCATION_NAME_IS_MANDATORY)
+    async verifyLocationNameTooltipAppearsOnHover(){
+        await this.verifyTooltipAppearsOnHover(this.locationNameInfoSign, locationNameTooltip)
     }
 
-    //City dropdown
-    async verifyDisplayOfLocationCityIsMandatoryErrorMessage(isDisplayed){
-        await this.verifyElementVisibilityAndText(this.locationCityErrorMessage, isDisplayed, addLocationValidationErrorMessages.CITY_IS_MANDATORY)
+    async verifyLocationPhoneTooltipAppearsOnHover(){
+        await this.verifyTooltipAppearsOnHover(this.locationPhoneInfoSign, locationPhoneTooltip)
     }
 
-    //Address Field
-    async verifyDisplayOfLocationAddressIsMandatoryErrorMessage(isDisplayed){
-        await this.verifyElementVisibilityAndText(this.locationAddressFieldErrorMessage, isDisplayed, addLocationValidationErrorMessages.ADDRESS_IS_MANDATORY)
+    async closeAddLocationWindow(){
+        await this.locationCloseButton.click();
     }
-    async verifyDisplayOfLocationAddressIsIncorrectErrorMessage(isDisplayed){
-        await this.verifyElementVisibilityAndText(this.locationAddressFieldErrorMessage, isDisplayed, addLocationValidationErrorMessages.ADDRESS_IS_INCORRECT)
-    }
-
-
-    //Coordinates Field
-    async verifyDisplayOfLocationCoordinatesAreIncorrectErrorMessage(isDisplayed){
-        await this.verifyElementVisibilityAndText(this.locationCoordinatesFieldErrorMessage, isDisplayed, addLocationValidationErrorMessages.COORDINATES_ARE_INCORRECT)
-    }
-    async verifyDisplayOfLocationCoordinatesCantHaveLettersErrorMessage(isDisplayed){
-        await this.verifyElementVisibilityAndText(this.locationCoordinatesFieldErrorMessage, isDisplayed, addLocationValidationErrorMessages.
-            COORDINATES_CANT_HAVE_LETTERS)
-    }
-
-    //Phone Field
-    async verifyDisplayOfLocationPhoneIsMandatoryErrorMessage(isDisplayed){
-        await this.verifyElementVisibilityAndText(this.locationPhoneFieldErrorMessage, isDisplayed, addLocationValidationErrorMessages.PHONE_IS_MANDATORY)
-    }
-    async verifyDisplayOfLocationPhoneIsIncorrectErrorMessage(isDisplayed){
-        await this.verifyElementVisibilityAndText(this.locationPhoneFieldErrorMessage, isDisplayed, addLocationValidationErrorMessages.PHONE_IS_INCORRECT)
-    }
-
 
     //---------------------------------------------------------------------
 
@@ -185,22 +170,6 @@ class AddClubPage extends BasePage {
 
     async verifyAvailableOnlineTooltipAppearsOnHover(){
         await this.verifyTooltipAppearsOnHover(this.isOnlineInfoSign, clubOnlineSliderTooltip)
-    }
-
-    //Contact details - error messages
-    async verifyDisplayOfClubPhoneIsMandatoryErrorMessage(isDisplayed){
-        await this.verifyElementVisibilityAndText(this.clubPhoneFieldErrorMessage, isDisplayed, addClubValidationErrorMessages.PHONE_IS_MANDATORY)
-    }
-
-    async verifyDisplayOfClubPhoneIsIncorrectErrorMessage(isDisplayed){
-        await this.verifyElementVisibilityAndText(this.clubPhoneFieldErrorMessage, isDisplayed, addClubValidationErrorMessages.PHONE_IS_INCORRECT)
-    }
-    async verifyDisplayOfClubPhoneCantHaveLettersErrorMessage(isDisplayed){
-        await this.verifyElementVisibilityAndText(this.clubPhoneFieldErrorMessage, isDisplayed, addClubValidationErrorMessages.PHONE_IS_INCORRECT_CANT_HAVE_LETTERS)
-    }
-    
-    async verifyDisplayOfClubEmailIsIncorrectErrorMessage(isDisplayed){
-        await this.verifyElementVisibilityAndText(this.clubEmailFieldErrorMessage, isDisplayed, addClubValidationErrorMessages.EMAIL_IS_INCORRECT)
     }
 
     //Step #3
@@ -226,10 +195,6 @@ class AddClubPage extends BasePage {
         await this.completeButton.click();
     }
 
-    async verifyClubCreationSuccessMessageDisplayed(){
-        await this.verifyElementVisibility(this.clubCreatedSuccessMessage, true);
-        await this.expectElementToHaveText(this.clubCreatedSuccessMessage, successClubCreationMessage);
-    }
 
 }
 
