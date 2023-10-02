@@ -1,5 +1,8 @@
 package com.example.teachua_android.presentation.home
 
+import android.content.res.Configuration
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +15,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -19,17 +24,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.teachua_android.R
+import com.example.teachua_android.presentation.home.components.ClubsDirectionCard
 import com.example.teachua_android.presentation.home.components.ClubsImageTitleCardPager
+import com.example.teachua_android.presentation.home.components.HomeFooter
 import com.example.teachua_android.presentation.home.components.MainHeader
+import com.example.teachua_android.presentation.home.components.NewsCard
+import com.example.teachua_android.presentation.home.components.OrangeButton
 import com.example.teachua_android.presentation.home.components.TitleText
-import com.example.teachua_android.presentation.ui.theme.OrangePrimary
+import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomePage() {
     Column(
@@ -80,7 +94,8 @@ fun HomePage() {
                 TitleText(
                     title = "Про челендж \"Навчай українською\"",
                     subtext = "Ми допоможемо вам перейти на українську мову викладання. " +
-                            "Тут ви можете знайти мотиваційні та практичні вебінари з експертами, " +
+                            "Тут ви можете знайти мотиваційні та " +
+                            "практичні вебінари з експертами, " +
                             "корисні матеріали, які вдосконалять ваші знання та" +
                             " навички викладати " +
                             "українською.",
@@ -88,14 +103,11 @@ fun HomePage() {
                     titleLineHeight = 28.sp,
                     modifier = Modifier.padding(vertical = 20.dp)
                 )
-                Button(
-                    onClick = { /*TODO add button functionality*/ },
-                    shape = RoundedCornerShape(6.dp),
-                    colors = ButtonDefaults.buttonColors(OrangePrimary),
+                OrangeButton(
+                    text = "Переглянути матеріали",
+                    onClick = { /*TODO*/ },
                     modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Переглянути матеріали")
-                }
+                )
                 Spacer(modifier = Modifier.height(32.dp))
                 TitleText(
                     title = "Оберіть напрям гуртків",
@@ -103,13 +115,105 @@ fun HomePage() {
                     titleFontSize = 28.sp,
                     titleLineHeight = 36.sp
                 )
+                ClubsDirectionCard(
+                    title = "Вокальна студія, музика, музичні інструменти",
+                    icon = Icons.Default.ArrowForward,
+                    subText = "Музична школа, хор, ансамбль, гра на музичних інструментах, звукорежисерський гурток та ін.",
+                    onCheckClick = {}
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(
+                    onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.buttonColors(Color.White),
+                    shape = RoundedCornerShape(6.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    Text(
+                        text = "Всі гуртки",
+
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight(700),
+                            color = Color(0xFFFA8C16),
+                            textAlign = TextAlign.Center,
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                TitleText(
+                    title = "Новини",
+                    subtext = "",
+                    titleFontSize = 28.sp,
+                    titleLineHeight = 36.sp,
+                    alignCenter = true
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                NewsCard(
+                    image = R.drawable.challenge_2,
+                    date = LocalDate.of(2023, 11, 1),
+                    title = "Lorem ipsum dolor sit amet",
+                    onClickAction = {}
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                NewsCard(
+                    image = R.drawable.challenge_2,
+                    date = LocalDate.of(2023, 11, 1),
+                    title = "Lorem ipsum dolor sit amet",
+                    onClickAction = {}
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                NewsCard(
+                    image = R.drawable.challenge_2,
+                    date = LocalDate.of(2023, 11, 1),
+                    title = "Lorem ipsum dolor sit amet",
+                    onClickAction = {}
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.challenge_2),
+                    contentDescription = "image description",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1.225f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                TitleText(
+                    title = "Челендж “Навчай українською”",
+                    subtext = "Близько тисячі учасників з усієї України " +
+                            "уже взяли участь у 21-денному челенджі " +
+                            "“Навчай українською” для закладів позашкільної " +
+                            "освіти, які переходять на українську мову навчання." +
+                            " У листопаді 2020 року на українську мову викладання" +
+                            " перейшло близько пів сотні гуртків. Ми підготували" +
+                            " матеріали для тих, хто хоче перейти на українську.",
+                    titleFontSize = 28.sp,
+                    titleLineHeight = 36.sp
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                OrangeButton(
+                    text = "Переглянути матеріали",
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(42.dp))
+
             }
         }
+        HomeFooter({})
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-@Preview(showBackground = true, device = "spec:width=407dp,height=2340dp")
+@Preview(
+    showBackground = true, device = "spec:width=407dp,height=5000dp",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 fun HomePagePreview() {
     HomePage()
 }

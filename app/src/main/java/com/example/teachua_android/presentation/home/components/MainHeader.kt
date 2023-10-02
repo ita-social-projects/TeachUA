@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,8 +22,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -48,7 +45,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.teachua_android.R
-import com.example.teachua_android.presentation.ui.theme.OrangePrimary
 
 @Composable
 fun MainHeader(
@@ -136,13 +132,7 @@ fun HomeToolbar(
         LocationFragment(location = location, onLocationChange = onLocationChange)
         Spacer(modifier = Modifier.weight(1f))
         if (!isAuthorized) {
-            Button(
-                onClick = onAddClubsButtonClick,
-                colors = ButtonDefaults.outlinedButtonColors(containerColor = OrangePrimary),
-                shape = RoundedCornerShape(6.dp),
-            ) {
-                Text(text = "Додати гурток", color = Color.White, fontFamily = FontFamily.SansSerif)
-            }
+            OrangeButton(text = "Додати гурток", onClick = onAddClubsButtonClick)
         }
     }
 }
