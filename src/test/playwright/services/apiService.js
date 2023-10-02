@@ -1,7 +1,7 @@
 
 import { expect} from "@playwright/test";
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
-import {signInUrl} from "../constants/api.constants";
+import {signInUrl, clubCreation} from "../constants/api.constants";
 
 
 class ApiService {
@@ -59,12 +59,20 @@ class ApiService {
     async deleteClubByTitle(title) {
         const clubs = await this.getAllUsersClubs();
         const club = clubs.content.find((c) => c.name === title);
-
+        
         if (!club) {
             throw new Error("Club wasn't deleted as it doesn't exist (hasn't been created or the title is wrong");
         }
 
         await this.deleteClubById(club.id)
+    }
+
+    async createNewClub(){
+       await fetch(clubCreation.url, {
+            method: clubCreation.method,
+            body: JSON.stringify(clubCreation.body),
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` }
+        });
     }
 }
 

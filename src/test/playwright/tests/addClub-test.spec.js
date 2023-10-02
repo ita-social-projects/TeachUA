@@ -1,10 +1,10 @@
-import { chromium, expect, test} from "@playwright/test";
+import {test} from "@playwright/test";
 import ApiService from "../services/apiService";
 import AddClubPage from "../PO/AddClubPage";
 import HomePage from "../PO/HomePage";
 import UserPage from "../PO/UserPage";
 import {clubCategories, newLocationCorrectDetails, newClubCorrectContactDetails, newClubIncorrectContactDetails, newClubCorrectDetails, newClubIncorrectDetails, newLocationIncorrectDetails} from "../constants/clubInformation.constants";
-import {addClubValidationErrorMessages,addLocationValidationErrorMessages,clubAlreadyExistMessage, successClubCreationMessage,noLocationClubOnlineMessage} from "../constants/messages.constants";
+import {addClubValidationErrorMessages,addLocationValidationErrorMessages, successClubCreationMessage} from "../constants/messages.constants";
 
 let apiservice, addclubpage, homepage, userpage;
 
