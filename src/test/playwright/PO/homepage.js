@@ -37,7 +37,7 @@ class HomePage extends BasePage{
         await this.passwordField.fill(userData[userType].password);
 
         await this.loginButton.click();
-        await this.elementHaveText(this.loginSuccessMessage, successLoginMessage);
+        await this.expectElementToHaveText(this.loginSuccessMessage, successLoginMessage);
     }
 }
 

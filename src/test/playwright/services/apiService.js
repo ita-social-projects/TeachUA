@@ -30,6 +30,7 @@ class ApiService {
 
         let jsonResponse = await response.json();
         const { accessToken, id, roleName, refreshToken } = jsonResponse;
+        this.token = accessToken;
 
         await this.page.addInitScript(
             ({ id, accessToken, roleName, refreshToken }) => {
@@ -43,9 +44,27 @@ class ApiService {
         await this.page.reload();
     }
 
-    async receiveResponseOfGetRequest() {
-        await page.waitForResponse('');
+    async getAllUsersClubs() {
+        const clubResponse = await fetch(`http://localhost:8080/dev/api/clubs/1`);
+        return clubResponse.json();
+    }
 
+    async deleteClubById(id) {
+        await fetch(`http://localhost:8080/dev/api/club/${id}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
+        });
+    }
+
+    async deleteClubByTitle(title) {
+        const clubs = await this.getAllUsersClubs();
+        const club = clubs.content.find((c) => c.name === title);
+
+        if (!club) {
+            throw new Error("Club wasn't deleted as it doesn't exist (hasn't been created or the title is wrong");
+        }
+
+        await this.deleteClubById(club.id)
     }
 }
 

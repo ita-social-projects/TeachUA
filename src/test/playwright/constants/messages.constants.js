@@ -6,7 +6,7 @@ export const locationPhoneTooltip = "Телефон не може містити
 
 export const noLocationClubOnlineMessage = 'Ви не додали жодної локації, гурток автоматично є онлайн';
 export const successClubCreationMessage = 'Гурток успішно створено';
-export const clubAlreadyExistMessage = 'Гурток успішно створено';
+export const clubAlreadyExistMessage = 'Гурток з такою назвою вже існує';
 
 //All the error messages should be reviewed once the correct ones has been implemented.
 export const addClubValidationErrorMessages = {

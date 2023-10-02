@@ -2,10 +2,10 @@ import { expect} from "@playwright/test";
 import { apiUrl } from "../constants/api.constants";
 import {
     clubOnlineSliderTooltip,
-    successClubCreationMessage,
     locationNameTooltip,
     locationPhoneTooltip,
     noLocationClubOnlineMessage,
+    clubAlreadyExistMessage
 } from "../constants/messages.constants";
 import { imagesPath } from "../constants/general.constants";
 import BasePage from "./BasePage";
@@ -65,14 +65,14 @@ class AddClubPage extends BasePage {
         this.clubEmailFieldErrorMessage = this.page.locator("div#basic_contactПошта_help");
 
         //Step 3 - Опис
-        this.clubIsAutomaticallyOnlineMessage = this.page.locator('div.ant-message-notice-content');
+        this.clubIsAutomaticallyOnlineMessage = this.page.locator('div.ant-message-notice-content').filter({ hasText: noLocationClubOnlineMessage });;
         this.addLogoInput = this.page.locator('input#basic_urlLogo')
         this.addCoverInput = this.page.locator('input#basic_urlBackground')
         this.addImagesInput = this.page.locator('input[type="file"]').nth(2);
         this.descriptionTextArea = this.page.locator("textarea[placeholder='Додайте опис гуртка']");
         this.completeButton = this.page.getByRole("button", { name: "Завершити" });
         this.clubCreatedSuccessMessage = this.page.locator("div.ant-message-success");
-        this.clubAlreadyExistMessage = this.page.locator("div.ant-message-notice-content");
+        this.clubAlreadyExistMessage = this.page.locator("div.ant-message-notice-content").filter({ hasText: clubAlreadyExistMessage });;
         //Error messages
         this.clubDescriptionErrorMessage = this.page.locator("div#basic_description_help");
 

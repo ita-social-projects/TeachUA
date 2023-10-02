@@ -64,7 +64,11 @@ let apiservice, addclubpage, homepage, userpage;
         await userpage.gotoUserPage();
         await userpage.verifyClubExistsByTitle(newClubCorrectDetails.CLUB_TITLE);  
 
-        await userpage.removeClubByTitle(newClubCorrectDetails.CLUB_TITLE);
+        try {
+            await apiservice.deleteClubByTitle(newClubCorrectDetails.CLUB_TITLE);
+        } catch (e) {
+            console.error(e);
+        }
     });
 
     test("Verify validation error messages appearence/disappearence on the first step", async ({ page }) => {
@@ -99,7 +103,7 @@ let apiservice, addclubpage, homepage, userpage;
         await addclubpage.proceedToNextStep();
         await addclubpage.openAddLocationWindow();
 
-        //trigget validation of mandatory fields and verify that each is present and correct
+        //trigger validation of mandatory fields and verify that each is present and correct
         //message is displayed
         await addclubpage.confirmLocationAddition();
         
@@ -166,7 +170,6 @@ let apiservice, addclubpage, homepage, userpage;
 
 
     test("Verify validation error messages appearence/disappearence on the third step", async ({ page }) => {
-        //await addclubpage.fillClubNameField(newClubCorrectDetails.CLUB_TITLE);
         await addclubpage.fillInputField(addclubpage.clubNameField, newClubCorrectDetails.CLUB_TITLE);
         await addclubpage.toggleStatedCheckboxes(
             clubCategories.ACTING,
@@ -189,7 +192,6 @@ let apiservice, addclubpage, homepage, userpage;
 
 
     test("Verify that tooltips and warning messages appear", async ({ page }) => {
-        //await addclubpage.fillClubNameField(newClubCorrectDetails.CLUB_TITLE);
         await addclubpage.fillInputField(addclubpage.clubNameField, newClubCorrectDetails.CLUB_TITLE);
         await addclubpage.toggleStatedCheckboxes(
             clubCategories.ACTING,
@@ -207,7 +209,7 @@ let apiservice, addclubpage, homepage, userpage;
         await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, newClubCorrectContactDetails.PHONE_NUMBER);
         await addclubpage.proceedToNextStep();
 
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubIsAutomaticallyOnlineMessage, true, noLocationClubOnlineMessage);
+        await addclubpage.verifyElementVisibility(addclubpage.clubIsAutomaticallyOnlineMessage, true);
         await addclubpage.fillInputField(addclubpage.descriptionTextArea, newClubCorrectDetails.CLUB_DESCRIPTION);
 
         //complete club creation and go through the creation steps again to verify that
@@ -225,10 +227,20 @@ let apiservice, addclubpage, homepage, userpage;
         await addclubpage.fillInputField(addclubpage.descriptionTextArea, newClubCorrectDetails.CLUB_DESCRIPTION);
 
         await addclubpage.completeClubCreation();
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubAlreadyExistMessage, true, clubAlreadyExistMessage); 
+        await addclubpage.verifyElementVisibility(addclubpage.clubAlreadyExistMessage, true); 
+        
+        await page.reload()
+        userpage = new UserPage(page);
+        await userpage.gotoUserPage();
 
+        
+        try {
+            await apiservice.deleteClubByTitle(newClubCorrectDetails.CLUB_TITLE);
+        } catch (e) {
+            console.error(e);
+        }
     });
 
-    test.afterEach(async({page})=>{
-        //await page.close();
-    })
+    test.afterEach(async ({ page }) => {
+        await page.close();
+    });
