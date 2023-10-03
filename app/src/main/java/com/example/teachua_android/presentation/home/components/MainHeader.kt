@@ -132,7 +132,7 @@ fun HomeToolbar(
         LocationFragment(location = location, onLocationChange = onLocationChange)
         Spacer(modifier = Modifier.weight(1f))
         if (!isAuthorized) {
-            OrangeButton(text = "Додати гурток", onClick = onAddClubsButtonClick)
+            OrangeButtonWithWhiteText(text = "Додати гурток", onClick = onAddClubsButtonClick)
         }
     }
 }

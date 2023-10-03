@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.example.teachua_android.presentation.ui.theme.OrangePrimary
 
 @Composable
-fun OrangeButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun OrangeButtonWithWhiteText(text: String , onClick: () -> Unit , modifier: Modifier = Modifier) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(containerColor = OrangePrimary),

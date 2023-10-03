@@ -70,7 +70,7 @@ fun HomeFooter(
             alignCenter = true
         )
         Spacer(modifier = Modifier.height(20.dp))
-        OrangeButton(
+        OrangeButtonWithWhiteText(
             text = "Допомогти проєкту",
             onClick = onHelpButtonClick,
             modifier = Modifier

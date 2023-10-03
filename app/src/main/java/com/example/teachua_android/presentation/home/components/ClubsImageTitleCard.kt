@@ -80,7 +80,7 @@ fun ClubsImageTitleCard(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            OrangeButton(text = stringResource(id = R.string.details), onClick = onClick, modifier = Modifier.fillMaxWidth())
+            OrangeButtonWithWhiteText(text = stringResource(id = R.string.details), onClick = onClick, modifier = Modifier.fillMaxWidth())
         }
     }
 }
