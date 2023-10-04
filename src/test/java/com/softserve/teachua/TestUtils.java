@@ -53,11 +53,13 @@ import com.softserve.teachua.model.CertificateDates;
 import com.softserve.teachua.model.CertificateTemplate;
 import com.softserve.teachua.model.CertificateType;
 import com.softserve.teachua.model.Role;
+import com.softserve.teachua.model.SearchStatistics;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.security.UserPrincipal;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -343,5 +345,13 @@ public class TestUtils {
         results.add(quizResult2);
         results.add(quizResult3);
         return results;
+    }
+
+    public static SearchStatistics getSearchStatistics() {
+        return SearchStatistics.builder()
+                .queryString("query1")
+                .searchCount(1L)
+                .timestamp(new Date())
+                .build();
     }
 }
