@@ -8,6 +8,7 @@ import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.dto.user.UserPreview;
 import com.softserve.teachua.model.GalleryPhoto;
+import com.softserve.teachua.model.WorkTime;
 import com.softserve.teachua.utils.validations.CheckRussian;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -47,7 +48,7 @@ public class ClubResponse implements Convertible {
     private String urlLogo;
     private String urlBackground;
     private List<GalleryPhoto> urlGallery;
-    private String workTime;
+    private Set<WorkTime> workTimes;
 
     @NotNull(message = "categories cannot be null")
     private Set<CategoryResponse> categories;

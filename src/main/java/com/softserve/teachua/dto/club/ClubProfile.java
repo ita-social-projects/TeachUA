@@ -5,8 +5,10 @@ import com.softserve.teachua.dto.club.validation.ClubDescription;
 import com.softserve.teachua.dto.gallery.GalleryPhotoProfile;
 import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.dto.marker.Convertible;
+import com.softserve.teachua.model.WorkTime;
 import com.softserve.teachua.utils.validations.CheckRussian;
 import java.util.List;
+import java.util.Set;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -61,6 +63,8 @@ public class ClubProfile implements Convertible {
     private String urlLogo;
 
     private List<GalleryPhotoProfile> urlGallery;
+
+    private List<WorkTime> workTimes;
 
     private Boolean isOnline;
 

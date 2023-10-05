@@ -6,6 +6,7 @@ import com.softserve.teachua.dto.marker.Convertible;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -67,8 +68,12 @@ public class Club implements Convertible {
     @ToString.Exclude
     private List<GalleryPhoto> urlGallery;
 
-    @Column
-    private String workTime;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JoinTable(name = "club_work_time",
+            joinColumns = {@JoinColumn(name = "club_id")},
+            inverseJoinColumns = {@JoinColumn(name = "work_time_id")})
+    @ToString.Exclude
+    private Set<WorkTime> workTimes;
 
     @Column
     @ColumnDefault(value = "0")

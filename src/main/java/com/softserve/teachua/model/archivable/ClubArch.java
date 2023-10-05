@@ -26,13 +26,13 @@ public class ClubArch implements Convertible, Archivable {
     private String urlLogo;
     private String urlBackground;
     private List<Long> urlGalleriesIds;
-    private String workTime;
     private Double rating;
     private Long feedbackCount;
     private Boolean isOnline;
     private Set<Long> locationsIds;
     private Set<Long> categoriesIds;
     private Set<Long> feedbacksIds;
+    private Set<Long> workTimesIds;
     private Long userId;
     private Long centerId;
     private Boolean isApproved;
