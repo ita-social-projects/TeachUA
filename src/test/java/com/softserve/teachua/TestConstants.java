@@ -3,6 +3,7 @@ package com.softserve.teachua;
 import com.softserve.teachua.utils.CertificateContentDecorator;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import org.springframework.mock.web.MockMultipartFile;
 
 public final class TestConstants {
@@ -67,4 +68,5 @@ public final class TestConstants {
                     + "\"issueDate\":\"\"},{\"Номер курсу\":\"\",\"fullName\":\"Коваль Сергій Сергійович\","
                     + "\"learningForm\":\"\",\"Електронна пошта\":\"test@test.com\",\"countOfHours\":\"\","
                     + "\"issueDate\":\"\"}]\n";
+
 }

@@ -331,6 +331,19 @@
       <artifactId>micrometer-registry-prometheus</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <version>4.2.0</version>
+      <scope>test</scope>
+    </dependency>
+
     <!--  Map types for Hibernate need update to currently Hibernate version-->
     <dependency>
       <groupId>io.hypersistence</groupId>

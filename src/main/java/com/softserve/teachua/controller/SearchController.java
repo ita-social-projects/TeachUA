@@ -41,9 +41,12 @@ public class SearchController implements Api {
      * @return {@link CombinedPossibleResponse }
      */
     @GetMapping("/search")
-    public CombinedPossibleResponse possibleResponses(@RequestParam @Length(max = 50) String text,
-            @RequestParam String cityName) {
+    public CombinedPossibleResponse possibleResponses(
+            @RequestParam @Length(max = 50) String text,
+            @RequestParam String cityName,
+            @RequestParam(required = false) Long userId
+    ) {
         return CombinedPossibleResponse.builder().categories(categoryService.getPossibleCategoryByName(text))
-                .clubs(clubService.getPossibleClubByName(text, cityName)).build();
+                .clubs(clubService.getPossibleClubByName(text, cityName, userId)).build();
     }
 }

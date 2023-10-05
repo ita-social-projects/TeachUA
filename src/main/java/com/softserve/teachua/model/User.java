@@ -15,6 +15,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -77,4 +79,7 @@ public class User implements Convertible {
     @ToString.Exclude
     @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
     private Set<Child> children;
+
+    @OneToMany(mappedBy = "user")
+    private List<SearchStatistics> searchStatistics = new ArrayList<>();
 }
