@@ -167,9 +167,10 @@ public interface ClubService {
      * The method which return possible results of search by entered text.
      *
      * @param text - put text of search (based on clubName & cityName)
+     * @param userId - put user id for collecting search statistics
      * @return {@code List<SearchPossibleResponse>}
      */
-    List<SearchPossibleResponse> getPossibleClubByName(String text, String cityName);
+    List<SearchPossibleResponse> getPossibleClubByName(String text, String cityName, Long userId);
 
     /**
      * The method which return possible results of search by category and city.

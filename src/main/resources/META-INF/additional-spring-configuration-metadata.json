@@ -1,0 +1,19 @@
+{
+    "properties": [
+        {
+            "name": "statistics.max-number",
+            "type": "java.lang.Integer",
+            "description": "Max number of rows in search_results table."
+        },
+        {
+            "name": "statistics.max-time",
+            "type": "java.lang.String",
+            "description": "Date in format yyyy-MM-dd HH:mm:ss. The maximum date until which requests are stored, older requests are deleted."
+        },
+        {
+            "name": "statistics.toCache",
+            "type": "java.lang.Boolean",
+            "description": "A variable that determines whether statistics should be collected or not."
+        }
+    ]
+}

@@ -56,7 +56,6 @@ public class ScheduleSendServiceImpl implements ScheduleSendService {
                 certificateService.updateDateAndSendStatus(certificate.getId(), false);
             }
         } else {
-            postProcessor.destroy();
             log.info("Scheduled Certification Service. Done. New task not found.");
         }
         gmailService.detectFailedSendCertificates();

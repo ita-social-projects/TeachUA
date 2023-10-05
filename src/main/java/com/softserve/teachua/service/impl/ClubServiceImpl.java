@@ -52,6 +52,7 @@ import com.softserve.teachua.service.ClubService;
 import com.softserve.teachua.service.DistrictService;
 import com.softserve.teachua.service.FeedbackService;
 import com.softserve.teachua.service.LocationService;
+import com.softserve.teachua.service.SearchStatisticsService;
 import com.softserve.teachua.service.StationService;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.utils.CategoryUtil;
@@ -100,6 +101,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private final CoordinatesConverter coordinatesConverter;
     private final GalleryRepository galleryRepository;
     private final CenterService centerService;
+    private final SearchStatisticsService searchStatisticsService;
     private final FeedbackRepository feedbackRepository;
     private final ObjectMapper objectMapper;
     private final ContactsStringConverter contactsStringConverter;
@@ -112,7 +114,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                            StationService stationService, CategoryService categoryService, UserService userService,
                            ClubToClubResponseConverter toClubResponseConverter, LocationService locationService,
                            CoordinatesConverter coordinatesConverter, GalleryRepository galleryRepository,
-                           CenterService centerService, FeedbackRepository feedbackRepository,
+                           CenterService centerService, SearchStatisticsService searchStatisticsService,
+                           FeedbackRepository feedbackRepository,
                            ObjectMapper objectMapper, ContactsStringConverter contactsStringConverter,
                            ComplaintRepository complaintRepository) {
         this.clubRepository = clubRepository;
@@ -127,6 +130,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         this.toClubResponseConverter = toClubResponseConverter;
         this.centerRepository = centerRepository;
         this.locationService = locationService;
+        this.searchStatisticsService = searchStatisticsService;
         this.coordinatesConverter = coordinatesConverter;
         this.galleryRepository = galleryRepository;
         this.centerService = centerService;
@@ -409,7 +413,10 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     @Override
-    public List<SearchPossibleResponse> getPossibleClubByName(String text, String cityName) {
+    public List<SearchPossibleResponse> getPossibleClubByName(String text, String cityName, Long userId) {
+        if (text.length() >= 4) {
+            searchStatisticsService.addToStatistics(text, userId);
+        }
         return clubRepository.findTop3ByName(text, cityName, PageRequest.of(0, 3)).stream()
                 .map(category -> (SearchPossibleResponse) dtoConverter.convertToDto(category,
                         SearchPossibleResponse.class))
