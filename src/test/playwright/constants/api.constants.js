@@ -1,13 +1,14 @@
 export const apiUrl = 'http://localhost:3000/dev';
 export const clubsUrl = 'http://localhost:3000/dev/clubs';
 export const signInUrl = 'http://localhost:8080/dev/api/signin';
+export const usersClubs = 'http://localhost:8080/dev/api/clubs';
 
-export const clubCreation = {
+export const createClubRequest  = {
     url: "http://localhost:8080/dev/api/club",
     method: "POST",
     body: {
         categoriesName: ["Акторська майстерність, театр", "Центр розвитку", "Програмування, робототехніка, STEM"],
-        name: "Test Automation club 2",
+        name: "Test Automation club new",
         ageFrom: 10,
         ageTo: 18,
         description:
@@ -15,10 +16,10 @@ export const clubCreation = {
         userId: "1",
         locations: [
             {
-                name: "Automation Kyiv City",
+                name: "Automation City",
                 cityName: "Дніпро",
-                districtName: "Деснянський",
-                stationName: "Арсенальна",
+                districtName: "Амур-Нижньодніпровський",
+                stationName: "Метробудівників",
                 address: "Volodymyra Velykoho str.",
                 coordinates: "49.790387, 24.028195",
                 phone: "0671834956",

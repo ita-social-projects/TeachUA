@@ -20,6 +20,13 @@ let apiservice, addclubpage, homepage, userpage;
 
     test("Verify that a new club can be succesfully added", async ({ page }) => {
         userpage = new UserPage(page);
+        //remove the club with the test club_title if it exists
+        try {
+            await apiservice.deleteClubByTitle(newClubCorrectDetails.CLUB_TITLE);
+        } catch (e) {
+            console.error(e);
+        }
+        
         await addclubpage.fillInputField(addclubpage.clubNameField, newClubCorrectDetails.CLUB_TITLE);
         await addclubpage.toggleStatedCheckboxes(
             clubCategories.ACTING,
@@ -62,13 +69,7 @@ let apiservice, addclubpage, homepage, userpage;
         await addclubpage.verifyElementVisibilityAndText(addclubpage.clubCreatedSuccessMessage, true, successClubCreationMessage);
         
         await userpage.gotoUserPage();
-        await userpage.verifyClubExistsByTitle(newClubCorrectDetails.CLUB_TITLE);  
-
-        try {
-            await apiservice.deleteClubByTitle(newClubCorrectDetails.CLUB_TITLE);
-        } catch (e) {
-            console.error(e);
-        }
+        await userpage.verifyClubExistance(newClubCorrectDetails.CLUB_TITLE);  
     });
 
     test("Verify validation error messages appearence/disappearence on the first step", async ({ page }) => {
@@ -187,11 +188,17 @@ let apiservice, addclubpage, homepage, userpage;
         await addclubpage.fillInputField(addclubpage.descriptionTextArea, newClubCorrectDetails.CLUB_DESCRIPTION);
         await addclubpage.verifyElementVisibilityAndText(addclubpage.clubDescriptionErrorMessage, false); 
 
-
     });
 
 
     test("Verify that tooltips and warning messages appear", async ({ page }) => {
+        //remove the club with the test club_title if it exists
+        try {
+            await apiservice.deleteClubByTitle(newClubCorrectDetails.CLUB_TITLE);
+        } catch (e) {
+            console.error(e);
+        }
+
         await addclubpage.fillInputField(addclubpage.clubNameField, newClubCorrectDetails.CLUB_TITLE);
         await addclubpage.toggleStatedCheckboxes(
             clubCategories.ACTING,
@@ -232,13 +239,6 @@ let apiservice, addclubpage, homepage, userpage;
         await page.reload()
         userpage = new UserPage(page);
         await userpage.gotoUserPage();
-
-        
-        try {
-            await apiservice.deleteClubByTitle(newClubCorrectDetails.CLUB_TITLE);
-        } catch (e) {
-            console.error(e);
-        }
     });
 
     test.afterEach(async ({ page }) => {

@@ -1,7 +1,7 @@
 import { chromium, expect, test} from "@playwright/test";
 import ApiService from "../services/apiService";
-import GroupsPage from "../PO/clubsPage";
-import BasePage from "../PO/basePage";
+import GroupsPage from "../PO/ClubsPage";
+import BasePage from "../PO/BasePage";
 import {simpleSearchParameters} from "../constants/searchQueries.constants";
 import {cities} from "../constants/general.constants";
 

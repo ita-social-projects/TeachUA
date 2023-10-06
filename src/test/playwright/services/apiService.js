@@ -1,7 +1,7 @@
 
 import { expect} from "@playwright/test";
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
-import {signInUrl, clubCreation} from "../constants/api.constants";
+import {signInUrl, createClubRequest , usersClubs} from "../constants/api.constants";
 
 
 class ApiService {
@@ -31,6 +31,7 @@ class ApiService {
         let jsonResponse = await response.json();
         const { accessToken, id, roleName, refreshToken } = jsonResponse;
         this.token = accessToken;
+        this.userId = id;
 
         await this.page.addInitScript(
             ({ id, accessToken, roleName, refreshToken }) => {
@@ -44,35 +45,66 @@ class ApiService {
         await this.page.reload();
     }
 
-    async getAllUsersClubs() {
-        const clubResponse = await fetch(`http://localhost:8080/dev/api/clubs/1`);
-        return clubResponse.json();
+    async getTotalPages(apiEndpoint, userId) {
+        try{
+        const clubResponse = await fetch(`${apiEndpoint}/${userId}?page=0`);
+        const responseJson = await clubResponse.json();
+        return responseJson.totalPages;
+        }catch(e){
+            console.error("Error fetching total pages of clubs: ", e);
+            throw new Error('Failed to fetch total pages of clubs');
+        }
+    }
+
+    async getAllClubsOfUser() {
+        try {
+            const totalPages = await this.getTotalPages(usersClubs, this.userId);
+            let allClubsContent = [];
+            for (let i = 0; i < totalPages; i++) {
+                const pageResponse = await fetch(`${usersClubs}/${this.userId}?page=${i}`);
+                const pageJson = await pageResponse.json();
+                allClubsContent = allClubsContent.concat(pageJson.content);
+            }
+            return allClubsContent;
+        } catch (e) {
+            console.error("Error fetching clubs: ", e);
+            throw new Error('Failed to fetch clubs');
+        }
     }
 
     async deleteClubById(id) {
-        await fetch(`http://localhost:8080/dev/api/club/${id}`, {
+        const response = await fetch(`http://localhost:8080/dev/api/club/${id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
         });
+        if (!response.ok) {
+            console.log(await response.json());
+            throw new Error("Request failed, club was not deleted \n");
+        }
     }
 
     async deleteClubByTitle(title) {
-        const clubs = await this.getAllUsersClubs();
-        const club = clubs.content.find((c) => c.name === title);
-        
+        const clubs = await this.getAllClubsOfUser();
+        const club = clubs.find((c) => c.name === title);
+
         if (!club) {
-            throw new Error("Club wasn't deleted as it doesn't exist (hasn't been created or the title is wrong");
+            console.log("Club wasn't deleted as it doesn't exist (hasn't been created or the title is wrong)");
+            return;
         }
 
-        await this.deleteClubById(club.id)
+        await this.deleteClubById(club.id);
     }
 
-    async createNewClub(){
-       await fetch(clubCreation.url, {
-            method: clubCreation.method,
-            body: JSON.stringify(clubCreation.body),
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` }
+    async createNewClub() {
+        const response = await fetch(createClubRequest .url, {
+            method: createClubRequest .method,
+            body: JSON.stringify(createClubRequest .body),
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
         });
+        if (!response.ok) {
+            console.log(await response.json());
+            throw new Error("Request failed, club was not created \n");
+        }
     }
 }
 

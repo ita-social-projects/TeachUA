@@ -38,7 +38,7 @@ class ClubsPage extends BasePage {
                 const firstTitle = await this.firstCardTitle.textContent();
                 //getting the first card locator using it's title so that we can later on wait for it to be hidded
                 const firstTitleLocator = await this.page.getByRole("div", { name: firstTitle });
-                const pageTitlesText = await this.page.locator("div.title").allTextContents();
+                const pageTitlesText = await this.clubsNames.allTextContents();
                 allClubsTitles = allClubsTitles.concat(pageTitlesText);
                 console.log(pageTitlesText);
                 if (await this.isNextPageAvailable()) {

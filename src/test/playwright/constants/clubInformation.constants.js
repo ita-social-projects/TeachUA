@@ -57,3 +57,31 @@ export const newClubIncorrectContactDetails = {
     PHONE_NUMBER_INCORRECT_FORMAT_WITH_LETTERS: '123abc',
     EMAIL: 'incorrectformat',
 }
+
+
+export const editClubDetails = {
+    CLUB_TITLE: 'Edited Automation club',
+    CLUB_ENTER_AGE: '5',
+    CLUB_CLOSING_AGE: '15',
+    CLUB_RELATED_CENTER: '- центр не вказано',
+    CLUB_DESCRIPTION: 'This is a test description for a new club. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident'
+}
+
+export const editLocationDetails = {
+    LOCATION_NAME: 'Edited City',
+    LOCATION_CITY: 'Київ',
+    LOCATION_DISTRICT: 'Святошинський',
+    LOCATION_STATION: '',
+    LOCATION_ADDRESS: 'Some Unknown str.',
+    LOCATION_COORDINATES: '19.790387, 64.028195',
+    LOCATION_PHONE: '0555555555'
+}
+
+export const editClubContactDetails = {
+    PHONE_NUMBER: '1236547891',
+    FACEBOOK: 'editedFacebook',
+    WHATSUP: 'editedWhatsUp',
+    EMAIL: 'editedEmail@gmail.com',
+    SKYPE: 'editedSkype',
+    WEB_PAGE: 'editedWebPage.com',
+}

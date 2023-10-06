@@ -43,6 +43,8 @@ class AddClubPage extends BasePage {
 
         this.locationCloseButton = this.page.locator('button[aria-label="Close"]').nth(1);
 
+        this.backgoundForClosure = this.page.locator('div#root');
+
         this.locationsList = this.page.locator('div.add-club-location-list ul.ant-list-items');
 
         this.isOnlineSlider = this.page.locator('button[role="switch"]');
@@ -71,6 +73,7 @@ class AddClubPage extends BasePage {
         this.addImagesInput = this.page.locator('input[type="file"]').nth(2);
         this.descriptionTextArea = this.page.locator("textarea[placeholder='Додайте опис гуртка']");
         this.completeButton = this.page.getByRole("button", { name: "Завершити" });
+
         this.clubCreatedSuccessMessage = this.page.locator("div.ant-message-success");
         this.clubAlreadyExistMessage = this.page.locator("div.ant-message-notice-content").filter({ hasText: clubAlreadyExistMessage });;
         //Error messages

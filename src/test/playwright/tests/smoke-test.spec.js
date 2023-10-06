@@ -1,6 +1,6 @@
 import { chromium, expect, test} from "@playwright/test";
-import HomePage from "../PO/homePage";
-import UserPage from "../PO/userPage";
+import HomePage from "../PO/HomePage";
+import UserPage from "../PO/UserPage";
 import ApiService from "../services/apiService";
 
 let homepage, apiservice, userpage;

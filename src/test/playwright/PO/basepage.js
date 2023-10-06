@@ -6,6 +6,7 @@ class BasePage {
         this.page = page;
         this.navBarCityDropdown = page.locator('header > div.right-side-menu div.city')
         this.navBarCityDropdownList = page.locator('body > div:last-child ul')
+        this.paginationNextPageButton = page.locator('ul > li[title="Next Page"]');
     }
 
     async expectElementToHaveText(element, text) {
@@ -24,6 +25,24 @@ class BasePage {
             await expect(element).toBeVisible();
         } else if (isVisible === false) {
             await expect(element).not.toBeVisible();
+        }
+    }
+
+    async isNextPageAvailable() {
+        return (
+            (await this.paginationNextPageButton.isVisible()) &&
+            (await this.paginationNextPageButton.getAttribute("aria-disabled")) !== "true"
+        );
+    }
+
+    async goToNextPage() {
+        await this.paginationNextPageButton.click();
+    }
+
+    async goToNextPageIfAvailabe(actionsOnThePage = async () => {}) {
+        if (await this.isNextPageAvailable()) {
+            await this.goToNextPage();
+            await actionsOnThePage();
         }
     }
 
