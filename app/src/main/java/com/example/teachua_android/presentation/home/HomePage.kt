@@ -56,21 +56,28 @@ fun HomePage() {
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.matchParentSize()
             )
-            Column(
-                modifier = Modifier.padding(horizontal = 24.dp)
-            ) {
+            Column {
                 ClubsImageTitleCardPager(modifier = Modifier.padding(top = 16.dp))
-                AboutUsHomePageSection()
-                AboutTeachUkrainianChallengeHomePageSection()
-                Spacer(modifier = Modifier.height(32.dp))
-                ClubsDirectionHomePageSection()
-                Spacer(modifier = Modifier.height(24.dp))
-                WhiteButtonWithOrangeText(text = "Всі гуртки" , onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth())
-                Spacer(modifier = Modifier.height(32.dp))
-                NewsHomePageSection()
-                Spacer(modifier = Modifier.height(32.dp))
-                TeachUkrainianChallengeHomePageSection()
-                Spacer(modifier = Modifier.height(42.dp))
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    AboutUsHomePageSection()
+                    AboutTeachUkrainianChallengeHomePageSection()
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
+                ClubsDirectionHomePageSection(modifier = Modifier)
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    WhiteButtonWithOrangeText(text = "Всі гуртки" , onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth())
+                    Spacer(modifier = Modifier.height(32.dp))
+                    NewsHomePageSection()
+                    Spacer(modifier = Modifier.height(32.dp))
+                    TeachUkrainianChallengeHomePageSection()
+                    Spacer(modifier = Modifier.height(42.dp))
+                }
+
             }
         }
         HomeFooter({})

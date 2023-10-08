@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -96,7 +97,9 @@ fun ClubsImageTitleCardPager(modifier: Modifier = Modifier) {
         HorizontalPager(
             count = pageCount,
             state = pagerState,
-            modifier = Modifier
+            modifier = Modifier,
+            itemSpacing = 24.dp,
+            contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             ClubsImageTitleCard(
                 image = R.drawable.homepage_moreinfo_img1,
