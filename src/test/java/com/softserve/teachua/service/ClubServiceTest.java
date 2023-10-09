@@ -94,7 +94,7 @@ class ClubServiceTest {
         user = User.builder().id(USER_EXISTING_ID).firstName(USER_EXISTING_NAME).lastName(USER_EXISTING_LASTNAME)
                 .build();
         club = Club.builder().id(EXISTING_ID).name(NEW_NAME).user(user).categories(CATEGORIES_SET)
-                .feedbacks(Sets.newSet()).locations(Sets.newSet()).urlGallery(Lists.list()).build();
+                .feedbacks(Sets.newSet()).locations(Sets.newSet()).workTimes(Sets.newSet()).urlGallery(Lists.list()).build();
         clubProfile = ClubProfile.builder().name(NEW_NAME).description(DESCRIPTION).contacts(CONTACTS)
                 .categoriesName(CATEGORIES).build();
         clubResponse = ClubResponse.builder().id(EXISTING_ID).name(NEW_NAME).build();
