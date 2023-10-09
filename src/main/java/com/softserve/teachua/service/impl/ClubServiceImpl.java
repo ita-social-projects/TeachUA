@@ -119,7 +119,9 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                            CoordinatesConverter coordinatesConverter, GalleryRepository galleryRepository,
                            CenterService centerService, FeedbackRepository feedbackRepository,
                            ObjectMapper objectMapper, ContactsStringConverter contactsStringConverter,
-                           ComplaintRepository complaintRepository, WorkTimeRepository workTimeRepository, WorkTimeService workTimeService) {
+                           ComplaintRepository complaintRepository,
+                           WorkTimeRepository workTimeRepository,
+                           WorkTimeService workTimeService) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -193,7 +195,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         Club club = getClubById(id);
         Set<LocationProfile> locations = null;
 
-
         if (clubResponse.getLocations() != null) {
             locations = new HashSet<>(clubResponse.getLocations());
             if (!locations.isEmpty()) {
@@ -204,7 +205,6 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             }
         }
         if (clubResponse.getWorkTimes() != null) {
-
             club.getWorkTimes().forEach(workTime -> {
                 workTime.setClub(null);
                 workTimeRepository.deleteById(workTime.getId());
@@ -223,7 +223,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 .withContacts(contactsStringConverter.convertContactDataResponseToString(clubResponse.getContacts()))
                 .withLocations(locationService.updateLocationByClub(locations, club))
                 .withCenter(center)
-                .withWorkTimes(workTimeService.updateWorkTimeByClub(clubResponse.getWorkTimes(),club));
+                .withWorkTimes(workTimeService.updateWorkTimeByClub(clubResponse.getWorkTimes(), club));
 
         List<GalleryPhoto> galleryPhotos = clubResponse.getUrlGallery();
         if (galleryPhotos != null && !galleryPhotos.isEmpty()) {
@@ -284,7 +284,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                                 .collect(Collectors.toSet()))
                         .withWorkTimes(clubProfile.getWorkTimes().stream()
                                 .map(workTime -> workTimeRepository.save(dtoConverter
-                                .convertToEntity(workTime,new WorkTime())
+                                        .convertToEntity(workTime, new WorkTime())
                                         .withDay(workTime.getDay())
                                         .withStartTime(workTime.getStartTime())
                                         .withEndTime(workTime.getEndTime())))
@@ -326,7 +326,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                                         .map(categoryService::getCategoryByName).collect(Collectors.toSet()))
                                 .withWorkTimes(clubProfile.getWorkTimes().stream()
                                         .map(workTime -> workTimeRepository.save(dtoConverter
-                                                .convertToEntity(workTime,new WorkTime())
+                                                .convertToEntity(workTime, new WorkTime())
                                                 .withDay(workTime.getDay())
                                                 .withStartTime(workTime.getStartTime())
                                                 .withEndTime(workTime.getEndTime())))

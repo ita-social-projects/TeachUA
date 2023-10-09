@@ -2,28 +2,25 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
-import com.softserve.teachua.model.Location;
 import com.softserve.teachua.model.WorkTime;
 import com.softserve.teachua.repository.WorkTimeRepository;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.WorkTimeService;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @Transactional
-public class WorkTimeServiceImpl implements WorkTimeService
-{
+public class WorkTimeServiceImpl implements WorkTimeService {
     private static final String WORK_TIME_NOT_FOUND_BY_ID = "Work time not found by id: %s";
 
     private final DtoConverter dtoConverter;
@@ -33,7 +30,8 @@ public class WorkTimeServiceImpl implements WorkTimeService
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public WorkTimeServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService, WorkTimeRepository workTimeRepository, ObjectMapper objectMapper) {
+    public WorkTimeServiceImpl(DtoConverter dtoConverter, ArchiveService archiveService,
+                               WorkTimeRepository workTimeRepository, ObjectMapper objectMapper) {
         this.dtoConverter = dtoConverter;
         this.archiveService = archiveService;
         this.workTimeRepository = workTimeRepository;
@@ -55,12 +53,10 @@ public class WorkTimeServiceImpl implements WorkTimeService
 
     @Override
     public Set<WorkTime> updateWorkTimeByClub(Set<WorkTime> workTimes, Club club) {
-
-
         if (workTimes == null || workTimes.isEmpty()) {
-           throw new IncorrectInputException("empty Work time");
+            throw new IncorrectInputException("empty Work time");
         }
-        if(club.getWorkTimes()!=null) {
+        if (club.getWorkTimes() != null) {
             club.getWorkTimes().forEach(workTime -> {
                 workTime.setClub(null);
                 workTimeRepository.deleteById(workTime.getId());
@@ -75,5 +71,4 @@ public class WorkTimeServiceImpl implements WorkTimeService
                                 .withEndTime(workTime.getEndTime())))
                 .collect(Collectors.toSet());
     }
-
 }
