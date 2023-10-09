@@ -64,6 +64,7 @@ public class ClubProfile implements Convertible {
 
     private List<GalleryPhotoProfile> urlGallery;
 
+    @Valid
     private List<WorkTime> workTimes;
 
     private Boolean isOnline;
