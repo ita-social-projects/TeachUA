@@ -1,6 +1,7 @@
 package com.softserve.teachua.service;
 
 import static com.softserve.teachua.TestUtils.getUser;
+import com.softserve.teachua.constants.Days;
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.ContactsStringConverter;
 import com.softserve.teachua.converter.DtoConverter;
@@ -15,11 +16,13 @@ import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.WorkTime;
 import com.softserve.teachua.model.archivable.ClubArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.repository.WorkTimeRepository;
 import com.softserve.teachua.service.impl.ClubServiceImpl;
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,9 +53,11 @@ class ClubServiceTest {
     private final String NEW_NAME = "New Club Name";
     private final String CONTACTS = "123456789";
     private final String DESCRIPTION = "Description Text";
+    private final WorkTime workTime =WorkTime.builder().day(Days.MONDAY).startTime("13:23").endTime("14:23").build();
     private final List<String> CATEGORIES = Arrays.asList("Category1", "Category2");
     private final Set<Category> CATEGORIES_SET = Sets.newSet(Category.builder().name("Category1").build(),
             Category.builder().name("Category2").build());
+    private final List<WorkTime> WORK_TIMES_SET =  Arrays.asList(workTime);
     private final Long USER_EXISTING_ID = 1L;
     private final Long USER_NOT_EXISTING_ID = 100L;
     private final String USER_EXISTING_NAME = "User Existing Name";
@@ -67,6 +72,8 @@ class ClubServiceTest {
     private ClubToClubResponseConverter clubToClubResponseConverter;
     @Mock
     private LocationRepository locationRepository;
+    @Mock
+    private WorkTimeRepository workTimeRepository;
     @Mock
     private FileUploadService fileUploadService;
     @Mock
@@ -98,7 +105,7 @@ class ClubServiceTest {
         club = Club.builder().id(EXISTING_ID).name(NEW_NAME).user(user).categories(CATEGORIES_SET)
                 .feedbacks(Sets.newSet()).locations(Sets.newSet()).workTimes(Sets.newSet()).urlGallery(Lists.list()).build();
         clubProfile = ClubProfile.builder().name(NEW_NAME).description(DESCRIPTION).contacts(CONTACTS)
-                .categoriesName(CATEGORIES).build();
+                .categoriesName(CATEGORIES).workTimes(WORK_TIMES_SET).build();
         clubResponse = ClubResponse.builder().id(EXISTING_ID).name(NEW_NAME).build();
         clubArch = ClubArch.builder().id(EXISTING_ID).name(NEW_NAME).build();
     }
@@ -223,6 +230,7 @@ class ClubServiceTest {
         when(dtoConverter.convertToDto(newClub, SuccessCreatedClub.class))
                 .thenReturn(SuccessCreatedClub.builder().name(NEW_NAME).build());
         when(userService.getAuthenticatedUser()).thenReturn(user);
+        when(dtoConverter.convertToEntity(workTime, new WorkTime())).thenReturn(workTime);
 
         SuccessCreatedClub actual = clubService.addClub(clubProfile);
         assertEquals(clubProfile.getName(), actual.getName());
