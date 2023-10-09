@@ -1,20 +1,26 @@
 package com.softserve.teachua.service;
 
 import static com.softserve.teachua.TestUtils.getUser;
+import com.softserve.teachua.constants.Days;
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.ContactsStringConverter;
+import com.softserve.teachua.converter.CoordinatesConverter;
 import com.softserve.teachua.converter.DtoConverter;
 import com.softserve.teachua.dto.club.ClubOwnerProfile;
 import com.softserve.teachua.dto.club.ClubProfile;
 import com.softserve.teachua.dto.club.ClubResponse;
 import com.softserve.teachua.dto.club.SuccessCreatedClub;
 import com.softserve.teachua.dto.club.SuccessUpdatedClub;
+import com.softserve.teachua.dto.location.LocationProfile;
 import com.softserve.teachua.exception.AlreadyExistException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Category;
+import com.softserve.teachua.model.City;
 import com.softserve.teachua.model.Club;
+import com.softserve.teachua.model.Location;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.WorkTime;
 import com.softserve.teachua.model.archivable.ClubArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
@@ -23,6 +29,7 @@ import com.softserve.teachua.repository.UserRepository;
 import com.softserve.teachua.service.impl.ClubServiceImpl;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -51,16 +58,27 @@ class ClubServiceTest {
     private final String CONTACTS = "123456789";
     private final String DESCRIPTION = "Description Text";
     private final List<String> CATEGORIES = Arrays.asList("Category1", "Category2");
+    private final List<LocationProfile> LOCATIONS = Arrays.asList(LocationProfile.builder().id(EXISTING_ID).build());
     private final Set<Category> CATEGORIES_SET = Sets.newSet(Category.builder().name("Category1").build(),
             Category.builder().name("Category2").build());
+    private final List<WorkTime> WORK_TIMES = Arrays.asList(WorkTime.builder().day(Days.MONDAY).startTime("13:23").endTime("14:23").build(),
+            WorkTime.builder().day(Days.THURSDAY).startTime("13:23").endTime("14:23").build());
+    private Set<WorkTime> workTimeSet = Sets.newSet(WorkTime.builder().day(Days.MONDAY).startTime("13:23").endTime("14:23").build(),
+            WorkTime.builder().day(Days.THURSDAY).startTime("13:23").endTime("14:23").build());
     private final Long USER_EXISTING_ID = 1L;
     private final Long USER_NOT_EXISTING_ID = 100L;
     private final String USER_EXISTING_NAME = "User Existing Name";
     private final String USER_EXISTING_LASTNAME = "User Existing LastName";
+    private WorkTime workTime;
+    private Location correctLocation;
+    private Set<Location> correctLocations;
+    private LocationProfile locationProfile;
     @Mock
     private ClubRepository clubRepository;
     @Mock
     private DtoConverter dtoConverter;
+    @Mock
+    private CoordinatesConverter coordinatesConverter;
     @Mock
     private ArchiveService archiveService;
     @Mock
@@ -80,6 +98,12 @@ class ClubServiceTest {
     @Mock
     private WorkTimeService workTimeService;
     @Mock
+    private DistrictService districtService;
+    @Mock
+    private StationService stationService;
+    @Mock
+    private CityService cityService;
+    @Mock
     private ContactsStringConverter contactsStringConverter;
     @Mock
     private ComplaintRepository complaintRepository;
@@ -93,11 +117,16 @@ class ClubServiceTest {
 
     @BeforeEach
     public void setUp() {
+        locationProfile = LocationProfile.builder().id(EXISTING_ID).build();
+        correctLocation = Location.builder().id(EXISTING_ID).build();
+        correctLocations=new HashSet<>();
+        correctLocations.add(correctLocation);
         user = User.builder().id(USER_EXISTING_ID).firstName(USER_EXISTING_NAME).lastName(USER_EXISTING_LASTNAME)
                 .build();
         club = Club.builder().id(EXISTING_ID).name(NEW_NAME).user(user).categories(CATEGORIES_SET)
-                .feedbacks(Sets.newSet()).locations(Sets.newSet()).workTimes(Sets.newSet()).urlGallery(Lists.list()).build();
+                .feedbacks(Sets.newSet()).locations(correctLocations).workTimes(workTimeSet).urlGallery(Lists.list()).build();
         clubProfile = ClubProfile.builder().name(NEW_NAME).description(DESCRIPTION).contacts(CONTACTS)
+                .locations(LOCATIONS)
                 .categoriesName(CATEGORIES).build();
         clubResponse = ClubResponse.builder().id(EXISTING_ID).name(NEW_NAME).build();
         clubArch = ClubArch.builder().id(EXISTING_ID).name(NEW_NAME).build();
@@ -223,7 +252,7 @@ class ClubServiceTest {
         when(dtoConverter.convertToDto(newClub, SuccessCreatedClub.class))
                 .thenReturn(SuccessCreatedClub.builder().name(NEW_NAME).build());
         when(userService.getAuthenticatedUser()).thenReturn(user);
-
+        when(dtoConverter.convertToEntity(locationProfile, new Location())).thenReturn(correctLocation);
         SuccessCreatedClub actual = clubService.addClub(clubProfile);
         assertEquals(clubProfile.getName(), actual.getName());
     }
