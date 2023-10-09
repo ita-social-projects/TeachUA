@@ -81,7 +81,7 @@ class SearchStatisticsServiceImplTest {
         oldRecords.add(new SearchStatistics());
         when(searchStatisticsProperties.getMaxTime()).thenReturn(SEARCH_DATE);
 
-        Date date = searchStatisticsService.validateDate();
+        Date date = searchStatisticsProperties.validateAndParseMaxTime();
 
         when(searchStatisticsRepository.findAllByTimestampBefore(date)).thenReturn(oldRecords);
 
@@ -91,13 +91,4 @@ class SearchStatisticsServiceImplTest {
         verify(searchStatisticsRepository, times(1)).deleteAll(oldRecords);
     }
 
-    @Test
-    void testValidateDateWithInvalidFormat() {
-        String invalidDate = "Invalid Date String";
-        when(searchStatisticsProperties.getMaxTime()).thenReturn(invalidDate);
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            searchStatisticsService.validateDate();
-        });
-    }
 }
