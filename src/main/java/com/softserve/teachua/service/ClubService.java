@@ -146,7 +146,7 @@ public interface ClubService {
      * @param searchClubProfile - put text of search (based on clubName, cityName & categoryName)
      * @return {@code Page<ClubResponse>}
      */
-    Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable);
+    Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable, Long userId);
 
     /**
      * The method which return possible results of search by entered text.
@@ -167,10 +167,9 @@ public interface ClubService {
      * The method which return possible results of search by entered text.
      *
      * @param text - put text of search (based on clubName & cityName)
-     * @param userId - put user id for collecting search statistics
      * @return {@code List<SearchPossibleResponse>}
      */
-    List<SearchPossibleResponse> getPossibleClubByName(String text, String cityName, Long userId);
+    List<SearchPossibleResponse> getPossibleClubByName(String text, String cityName);
 
     /**
      * The method which return possible results of search by category and city.

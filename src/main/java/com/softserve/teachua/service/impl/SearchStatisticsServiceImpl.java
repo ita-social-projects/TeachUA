@@ -6,8 +6,6 @@ import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.SearchStatisticsRepository;
 import com.softserve.teachua.service.SearchStatisticsService;
 import jakarta.transaction.Transactional;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -76,11 +74,10 @@ public class SearchStatisticsServiceImpl implements SearchStatisticsService {
         }
     }
 
-    @Async
     @Scheduled(cron = "@weekly")
     public void deleteOldStatisticsByTime() {
         try {
-            Date date = validateDate();
+            Date date = searchStatisticsProperties.validateAndParseMaxTime();
             List<SearchStatistics> oldRecords = searchStatisticsRepository.findAllByTimestampBefore(date);
             if (oldRecords.size() > 0) {
                 searchStatisticsRepository.deleteAll(oldRecords);
@@ -88,16 +85,6 @@ public class SearchStatisticsServiceImpl implements SearchStatisticsService {
             log.info("Old statistics deleted: " + oldRecords.size() + " records");
         } catch (Exception e) {
             log.error("Error while deleting old statistics: {}", e.getMessage());
-        }
-    }
-
-    public Date validateDate() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            return formatter.parse(searchStatisticsProperties.getMaxTime());
-        } catch (ParseException | IllegalArgumentException e) {
-            log.error("Error while parsing date: {}", e.getMessage());
-            throw new IllegalArgumentException("Invalid date format");
         }
     }
 }

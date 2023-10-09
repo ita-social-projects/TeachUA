@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -47,8 +48,8 @@ public class PdfGenerationController implements Api {
 
     @GetMapping(value = { "/pdf/resultsearch" }, produces = { "application/pdf" })
     public byte[] generateResultSearchPdfReport(SearchClubProfile searchClubProfile,
-            @PageableDefault(sort = "id", value = 50) Pageable pageable) {
+            @PageableDefault(sort = "id", value = 50) Pageable pageable,  @RequestParam(required = false) Long userId) {
         return resultSearchReportGenerationService
-                .getPdfOutput(clubService.getClubsBySearchParameters(searchClubProfile, pageable));
+                .getPdfOutput(clubService.getClubsBySearchParameters(searchClubProfile, pageable, userId));
     }
 }
