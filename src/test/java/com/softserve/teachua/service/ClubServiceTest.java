@@ -1,5 +1,6 @@
 package com.softserve.teachua.service;
 
+import static com.softserve.teachua.TestUtils.getUser;
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.ContactsStringConverter;
 import com.softserve.teachua.converter.DtoConverter;
@@ -25,21 +26,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.assertj.core.util.Lists;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.internal.util.collections.Sets;
-import org.mockito.junit.jupiter.MockitoExtension;
-import static com.softserve.teachua.TestUtils.getUser;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import org.mockito.internal.util.collections.Sets;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ClubServiceTest {
@@ -77,6 +77,8 @@ class ClubServiceTest {
     private UserService userService;
     @Mock
     private LocationService locationService;
+    @Mock
+    private WorkTimeService workTimeService;
     @Mock
     private ContactsStringConverter contactsStringConverter;
     @Mock
@@ -153,14 +155,14 @@ class ClubServiceTest {
         when(clubRepository.findById(EXISTING_ID)).thenReturn(Optional.of(club));
         when(clubRepository.save(any())).thenReturn(club);
         when(dtoConverter.convertToEntity(
-                ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).build(), club))
+                ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).workTimes(Collections.emptySet()).build(), club))
                 .thenReturn(Club.builder().name(NEW_NAME).build());
         when(dtoConverter.convertToDto(club, SuccessUpdatedClub.class))
                 .thenReturn(SuccessUpdatedClub.builder().name(NEW_NAME).build());
         when(userService.getAuthenticatedUser()).thenReturn(user);
 
         SuccessUpdatedClub actual = clubService.updateClub(EXISTING_ID,
-                ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).build());
+                ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).workTimes(Collections.emptySet()).build());
         assertEquals(clubProfile.getName(), actual.getName());
     }
 

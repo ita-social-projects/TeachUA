@@ -282,14 +282,19 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                         .withCategories(clubProfile.getCategoriesName().stream()
                                 .map(categoryService::getCategoryByName)
                                 .collect(Collectors.toSet()))
-                        .withWorkTimes(clubProfile.getWorkTimes().stream()
-                                .map(workTime -> workTimeRepository.save(dtoConverter
-                                        .convertToEntity(workTime, new WorkTime())
-                                        .withDay(workTime.getDay())
-                                        .withStartTime(workTime.getStartTime())
-                                        .withEndTime(workTime.getEndTime())))
-                                .collect(Collectors.toSet()))
                         .withRating(0d).withUser(user).withCenter(center));
+
+        List<WorkTime> workTimes = clubProfile.getWorkTimes();
+
+        if (workTimes != null && !workTimes.isEmpty()) {
+            club.setWorkTimes(workTimes.stream()
+                    .map(workTime -> workTimeRepository.save(dtoConverter
+                            .convertToEntity(workTime, new WorkTime())
+                            .withDay(workTime.getDay())
+                            .withStartTime(workTime.getStartTime())
+                            .withEndTime(workTime.getEndTime())))
+                    .collect(Collectors.toSet()));
+        }
 
         if (locations != null && !locations.isEmpty()) {
             club.setLocations(
