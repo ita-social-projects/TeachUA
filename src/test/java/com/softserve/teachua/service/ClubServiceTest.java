@@ -26,6 +26,7 @@ import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.repository.WorkTimeRepository;
 import com.softserve.teachua.service.impl.ClubServiceImpl;
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,6 +76,8 @@ class ClubServiceTest {
     private LocationProfile locationProfile;
     @Mock
     private ClubRepository clubRepository;
+    @Mock
+    private WorkTimeRepository workTimeRepository;
     @Mock
     private DtoConverter dtoConverter;
     @Mock
