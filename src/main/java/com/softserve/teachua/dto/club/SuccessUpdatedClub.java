@@ -9,6 +9,7 @@ import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.GalleryPhoto;
 import java.util.List;
 import java.util.Set;
+import com.softserve.teachua.model.WorkTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +29,7 @@ public class SuccessUpdatedClub implements Convertible {
     private String urlLogo;
     private String urlBackground;
     private List<GalleryPhoto> urlGallery;
-    private String workTime;
+    private Set<WorkTime> workTimes;
     private Set<Category> categories;
     private UserPreview user;
     private CenterForClub center;
