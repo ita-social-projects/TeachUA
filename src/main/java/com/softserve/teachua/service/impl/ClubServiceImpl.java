@@ -59,6 +59,7 @@ import com.softserve.teachua.service.StationService;
 import com.softserve.teachua.service.UserService;
 import com.softserve.teachua.service.WorkTimeService;
 import com.softserve.teachua.utils.CategoryUtil;
+import com.softserve.teachua.utils.validations.QueryStringValidator;
 import jakarta.validation.ValidationException;
 import java.util.HashSet;
 import java.util.List;
@@ -111,6 +112,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private final ObjectMapper objectMapper;
     private final ContactsStringConverter contactsStringConverter;
     private FeedbackService feedbackService;
+    private final QueryStringValidator queryStringValidator;
 
     @Autowired
     public ClubServiceImpl(ClubRepository clubRepository, CenterRepository centerRepository,
@@ -122,7 +124,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                            CenterService centerService, SearchStatisticsService searchStatisticsService,
                            FeedbackRepository feedbackRepository,
                            ObjectMapper objectMapper, ContactsStringConverter contactsStringConverter,
-                           ComplaintRepository complaintRepository,
+                           ComplaintRepository complaintRepository, QueryStringValidator queryStringValidator,
                            WorkTimeRepository workTimeRepository,
                            WorkTimeService workTimeService) {
         this.clubRepository = clubRepository;
@@ -145,6 +147,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         this.objectMapper = objectMapper;
         this.contactsStringConverter = contactsStringConverter;
         this.complaintRepository = complaintRepository;
+        this.queryStringValidator = queryStringValidator;
         this.workTimeRepository = workTimeRepository;
         this.workTimeService = workTimeService;
     }
@@ -425,13 +428,21 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     @Override
-    public Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable) {
+    public Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable,
+                                                         Long userId) {
         log.debug("getClubsBySearchParameters ===> ");
         log.debug(searchClubProfile.toString());
+
 
         Page<Club> clubResponses = clubRepository.findAllByParameters(searchClubProfile.getClubName(),
                 searchClubProfile.getCityName(), searchClubProfile.getCategoryName(), searchClubProfile.getIsOnline(),
                 pageable);
+
+        if (queryStringValidator.isValid(
+                searchClubProfile.getClubName(),
+                clubResponses.getTotalElements())) {
+            searchStatisticsService.addToStatistics(searchClubProfile.getClubName(), userId);
+        }
 
         log.debug("===find clubs : " + clubResponses.getNumberOfElements());
 
@@ -442,10 +453,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     }
 
     @Override
-    public List<SearchPossibleResponse> getPossibleClubByName(String text, String cityName, Long userId) {
-        if (text.length() >= 4) {
-            searchStatisticsService.addToStatistics(text, userId);
-        }
+    public List<SearchPossibleResponse> getPossibleClubByName(String text, String cityName) {
         return clubRepository.findTop3ByName(text, cityName, PageRequest.of(0, 3)).stream()
                 .map(category -> (SearchPossibleResponse) dtoConverter.convertToDto(category,
                         SearchPossibleResponse.class))
