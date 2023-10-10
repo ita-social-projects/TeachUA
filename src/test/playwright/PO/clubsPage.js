@@ -19,6 +19,8 @@ class ClubsPage extends BasePage {
         this.paginationFirstPageButton = page.locator('ul > li[title="1"]');
         this.advancedSearchButton = page.locator('span[title="Розширений пошук"]');
         this.firstCardTitle = page.locator("div.content-clubs-list > div:first-child div.name");
+
+        this.noResultsMessage = page.locator('div.clubs-not-found');
     }
 
     async gotoClubsPage() {
@@ -79,10 +81,6 @@ class ClubsPage extends BasePage {
 
     async goToNextPage() {
         await this.paginationNextPageButton.click();
-    }
-
-    async verifyTitleToHaveText(text) {
-        await this.expectElementToHaveText(this.clubsPageTitle, text);
     }
 
     async simpleSearchByQuery(query) {

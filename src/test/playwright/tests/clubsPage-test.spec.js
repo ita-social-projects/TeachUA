@@ -32,6 +32,11 @@ let apiservice, clubspage, basepage;
         await clubspage.verifyClubCardsContainText(simpleSearchParameters.CATEGORY_SEARCH_QUERY);
     });
 
+    test("Verify that respective message will be shown when there are no results", async ({ page }) => {
+        await clubspage.simpleSearchByQuery(simpleSearchParameters.INCORRECT_SEARCH_QUERY);
+        await clubspage.verifyElementVisibility(clubspage.noResultsMessage);
+    });
+
     test("Verify that after advanced search toggle, cards are sorted in alphabetical order", async({page})=>{
         basepage = new BasePage(page);
         await clubspage.toggleAdvancedSearch();
@@ -40,5 +45,5 @@ let apiservice, clubspage, basepage;
 
 
     test.afterEach(async({page})=>{
-        //page.close();
+        page.close();
     })

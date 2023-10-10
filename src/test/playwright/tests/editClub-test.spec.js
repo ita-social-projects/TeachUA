@@ -66,6 +66,5 @@ let apiservice, editclubpage, homepage, userpage, basepage;
     });
 
     test.afterEach(async ({ page }) => {
-        //await apiservice.deleteClubByTitle(clubCreation.body.name);
         await page.close();
     });
