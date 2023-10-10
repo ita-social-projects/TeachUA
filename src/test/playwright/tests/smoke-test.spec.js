@@ -10,7 +10,7 @@ let homepage, apiservice, userpage;
         await homepage.gotoHomepage();
     })
 
-    test('Verify successful login via API', async ({page})=>{
+    test('Verify successful login via API @smoke', async ({page})=>{
         apiservice = new ApiService(page);
         userpage = new UserPage(page);
 
@@ -19,7 +19,7 @@ let homepage, apiservice, userpage;
         await userpage.verifyTitleIsVisible(true);
     })
 
-    test('Verify successful login via UI', async () =>{
+    test('Verify successful login via UI @smoke', async () =>{
         await homepage.uiLoginAs('admin');
     })
 

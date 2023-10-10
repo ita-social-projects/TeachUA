@@ -59,8 +59,6 @@ class ClubsPage extends BasePage {
     async verifyClubsSortedByTitlesAsc() {
         const originalClubsTitles = await this.getAllClubsTitles();
         const sortedClubsTitles = await this.sortElementsAsc(originalClubsTitles);
-        console.log(originalClubsTitles);
-        console.log(sortedClubsTitles);
         expect(originalClubsTitles).toMatchObject(sortedClubsTitles);
     }
 
@@ -127,7 +125,6 @@ class ClubsPage extends BasePage {
             }
             await expect(card.includes(text)).toBe(true);
         }
-        console.log(`Page of ${text} search query is done-----------------------------------------`);
         await this.goToNextPageIfAvailabe(async () => {
             await this.verifyClubCardsContainText(text);
         });

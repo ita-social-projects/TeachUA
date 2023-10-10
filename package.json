@@ -4,7 +4,9 @@
   "description": "![TeachUA](images/logo.png)",
   "main": "index.js",
   "scripts": {
-    "playDebug": "npx playwright test ./playwright/tests/editClub-test.spec.js --headed"
+    "playDebug": "npx playwright test ./playwright/tests/editClub-test.spec.js --headed",
+    "smoke": "npx playwright test --grep @smoke",
+    "allTests": "npx playwright test"
   },
   "keywords": [],
   "author": "",

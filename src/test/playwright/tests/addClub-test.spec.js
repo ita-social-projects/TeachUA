@@ -223,7 +223,7 @@ let apiservice, addclubpage, homepage, userpage;
         //complete club creation and go through the creation steps again to verify that
         //'this club already exists' message appears
         await addclubpage.completeClubCreation();
-        await addclubpage.gotoAddClubPage();
+        await homepage.openAddClubPage();
         await addclubpage.fillInputField(addclubpage.clubNameField, newClubCorrectDetails.CLUB_TITLE);
         await addclubpage.toggleStatedCheckboxes(clubCategories.ACTING);
         await addclubpage.setAcceptableChildAge(
