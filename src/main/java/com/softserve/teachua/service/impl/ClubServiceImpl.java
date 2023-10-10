@@ -328,14 +328,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 return clubRepository
                         .save(dtoConverter.convertToEntity(clubProfile, new Club())
                                 .withCategories(clubProfile.getCategoriesName().stream()
-                                        .map(categoryService::getCategoryByName).collect(Collectors.toSet()))
-                                .withWorkTimes(clubProfile.getWorkTimes().stream()
-                                        .map(workTime -> workTimeRepository.save(dtoConverter
-                                                .convertToEntity(workTime, new WorkTime())
-                                                .withDay(workTime.getDay())
-                                                .withStartTime(workTime.getStartTime())
-                                                .withEndTime(workTime.getEndTime())))
-                                        .collect(Collectors.toSet())))
+                                        .map(categoryService::getCategoryByName).collect(Collectors.toSet())))
                         .withUser(null).withCenter(null);
             } catch (Exception e) {
                 log.debug("(row 268, ClubServiceImpl)    saving club ");
