@@ -46,13 +46,13 @@ class ApiService {
     }
 
     async getTotalPages(apiEndpoint, userId) {
-        try{
-        const clubResponse = await fetch(`${apiEndpoint}/${userId}?page=0`);
-        const responseJson = await clubResponse.json();
-        return responseJson.totalPages;
-        }catch(e){
+        try {
+            const clubResponse = await fetch(`${apiEndpoint}/${userId}?page=0`);
+            const responseJson = await clubResponse.json();
+            return responseJson.totalPages;
+        } catch (e) {
             console.error("Error fetching total pages of clubs: ", e);
-            throw new Error('Failed to fetch total pages of clubs');
+            throw new Error("Failed to fetch total pages of clubs");
         }
     }
 
@@ -68,7 +68,7 @@ class ApiService {
             return allClubsContent;
         } catch (e) {
             console.error("Error fetching clubs: ", e);
-            throw new Error('Failed to fetch clubs');
+            throw new Error("Failed to fetch clubs");
         }
     }
 
@@ -96,12 +96,14 @@ class ApiService {
     }
 
     async createNewClub() {
-        const response = await fetch(createClubRequest .url, {
-            method: createClubRequest .method,
-            body: JSON.stringify(createClubRequest .body),
+        const response = await fetch(createClubRequest.url, {
+            method: createClubRequest.method,
+            body: JSON.stringify(createClubRequest.body),
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
         });
-        if (!response.ok) {
+        if ((await response.json()).status === 409) {
+            console.log("Club already exist");
+        } else if (!response.ok) {
             console.log(await response.json());
             throw new Error("Request failed, club was not created \n");
         }

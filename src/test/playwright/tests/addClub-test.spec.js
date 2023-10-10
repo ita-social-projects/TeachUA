@@ -15,7 +15,7 @@ let apiservice, addclubpage, homepage, userpage;
 
         await apiservice.apiLoginAs('admin');
         await homepage.gotoHomepage();
-        await addclubpage.gotoAddClubPage();
+        await homepage.openAddClubPage();
     })
 
     test("Verify that a new club can be succesfully added", async ({ page }) => {
@@ -200,10 +200,11 @@ let apiservice, addclubpage, homepage, userpage;
         }
 
         await addclubpage.fillInputField(addclubpage.clubNameField, newClubCorrectDetails.CLUB_TITLE);
-        await addclubpage.toggleStatedCheckboxes(
-            clubCategories.ACTING,
+        await addclubpage.toggleStatedCheckboxes(clubCategories.ACTING);
+        await addclubpage.setAcceptableChildAge(
+            newClubCorrectDetails.CLUB_ENTER_AGE,
+            newClubCorrectDetails.CLUB_CLOSING_AGE
         );
-        await addclubpage.setAcceptableChildAge(newClubCorrectDetails.CLUB_ENTER_AGE, newClubCorrectDetails.CLUB_CLOSING_AGE);
         await addclubpage.proceedToNextStep();
         await addclubpage.openAddLocationWindow();
 
@@ -224,19 +225,20 @@ let apiservice, addclubpage, homepage, userpage;
         await addclubpage.completeClubCreation();
         await addclubpage.gotoAddClubPage();
         await addclubpage.fillInputField(addclubpage.clubNameField, newClubCorrectDetails.CLUB_TITLE);
-        await addclubpage.toggleStatedCheckboxes(
-            clubCategories.ACTING,
+        await addclubpage.toggleStatedCheckboxes(clubCategories.ACTING);
+        await addclubpage.setAcceptableChildAge(
+            newClubCorrectDetails.CLUB_ENTER_AGE,
+            newClubCorrectDetails.CLUB_CLOSING_AGE
         );
-        await addclubpage.setAcceptableChildAge(newClubCorrectDetails.CLUB_ENTER_AGE, newClubCorrectDetails.CLUB_CLOSING_AGE);
         await addclubpage.proceedToNextStep();
         await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, newClubCorrectContactDetails.PHONE_NUMBER);
         await addclubpage.proceedToNextStep();
         await addclubpage.fillInputField(addclubpage.descriptionTextArea, newClubCorrectDetails.CLUB_DESCRIPTION);
 
         await addclubpage.completeClubCreation();
-        await addclubpage.verifyElementVisibility(addclubpage.clubAlreadyExistMessage, true); 
-        
-        await page.reload()
+        await addclubpage.verifyElementVisibility(addclubpage.clubAlreadyExistMessage, true);
+
+        await page.reload();
         userpage = new UserPage(page);
         await userpage.gotoUserPage();
     });

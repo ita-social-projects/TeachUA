@@ -1,5 +1,6 @@
 import { expect} from "@playwright/test";
 import { apiUrl } from "../constants/api.constants";
+import { addClubPage } from "../constants/locatorsText.constants";
 import {
     clubOnlineSliderTooltip,
     locationNameTooltip,
@@ -14,9 +15,8 @@ class AddClubPage extends BasePage {
     constructor(page) {
         super(page);
         //Step 1 - Основна Інформація
-        this.addClubButton = this.page.getByRole("button", { name: "Додати гурток" });
-        this.goBackButton = this.page.getByRole("button", { name: "Назад" });
-        this.nextStepButton = this.page.getByRole("button", { name: "Наступний крок" });
+        this.goBackButton = this.page.getByRole("button", { name: addClubPage.stepBack });
+        this.nextStepButton = this.page.getByRole("button", { name: addClubPage.nextStep });
         this.clubNameField = this.page.locator("input#basic_name");
         this.childAgeFrom = this.page.locator("input#basic_ageFrom");
         this.childAgeTo = this.page.locator("input#basic_ageTo");
@@ -36,14 +36,12 @@ class AddClubPage extends BasePage {
         this.locationAddressField = this.page.locator("input#address");
         this.locationCoordinatesField = this.page.locator("input#coordinates");
         this.locationPhoneNumberField = this.page.locator("input#phone");
-        this.locationAddButton = this.page.locator('button[type="submit"]').filter({ hasText: "Додати" });
+        this.locationAddButton = this.page.locator('div.add-club-locations button[type="submit"]');
 
         this.locationNameInfoSign = this.page.locator('input#name + span svg');
         this.locationPhoneInfoSign = this.page.locator('input#phone + span svg');
 
         this.locationCloseButton = this.page.locator('button[aria-label="Close"]').nth(1);
-
-        this.backgoundForClosure = this.page.locator('div#root');
 
         this.locationsList = this.page.locator('div.add-club-location-list ul.ant-list-items');
 
@@ -67,24 +65,21 @@ class AddClubPage extends BasePage {
         this.clubEmailFieldErrorMessage = this.page.locator("div#basic_contactПошта_help");
 
         //Step 3 - Опис
-        this.clubIsAutomaticallyOnlineMessage = this.page.locator('div.ant-message-notice-content').filter({ hasText: noLocationClubOnlineMessage });;
+        this.clubIsAutomaticallyOnlineMessage = this.page.locator('div.ant-message-notice-content').filter({ hasText: addClubPage.noLocationClubOnlineMessage });;
         this.addLogoInput = this.page.locator('input#basic_urlLogo')
         this.addCoverInput = this.page.locator('input#basic_urlBackground')
-        this.addImagesInput = this.page.locator('input[type="file"]').nth(2);
+        this.addImagesInput = this.page.locator('div.ant-upload-list-picture-card input');
         this.descriptionTextArea = this.page.locator("textarea[placeholder='Додайте опис гуртка']");
         this.completeButton = this.page.getByRole("button", { name: "Завершити" });
 
         this.clubCreatedSuccessMessage = this.page.locator("div.ant-message-success");
-        this.clubAlreadyExistMessage = this.page.locator("div.ant-message-notice-content").filter({ hasText: clubAlreadyExistMessage });;
+        this.clubAlreadyExistMessage = this.page.locator("div.ant-message-notice-content").filter({ hasText: addClubPage.clubAlreadyExistMessage});;
         //Error messages
         this.clubDescriptionErrorMessage = this.page.locator("div#basic_description_help");
 
     }
 
-    async gotoAddClubPage() {
-        await this.page.goto(apiUrl);
-        await this.addClubButton.click();
-    }
+    
 
     //Step #1
     async proceedToNextStep() {
@@ -112,7 +107,7 @@ class AddClubPage extends BasePage {
     }
 
     async selectRelatedCenter(center) {
-        await this.relatedCenterDropdown.click();
+        await this.relatedCenterDropdown.click({force: true});
         await this.selectDropdownValue(center);
     }
 
@@ -131,17 +126,17 @@ class AddClubPage extends BasePage {
     }
 
     async selectLocationCity(value) {
-        await this.locationCityDropdown.click();
+        await this.locationCityDropdown.click({force: true});
         await this.selectDropdownValue(value);
     }
 
     async selectLocationDistrict(value) {
-        await this.locationDistrictDropdown.click();
+        await this.locationDistrictDropdown.click({force: true});
         await this.selectDropdownValue(value);
     }
 
     async selectLocationStation(value) {
-        await this.locationStationDropdown.click();
+        await this.locationStationDropdown.click({force: true});
         await this.selectDropdownValue(value);
     }
 
