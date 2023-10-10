@@ -68,7 +68,8 @@ public class Club implements Convertible {
     @ToString.Exclude
     private List<GalleryPhoto> urlGallery;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    //@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "club_work_time",
             joinColumns = {@JoinColumn(name = "club_id")},
             inverseJoinColumns = {@JoinColumn(name = "work_time_id")})

@@ -3,6 +3,7 @@ package com.softserve.teachua.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.softserve.teachua.constants.Days;
 import com.softserve.teachua.dto.marker.Convertible;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,7 +33,7 @@ public class WorkTime implements Convertible {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToMany(mappedBy = "workTimes")
+    @ManyToMany(mappedBy = "workTimes", cascade = CascadeType.ALL)
     @JsonBackReference(value = "clubsInWorkTime")
     @ToString.Exclude
     private Set<Club> club = new HashSet<>();
