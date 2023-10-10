@@ -36,6 +36,7 @@ import com.softserve.teachua.model.Feedback;
 import com.softserve.teachua.model.GalleryPhoto;
 import com.softserve.teachua.model.Location;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.WorkTime;
 import com.softserve.teachua.model.archivable.ClubArch;
 import com.softserve.teachua.repository.CenterRepository;
 import com.softserve.teachua.repository.ClubRepository;
@@ -43,6 +44,7 @@ import com.softserve.teachua.repository.ComplaintRepository;
 import com.softserve.teachua.repository.FeedbackRepository;
 import com.softserve.teachua.repository.GalleryRepository;
 import com.softserve.teachua.repository.LocationRepository;
+import com.softserve.teachua.repository.WorkTimeRepository;
 import com.softserve.teachua.service.ArchiveMark;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.CategoryService;
@@ -55,6 +57,7 @@ import com.softserve.teachua.service.LocationService;
 import com.softserve.teachua.service.SearchStatisticsService;
 import com.softserve.teachua.service.StationService;
 import com.softserve.teachua.service.UserService;
+import com.softserve.teachua.service.WorkTimeService;
 import com.softserve.teachua.utils.CategoryUtil;
 import com.softserve.teachua.utils.validations.QueryStringValidator;
 import jakarta.validation.ValidationException;
@@ -89,6 +92,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private final ComplaintRepository complaintRepository;
     private final ClubRepository clubRepository;
     private final LocationRepository locationRepository;
+    private final WorkTimeRepository workTimeRepository;
     private final DtoConverter dtoConverter;
     private final ClubToClubResponseConverter toClubResponseConverter;
     private final ArchiveService archiveService;
@@ -97,6 +101,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
     private final StationService stationService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final WorkTimeService workTimeService;
     private final CenterRepository centerRepository;
     private final LocationService locationService;
     private final CoordinatesConverter coordinatesConverter;
@@ -119,7 +124,9 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                            CenterService centerService, SearchStatisticsService searchStatisticsService,
                            FeedbackRepository feedbackRepository,
                            ObjectMapper objectMapper, ContactsStringConverter contactsStringConverter,
-                           ComplaintRepository complaintRepository, QueryStringValidator queryStringValidator) {
+                           ComplaintRepository complaintRepository, QueryStringValidator queryStringValidator,
+                           WorkTimeRepository workTimeRepository,
+                           WorkTimeService workTimeService) {
         this.clubRepository = clubRepository;
         this.locationRepository = locationRepository;
         this.dtoConverter = dtoConverter;
@@ -141,6 +148,8 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         this.contactsStringConverter = contactsStringConverter;
         this.complaintRepository = complaintRepository;
         this.queryStringValidator = queryStringValidator;
+        this.workTimeRepository = workTimeRepository;
+        this.workTimeService = workTimeService;
     }
 
     @Autowired
@@ -202,6 +211,12 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 }
             }
         }
+        if (clubResponse.getWorkTimes() != null) {
+            club.getWorkTimes().forEach(workTime -> {
+                workTime.setClub(null);
+                workTimeRepository.deleteById(workTime.getId());
+            });
+        }
 
         Center center = null;
         if (clubResponse.getCenter() != null && clubResponse.getCenter().getId() != null) {
@@ -213,7 +228,9 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                         clubResponse.getCategories().stream().map(CategoryResponse::getName)
                                 .map(categoryService::getCategoryByName).collect(Collectors.toSet()))
                 .withContacts(contactsStringConverter.convertContactDataResponseToString(clubResponse.getContacts()))
-                .withLocations(locationService.updateLocationByClub(locations, club)).withCenter(center);
+                .withLocations(locationService.updateLocationByClub(locations, club))
+                .withCenter(center)
+                .withWorkTimes(workTimeService.updateWorkTimeByClub(clubResponse.getWorkTimes(), club));
 
         List<GalleryPhoto> galleryPhotos = clubResponse.getUrlGallery();
         if (galleryPhotos != null && !galleryPhotos.isEmpty()) {
@@ -273,6 +290,18 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                                 .map(categoryService::getCategoryByName)
                                 .collect(Collectors.toSet()))
                         .withRating(0d).withUser(user).withCenter(center));
+
+        List<WorkTime> workTimes = clubProfile.getWorkTimes();
+
+        if (workTimes != null && !workTimes.isEmpty()) {
+            club.setWorkTimes(workTimes.stream()
+                    .map(workTime -> workTimeRepository.save(dtoConverter
+                            .convertToEntity(workTime, new WorkTime())
+                            .withDay(workTime.getDay())
+                            .withStartTime(workTime.getStartTime())
+                            .withEndTime(workTime.getEndTime())))
+                    .collect(Collectors.toSet()));
+        }
 
         if (locations != null && !locations.isEmpty()) {
             club.setLocations(
@@ -648,6 +677,10 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 location.setClub(null);
                 locationRepository.deleteById(location.getId());
             });
+            club.getWorkTimes().forEach(workTime -> {
+                workTime.setClub(null);
+                workTimeRepository.deleteById(workTime.getId());
+            });
 
             club.getUrlGallery().forEach(urlGallery -> {
                 Optional<GalleryPhoto> galleryPhoto = galleryRepository.findById(urlGallery.getId());
@@ -777,6 +810,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
         clubArch.setUrlGalleriesIds(
                 club.getUrlGallery().stream().map(GalleryPhoto::getId).toList());
         clubArch.setLocationsIds(club.getLocations().stream().map(Location::getId).collect(Collectors.toSet()));
+        clubArch.setWorkTimesIds(club.getWorkTimes().stream().map(WorkTime::getId).collect(Collectors.toSet()));
         clubArch.setCategoriesIds(club.getCategories().stream().map(Category::getId).collect(Collectors.toSet()));
         clubArch.setFeedbacksIds(club.getFeedbacks().stream().map(Feedback::getId).collect(Collectors.toSet()));
         archiveService.saveModel(clubArch);
@@ -794,7 +828,9 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
                 .withUrlGallery(clubArch.getUrlGalleriesIds().stream().map(galleryRepository::findById)
                         .filter(Optional::isPresent).map(Optional::get).toList())
                 .withFeedbacks(clubArch.getFeedbacksIds().stream().map(feedbackService::getFeedbackById)
-                        .collect(Collectors.toSet()));
+                        .collect(Collectors.toSet()))
+                .withWorkTimes(clubArch.getWorkTimesIds().stream().map(workTimeRepository::findById)
+                        .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet()));
         if (Optional.ofNullable(clubArch.getCenterId()).isPresent()) {
             club.setCenter(centerService.getCenterById(clubArch.getCenterId()));
         }
