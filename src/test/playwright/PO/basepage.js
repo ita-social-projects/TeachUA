@@ -17,6 +17,11 @@ class BasePage {
         await expect(element).toContainText(text);
     }
 
+    async expectTextContain(text, searchText) {
+        const doesContain = text.includes(searchText);
+        expect(doesContain).toBe(true);
+    }
+
     async verifyElementVisibility(element, isVisible = true) {
         if(!(typeof isVisible === 'boolean')){
           throw new Error('Second paramenter should be boolean');

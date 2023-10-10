@@ -123,7 +123,7 @@ class ClubsPage extends BasePage {
             } else {
                 card = (await card.textContent()).toLowerCase();
             }
-            await expect(card.includes(text)).toBe(true);
+            await this.expectTextContain(card, text);
         }
         await this.goToNextPageIfAvailabe(async () => {
             await this.verifyClubCardsContainText(text);
