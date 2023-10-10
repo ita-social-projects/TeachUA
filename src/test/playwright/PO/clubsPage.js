@@ -25,43 +25,51 @@ class ClubsPage extends BasePage {
         await this.page.goto(clubsUrl);
     }
 
+    // Click the advanced search button and wait for a short timeout for clubs to update
     async toggleAdvancedSearch() {
         await this.advancedSearchButton.click();
         await this.page.waitForTimeout(500);
     }
 
+    /*
+     * Method to accumulate titles of all club cards
+     * Iterates through pages of club cards, accumulating their titles
+     * Uses the firstTitleLocator to ensure that previous clubs have disappeared
+     * from the page before adding new titles to the array
+     */
     async getAllClubsTitles() {
         let allClubsTitles = [];
         while (true) {
             try {
-                //getting the title of first card
                 const firstTitle = await this.firstCardTitle.textContent();
-                //getting the first card locator using it's title so that we can later on wait for it to be hidded
                 const firstTitleLocator = await this.page.getByRole("div", { name: firstTitle });
                 const pageTitlesText = await this.clubsNames.allTextContents();
                 allClubsTitles = allClubsTitles.concat(pageTitlesText);
                 console.log(pageTitlesText);
                 if (await this.isNextPageAvailable()) {
                     await this.goToNextPage();
-                    //waiting for the cards update by waiting for the previous card to be hidden
                     await firstTitleLocator.waitFor({ state: "hidden", timeout: 10000 });
                 } else {
                     break;
                 }
             } catch (e) {
-                console.error("Error" + e);
+                console.error("Error " + e);
                 break;
             }
         }
         return allClubsTitles;
     }
 
+    /*
+     * Asserts that accumulated club titles are sorted in ascending order
+     */
     async verifyClubsSortedByTitlesAsc() {
         const originalClubsTitles = await this.getAllClubsTitles();
         const sortedClubsTitles = await this.sortElementsAsc(originalClubsTitles);
         expect(originalClubsTitles).toMatchObject(sortedClubsTitles);
     }
 
+    // Check if the next page button is visible and enabled
     async isNextPageAvailable() {
         return (
             (await this.paginationNextPageButton.isVisible()) &&
@@ -83,7 +91,11 @@ class ClubsPage extends BasePage {
         await this.searchButton.click();
     }
 
-    //this method navigates to the next page calls next method if provided
+    /*
+     * Navigates to the next page if available and executes additional actions on the page.
+     * @param {Function} actionsOnThePage - Optional function to perform additional actions on the page.
+     *                                      Defaults to an empty async function.
+     */
     async goToNextPageIfAvailabe(actionsOnThePage = async () => {}) {
         if (await this.isNextPageAvailable()) {
             await this.goToNextPage();
@@ -103,16 +115,18 @@ class ClubsPage extends BasePage {
         await this.paginationFirstPageButton.click();
     }
 
+    /*
+     * Method to verify that club cards contain the specified text
+     * Iterates through club cards, comparing their text with the search query
+     * Opens card details to check for additional categories, if any
+     * Utilizes recursion to iterate through all pages
+     */
     async verifyClubCardsContainText(text) {
-        //convert search query to lower case so that it can be compared with the card's text
         text = text.toLowerCase();
         const cards = await this.cards.all();
         if (cards.length === 0) {
             throw new Error("There are no result for this search query!");
         }
-        //iterate through each of the club card, convert it's text value to lower case
-        //and compare it with the search query. If there are additional categories, then the card
-        //details will be opened and these additional categories will be added to the card's text value
         for (let card of cards) {
             const cardANDcategory = await card.locator(this.clubsANDcategories).textContent();
             if (cardANDcategory.length > 0) {
