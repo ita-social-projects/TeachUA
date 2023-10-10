@@ -54,7 +54,7 @@ class WorkTimeServiceTest {
     @Test
     void updateWorkTimeByClubShouldReturnWorkTimeSet() {
 
-        when(dtoConverter.convertToEntity(workTimeSet, new WorkTime())).thenReturn(workTime);
+        when(dtoConverter.convertToEntity(workTime, new WorkTime())).thenReturn(workTime);
         when(workTimeRepository.save(any(WorkTime.class))).thenReturn(workTime);
         Set<WorkTime> actual = workTimeServiceImpl.updateWorkTimeByClub(workTimeSet, club);
         assertThat(actual).isEqualTo(workTimeSet);
@@ -63,7 +63,7 @@ class WorkTimeServiceTest {
     @Test
     void updateWorkTimeByClubWithExistingWorkTimeShouldReturnWorkTimeSet() {
         club.setWorkTimes(workTimeSet);
-        when(dtoConverter.convertToEntity(workTimeSet, new WorkTime())).thenReturn(workTime);
+        when(dtoConverter.convertToEntity(workTime, new WorkTime())).thenReturn(workTime);
         when(workTimeRepository.save(any(WorkTime.class))).thenReturn(workTime);
         Set<WorkTime> actual = workTimeServiceImpl.updateWorkTimeByClub(workTimeSet, club);
         assertThat(actual).isEqualTo(workTimeSet);

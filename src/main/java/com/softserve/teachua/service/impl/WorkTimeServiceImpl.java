@@ -65,8 +65,9 @@ public class WorkTimeServiceImpl implements WorkTimeService {
 
         return workTimes.stream()
                 .map(workTime -> workTimeRepository
-                        .save(dtoConverter.convertToEntity(workTimes, new WorkTime())
+                        .save(dtoConverter.convertToEntity(workTime, new WorkTime())
                                 .withDay(workTime.getDay())
+                                .withClub(club)
                                 .withStartTime(workTime.getStartTime())
                                 .withEndTime(workTime.getEndTime())))
                 .collect(Collectors.toSet());

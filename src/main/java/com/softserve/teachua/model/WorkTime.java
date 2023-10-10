@@ -9,10 +9,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,13 +28,14 @@ import lombok.With;
 @Table(name = "work_times")
 public class WorkTime implements Convertible {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @ManyToMany(mappedBy = "workTimes")
-    @JsonBackReference(value = "clubsInWorkTime")
+    @JsonBackReference(value = "club")
+    @ManyToOne
+    @JoinColumn(name = "club_id", referencedColumnName = "id", nullable = false)
     @ToString.Exclude
-    private Set<Club> club = new HashSet<>();
+    private Club club;
 
     @Enumerated(EnumType.ORDINAL)
     private Days day;
