@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,24 +24,16 @@ import com.example.teachua_android.presentation.home.components.AboutUsHomePageS
 import com.example.teachua_android.presentation.home.components.ClubsDirectionHomePageSection
 import com.example.teachua_android.presentation.home.components.ClubsImageTitleCardPager
 import com.example.teachua_android.presentation.home.components.HomeFooter
-import com.example.teachua_android.presentation.home.components.MainHeader
 import com.example.teachua_android.presentation.home.components.NewsHomePageSection
 import com.example.teachua_android.presentation.home.components.TeachUkrainianChallengeHomePageSection
 import com.example.teachua_android.presentation.home.components.WhiteButtonWithOrangeText
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomePage() {
+fun HomePageContent(modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier.verticalScroll(rememberScrollState())
+        modifier = modifier
     ) {
-        MainHeader(
-            location = "Київ",
-            onMenuButtonClick = {},
-            onSearch = {},
-            onAddClubsButtonClick = {},
-            onLocationChange = {},
-        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -91,5 +81,5 @@ fun HomePage() {
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 fun HomePagePreview() {
-    HomePage()
+    HomePageContent()
 }
