@@ -237,10 +237,6 @@ let apiservice, addclubpage, homepage, userpage;
 
         await addclubpage.completeClubCreation();
         await addclubpage.verifyElementVisibility(addclubpage.clubAlreadyExistMessage, true);
-
-        await page.reload();
-        userpage = new UserPage(page);
-        await userpage.gotoUserPage();
     });
 
     test.afterEach(async ({ page }) => {

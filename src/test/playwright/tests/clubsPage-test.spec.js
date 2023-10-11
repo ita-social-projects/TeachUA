@@ -1,4 +1,4 @@
-import { chromium, expect, test} from "@playwright/test";
+import { test} from "@playwright/test";
 import ApiService from "../services/apiService";
 import GroupsPage from "../PO/ClubsPage";
 import BasePage from "../PO/BasePage";
