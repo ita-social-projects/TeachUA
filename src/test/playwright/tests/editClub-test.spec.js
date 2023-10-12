@@ -1,13 +1,14 @@
-import { chromium, expect, test} from "@playwright/test";
+import { test} from "@playwright/test";
 import ApiService from "../services/apiService";
 import EditClubPage from "../PO/EditClubPage";
 import UserPage from "../PO/UserPage";
 import HomePage from "../PO/HomePage";
 import BasePage from "../PO/BasePage";
-import {editLocationDetails, editClubDetails, editClubContactDetails, newClubCorrectDetails} from "../constants/clubInformation.constants";
+import ClubInfoPage from "../PO/ClubInfoPage";
+import {editLocationDetails, editClubDetails, editClubContactDetails, clubCategories} from "../constants/clubInformation.constants";
 import {createClubRequest } from "../constants/api.constants";
 
-let apiservice, editclubpage, homepage, userpage, basepage;
+let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
 
     test.beforeEach(async({page})=>{
         apiservice = new ApiService(page);
@@ -21,7 +22,7 @@ let apiservice, editclubpage, homepage, userpage, basepage;
         await userpage.gotoUserPage();
     })
 
-    test("Verify that a new club can be succesfully added", async ({ page }) => {
+    test("Verify that a new club can be succesfully added and the details will be correct", async ({ page }) => {
         await apiservice.createNewClub(createClubRequest.body.name);
         try {
             await apiservice.deleteClubByTitle(editClubDetails.CLUB_TITLE);
@@ -62,6 +63,35 @@ let apiservice, editclubpage, homepage, userpage, basepage;
         await basepage.verifyElementVisibility(editclubpage.clubUpdatedSuccessMessage, true);
         
         await userpage.gotoUserPage();
+
+        clubinfopage = new ClubInfoPage(page);
+        await userpage.openClubInfoPage(editClubDetails.CLUB_TITLE);
+        await clubinfopage.verifyElementVisibilityAndText(
+            clubinfopage.clubPageTitle,
+            true,
+            editClubDetails.CLUB_TITLE
+        );
+        await clubinfopage.expectElementToHaveText(clubinfopage.clubPageTags, [
+            clubCategories.ACTING,
+            clubCategories.DEVELOPMENT_CENTER,
+            clubCategories.PROGRAMMING,
+        ]);
+        await clubinfopage.verifyElementVisibilityAndText(
+            clubinfopage.clubPageAddress,
+            true,
+            editLocationDetails.LOCATION_ADDRESS
+        );
+        await clubinfopage.verifyElementVisibilityAndText(
+            clubinfopage.clubPageDescription,
+            true,
+            editClubDetails.CLUB_DESCRIPTION
+        );
+        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, editClubContactDetails.EMAIL)
+        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, editClubContactDetails.FACEBOOK)
+        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, '+38'+editClubContactDetails.PHONE_NUMBER)
+        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, editClubContactDetails.WHATSUP)
+        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, editClubContactDetails.SKYPE)
+        
 
     });
 

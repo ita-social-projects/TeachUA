@@ -17,7 +17,7 @@ class BasePage {
         await expect(element).toContainText(text);
     }
 
-    async expectTextContain(text, searchText) {
+    async assertTextContains(text, searchText) {
         const doesContain = text.includes(searchText);
         expect(doesContain).toBe(true);
     }

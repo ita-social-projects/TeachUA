@@ -45,15 +45,16 @@ class ApiService {
         await this.page.reload();
     }
 
+    async assertResponseIsOk(response) {
+        expect(response.ok, `Response is not OK. Status: ${response.status}`).toBeTruthy();
+    }
+
+    // Get the total pages of clubs and assert that the response is successful.
     async getTotalPages(apiEndpoint, userId) {
-        try {
             const clubResponse = await fetch(`${apiEndpoint}/${userId}?page=0`);
             const responseJson = await clubResponse.json();
+            await this.assertResponseIsOk(clubResponse);
             return responseJson.totalPages;
-        } catch (e) {
-            console.error("Error fetching total pages of clubs: ", e);
-            throw new Error("Failed to fetch total pages of clubs");
-        }
     }
 
     async getAllClubsOfUser() {

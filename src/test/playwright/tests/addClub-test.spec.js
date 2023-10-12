@@ -3,10 +3,11 @@ import ApiService from "../services/apiService";
 import AddClubPage from "../PO/AddClubPage";
 import HomePage from "../PO/HomePage";
 import UserPage from "../PO/UserPage";
+import ClubInfoPage from "../PO/ClubInfoPage";
 import {clubCategories, newLocationCorrectDetails, newClubCorrectContactDetails, newClubIncorrectContactDetails, newClubCorrectDetails, newClubIncorrectDetails, newLocationIncorrectDetails} from "../constants/clubInformation.constants";
 import {addClubValidationErrorMessages,addLocationValidationErrorMessages, successClubCreationMessage} from "../constants/messages.constants";
 
-let apiservice, addclubpage, homepage, userpage;
+let apiservice, addclubpage, homepage, userpage, clubinfopage;
 
     test.beforeEach(async({page})=>{
         apiservice = new ApiService(page);
@@ -14,7 +15,6 @@ let apiservice, addclubpage, homepage, userpage;
         homepage = new HomePage(page);
 
         await apiservice.apiLoginAs('admin');
-        await homepage.gotoHomepage();
         await homepage.openAddClubPage();
     })
 
@@ -69,8 +69,47 @@ let apiservice, addclubpage, homepage, userpage;
         await addclubpage.verifyElementVisibilityAndText(addclubpage.clubCreatedSuccessMessage, true, successClubCreationMessage);
         
         await userpage.gotoUserPage();
+        
+        //verify that created club is present on the user page
         await userpage.verifyClubExistance(newClubCorrectDetails.CLUB_TITLE);  
+       
+        //verify that the created club information is correct
+        clubinfopage = new ClubInfoPage(page);
+        await userpage.gotoUserPage();
+        await userpage.openClubInfoPage(newClubCorrectDetails.CLUB_TITLE);
+        await clubinfopage.verifyElementVisibilityAndText(
+            clubinfopage.clubPageTitle,
+            true,
+            newClubCorrectDetails.CLUB_TITLE
+        );
+        await clubinfopage.expectElementToHaveText(clubinfopage.clubPageTags, [
+            clubCategories.ACTING,
+            clubCategories.DEVELOPMENT_CENTER,
+            clubCategories.PROGRAMMING,
+        ]);
+        await clubinfopage.verifyElementVisibilityAndText(
+            clubinfopage.clubPageAddress,
+            true,
+            newLocationCorrectDetails.LOCATION_ADDRESS
+        );
+        await clubinfopage.verifyElementVisibilityAndText(
+            clubinfopage.clubPageDescription,
+            true,
+            newClubCorrectDetails.CLUB_DESCRIPTION
+        );
+        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, newClubCorrectContactDetails.EMAIL)
+        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, newClubCorrectContactDetails.FACEBOOK)
+        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, '+38'+newClubCorrectContactDetails.PHONE_NUMBER)
+        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, newClubCorrectContactDetails.WHATSUP)
+        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, newClubCorrectContactDetails.WEB_PAGE)
+        
+        await clubinfopage.verifyElementVisibilityAndText(
+            clubinfopage.clubPageDevelopmentCenter,
+            true,
+            newClubCorrectDetails.CLUB_RELATED_CENTER
+        );
     });
+    
 
     test("Verify validation error messages appearence/disappearence on the first step", async ({ page }) => {
         await addclubpage.proceedToNextStep();
@@ -240,5 +279,5 @@ let apiservice, addclubpage, homepage, userpage;
     });
 
     test.afterEach(async ({ page }) => {
-        await page.close();
+        //await page.close();
     });
