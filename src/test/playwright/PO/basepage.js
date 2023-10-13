@@ -4,8 +4,8 @@ import {signInUrl} from "../constants/api.constants";
 class BasePage {
     constructor(page) {
         this.page = page;
-        this.navBarCityDropdown = page.locator('header > div.right-side-menu div.city')
-        this.navBarCityDropdownList = page.locator('body > div:last-child ul')
+        this.navBarCityDropdown = page.locator("header > div.right-side-menu div.city");
+        this.navBarCityDropdownList = page.locator("body > div:last-child ul");
         this.paginationNextPageButton = page.locator('ul > li[title="Next Page"]');
     }
 
@@ -23,14 +23,10 @@ class BasePage {
     }
 
     async verifyElementVisibility(element, isVisible = true) {
-        if(!(typeof isVisible === 'boolean')){
-          throw new Error('Second paramenter should be boolean');
+        if (!(typeof isVisible === "boolean")) {
+            throw new Error("Second paramenter should be boolean");
         }
-        if (isVisible === true) {
-            await expect(element).toBeVisible();
-        } else if (isVisible === false) {
-            await expect(element).not.toBeVisible();
-        }
+        isVisible ? await expect(element).toBeVisible() : await expect(element).not.toBeVisible();
     }
 
     async isNextPageAvailable() {
@@ -51,25 +47,26 @@ class BasePage {
         }
     }
 
-    //this method can be used to check whether the element is present and has the required text, or not visible
-    //I combined it in order to reduce code duplication when verifying error messages presence/absence
-    async verifyElementVisibilityAndText(element, isVisible=true, text){
-        if(isVisible===true){
-            await this.verifyElementVisibility(element, isVisible);
-            await this.expectElementToHaveText(element,text);
-        } else {
-            await this.verifyElementVisibility(element, isVisible);
+    /*
+     *This method can be used to check whether the element is present and, if visible, 
+     *has the required text.
+     *It combines both checks to reduce code duplication when 
+     *verifying error messages' presence or absence.
+     */
+    async verifyElementVisibilityAndText(element, isVisible = true, text) {
+        await this.verifyElementVisibility(element, isVisible);
+        if (isVisible === true) {
+            await this.expectElementToHaveText(element, text);
         }
     }
 
-
-    async fillInputField(element, value){
-        await element.waitFor({timeout: 5000});
+    async fillInputField(element, value) {
+        await element.waitFor({ timeout: 5000 });
         await element.clear();
         await element.fill(value);
     }
 
-    async selectCityInNavBar(city){
+    async selectCityInNavBar(city) {
         await this.navBarCityDropdown.click();
         await (await this.navBarCityDropdownList.getByText(city)).click();
     }
@@ -82,9 +79,9 @@ class BasePage {
         return elements.sort((a, b) => b - a);
     }
 
-    async verifyTooltipAppearsOnHover(selector,message){
+    async verifyTooltipAppearsOnHover(selector, message) {
         await selector.hover();
-        const tooltip = this.page.locator('div.ant-tooltip-inner').filter({ hasText: `${message}`});;
+        const tooltip = this.page.locator("div.ant-tooltip-inner").filter({ hasText: `${message}` });
         await this.verifyElementVisibility(tooltip, true);
     }
 }

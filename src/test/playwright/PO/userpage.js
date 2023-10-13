@@ -13,7 +13,7 @@ class UserPage extends BasePage {
         this.editClubOption = page.locator("li.ant-dropdown-menu-item").filter({ hasText: userPage.editClub });
         this.deleteClubOption = page.locator("li.ant-dropdown-menu-item").filter({ hasText: userPage.deleteClub });
         this.editClubWindowTitle = page.getByRole("dialog").getByText("Редагувати гурток");
-        this.clubDetailsButton = page.locator('button.details-button');
+        this.clubDetailsButton = page.locator("button.details-button");
 
         this.clubDeletedSuccessMessage = this.page
             .locator("div.ant-message-success")
@@ -52,8 +52,10 @@ class UserPage extends BasePage {
         }
     }
 
-    async verifyClubExistance(clubTitle) {
-        expect(await this.isClubPresent(clubTitle)).toBe(true);
+    async verifyClubExistance(clubTitle, doesExist = true) {
+        doesExist
+            ? expect(await this.isClubPresent(clubTitle)).toBe(true)
+            : expect(await this.isClubPresent(clubTitle)).toBe(false);
     }
 
     async openClubEditModeByTitle(clubTitle) {

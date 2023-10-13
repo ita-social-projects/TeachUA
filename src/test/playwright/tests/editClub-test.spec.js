@@ -22,7 +22,7 @@ let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
         await userpage.gotoUserPage();
     })
 
-    test("Verify that a new club can be succesfully added and the details will be correct", async ({ page }) => {
+    test("Verify that an existing club can be succesfully edited and the details will be correct", async ({ page }) => {
         await apiservice.createNewClub(createClubRequest.body.name);
         try {
             await apiservice.deleteClubByTitle(editClubDetails.CLUB_TITLE);
@@ -94,6 +94,13 @@ let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
         
 
     });
+
+    test("Verify that an existing club can be succesfully deleted", async ({ page }) => {
+        await apiservice.createNewClub(createClubRequest.body.name);
+        await userpage.removeClubByTitle(createClubRequest.body.name);
+        await userpage.gotoUserPage();
+        await userpage.verifyClubExistance(createClubRequest.body.name, false);
+    })
 
     test.afterEach(async ({ page }) => {
         await page.close();
