@@ -100,7 +100,30 @@ let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
         await userpage.removeClubByTitle(createClubRequest.body.name);
         await userpage.gotoUserPage();
         await userpage.verifyClubExistance(createClubRequest.body.name, false);
-    })
+    });
+
+    test("Verify that an club's location can be succesfully deleted", async ({ page }) => {
+        try {
+            await apiservice.deleteClubByTitle(createClubRequest.body.name);
+        } catch (e) {
+            console.error(e);
+        }
+        await apiservice.createNewClub(createClubRequest.body.name);
+        await userpage.openClubEditModeByTitle(createClubRequest.body.name);
+        await editclubpage.proceedToNextStep();
+        await editclubpage.deleteLocation(createClubRequest.body.locations.name);
+        await editclubpage.verifyLocationPresence(createClubRequest.body.locations.name, false);
+        await editclubpage.proceedToNextStep();
+        await editclubpage.completeClubCreation();
+        await userpage.gotoUserPage();
+        clubinfopage = new ClubInfoPage(page);
+        await userpage.openClubInfoPage(createClubRequest.body.name);
+        await clubinfopage.verifyElementVisibilityAndText(
+            clubinfopage.clubPageAddress,
+            true,
+            editLocationDetails.LOCATION_ONLINE
+        );
+    });
 
     test.afterEach(async ({ page }) => {
         await page.close();

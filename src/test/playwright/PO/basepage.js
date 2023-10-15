@@ -17,6 +17,10 @@ class BasePage {
         await expect(element).toContainText(text);
     }
 
+    async expectElementToNotContainText(element, text) {
+        await expect(element).not.toContainText(text);
+    }
+
     async assertTextContains(text, searchText) {
         const doesContain = text.includes(searchText);
         expect(doesContain).toBe(true);
@@ -26,7 +30,7 @@ class BasePage {
         if (!(typeof isVisible === "boolean")) {
             throw new Error("Second paramenter should be boolean");
         }
-        isVisible ? await expect(element).toBeVisible() : await expect(element).not.toBeVisible();
+        isVisible ? await expect(element, 'should be visible').toBeVisible() : await expect(element, 'should NOT be visible').not.toBeVisible();
     }
 
     async isNextPageAvailable() {

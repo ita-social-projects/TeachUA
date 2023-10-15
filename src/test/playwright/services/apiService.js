@@ -46,7 +46,7 @@ class ApiService {
     }
 
     async assertResponseIsOk(response) {
-        expect(response.ok, `Response is not OK. Status: ${response.status}`).toBeTruthy();
+        expect(response.ok, `Response should be OK. Status: ${response.status}`).toBeTruthy();
     }
 
     // Get the total pages of clubs and assert that the response is successful.

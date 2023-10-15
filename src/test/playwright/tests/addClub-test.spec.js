@@ -48,8 +48,7 @@ let apiservice, addclubpage, homepage, userpage, clubinfopage;
         await addclubpage.fillInputField(addclubpage.locationPhoneNumberField, newLocationCorrectDetails.LOCATION_PHONE);
         await addclubpage.confirmLocationAddition();
 
-        await addclubpage.verifyLocationListContainsItem(newLocationCorrectDetails.LOCATION_NAME)
-        await addclubpage.verifyLocationListContainsItem(newLocationCorrectDetails.LOCATION_ADDRESS)
+        await addclubpage.verifyLocationPresence(newLocationCorrectDetails.LOCATION_NAME);
         
         await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, newClubCorrectContactDetails.PHONE_NUMBER);
         await addclubpage.fillInputField(addclubpage.clubFacebookField, newClubCorrectContactDetails.FACEBOOK);

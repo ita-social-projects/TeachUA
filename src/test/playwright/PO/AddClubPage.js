@@ -158,8 +158,9 @@ class AddClubPage extends BasePage {
 
     //---------------------------------------------------------------------
 
-    async verifyLocationListContainsItem(item){
-        await this.expectElementToContainText(this.locationsList, item);
+    async verifyLocationPresence(locationName, isPresent){
+        const location = await this.page.getByRole('heading', {name: locationName});
+        await this.verifyElementVisibility(location, isPresent);
     }
 
     async toggleIsOnlineSlider(){

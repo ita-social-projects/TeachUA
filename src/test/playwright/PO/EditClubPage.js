@@ -22,6 +22,9 @@ class EditClubPage extends AddClubPage {
         //Step 2 - Контакти/Локація
         this.addLocationButton = this.page.locator("span.add-club-location");
         this.editLocationButton = this.page.locator("ul.ant-list-item-action li span:first-child");
+        this.deleteLocationButton = this.page.locator("ul.ant-list-item-action li span:last-child");
+        this.deleteLocationCancelButton = this.page.locator("div.ant-popover-content button.popConfirm-cancel-button");
+        this.deleteLocationConfirmButton = this.page.locator("div.ant-popover-content button.popConfirm-ok-button");
 
         this.locationNameField = this.page.locator("input#name");
         this.locationCityDropdown = this.page.locator("input#cityName");
@@ -36,7 +39,7 @@ class EditClubPage extends AddClubPage {
         this.locationNameInfoSign = this.page.locator("input#name + span svg");
         this.locationPhoneInfoSign = this.page.locator("input#phone + span svg");
 
-        this.locationsList = this.page.locator("div.add-club-location-list ul.ant-list-items");
+        this.locationsList = this.page.locator("div.add-club-location-list");
 
         this.isOnlineSlider = this.page.locator('button[role="switch"]');
         this.isOnlineInfoSign = this.page.locator('button[role="switch"] + span svg');
@@ -84,6 +87,15 @@ class EditClubPage extends AddClubPage {
             .filter({ hasText: locationName })
             .locator(this.editLocationButton)
             .click();
+    
+        }
+    async deleteLocation(locationName) {
+        await this.page
+            .locator("li.ant-list-item")
+            .filter({ hasText: locationName })
+            .locator(this.deleteLocationButton)
+            .click();
+        await this.deleteLocationConfirmButton.click();
     }
 }
 

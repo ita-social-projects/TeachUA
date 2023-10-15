@@ -74,7 +74,8 @@ export const editLocationDetails = {
     LOCATION_STATION: '',
     LOCATION_ADDRESS: 'Some Unknown str.',
     LOCATION_COORDINATES: '19.790387, 64.028195',
-    LOCATION_PHONE: '0555555555'
+    LOCATION_PHONE: '0555555555',
+    LOCATION_ONLINE: 'Онлайн'
 }
 
 export const editClubContactDetails = {
