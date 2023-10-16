@@ -1,6 +1,6 @@
 import { test} from "@playwright/test";
 import ApiService from "../services/apiService";
-import GroupsPage from "../PO/ClubsPage";
+import ClubsPage from "../PO/ClubsPage";
 import BasePage from "../PO/BasePage";
 import {simpleSearchParameters} from "../constants/searchQueries.constants";
 import {cities} from "../constants/general.constants";
@@ -9,7 +9,7 @@ let apiservice, clubspage, basepage;
 
     test.beforeEach(async({page})=>{
         apiservice = new ApiService(page);
-        clubspage = new GroupsPage(page);
+        clubspage = new ClubsPage(page);
         await apiservice.apiLoginAs('admin');
         await clubspage.gotoClubsPage();
     })
