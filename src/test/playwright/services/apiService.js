@@ -109,6 +109,33 @@ class ApiService {
             throw new Error("Request failed, club was not created \n");
         }
     }
+
+    //challenges & tasks interaction
+
+    async deleteChallengeByName(challengeName){ 
+        const challenges = await this.getAllChallenges();
+        const challenge = challenges.find((c)=>c.name === challengeName);
+        if (!challenge) {
+            console.log("Challenge wasn't deleted as it doesn't exist (hasn't been created or the name is wrong)");
+            return;
+        }
+        await this.deleteChallengeById(challenge.id);
+    }
+
+    async deleteChallengeById(id) {
+        const response = await fetch(`http://localhost:8080/dev/api/challenge/${id}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
+        });
+        await this.assertResponseIsOk(response);
+    }
+
+    async getAllChallenges(){
+        const pageResponse = await fetch(`http://localhost:8080/dev/api/challenges`);
+        await this.assertResponseIsOk(pageResponse);
+        const pageJson = await pageResponse.json();
+        return pageJson;
+    }
 }
 
 module.exports = ApiService;

@@ -16,12 +16,12 @@ class ChallengesPage extends BasePage {
 
     async openAddChallengePage() {
         await this.addChallengeButton.click();
-        await expect(await this.page.url()).toBe(addChallengeAdminUrl);
+        await this.verifyUrl(addChallengeAdminUrl);        
     }
 
     async openTasksPage() {
         await this.openTasksButton.click();
-        await expect(await this.page.url()).toBe(tasksAdminUrl);
+        await this.verifyUrl(tasksAdminUrl);        
     }
 }
 

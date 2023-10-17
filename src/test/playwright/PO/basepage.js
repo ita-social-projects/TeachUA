@@ -33,6 +33,11 @@ class BasePage {
         isVisible ? await expect(element, 'should be visible').toBeVisible() : await expect(element, 'should NOT be visible').not.toBeVisible();
     }
 
+    async verifyUrl(expectedUrl){
+        const currentUrl = await this.page.url();
+        expect(currentUrl).toBe(expectedUrl);
+    }
+
     async isNextPageAvailable() {
         return (
             (await this.paginationNextPageButton.isVisible()) &&
