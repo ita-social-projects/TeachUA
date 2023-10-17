@@ -20,6 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
+import org.mockito.internal.util.collections.Sets;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,7 +55,7 @@ class WorkTimeServiceTest {
     @Test
     void updateWorkTimeByClubShouldReturnWorkTimeSet() {
 
-        when(dtoConverter.convertToEntity(workTimeSet, new WorkTime())).thenReturn(workTime);
+        when(dtoConverter.convertToEntity(workTime, new WorkTime())).thenReturn(workTime);
         when(workTimeRepository.save(any(WorkTime.class))).thenReturn(workTime);
         Set<WorkTime> actual = workTimeServiceImpl.updateWorkTimeByClub(workTimeSet, club);
         assertThat(actual).isEqualTo(workTimeSet);
@@ -63,7 +64,7 @@ class WorkTimeServiceTest {
     @Test
     void updateWorkTimeByClubWithExistingWorkTimeShouldReturnWorkTimeSet() {
         club.setWorkTimes(workTimeSet);
-        when(dtoConverter.convertToEntity(workTimeSet, new WorkTime())).thenReturn(workTime);
+        when(dtoConverter.convertToEntity(workTime, new WorkTime())).thenReturn(workTime);
         when(workTimeRepository.save(any(WorkTime.class))).thenReturn(workTime);
         Set<WorkTime> actual = workTimeServiceImpl.updateWorkTimeByClub(workTimeSet, club);
         assertThat(actual).isEqualTo(workTimeSet);
@@ -71,8 +72,7 @@ class WorkTimeServiceTest {
 
     @Test
     void updateWorkTimeByEmptyWorkTimeSetShouldReturnIncorrectInputException() {
-        assertThatThrownBy(() -> workTimeServiceImpl.updateWorkTimeByClub(null, club)).isInstanceOf(
-                IncorrectInputException.class);
+        assertThat(workTimeServiceImpl.updateWorkTimeByClub(null, club)).isEqualTo(Sets.newSet());
     }
 
     @Test

@@ -2,13 +2,13 @@ package com.softserve.teachua.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softserve.teachua.converter.DtoConverter;
-import com.softserve.teachua.exception.IncorrectInputException;
 import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.WorkTime;
 import com.softserve.teachua.repository.WorkTimeRepository;
 import com.softserve.teachua.service.ArchiveService;
 import com.softserve.teachua.service.WorkTimeService;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,20 +53,20 @@ public class WorkTimeServiceImpl implements WorkTimeService {
 
     @Override
     public Set<WorkTime> updateWorkTimeByClub(Set<WorkTime> workTimes, Club club) {
-        if (workTimes == null || workTimes.isEmpty()) {
-            throw new IncorrectInputException("empty Work time");
-        }
         if (club.getWorkTimes() != null) {
             club.getWorkTimes().forEach(workTime -> {
                 workTime.setClub(null);
                 workTimeRepository.deleteById(workTime.getId());
             });
         }
-
+        if (workTimes == null || workTimes.isEmpty()) {
+            return new HashSet<WorkTime>();
+        }
         return workTimes.stream()
                 .map(workTime -> workTimeRepository
-                        .save(dtoConverter.convertToEntity(workTimes, new WorkTime())
+                        .save(dtoConverter.convertToEntity(workTime, new WorkTime())
                                 .withDay(workTime.getDay())
+                                .withClub(club)
                                 .withStartTime(workTime.getStartTime())
                                 .withEndTime(workTime.getEndTime())))
                 .collect(Collectors.toSet());

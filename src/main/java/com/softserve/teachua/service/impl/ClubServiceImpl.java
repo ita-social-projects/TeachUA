@@ -297,6 +297,7 @@ public class ClubServiceImpl implements ClubService, ArchiveMark<Club> {
             club.setWorkTimes(workTimes.stream()
                     .map(workTime -> workTimeRepository.save(dtoConverter
                             .convertToEntity(workTime, new WorkTime())
+                            .withClub(club)
                             .withDay(workTime.getDay())
                             .withStartTime(workTime.getStartTime())
                             .withEndTime(workTime.getEndTime())))
