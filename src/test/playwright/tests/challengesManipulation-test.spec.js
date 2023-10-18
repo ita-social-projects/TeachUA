@@ -17,6 +17,11 @@ let apiservice, challengespage, basepage, addchallengepage;
 
     test("Verify that a new challenge can be successfully created", async ({ page }) => {
         addchallengepage = new AddChallengePage(page);
+        try {
+            await apiservice.deleteChallengeByName(newChallengeCorrectDetails.NAME)
+        } catch (e) {
+            console.error(e);
+        }
         await challengespage.openAddChallengePage();
         await addchallengepage.fillInputField(addchallengepage.challengeSequenceNumberField, newChallengeCorrectDetails.SEQUENCE_NUMBER)
         await addchallengepage.fillInputField(addchallengepage.challengeNameField, newChallengeCorrectDetails.NAME)
@@ -27,12 +32,14 @@ let apiservice, challengespage, basepage, addchallengepage;
 
         await addchallengepage.verifyElementVisibility(addchallengepage.challengeAddedSuccessMessage);
         await addchallengepage.openChallengesPage();
+        await addchallengepage.verifyElementExistance(challengespage.allChallengesSequenceNumbers, newChallengeCorrectDetails.SEQUENCE_NUMBER)
 
     });
 
-    test("test", async ({ page }) => {
-        await apiservice.deleteChallengeByName("NEW UPDATE NAME")
-    });
+    test("Verify that a new task can be added to the existing challenge", async({page})=>{
+        await apiservice.createNewChallenge();
+    })
+
 
     test.afterEach(async({page})=>{
         //page.close();

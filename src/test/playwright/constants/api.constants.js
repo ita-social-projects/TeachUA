@@ -38,3 +38,17 @@ export const createClubRequest  = {
         centerId: 1,
     },
 };
+
+export const createChallengeRequest  = {
+    url: "http://localhost:8080/dev/api/challenge",
+    method: "POST",
+    body: {
+        name: "Super Challenge Name",
+        description: "<p>This is a test description for a new Challenge. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>",
+        title: "Exquisite test title",
+        picture: "/upload/challenges/challenge1.jpg",
+        sortNumber: 1122334455
+    },
+};
+
+

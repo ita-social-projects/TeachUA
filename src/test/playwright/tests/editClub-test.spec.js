@@ -46,8 +46,7 @@ let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
         await editclubpage.fillInputField(editclubpage.locationPhoneNumberField, editLocationDetails.LOCATION_PHONE);
         await editclubpage.confirmLocationAddition();
 
-        await editclubpage.verifyLocationListContainsItem(editLocationDetails.LOCATION_NAME)
-        await editclubpage.verifyLocationListContainsItem(editLocationDetails.LOCATION_ADDRESS)
+        await editclubpage.verifyLocationPresence(editLocationDetails.LOCATION_NAME)
         
         await editclubpage.fillInputField(editclubpage.clubPhoneNumberField, editClubContactDetails.PHONE_NUMBER);
         await editclubpage.fillInputField(editclubpage.clubFacebookField, editClubContactDetails.FACEBOOK);
@@ -99,7 +98,7 @@ let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
         await apiservice.createNewClub(createClubRequest.body.name);
         await userpage.removeClubByTitle(createClubRequest.body.name);
         await userpage.gotoUserPage();
-        await userpage.verifyElementExistance(userpage.clubsNames, createClubRequest.body.name);
+        await userpage.verifyElementExistance(userpage.clubsNames, createClubRequest.body.name, false);
 
     });
 

@@ -25,26 +25,6 @@ class ChallengesPage extends BasePage {
         await this.verifyUrl(tasksAdminUrl);        
     }
 
-    async isClubPresent(clubTitle) {
-        try {
-            await (await this.firstClub).waitFor({ state: "visible", timeout: 5000 });
-        } catch (e) {
-            console.log("Current user doesn't own any clubs");
-            return false;
-        }
-
-        const clubNames = await this.clubsNames.allTextContents();
-        if (await clubNames.includes(clubTitle)) {
-            return true;
-        } else if (await this.isNextPageAvailable()) {
-            // If the club is not found on this page, check if there's a next page and recursively search
-            await this.goToNextPage();
-            return await this.isClubPresent(clubTitle);
-        } else {
-            // If the club is not found and there are no more pages, return false
-            return false;
-        }
-    }
 }
 
 module.exports = ChallengesPage;

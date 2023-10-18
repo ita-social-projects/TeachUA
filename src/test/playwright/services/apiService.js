@@ -1,7 +1,7 @@
 
 import { expect} from "@playwright/test";
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
-import {signInUrl, createClubRequest , usersClubs} from "../constants/api.constants";
+import {signInUrl, createClubRequest , usersClubs, createChallengeRequest} from "../constants/api.constants";
 
 
 class ApiService {
@@ -49,12 +49,28 @@ class ApiService {
         expect(response.ok, `Response should be OK. Status: ${response.status}`).toBeTruthy();
     }
 
+    //clubs interaction
+
     // Get the total pages of clubs and assert that the response is successful.
     async getTotalPages(apiEndpoint, userId) {
             const clubResponse = await fetch(`${apiEndpoint}/${userId}?page=0`);
             const responseJson = await clubResponse.json();
             await this.assertResponseIsOk(clubResponse);
             return responseJson.totalPages;
+    }
+
+    async createNewClub() {
+        const response = await fetch(createClubRequest.url, {
+            method: createClubRequest.method,
+            body: JSON.stringify(createClubRequest.body),
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
+        });
+        if ((await response.json()).status === 409) {
+            console.log("Club already exist");
+        } else if (!response.ok) {
+            console.log(await response.json());
+            throw new Error("Request failed, club was not created \n");
+        }
     }
 
     async getAllClubsOfUser() {
@@ -96,21 +112,17 @@ class ApiService {
         await this.deleteClubById(club.id);
     }
 
-    async createNewClub() {
-        const response = await fetch(createClubRequest.url, {
-            method: createClubRequest.method,
-            body: JSON.stringify(createClubRequest.body),
+    //challenges & tasks interaction
+    async createNewChallenge() {
+        const response = await fetch(createChallengeRequest.url, {
+            method: createChallengeRequest.method,
+            body: JSON.stringify(createChallengeRequest.body),
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
         });
-        if ((await response.json()).status === 409) {
-            console.log("Club already exist");
-        } else if (!response.ok) {
-            console.log(await response.json());
-            throw new Error("Request failed, club was not created \n");
-        }
+        if ((await response.json()).status === 400) {
+            console.log("Challenge already exist");
+        } 
     }
-
-    //challenges & tasks interaction
 
     async deleteChallengeByName(challengeName){ 
         const challenges = await this.getAllChallenges();
