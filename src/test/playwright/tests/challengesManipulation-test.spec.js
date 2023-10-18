@@ -26,6 +26,8 @@ let apiservice, challengespage, basepage, addchallengepage;
         await addchallengepage.confirmChallengeCreation();
 
         await addchallengepage.verifyElementVisibility(addchallengepage.challengeAddedSuccessMessage);
+        await addchallengepage.openChallengesPage();
+
     });
 
     test("test", async ({ page }) => {

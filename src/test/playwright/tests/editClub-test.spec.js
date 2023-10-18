@@ -99,7 +99,8 @@ let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
         await apiservice.createNewClub(createClubRequest.body.name);
         await userpage.removeClubByTitle(createClubRequest.body.name);
         await userpage.gotoUserPage();
-        await userpage.verifyClubExistance(createClubRequest.body.name, false);
+        await userpage.verifyElementExistance(userpage.clubsNames, createClubRequest.body.name);
+
     });
 
     test("Verify that an club's location can be succesfully deleted", async ({ page }) => {

@@ -70,8 +70,8 @@ let apiservice, addclubpage, homepage, userpage, clubinfopage;
         await userpage.gotoUserPage();
         
         //verify that created club is present on the user page
-        await userpage.verifyClubExistance(newClubCorrectDetails.CLUB_TITLE);  
-       
+        await userpage.verifyElementExistance(userpage.clubsNames,newClubCorrectDetails.CLUB_TITLE);
+
         //verify that the created club information is correct
         clubinfopage = new ClubInfoPage(page);
         await userpage.gotoUserPage();
