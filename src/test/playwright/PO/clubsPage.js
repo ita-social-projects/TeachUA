@@ -122,7 +122,7 @@ class ClubsPage extends BasePage {
     async verifyClubCardsContainText(text) {
         text = text.toLowerCase();
         const cards = await this.cards.all();
-        if (cards.length === 0) {
+        if (await cards.length === 0) {
             throw new Error("There are no result for this search query!");
         }
         for (let card of cards) {

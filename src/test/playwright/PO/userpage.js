@@ -1,4 +1,3 @@
-import { expect } from "@playwright/test";
 import { apiUrl } from "../constants/api.constants";
 import { userPage } from "../constants/locatorsText.constants";
 import BasePage from "./BasePage";

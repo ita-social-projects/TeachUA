@@ -1,4 +1,3 @@
-import { expect} from "@playwright/test";
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
 import {apiUrl} from "../constants/api.constants";
 import {addClubPage} from "../constants/locatorsText.constants";

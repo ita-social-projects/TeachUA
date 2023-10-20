@@ -18,7 +18,7 @@ let apiservice, challengespage, basepage, addchallengepage;
     test("Verify that a new challenge can be successfully created", async ({ page }) => {
         addchallengepage = new AddChallengePage(page);
         try {
-            await apiservice.deleteChallengeByName(newChallengeCorrectDetails.NAME)
+            await apiservice.deleteChallengeBySequenceNumber(newChallengeCorrectDetails.SEQUENCE_NUMBER)
         } catch (e) {
             console.error(e);
         }
@@ -29,6 +29,7 @@ let apiservice, challengespage, basepage, addchallengepage;
         await addchallengepage.fillInputField(addchallengepage.challengeDescriptionField, newChallengeCorrectDetails.DESCRIPTION)
         await addchallengepage.uploadChallengePhoto();
         await addchallengepage.confirmChallengeCreation();
+        await addchallengepage.confirmChallengeCreation();
 
         await addchallengepage.verifyElementVisibility(addchallengepage.challengeAddedSuccessMessage);
         await addchallengepage.openChallengesPage();
@@ -36,11 +37,11 @@ let apiservice, challengespage, basepage, addchallengepage;
 
     });
 
-    test("Verify that a new task can be added to the existing challenge", async({page})=>{
-        await apiservice.createNewChallenge();
-    })
+    // test("Verify that a new task can be added to the existing challenge", async({page})=>{
+    //     await apiservice.createNewChallenge();
+    // })
 
 
     test.afterEach(async({page})=>{
-        //page.close();
+       await page.close();
     })

@@ -1,5 +1,4 @@
 import { expect} from "@playwright/test";
-import {signInUrl} from "../constants/api.constants";
 
 class BasePage {
     constructor(page) {

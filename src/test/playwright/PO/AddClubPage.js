@@ -1,12 +1,8 @@
-import { expect} from "@playwright/test";
-import { apiUrl } from "../constants/api.constants";
 import { addClubPage } from "../constants/locatorsText.constants";
 import {
     clubOnlineSliderTooltip,
     locationNameTooltip,
     locationPhoneTooltip,
-    noLocationClubOnlineMessage,
-    clubAlreadyExistMessage
 } from "../constants/messages.constants";
 import { imagesPath } from "../constants/general.constants";
 import BasePage from "./BasePage";

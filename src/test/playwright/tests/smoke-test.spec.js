@@ -5,6 +5,10 @@ import ApiService from "../services/apiService";
 
 let homepage, apiservice, userpage;
 
+test.describe.configure({
+    mode: "parallel"
+})
+
     test.beforeEach(async({page})=>{
         homepage = new HomePage(page);
         await homepage.gotoHomepage();
@@ -24,6 +28,5 @@ let homepage, apiservice, userpage;
     })
 
     test.afterEach(async({page})=>{
-        page.close();
+       await page.close();
     })
-

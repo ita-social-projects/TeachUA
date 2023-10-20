@@ -1,4 +1,3 @@
-import { expect } from "@playwright/test";
 import { challengesAdminUrl, addChallengeAdminUrl, tasksAdminUrl } from "../constants/api.constants";
 import BasePage from "./BasePage";
 

@@ -124,9 +124,9 @@ class ApiService {
         } 
     }
 
-    async deleteChallengeByName(challengeName){ 
+    async deleteChallengeBySequenceNumber(sequenceNumber){ 
         const challenges = await this.getAllChallenges();
-        const challenge = challenges.find((c)=>c.name === challengeName);
+        const challenge = challenges.find((c)=>c.sortNumber === parseInt(sequenceNumber));
         if (!challenge) {
             console.log("Challenge wasn't deleted as it doesn't exist (hasn't been created or the name is wrong)");
             return;

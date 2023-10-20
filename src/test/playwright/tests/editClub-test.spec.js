@@ -23,12 +23,13 @@ let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
     })
 
     test("Verify that an existing club can be succesfully edited and the details will be correct", async ({ page }) => {
-        await apiservice.createNewClub(createClubRequest.body.name);
         try {
             await apiservice.deleteClubByTitle(editClubDetails.CLUB_TITLE);
+            await apiservice.deleteClubByTitle(createClubRequest.body.name);
         } catch (e) {
             console.error(e);
         }
+        await apiservice.createNewClub(createClubRequest.body.name);
 
         await userpage.openClubEditModeByTitle(createClubRequest.body.name);
         await basepage.fillInputField(editclubpage.clubNameField, editClubDetails.CLUB_TITLE);

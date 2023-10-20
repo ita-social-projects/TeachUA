@@ -7,6 +7,10 @@ import {cities} from "../constants/general.constants";
 
 let apiservice, clubspage, basepage;
 
+test.describe.configure({
+    mode: "parallel"
+})
+
     test.beforeEach(async({page})=>{
         apiservice = new ApiService(page);
         clubspage = new ClubsPage(page);
@@ -45,5 +49,5 @@ let apiservice, clubspage, basepage;
 
 
     test.afterEach(async({page})=>{
-        page.close();
+        await page.close();
     })

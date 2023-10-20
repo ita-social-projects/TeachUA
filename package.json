@@ -6,7 +6,10 @@
   "scripts": {
     "playDebug": "npx playwright test ./playwright/tests/addClub-test.spec.js --headed",
     "smoke": "npx playwright test --grep @smoke",
-    "allTests": "npx playwright test"
+    "allTests": "npx playwright test",
+    "test:sequence": "npx playwright test ./playwright/tests/sequence/",
+    "test:parallel": "npx playwright test ./playwright/tests/parallel/",
+    "test:ci": "npm run test:parallel && npm run test:sequence"
   },
   "keywords": [],
   "author": "",

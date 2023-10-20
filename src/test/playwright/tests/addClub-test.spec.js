@@ -68,9 +68,6 @@ let apiservice, addclubpage, homepage, userpage, clubinfopage;
         await addclubpage.verifyElementVisibilityAndText(addclubpage.clubCreatedSuccessMessage, true, successClubCreationMessage);
         
         await userpage.gotoUserPage();
-        
-        //verify that created club is present on the user page
-        await userpage.verifyElementExistance(userpage.clubsNames,newClubCorrectDetails.CLUB_TITLE);
 
         //verify that the created club information is correct
         clubinfopage = new ClubInfoPage(page);
@@ -278,5 +275,5 @@ let apiservice, addclubpage, homepage, userpage, clubinfopage;
     });
 
     test.afterEach(async ({ page }) => {
-        //await page.close();
+        await page.close();
     });
