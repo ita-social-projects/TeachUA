@@ -9,10 +9,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.teachua_android.common.Screen
-import com.example.teachua_android.presentation.home.components.HomePage
+import com.example.teachua_android.presentation.home.HomePage
 import com.example.teachua_android.presentation.navigation_drawer.NotImplementedScreen
 import com.example.teachua_android.presentation.ui.theme.TeachUA_androidTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {

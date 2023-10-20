@@ -1,4 +1,4 @@
-package com.example.teachua_android.presentation.home.components
+package com.example.teachua_android.presentation.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -48,7 +48,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,10 +63,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.teachua_android.R
-import com.example.teachua_android.presentation.home.HomePageContent
+import com.example.teachua_android.presentation.home.components.HomePageContent
+import com.example.teachua_android.presentation.home.components.OrangeButtonWithWhiteText
 import com.example.teachua_android.presentation.navigation_drawer.navigationItemList
 import kotlinx.coroutines.launch
 
@@ -78,16 +80,19 @@ import kotlinx.coroutines.launch
 fun HomePage(
     navController: NavController ,
     modifier: Modifier = Modifier ,
+    viewModel: HomePageViewModel = hiltViewModel()
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var selectedItemIndex by rememberSaveable {
-        mutableStateOf(0)
-    }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val selectedItemIndex = navigationItemList.indexOfFirst { it.route == currentRoute }
+
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     val scrollState = rememberScrollState()
+    val citiesState by viewModel.citiesState
 
     ModalNavigationDrawer(
         drawerContent = {
@@ -100,8 +105,9 @@ fun HomePage(
                         } ,
                         selected = index == selectedItemIndex ,
                         onClick = {
-                            navController.navigate(item.route)
-                            selectedItemIndex = index
+                            navController.navigate(item.route) {
+
+                            }
                             scope.launch {
                                 drawerState.close()
                             }
@@ -125,21 +131,20 @@ fun HomePage(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) ,
             topBar = {
                 Box(
-                   // modifier = modifier.heightIn(max = 56.dp) ,
+                    // modifier = modifier.heightIn(max = 56.dp) ,
 
-                    ) {
+                ) {
                     /*HomeHeaderContent(
                         onAddClubsButtonClick = { *//*TODO*//* } ,
                         onLocationChange = { *//*TODO*//* } ,
                         onSearch = {} ,
                     )*/
-
                     CenterAlignedTopAppBar(
                         title = {
                             Column {
                                 LocationFragment(
-                                    location = "Київ" ,
-                                    onLocationChange = { /*TODO*/ }
+                                    location = citiesState.currentCity?.name ?: "" ,
+                                    onLocationChange = {  }
                                 )
 
                             }
@@ -187,7 +192,6 @@ fun HomeHeaderContent(
     onLocationChange: () -> Unit ,
     onSearch: (String) -> Unit ,
     modifier: Modifier = Modifier ,
-    isAuthorized: Boolean = false
 ) {
     Box(
         modifier = modifier.heightIn(max = 200.dp) ,

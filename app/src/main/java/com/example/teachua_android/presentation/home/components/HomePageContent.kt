@@ -1,4 +1,4 @@
-package com.example.teachua_android.presentation.home
+package com.example.teachua_android.presentation.home.components
 
 import android.content.res.Configuration
 import android.os.Build
@@ -19,14 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.teachua_android.R
-import com.example.teachua_android.presentation.home.components.AboutTeachUkrainianChallengeHomePageSection
-import com.example.teachua_android.presentation.home.components.AboutUsHomePageSection
-import com.example.teachua_android.presentation.home.components.ClubsDirectionHomePageSection
-import com.example.teachua_android.presentation.home.components.ClubsImageTitleCardPager
-import com.example.teachua_android.presentation.home.components.HomeFooter
-import com.example.teachua_android.presentation.home.components.NewsHomePageSection
-import com.example.teachua_android.presentation.home.components.TeachUkrainianChallengeHomePageSection
-import com.example.teachua_android.presentation.home.components.WhiteButtonWithOrangeText
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
