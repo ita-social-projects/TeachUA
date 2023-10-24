@@ -95,7 +95,6 @@ fun HomePage(
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     val scrollState = rememberScrollState()
-    val citiesState by viewModel.citiesState
 
     ModalNavigationDrawer(drawerContent = {
         ModalDrawerSheet {
