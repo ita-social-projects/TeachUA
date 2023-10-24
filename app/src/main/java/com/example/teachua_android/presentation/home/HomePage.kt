@@ -17,7 +17,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -63,10 +66,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.teachua_android.R
 import com.example.teachua_android.presentation.home.components.HomePageContent
 import com.example.teachua_android.presentation.home.components.OrangeButtonWithWhiteText
@@ -94,61 +97,44 @@ fun HomePage(
     val scrollState = rememberScrollState()
     val citiesState by viewModel.citiesState
 
-    ModalNavigationDrawer(
-        drawerContent = {
-            ModalDrawerSheet {
-                Spacer(modifier = Modifier.height(16.dp))
-                navigationItemList.forEachIndexed { index , item ->
-                    NavigationDrawerItem(
-                        label = {
-                            Text(text = item.title)
-                        } ,
-                        selected = index == selectedItemIndex ,
-                        onClick = {
-                            navController.navigate(item.route) {
+    ModalNavigationDrawer(drawerContent = {
+        ModalDrawerSheet {
+            Spacer(modifier = Modifier.height(16.dp))
+            navigationItemList.forEachIndexed { index , item ->
+                NavigationDrawerItem(label = {
+                    Text(text = item.title)
+                } , selected = index == selectedItemIndex , onClick = {
+                    navController.navigate(item.route) {
 
-                            }
-                            scope.launch {
-                                drawerState.close()
-                            }
-                        } ,
-                        icon = {
-                            Icon(
-                                imageVector = item.Icon ,
-                                contentDescription = item.title
-                            )
-                        } ,
-                        modifier = Modifier
-                            .padding(NavigationDrawerItemDefaults.ItemPadding)
+                    }
+                    scope.launch {
+                        drawerState.close()
+                    }
+                } , icon = {
+                    Icon(
+                        imageVector = item.Icon , contentDescription = item.title
                     )
-                }
+                } , modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding))
             }
-        } ,
-        drawerState = drawerState ,
-        modifier = modifier.wrapContentSize()
-    ) {
+        }
+    } , drawerState = drawerState , modifier = modifier.wrapContentSize()) {
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) ,
             topBar = {
                 Box(
-                    // modifier = modifier.heightIn(max = 56.dp) ,
-
+//                     modifier = modifier.heightIn(max = 56.dp) ,
                 ) {
-                    /*HomeHeaderContent(
-                        onAddClubsButtonClick = { *//*TODO*//* } ,
-                        onLocationChange = { *//*TODO*//* } ,
+                    /*HomeHeaderContent(onAddClubsButtonClick = {} ,
+                        location = "Київ" ,
+                        onLocationChange = {} ,
                         onSearch = {} ,
-                    )*/
-                    CenterAlignedTopAppBar(
-                        title = {
-                            Column {
-                                LocationFragment(
-                                    location = citiesState.currentCity?.name ?: "" ,
-                                    onLocationChange = {  }
-                                )
+                        modifier = Modifier)*/
 
-                            }
-                        } ,
+                    CenterAlignedTopAppBar(title = {
+                        Column {
+                            LocationFragment()
+                        }
+                    } ,
                         navigationIcon = {
                             IconButton(onClick = {
                                 scope.launch {
@@ -169,12 +155,9 @@ fun HomePage(
                             )
                         } ,
                         scrollBehavior = scrollBehavior ,
-                        colors = TopAppBarDefaults
-                            .centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
-                    )
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary))
                 }
-            }
-        ) { padding ->
+            }) { padding ->
             Column(
                 modifier = Modifier.verticalScroll(scrollState)
             ) {
@@ -194,8 +177,7 @@ fun HomeHeaderContent(
     modifier: Modifier = Modifier ,
 ) {
     Box(
-        modifier = modifier.heightIn(max = 200.dp) ,
-        contentAlignment = Alignment.Center
+        modifier = modifier.heightIn(max = 200.dp) , contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(id = R.drawable.header_main_bg) ,
@@ -229,8 +211,7 @@ fun HomeHeaderContent(
                 )
             }
             UnderlinedTextInput(
-                value = stringResource(R.string.which_club_are_you_searching) ,
-                onSearch = onSearch
+                value = stringResource(R.string.which_club_are_you_searching) , onSearch = onSearch
             )
         }
     }
@@ -238,16 +219,47 @@ fun HomeHeaderContent(
 
 @Composable
 fun LocationFragment(
-    location: String ,
-    onLocationChange: () -> Unit ,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier ,
+    viewModel: HomePageViewModel = hiltViewModel() ,
 ) {
+    var popupControl by remember {
+        mutableStateOf(false)
+    }
     val color = MaterialTheme.colorScheme.onPrimary
+    val cities = viewModel.citiesState.value.cities
+    var currentCity = viewModel.citiesState.value.currentCity
+
     Row(
         modifier = modifier
-            .padding(3.dp) ,
+            .padding(3.dp)
+            .clickable(onClick = { popupControl = true }) ,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        if (popupControl) {
+            Popup(onDismissRequest = {
+                popupControl = false
+            }) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        items(cities) { city ->
+                            Text(text = city.name ,
+                                modifier = Modifier
+                                    .padding(vertical = 8.dp)
+                                    .clickable {
+                                        viewModel.citiesState.value.currentCity = city
+                                        popupControl = false
+
+                                    })
+
+                        }
+                    }
+                }
+            }
+        }
         Icon(
             imageVector = Icons.Default.LocationOn ,
             contentDescription = null ,
@@ -255,7 +267,7 @@ fun LocationFragment(
             modifier = Modifier.size(16.dp)
         )
         Text(
-            text = location ,
+            text = currentCity?.name ?: "" ,
             color = color ,
             fontSize = 14.sp ,
             fontFamily = FontFamily.SansSerif ,
@@ -267,9 +279,7 @@ fun LocationFragment(
             imageVector = Icons.Default.ArrowDropDown ,
             contentDescription = "Location dropdown arrow" ,
             tint = color ,
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .clickable(onClick = onLocationChange)
+            modifier = Modifier.padding(start = 8.dp)
         )
     }
 
@@ -277,9 +287,7 @@ fun LocationFragment(
 
 @Composable
 fun UnderlinedTextInput(
-    value: String ,
-    onSearch: (String) -> Unit ,
-    modifier: Modifier = Modifier
+    value: String , onSearch: (String) -> Unit , modifier: Modifier = Modifier
 ) {
     val textStyle = TextStyle(
         fontSize = 16.sp ,
@@ -307,22 +315,13 @@ fun UnderlinedTextInput(
                     Text(value , style = textStyle)
                 }
 
-                BasicTextField(
-                    value = textValue ,
-                    onValueChange = {
-                        textValue = it
-                    } ,
-                    textStyle = textStyle ,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = androidx.compose.ui.text.input.ImeAction.Done
-                    ) ,
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            onSearch(textValue)
-                        }
-                    ) ,
-                    singleLine = true
-                )
+                BasicTextField(value = textValue , onValueChange = {
+                    textValue = it
+                } , textStyle = textStyle , keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = androidx.compose.ui.text.input.ImeAction.Done
+                ) , keyboardActions = KeyboardActions(onDone = {
+                    onSearch(textValue)
+                }) , singleLine = true)
             }
 
             Icon(
@@ -345,34 +344,13 @@ fun UnderlinedTextInput(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun LocationFragmentPreview() {
-    Surface(color = Color.Black)
-    {
-        LocationFragment(location = "Київ" , onLocationChange = {})
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true , backgroundColor = 0xFFE43434)
-@Composable
-fun HomeToolbarPreview() {
-    val navController = rememberNavController()
-    HomePage(
-        navController = navController
-    )
-}
-
 @Preview(showBackground = false)
 @Composable
 fun MainHeader2Preview() {
-    HomeHeaderContent(
-        onAddClubsButtonClick = {} ,
+    HomeHeaderContent(onAddClubsButtonClick = {} ,
         location = "Київ" ,
         onLocationChange = {} ,
         onSearch = {} ,
-        modifier = Modifier
-    )
+        modifier = Modifier)
 }
 
