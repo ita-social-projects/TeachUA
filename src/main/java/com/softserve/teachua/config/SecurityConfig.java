@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -24,24 +25,29 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @Profile({"dev", "prod"})
 public class SecurityConfig {
-    private static final String[] AUTH_WHITELIST = {
-        "/",
-        "/index.html",
-        "/error",
-        "/*.json",
-        "/api/**",
-        "/oauth2/**",
-        "/static/**",
-        "/upload/**",
-        "/v3/api-docs/**",
-        "/swagger-ui/**",
-        "/swagger-ui.html"
+    private static final AntPathRequestMatcher[] AUTH_WHITELIST = {
+        antMatcher("/index.html"),
+        antMatcher("/error"),
+        antMatcher("/*.json"),
+        antMatcher("/api/**"),
+        antMatcher("/oauth2/**"),
+        antMatcher("/static/**"),
+        antMatcher("/upload/**"),
+        antMatcher("/v3/api-docs/**"),
+        antMatcher("/swagger-ui/**"),
+        antMatcher("/swagger-ui.html"),
+        antMatcher("/actuator"),
+        antMatcher("/actuator/**")
     };
     private final JwtFilter jwtFilter;
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -76,8 +82,14 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    @Scope("prototype")
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+        return new MvcRequestMatcher.Builder(introspector);
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
@@ -89,6 +101,7 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new RestAuthenticationEntryPoint()))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(mvc.pattern("/")).permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 )
