@@ -23,7 +23,7 @@ import lombok.ToString;
 @Builder
 @EqualsAndHashCode(exclude = {"id"})
 @Entity
-@Table(name = "groups")
+@Table(name = "group_cohort")
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

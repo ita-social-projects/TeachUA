@@ -1,8 +1,9 @@
 package com.softserve.teachua.dto.child;
 
-import com.softserve.teachua.constants.Gender;
+//import com.softserve.teachua.constants.Gender;
 import com.softserve.teachua.dto.marker.Convertible;
 import com.softserve.teachua.dto.user.ParentResponse;
+import com.softserve.teachua.model.Gender;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

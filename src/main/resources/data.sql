@@ -1,3 +1,7 @@
+insert into gender(value)
+values ('MALE'),
+       ('FEMALE');
+
 insert into roles(name)
 values ('ROLE_ADMIN'),
        ('ROLE_USER'),
