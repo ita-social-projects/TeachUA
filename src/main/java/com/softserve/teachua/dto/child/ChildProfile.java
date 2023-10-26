@@ -28,5 +28,5 @@ public class ChildProfile implements Convertible {
     @Range(min = 2, max = 18)
     private Short age;
     @NotNull
-    private Gender gender;
+    private String gender;
 }

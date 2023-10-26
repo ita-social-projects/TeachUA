@@ -47,6 +47,6 @@ public class Child implements Convertible {
     ////@Type(PostgreSQLEnumType.class)
     ////@Column(name = "gender", nullable = false, columnDefinition = "gender_enum")
     @ManyToOne
-    @JoinColumn(name = "value", nullable = false)
+    @JoinColumn(nullable = false)
     private Gender gender;
 }
