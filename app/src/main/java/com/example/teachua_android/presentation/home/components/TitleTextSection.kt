@@ -9,7 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -18,6 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.teachua_android.presentation.ui.theme.SubtextGray
+import com.example.teachua_android.presentation.ui.theme.TitleBlue
 
 @Composable
 fun TitleText(
@@ -37,20 +38,20 @@ fun TitleText(
                 fontSize = titleFontSize,
                 lineHeight = titleLineHeight,
                 fontWeight = FontWeight(700),
-                color = Color(0xFF002766),
+                color = TitleBlue,
                 textAlign = if (alignCenter) TextAlign.Center else TextAlign.Start
             ),
             maxLines = 3,
             overflow = TextOverflow.Ellipsis
         )
-        Spacer(modifier = Modifier.height(12.dp))
         if (subtext.isNotBlank()) {
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = subtext, style = TextStyle(
                     fontSize = 14.sp,
                     lineHeight = 24.sp,
                     fontWeight = FontWeight(400),
-                    color = Color(0xFF2D4C68),
+                    color = SubtextGray,
                     textAlign = if (alignCenter) TextAlign.Center else TextAlign.Start
                 )
             )

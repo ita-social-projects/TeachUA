@@ -1,7 +1,12 @@
 package com.example.teachua_android.data.remote.dto
 
+import com.example.teachua_android.domain.model.club.Contacts
 
 data class ContactsDto(
-    var contactType: ContactTypeDto,
-    var contactData: String
+    val contactType: ContactTypeDto,
+    val contactData: String
 )
+
+fun ContactsDto.toContacts(): Contacts{
+    return Contacts(contactType.toContactType(), contactData)
+}

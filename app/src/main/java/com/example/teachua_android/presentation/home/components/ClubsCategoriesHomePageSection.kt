@@ -5,33 +5,40 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.teachua_android.presentation.categories.CategoryViewModel
 
 @Composable
-fun ClubsDirectionHomePageSection(modifier: Modifier = Modifier) {
+fun ClubsCategoriesHomePageSection(
+    modifier: Modifier = Modifier ,
+    viewModel: CategoryViewModel = hiltViewModel()
+) {
     Column {
         TitleText(
             title = "Оберіть напрям гуртків" ,
             subtext = "" ,
             titleFontSize = 28.sp ,
-            titleLineHeight = 36.sp,
+            titleLineHeight = 36.sp ,
             Modifier.padding(horizontal = 16.dp)
         )
         LazyRow(modifier = modifier) {
             item {
                 Spacer(modifier = Modifier.width(16.dp))
             }
-            items(5) {
-                ClubsDirectionCard(
-                    title = "Вокальна студія, музика, музичні інструменти" ,
+            items(viewModel.categoriesState.categories , key = { category ->
+                category.id
+            }) { category ->
+                ClubsCategoryCard(
+                    title = category.name ,
                     icon = Icons.Default.ArrowForward ,
-                    subText = "Музична школа, хор, ансамбль, гра на музичних інструментах, звукорежисерський гурток та ін." ,
+                    description = category.description,
                     onCheckClick = {}
                 )
                 Spacer(modifier = Modifier.width(16.dp))
@@ -39,10 +46,4 @@ fun ClubsDirectionHomePageSection(modifier: Modifier = Modifier) {
 
         }
     }
-}
-
-@Preview
-@Composable
-fun ClubsDirectionHomePageSectionPreview() {
-    ClubsDirectionHomePageSection()
 }

@@ -71,6 +71,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.teachua_android.R
+import com.example.teachua_android.presentation.cities.CitiesViewModel
 import com.example.teachua_android.presentation.home.components.HomePageContent
 import com.example.teachua_android.presentation.home.components.OrangeButtonWithWhiteText
 import com.example.teachua_android.presentation.navigation_drawer.navigationItemList
@@ -83,7 +84,6 @@ import kotlinx.coroutines.launch
 fun HomePage(
     navController: NavController ,
     modifier: Modifier = Modifier ,
-    viewModel: HomePageViewModel = hiltViewModel()
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -130,9 +130,8 @@ fun HomePage(
                         modifier = Modifier)*/
 
                     CenterAlignedTopAppBar(title = {
-                        Column {
-                            LocationFragment()
-                        }
+                        LocationFragment()
+                        
                     } ,
                         navigationIcon = {
                             IconButton(onClick = {
@@ -160,7 +159,7 @@ fun HomePage(
             Column(
                 modifier = Modifier.verticalScroll(scrollState)
             ) {
-                HomePageContent(Modifier.padding(padding))
+                HomePageContent(navController, Modifier.padding(padding))
             }
         }
 
@@ -219,14 +218,14 @@ fun HomeHeaderContent(
 @Composable
 fun LocationFragment(
     modifier: Modifier = Modifier ,
-    viewModel: HomePageViewModel = hiltViewModel() ,
+    viewModel: CitiesViewModel = hiltViewModel() ,
 ) {
     var popupControl by remember {
         mutableStateOf(false)
     }
     val color = MaterialTheme.colorScheme.onPrimary
-    val cities = viewModel.citiesState.value.cities
-    var currentCity = viewModel.citiesState.value.currentCity
+    val cities = viewModel.citiesState.cities
+    val currentCity = viewModel.citiesState.currentCity
 
     Row(
         modifier = modifier
@@ -249,7 +248,7 @@ fun LocationFragment(
                                 modifier = Modifier
                                     .padding(vertical = 8.dp)
                                     .clickable {
-                                        viewModel.citiesState.value.currentCity = city
+                                        viewModel.citiesState.currentCity = city
                                         popupControl = false
 
                                     })

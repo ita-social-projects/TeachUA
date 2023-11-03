@@ -30,11 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ClubsDirectionCard(
-    icon: ImageVector,
-    title: String,
-    subText: String,
-    onCheckClick: () -> Unit,
+fun ClubsCategoryCard(
+    icon: ImageVector ,
+    title: String ,
+    description: String ,
+    onCheckClick: () -> Unit ,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -63,7 +63,7 @@ fun ClubsDirectionCard(
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = subText,
+                text = description,
                 style = TextStyle(
                     fontSize = 14.sp,
                     lineHeight = 24.sp,
@@ -114,10 +114,10 @@ fun CheckTextLink(
 @Preview
 @Composable
 fun ClubsDirectionCardPreview() {
-    ClubsDirectionCard(
+    ClubsCategoryCard(
         title = "Вокальна студія, музика, музичні інструменти",
         icon = Icons.Default.ArrowForward,
-        subText = "Музична школа, хор, ансамбль, гра на музичних інструментах, звукорежисерський гурток та ін.",
+        description = "Музична школа, хор, ансамбль, гра на музичних інструментах, звукорежисерський гурток та ін.",
         onCheckClick = {}
     )
 }

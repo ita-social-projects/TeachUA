@@ -18,24 +18,30 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.teachua_android.R
+import com.example.teachua_android.common.Screen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomePageContent(modifier: Modifier = Modifier) {
+fun HomePageContent(
+    navController: NavController ,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),
+                .wrapContentHeight() ,
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.home_page_bg),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
+                painter = painterResource(id = R.drawable.home_page_bg) ,
+                contentDescription = null ,
+                contentScale = ContentScale.FillBounds ,
                 modifier = Modifier.matchParentSize()
             )
             Column {
@@ -47,12 +53,16 @@ fun HomePageContent(modifier: Modifier = Modifier) {
                     AboutTeachUkrainianChallengeHomePageSection()
                     Spacer(modifier = Modifier.height(32.dp))
                 }
-                ClubsDirectionHomePageSection(modifier = Modifier)
+                ClubsCategoriesHomePageSection()
                 Column(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     Spacer(modifier = Modifier.height(24.dp))
-                    WhiteButtonWithOrangeText(text = "Всі гуртки" , onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth())
+                    WhiteButtonWithOrangeText(
+                        text = "Всі гуртки" ,
+                        onClick = { navController.navigate(Screen.Clubs.route) } ,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                     Spacer(modifier = Modifier.height(32.dp))
                     NewsHomePageSection()
                     Spacer(modifier = Modifier.height(32.dp))
@@ -69,9 +79,9 @@ fun HomePageContent(modifier: Modifier = Modifier) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(
-    showBackground = true, device = "spec:width=407dp,height=5000dp",
+    showBackground = true , device = "spec:width=407dp,height=5000dp" ,
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 fun HomePagePreview() {
-    HomePageContent()
+    HomePageContent(rememberNavController())
 }
