@@ -3,12 +3,11 @@ import { challengesAdminUrl, addChallengeAdminUrl, tasksAdminUrl } from "../cons
 import { imagesPath } from "../constants/general.constants";
 import BasePage from "./BasePage";
 
-class ChallengesPage extends BasePage {
+class AddChallengePage extends BasePage {
     constructor(page) {
         super(page);
-        this.challengesPageTitle = page.getByRole("heading", { name: "Челенджі" });
         this.backToChallengesButton = page.locator('a.back-btn[href="/dev/admin/challenges"]');
-        this.viewChallengeButton = page.locator('a.back-btn[href="/dev/admin/challenges"]');
+        this.viewChallengeButton = page.locator('div.add-form a:nth-child(2)');
         this.challengeSequenceNumberField = page.locator('input#sortNumber');
         this.challengeNameField = page.locator('input#name');
         this.challengeTitleField = page.locator('input#title');
@@ -38,4 +37,4 @@ class ChallengesPage extends BasePage {
     }
 }
 
-module.exports = ChallengesPage;
+module.exports = AddChallengePage;

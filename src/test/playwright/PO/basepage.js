@@ -92,6 +92,7 @@ class BasePage {
 
     async fillInputField(element, value) {
         await element.waitFor({ timeout: 5000 });
+        await element.click();
         await element.clear();
         await element.fill(value);
     }

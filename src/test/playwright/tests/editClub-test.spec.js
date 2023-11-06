@@ -96,7 +96,7 @@ let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
     });
 
     test("Verify that an existing club can be succesfully deleted", async ({ page }) => {
-        await apiservice.createNewClub(createClubRequest.body.name);
+        await apiservice.createNewClub();
         await userpage.removeClubByTitle(createClubRequest.body.name);
         await userpage.gotoUserPage();
         await userpage.verifyElementExistance(userpage.clubsNames, createClubRequest.body.name, false);

@@ -7,6 +7,7 @@ class ChallengesPage extends BasePage {
         this.challengesPageTitle = page.getByRole("heading", { name: "Челенджі" });
         this.addChallengeButton = page.locator("button.add-btn");
         this.openTasksButton = page.locator("a.back-btn button");
+        this.addTaskButton = page.locator("a[href='/dev/admin/addTask']");
         this.allChallengesSequenceNumbers = page.locator("tbody td:nth-child(2)");
     }
 
