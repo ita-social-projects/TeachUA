@@ -61,7 +61,7 @@ fun NewsCard(
                     )
                 )
                 TitleText(
-                    title = title, subtext = "",
+                    title = title, description = "",
                     titleFontSize = 18.sp, titleLineHeight = 28.sp
                 )
             }

@@ -42,7 +42,7 @@ fun HomeFooter(
 
         TitleText(
             title = "Наші партнери",
-            subtext = "",
+            description = "",
             titleFontSize = 20.sp,
             titleLineHeight = 28.sp,
             alignCenter = true
@@ -63,7 +63,7 @@ fun HomeFooter(
         Spacer(modifier = Modifier.height(30.dp))
         TitleText(
             title = "Як допомогти проєкту",
-            subtext = "Ініціатива потребує постійної фінансової\n " +
+            description = "Ініціатива потребує постійної фінансової\n " +
                     "підтримки, аби покривати щоденні витрати.",
             titleFontSize = 20.sp,
             titleLineHeight = 28.sp,

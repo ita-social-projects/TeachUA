@@ -19,7 +19,7 @@ fun NewsHomePageSection() {
     Column {
         TitleText(
             title = "Новини" ,
-            subtext = "" ,
+            description = "" ,
             titleFontSize = 28.sp ,
             titleLineHeight = 36.sp ,
             alignCenter = true

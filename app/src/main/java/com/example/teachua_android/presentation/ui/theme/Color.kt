@@ -66,7 +66,7 @@ val md_theme_dark_scrim = Color(0xFF000000)
 val OrangePrimary = Color(0xFFFA8C16)
 val GreyPrimary = Color(0xFFC4C4C4)
 val LightBlue = Color(0xFF1890FF)
-val SubtextGray = Color(0xFF2D4C68)
+val DescriptionGray = Color(0xFF2D4C68)
 val TitleBlue = Color(0xFF002766)
 
 val seed = Color(0xFFFA8C16)

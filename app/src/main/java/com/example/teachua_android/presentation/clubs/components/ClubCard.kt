@@ -40,9 +40,9 @@ import com.example.teachua_android.domain.model.club.Club
 import com.example.teachua_android.domain.model.club.Location
 import com.example.teachua_android.presentation.home.components.TitleText
 import com.example.teachua_android.presentation.home.components.WhiteButtonWithOrangeText
+import com.example.teachua_android.presentation.ui.theme.DescriptionGray
 import com.example.teachua_android.presentation.ui.theme.LightBlue
 import com.example.teachua_android.presentation.ui.theme.OrangePrimary
-import com.example.teachua_android.presentation.ui.theme.SubtextGray
 
 @Composable
 fun ClubCard(club: Club , modifier: Modifier = Modifier) {
@@ -76,7 +76,7 @@ fun ClubCard(club: Club , modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.width(10.dp))
                 TitleText(
                     title = club.name ,
-                    subtext = "" ,
+                    description = "" ,
                     titleFontSize = 16.sp ,
                     titleLineHeight = 22.sp
                 )
@@ -107,7 +107,7 @@ fun ClubCard(club: Club , modifier: Modifier = Modifier) {
                     fontSize = 14.sp ,
                     lineHeight = 24.sp ,
                     fontWeight = FontWeight(400) ,
-                    color = SubtextGray ,
+                    color = DescriptionGray ,
                 ) ,
                 maxLines = 5 ,
                 overflow = TextOverflow.Ellipsis

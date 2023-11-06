@@ -23,7 +23,7 @@ fun ClubsCategoriesHomePageSection(
     Column {
         TitleText(
             title = "Оберіть напрям гуртків" ,
-            subtext = "" ,
+            description = "" ,
             titleFontSize = 28.sp ,
             titleLineHeight = 36.sp ,
             Modifier.padding(horizontal = 16.dp)

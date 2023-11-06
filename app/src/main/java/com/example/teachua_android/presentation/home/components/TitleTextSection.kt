@@ -17,16 +17,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.teachua_android.presentation.ui.theme.SubtextGray
+import com.example.teachua_android.presentation.ui.theme.DescriptionGray
 import com.example.teachua_android.presentation.ui.theme.TitleBlue
 
 @Composable
 fun TitleText(
-    title: String,
-    subtext: String,
-    titleFontSize: TextUnit,
-    titleLineHeight: TextUnit,
-    modifier: Modifier = Modifier,
+    title: String ,
+    description: String ,
+    titleFontSize: TextUnit ,
+    titleLineHeight: TextUnit ,
+    modifier: Modifier = Modifier ,
     alignCenter: Boolean = false
 ) {
     Column(
@@ -44,14 +44,14 @@ fun TitleText(
             maxLines = 3,
             overflow = TextOverflow.Ellipsis
         )
-        if (subtext.isNotBlank()) {
+        if (description.isNotBlank()) {
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = subtext, style = TextStyle(
+                text = description, style = TextStyle(
                     fontSize = 14.sp,
                     lineHeight = 24.sp,
                     fontWeight = FontWeight(400),
-                    color = SubtextGray,
+                    color = DescriptionGray,
                     textAlign = if (alignCenter) TextAlign.Center else TextAlign.Start
                 )
             )
@@ -65,7 +65,7 @@ fun TitleTextPreview() {
     Surface {
         TitleText(
             title = "Про нас",
-            subtext = "Ініціатива \"Навчай українською\" - це небайдужі громадяни, " +
+            description = "Ініціатива \"Навчай українською\" - це небайдужі громадяни, " +
                     "які об'єдналися, щоб популяризувати українську мову у сфері освіти.\n",
             titleFontSize = 24.sp,
             titleLineHeight = 32.sp,

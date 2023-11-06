@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,11 +28,17 @@ import com.example.teachua_android.common.Screen
 @Composable
 fun HomePageContent(
     navController: NavController ,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     Column(
         modifier = modifier
     ) {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(contentPadding.calculateTopPadding())
+        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()

@@ -38,10 +38,10 @@ import com.google.accompanist.pager.rememberPagerState
 
 @Composable
 fun ClubsImageTitleCard(
-    @DrawableRes image: Int,
-    title: String,
-    subText: String,
-    onClick: () -> Unit,
+    @DrawableRes image: Int ,
+    title: String ,
+    description: String ,
+    onClick: () -> Unit ,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -73,7 +73,7 @@ fun ClubsImageTitleCard(
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = subText,
+                text = description,
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 24.sp,
                 lineHeight = 32.sp,
@@ -104,7 +104,7 @@ fun ClubsImageTitleCardPager(modifier: Modifier = Modifier) {
             ClubsImageTitleCard(
                 image = R.drawable.homepage_moreinfo_img1,
                 title = "Про гуртки українською",
-                subText = "На нашому сайті ви можете обрати для вашої дитини гурток, де навчають українською мовою.\n",
+                description = "На нашому сайті ви можете обрати для вашої дитини гурток, де навчають українською мовою.\n",
                 onClick = {},
                 modifier = Modifier.padding(bottom = 24.dp)
             )
@@ -137,13 +137,13 @@ fun ClubsImageTitleCardPagerPreview() {
 }
 
 
-@Preview()
+@Preview
 @Composable
 fun ClubsImageTitleCardPreview() {
     ClubsImageTitleCard(
         image = R.drawable.homepage_moreinfo_img1,
         title = "Про гуртки українською",
-        subText = "На нашому сайті ви можете обрати для вашої дитини гурток, де навчають українською мовою.\n",
+        description = "На нашому сайті ви можете обрати для вашої дитини гурток, де навчають українською мовою.\n",
         onClick = {}
     )
 }
