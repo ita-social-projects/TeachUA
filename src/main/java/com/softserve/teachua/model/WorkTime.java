@@ -3,6 +3,8 @@ package com.softserve.teachua.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.softserve.teachua.constants.Days;
 import com.softserve.teachua.dto.marker.Convertible;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -38,6 +40,7 @@ public class WorkTime implements Convertible {
     private Club club;
 
     @Enumerated(EnumType.ORDINAL)
+    @Column(name = "`day`")
     private Days day;
 
     private String startTime;
