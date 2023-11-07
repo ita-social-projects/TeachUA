@@ -7,6 +7,7 @@ import com.softserve.teachua.exception.NotExistException;
 import com.softserve.teachua.model.Child;
 import com.softserve.teachua.model.User;
 import com.softserve.teachua.repository.ChildRepository;
+import com.softserve.teachua.repository.GenderRepository;
 import com.softserve.teachua.service.impl.ChildServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +30,8 @@ class ChildServiceImplTest {
     private DtoConverter dtoConverter;
     @Mock
     private UserService userService;
+    @Mock
+    private GenderRepository genderRepository;
 
     @InjectMocks
     private ChildServiceImpl childService;
