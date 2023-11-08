@@ -1,6 +1,7 @@
 import { test} from "@playwright/test";
 import ApiService from "../services/apiService";
 import ChallengesPage from "../PO/ChallengesPage";
+import ChallengeInfoPage from "../PO/ChallengeInfoPage";
 import TasksPage from "../PO/TasksPage";
 import AddChallengePage from "../PO/AddChallengePage";
 import AddTaskPage from "../PO/AddTaskPage";
@@ -8,7 +9,7 @@ import {createChallengeRequest, tasksAdminUrl} from "../constants/api.constants"
 import {newChallengeCorrectDetails, newTaskCorrectDetails} from "../constants/challengeAndTaskInformation.constants";
 
 
-let apiservice, challengespage, taskspage, addchallengepage, addtaskpage;
+let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, addtaskpage;
 
     test.beforeEach(async({page})=>{
         apiservice = new ApiService(page);
@@ -43,6 +44,8 @@ let apiservice, challengespage, taskspage, addchallengepage, addtaskpage;
     test("Verify that a new task can be successfully added to an existing challenge", async ({ page }) => {
         taskspage = new TasksPage(page);
         addtaskpage = new AddTaskPage(page);
+        challengeinfopage = new ChallengeInfoPage(page);
+
 
         await apiservice.createNewChallenge();
         await taskspage.gotoTasksPage();
@@ -68,13 +71,10 @@ let apiservice, challengespage, taskspage, addchallengepage, addtaskpage;
         await taskspage.gotoTasksPage();
         await taskspage.verifyElementExistance(taskspage.allTasksNames, newTaskCorrectDetails.NAME)
         
+        await taskspage.openChallengesPage();
+        await challengespage.openChallengeInfoPage(createChallengeRequest.body.sortNumber);
+
     });
-
-
-    test("Verify that a new task can be added to the existing challenge", async({page})=>{
-        await apiservice.createNewChallenge();
-    })
-
 
 
     // test("Verify that a challenge can be succesfully deleted", async({page})=>{

@@ -1,7 +1,7 @@
 
 import { expect} from "@playwright/test";
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
-import {signInUrl, createClubRequest , usersClubs, createChallengeRequest} from "../constants/api.constants";
+import {signInUrl, createClubRequest , usersClubs, createChallengeRequest, createTaskRequest} from "../constants/api.constants";
 
 
 class ApiService {
@@ -53,10 +53,10 @@ class ApiService {
 
     // Get the total pages of clubs and assert that the response is successful.
     async getTotalPages(apiEndpoint, userId) {
-            const clubResponse = await fetch(`${apiEndpoint}/${userId}?page=0`);
-            const responseJson = await clubResponse.json();
-            await this.assertResponseIsOk(clubResponse);
-            return responseJson.totalPages;
+        const clubResponse = await fetch(`${apiEndpoint}/${userId}?page=0`);
+        const responseJson = await clubResponse.json();
+        await this.assertResponseIsOk(clubResponse);
+        return responseJson.totalPages;
     }
 
     async createNewClub() {
@@ -113,6 +113,7 @@ class ApiService {
     }
 
     //challenges & tasks interaction
+    //Challenges
     async createNewChallenge() {
         const response = await fetch(createChallengeRequest.url, {
             method: createChallengeRequest.method,
@@ -121,12 +122,12 @@ class ApiService {
         });
         if ((await response.json()).status === 400) {
             console.log("Challenge already exist");
-        } 
+        }
     }
 
-    async deleteChallengeBySequenceNumber(sequenceNumber){ 
+    async deleteChallengeBySequenceNumber(sequenceNumber) {
         const challenges = await this.getAllChallenges();
-        const challenge = challenges.find((c)=>c.sortNumber === parseInt(sequenceNumber));
+        const challenge = challenges.find((c) => c.sortNumber === parseInt(sequenceNumber));
         if (!challenge) {
             console.log("Challenge wasn't deleted as it doesn't exist (hasn't been created or the name is wrong)");
             return;
@@ -142,11 +143,36 @@ class ApiService {
         await this.assertResponseIsOk(response);
     }
 
-    async getAllChallenges(){
+    async getAllChallenges() {
         const pageResponse = await fetch(`http://localhost:8080/dev/api/challenges`);
         await this.assertResponseIsOk(pageResponse);
         const pageJson = await pageResponse.json();
         return pageJson;
+    }
+
+    //Tasks
+
+    /**
+     * Create a new task associated with a challenge.
+     *
+     * This function retrieves a list of challenges, finds the challenge with a specific
+     * sortNumber, and creates a new task associated with that challenge.
+     */
+
+    async createNewTask() {
+        const challenges = await this.getAllChallenges();
+        const challenge = challenges.find((c) => c.sortNumber === parseInt(createChallengeRequest.body.sortNumber));
+        createTaskRequest.body.challengeId = challenge.id;
+        if (challenge) {
+            const response = await fetch(`http://localhost:8080/dev/api/challenge/${challenge.id}/task`, {
+                method: createTaskRequest.method,
+                body: JSON.stringify(createTaskRequest.body),
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
+            });
+            await this.assertResponseIsOk(response);
+        } else {
+            console.error("Challenge is not found or sortNumber is invalid");
+        }
     }
 }
 

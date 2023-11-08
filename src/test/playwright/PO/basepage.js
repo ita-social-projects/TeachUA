@@ -29,7 +29,7 @@ class BasePage {
         if (!(typeof isVisible === "boolean")) {
             throw new Error("Second paramenter should be boolean");
         }
-        isVisible ? await expect(element, 'should be visible').toBeVisible() : await expect(element, 'should NOT be visible').not.toBeVisible();
+        isVisible ? await expect(element, element + ' should be visible').toBeVisible() : await expect(element, 'should NOT be visible').not.toBeVisible();
     }
 
     async isElementWithNamePresent(allElements, name){
