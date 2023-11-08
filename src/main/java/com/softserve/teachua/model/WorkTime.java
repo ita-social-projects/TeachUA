@@ -3,7 +3,6 @@ package com.softserve.teachua.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.softserve.teachua.constants.Days;
 import com.softserve.teachua.dto.marker.Convertible;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -26,5 +26,4 @@ public class Gender {
 
     @Column(nullable = false, unique = true, name = "`value`")
     private String value;
-
 }

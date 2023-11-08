@@ -1,8 +1,6 @@
 package com.softserve.teachua.dto.child;
 
-//import com.softserve.teachua.constants.Gender;
 import com.softserve.teachua.dto.marker.Convertible;
-import com.softserve.teachua.model.Gender;
 import com.softserve.teachua.utils.validations.CheckRussian;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
