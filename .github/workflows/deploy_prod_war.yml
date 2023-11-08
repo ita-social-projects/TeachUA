@@ -11,7 +11,7 @@ jobs:
       - name: Use custom node version
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           
       - name: Node version
         run: "node --version"
@@ -55,7 +55,7 @@ jobs:
         run: "java -version"
         
       - name: Build war
-        # run: 'mvn package -DskipTests -Dcheckstyle.skip'
+        ##run: 'mvn package -DskipTests -Dcheckstyle.skip'
         run: 'mvn package'
 
       - name: Copy results to the remote host over SSH
