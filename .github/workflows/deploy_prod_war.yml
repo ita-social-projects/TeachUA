@@ -55,8 +55,8 @@ jobs:
         run: "java -version"
         
       - name: Build war
-        run: 'mvn package -DskipTests -Dcheckstyle.skip'
-        ##run: 'mvn package'
+        ##run: 'mvn package -DskipTests -Dcheckstyle.skip'
+        run: 'mvn package'
 
       - name: Copy results to the remote host over SSH
         uses: appleboy/scp-action@master
