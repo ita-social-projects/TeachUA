@@ -4,13 +4,17 @@ import BasePage from "./BasePage";
 class ChallengeInfoPage extends BasePage {
     constructor(page) {
         super(page);
-        this.clubPageTitle = page.locator("div.name-box");
-        this.clubPageTags = page.locator("span.tag span.name");
-        this.clubPageAddress = page.locator("div.address");
-        this.clubPageDescription = page.locator("div.content");
-        this.clubPageContactData = page.locator("div.social-media div.links").nth(0);//.locator('span.contact-name');
-        this.clubPageDevelopmentCenter = page.locator("div.center span.name");
+        this.challengePageTitle = page.locator("h1.ant-typography");
+        this.challengeSortNumber = page.locator("input#sortNumber");
+        this.challengeStatus = page.locator("button#isActive");
+        this.challengeName = page.locator("input#name");
+        this.challengeTitle = page.locator("input#title");
+        this.challengeDescription = page.locator("div.ql-editor");
+        this.saveButton = page.locator('button.flooded-button[type="submit"]');
+
+        this.challengeTasksNames = page.locator("td:nth-child(2)");
     }
+
 }
 
 module.exports = ChallengeInfoPage;

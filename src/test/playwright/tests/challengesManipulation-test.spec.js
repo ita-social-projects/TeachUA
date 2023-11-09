@@ -45,7 +45,7 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
         taskspage = new TasksPage(page);
         addtaskpage = new AddTaskPage(page);
         challengeinfopage = new ChallengeInfoPage(page);
-
+        await apiservice.deleteTaskByName(newTaskCorrectDetails.NAME);
 
         await apiservice.createNewChallenge();
         await taskspage.gotoTasksPage();
@@ -73,7 +73,7 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
         
         await taskspage.openChallengesPage();
         await challengespage.openChallengeInfoPage(createChallengeRequest.body.sortNumber);
-
+        await challengeinfopage.verifyElementExistance(challengeinfopage.challengeTasksNames, newTaskCorrectDetails.NAME);
     });
 
 

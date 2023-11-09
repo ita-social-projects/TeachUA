@@ -29,13 +29,15 @@ class BasePage {
         if (!(typeof isVisible === "boolean")) {
             throw new Error("Second paramenter should be boolean");
         }
-        isVisible ? await expect(element, element + ' should be visible').toBeVisible() : await expect(element, 'should NOT be visible').not.toBeVisible();
+        isVisible 
+        ? await expect(element, ' should be visible').toBeVisible() 
+        : await expect(element, 'should NOT be visible').not.toBeVisible();
     }
 
     async isElementWithNamePresent(allElements, name){
         await this.verifyElementVisibility(await allElements.nth(0));
-        const element = await allElements.allTextContents();
-        if (await element.includes(name)) {
+        const elementsTextContents = await allElements.allTextContents();
+        if (await elementsTextContents.includes(name)) {
             return true;
         } else if (await this.isNextPageAvailable()) {
             // If the element is not found on this page, check if there's a next page and recursively search
@@ -49,9 +51,10 @@ class BasePage {
 
     //use the method above to make assertion
     async verifyElementExistance(allElements, name, doesExist = true) {
+        const isElementPresent = await this.isElementWithNamePresent(allElements, name)
         doesExist
-            ? expect(await this.isElementWithNamePresent(allElements, name)).toBe(true)
-            : expect(await this.isElementWithNamePresent(allElements, name)).toBe(false);
+            ? expect(isElementPresent).toBe(true)
+            : expect(isElementPresent).toBe(false);
     }
 
     async verifyUrl(expectedUrl){

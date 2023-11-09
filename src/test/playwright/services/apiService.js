@@ -1,7 +1,7 @@
 
 import { expect} from "@playwright/test";
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
-import {signInUrl, createClubRequest , usersClubs, createChallengeRequest, createTaskRequest} from "../constants/api.constants";
+import {signInUrl, createClubRequest , usersClubs, createChallengeRequest, createTaskRequest, getChallengesRequest, getTasksRequest} from "../constants/api.constants";
 
 
 class ApiService {
@@ -144,7 +144,7 @@ class ApiService {
     }
 
     async getAllChallenges() {
-        const pageResponse = await fetch(`http://localhost:8080/dev/api/challenges`);
+        const pageResponse = await fetch(getChallengesRequest);
         await this.assertResponseIsOk(pageResponse);
         const pageJson = await pageResponse.json();
         return pageJson;
@@ -173,6 +173,33 @@ class ApiService {
         } else {
             console.error("Challenge is not found or sortNumber is invalid");
         }
+    }
+
+    async deleteTaskByName(taskName) {
+        const tasks = await this.getAllTasks();
+        const task = tasks.find((c) => c.name === taskName);
+        if (!task) {
+            console.log("Task wasn't deleted as it doesn't exist (hasn't been created or the name is wrong)");
+            return;
+        }
+        await this.deleteTaskById(task.id);
+    }
+
+    async deleteTaskById(id) {
+        const response = await fetch(`http://localhost:8080/dev/api/challenge/task/${id}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
+        });
+        await this.assertResponseIsOk(response);
+    }
+
+    async getAllTasks() {
+        const pageResponse = await fetch(getTasksRequest, {
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
+        });
+        await this.assertResponseIsOk(pageResponse);
+        const pageJson = await pageResponse.json();
+        return pageJson;
     }
 }
 

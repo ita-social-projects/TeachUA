@@ -2,9 +2,13 @@ export const apiUrl = 'http://localhost:3000/dev';
 export const clubsUrl = 'http://localhost:3000/dev/clubs';
 export const signInUrl = 'http://localhost:8080/dev/api/signin';
 export const usersClubs = 'http://localhost:8080/dev/api/clubs';
+
 export const challengesAdminUrl = 'http://localhost:3000/dev/admin/challenges';
+export const getChallengesRequest = 'http://localhost:8080/dev/api/challenges';
 export const addChallengeAdminUrl = 'http://localhost:3000/dev/admin/addChallenge';
+
 export const tasksAdminUrl = 'http://localhost:3000/dev/admin/tasks';
+export const getTasksRequest = 'http://localhost:8080/dev/api/tasks';
 export const addTaskAdminUrl = 'http://localhost:3000/dev/admin/addTask';
 
 export const createClubRequest  = {
