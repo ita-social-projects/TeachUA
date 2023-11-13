@@ -11,6 +11,7 @@ import java.util.List;
  */
 
 public interface ArchiveService {
+    String WRONG_ARCHIVE_CLASS_NAME = "wrong class";
     /**
      * The method returns list of entities {@code List<Archive>} of all existing archives found by id.
      *

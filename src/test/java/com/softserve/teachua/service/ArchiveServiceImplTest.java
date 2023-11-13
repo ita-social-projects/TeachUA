@@ -30,7 +30,7 @@ class ArchiveServiceImplTest {
     private static final long CORRECT_ID = 1;
     private static final String ARCHIVE_DATA = "{\"field\":\"value\"}";
     private static final String RIGHT_ARCHIVE_CLASS_NAME = "java.lang.Object";
-    private static final String WRONG_ARCHIVE_CLASS_NAME = "wrong class";
+    //private static final String WRONG_ARCHIVE_CLASS_NAME = "wrong class";
     private static final long WRONG_ID = 10;
 
     @Mock
@@ -80,7 +80,7 @@ class ArchiveServiceImplTest {
     @Test
     @DisplayName("Finding archives by not existing Class name returns empty list")
     void findArchivesByWrongClassName() {
-        assertThat(archiveService.findArchivesByClassName(WRONG_ARCHIVE_CLASS_NAME))
+        assertThat(archiveService.findArchivesByClassName(ArchiveService.WRONG_ARCHIVE_CLASS_NAME))
             .isEqualTo(Collections.emptyList());
     }
 
@@ -136,7 +136,7 @@ class ArchiveServiceImplTest {
     @Test
     @DisplayName("Restoring an object with service class that does not exist throws RestoreArchiveException")
     void restoreWrongServiceClass() {
-        archive.setClassName(WRONG_ARCHIVE_CLASS_NAME);
+        archive.setClassName(ArchiveService.WRONG_ARCHIVE_CLASS_NAME);
         when(archiveRepository.findById(CORRECT_ID)).thenReturn(Optional.of(archive));
         assertThatThrownBy(() -> archiveService.restoreArchiveObject(CORRECT_ID))
             .isInstanceOf(RestoreArchiveException.class);

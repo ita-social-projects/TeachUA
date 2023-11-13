@@ -1,5 +1,7 @@
 package com.softserve.teachua.service;
 
+import static com.softserve.teachua.TestUtils.getUser;
+import com.softserve.teachua.constants.Days;
 import com.softserve.teachua.converter.ClubToClubResponseConverter;
 import com.softserve.teachua.converter.ContactsStringConverter;
 import com.softserve.teachua.converter.DtoConverter;
@@ -14,32 +16,33 @@ import com.softserve.teachua.model.Archive;
 import com.softserve.teachua.model.Category;
 import com.softserve.teachua.model.Club;
 import com.softserve.teachua.model.User;
+import com.softserve.teachua.model.WorkTime;
 import com.softserve.teachua.model.archivable.ClubArch;
 import com.softserve.teachua.repository.ClubRepository;
 import com.softserve.teachua.repository.ComplaintRepository;
 import com.softserve.teachua.repository.LocationRepository;
 import com.softserve.teachua.repository.UserRepository;
+import com.softserve.teachua.repository.WorkTimeRepository;
 import com.softserve.teachua.service.impl.ClubServiceImpl;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.assertj.core.util.Lists;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.internal.util.collections.Sets;
-import org.mockito.junit.jupiter.MockitoExtension;
-import static com.softserve.teachua.TestUtils.getUser;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import org.mockito.internal.util.collections.Sets;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ClubServiceTest {
@@ -50,9 +53,11 @@ class ClubServiceTest {
     private final String NEW_NAME = "New Club Name";
     private final String CONTACTS = "123456789";
     private final String DESCRIPTION = "Description Text";
+    private final WorkTime workTime =WorkTime.builder().day(Days.MONDAY).startTime("13:23").endTime("14:23").build();
     private final List<String> CATEGORIES = Arrays.asList("Category1", "Category2");
     private final Set<Category> CATEGORIES_SET = Sets.newSet(Category.builder().name("Category1").build(),
             Category.builder().name("Category2").build());
+    private final List<WorkTime> WORK_TIMES_SET =  Arrays.asList(workTime);
     private final Long USER_EXISTING_ID = 1L;
     private final Long USER_NOT_EXISTING_ID = 100L;
     private final String USER_EXISTING_NAME = "User Existing Name";
@@ -68,6 +73,8 @@ class ClubServiceTest {
     @Mock
     private LocationRepository locationRepository;
     @Mock
+    private WorkTimeRepository workTimeRepository;
+    @Mock
     private FileUploadService fileUploadService;
     @Mock
     private CategoryService categoryService;
@@ -77,6 +84,8 @@ class ClubServiceTest {
     private UserService userService;
     @Mock
     private LocationService locationService;
+    @Mock
+    private WorkTimeService workTimeService;
     @Mock
     private ContactsStringConverter contactsStringConverter;
     @Mock
@@ -94,9 +103,9 @@ class ClubServiceTest {
         user = User.builder().id(USER_EXISTING_ID).firstName(USER_EXISTING_NAME).lastName(USER_EXISTING_LASTNAME)
                 .build();
         club = Club.builder().id(EXISTING_ID).name(NEW_NAME).user(user).categories(CATEGORIES_SET)
-                .feedbacks(Sets.newSet()).locations(Sets.newSet()).urlGallery(Lists.list()).build();
+                .feedbacks(Sets.newSet()).locations(Sets.newSet()).workTimes(Sets.newSet()).urlGallery(Lists.list()).build();
         clubProfile = ClubProfile.builder().name(NEW_NAME).description(DESCRIPTION).contacts(CONTACTS)
-                .categoriesName(CATEGORIES).build();
+                .categoriesName(CATEGORIES).workTimes(WORK_TIMES_SET).build();
         clubResponse = ClubResponse.builder().id(EXISTING_ID).name(NEW_NAME).build();
         clubArch = ClubArch.builder().id(EXISTING_ID).name(NEW_NAME).build();
     }
@@ -153,14 +162,14 @@ class ClubServiceTest {
         when(clubRepository.findById(EXISTING_ID)).thenReturn(Optional.of(club));
         when(clubRepository.save(any())).thenReturn(club);
         when(dtoConverter.convertToEntity(
-                ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).build(), club))
+                ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).workTimes(Collections.emptySet()).build(), club))
                 .thenReturn(Club.builder().name(NEW_NAME).build());
         when(dtoConverter.convertToDto(club, SuccessUpdatedClub.class))
                 .thenReturn(SuccessUpdatedClub.builder().name(NEW_NAME).build());
         when(userService.getAuthenticatedUser()).thenReturn(user);
 
         SuccessUpdatedClub actual = clubService.updateClub(EXISTING_ID,
-                ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).build());
+                ClubResponse.builder().name(NEW_NAME).categories(Collections.emptySet()).workTimes(Collections.emptySet()).build());
         assertEquals(clubProfile.getName(), actual.getName());
     }
 
@@ -221,6 +230,7 @@ class ClubServiceTest {
         when(dtoConverter.convertToDto(newClub, SuccessCreatedClub.class))
                 .thenReturn(SuccessCreatedClub.builder().name(NEW_NAME).build());
         when(userService.getAuthenticatedUser()).thenReturn(user);
+        when(dtoConverter.convertToEntity(workTime, new WorkTime())).thenReturn(workTime);
 
         SuccessCreatedClub actual = clubService.addClub(clubProfile);
         assertEquals(clubProfile.getName(), actual.getName());

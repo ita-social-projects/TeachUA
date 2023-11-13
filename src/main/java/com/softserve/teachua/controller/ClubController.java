@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -155,11 +156,13 @@ public class ClubController implements Api {
      *
      * @return {@code Page<ClubResponse>}.
      */
+
     @GetMapping("/clubs/search")
     public Page<ClubResponse> getClubsListOfClubs(SearchClubProfile searchClubProfile,
                                                   @PageableDefault(value = CLUBS_PER_PAGE, sort = "id")
-                                                  Pageable pageable) {
-        return clubService.getClubsBySearchParameters(searchClubProfile, pageable);
+                                                  Pageable pageable,
+                                                  @RequestParam(required = false) Long userId) {
+        return clubService.getClubsBySearchParameters(searchClubProfile, pageable, userId);
     }
 
     /**

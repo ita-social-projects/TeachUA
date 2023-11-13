@@ -3,9 +3,6 @@ package com.softserve.teachua.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.softserve.teachua.dto.marker.Convertible;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +15,9 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -67,8 +67,9 @@ public class Club implements Convertible {
     @ToString.Exclude
     private List<GalleryPhoto> urlGallery;
 
-    @Column
-    private String workTime;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "club")
+    @ToString.Exclude
+    private Set<WorkTime> workTimes;
 
     @Column
     @ColumnDefault(value = "0")

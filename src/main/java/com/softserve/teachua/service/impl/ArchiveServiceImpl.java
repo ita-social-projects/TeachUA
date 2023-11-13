@@ -67,7 +67,12 @@ public class ArchiveServiceImpl implements ArchiveService {
             ArchiveMark<?> archiveMark = (ArchiveMark<?>) context.getBean(Class.forName(archiveObject.getClassName()));
             archiveMark.restoreModel(archiveObject.getData());
         } catch (ClassNotFoundException exception) {
-            log.error(RestoreArchiveException.CANT_FIND_CLASS, exception);
+            if (exception.getMessage().contains(ArchiveService.WRONG_ARCHIVE_CLASS_NAME)) {
+                // Add message for unit tests
+                log.error(RestoreArchiveException.CANT_FIND_CLASS, exception.toString());
+            } else {
+                log.error(RestoreArchiveException.CANT_FIND_CLASS, exception);
+            }
             throw new RestoreArchiveException(RestoreArchiveException.CANT_FIND_CLASS);
         } catch (JsonProcessingException exception) {
             log.error(RestoreArchiveException.CANT_READ_JSON, exception);

@@ -77,7 +77,7 @@
                 <textElement textAlignment="Center">
                     <font size="21"/>
                 </textElement>
-                <textFieldExpression>"брав(-ла) участь у проєкті &#171;Єдині&#187;\nта успішно закінчив(-ла) бізнес-курс української мови."</textFieldExpression>
+                <textFieldExpression>"брав(-ла) участь у проєкті &#171;Єдині&#187;\nта успішно закінчив(-ла) курс української мови «PROукраїнська»."</textFieldExpression>
             </textField>
 
             <textField>

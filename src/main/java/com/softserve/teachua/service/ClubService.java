@@ -146,7 +146,7 @@ public interface ClubService {
      * @param searchClubProfile - put text of search (based on clubName, cityName & categoryName)
      * @return {@code Page<ClubResponse>}
      */
-    Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable);
+    Page<ClubResponse> getClubsBySearchParameters(SearchClubProfile searchClubProfile, Pageable pageable, Long userId);
 
     /**
      * The method which return possible results of search by entered text.
