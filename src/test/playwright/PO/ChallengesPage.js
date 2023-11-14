@@ -10,6 +10,20 @@ class ChallengesPage extends BasePage {
         this.addTaskButton = page.locator("a[href='/dev/admin/addTask']");
         this.allChallengesSequenceNumbers = page.locator("tbody td:nth-child(2)");
         this.firstChallenge = page.locator("tbody tr:first-child");
+        this.editChallengeButtons = page.locator("span.table-action:nth-child(1)");
+        this.editConfirmButton = page.locator("span.table-action").filter({ hasText: "Зберегти" });
+        this.editCancelButton = page.locator("span.table-action").filter({ hasText: "Відмінити" });
+
+        this.deleteChallengeButtons = page.locator("span.table-action:nth-child(2)");
+        //insecure locator below (each time 'delete' button was clicked, it created a new instance). No unique locator available
+        this.popUpYes = page.locator("button.popConfirm-ok-button");
+        this.popUpNo = page.locator("popConfirm-cancel-button");
+
+        this.challengeSequenceNumberField = page.locator("input#sortNumber");
+        this.challengeNameField = page.locator("input#name");
+        this.challengeTitleField = page.locator("input#title");
+
+        this.actionSuccessMessage = page.locator("div.ant-message-success");
     }
 
     async gotoChallengesPage() {
@@ -18,15 +32,13 @@ class ChallengesPage extends BasePage {
 
     async openAddChallengePage() {
         await this.addChallengeButton.click();
-        await this.verifyUrl(addChallengeAdminUrl);        
+        await this.verifyUrl(addChallengeAdminUrl);
     }
 
     async openTasksPage() {
         await this.openTasksButton.click();
-        await this.verifyUrl(tasksAdminUrl);        
+        await this.verifyUrl(tasksAdminUrl);
     }
-
-
 
     async checkIfChallengesExist() {
         try {
@@ -39,7 +51,9 @@ class ChallengesPage extends BasePage {
     async openChallengeInfoPage(challengeSortNumber) {
         await this.checkIfChallengesExist();
 
-        const challenge = await this.allChallengesSequenceNumbers.filter({ has: this.page.getByText(challengeSortNumber, { exact: true }) });
+        const challenge = await this.allChallengesSequenceNumbers.filter({
+            has: this.page.getByText(challengeSortNumber, { exact: true }),
+        });
         if (await challenge.isVisible()) {
             await challenge.click();
             return;
@@ -51,6 +65,41 @@ class ChallengesPage extends BasePage {
         }
     }
 
+    async selectChallengeManageOption(challengeSortNumber, option) {
+        await this.checkIfChallengesExist();
+
+        const challenge = await this.allChallengesSequenceNumbers.filter({
+            has: this.page.getByText(challengeSortNumber, { exact: true }),
+        });
+        if (await challenge.isVisible()) {
+            const row = await this.page.getByRole("row", { name: challengeSortNumber });
+            await row.locator(option).click();
+            return;
+        } else if (await this.isNextPageAvailable()) {
+            // If the club is not found on this page, check if there's a next page and recursively search
+            await this.goToNextPage();
+            await this.selectChallengeManageOption(challengeSortNumber, option);
+        } else {
+            // If the club is not found and there are no more pages, throw an error
+            throw new Error("No such challenge exists");
+        }
+    }
+
+    async turnOnEditChallenge(challengeSortNumber) {
+        await this.selectChallengeManageOption(challengeSortNumber + "", this.editChallengeButtons);
+        await this.verifyElementVisibility(this.challengeSequenceNumberField);
+    }
+
+    async confirmEditChallenge() {
+        await this.editConfirmButton.click();
+        await this.popUpYes.click();
+    }
+
+    async deleteChallenge(challengeSortNumber) {
+        await this.selectChallengeManageOption(challengeSortNumber + "", this.deleteChallengeButtons);
+        await this.popUpYes.click();
+        await this.verifyElementVisibility(await this.page.getByText(challengeSortNumber, { exact: true }), false);
+    }
 }
 
 module.exports = ChallengesPage;

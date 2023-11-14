@@ -77,14 +77,27 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
     });
 
 
-    // test("Verify that a challenge can be succesfully deleted", async({page})=>{
-    //     await apiservice.createNewChallenge();
-    // })
+    test("Verify that a challenge can be succesfully deleted", async ({ page }) => {
+        await apiservice.createNewChallenge();
+        await challengespage.gotoChallengesPage();
+        await challengespage.deleteChallenge(createChallengeRequest.body.sortNumber);
+        await challengespage.verifyElementVisibility(challengespage.actionSuccessMessage);
+        await challengespage.verifyElementExistance(
+            challengespage.allChallengesSequenceNumbers,
+            createChallengeRequest.body.sortNumber,
+            false
+        );
+    });
+
+
     // test("Verify that a task can be removed from the existing challenge", async({page})=>{
     //     await apiservice.createNewChallenge();
     // })
     // test("Verify that an existing challenge can be edited", async({page})=>{
     //     await apiservice.createNewChallenge();
+    //     await challengespage.turnOnEditChallenge(createChallengeRequest.body.sortNumber);
+    //     await challengespage.confirmEditChallenge();
+
     // })
     // test("Verify that an existing task can be edited", async({page})=>{
     //     await apiservice.createNewChallenge();

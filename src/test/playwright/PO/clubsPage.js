@@ -84,9 +84,12 @@ class ClubsPage extends BasePage {
     }
 
     async simpleSearchByQuery(query) {
+        const firstTitle = await this.firstCardTitle.textContent();
+        const firstTitleLocator = await this.page.getByRole("div", { name: firstTitle });
         await this.searchField.clear();
         await this.searchField.fill(query);
         await this.searchButton.click();
+        await firstTitleLocator.waitFor({ state: "detached", timeout: 10000 });
     }
 
     /*
