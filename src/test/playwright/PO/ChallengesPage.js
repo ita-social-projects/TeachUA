@@ -9,7 +9,7 @@ class ChallengesPage extends BasePage {
         this.openTasksButton = page.locator("a.back-btn button");
         this.addTaskButton = page.locator("a[href='/dev/admin/addTask']");
         this.allChallengesSequenceNumbers = page.locator("tbody td:nth-child(2)");
-        this.firstChallenge = page.locator("tbody tr:first-child");
+        this.firstChallenge = page.locator("tr:first-child td.ant-table-cell:first-child");
         this.editChallengeButtons = page.locator("span.table-action:nth-child(1)");
         this.editConfirmButton = page.locator("span.table-action").filter({ hasText: "Зберегти" });
         this.editCancelButton = page.locator("span.table-action").filter({ hasText: "Відмінити" });
@@ -39,17 +39,10 @@ class ChallengesPage extends BasePage {
         await this.openTasksButton.click();
         await this.verifyUrl(tasksAdminUrl);
     }
-
-    async checkIfChallengesExist() {
-        try {
-            await (await this.firstChallenge).waitFor({ state: "visible", timeout: 5000 });
-        } catch (e) {
-            throw new Error("There are no challenges existing");
-        }
-    }
+        
 
     async openChallengeInfoPage(challengeSortNumber) {
-        await this.checkIfChallengesExist();
+        await this.verifyElementVisibility(this.firstChallenge);
 
         const challenge = await this.allChallengesSequenceNumbers.filter({
             has: this.page.getByText(challengeSortNumber, { exact: true }),
@@ -66,8 +59,6 @@ class ChallengesPage extends BasePage {
     }
 
     async selectChallengeManageOption(challengeSortNumber, option) {
-        await this.checkIfChallengesExist();
-
         const challenge = await this.allChallengesSequenceNumbers.filter({
             has: this.page.getByText(challengeSortNumber, { exact: true }),
         });
@@ -93,12 +84,15 @@ class ChallengesPage extends BasePage {
     async confirmEditChallenge() {
         await this.editConfirmButton.click();
         await this.popUpYes.click();
+        await this.verifyElementVisibility(this.editConfirmButton, false);
+        await this.verifyElementVisibility(this.editCancelButton, false);
     }
 
     async deleteChallenge(challengeSortNumber) {
         await this.selectChallengeManageOption(challengeSortNumber + "", this.deleteChallengeButtons);
         await this.popUpYes.click();
-        await this.verifyElementVisibility(await this.page.getByText(challengeSortNumber, { exact: true }), false);
+        const challenge = await this.page.getByText(challengeSortNumber, { exact: true })
+        await this.verifyElementVisibility(challenge, false);
     }
 }
 

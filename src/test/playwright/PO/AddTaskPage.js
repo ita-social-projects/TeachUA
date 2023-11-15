@@ -13,7 +13,7 @@ class AddTaskPage extends BasePage {
         this.taskNameField = page.locator('input#name');
         this.taskTitleField = page.locator("div.ant-form-item:nth-child(4) .ql-editor");
         this.taskDescriptionField = page.locator("div.ant-form-item:nth-child(5) .ql-editor");
-        this.taskChallengeField = page.locator("input[type='search']");
+        this.taskChallengeField = page.locator("input#challengeId");
         this.saveButton = page.locator('button.flooded-button[type="submit"]');
 
         this.taskAddedSuccessMessage = this.page.locator("div.ant-message-success");

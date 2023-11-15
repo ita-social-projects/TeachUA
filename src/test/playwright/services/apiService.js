@@ -160,6 +160,12 @@ class ApiService {
      */
 
     async createNewTask() {
+        const tasks = await this.getAllTasks();
+        const task = tasks.find((c) => c.name === createTaskRequest.body.name);
+        if(task){
+            console.log("Task already exist");
+            return;
+        }
         const challenges = await this.getAllChallenges();
         const challenge = challenges.find((c) => c.sortNumber === parseInt(createChallengeRequest.body.sortNumber));
         createTaskRequest.body.challengeId = challenge.id;

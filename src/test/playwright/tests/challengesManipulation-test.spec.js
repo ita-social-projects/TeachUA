@@ -5,8 +5,8 @@ import ChallengeInfoPage from "../PO/ChallengeInfoPage";
 import TasksPage from "../PO/TasksPage";
 import AddChallengePage from "../PO/AddChallengePage";
 import AddTaskPage from "../PO/AddTaskPage";
-import {createChallengeRequest, tasksAdminUrl} from "../constants/api.constants";
-import {newChallengeCorrectDetails, newTaskCorrectDetails} from "../constants/challengeAndTaskInformation.constants";
+import {createChallengeRequest, createTaskRequest, tasksAdminUrl} from "../constants/api.constants";
+import {newChallengeCorrectDetails, editedChallengeCorrectDetails, newTaskCorrectDetails, editedTaskCorrectDetails} from "../constants/challengeAndTaskInformation.constants";
 
 
 let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, addtaskpage;
@@ -89,19 +89,67 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
         );
     });
 
+    test("Verify that an existing challenge can be edited on the challenges list page", async({page})=>{
+        await apiservice.createNewChallenge();
+        try {
+            await apiservice.deleteChallengeBySequenceNumber(editedChallengeCorrectDetails.SEQUENCE_NUMBER)
+        } catch (e) {
+            console.error(e);
+        }
+        await challengespage.gotoChallengesPage();
+        await challengespage.turnOnEditChallenge(createChallengeRequest.body.sortNumber);
+        await challengespage.fillInputField(challengespage.challengeSequenceNumberField, editedChallengeCorrectDetails.SEQUENCE_NUMBER)
+        await challengespage.fillInputField(challengespage.challengeNameField, editedChallengeCorrectDetails.NAME)
+        await challengespage.fillInputField(challengespage.challengeTitleField, editedChallengeCorrectDetails.TITLE)
+        await challengespage.confirmEditChallenge();
+        await challengespage.verifyElementExistance(
+            challengespage.allChallengesSequenceNumbers,
+            editedChallengeCorrectDetails.SEQUENCE_NUMBER,
+            true
+        );
+    })
 
-    // test("Verify that a task can be removed from the existing challenge", async({page})=>{
-    //     await apiservice.createNewChallenge();
-    // })
-    // test("Verify that an existing challenge can be edited", async({page})=>{
-    //     await apiservice.createNewChallenge();
-    //     await challengespage.turnOnEditChallenge(createChallengeRequest.body.sortNumber);
-    //     await challengespage.confirmEditChallenge();
+    
+    test("Verify that a task can be succesfully deleted", async({page})=>{
+        taskspage = new TasksPage(page);
+        await apiservice.createNewChallenge();
+        await apiservice.createNewTask();
+        await taskspage.gotoTasksPage();
+        await taskspage.deleteTask(createTaskRequest.body.name);
+        await taskspage.verifyElementVisibility(taskspage.actionSuccessMessage);
+        
+        /*Verification below won't work if there a couple of tasks with the same name*/
+        // await taskspage.verifyElementExistance(
+        //     taskspage.allTasksNames,
+        //     createTaskRequest.body.name, false
+        // );
+    })
 
-    // })
+    test("Verify that an existing task can be edited on the tasks list page", async({page})=>{
+        taskspage = new TasksPage(page);
+        await apiservice.createNewChallenge();
+        await apiservice.createNewTask();
+        await taskspage.gotoTasksPage();
+        await taskspage.turnOnEditTask(createTaskRequest.body.name);
+        await taskspage.fillInputField(taskspage.taskNameField, editedTaskCorrectDetails.NAME)
+        await taskspage.confirmEditTask();
+        await taskspage.verifyElementExistance(
+            challengespage.allChallengesSequenceNumbers,
+            editedTaskCorrectDetails.NAME,
+            true
+        );
+     })
+
+
     // test("Verify that an existing task can be edited", async({page})=>{
-    //     await apiservice.createNewChallenge();
+    //    taskspage = new TasksPage(page);
+        // await apiservice.createNewChallenge();
+        // await apiservice.createNewTask();
+        // await taskspage.gotoTasksPage();
+        // await taskspage.openTaskInfoPage(createTaskRequest.body.name);
     // })
+
+
     // test("Verify that the user can navigate through challenge's existing tasks", async({page})=>{
     //     await apiservice.createNewChallenge();
     // })

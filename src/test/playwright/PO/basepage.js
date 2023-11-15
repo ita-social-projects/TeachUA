@@ -6,6 +6,7 @@ class BasePage {
         this.navBarCityDropdown = page.locator("header > div.right-side-menu div.city");
         this.navBarCityDropdownList = page.locator("body > div:last-child ul");
         this.paginationNextPageButton = page.locator('ul > li[title="Next Page"]');
+        this.paginationFirstPage = page.locator('li[title="1"]');
     }
 
     async expectElementToHaveText(element, text) {
@@ -35,7 +36,6 @@ class BasePage {
     }
 
     async isElementWithNamePresent(allElements, name){
-        await this.verifyElementVisibility(await allElements.nth(0));
         const elementsTextContents = await allElements.allTextContents();
         if (await elementsTextContents.includes(name)) {
             return true;
@@ -51,6 +51,9 @@ class BasePage {
 
     //use the method above to make assertion
     async verifyElementExistance(allElements, name, doesExist = true) {
+        if(!await this.isItFirstPage()){
+            await this.paginationFirstPage.click();
+        }
         const isElementPresent = await this.isElementWithNamePresent(allElements, name)
         doesExist
             ? expect(isElementPresent).toBe(true)
@@ -67,6 +70,10 @@ class BasePage {
             (await this.paginationNextPageButton.isVisible()) &&
             (await this.paginationNextPageButton.getAttribute("aria-disabled")) !== "true"
         );
+    }
+
+    async isItFirstPage(){
+        return await this.paginationFirstPage.getAttribute("ant-pagination-item-active");
     }
 
     async goToNextPage() {
