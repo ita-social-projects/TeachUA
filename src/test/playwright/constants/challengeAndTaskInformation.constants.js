@@ -24,4 +24,5 @@ export const editedTaskCorrectDetails = {
     START_DATE: '2024-12-22',
     NAME: 'Super EDITED TASK Name',
     TITLE: 'Splendid EDITED test Task title. Minimum EDITED chars',
+    DESCRIPTION: 'This is a test description TASK EDITED EDITED EDITED EDITED EDITED EDITED EDITED EDITED EDITED EDITED'
 }

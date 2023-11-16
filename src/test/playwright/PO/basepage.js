@@ -51,7 +51,7 @@ class BasePage {
 
     //use the method above to make assertion
     async verifyElementExistance(allElements, name, doesExist = true) {
-        if(!await this.isItFirstPage()){
+        if ((await this.isItFirstPage())) {
             await this.paginationFirstPage.click();
         }
         const isElementPresent = await this.isElementWithNamePresent(allElements, name)
@@ -73,7 +73,10 @@ class BasePage {
     }
 
     async isItFirstPage(){
-        return await this.paginationFirstPage.getAttribute("ant-pagination-item-active");
+        return (
+            (await this.paginationFirstPage.isVisible()) && 
+            !(await this.paginationFirstPage.getAttribute("ant-pagination-item-active"))
+        )
     }
 
     async goToNextPage() {
