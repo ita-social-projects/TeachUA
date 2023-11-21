@@ -62,7 +62,43 @@ export const createTaskRequest  = {
         name: "Super Task Name",
         headerText: "Splendid test Task title. Minimum 40 chars",
         description: "A new TASK test description. Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet.",
-        startDate: "2023-12-12",
+        startDate: "2024-12-12",
+        picture: "/upload/challenges/task1.jpg",
+        challengeId: 48
+    },
+};
+export const createTaskRequest2  = {
+    url: "http://localhost:8080/dev/api/challenge",
+    method: "POST",
+    body: {
+        name: "Second Task",
+        headerText: "Splendid test Task title. Minimum 40 chars",
+        description: "A new TASK test description. Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet.",
+        startDate: "2024-11-19",
+        picture: "/upload/challenges/task1.jpg",
+        challengeId: 48
+    },
+};
+export const createTaskRequest3  = {
+    url: "http://localhost:8080/dev/api/challenge",
+    method: "POST",
+    body: {
+        name: "Third Task",
+        headerText: "Splendid test Task title. Minimum 40 chars",
+        description: "A new TASK test description. Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet.",
+        startDate: "2024-11-21",
+        picture: "/upload/challenges/task1.jpg",
+        challengeId: 48
+    },
+};
+export const createTaskRequest4  = {
+    url: "http://localhost:8080/dev/api/challenge",
+    method: "POST",
+    body: {
+        name: "Fourth Task",
+        headerText: "Splendid test Task title. Minimum 40 chars",
+        description: "A new TASK test description. Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet.",
+        startDate: "2024-11-22",
         picture: "/upload/challenges/task1.jpg",
         challengeId: 48
     },
