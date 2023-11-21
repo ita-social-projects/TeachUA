@@ -114,7 +114,7 @@ class ApiService {
 
     //challenges & tasks interaction
     //Challenges
-    async createNewChallenge() {
+    async createNewChallenge(createChallengeRequest) {
         const response = await fetch(createChallengeRequest.url, {
             method: createChallengeRequest.method,
             body: JSON.stringify(createChallengeRequest.body),
@@ -159,7 +159,7 @@ class ApiService {
      * sortNumber, and creates a new task associated with that challenge.
      */
 
-    async createNewTask() {
+    async createNewTask(createTaskRequest) {
         const tasks = await this.getAllTasks();
         const task = tasks.find((c) => c.name === createTaskRequest.body.name);
         if(task){
