@@ -225,7 +225,15 @@ class ApiService {
         return response.json();
     }
 
-    
+    // Helper function to update task details
+    async updateTaskDetails(updatedTask) {
+        const response = await fetch(`http://localhost:8080/dev/api/challenge/task/${updatedTask.id}`, {
+            method: "PUT",
+            body: JSON.stringify(updatedTask),
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
+        });
+        await this.assertResponseIsOk(response);
+    }
 }
 
 module.exports = ApiService;
