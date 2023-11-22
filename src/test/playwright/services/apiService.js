@@ -199,6 +199,7 @@ class ApiService {
         await this.assertResponseIsOk(response);
     }
 
+    // Helper function to get all tasks
     async getAllTasks() {
         const pageResponse = await fetch(getTasksRequest, {
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
@@ -207,6 +208,13 @@ class ApiService {
         const pageJson = await pageResponse.json();
         return pageJson;
     }
+
+    // Helper function to get a task by name
+    async getTaskByName(taskName) {
+    const tasks = await this.getAllTasks();
+    return tasks.find((c) => c.name === taskName);
+}
+
 }
 
 module.exports = ApiService;
