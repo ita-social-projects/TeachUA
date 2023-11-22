@@ -162,7 +162,7 @@ class ApiService {
     async createNewTask(createTaskRequest) {
         const tasks = await this.getAllTasks();
         const task = tasks.find((c) => c.name === createTaskRequest.body.name);
-        if(task){
+        if (task) {
             console.log("Task already exist");
             return;
         }
@@ -211,10 +211,21 @@ class ApiService {
 
     // Helper function to get a task by name
     async getTaskByName(taskName) {
-    const tasks = await this.getAllTasks();
-    return tasks.find((c) => c.name === taskName);
-}
+        const tasks = await this.getAllTasks();
+        return tasks.find((c) => c.name === taskName);
+    }
 
+    // Helper function to fetch task details
+    async fetchTaskDetails(taskId) {
+        const response = await fetch(`http://localhost:8080/dev/api/challenge/task/${taskId}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
+        });
+        await this.assertResponseIsOk(response);
+        return response.json();
+    }
+
+    
 }
 
 module.exports = ApiService;
