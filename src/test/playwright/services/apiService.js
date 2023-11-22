@@ -234,6 +234,31 @@ class ApiService {
         });
         await this.assertResponseIsOk(response);
     }
+
+    /**
+     * Updates the start date of a task to today's date, 
+     * ensuring it appears among the active tasks of the challenge.
+     *
+     * @param {string} taskName - The name of the task to be updated.
+     */
+
+    async changeTaskDateToToday(taskName) {
+        const task = await this.getTaskByName(taskName);
+
+        if (!task) {
+            console.log("Task wasn't updated as it doesn't exist (hasn't been created or the name is wrong)");
+            return;
+        }
+
+        const pageJson = await this.fetchTaskDetails(task.id);
+
+        const currentDate = new Date();
+        pageJson.startDate = currentDate.toISOString().split("T")[0];
+
+        await this.updateTaskDetails(pageJson);
+
+        console.log(pageJson);
+    }
 }
 
 module.exports = ApiService;
