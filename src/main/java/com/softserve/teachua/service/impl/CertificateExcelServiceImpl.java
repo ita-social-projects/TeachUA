@@ -119,7 +119,8 @@ public class CertificateExcelServiceImpl implements CertificateExcelService {
                         }).toList()
                 ).toList();
         return CertificateByTemplateExcelParsingResponse.builder()
-                .columnHeadersList(allConvertedCells.remove(0))
+                /*.columnHeadersList(allConvertedCells.remove(0)) */
+                .columnHeadersList(allConvertedCells.get(1))
                 .excelContent(allConvertedCells)
                 .build();
     }

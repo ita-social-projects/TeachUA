@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -37,6 +39,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @Slf4j
+@Tag(name = "task", description = "the CertificateByTemplate API")
+@SecurityRequirement(name = "api")
 public class CertificateByTemplateController implements Api {
     private final CertificateExcelService excelService;
     private final CertificateTemplateService certificateTemplateService;
