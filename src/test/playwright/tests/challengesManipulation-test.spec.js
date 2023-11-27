@@ -7,6 +7,7 @@ import AddChallengePage from "../PO/AddChallengePage";
 import AddTaskPage from "../PO/AddTaskPage";
 import {createChallengeRequest, createTaskRequest, createTaskRequest2, createTaskRequest3, createTaskRequest4, tasksAdminUrl} from "../constants/api.constants";
 import {newChallengeCorrectDetails, editedChallengeCorrectDetails, newTaskCorrectDetails, editedTaskCorrectDetails} from "../constants/challengeAndTaskInformation.constants";
+import { USER_ROLES } from "../constants/general.constants"
 
 
 let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, addtaskpage;
@@ -14,7 +15,7 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
     test.beforeEach(async({page})=>{
         apiservice = new ApiService(page);
         challengespage = new ChallengesPage(page);
-        await apiservice.apiLoginAs('admin');
+        await apiservice.apiLoginAs(USER_ROLES.admin);
     })
 
     test("Verify that a new challenge can be successfully created", async ({ page }) => {

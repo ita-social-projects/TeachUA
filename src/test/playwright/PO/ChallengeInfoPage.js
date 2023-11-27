@@ -1,16 +1,17 @@
 
 import BasePage from "./BasePage";
 import { expect } from "@playwright/test";
+import { CHALLENGE_INFO_PAGE } from "../constants/locatorsText.constants";
 
 class ChallengeInfoPage extends BasePage {
     constructor(page) {
         super(page);
-        this.viewChallengeButton = page.getByRole("button", { name: "Переглянути челендж" });
+        this.viewChallengeButton = page.getByRole("button", { name: CHALLENGE_INFO_PAGE.viewChallenge });
         this.viewChallengeTitle = page.locator("span.title");
         this.slickCard = page.locator("div.slick-slide");
         this.slickCardsNames = page.locator("div.slick-slide div.name");
         this.slickDots = page.locator("ul.slick-dots li");
-        this.slickRightArrow = page.locator("div.challenge-day-block span[aria-label='arrow-right']:nth-child(2) svg");
+        this.slickRightArrow = page.locator("span.arrows-next svg");
 
         this.challengePageTitle = page.locator("h1.ant-typography");
         this.challengeSortNumber = page.locator("input#sortNumber");
@@ -20,8 +21,8 @@ class ChallengeInfoPage extends BasePage {
         this.challengeDescription = page.locator("div.ql-editor");
         this.saveButton = page.locator('button.flooded-button[type="submit"]');
 
-        this.challengeTasksNames = page.locator("td:nth-child(2)");
-    }
+        this.tasksTableCells = page.locator("td[class='ant-table-cell']");
+        }
 
     async openViewChallenge() {
         await this.viewChallengeButton.click();
