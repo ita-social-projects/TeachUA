@@ -7,18 +7,14 @@ import AddChallengePage from "../PO/AddChallengePage";
 import AddTaskPage from "../PO/AddTaskPage";
 import {createChallengeRequest, createTaskRequest, createTaskRequest2, createTaskRequest3, createTaskRequest4, tasksAdminUrl} from "../constants/api.constants";
 import {newChallengeCorrectDetails, editedChallengeCorrectDetails, newTaskCorrectDetails, editedTaskCorrectDetails} from "../constants/challengeAndTaskInformation.constants";
-
+import { USER_ROLES } from "../constants/general.constants"
 
 let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, addtaskpage;
 
     test.beforeEach(async({page})=>{
         apiservice = new ApiService(page);
         challengespage = new ChallengesPage(page);
-        await apiservice.apiLoginAs('admin');
-        // await apiservice.deleteChallengeBySequenceNumber(newChallengeCorrectDetails.SEQUENCE_NUMBER)
-        // await apiservice.deleteChallengeBySequenceNumber(editedChallengeCorrectDetails.SEQUENCE_NUMBER)
-        // await apiservice.deleteTaskByName(editedTaskCorrectDetails.NAME);
-        // await apiservice.deleteTaskByName(newTaskCorrectDetails.NAME);
+        await apiservice.apiLoginAs(USER_ROLES.admin);
     })
 
     test("Verify that a new challenge can be successfully created", async ({ page }) => {
@@ -73,7 +69,7 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
         
         await taskspage.openChallengesPage();
         await challengespage.openChallengeInfoPage(createChallengeRequest.body.sortNumber);
-        await challengeinfopage.verifyElementExistance(challengeinfopage.challengeTasksNames, newTaskCorrectDetails.NAME);
+        await challengeinfopage.verifyElementExistance(challengeinfopage.tasksTableCells, newTaskCorrectDetails.NAME);
     });
 
 
@@ -171,9 +167,28 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
     });
 
 
-    // test("Verify that the user can navigate through challenge's existing tasks", async({page})=>{
-    //     await apiservice.createNewChallenge();
-    // })
+    test("Verify that the user can navigate through challenge's existing tasks", async({page})=>{
+        taskspage = new TasksPage(page);
+        challengeinfopage = new ChallengeInfoPage(page);
+        await apiservice.deleteTaskByName(createTaskRequest.body.name);
+        await apiservice.deleteTaskByName(createTaskRequest2.body.name);
+        await apiservice.deleteTaskByName(createTaskRequest3.body.name);
+        await apiservice.deleteTaskByName(createTaskRequest4.body.name);
+
+        await apiservice.createNewChallenge(createChallengeRequest);
+        await apiservice.createNewTask(createTaskRequest);
+        await apiservice.changeTaskDateToToday(createTaskRequest.body.name);
+        await apiservice.createNewTask(createTaskRequest2);
+        await apiservice.changeTaskDateToToday(createTaskRequest2.body.name);
+        await apiservice.createNewTask(createTaskRequest3);
+        await apiservice.changeTaskDateToToday(createTaskRequest3.body.name);
+        await apiservice.createNewTask(createTaskRequest4);
+        await apiservice.changeTaskDateToToday(createTaskRequest4.body.name);
+        await challengespage.gotoChallengesPage();
+        await challengespage.openChallengeInfoPage(createChallengeRequest.body.sortNumber);
+        await challengeinfopage.openViewChallenge();
+        await challengeinfopage.verifyTaskOnChallengeView(createTaskRequest4.body.name);
+    })
 
 
     test.afterEach(async({page})=>{

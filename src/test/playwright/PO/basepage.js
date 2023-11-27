@@ -1,4 +1,4 @@
-import { expect} from "@playwright/test";
+import { expect } from "@playwright/test";
 
 class BasePage {
     constructor(page) {
@@ -51,16 +51,14 @@ class BasePage {
 
     //use the method above to make assertion
     async verifyElementExistance(allElements, name, doesExist = true) {
-        if ((await this.isItFirstPage())) {
+        if (await this.isItFirstPage()) {
             await this.paginationFirstPage.click();
         }
-        const isElementPresent = await this.isElementWithNamePresent(allElements, name)
-        doesExist
-            ? expect(isElementPresent).toBe(true)
-            : expect(isElementPresent).toBe(false);
+        const isElementPresent = await this.isElementWithNamePresent(allElements, name);
+        doesExist ? expect(isElementPresent).toBe(true) : expect(isElementPresent).toBe(false);
     }
 
-    async verifyUrl(expectedUrl){
+    async verifyUrl(expectedUrl) {
         const currentUrl = await this.page.url();
         expect(currentUrl).toBe(expectedUrl);
     }
@@ -72,11 +70,11 @@ class BasePage {
         );
     }
 
-    async isItFirstPage(){
+    async isItFirstPage() {
         return (
             (await this.paginationFirstPage.isVisible()) && 
             !(await this.paginationFirstPage.getAttribute("ant-pagination-item-active"))
-        )
+        );
     }
 
     async goToNextPage() {
