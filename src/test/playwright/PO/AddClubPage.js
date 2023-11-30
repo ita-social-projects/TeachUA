@@ -1,8 +1,8 @@
 import { ADD_CLUB_PAGE } from "../constants/locatorsText.constants";
 import {
-    clubOnlineSliderTooltip,
-    locationNameTooltip,
-    locationPhoneTooltip,
+    CLUB_ONLINE_SLIDER_TOOLTIP,
+    LOCATION_NAME_TOOLTIP,
+    LOCATION_PHONE_TOOLTIP,
 } from "../constants/messages.constants";
 import { IMAGES_PATH } from "../constants/general.constants";
 import BasePage from "./BasePage";
@@ -141,11 +141,11 @@ class AddClubPage extends BasePage {
     }
 
     async verifyLocationNameTooltipAppearsOnHover(){
-        await this.verifyTooltipAppearsOnHover(this.locationNameInfoSign, locationNameTooltip)
+        await this.verifyTooltipAppearsOnHover(this.locationNameInfoSign, LOCATION_NAME_TOOLTIP)
     }
 
     async verifyLocationPhoneTooltipAppearsOnHover(){
-        await this.verifyTooltipAppearsOnHover(this.locationPhoneInfoSign, locationPhoneTooltip)
+        await this.verifyTooltipAppearsOnHover(this.locationPhoneInfoSign, LOCATION_PHONE_TOOLTIP)
     }
 
     async closeAddLocationWindow(){
@@ -164,7 +164,7 @@ class AddClubPage extends BasePage {
     }
 
     async verifyAvailableOnlineTooltipAppearsOnHover(){
-        await this.verifyTooltipAppearsOnHover(this.isOnlineInfoSign, clubOnlineSliderTooltip)
+        await this.verifyTooltipAppearsOnHover(this.isOnlineInfoSign, CLUB_ONLINE_SLIDER_TOOLTIP)
     }
 
     //Step #3

@@ -1,7 +1,7 @@
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
 import {API_URL} from "../constants/api.constants";
 import {ADD_CLUB_PAGE} from "../constants/locatorsText.constants";
-import { successLoginMessage } from "../constants/messages.constants.js";
+import { SUCCESS_LOGIN_MESSAGE } from "../constants/messages.constants.js";
 import BasePage from "./BasePage";
 
 class HomePage extends BasePage{
@@ -43,7 +43,7 @@ class HomePage extends BasePage{
         await this.passwordField.fill(userData[userType].password);
 
         await this.loginButton.click();
-        await this.expectElementToHaveText(this.loginSuccessMessage, successLoginMessage);
+        await this.expectElementToHaveText(this.loginSuccessMessage, SUCCESS_LOGIN_MESSAGE);
     }
 }
 
