@@ -6,14 +6,14 @@ export const USER_ROLES = {
     admin: 'admin',
     user: 'user',
   };
-export const cities = {
-    KYIV: "Київ",
-    KHARKIV: "Харків",
-    ODESSA: "Одеса",
-    DNIPRO: "Дніпро",
-    ZAPORIZHZHIA: "Запоріжжя",
-    NO_LOCATION: "Без локації",
+export const CITIES = {
+    kyiv: "Київ",
+    kharkiv: "Харків",
+    odessa: "Одеса",
+    dnipro: "Дніпро",
+    zaporizhzhia: "Запоріжжя",
+    noLocation: "Без локації",
 }
 
 
-export const imagesPath = './src/test/playwright/imagesToUpload/';
+export const IMAGES_PATH = './src/test/playwright/imagesToUpload/';

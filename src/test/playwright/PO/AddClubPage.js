@@ -4,7 +4,7 @@ import {
     locationNameTooltip,
     locationPhoneTooltip,
 } from "../constants/messages.constants";
-import { imagesPath } from "../constants/general.constants";
+import { IMAGES_PATH } from "../constants/general.constants";
 import BasePage from "./BasePage";
 
 class AddClubPage extends BasePage {
@@ -170,15 +170,15 @@ class AddClubPage extends BasePage {
     //Step #3
 
     async uploadLogo(){
-        await this.addLogoInput.setInputFiles(imagesPath + 'clubLogo.jpg');
+        await this.addLogoInput.setInputFiles(IMAGES_PATH + 'clubLogo.jpg');
     }
 
     async uploadCover(){
-        await this.addCoverInput.setInputFiles(imagesPath + 'cover.png');
+        await this.addCoverInput.setInputFiles(IMAGES_PATH + 'cover.png');
     }
 
     async uploadPhotoes() {
-        await this.addImagesInput.setInputFiles(imagesPath + 'galery.jpg');
+        await this.addImagesInput.setInputFiles(IMAGES_PATH + 'galery.jpg');
     }
 
     async fillClubDescription(description){

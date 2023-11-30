@@ -3,7 +3,7 @@ import ApiService from "../services/apiService";
 import ClubsPage from "../PO/ClubsPage";
 import BasePage from "../PO/BasePage";
 import {simpleSearchParameters} from "../constants/searchQueries.constants";
-import {cities} from "../constants/general.constants";
+import {CITIES} from "../constants/general.constants";
 
 let apiservice, clubspage, basepage;
 
@@ -31,7 +31,7 @@ test.describe.configure({
     test("Verify that clubs received in the result of the simple search contain search query (search by category name)", async ({ page }) => {
         //search by the club category and verification/different city
         basepage = new BasePage(page);
-        await basepage.selectCityInNavBar(cities.KHARKIV)
+        await basepage.selectCityInNavBar(CITIES.kharkiv)
         await clubspage.simpleSearchByQuery(simpleSearchParameters.CATEGORY_SEARCH_QUERY);
         await clubspage.verifyClubCardsContainText(simpleSearchParameters.CATEGORY_SEARCH_QUERY);
     });

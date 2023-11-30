@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 import { CHALLENGES_ADMIN_URL, ADD_CHALLENGE_ADMIN_URL, TASKS_ADMIN_URL } from "../constants/api.constants";
-import { imagesPath } from "../constants/general.constants";
+import { IMAGES_PATH } from "../constants/general.constants";
 import BasePage from "./BasePage";
 
 class AddChallengePage extends BasePage {
@@ -29,7 +29,7 @@ class AddChallengePage extends BasePage {
     }
 
     async uploadChallengePhoto() {
-        await this.challengePhotoInput.setInputFiles(imagesPath + 'challenge1.jpg');
+        await this.challengePhotoInput.setInputFiles(IMAGES_PATH + 'challenge1.jpg');
     }
 
     async confirmChallengeCreation(){
