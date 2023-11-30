@@ -35,9 +35,9 @@ import static com.softserve.teachua.service.impl.PdfTemplateServiceImpl.CERTIFIC
 @Component
 public class CertificateByTemplateServiceImpl implements CertificateByTemplateService {
     private static final String HALVAR_BLK_PATH = "certificates/fonts/Halvar Breitschrift Medium.ttf";
-            /*"./src/main/resources/certificates/fonts/Halvar Breitschrift Medium.ttf";*/
+    /*"./src/main/resources/certificates/fonts/Halvar Breitschrift Medium.ttf";*/
     private static final String HALVAR_MD_PATH = "certificates/fonts/Halvar Breitschrift Medium.ttf";
-            /*"./src/main/resources/certificates/fonts/Halvar Breitschrift Medium.ttf";*/
+    /*"./src/main/resources/certificates/fonts/Halvar Breitschrift Medium.ttf";*/
 
     private final QRCodeService qrCodeService;
     private final ObjectMapper objectMapper;
