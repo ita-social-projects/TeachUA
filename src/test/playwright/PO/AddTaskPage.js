@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { challengesAdminUrl, addChallengeAdminUrl, tasksAdminUrl } from "../constants/api.constants";
+import { challengesAdminUrl, ADD_CHALLENGE_ADMIN_URL, TASKS_ADMIN_URL } from "../constants/api.constants";
 import { imagesPath } from "../constants/general.constants";
 import BasePage from "./BasePage";
 
@@ -21,7 +21,7 @@ class AddTaskPage extends BasePage {
     }
 
     async gotoAddChallengePage() {
-        await this.page.goto(addChallengeAdminUrl);
+        await this.page.goto(ADD_CHALLENGE_ADMIN_URL);
     }
 
     async openChallengesPage() {

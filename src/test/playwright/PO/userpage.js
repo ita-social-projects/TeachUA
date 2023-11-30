@@ -1,4 +1,4 @@
-import { apiUrl } from "../constants/api.constants";
+import { API_URL } from "../constants/api.constants";
 import { userPage } from "../constants/locatorsText.constants";
 import BasePage from "./BasePage";
 
@@ -23,7 +23,7 @@ class UserPage extends BasePage {
         const idValue = await this.page.evaluate(() => {
             return window.localStorage.getItem("id");
         });
-        await this.page.goto(`${apiUrl}/user/${idValue}/page`);
+        await this.page.goto(`${API_URL}/user/${idValue}/page`);
     }
 
     async verifyTitleIsVisible(isVisible) {

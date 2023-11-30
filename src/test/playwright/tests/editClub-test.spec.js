@@ -6,7 +6,7 @@ import HomePage from "../PO/HomePage";
 import BasePage from "../PO/BasePage";
 import ClubInfoPage from "../PO/ClubInfoPage";
 import {editLocationDetails, editClubDetails, editClubContactDetails, clubCategories} from "../constants/clubInformation.constants";
-import {createClubRequest } from "../constants/api.constants";
+import {CREATE_CLUB_REQUEST } from "../constants/api.constants";
 
 let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
 
@@ -25,20 +25,20 @@ let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
     test("Verify that an existing club can be succesfully edited and the details will be correct", async ({ page }) => {
         try {
             await apiservice.deleteClubByTitle(editClubDetails.CLUB_TITLE);
-            await apiservice.deleteClubByTitle(createClubRequest.body.name);
+            await apiservice.deleteClubByTitle(CREATE_CLUB_REQUEST.body.name);
         } catch (e) {
             console.error(e);
         }
-        await apiservice.createNewClub(createClubRequest.body.name);
+        await apiservice.createNewClub(CREATE_CLUB_REQUEST.body.name);
 
-        await userpage.openClubEditModeByTitle(createClubRequest.body.name);
+        await userpage.openClubEditModeByTitle(CREATE_CLUB_REQUEST.body.name);
         await basepage.fillInputField(editclubpage.clubNameField, editClubDetails.CLUB_TITLE);
         
         await editclubpage.setAcceptableChildAge(editClubDetails.CLUB_ENTER_AGE, editClubDetails.CLUB_CLOSING_AGE);
         await editclubpage.selectRelatedCenter(editClubDetails.CLUB_RELATED_CENTER);
         await editclubpage.proceedToNextStep();
 
-        await editclubpage.openEditLocationWindow(createClubRequest.body.locations.name);
+        await editclubpage.openEditLocationWindow(CREATE_CLUB_REQUEST.body.locations.name);
         await editclubpage.fillInputField(editclubpage.locationNameField, editLocationDetails.LOCATION_NAME)
         await editclubpage.selectLocationCity(editLocationDetails.LOCATION_CITY);
         await editclubpage.selectLocationDistrict(editLocationDetails.LOCATION_DISTRICT);
@@ -97,28 +97,28 @@ let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
 
     test("Verify that an existing club can be succesfully deleted", async ({ page }) => {
         await apiservice.createNewClub();
-        await userpage.removeClubByTitle(createClubRequest.body.name);
+        await userpage.removeClubByTitle(CREATE_CLUB_REQUEST.body.name);
         await userpage.gotoUserPage();
-        await userpage.verifyElementExistance(userpage.clubsNames, createClubRequest.body.name, false);
+        await userpage.verifyElementExistance(userpage.clubsNames, CREATE_CLUB_REQUEST.body.name, false);
 
     });
 
     test("Verify that an club's location can be succesfully deleted", async ({ page }) => {
         try {
-            await apiservice.deleteClubByTitle(createClubRequest.body.name);
+            await apiservice.deleteClubByTitle(CREATE_CLUB_REQUEST.body.name);
         } catch (e) {
             console.error(e);
         }
-        await apiservice.createNewClub(createClubRequest.body.name);
-        await userpage.openClubEditModeByTitle(createClubRequest.body.name);
+        await apiservice.createNewClub(CREATE_CLUB_REQUEST.body.name);
+        await userpage.openClubEditModeByTitle(CREATE_CLUB_REQUEST.body.name);
         await editclubpage.proceedToNextStep();
-        await editclubpage.deleteLocation(createClubRequest.body.locations.name);
-        await editclubpage.verifyLocationPresence(createClubRequest.body.locations.name, false);
+        await editclubpage.deleteLocation(CREATE_CLUB_REQUEST.body.locations.name);
+        await editclubpage.verifyLocationPresence(CREATE_CLUB_REQUEST.body.locations.name, false);
         await editclubpage.proceedToNextStep();
         await editclubpage.completeClubCreation();
         await userpage.gotoUserPage();
         clubinfopage = new ClubInfoPage(page);
-        await userpage.openClubInfoPage(createClubRequest.body.name);
+        await userpage.openClubInfoPage(CREATE_CLUB_REQUEST.body.name);
         await clubinfopage.verifyElementVisibilityAndText(
             clubinfopage.clubPageAddress,
             true,

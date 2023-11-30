@@ -5,7 +5,7 @@ import ChallengeInfoPage from "../PO/ChallengeInfoPage";
 import TasksPage from "../PO/TasksPage";
 import AddChallengePage from "../PO/AddChallengePage";
 import AddTaskPage from "../PO/AddTaskPage";
-import {createChallengeRequest, createTaskRequest, createTaskRequest2, createTaskRequest3, createTaskRequest4, tasksAdminUrl} from "../constants/api.constants";
+import {CREATE_CHALLENGE_REQUEST, CREATE_TASK_REQUEST, CREATE_TASK_REQUEST_2, CREATE_TASK_REQUEST_3, CREATE_TASK_REQUEST_4, TASKS_ADMIN_URL} from "../constants/api.constants";
 import {newChallengeCorrectDetails, editedChallengeCorrectDetails, newTaskCorrectDetails, editedTaskCorrectDetails} from "../constants/challengeAndTaskInformation.constants";
 import { USER_ROLES } from "../constants/general.constants"
 
@@ -43,7 +43,7 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
         challengeinfopage = new ChallengeInfoPage(page);
         await apiservice.deleteTaskByName(newTaskCorrectDetails.NAME);
 
-        await apiservice.createNewChallenge(createChallengeRequest);
+        await apiservice.createNewChallenge(CREATE_CHALLENGE_REQUEST);
         await taskspage.gotoTasksPage();
         await taskspage.openAddTaskPage();
         
@@ -52,7 +52,7 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
         await addtaskpage.fillInputField(addtaskpage.taskNameField, newTaskCorrectDetails.NAME)
         await addtaskpage.fillInputField(addtaskpage.taskTitleField, newTaskCorrectDetails.TITLE)
         await addtaskpage.fillInputField(addtaskpage.taskDescriptionField, newTaskCorrectDetails.DESCRIPTION)
-        await addtaskpage.selectChallenge(createChallengeRequest.body.name)
+        await addtaskpage.selectChallenge(CREATE_CHALLENGE_REQUEST.body.name)
 
         await addtaskpage.confirmTaskCreation();
 
@@ -68,28 +68,28 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
         await taskspage.verifyElementExistance(taskspage.allTasksNames, newTaskCorrectDetails.NAME)
         
         await taskspage.openChallengesPage();
-        await challengespage.openChallengeInfoPage(createChallengeRequest.body.sortNumber);
+        await challengespage.openChallengeInfoPage(CREATE_CHALLENGE_REQUEST.body.sortNumber);
         await challengeinfopage.verifyElementExistance(challengeinfopage.tasksTableCells, newTaskCorrectDetails.NAME);
     });
 
 
     test("Verify that a challenge can be succesfully deleted", async ({ page }) => {
-        await apiservice.createNewChallenge(createChallengeRequest);
+        await apiservice.createNewChallenge(CREATE_CHALLENGE_REQUEST);
         await challengespage.gotoChallengesPage();
-        await challengespage.deleteChallenge(createChallengeRequest.body.sortNumber);
+        await challengespage.deleteChallenge(CREATE_CHALLENGE_REQUEST.body.sortNumber);
         await challengespage.verifyElementVisibility(challengespage.actionSuccessMessage);
         await challengespage.verifyElementExistance(
             challengespage.allChallengesSequenceNumbers,
-            createChallengeRequest.body.sortNumber,
+            CREATE_CHALLENGE_REQUEST.body.sortNumber,
             false
         );
     });
 
     test("Verify that an existing challenge can be edited on the challenges list page", async({page})=>{
-        await apiservice.createNewChallenge(createChallengeRequest);
+        await apiservice.createNewChallenge(CREATE_CHALLENGE_REQUEST);
         await apiservice.deleteChallengeBySequenceNumber(editedChallengeCorrectDetails.SEQUENCE_NUMBER)
         await challengespage.gotoChallengesPage();
-        await challengespage.turnOnEditChallenge(createChallengeRequest.body.sortNumber);
+        await challengespage.turnOnEditChallenge(CREATE_CHALLENGE_REQUEST.body.sortNumber);
         await challengespage.fillInputField(challengespage.challengeSequenceNumberField, editedChallengeCorrectDetails.SEQUENCE_NUMBER)
         await challengespage.fillInputField(challengespage.challengeNameField, editedChallengeCorrectDetails.NAME)
         await challengespage.fillInputField(challengespage.challengeTitleField, editedChallengeCorrectDetails.TITLE)
@@ -104,9 +104,9 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
     test("Verify that an existing challenge can be edited", async ({ page }) => {
         addchallengepage = new AddChallengePage(page);
         await apiservice.deleteChallengeBySequenceNumber(editedChallengeCorrectDetails.SEQUENCE_NUMBER);
-        await apiservice.createNewChallenge(createChallengeRequest);
+        await apiservice.createNewChallenge(CREATE_CHALLENGE_REQUEST);
         await challengespage.gotoChallengesPage();
-        await challengespage.openChallengeInfoPage(createChallengeRequest.body.sortNumber);
+        await challengespage.openChallengeInfoPage(CREATE_CHALLENGE_REQUEST.body.sortNumber);
         await addchallengepage.fillInputField(addchallengepage.challengeSequenceNumberField, editedChallengeCorrectDetails.SEQUENCE_NUMBER)
         await addchallengepage.fillInputField(addchallengepage.challengeNameField, editedChallengeCorrectDetails.NAME)
         await addchallengepage.fillInputField(addchallengepage.challengeTitleField, editedChallengeCorrectDetails.TITLE)
@@ -119,26 +119,26 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
     
     test("Verify that a task can be succesfully deleted", async({page})=>{
         taskspage = new TasksPage(page);
-        await apiservice.createNewChallenge(createChallengeRequest);
-        await apiservice.createNewTask(createTaskRequest);
+        await apiservice.createNewChallenge(CREATE_CHALLENGE_REQUEST);
+        await apiservice.createNewTask(CREATE_TASK_REQUEST);
         await taskspage.gotoTasksPage();
-        await taskspage.deleteTask(createTaskRequest.body.name);
+        await taskspage.deleteTask(CREATE_TASK_REQUEST.body.name);
         await taskspage.verifyElementVisibility(taskspage.actionSuccessMessage);
         
         /*Verification below won't work if there a couple of tasks with the same name*/
         await taskspage.verifyElementExistance(
             taskspage.allTasksNames,
-            createTaskRequest.body.name, false
+            CREATE_TASK_REQUEST.body.name, false
         );
     })
 
     test("Verify that an existing task can be edited on the tasks list page", async({page})=>{
         taskspage = new TasksPage(page);
-        await apiservice.createNewChallenge(createChallengeRequest);
+        await apiservice.createNewChallenge(CREATE_CHALLENGE_REQUEST);
         await apiservice.deleteTaskByName(editedTaskCorrectDetails.NAME)
-        await apiservice.createNewTask(createTaskRequest);
+        await apiservice.createNewTask(CREATE_TASK_REQUEST);
         await taskspage.gotoTasksPage();
-        await taskspage.turnOnEditTask(createTaskRequest.body.name);
+        await taskspage.turnOnEditTask(CREATE_TASK_REQUEST.body.name);
         await taskspage.fillInputField(taskspage.taskNameField, editedTaskCorrectDetails.NAME)
         await taskspage.confirmEditTask();
         await taskspage.verifyElementExistance(
@@ -153,10 +153,10 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
         taskspage = new TasksPage(page);
         addtaskpage = new AddTaskPage(page);
         await apiservice.deleteTaskByName(editedTaskCorrectDetails.NAME);
-        await apiservice.createNewChallenge(createChallengeRequest);
-        await apiservice.createNewTask(createTaskRequest);
+        await apiservice.createNewChallenge(CREATE_CHALLENGE_REQUEST);
+        await apiservice.createNewTask(CREATE_TASK_REQUEST);
         await taskspage.gotoTasksPage();
-        await taskspage.openTaskInfoPage(createTaskRequest.body.name);
+        await taskspage.openTaskInfoPage(CREATE_TASK_REQUEST.body.name);
         await addtaskpage.fillInputField(addtaskpage.taskNameField, editedTaskCorrectDetails.NAME);
         await addtaskpage.fillInputField(addtaskpage.taskTitleField, editedTaskCorrectDetails.TITLE);
         await addtaskpage.fillInputField(addtaskpage.taskDescriptionField, editedTaskCorrectDetails.DESCRIPTION);
@@ -170,24 +170,24 @@ let apiservice, challengespage, challengeinfopage,taskspage, addchallengepage, a
     test("Verify that the user can navigate through challenge's existing tasks", async({page})=>{
         taskspage = new TasksPage(page);
         challengeinfopage = new ChallengeInfoPage(page);
-        await apiservice.deleteTaskByName(createTaskRequest.body.name);
-        await apiservice.deleteTaskByName(createTaskRequest2.body.name);
-        await apiservice.deleteTaskByName(createTaskRequest3.body.name);
-        await apiservice.deleteTaskByName(createTaskRequest4.body.name);
+        await apiservice.deleteTaskByName(CREATE_TASK_REQUEST.body.name);
+        await apiservice.deleteTaskByName(CREATE_TASK_REQUEST_2.body.name);
+        await apiservice.deleteTaskByName(CREATE_TASK_REQUEST_3.body.name);
+        await apiservice.deleteTaskByName(CREATE_TASK_REQUEST_4.body.name);
 
-        await apiservice.createNewChallenge(createChallengeRequest);
-        await apiservice.createNewTask(createTaskRequest);
-        await apiservice.changeTaskDateToToday(createTaskRequest.body.name);
-        await apiservice.createNewTask(createTaskRequest2);
-        await apiservice.changeTaskDateToToday(createTaskRequest2.body.name);
-        await apiservice.createNewTask(createTaskRequest3);
-        await apiservice.changeTaskDateToToday(createTaskRequest3.body.name);
-        await apiservice.createNewTask(createTaskRequest4);
-        await apiservice.changeTaskDateToToday(createTaskRequest4.body.name);
+        await apiservice.createNewChallenge(CREATE_CHALLENGE_REQUEST);
+        await apiservice.createNewTask(CREATE_TASK_REQUEST);
+        await apiservice.changeTaskDateToToday(CREATE_TASK_REQUEST.body.name);
+        await apiservice.createNewTask(CREATE_TASK_REQUEST_2);
+        await apiservice.changeTaskDateToToday(CREATE_TASK_REQUEST_2.body.name);
+        await apiservice.createNewTask(CREATE_TASK_REQUEST_3);
+        await apiservice.changeTaskDateToToday(CREATE_TASK_REQUEST_3.body.name);
+        await apiservice.createNewTask(CREATE_TASK_REQUEST_4);
+        await apiservice.changeTaskDateToToday(CREATE_TASK_REQUEST_4.body.name);
         await challengespage.gotoChallengesPage();
-        await challengespage.openChallengeInfoPage(createChallengeRequest.body.sortNumber);
+        await challengespage.openChallengeInfoPage(CREATE_CHALLENGE_REQUEST.body.sortNumber);
         await challengeinfopage.openViewChallenge();
-        await challengeinfopage.verifyTaskOnChallengeView(createTaskRequest4.body.name);
+        await challengeinfopage.verifyTaskOnChallengeView(CREATE_TASK_REQUEST_4.body.name);
     })
 
 

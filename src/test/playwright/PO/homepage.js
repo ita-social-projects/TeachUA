@@ -1,5 +1,5 @@
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
-import {apiUrl} from "../constants/api.constants";
+import {API_URL} from "../constants/api.constants";
 import {addClubPage} from "../constants/locatorsText.constants";
 import { successLoginMessage } from "../constants/messages.constants.js";
 import BasePage from "./BasePage";
@@ -19,11 +19,11 @@ class HomePage extends BasePage{
     }
 
     async gotoHomepage(){
-        await this.page.goto(apiUrl)
+        await this.page.goto(API_URL)
     }
 
     async openAddClubPage() {
-        await this.page.goto(apiUrl);
+        await this.page.goto(API_URL);
         await this.addClubButton.click();
     }
 

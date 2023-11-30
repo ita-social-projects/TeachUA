@@ -1,7 +1,7 @@
 
 import { expect} from "@playwright/test";
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
-import {signInUrl, createClubRequest , usersClubs, createChallengeRequest, createTaskRequest, getChallengesRequest, getTasksRequest} from "../constants/api.constants";
+import {SIGN_IN_URL, CREATE_CLUB_REQUEST , USERS_CLUBS, CREATE_CHALLENGE_REQUEST, CREATE_TASK_REQUEST, GET_CHALLENGES_REQUEST, GET_TASK_REQUEST} from "../constants/api.constants";
 
 
 class ApiService {
@@ -20,7 +20,7 @@ class ApiService {
 
         const { email, password } = userData[userType];
 
-        const response = await fetch(signInUrl, {
+        const response = await fetch(SIGN_IN_URL, {
             method: "POST",
             body: JSON.stringify({ email, password }),
             headers: { "Content-Type": "application/json" },
@@ -60,9 +60,9 @@ class ApiService {
     }
 
     async createNewClub() {
-        const response = await fetch(createClubRequest.url, {
-            method: createClubRequest.method,
-            body: JSON.stringify(createClubRequest.body),
+        const response = await fetch(CREATE_CLUB_REQUEST.url, {
+            method: CREATE_CLUB_REQUEST.method,
+            body: JSON.stringify(CREATE_CLUB_REQUEST.body),
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
         });
         if ((await response.json()).status === 409) {
@@ -75,10 +75,10 @@ class ApiService {
 
     async getAllClubsOfUser() {
         try {
-            const totalPages = await this.getTotalPages(usersClubs, this.userId);
+            const totalPages = await this.getTotalPages(USERS_CLUBS, this.userId);
             let allClubsContent = [];
             for (let i = 0; i < totalPages; i++) {
-                const pageResponse = await fetch(`${usersClubs}/${this.userId}?page=${i}`);
+                const pageResponse = await fetch(`${USERS_CLUBS}/${this.userId}?page=${i}`);
                 const pageJson = await pageResponse.json();
                 allClubsContent = allClubsContent.concat(pageJson.content);
             }
@@ -114,10 +114,10 @@ class ApiService {
 
     //challenges & tasks interaction
     //Challenges
-    async createNewChallenge(createChallengeRequest) {
-        const response = await fetch(createChallengeRequest.url, {
-            method: createChallengeRequest.method,
-            body: JSON.stringify(createChallengeRequest.body),
+    async createNewChallenge(CREATE_CHALLENGE_REQUEST) {
+        const response = await fetch(CREATE_CHALLENGE_REQUEST.url, {
+            method: CREATE_CHALLENGE_REQUEST.method,
+            body: JSON.stringify(CREATE_CHALLENGE_REQUEST.body),
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
         });
         if ((await response.json()).status === 400) {
@@ -144,7 +144,7 @@ class ApiService {
     }
 
     async getAllChallenges() {
-        const pageResponse = await fetch(getChallengesRequest);
+        const pageResponse = await fetch(GET_CHALLENGES_REQUEST);
         await this.assertResponseIsOk(pageResponse);
         const pageJson = await pageResponse.json();
         return pageJson;
@@ -159,20 +159,20 @@ class ApiService {
      * sortNumber, and creates a new task associated with that challenge.
      */
 
-    async createNewTask(createTaskRequest) {
+    async createNewTask(CREATE_TASK_REQUEST) {
         const tasks = await this.getAllTasks();
-        const task = tasks.find((c) => c.name === createTaskRequest.body.name);
+        const task = tasks.find((c) => c.name === CREATE_TASK_REQUEST.body.name);
         if (task) {
             console.log("Task already exist");
             return;
         }
         const challenges = await this.getAllChallenges();
-        const challenge = challenges.find((c) => c.sortNumber === parseInt(createChallengeRequest.body.sortNumber));
-        createTaskRequest.body.challengeId = challenge.id;
+        const challenge = challenges.find((c) => c.sortNumber === parseInt(CREATE_CHALLENGE_REQUEST.body.sortNumber));
+        CREATE_TASK_REQUEST.body.challengeId = challenge.id;
         if (challenge) {
             const response = await fetch(`http://localhost:8080/dev/api/challenge/${challenge.id}/task`, {
-                method: createTaskRequest.method,
-                body: JSON.stringify(createTaskRequest.body),
+                method: CREATE_TASK_REQUEST.method,
+                body: JSON.stringify(CREATE_TASK_REQUEST.body),
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
             });
             await this.assertResponseIsOk(response);
@@ -201,7 +201,7 @@ class ApiService {
 
     // Helper function to get all tasks
     async getAllTasks() {
-        const pageResponse = await fetch(getTasksRequest, {
+        const pageResponse = await fetch(GET_TASK_REQUEST, {
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.token}` },
         });
         await this.assertResponseIsOk(pageResponse);

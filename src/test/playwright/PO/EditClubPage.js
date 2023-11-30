@@ -1,4 +1,3 @@
-import { apiUrl } from "../constants/api.constants";
 import { editClubPage } from "../constants/locatorsText.constants";
 import AddClubPage from "./AddClubPage";
 
