@@ -1,4 +1,4 @@
-import { editClubPage } from "../constants/locatorsText.constants";
+import { EDIT_CLUB_PAGE } from "../constants/locatorsText.constants";
 import AddClubPage from "./AddClubPage";
 
 
@@ -6,8 +6,8 @@ class EditClubPage extends AddClubPage {
     constructor(page) {
         super(page);
         //Step 1 - Основна Інформація
-        this.goBackButton = this.page.getByRole("button", { name: editClubPage.stepBack });
-        this.nextStepButton = this.page.getByRole("button", { name: editClubPage.nextStep });
+        this.goBackButton = this.page.getByRole("button", { name: EDIT_CLUB_PAGE.stepBack });
+        this.nextStepButton = this.page.getByRole("button", { name: EDIT_CLUB_PAGE.nextStep });
         this.clubNameField = this.page.locator("input#edit_category_name");
         this.childAgeFrom = this.page.locator("input#edit_category_ageFrom");
         this.childAgeTo = this.page.locator("input#edit_category_ageTo");
@@ -62,7 +62,7 @@ class EditClubPage extends AddClubPage {
         //Step 3 - Опис
         this.clubIsAutomaticallyOnlineMessage = this.page
             .locator("div.ant-message-notice-content")
-            .filter({ hasText: editClubPage.noLocationClubOnlineMessage });
+            .filter({ hasText: EDIT_CLUB_PAGE.noLocationClubOnlineMessage });
         this.addLogoInput = this.page.locator("input#basic_urlLogo");
         this.addCoverInput = this.page.locator("input#basic_urlBackground");
         this.addImagesInput = this.page.locator("div.ant-upload-list-picture-card input");
@@ -71,11 +71,11 @@ class EditClubPage extends AddClubPage {
 
         this.clubUpdatedSuccessMessage = this.page
             .locator("div.ant-message-success")
-            .filter({ hasText: editClubPage.clubSuccessfullyEdited });
+            .filter({ hasText: EDIT_CLUB_PAGE.clubSuccessfullyEdited });
             
         this.clubAlreadyExistMessage = this.page
             .locator("div.ant-message-notice-content")
-            .filter({ hasText: editClubPage.clubAlreadyExistMessage });
+            .filter({ hasText: EDIT_CLUB_PAGE.clubAlreadyExistMessage });
         //Error messages
         this.clubDescriptionErrorMessage = this.page.locator("div#basic_descriptionText_help");
     }

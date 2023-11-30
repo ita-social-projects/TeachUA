@@ -1,11 +1,11 @@
-export const userPage = {
+export const USER_PAGE = {
     editClub: 'Редагувати гурток',
     deleteClub: 'Видалити гурток',
     clubSuccessfullyDeleted: 'Гурток успішно видалено',
     clubSuccessfullyEdited: 'Гурток успішно оновлено'
 }
 
-export const addClubPage = {
+export const ADD_CLUB_PAGE = {
     addClub: 'Додати гурток',
     stepBack: 'Назад',
     nextStep: 'Наступний крок',
@@ -14,7 +14,7 @@ export const addClubPage = {
     clubAlreadyExistMessage: 'Гурток з такою назвою вже існує'
 }
 
-export const editClubPage = {
+export const EDIT_CLUB_PAGE = {
     addClub: 'Додати гурток',
     stepBack: 'Назад',
     nextStep: 'Наступний крок',

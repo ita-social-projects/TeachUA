@@ -1,5 +1,5 @@
 import { API_URL } from "../constants/api.constants";
-import { userPage } from "../constants/locatorsText.constants";
+import { USER_PAGE } from "../constants/locatorsText.constants";
 import BasePage from "./BasePage";
 
 class UserPage extends BasePage {
@@ -9,14 +9,14 @@ class UserPage extends BasePage {
         this.ownedClubs = page.locator("div.ant-card");
         this.clubsNames = page.locator("div.title-name");
         this.firstClub = page.locator("div.ant-space-item:first-child div.title-name");
-        this.editClubOption = page.locator("li.ant-dropdown-menu-item").filter({ hasText: userPage.editClub });
-        this.deleteClubOption = page.locator("li.ant-dropdown-menu-item").filter({ hasText: userPage.deleteClub });
+        this.editClubOption = page.locator("li.ant-dropdown-menu-item").filter({ hasText: USER_PAGE.editClub });
+        this.deleteClubOption = page.locator("li.ant-dropdown-menu-item").filter({ hasText: USER_PAGE.deleteClub });
         this.editClubWindowTitle = page.getByRole("dialog").getByText("Редагувати гурток");
         this.clubDetailsButton = page.locator("button.details-button");
 
         this.clubDeletedSuccessMessage = this.page
             .locator("div.ant-message-success")
-            .filter({ hasText: userPage.clubSuccessfullyDeleted });
+            .filter({ hasText: USER_PAGE.clubSuccessfullyDeleted });
     }
 
     async gotoUserPage() {

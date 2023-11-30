@@ -1,6 +1,6 @@
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
 import {API_URL} from "../constants/api.constants";
-import {addClubPage} from "../constants/locatorsText.constants";
+import {ADD_CLUB_PAGE} from "../constants/locatorsText.constants";
 import { successLoginMessage } from "../constants/messages.constants.js";
 import BasePage from "./BasePage";
 
@@ -14,7 +14,7 @@ class HomePage extends BasePage{
         this.passwordField = page.locator('input#basic_password');
         this.loginButton = page.locator('button.login-button');
         this.loginSuccessMessage = page.locator('div.ant-message-success span:nth-child(2)');
-        this.addClubButton = this.page.getByRole("button", { name: addClubPage.addClub });
+        this.addClubButton = this.page.getByRole("button", { name: ADD_CLUB_PAGE.addClub });
         this.harkivItem = page.getByRole('menuitem', { name: 'Харків' })
     }
 

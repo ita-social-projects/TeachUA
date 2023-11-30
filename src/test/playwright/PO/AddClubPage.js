@@ -1,4 +1,4 @@
-import { addClubPage } from "../constants/locatorsText.constants";
+import { ADD_CLUB_PAGE } from "../constants/locatorsText.constants";
 import {
     clubOnlineSliderTooltip,
     locationNameTooltip,
@@ -11,8 +11,8 @@ class AddClubPage extends BasePage {
     constructor(page) {
         super(page);
         //Step 1 - Основна Інформація
-        this.goBackButton = this.page.getByRole("button", { name: addClubPage.stepBack });
-        this.nextStepButton = this.page.getByRole("button", { name: addClubPage.nextStep });
+        this.goBackButton = this.page.getByRole("button", { name: ADD_CLUB_PAGE.stepBack });
+        this.nextStepButton = this.page.getByRole("button", { name: ADD_CLUB_PAGE.nextStep });
         this.clubNameField = this.page.locator("input#basic_name");
         this.childAgeFrom = this.page.locator("input#basic_ageFrom");
         this.childAgeTo = this.page.locator("input#basic_ageTo");
@@ -61,7 +61,7 @@ class AddClubPage extends BasePage {
         this.clubEmailFieldErrorMessage = this.page.locator("div#basic_contactПошта_help");
 
         //Step 3 - Опис
-        this.clubIsAutomaticallyOnlineMessage = this.page.locator('div.ant-message-notice-content').filter({ hasText: addClubPage.noLocationClubOnlineMessage });;
+        this.clubIsAutomaticallyOnlineMessage = this.page.locator('div.ant-message-notice-content').filter({ hasText: ADD_CLUB_PAGE.noLocationClubOnlineMessage });;
         this.addLogoInput = this.page.locator('input#basic_urlLogo')
         this.addCoverInput = this.page.locator('input#basic_urlBackground')
         this.addImagesInput = this.page.locator('div.ant-upload-list-picture-card input');
@@ -69,7 +69,7 @@ class AddClubPage extends BasePage {
         this.completeButton = this.page.getByRole("button", { name: "Завершити" });
 
         this.clubCreatedSuccessMessage = this.page.locator("div.ant-message-success");
-        this.clubAlreadyExistMessage = this.page.locator("div.ant-message-notice-content").filter({ hasText: addClubPage.clubAlreadyExistMessage});;
+        this.clubAlreadyExistMessage = this.page.locator("div.ant-message-notice-content").filter({ hasText: ADD_CLUB_PAGE.clubAlreadyExistMessage});;
         //Error messages
         this.clubDescriptionErrorMessage = this.page.locator("div#basic_description_help");
 
