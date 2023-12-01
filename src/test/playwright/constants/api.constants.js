@@ -1,17 +1,17 @@
-export const apiUrl = 'http://localhost:3000/dev';
-export const clubsUrl = 'http://localhost:3000/dev/clubs';
-export const signInUrl = 'http://localhost:8080/dev/api/signin';
-export const usersClubs = 'http://localhost:8080/dev/api/clubs';
+export const API_URL = 'http://localhost:3000/dev';
+export const CLUBS_URL = 'http://localhost:3000/dev/clubs';
+export const SIGN_IN_URL = 'http://localhost:8080/dev/api/signin';
+export const USERS_CLUBS = 'http://localhost:8080/dev/api/clubs';
 
-export const challengesAdminUrl = 'http://localhost:3000/dev/admin/challenges';
-export const getChallengesRequest = 'http://localhost:8080/dev/api/challenges';
-export const addChallengeAdminUrl = 'http://localhost:3000/dev/admin/addChallenge';
+export const CHALLENGES_ADMIN_URL = 'http://localhost:3000/dev/admin/challenges';
+export const GET_CHALLENGES_REQUEST = 'http://localhost:8080/dev/api/challenges';
+export const ADD_CHALLENGE_ADMIN_URL = 'http://localhost:3000/dev/admin/addChallenge';
 
-export const tasksAdminUrl = 'http://localhost:3000/dev/admin/tasks';
-export const getTasksRequest = 'http://localhost:8080/dev/api/tasks';
-export const addTaskAdminUrl = 'http://localhost:3000/dev/admin/addTask';
+export const TASKS_ADMIN_URL = 'http://localhost:3000/dev/admin/tasks';
+export const GET_TASK_REQUEST = 'http://localhost:8080/dev/api/tasks';
+export const ADD_TASK_ADMIN_URL = 'http://localhost:3000/dev/admin/addTask';
 
-export const createClubRequest  = {
+export const CREATE_CLUB_REQUEST  = {
     url: "http://localhost:8080/dev/api/club",
     method: "POST",
     body: {
@@ -43,7 +43,7 @@ export const createClubRequest  = {
     },
 };
 
-export const createChallengeRequest  = {
+export const CREATE_CHALLENGE_REQUEST  = {
     url: "http://localhost:8080/dev/api/challenge",
     method: "POST",
     body: {
@@ -55,7 +55,7 @@ export const createChallengeRequest  = {
     },
 };
 
-export const createTaskRequest  = {
+export const CREATE_TASK_REQUEST  = {
     url: "http://localhost:8080/dev/api/challenge",
     method: "POST",
     body: {
@@ -67,7 +67,7 @@ export const createTaskRequest  = {
         challengeId: 48
     },
 };
-export const createTaskRequest2  = {
+export const CREATE_TASK_REQUEST_2  = {
     url: "http://localhost:8080/dev/api/challenge",
     method: "POST",
     body: {
@@ -79,7 +79,7 @@ export const createTaskRequest2  = {
         challengeId: 48
     },
 };
-export const createTaskRequest3  = {
+export const CREATE_TASK_REQUEST_3  = {
     url: "http://localhost:8080/dev/api/challenge",
     method: "POST",
     body: {
@@ -91,7 +91,7 @@ export const createTaskRequest3  = {
         challengeId: 48
     },
 };
-export const createTaskRequest4  = {
+export const CREATE_TASK_REQUEST_4  = {
     url: "http://localhost:8080/dev/api/challenge",
     method: "POST",
     body: {

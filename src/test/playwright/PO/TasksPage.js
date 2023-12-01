@@ -1,4 +1,4 @@
-import { challengesAdminUrl, addTaskAdminUrl, tasksAdminUrl } from "../constants/api.constants";
+import { CHALLENGES_ADMIN_URL, ADD_TASK_ADMIN_URL, TASKS_ADMIN_URL } from "../constants/api.constants";
 import BasePage from "./BasePage";
 
 class TasksPage extends BasePage {
@@ -31,17 +31,17 @@ class TasksPage extends BasePage {
     }
 
     async gotoTasksPage() {
-        await this.page.goto(tasksAdminUrl);
+        await this.page.goto(TASKS_ADMIN_URL);
     }
 
     async openAddTaskPage() {
         await this.addTaskButton.click();
-        await this.verifyUrl(addTaskAdminUrl);        
+        await this.verifyUrl(ADD_TASK_ADMIN_URL);        
     }
 
     async openChallengesPage() {
         await this.openChallengesButton.click();
-        await this.verifyUrl(challengesAdminUrl);        
+        await this.verifyUrl(CHALLENGES_ADMIN_URL);        
     }
 
     async openTaskInfoPage(taskName) {

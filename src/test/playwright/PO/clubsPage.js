@@ -1,5 +1,5 @@
 import { expect} from "@playwright/test";
-import {clubsUrl} from "../constants/api.constants";
+import {CLUBS_URL} from "../constants/api.constants";
 import BasePage from "./BasePage";
 
 class ClubsPage extends BasePage {
@@ -24,7 +24,7 @@ class ClubsPage extends BasePage {
     }
 
     async gotoClubsPage() {
-        await this.page.goto(clubsUrl);
+        await this.page.goto(CLUBS_URL);
     }
 
     // Click the advanced search button and wait for a short timeout for clubs to update

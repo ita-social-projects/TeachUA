@@ -1,18 +1,18 @@
-import { addClubPage } from "../constants/locatorsText.constants";
+import { ADD_CLUB_PAGE } from "../constants/locatorsText.constants";
 import {
-    clubOnlineSliderTooltip,
-    locationNameTooltip,
-    locationPhoneTooltip,
+    CLUB_ONLINE_SLIDER_TOOLTIP,
+    LOCATION_NAME_TOOLTIP,
+    LOCATION_PHONE_TOOLTIP,
 } from "../constants/messages.constants";
-import { imagesPath } from "../constants/general.constants";
+import { IMAGES_PATH } from "../constants/general.constants";
 import BasePage from "./BasePage";
 
 class AddClubPage extends BasePage {
     constructor(page) {
         super(page);
         //Step 1 - Основна Інформація
-        this.goBackButton = this.page.getByRole("button", { name: addClubPage.stepBack });
-        this.nextStepButton = this.page.getByRole("button", { name: addClubPage.nextStep });
+        this.goBackButton = this.page.getByRole("button", { name: ADD_CLUB_PAGE.stepBack });
+        this.nextStepButton = this.page.getByRole("button", { name: ADD_CLUB_PAGE.nextStep });
         this.clubNameField = this.page.locator("input#basic_name");
         this.childAgeFrom = this.page.locator("input#basic_ageFrom");
         this.childAgeTo = this.page.locator("input#basic_ageTo");
@@ -61,7 +61,7 @@ class AddClubPage extends BasePage {
         this.clubEmailFieldErrorMessage = this.page.locator("div#basic_contactПошта_help");
 
         //Step 3 - Опис
-        this.clubIsAutomaticallyOnlineMessage = this.page.locator('div.ant-message-notice-content').filter({ hasText: addClubPage.noLocationClubOnlineMessage });;
+        this.clubIsAutomaticallyOnlineMessage = this.page.locator('div.ant-message-notice-content').filter({ hasText: ADD_CLUB_PAGE.noLocationClubOnlineMessage });;
         this.addLogoInput = this.page.locator('input#basic_urlLogo')
         this.addCoverInput = this.page.locator('input#basic_urlBackground')
         this.addImagesInput = this.page.locator('div.ant-upload-list-picture-card input');
@@ -69,7 +69,7 @@ class AddClubPage extends BasePage {
         this.completeButton = this.page.getByRole("button", { name: "Завершити" });
 
         this.clubCreatedSuccessMessage = this.page.locator("div.ant-message-success");
-        this.clubAlreadyExistMessage = this.page.locator("div.ant-message-notice-content").filter({ hasText: addClubPage.clubAlreadyExistMessage});;
+        this.clubAlreadyExistMessage = this.page.locator("div.ant-message-notice-content").filter({ hasText: ADD_CLUB_PAGE.clubAlreadyExistMessage});;
         //Error messages
         this.clubDescriptionErrorMessage = this.page.locator("div#basic_description_help");
 
@@ -141,11 +141,11 @@ class AddClubPage extends BasePage {
     }
 
     async verifyLocationNameTooltipAppearsOnHover(){
-        await this.verifyTooltipAppearsOnHover(this.locationNameInfoSign, locationNameTooltip)
+        await this.verifyTooltipAppearsOnHover(this.locationNameInfoSign, LOCATION_NAME_TOOLTIP)
     }
 
     async verifyLocationPhoneTooltipAppearsOnHover(){
-        await this.verifyTooltipAppearsOnHover(this.locationPhoneInfoSign, locationPhoneTooltip)
+        await this.verifyTooltipAppearsOnHover(this.locationPhoneInfoSign, LOCATION_PHONE_TOOLTIP)
     }
 
     async closeAddLocationWindow(){
@@ -164,21 +164,21 @@ class AddClubPage extends BasePage {
     }
 
     async verifyAvailableOnlineTooltipAppearsOnHover(){
-        await this.verifyTooltipAppearsOnHover(this.isOnlineInfoSign, clubOnlineSliderTooltip)
+        await this.verifyTooltipAppearsOnHover(this.isOnlineInfoSign, CLUB_ONLINE_SLIDER_TOOLTIP)
     }
 
     //Step #3
 
     async uploadLogo(){
-        await this.addLogoInput.setInputFiles(imagesPath + 'clubLogo.jpg');
+        await this.addLogoInput.setInputFiles(IMAGES_PATH + 'clubLogo.jpg');
     }
 
     async uploadCover(){
-        await this.addCoverInput.setInputFiles(imagesPath + 'cover.png');
+        await this.addCoverInput.setInputFiles(IMAGES_PATH + 'cover.png');
     }
 
     async uploadPhotoes() {
-        await this.addImagesInput.setInputFiles(imagesPath + 'galery.jpg');
+        await this.addImagesInput.setInputFiles(IMAGES_PATH + 'galery.jpg');
     }
 
     async fillClubDescription(description){
