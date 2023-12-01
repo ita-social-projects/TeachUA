@@ -24,7 +24,6 @@ export const EDIT_CLUB_PAGE = {
     clubSuccessfullyEdited: 'Гурток успішно оновлено'
 }
 
-
 export const CHALLENGE_INFO_PAGE = {
     viewChallenge: 'Переглянути челендж'
 }

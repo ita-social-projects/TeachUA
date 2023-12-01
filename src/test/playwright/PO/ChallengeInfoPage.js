@@ -22,7 +22,7 @@ class ChallengeInfoPage extends BasePage {
         this.saveButton = page.locator('button.flooded-button[type="submit"]');
 
         this.tasksTableCells = page.locator("td[class='ant-table-cell']");
-    }
+        }
 
     async openViewChallenge() {
         await this.viewChallengeButton.click();
