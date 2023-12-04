@@ -1,5 +1,4 @@
-import { expect } from "@playwright/test";
-import { challengesAdminUrl, ADD_CHALLENGE_ADMIN_URL, TASKS_ADMIN_URL } from "../constants/api.constants";
+import { challengesAdminUrl, ADD_CHALLENGE_ADMIN_URL } from "../constants/api.constants";
 import { IMAGES_PATH } from "../constants/general.constants";
 import BasePage from "./BasePage";
 
