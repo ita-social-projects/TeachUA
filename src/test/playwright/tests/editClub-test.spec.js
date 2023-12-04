@@ -8,119 +8,119 @@ import ClubInfoPage from "../PO/ClubInfoPage";
 import {EDIT_LOCATION_DETAILS, EDIT_CLUB_DETAILS, EDIT_CLUB_CONTACT_DETAILS, CLUB_CATEGORIES} from "../constants/clubInformation.constants";
 import {CREATE_CLUB_REQUEST } from "../constants/api.constants";
 
-let apiservice, editclubpage, homepage, userpage, basepage, clubinfopage;
+let apiService, editClubPage, homePage, userPage, basePage, clubInfoPage;
 
     test.beforeEach(async({page})=>{
-        apiservice = new ApiService(page);
-        editclubpage = new EditClubPage(page);
-        basepage = new BasePage(page);
-        userpage = new UserPage(page);
-        homepage = new HomePage(page);
+        apiService = new ApiService(page);
+        editClubPage = new EditClubPage(page);
+        basePage = new BasePage(page);
+        userPage = new UserPage(page);
+        homePage = new HomePage(page);
 
-        await apiservice.apiLoginAs('admin');
-        await homepage.gotoHomepage();
-        await userpage.gotoUserPage();
+        await apiService.apiLoginAs('admin');
+        await homePage.gotoHomepage();
+        await userPage.gotoUserPage();
     })
 
     test("Verify that an existing club can be succesfully edited and the details will be correct", async ({ page }) => {
         try {
-            await apiservice.deleteClubByTitle(EDIT_CLUB_DETAILS.clubTitle);
-            await apiservice.deleteClubByTitle(CREATE_CLUB_REQUEST.body.name);
+            await apiService.deleteClubByTitle(EDIT_CLUB_DETAILS.clubTitle);
+            await apiService.deleteClubByTitle(CREATE_CLUB_REQUEST.body.name);
         } catch (e) {
             console.error(e);
         }
-        await apiservice.createNewClub(CREATE_CLUB_REQUEST.body.name);
+        await apiService.createNewClub(CREATE_CLUB_REQUEST.body.name);
 
-        await userpage.openClubEditModeByTitle(CREATE_CLUB_REQUEST.body.name);
-        await basepage.fillInputField(editclubpage.clubNameField, EDIT_CLUB_DETAILS.clubTitle);
+        await userPage.openClubEditModeByTitle(CREATE_CLUB_REQUEST.body.name);
+        await basePage.fillInputField(editClubPage.clubNameField, EDIT_CLUB_DETAILS.clubTitle);
         
-        await editclubpage.setAcceptableChildAge(EDIT_CLUB_DETAILS.clubEnterAge, EDIT_CLUB_DETAILS.clubClosingAge);
-        await editclubpage.selectRelatedCenter(EDIT_CLUB_DETAILS.clubRelatedCenter);
-        await editclubpage.proceedToNextStep();
+        await editClubPage.setAcceptableChildAge(EDIT_CLUB_DETAILS.clubEnterAge, EDIT_CLUB_DETAILS.clubClosingAge);
+        await editClubPage.selectRelatedCenter(EDIT_CLUB_DETAILS.clubRelatedCenter);
+        await editClubPage.proceedToNextStep();
 
-        await editclubpage.openEditLocationWindow(CREATE_CLUB_REQUEST.body.locations.name);
-        await editclubpage.fillInputField(editclubpage.locationNameField, EDIT_LOCATION_DETAILS.locationName)
-        await editclubpage.selectLocationCity(EDIT_LOCATION_DETAILS.locationCity);
-        await editclubpage.selectLocationDistrict(EDIT_LOCATION_DETAILS.locationDistrict);
-        await editclubpage.fillInputField(editclubpage.locationAddressField, EDIT_LOCATION_DETAILS.locationAddress)
-        await editclubpage.fillInputField(editclubpage.locationCoordinatesField, EDIT_LOCATION_DETAILS.locationCoordinates)
-        await editclubpage.fillInputField(editclubpage.locationPhoneNumberField, EDIT_LOCATION_DETAILS.locationPhone);
-        await editclubpage.confirmLocationAddition();
+        await editClubPage.openEditLocationWindow(CREATE_CLUB_REQUEST.body.locations.name);
+        await editClubPage.fillInputField(editClubPage.locationNameField, EDIT_LOCATION_DETAILS.locationName)
+        await editClubPage.selectLocationCity(EDIT_LOCATION_DETAILS.locationCity);
+        await editClubPage.selectLocationDistrict(EDIT_LOCATION_DETAILS.locationDistrict);
+        await editClubPage.fillInputField(editClubPage.locationAddressField, EDIT_LOCATION_DETAILS.locationAddress)
+        await editClubPage.fillInputField(editClubPage.locationCoordinatesField, EDIT_LOCATION_DETAILS.locationCoordinates)
+        await editClubPage.fillInputField(editClubPage.locationPhoneNumberField, EDIT_LOCATION_DETAILS.locationPhone);
+        await editClubPage.confirmLocationAddition();
 
-        await editclubpage.verifyLocationPresence(EDIT_LOCATION_DETAILS.locationName)
+        await editClubPage.verifyLocationPresence(EDIT_LOCATION_DETAILS.locationName)
         
-        await editclubpage.fillInputField(editclubpage.clubPhoneNumberField, EDIT_CLUB_CONTACT_DETAILS.phoneNumber);
-        await editclubpage.fillInputField(editclubpage.clubFacebookField, EDIT_CLUB_CONTACT_DETAILS.facebook);
-        await editclubpage.fillInputField(editclubpage.clubEmailField, EDIT_CLUB_CONTACT_DETAILS.email);
-        await editclubpage.fillInputField(editclubpage.clubWhatsUpField, EDIT_CLUB_CONTACT_DETAILS.whatsup);
-        await editclubpage.fillInputField(editclubpage.clubSkypeField, EDIT_CLUB_CONTACT_DETAILS.skype);
+        await editClubPage.fillInputField(editClubPage.clubPhoneNumberField, EDIT_CLUB_CONTACT_DETAILS.phoneNumber);
+        await editClubPage.fillInputField(editClubPage.clubFacebookField, EDIT_CLUB_CONTACT_DETAILS.facebook);
+        await editClubPage.fillInputField(editClubPage.clubEmailField, EDIT_CLUB_CONTACT_DETAILS.email);
+        await editClubPage.fillInputField(editClubPage.clubWhatsUpField, EDIT_CLUB_CONTACT_DETAILS.whatsup);
+        await editClubPage.fillInputField(editClubPage.clubSkypeField, EDIT_CLUB_CONTACT_DETAILS.skype);
         
-        await editclubpage.proceedToNextStep();
+        await editClubPage.proceedToNextStep();
 
-        await editclubpage.fillInputField(editclubpage.descriptionTextArea, EDIT_CLUB_DETAILS.clubDescription);
-        await editclubpage.completeClubCreation();
+        await editClubPage.fillInputField(editClubPage.descriptionTextArea, EDIT_CLUB_DETAILS.clubDescription);
+        await editClubPage.completeClubCreation();
 
-        await basepage.verifyElementVisibility(editclubpage.clubUpdatedSuccessMessage, true);
+        await basePage.verifyElementVisibility(editClubPage.clubUpdatedSuccessMessage, true);
         
-        await userpage.gotoUserPage();
+        await userPage.gotoUserPage();
 
-        clubinfopage = new ClubInfoPage(page);
-        await userpage.openClubInfoPage(EDIT_CLUB_DETAILS.clubTitle);
-        await clubinfopage.verifyElementVisibilityAndText(
-            clubinfopage.clubPageTitle,
+        clubInfoPage = new ClubInfoPage(page);
+        await userPage.openClubInfoPage(EDIT_CLUB_DETAILS.clubTitle);
+        await clubInfoPage.verifyElementVisibilityAndText(
+            clubInfoPage.clubPageTitle,
             true,
             EDIT_CLUB_DETAILS.clubTitle
         );
-        await clubinfopage.expectElementToHaveText(clubinfopage.clubPageTags, [
+        await clubInfoPage.expectElementToHaveText(clubInfoPage.clubPageTags, [
             CLUB_CATEGORIES.acting,
             CLUB_CATEGORIES.developmentCenter,
             CLUB_CATEGORIES.programming,
         ]);
-        await clubinfopage.verifyElementVisibilityAndText(
-            clubinfopage.clubPageAddress,
+        await clubInfoPage.verifyElementVisibilityAndText(
+            clubInfoPage.clubPageAddress,
             true,
             EDIT_LOCATION_DETAILS.locationAddress
         );
-        await clubinfopage.verifyElementVisibilityAndText(
-            clubinfopage.clubPageDescription,
+        await clubInfoPage.verifyElementVisibilityAndText(
+            clubInfoPage.clubPageDescription,
             true,
             EDIT_CLUB_DETAILS.clubDescription
         );
-        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, EDIT_CLUB_CONTACT_DETAILS.email)
-        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, EDIT_CLUB_CONTACT_DETAILS.facebook)
-        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, '+38'+EDIT_CLUB_CONTACT_DETAILS.phoneNumber)
-        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, EDIT_CLUB_CONTACT_DETAILS.whatsup)
-        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, EDIT_CLUB_CONTACT_DETAILS.skype)
+        await clubInfoPage.expectElementToContainText(clubInfoPage.clubPageContactData, EDIT_CLUB_CONTACT_DETAILS.email)
+        await clubInfoPage.expectElementToContainText(clubInfoPage.clubPageContactData, EDIT_CLUB_CONTACT_DETAILS.facebook)
+        await clubInfoPage.expectElementToContainText(clubInfoPage.clubPageContactData, '+38'+EDIT_CLUB_CONTACT_DETAILS.phoneNumber)
+        await clubInfoPage.expectElementToContainText(clubInfoPage.clubPageContactData, EDIT_CLUB_CONTACT_DETAILS.whatsup)
+        await clubInfoPage.expectElementToContainText(clubInfoPage.clubPageContactData, EDIT_CLUB_CONTACT_DETAILS.skype)
         
 
     });
 
     test("Verify that an existing club can be succesfully deleted", async ({ page }) => {
-        await apiservice.createNewClub();
-        await userpage.removeClubByTitle(CREATE_CLUB_REQUEST.body.name);
-        await userpage.gotoUserPage();
-        await userpage.verifyElementExistance(userpage.clubsNames, CREATE_CLUB_REQUEST.body.name, false);
+        await apiService.createNewClub();
+        await userPage.removeClubByTitle(CREATE_CLUB_REQUEST.body.name);
+        await userPage.gotoUserPage();
+        await userPage.verifyElementExistance(userPage.clubsNames, CREATE_CLUB_REQUEST.body.name, false);
 
     });
 
     test("Verify that an club's location can be succesfully deleted", async ({ page }) => {
         try {
-            await apiservice.deleteClubByTitle(CREATE_CLUB_REQUEST.body.name);
+            await apiService.deleteClubByTitle(CREATE_CLUB_REQUEST.body.name);
         } catch (e) {
             console.error(e);
         }
-        await apiservice.createNewClub(CREATE_CLUB_REQUEST.body.name);
-        await userpage.openClubEditModeByTitle(CREATE_CLUB_REQUEST.body.name);
-        await editclubpage.proceedToNextStep();
-        await editclubpage.deleteLocation(CREATE_CLUB_REQUEST.body.locations.name);
-        await editclubpage.verifyLocationPresence(CREATE_CLUB_REQUEST.body.locations.name, false);
-        await editclubpage.proceedToNextStep();
-        await editclubpage.completeClubCreation();
-        await userpage.gotoUserPage();
-        clubinfopage = new ClubInfoPage(page);
-        await userpage.openClubInfoPage(CREATE_CLUB_REQUEST.body.name);
-        await clubinfopage.verifyElementVisibilityAndText(
-            clubinfopage.clubPageAddress,
+        await apiService.createNewClub(CREATE_CLUB_REQUEST.body.name);
+        await userPage.openClubEditModeByTitle(CREATE_CLUB_REQUEST.body.name);
+        await editClubPage.proceedToNextStep();
+        await editClubPage.deleteLocation(CREATE_CLUB_REQUEST.body.locations.name);
+        await editClubPage.verifyLocationPresence(CREATE_CLUB_REQUEST.body.locations.name, false);
+        await editClubPage.proceedToNextStep();
+        await editClubPage.completeClubCreation();
+        await userPage.gotoUserPage();
+        clubInfoPage = new ClubInfoPage(page);
+        await userPage.openClubInfoPage(CREATE_CLUB_REQUEST.body.name);
+        await clubInfoPage.verifyElementVisibilityAndText(
+            clubInfoPage.clubPageAddress,
             true,
             EDIT_LOCATION_DETAILS.locationOnline
         );

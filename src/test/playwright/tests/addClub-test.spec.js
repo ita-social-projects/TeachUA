@@ -7,100 +7,100 @@ import ClubInfoPage from "../PO/ClubInfoPage";
 import {CLUB_CATEGORIES, NEW_LOCATION_CORRECT_DETAILS, NEW_CLUB_CORRECT_CONTACT_DETAILS, NEW_CLUB_INCORRECT_CONTACT_DETAILS, NEW_CLUB_CORRECT_DETAILS, NEW_CLUB_INCORRECT_DETAILS, NEW_LOCATION_INCORRECT_DETAILS} from "../constants/clubInformation.constants";
 import {ADD_CLUB_VALIDATION_ERROR_MESSAGE,ADD_LOCATION_VALIDATION_ERROR_MESSAGE, SUCCESS_CLUB_CREATION_MESSAGE} from "../constants/messages.constants";
 
-let apiservice, addclubpage, homepage, userpage, clubinfopage;
+let apiService, addClubPage, homePage, userPage, clubInfoPage;
 
     test.beforeEach(async({page})=>{
-        apiservice = new ApiService(page);
-        addclubpage = new AddClubPage(page);
-        homepage = new HomePage(page);
+        apiService = new ApiService(page);
+        addClubPage = new AddClubPage(page);
+        homePage = new HomePage(page);
 
-        await apiservice.apiLoginAs('admin');
-        await homepage.openAddClubPage();
+        await apiService.apiLoginAs('admin');
+        await homePage.openAddClubPage();
     })
 
     test("Verify that a new club can be succesfully added", async ({ page }) => {
-        userpage = new UserPage(page);
+        userPage = new UserPage(page);
         //remove the club with the test club_title if it exists
         try {
-            await apiservice.deleteClubByTitle(NEW_CLUB_CORRECT_DETAILS.clubTitle);
+            await apiService.deleteClubByTitle(NEW_CLUB_CORRECT_DETAILS.clubTitle);
         } catch (e) {
             console.error(e);
         }
         
-        await addclubpage.fillInputField(addclubpage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);
-        await addclubpage.toggleStatedCheckboxes(
+        await addClubPage.fillInputField(addClubPage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);
+        await addClubPage.toggleStatedCheckboxes(
             CLUB_CATEGORIES.acting,
             CLUB_CATEGORIES.developmentCenter,
             CLUB_CATEGORIES.programming
         );
-        await addclubpage.setAcceptableChildAge(NEW_CLUB_CORRECT_DETAILS.clubEnterAge, NEW_CLUB_CORRECT_DETAILS.clubClosingAge);
-        await addclubpage.selectRelatedCenter(NEW_CLUB_CORRECT_DETAILS.clubRelatedCenter);
-        await addclubpage.proceedToNextStep();
+        await addClubPage.setAcceptableChildAge(NEW_CLUB_CORRECT_DETAILS.clubEnterAge, NEW_CLUB_CORRECT_DETAILS.clubClosingAge);
+        await addClubPage.selectRelatedCenter(NEW_CLUB_CORRECT_DETAILS.clubRelatedCenter);
+        await addClubPage.proceedToNextStep();
 
 
-        await addclubpage.openAddLocationWindow();
-        await addclubpage.fillInputField(addclubpage.locationNameField, NEW_LOCATION_CORRECT_DETAILS.locationName)
-        await addclubpage.selectLocationCity(NEW_LOCATION_CORRECT_DETAILS.locationCity);
-        await addclubpage.selectLocationDistrict(NEW_LOCATION_CORRECT_DETAILS.locationDistrict);
-        await addclubpage.selectLocationStation(NEW_LOCATION_CORRECT_DETAILS.locationStation);
-        await addclubpage.fillInputField(addclubpage.locationAddressField, NEW_LOCATION_CORRECT_DETAILS.locationAddress)
-        await addclubpage.fillInputField(addclubpage.locationCoordinatesField, NEW_LOCATION_CORRECT_DETAILS.locationCoordinates)
-        await addclubpage.fillInputField(addclubpage.locationPhoneNumberField, NEW_LOCATION_CORRECT_DETAILS.locationPhone);
-        await addclubpage.confirmLocationAddition();
+        await addClubPage.openAddLocationWindow();
+        await addClubPage.fillInputField(addClubPage.locationNameField, NEW_LOCATION_CORRECT_DETAILS.locationName)
+        await addClubPage.selectLocationCity(NEW_LOCATION_CORRECT_DETAILS.locationCity);
+        await addClubPage.selectLocationDistrict(NEW_LOCATION_CORRECT_DETAILS.locationDistrict);
+        await addClubPage.selectLocationStation(NEW_LOCATION_CORRECT_DETAILS.locationStation);
+        await addClubPage.fillInputField(addClubPage.locationAddressField, NEW_LOCATION_CORRECT_DETAILS.locationAddress)
+        await addClubPage.fillInputField(addClubPage.locationCoordinatesField, NEW_LOCATION_CORRECT_DETAILS.locationCoordinates)
+        await addClubPage.fillInputField(addClubPage.locationPhoneNumberField, NEW_LOCATION_CORRECT_DETAILS.locationPhone);
+        await addClubPage.confirmLocationAddition();
 
-        await addclubpage.verifyLocationPresence(NEW_LOCATION_CORRECT_DETAILS.locationName);
+        await addClubPage.verifyLocationPresence(NEW_LOCATION_CORRECT_DETAILS.locationName);
         
-        await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, NEW_CLUB_CORRECT_CONTACT_DETAILS.phoneNumber);
-        await addclubpage.fillInputField(addclubpage.clubFacebookField, NEW_CLUB_CORRECT_CONTACT_DETAILS.facebook);
-        await addclubpage.fillInputField(addclubpage.clubEmailField, NEW_CLUB_CORRECT_CONTACT_DETAILS.email);
-        await addclubpage.fillInputField(addclubpage.clubWhatsUpField, NEW_CLUB_CORRECT_CONTACT_DETAILS.whatsup);
-        await addclubpage.fillInputField(addclubpage.clubWebPageField, NEW_CLUB_CORRECT_CONTACT_DETAILS.webPage);
+        await addClubPage.fillInputField(addClubPage.clubPhoneNumberField, NEW_CLUB_CORRECT_CONTACT_DETAILS.phoneNumber);
+        await addClubPage.fillInputField(addClubPage.clubFacebookField, NEW_CLUB_CORRECT_CONTACT_DETAILS.facebook);
+        await addClubPage.fillInputField(addClubPage.clubEmailField, NEW_CLUB_CORRECT_CONTACT_DETAILS.email);
+        await addClubPage.fillInputField(addClubPage.clubWhatsUpField, NEW_CLUB_CORRECT_CONTACT_DETAILS.whatsup);
+        await addClubPage.fillInputField(addClubPage.clubWebPageField, NEW_CLUB_CORRECT_CONTACT_DETAILS.webPage);
         
-        await addclubpage.proceedToNextStep();
+        await addClubPage.proceedToNextStep();
 
-        await addclubpage.uploadLogo();
-        await addclubpage.uploadCover();
-        await addclubpage.uploadPhotoes();
+        await addClubPage.uploadLogo();
+        await addClubPage.uploadCover();
+        await addClubPage.uploadPhotoes();
 
-        await addclubpage.fillInputField(addclubpage.descriptionTextArea, NEW_CLUB_CORRECT_DETAILS.clubDescription);
-        await addclubpage.completeClubCreation();
+        await addClubPage.fillInputField(addClubPage.descriptionTextArea, NEW_CLUB_CORRECT_DETAILS.clubDescription);
+        await addClubPage.completeClubCreation();
 
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubCreatedSuccessMessage, true, SUCCESS_CLUB_CREATION_MESSAGE);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.clubCreatedSuccessMessage, true, SUCCESS_CLUB_CREATION_MESSAGE);
         
-        await userpage.gotoUserPage();
+        await userPage.gotoUserPage();
 
         //verify that the created club information is correct
-        clubinfopage = new ClubInfoPage(page);
-        await userpage.gotoUserPage();
-        await userpage.openClubInfoPage(NEW_CLUB_CORRECT_DETAILS.clubTitle);
-        await clubinfopage.verifyElementVisibilityAndText(
-            clubinfopage.clubPageTitle,
+        clubInfoPage = new ClubInfoPage(page);
+        await userPage.gotoUserPage();
+        await userPage.openClubInfoPage(NEW_CLUB_CORRECT_DETAILS.clubTitle);
+        await clubInfoPage.verifyElementVisibilityAndText(
+            clubInfoPage.clubPageTitle,
             true,
             NEW_CLUB_CORRECT_DETAILS.clubTitle
         );
-        await clubinfopage.expectElementToHaveText(clubinfopage.clubPageTags, [
+        await clubInfoPage.expectElementToHaveText(clubInfoPage.clubPageTags, [
             CLUB_CATEGORIES.acting,
             CLUB_CATEGORIES.developmentCenter,
             CLUB_CATEGORIES.programming,
         ]);
-        await clubinfopage.verifyElementVisibilityAndText(
-            clubinfopage.clubPageAddress,
+        await clubInfoPage.verifyElementVisibilityAndText(
+            clubInfoPage.clubPageAddress,
             true,
             NEW_LOCATION_CORRECT_DETAILS.locationAddress
         );
-        await clubinfopage.verifyElementVisibilityAndText(
-            clubinfopage.clubPageDescription,
+        await clubInfoPage.verifyElementVisibilityAndText(
+            clubInfoPage.clubPageDescription,
             true,
             NEW_CLUB_CORRECT_DETAILS.clubDescription
         );
-        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, NEW_CLUB_CORRECT_CONTACT_DETAILS.email)
-        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, NEW_CLUB_CORRECT_CONTACT_DETAILS.facebook)
-        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, '+38'+NEW_CLUB_CORRECT_CONTACT_DETAILS.phoneNumber)
-        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, NEW_CLUB_CORRECT_CONTACT_DETAILS.whatsup)
-        await clubinfopage.expectElementToContainText(clubinfopage.clubPageContactData, NEW_CLUB_CORRECT_CONTACT_DETAILS.webPage)
+        await clubInfoPage.expectElementToContainText(clubInfoPage.clubPageContactData, NEW_CLUB_CORRECT_CONTACT_DETAILS.email)
+        await clubInfoPage.expectElementToContainText(clubInfoPage.clubPageContactData, NEW_CLUB_CORRECT_CONTACT_DETAILS.facebook)
+        await clubInfoPage.expectElementToContainText(clubInfoPage.clubPageContactData, '+38'+NEW_CLUB_CORRECT_CONTACT_DETAILS.phoneNumber)
+        await clubInfoPage.expectElementToContainText(clubInfoPage.clubPageContactData, NEW_CLUB_CORRECT_CONTACT_DETAILS.whatsup)
+        await clubInfoPage.expectElementToContainText(clubInfoPage.clubPageContactData, NEW_CLUB_CORRECT_CONTACT_DETAILS.webPage)
         
-        await clubinfopage.verifyElementVisibilityAndText(
-            clubinfopage.clubPageDevelopmentCenter,
+        await clubInfoPage.verifyElementVisibilityAndText(
+            clubInfoPage.clubPageDevelopmentCenter,
             true,
             NEW_CLUB_CORRECT_DETAILS.clubRelatedCenter
         );
@@ -108,97 +108,97 @@ let apiservice, addclubpage, homepage, userpage, clubinfopage;
     
 
     test("Verify validation error messages appearence/disappearence on the first step", async ({ page }) => {
-        await addclubpage.proceedToNextStep();
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.nameFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.nameIsMandatory);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.categoryFieldErrorMessage, true,ADD_CLUB_VALIDATION_ERROR_MESSAGE.categoryIsMandatory);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.ageFromFieldErrorMessage, true,ADD_CLUB_VALIDATION_ERROR_MESSAGE.ageIsMandatory);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.ageToFieldErrorMessage, true,ADD_CLUB_VALIDATION_ERROR_MESSAGE.ageIsMandatory);
+        await addClubPage.proceedToNextStep();
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.nameFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.nameIsMandatory);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.categoryFieldErrorMessage, true,ADD_CLUB_VALIDATION_ERROR_MESSAGE.categoryIsMandatory);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.ageFromFieldErrorMessage, true,ADD_CLUB_VALIDATION_ERROR_MESSAGE.ageIsMandatory);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.ageToFieldErrorMessage, true,ADD_CLUB_VALIDATION_ERROR_MESSAGE.ageIsMandatory);
 
-        await addclubpage.fillInputField(addclubpage.clubNameField, NEW_CLUB_INCORRECT_DETAILS.clubTitle);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.nameFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.nameIsIncorrect);
-        await addclubpage.fillInputField(addclubpage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.nameFieldErrorMessage, false);
+        await addClubPage.fillInputField(addClubPage.clubNameField, NEW_CLUB_INCORRECT_DETAILS.clubTitle);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.nameFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.nameIsIncorrect);
+        await addClubPage.fillInputField(addClubPage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.nameFieldErrorMessage, false);
 
-        await addclubpage.toggleStatedCheckboxes(CLUB_CATEGORIES.acting);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.categoryFieldErrorMessage, false);
+        await addClubPage.toggleStatedCheckboxes(CLUB_CATEGORIES.acting);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.categoryFieldErrorMessage, false);
 
-        await addclubpage.setAcceptableChildAge(
+        await addClubPage.setAcceptableChildAge(
             NEW_CLUB_CORRECT_DETAILS.clubEnterAge,
             NEW_CLUB_CORRECT_DETAILS.clubClosingAge
         );
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.ageFromFieldErrorMessage, false);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.ageFromFieldErrorMessage, false);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.ageFromFieldErrorMessage, false);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.ageFromFieldErrorMessage, false);
     });
 
     test("Verify validation error messages appearence/disappearence on the second step", async ({ page }) => {
-        await addclubpage.fillInputField(addclubpage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);
-        await addclubpage.toggleStatedCheckboxes(
+        await addClubPage.fillInputField(addClubPage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);
+        await addClubPage.toggleStatedCheckboxes(
             CLUB_CATEGORIES.acting,
         );
-        await addclubpage.setAcceptableChildAge(NEW_CLUB_CORRECT_DETAILS.clubEnterAge, NEW_CLUB_CORRECT_DETAILS.clubClosingAge);
-        await addclubpage.proceedToNextStep();
-        await addclubpage.openAddLocationWindow();
+        await addClubPage.setAcceptableChildAge(NEW_CLUB_CORRECT_DETAILS.clubEnterAge, NEW_CLUB_CORRECT_DETAILS.clubClosingAge);
+        await addClubPage.proceedToNextStep();
+        await addClubPage.openAddLocationWindow();
 
         //trigger validation of mandatory fields and verify that each is present and correct
         //message is displayed
-        await addclubpage.confirmLocationAddition();
+        await addClubPage.confirmLocationAddition();
         
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationNameFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.locationNameIsMandatory);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationCityErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.cityIsMandatory);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationNameFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.locationNameIsMandatory);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationCityErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.cityIsMandatory);
 
         //this one is ommitted because of the defect which displays both mandatory and incorrect value validation for the address field
         //await addclubpage.verifyElementVisibilityAndText(addclubpage.locationAddressFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.locationNameIsMandatory);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationCoordinatesFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.coordinatesAreIncorrect);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationPhoneFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.phoneIsMandatory);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationCoordinatesFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.coordinatesAreIncorrect);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationPhoneFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.phoneIsMandatory);
 
         //fill fields with incorrect data and verify that appropriate error message appears
-        await addclubpage.fillInputField(addclubpage.locationNameField, NEW_LOCATION_INCORRECT_DETAILS.locationName);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationNameFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.locationNameIsIncorrect);
+        await addClubPage.fillInputField(addClubPage.locationNameField, NEW_LOCATION_INCORRECT_DETAILS.locationName);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationNameFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.locationNameIsIncorrect);
 
-        await addclubpage.fillInputField(addclubpage.locationAddressField, NEW_LOCATION_INCORRECT_DETAILS.locationAddress);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationAddressFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.addressIsIncorrect);
+        await addClubPage.fillInputField(addClubPage.locationAddressField, NEW_LOCATION_INCORRECT_DETAILS.locationAddress);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationAddressFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.addressIsIncorrect);
 
-        await addclubpage.fillInputField(addclubpage.locationCoordinatesField, NEW_LOCATION_INCORRECT_DETAILS.locationCoordinates);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationCoordinatesFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.coordinatesAreIncorrect);
-        await addclubpage.fillInputField(addclubpage.locationCoordinatesField, NEW_LOCATION_INCORRECT_DETAILS.locationCoordinatesWithLetters);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationCoordinatesFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.coordinatesCantHaveLetters);
+        await addClubPage.fillInputField(addClubPage.locationCoordinatesField, NEW_LOCATION_INCORRECT_DETAILS.locationCoordinates);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationCoordinatesFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.coordinatesAreIncorrect);
+        await addClubPage.fillInputField(addClubPage.locationCoordinatesField, NEW_LOCATION_INCORRECT_DETAILS.locationCoordinatesWithLetters);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationCoordinatesFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.coordinatesCantHaveLetters);
 
-        await addclubpage.fillInputField(addclubpage.locationPhoneNumberField, NEW_LOCATION_INCORRECT_DETAILS.locationPhone);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationPhoneFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.phoneIsIncorrect);
+        await addClubPage.fillInputField(addClubPage.locationPhoneNumberField, NEW_LOCATION_INCORRECT_DETAILS.locationPhone);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationPhoneFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.phoneIsIncorrect);
 
         //fill fields with correct data and verify that error messages disappear
-        await addclubpage.fillInputField(addclubpage.locationNameField, NEW_LOCATION_CORRECT_DETAILS.locationName);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationNameFieldErrorMessage, false);
+        await addClubPage.fillInputField(addClubPage.locationNameField, NEW_LOCATION_CORRECT_DETAILS.locationName);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationNameFieldErrorMessage, false);
 
-        await addclubpage.selectLocationCity(NEW_LOCATION_CORRECT_DETAILS.locationCity);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationCityErrorMessage, false);
+        await addClubPage.selectLocationCity(NEW_LOCATION_CORRECT_DETAILS.locationCity);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationCityErrorMessage, false);
 
-        await addclubpage.fillInputField(addclubpage.locationAddressField, NEW_LOCATION_CORRECT_DETAILS.locationAddress);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationCityErrorMessage, false);
+        await addClubPage.fillInputField(addClubPage.locationAddressField, NEW_LOCATION_CORRECT_DETAILS.locationAddress);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationCityErrorMessage, false);
 
-        await addclubpage.fillInputField(addclubpage.locationCoordinatesField, NEW_LOCATION_CORRECT_DETAILS.locationCoordinates);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationCoordinatesFieldErrorMessage, false);
+        await addClubPage.fillInputField(addClubPage.locationCoordinatesField, NEW_LOCATION_CORRECT_DETAILS.locationCoordinates);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationCoordinatesFieldErrorMessage, false);
 
-        await addclubpage.fillInputField(addclubpage.locationPhoneNumberField, NEW_LOCATION_CORRECT_DETAILS.locationPhone);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.locationPhoneFieldErrorMessage, false);
+        await addClubPage.fillInputField(addClubPage.locationPhoneNumberField, NEW_LOCATION_CORRECT_DETAILS.locationPhone);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.locationPhoneFieldErrorMessage, false);
 
-        await addclubpage.confirmLocationAddition();
+        await addClubPage.confirmLocationAddition();
 
         //trigger step 2 mandatory fields validation
-        await addclubpage.proceedToNextStep();
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubPhoneFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.phoneIsMandatory);
+        await addClubPage.proceedToNextStep();
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.clubPhoneFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.phoneIsMandatory);
 
-        await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, NEW_CLUB_INCORRECT_CONTACT_DETAILS.phoneNumberIncorrectFormat);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubPhoneFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.phoneIsIncorrect);
-        await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, NEW_CLUB_INCORRECT_CONTACT_DETAILS.phoneNumberIncorrectFormatWithLetters);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubPhoneFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.phoneIsIncorrectCantHaveLetters);
-        await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, NEW_CLUB_CORRECT_CONTACT_DETAILS.phoneNumber);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubPhoneFieldErrorMessage, false);
+        await addClubPage.fillInputField(addClubPage.clubPhoneNumberField, NEW_CLUB_INCORRECT_CONTACT_DETAILS.phoneNumberIncorrectFormat);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.clubPhoneFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.phoneIsIncorrect);
+        await addClubPage.fillInputField(addClubPage.clubPhoneNumberField, NEW_CLUB_INCORRECT_CONTACT_DETAILS.phoneNumberIncorrectFormatWithLetters);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.clubPhoneFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.phoneIsIncorrectCantHaveLetters);
+        await addClubPage.fillInputField(addClubPage.clubPhoneNumberField, NEW_CLUB_CORRECT_CONTACT_DETAILS.phoneNumber);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.clubPhoneFieldErrorMessage, false);
 
-        await addclubpage.fillInputField(addclubpage.clubEmailField, NEW_CLUB_INCORRECT_CONTACT_DETAILS.email);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubEmailFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.emailIsIncorrect); 
-        await addclubpage.fillInputField(addclubpage.clubEmailField, NEW_CLUB_CORRECT_CONTACT_DETAILS.email);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubEmailFieldErrorMessage, false); 
+        await addClubPage.fillInputField(addClubPage.clubEmailField, NEW_CLUB_INCORRECT_CONTACT_DETAILS.email);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.clubEmailFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.emailIsIncorrect); 
+        await addClubPage.fillInputField(addClubPage.clubEmailField, NEW_CLUB_CORRECT_CONTACT_DETAILS.email);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.clubEmailFieldErrorMessage, false); 
 
 
 
@@ -206,22 +206,22 @@ let apiservice, addclubpage, homepage, userpage, clubinfopage;
 
 
     test("Verify validation error messages appearence/disappearence on the third step", async ({ page }) => {
-        await addclubpage.fillInputField(addclubpage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);
-        await addclubpage.toggleStatedCheckboxes(
+        await addClubPage.fillInputField(addClubPage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);
+        await addClubPage.toggleStatedCheckboxes(
             CLUB_CATEGORIES.acting,
         );
-        await addclubpage.setAcceptableChildAge(NEW_CLUB_CORRECT_DETAILS.clubEnterAge, NEW_CLUB_CORRECT_DETAILS.clubClosingAge);
-        await addclubpage.proceedToNextStep();
-        await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, NEW_CLUB_CORRECT_CONTACT_DETAILS.phoneNumber);
-        await addclubpage.proceedToNextStep();
+        await addClubPage.setAcceptableChildAge(NEW_CLUB_CORRECT_DETAILS.clubEnterAge, NEW_CLUB_CORRECT_DETAILS.clubClosingAge);
+        await addClubPage.proceedToNextStep();
+        await addClubPage.fillInputField(addClubPage.clubPhoneNumberField, NEW_CLUB_CORRECT_CONTACT_DETAILS.phoneNumber);
+        await addClubPage.proceedToNextStep();
 
-        await addclubpage.completeClubCreation();
+        await addClubPage.completeClubCreation();
         //to be updated once the correct error messages are implemented
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubDescriptionErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.descriptionIsIncorrect); 
-        await addclubpage.fillInputField(addclubpage.descriptionTextArea, NEW_CLUB_INCORRECT_DETAILS.clubDescription);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubDescriptionErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.descriptionIsIncorrectCharLimit); 
-        await addclubpage.fillInputField(addclubpage.descriptionTextArea, NEW_CLUB_CORRECT_DETAILS.clubDescription);
-        await addclubpage.verifyElementVisibilityAndText(addclubpage.clubDescriptionErrorMessage, false); 
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.clubDescriptionErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.descriptionIsIncorrect); 
+        await addClubPage.fillInputField(addClubPage.descriptionTextArea, NEW_CLUB_INCORRECT_DETAILS.clubDescription);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.clubDescriptionErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.descriptionIsIncorrectCharLimit); 
+        await addClubPage.fillInputField(addClubPage.descriptionTextArea, NEW_CLUB_CORRECT_DETAILS.clubDescription);
+        await addClubPage.verifyElementVisibilityAndText(addClubPage.clubDescriptionErrorMessage, false); 
 
     });
 
@@ -229,49 +229,49 @@ let apiservice, addclubpage, homepage, userpage, clubinfopage;
     test("Verify that tooltips and warning messages appear", async ({ page }) => {
         //remove the club with the test club_title if it exists
         try {
-            await apiservice.deleteClubByTitle(NEW_CLUB_CORRECT_DETAILS.clubTitle);
+            await apiService.deleteClubByTitle(NEW_CLUB_CORRECT_DETAILS.clubTitle);
         } catch (e) {
             console.error(e);
         }
 
-        await addclubpage.fillInputField(addclubpage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);
-        await addclubpage.toggleStatedCheckboxes(CLUB_CATEGORIES.acting);
-        await addclubpage.setAcceptableChildAge(
+        await addClubPage.fillInputField(addClubPage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);
+        await addClubPage.toggleStatedCheckboxes(CLUB_CATEGORIES.acting);
+        await addClubPage.setAcceptableChildAge(
             NEW_CLUB_CORRECT_DETAILS.clubEnterAge,
             NEW_CLUB_CORRECT_DETAILS.clubClosingAge
         );
-        await addclubpage.proceedToNextStep();
-        await addclubpage.openAddLocationWindow();
+        await addClubPage.proceedToNextStep();
+        await addClubPage.openAddLocationWindow();
 
-        await addclubpage.verifyLocationNameTooltipAppearsOnHover();
-        await addclubpage.verifyLocationPhoneTooltipAppearsOnHover();
-        await addclubpage.closeAddLocationWindow();
+        await addClubPage.verifyLocationNameTooltipAppearsOnHover();
+        await addClubPage.verifyLocationPhoneTooltipAppearsOnHover();
+        await addClubPage.closeAddLocationWindow();
 
-        await addclubpage.verifyAvailableOnlineTooltipAppearsOnHover();
+        await addClubPage.verifyAvailableOnlineTooltipAppearsOnHover();
 
-        await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, NEW_CLUB_CORRECT_CONTACT_DETAILS.phoneNumber);
-        await addclubpage.proceedToNextStep();
+        await addClubPage.fillInputField(addClubPage.clubPhoneNumberField, NEW_CLUB_CORRECT_CONTACT_DETAILS.phoneNumber);
+        await addClubPage.proceedToNextStep();
 
-        await addclubpage.verifyElementVisibility(addclubpage.clubIsAutomaticallyOnlineMessage, true);
-        await addclubpage.fillInputField(addclubpage.descriptionTextArea, NEW_CLUB_CORRECT_DETAILS.clubDescription);
+        await addClubPage.verifyElementVisibility(addClubPage.clubIsAutomaticallyOnlineMessage, true);
+        await addClubPage.fillInputField(addClubPage.descriptionTextArea, NEW_CLUB_CORRECT_DETAILS.clubDescription);
 
         //complete club creation and go through the creation steps again to verify that
         //'this club already exists' message appears
-        await addclubpage.completeClubCreation();
-        await homepage.openAddClubPage();
-        await addclubpage.fillInputField(addclubpage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);
-        await addclubpage.toggleStatedCheckboxes(CLUB_CATEGORIES.acting);
-        await addclubpage.setAcceptableChildAge(
+        await addClubPage.completeClubCreation();
+        await homePage.openAddClubPage();
+        await addClubPage.fillInputField(addClubPage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);
+        await addClubPage.toggleStatedCheckboxes(CLUB_CATEGORIES.acting);
+        await addClubPage.setAcceptableChildAge(
             NEW_CLUB_CORRECT_DETAILS.clubEnterAge,
             NEW_CLUB_CORRECT_DETAILS.clubClosingAge
         );
-        await addclubpage.proceedToNextStep();
-        await addclubpage.fillInputField(addclubpage.clubPhoneNumberField, NEW_CLUB_CORRECT_CONTACT_DETAILS.phoneNumber);
-        await addclubpage.proceedToNextStep();
-        await addclubpage.fillInputField(addclubpage.descriptionTextArea, NEW_CLUB_CORRECT_DETAILS.clubDescription);
+        await addClubPage.proceedToNextStep();
+        await addClubPage.fillInputField(addClubPage.clubPhoneNumberField, NEW_CLUB_CORRECT_CONTACT_DETAILS.phoneNumber);
+        await addClubPage.proceedToNextStep();
+        await addClubPage.fillInputField(addClubPage.descriptionTextArea, NEW_CLUB_CORRECT_DETAILS.clubDescription);
 
-        await addclubpage.completeClubCreation();
-        await addclubpage.verifyElementVisibility(addclubpage.clubAlreadyExistMessage, true);
+        await addClubPage.completeClubCreation();
+        await addClubPage.verifyElementVisibility(addClubPage.clubAlreadyExistMessage, true);
     });
 
     test.afterEach(async ({ page }) => {

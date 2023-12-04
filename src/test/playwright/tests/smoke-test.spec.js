@@ -3,28 +3,28 @@ import HomePage from "../PO/HomePage";
 import UserPage from "../PO/UserPage";
 import ApiService from "../services/apiService";
 
-let homepage, apiservice, userpage;
+let homePage, apiService, userPage;
 
 test.describe.configure({
     mode: "parallel"
 })
 
     test.beforeEach(async({page})=>{
-        homepage = new HomePage(page);
-        await homepage.gotoHomepage();
+        homePage = new HomePage(page);
+        await homePage.gotoHomepage();
     })
 
     test('Verify successful login via API @smoke', async ({page})=>{
-        apiservice = new ApiService(page);
-        userpage = new UserPage(page);
+        apiService = new ApiService(page);
+        userPage = new UserPage(page);
 
-        await apiservice.apiLoginAs('admin');
-        await userpage.gotoUserPage();
-        await userpage.verifyTitleIsVisible(true);
+        await apiService.apiLoginAs('admin');
+        await userPage.gotoUserPage();
+        await userPage.verifyTitleIsVisible(true);
     })
 
     test('Verify successful login via UI @smoke', async () =>{
-        await homepage.uiLoginAs('admin');
+        await homePage.uiLoginAs('admin');
     })
 
     test.afterEach(async({page})=>{
