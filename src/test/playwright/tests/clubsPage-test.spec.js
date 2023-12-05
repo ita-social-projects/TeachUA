@@ -1,5 +1,5 @@
 import { test} from "@playwright/test";
-import ApiService from "../services/apiService";
+import ApiService from "../services/ApiService";
 import ClubsPage from "../PO/ClubsPage";
 import BasePage from "../PO/BasePage";
 import {SIMPLE_SEARCH_PARAMETERS} from "../constants/searchQueries.constants";

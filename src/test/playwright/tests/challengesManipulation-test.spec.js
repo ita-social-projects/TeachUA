@@ -1,5 +1,5 @@
 import { test} from "@playwright/test";
-import ApiService from "../services/apiService";
+import ApiService from "../services/ApiService";
 import ChallengesPage from "../PO/ChallengesPage";
 import ChallengeInfoPage from "../PO/ChallengeInfoPage";
 import TasksPage from "../PO/TasksPage";

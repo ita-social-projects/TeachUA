@@ -1,7 +1,7 @@
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
 import {API_URL} from "../constants/api.constants";
 import {ADD_CLUB_PAGE} from "../constants/locatorsText.constants";
-import { SUCCESS_LOGIN_MESSAGE } from "../constants/messages.constants.js";
+import { SUCCESS_LOGIN_MESSAGE } from "../constants/messages.constants";
 import BasePage from "./BasePage";
 
 class HomePage extends BasePage{
