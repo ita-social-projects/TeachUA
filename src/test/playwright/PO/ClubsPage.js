@@ -1,24 +1,25 @@
 import { expect} from "@playwright/test";
 import {CLUBS_URL} from "../constants/api.constants";
+import {CLUBS_PAGE} from "../constants/locatorsText.constants";
 import BasePage from "./BasePage";
 
 class ClubsPage extends BasePage {
     constructor(page) {
         super(page);
-        this.clubsPageTitle = page.locator(".city-name");
+        this.clubsPageTitle = page.locator('.city-name');
         this.searchField = page.locator('div.search-container input[type="search"]');
         this.searchButton = page.locator('span[aria-label="search"]');
-        this.cards = page.locator("div.ant-card");
-        this.clubsNames = page.locator("div.title");
-        this.clubsCategories = page.locator("div.club-tags-box span.name");
-        this.clubsDescriptions = page.locator("p.description");
-        this.clubsANDcategories = page.locator("span.and");
-        this.clubDetailsCategories = page.locator("div.tags.categories span.name");
+        this.cards = page.locator('div.ant-card');
+        this.clubsNames = page.locator('div.title');
+        this.clubsCategories = page.locator('div.club-tags-box span.name');
+        this.clubsDescriptions = page.locator('p.description');
+        this.clubsANDcategories = page.locator('span.and');
+        this.clubDetailsCategories = page.locator('div.tags.categories span.name');
         this.clubDetailsCloseButton = page.locator('button[aria-label="Close"]');
         this.paginationNextPageButton = page.locator('ul > li[title="Next Page"]');
         this.paginationFirstPageButton = page.locator('ul > li[title="1"]');
-        this.advancedSearchButton = page.locator('span[title="Розширений пошук"]');
-        this.firstCardTitle = page.locator("div.content-clubs-list > div:first-child div.name");
+        this.advancedSearchButton = page.locator(`span[title='${CLUBS_PAGE.extendedSearch}']`);
+        this.firstCardTitle = page.locator('div.content-clubs-list > div:first-child div.name');
 
         this.noResultsMessage = page.locator('div.clubs-not-found');
     }

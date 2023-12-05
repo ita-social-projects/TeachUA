@@ -5,14 +5,14 @@ import BasePage from "./BasePage";
 class UserPage extends BasePage {
     constructor(page) {
         super(page);
-        this.userPageTitle = page.locator(".menu-title");
-        this.ownedClubs = page.locator("div.ant-card");
-        this.clubsNames = page.locator("div.title-name");
-        this.firstClub = page.locator("div.ant-space-item:first-child div.title-name");
-        this.editClubOption = page.locator("li.ant-dropdown-menu-item").filter({ hasText: USER_PAGE.editClub });
-        this.deleteClubOption = page.locator("li.ant-dropdown-menu-item").filter({ hasText: USER_PAGE.deleteClub });
-        this.editClubWindowTitle = page.getByRole("dialog").getByText("Редагувати гурток");
-        this.clubDetailsButton = page.locator("button.details-button");
+        this.userPageTitle = page.locator('.menu-title');
+        this.ownedClubs = page.locator('div.ant-card');
+        this.clubsNames = page.locator('div.title-name');
+        this.firstClub = page.locator('div.ant-space-item:first-child div.title-name');
+        this.editClubOption = page.locator('li.ant-dropdown-menu-item').filter({ hasText: USER_PAGE.editClub });
+        this.deleteClubOption = page.locator('li.ant-dropdown-menu-item').filter({ hasText: USER_PAGE.deleteClub });
+        this.editClubWindowTitle = page.getByRole('dialog').getByText(USER_PAGE.editClub);
+        this.clubDetailsButton = page.locator('button.details-button');
 
         this.clubDeletedSuccessMessage = this.page
             .locator("div.ant-message-success")

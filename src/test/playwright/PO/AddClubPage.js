@@ -11,33 +11,33 @@ class AddClubPage extends BasePage {
     constructor(page) {
         super(page);
         //Step 1 - Основна Інформація
-        this.goBackButton = this.page.getByRole("button", { name: ADD_CLUB_PAGE.stepBack });
-        this.nextStepButton = this.page.getByRole("button", { name: ADD_CLUB_PAGE.nextStep });
-        this.clubNameField = this.page.locator("input#basic_name");
-        this.childAgeFrom = this.page.locator("input#basic_ageFrom");
-        this.childAgeTo = this.page.locator("input#basic_ageTo");
-        this.relatedCenterDropdown = this.page.locator("input#basic_centerId");
+        this.goBackButton = this.page.getByRole('button', { name: ADD_CLUB_PAGE.stepBack });
+        this.nextStepButton = this.page.getByRole('button', { name: ADD_CLUB_PAGE.nextStep });
+        this.clubNameField = this.page.locator('input#basic_name');
+        this.childAgeFrom = this.page.locator('input#basic_ageFrom');
+        this.childAgeTo = this.page.locator('input#basic_ageTo');
+        this.relatedCenterDropdown = this.page.locator('input#basic_centerId');
         //Error messages
-        this.nameFieldErrorMessage = this.page.locator("div#basic_name_help");
-        this.categoryFieldErrorMessage = this.page.locator("div#basic_categories_help");
-        this.ageFromFieldErrorMessage = this.page.locator("div#basic_ageFrom_help");
-        this.ageToFieldErrorMessage = this.page.locator("div#basic_ageTo_help");
+        this.nameFieldErrorMessage = this.page.locator('div#basic_name_help');
+        this.categoryFieldErrorMessage = this.page.locator('div#basic_categories_help');
+        this.ageFromFieldErrorMessage = this.page.locator('div#basic_ageFrom_help');
+        this.ageToFieldErrorMessage = this.page.locator('div#basic_ageTo_help');
 
         //Step 2 - Контакти/Локація
-        this.addLocationButton = this.page.locator("span.add-club-location");
-        this.locationNameField = this.page.locator("input#name");
-        this.locationCityDropdown = this.page.locator("input#cityName");
-        this.locationDistrictDropdown = this.page.locator("input#districtName");
-        this.locationStationDropdown = this.page.locator("input#stationName");
-        this.locationAddressField = this.page.locator("input#address");
-        this.locationCoordinatesField = this.page.locator("input#coordinates");
-        this.locationPhoneNumberField = this.page.locator("input#phone");
+        this.addLocationButton = this.page.locator('span.add-club-location');
+        this.locationNameField = this.page.locator('input#name');
+        this.locationCityDropdown = this.page.locator('input#cityName');
+        this.locationDistrictDropdown = this.page.locator('input#districtName');
+        this.locationStationDropdown = this.page.locator('input#stationName');
+        this.locationAddressField = this.page.locator('input#address');
+        this.locationCoordinatesField = this.page.locator('input#coordinates');
+        this.locationPhoneNumberField = this.page.locator('input#phone');
         this.locationAddButton = this.page.locator('div.add-club-locations button[type="submit"]');
 
         this.locationNameInfoSign = this.page.locator('input#name + span svg');
         this.locationPhoneInfoSign = this.page.locator('input#phone + span svg');
 
-        this.locationCloseButton = this.page.locator('button[aria-label="Close"]').nth(1);
+        this.locationCloseButton = this.page.locator('div.ant-modal-content').filter({hasText: ADD_CLUB_PAGE.geographicCoordinates}).locator('button[aria-label="Close"]');
 
         this.locationsList = this.page.locator('div.add-club-location-list ul.ant-list-items');
 
@@ -51,27 +51,27 @@ class AddClubPage extends BasePage {
         this.clubSkypeField = this.page.locator('input#basic_contactSkype')
         this.clubWebPageField = this.page.locator('input#basic_contactSite')
         //Error messages
-        this.locationNameFieldErrorMessage = this.page.locator("div#name_help");
-        this.locationCityErrorMessage = this.page.locator("div#cityName_help");
-        this.locationAddressFieldErrorMessage = this.page.locator("div#address_help");
-        this.locationCoordinatesFieldErrorMessage = this.page.locator("div#coordinates_help");
-        this.locationPhoneFieldErrorMessage = this.page.locator("div#phone_help");
+        this.locationNameFieldErrorMessage = this.page.locator('div#name_help');
+        this.locationCityErrorMessage = this.page.locator('div#cityName_help');
+        this.locationAddressFieldErrorMessage = this.page.locator('div#address_help');
+        this.locationCoordinatesFieldErrorMessage = this.page.locator('div#coordinates_help');
+        this.locationPhoneFieldErrorMessage = this.page.locator('div#phone_help');
 
-        this.clubPhoneFieldErrorMessage = this.page.locator("div#basic_contactТелефон_help");
-        this.clubEmailFieldErrorMessage = this.page.locator("div#basic_contactПошта_help");
+        this.clubPhoneFieldErrorMessage = this.page.locator('div#basic_contactТелефон_help');
+        this.clubEmailFieldErrorMessage = this.page.locator('div#basic_contactПошта_help');
 
         //Step 3 - Опис
-        this.clubIsAutomaticallyOnlineMessage = this.page.locator('div.ant-message-notice-content').filter({ hasText: ADD_CLUB_PAGE.noLocationClubOnlineMessage });;
+        this.clubIsAutomaticallyOnlineMessage = this.page.locator('div.ant-message-notice-content').filter({ hasText: ADD_CLUB_PAGE.noLocationClubOnlineMessage });
         this.addLogoInput = this.page.locator('input#basic_urlLogo')
         this.addCoverInput = this.page.locator('input#basic_urlBackground')
         this.addImagesInput = this.page.locator('div.ant-upload-list-picture-card input');
-        this.descriptionTextArea = this.page.locator("textarea[placeholder='Додайте опис гуртка']");
-        this.completeButton = this.page.getByRole("button", { name: "Завершити" });
+        this.descriptionTextArea = this.page.locator(`textarea[placeholder='${ADD_CLUB_PAGE.addClubDescription}']`);
+        this.completeButton = this.page.getByRole('button', { name: ADD_CLUB_PAGE.complete });
 
-        this.clubCreatedSuccessMessage = this.page.locator("div.ant-message-success");
-        this.clubAlreadyExistMessage = this.page.locator("div.ant-message-notice-content").filter({ hasText: ADD_CLUB_PAGE.clubAlreadyExistMessage});;
+        this.clubCreatedSuccessMessage = this.page.locator('div.ant-message-success');
+        this.clubAlreadyExistMessage = this.page.locator('div.ant-message-notice-content').filter({ hasText: ADD_CLUB_PAGE.clubAlreadyExistMessage});
         //Error messages
-        this.clubDescriptionErrorMessage = this.page.locator("div#basic_description_help");
+        this.clubDescriptionErrorMessage = this.page.locator('div#basic_description_help');
 
     }
 

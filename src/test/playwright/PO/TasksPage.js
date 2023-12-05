@@ -1,33 +1,32 @@
 import { CHALLENGES_ADMIN_URL, ADD_TASK_ADMIN_URL, TASKS_ADMIN_URL } from "../constants/api.constants";
+import {TASKS_PAGE} from "../constants/locatorsText.constants";
 import BasePage from "./BasePage";
 
 class TasksPage extends BasePage {
     constructor(page) {
         super(page);
-        this.addTaskButton = page.locator("a[href='/dev/admin/addTask']");
-        this.openChallengesButton = page.locator("a.back-btn button");
+        this.addTaskButton = page.locator('a[href="/dev/admin/addTask"]');
+        this.openChallengesButton = page.locator('a.back-btn button');
 
         //Task information page
-        this.taskInfoName = page.locator("div.task-header");
-        this.taskInfoTitle = page.locator("div.task-text:nth-child(2)");
-        this.taskInfoDescription = page.locator("div.task-text:nth-child(1)");
-        this.allTasksNames = page.locator("tbody td:nth-child(2)");
+        this.taskInfoName = page.locator('div.task-header');
+        this.allTasksNames = page.locator('td.ant-table-cell > a.table-name[href*="task"]');
 
-        this.firstTask = page.locator("tr:first-child a.table-name");
-        this.editTaskButtons = page.locator("span.table-action:nth-child(1)");
-        this.editConfirmButton = page.locator("span.table-action").filter({ hasText: "Зберегти" });
-        this.editCancelButton = page.locator("span.table-action").filter({ hasText: "Відмінити" });
+        this.firstTask = page.locator('tr:first-child a.table-name');
+        this.editTaskButtons = page.locator('span.table-action').filter({hasText: TASKS_PAGE.edit});
+        this.editConfirmButton = page.locator('span.table-action').filter({ hasText: TASKS_PAGE.confirmEdit});
+        this.editCancelButton = page.locator('span.table-action').filter({ hasText: TASKS_PAGE.cancel});
 
-        this.deleteTaskButtons = page.locator("span.table-action:nth-child(2)");
+        this.deleteTaskButtons = page.locator('span.table-action').filter({hasText: TASKS_PAGE.delete});
         //insecure locator below (each time 'delete' button was clicked, it created a new instance). No unique locator available
-        this.popUpYes = page.locator("button.popConfirm-ok-button");
-        this.popUpNo = page.locator("popConfirm-cancel-button");
+        this.popUpYes = page.locator('button.popConfirm-ok-button');
+        this.popUpNo = page.locator('popConfirm-cancel-button');
 
-        this.taskNameField = page.locator("input#name");
-        this.taskChallengeField = page.locator("input#challengeId");
-        this.taskIsActiveCheckbox = page.locator("input#isActive");
+        this.taskNameField = page.locator('input#name');
+        this.taskChallengeField = page.locator('input#challengeId');
+        this.taskIsActiveCheckbox = page.locator('input#isActive');
 
-        this.actionSuccessMessage = page.locator("div.ant-message-success");
+        this.actionSuccessMessage = page.locator('div.ant-message-success');
     }
 
     async gotoTasksPage() {
@@ -51,7 +50,7 @@ class TasksPage extends BasePage {
             has: this.page.getByText(taskName, { exact: true }),
         });
         if (await task.first().isVisible()) {
-            await task.locator('a.table-name').first().click();
+            await task.click();
             return;
         } else if (await this.isNextPageAvailable()) {
             await this.goToNextPage();
