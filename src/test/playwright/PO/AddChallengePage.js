@@ -6,7 +6,7 @@ class AddChallengePage extends BasePage {
     constructor(page) {
         super(page);
         this.backToChallengesButton = page.locator('a.back-btn[href="/dev/admin/challenges"]');
-        this.viewChallengeButton = page.locator('div.add-form a:nth-child(2)');
+        this.viewChallengeButton = page.locator('a[href^="/dev/challenges/"] button');
         this.challengeSequenceNumberField = page.locator('input#sortNumber');
         this.challengeNameField = page.locator('input#name');
         this.challengeTitleField = page.locator('input#title');
@@ -14,7 +14,7 @@ class AddChallengePage extends BasePage {
         this.challengePhotoInput = page.locator('input[type="file"]');
         this.saveButton = page.locator('button.flooded-button[type="submit"]');
 
-        this.challengeAddedSuccessMessage = this.page.locator("div.ant-message-success");
+        this.challengeAddedSuccessMessage = this.page.locator('div.ant-message-success');
         
     }
 

@@ -6,22 +6,22 @@ import { CHALLENGE_INFO_PAGE } from "../constants/locatorsText.constants";
 class ChallengeInfoPage extends BasePage {
     constructor(page) {
         super(page);
-        this.viewChallengeButton = page.getByRole("button", { name: CHALLENGE_INFO_PAGE.viewChallenge });
-        this.viewChallengeTitle = page.locator("span.title");
-        this.slickCard = page.locator("div.slick-slide");
-        this.slickCardsNames = page.locator("div.slick-slide div.name");
-        this.slickDots = page.locator("ul.slick-dots li");
-        this.slickRightArrow = page.locator("span.arrows-next svg");
+        this.viewChallengeButton = page.getByRole('button', { name: CHALLENGE_INFO_PAGE.viewChallenge });
+        this.viewChallengeTitle = page.locator('span.title');
+        this.slickCard = page.locator('div.slick-slide');
+        this.slickCardsNames = page.locator('div.slick-slide div.name');
+        this.slickDots = page.locator('ul.slick-dots li');
+        this.slickRightArrow = page.locator('span.arrows-next svg');
 
-        this.challengePageTitle = page.locator("h1.ant-typography");
-        this.challengeSortNumber = page.locator("input#sortNumber");
-        this.challengeStatus = page.locator("button#isActive");
-        this.challengeName = page.locator("input#name");
-        this.challengeTitle = page.locator("input#title");
-        this.challengeDescription = page.locator("div.ql-editor");
+        this.challengePageTitle = page.locator('h1.ant-typography');
+        this.challengeSortNumber = page.locator('input#sortNumber');
+        this.challengeStatus = page.locator('button#isActive');
+        this.challengeName = page.locator('input#name');
+        this.challengeTitle = page.locator('input#title');
+        this.challengeDescription = page.locator('div.ql-editor');
         this.saveButton = page.locator('button.flooded-button[type="submit"]');
 
-        this.tasksTableCells = page.locator("td[class='ant-table-cell']");
+        this.tasksTableCells = page.locator('td[class="ant-table-cell"]');
         }
 
     async openViewChallenge() {

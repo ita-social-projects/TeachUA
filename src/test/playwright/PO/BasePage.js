@@ -3,8 +3,8 @@ import { expect } from "@playwright/test";
 class BasePage {
     constructor(page) {
         this.page = page;
-        this.navBarCityDropdown = page.locator("header > div.right-side-menu div.city");
-        this.navBarCityDropdownList = page.locator("body > div:last-child ul");
+        this.navBarCityDropdown = page.locator('header > div.right-side-menu div.city');
+        this.navBarCityDropdownList = page.locator('body > div:last-child ul');
         this.paginationNextPageButton = page.locator('ul > li[title="Next Page"]');
         this.paginationFirstPage = page.locator('li[title="1"]');
     }

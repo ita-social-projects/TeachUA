@@ -1,29 +1,30 @@
 import { CHALLENGES_ADMIN_URL, ADD_CHALLENGE_ADMIN_URL, TASKS_ADMIN_URL } from "../constants/api.constants";
+import { CHALLENGES_PAGE } from "../constants/locatorsText.constants";
 import BasePage from "./BasePage";
 
 class ChallengesPage extends BasePage {
     constructor(page) {
         super(page);
-        this.challengesPageTitle = page.getByRole("heading", { name: "Челенджі" });
-        this.addChallengeButton = page.locator("button.add-btn");
-        this.openTasksButton = page.locator("a.back-btn button");
-        this.addTaskButton = page.locator("a[href='/dev/admin/addTask']");
-        this.allChallengesSequenceNumbers = page.locator("tbody td:nth-child(2)");
-        this.firstChallenge = page.locator("tr:first-child td.ant-table-cell:first-child");
-        this.editChallengeButtons = page.locator("span.table-action:nth-child(1)");
-        this.editConfirmButton = page.locator("span.table-action").filter({ hasText: "Зберегти" });
-        this.editCancelButton = page.locator("span.table-action").filter({ hasText: "Відмінити" });
+        this.challengesPageTitle = page.getByRole('heading', { name: CHALLENGES_PAGE.challenges });
+        this.addChallengeButton = page.locator('button.add-btn');
+        this.openTasksButton = page.locator('a.back-btn button');
+        this.addTaskButton = page.locator('a[href="/dev/admin/addTask"]');
+        this.allChallengesSequenceNumbers = page.locator(`td.ant-table-cell:nth-child(${CHALLENGES_PAGE.sequenceNumberTableColumn})`);
+        this.firstChallenge = page.locator('tr:first-child td.ant-table-cell:first-child');
+        this.editChallengeButtons = page.locator('span.table-action').filter({ hasText: CHALLENGES_PAGE.edit });
+        this.editConfirmButton = page.locator('span.table-action').filter({ hasText: CHALLENGES_PAGE.save });
+        this.editCancelButton = page.locator('span.table-action').filter({ hasText: CHALLENGES_PAGE.cancel });
 
-        this.deleteChallengeButtons = page.locator("span.table-action:nth-child(2)");
+        this.deleteChallengeButtons = page.locator('span.table-action').filter({hasText: CHALLENGES_PAGE.delete });;
         //insecure locator below (each time 'delete' button was clicked, it created a new instance). No unique locator available
-        this.popUpYes = page.locator("button.popConfirm-ok-button");
-        this.popUpNo = page.locator("popConfirm-cancel-button");
+        this.popUpYes = page.locator('button.popConfirm-ok-button');
+        this.popUpNo = page.locator('popConfirm-cancel-button');
 
-        this.challengeSequenceNumberField = page.locator("input#sortNumber");
-        this.challengeNameField = page.locator("input#name");
-        this.challengeTitleField = page.locator("input#title");
+        this.challengeSequenceNumberField = page.locator('input#sortNumber');
+        this.challengeNameField = page.locator('input#name');
+        this.challengeTitleField = page.locator('input#title');
 
-        this.actionSuccessMessage = page.locator("div.ant-message-success");
+        this.actionSuccessMessage = page.locator('div.ant-message-success');
     }
 
     async gotoChallengesPage() {

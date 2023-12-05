@@ -1,7 +1,7 @@
-import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
+import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD, CITIES } from "../constants/general.constants";
 import {API_URL} from "../constants/api.constants";
-import {ADD_CLUB_PAGE} from "../constants/locatorsText.constants";
-import { SUCCESS_LOGIN_MESSAGE } from "../constants/messages.constants";
+import {ADD_CLUB_PAGE, HOME_PAGE} from "../constants/locatorsText.constants";
+import { SUCCESS_LOGIN_MESSAGE } from "../constants/messages.constants.js";
 import BasePage from "./BasePage";
 
 class HomePage extends BasePage{
@@ -9,13 +9,12 @@ class HomePage extends BasePage{
         super(page);
         this.citiesDropdown = page.locator('.ant-dropdown-trigger.city');
         this.userDropdown = page.locator('.ant-dropdown-trigger.user-profile');
-        this.registerButton = page.getByRole('menuitem', { name: 'Увійти' });
+        this.registerButton = page.getByRole('menuitem', { name: HOME_PAGE.logIn });
         this.emailField = page.locator('input#basic_email');
         this.passwordField = page.locator('input#basic_password');
         this.loginButton = page.locator('button.login-button');
-        this.loginSuccessMessage = page.locator('div.ant-message-success span:nth-child(2)');
-        this.addClubButton = this.page.getByRole("button", { name: ADD_CLUB_PAGE.addClub });
-        this.harkivItem = page.getByRole('menuitem', { name: 'Харків' })
+        this.loginSuccessMessage = page.locator('div.ant-message-success');
+        this.addClubButton = this.page.getByRole('button', { name: ADD_CLUB_PAGE.addClub });
     }
 
     async gotoHomepage(){
