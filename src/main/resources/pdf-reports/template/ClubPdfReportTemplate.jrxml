@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="documentTemplate" pageWidth="612" pageHeight="1000" columnWidth="572" leftMargin="20"
+              rightMargin="20" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty"
+              uuid="bf199c87-280e-423e-b235-b7fd14ee35f0">
+    <property name="ireport.zoom" value="1.5000000000000118"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <style name="Default" isDefault="true" pdfFontName="/pdf-reports/font/arial.ttf" pdfEncoding="Cp1251"/>
+    <subDataset name="Table Dataset 1" uuid="e23907bc-bf27-4929-b605-2c4c5f59acb2"/>
+
+    <parameter name="CLUB" class="com.softserve.teachua.model.Club" isForPrompting="false"/>
+    <parameter name="LOCATION_SUB_REPORT_PATH" class="java.lang.String" isForPrompting="false"/>
+    <parameter name="CATEGORIES_SUB_REPORT_PATH" class="java.lang.String" isForPrompting="false"/>
+    <parameter name="CONTACTS_SUB_REPORT_PATH" class="java.lang.String" isForPrompting="false"/>
+
+    <field name="categories" class="java.util.HashSet"/>
+    <field name="locations" class="java.util.Set"/>
+    <field name="contacts" class="java.util.Set"/>
+    <field name="description"/>
+    <field name="ageFrom" class="java.lang.Integer"/>
+    <field name="ageTo" class="java.lang.Integer"/>
+
+
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="2" splitType="Stretch"/>
+    </title>
+    <pageHeader>
+        <band height="2" splitType="Stretch"/>
+    </pageHeader>
+    <columnHeader>
+        <band height="2" splitType="Stretch"/>
+    </columnHeader>
+    <detail>
+        <band height="900" splitType="Stretch">
+            <printWhenExpression><![CDATA[$P{CLUB} != null]]></printWhenExpression>
+            <!--CLUB TITLE-->
+            <textField>
+                <reportElement forecolor="#002766" x="80" y="10" width="450" height="550"
+                               uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1"/>
+                <textElement markup="styled" textAlignment="Left">
+                    <font size="16" fontName="Serif"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{CLUB}.getName()]]></textFieldExpression>
+            </textField>
+            <!--CATEGORIES-->
+            <frame>
+                <reportElement x="0" y="80" width="575" height="100"/>
+
+                <staticText>
+                    <reportElement x="30" y="0" width="100" height="30" forecolor="#002766"/>
+                    <textElement markup="styled">
+                        <font size="12" isBold="true" fontName="Serif"/>
+                    </textElement>
+                    <text>Категорії</text>
+                </staticText>
+                <subreport>
+                    <reportElement x="0" y="20" width="575" height="100" forecolor="#2d4c68"
+                                   uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1"/>
+                    <dataSourceExpression>
+                        <![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{categories})]]></dataSourceExpression>
+                    <subreportExpression>
+                        <![CDATA[JasperCompileManager.compileReport($P{CATEGORIES_SUB_REPORT_PATH})]]></subreportExpression>
+                </subreport>
+            </frame>
+            <!--LOCATIONS-->
+            <frame>
+                <reportElement x="20" y="210" width="600" height="10"/>
+
+                <subreport>
+                    <reportElement x="5" y="5" width="575" height="10" forecolor="#2d4c68"
+                                   uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1"/>
+                    <dataSourceExpression>
+                        <![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{locations})]]></dataSourceExpression>
+                    <subreportExpression>
+                        <![CDATA[JasperCompileManager.compileReport($P{LOCATION_SUB_REPORT_PATH})]]></subreportExpression>
+                </subreport>
+                <image>
+                    <reportElement x="1" y="0" width="24" height="24"/>
+                    <imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/map/cluster.png")]]>
+                    </imageExpression>
+                </image>
+                <ellipse>
+                    <reportElement x="10" y="7" width="6" height="6" forecolor="#ffffff" mode="Transparent"/>
+                </ellipse>
+            </frame>
+            <!--YEARS-->
+            <frame>
+                <reportElement x="0" y="260" width="400" height="50"/>
+                <staticText>
+                    <reportElement x="0" y="0" forecolor="#002766" width="100" height="100"/>
+                    <textElement markup="styled">
+                        <font size="12" isBold="true" fontName="Serif"/>
+                    </textElement>
+                    <text>Вік аудиторії:</text>
+                </staticText>
+                <textField>
+                    <reportElement x="80" y="0" forecolor="#2d4c68" width="200" height="50"/>
+                    <textElement textAlignment="Left">
+                        <font size="12" isBold="true" fontName="Serif"/>
+                    </textElement>
+                    <textFieldExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.formYears($F{ageFrom},$F{ageTo})]]></textFieldExpression>
+                </textField>
+            </frame>
+            <!--CONTACTS-->
+            <frame>
+                <reportElement x="300" y="80" width="600" height="50"/>
+                <staticText>
+                    <reportElement x="30" y="0" forecolor="#002766" width="100" height="20"/>
+                    <textElement markup="styled">
+                        <font size="12" isBold="true" fontName="Serif"/>
+                    </textElement>
+                    <text>Контакти гуртка</text>
+                </staticText>
+                <subreport>
+                    <reportElement x="0" y="20" width="575" height="100" forecolor="#2d4c68"
+                                   uuid="ff98d7b1-6a84-41d2-b2ad-c48355d7f6d1"/>
+                    <dataSourceExpression>
+                        <![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{contacts})]]></dataSourceExpression>
+                    <subreportExpression>
+                        <![CDATA[JasperCompileManager.compileReport($P{CONTACTS_SUB_REPORT_PATH})]]></subreportExpression>
+                </subreport>
+            </frame>
+            <!--DESCRIPTION-->
+            <staticText>
+                <reportElement x="0" y="290" forecolor="#002766" width="100" height="20"/>
+                <textElement markup="styled">
+                    <font size="14" isBold="true" fontName="Serif"/>
+                </textElement>
+                <text>Про гурток</text>
+            </staticText>
+
+            <frame>
+                <reportElement x="0" y="210" width="500" height="150"/>
+                <image>
+                    <reportElement x="0" y="111" width="100" height="100"/>
+                    <imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/clubs_carousel_tmp/balls.jpg")]]></imageExpression>
+                </image>
+                <image>
+                    <reportElement x="130" y="111" width="100" height="100"/>
+                    <imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/clubs_carousel_tmp/exercise.jpg")]]></imageExpression>
+                </image>
+                <image>
+                    <reportElement x="260" y="111" width="100" height="100"/>
+                    <imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/clubs_carousel_tmp/kids_jump.png")]]></imageExpression>
+                </image>
+                <image>
+                    <reportElement x="390" y="111" width="100" height="100"/>
+                    <imageExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.getRealFilePathFrontend("/static/images/clubs_carousel_tmp/pencils.jpg")]]></imageExpression>
+                </image>
+            </frame>
+
+            <frame>
+                <reportElement x="0" y="420" width="900" height="400"/>
+                <textField>
+                    <reportElement x="0" y="0" forecolor="#2d4c68" width="550" height="400"/>
+                    <textElement textAlignment="Left">
+                        <font size="12" isBold="true" fontName="Serif"/>
+                    </textElement>
+                    <textFieldExpression>
+                        <![CDATA[com.softserve.teachua.utils.ReportDecorator.formDescription($F{description})]]></textFieldExpression>
+                </textField>
+            </frame>
+
+        </band>
+    </detail>
+    <columnFooter>
+        <band height="3" splitType="Stretch"/>
+    </columnFooter>
+    <pageFooter>
+        <band splitType="Stretch"/>
+    </pageFooter>
+    <summary>
+        <band height="3" splitType="Stretch"/>
+    </summary>
+</jasperReport>
