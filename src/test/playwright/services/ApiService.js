@@ -49,7 +49,7 @@ class ApiService {
         expect(response.ok, `Response should be OK. Status: ${response.status}`).toBeTruthy();
     }
 
-    //clubs interaction
+    // Clubs interaction
 
     // Get the total pages of clubs and assert that the response is successful.
     async getTotalPages(apiEndpoint, userId) {
@@ -112,8 +112,7 @@ class ApiService {
         await this.deleteClubById(club.id);
     }
 
-    //challenges & tasks interaction
-    //Challenges
+    // Challenges
     async createNewChallenge(CREATE_CHALLENGE_REQUEST) {
         const response = await fetch(CREATE_CHALLENGE_REQUEST.url, {
             method: CREATE_CHALLENGE_REQUEST.method,
@@ -150,15 +149,13 @@ class ApiService {
         return pageJson;
     }
 
-    //Tasks
+    // Tasks
 
     /**
      * Create a new task associated with a challenge.
-     *
      * This function retrieves a list of challenges, finds the challenge with a specific
      * sortNumber, and creates a new task associated with that challenge.
      */
-
     async createNewTask(CREATE_TASK_REQUEST) {
         const tasks = await this.getAllTasks();
         const task = tasks.find((c) => c.name === CREATE_TASK_REQUEST.body.name);
@@ -238,10 +235,8 @@ class ApiService {
     /**
      * Updates the start date of a task to today's date, 
      * ensuring it appears among the active tasks of the challenge.
-     *
      * @param {string} taskName - The name of the task to be updated.
      */
-
     async changeTaskDateToToday(taskName) {
         const task = await this.getTaskByName(taskName);
 

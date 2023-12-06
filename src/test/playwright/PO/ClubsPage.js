@@ -20,7 +20,6 @@ class ClubsPage extends BasePage {
         this.paginationFirstPageButton = page.locator('ul > li[title="1"]');
         this.advancedSearchButton = page.locator(`span[title='${CLUBS_PAGE.extendedSearch}']`);
         this.firstCardTitle = page.locator('div.content-clubs-list > div:first-child div.name');
-
         this.noResultsMessage = page.locator('div.clubs-not-found');
     }
 
@@ -28,17 +27,17 @@ class ClubsPage extends BasePage {
         await this.page.goto(CLUBS_URL);
     }
 
-    // Click the advanced search button and wait for a short timeout for clubs to update
+    // Toggles the advanced search and waits for a short timeout for clubs to update.
     async toggleAdvancedSearch() {
         await this.advancedSearchButton.click();
         await this.page.waitForTimeout(500);
     }
 
-    /*
-     * Method to accumulate titles of all club cards
-     * Iterates through pages of club cards, accumulating their titles
+    /**
+     * Gets titles of all club cards by iterating through pages.
      * Uses the firstTitleLocator to ensure that previous clubs have disappeared
      * from the page before adding new titles to the array
+     * @returns {string[]} - Array of club titles.
      */
     async getAllClubsTitles() {
         let allClubsTitles = [];
@@ -63,16 +62,17 @@ class ClubsPage extends BasePage {
         return allClubsTitles;
     }
 
-    /*
-     * Asserts that accumulated club titles are sorted in ascending order
-     */
+    // Verifies that accumulated club titles are sorted in ascending order.
     async verifyClubsSortedByTitlesAsc() {
         const originalClubsTitles = await this.getAllClubsTitles();
         const sortedClubsTitles = await this.sortElementsAsc(originalClubsTitles);
         expect(originalClubsTitles).toMatchObject(sortedClubsTitles);
     }
 
-    // Check if the next page button is visible and enabled
+    /**
+     * Checks if the next page button is visible and enabled.
+     * @returns {boolean} - True if the next page is available, false otherwise.
+     */
     async isNextPageAvailable() {
         return (
             (await this.paginationNextPageButton.isVisible()) &&
@@ -84,6 +84,7 @@ class ClubsPage extends BasePage {
         await this.paginationNextPageButton.click();
     }
 
+    // Performs a simple search by query and waits for the first title to detach.
     async simpleSearchByQuery(query) {
         const firstTitle = await this.firstCardTitle.textContent();
         const firstTitleLocator = await this.page.getByRole("div", { name: firstTitle });
@@ -91,18 +92,6 @@ class ClubsPage extends BasePage {
         await this.searchField.fill(query);
         await this.searchButton.click();
         await firstTitleLocator.waitFor({ state: "detached", timeout: 10000 });
-    }
-
-    /*
-     * Navigates to the next page if available and executes additional actions on the page.
-     * @param {Function} actionsOnThePage - Optional function to perform additional actions on the page.
-     *                                      Defaults to an empty async function.
-     */
-    async goToNextPageIfAvailabe(actionsOnThePage = async () => {}) {
-        if (await this.isNextPageAvailable()) {
-            await this.goToNextPage();
-            await actionsOnThePage();
-        }
     }
 
     async openCardDetailsPopUp(card) {
@@ -117,16 +106,17 @@ class ClubsPage extends BasePage {
         await this.paginationFirstPageButton.click();
     }
 
-    /*
-     * Method to verify that club cards contain the specified text
-     * Iterates through club cards, comparing their text with the search query
-     * Opens card details to check for additional categories, if any
-     * Utilizes recursion to iterate through all pages
+    /**
+     * Verifies that club cards contain the specified text.
+     * Iterates through club cards, comparing their text with the search query.
+     * Opens card details to check for additional categories, if any.
+     * Utilizes recursion to iterate through all pages.
+     * @param {string} text - Text to verify in club cards.
      */
     async verifyClubCardsContainText(text) {
         text = text.toLowerCase();
         const cards = await this.cards.all();
-        if (await cards.length === 0) {
+        if ((await cards.length) === 0) {
             throw new Error("There are no result for this search query!");
         }
         for (let card of cards) {

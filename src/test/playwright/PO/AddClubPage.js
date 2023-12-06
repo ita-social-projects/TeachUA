@@ -33,7 +33,7 @@ class AddClubPage extends BasePage {
         this.locationCoordinatesField = this.page.locator('input#coordinates');
         this.locationPhoneNumberField = this.page.locator('input#phone');
         this.locationAddButton = this.page.locator('div.add-club-locations button[type="submit"]');
-
+        
         this.locationNameInfoSign = this.page.locator('input#name + span svg');
         this.locationPhoneInfoSign = this.page.locator('input#phone + span svg');
 
@@ -43,7 +43,7 @@ class AddClubPage extends BasePage {
 
         this.isOnlineSlider = this.page.locator('button[role="switch"]');
         this.isOnlineInfoSign = this.page.locator('button[role="switch"] + span svg');
-
+        
         this.clubPhoneNumberField = this.page.locator('input#basic_contactТелефон')
         this.clubFacebookField = this.page.locator('input#basic_contactFacebook')
         this.clubWhatsUpField = this.page.locator('input#basic_contactWhatsApp')
@@ -75,8 +75,6 @@ class AddClubPage extends BasePage {
 
     }
 
-    
-
     //Step #1
     async proceedToNextStep() {
         await this.nextStepButton.click();
@@ -103,7 +101,7 @@ class AddClubPage extends BasePage {
     }
 
     async selectRelatedCenter(center) {
-        await this.relatedCenterDropdown.click({force: true});
+        await this.relatedCenterDropdown.click({ force: true });
         await this.selectDropdownValue(center);
     }
 
@@ -114,66 +112,63 @@ class AddClubPage extends BasePage {
             .click();
     }
 
-    
-//Step #2
-//Methods related to the new location addition window------
+    //Step #2
+    //Methods related to the new location addition window------
     async openAddLocationWindow() {
         await this.addLocationButton.click();
     }
 
     async selectLocationCity(value) {
-        await this.locationCityDropdown.click({force: true});
+        await this.locationCityDropdown.click({ force: true });
         await this.selectDropdownValue(value);
     }
 
     async selectLocationDistrict(value) {
-        await this.locationDistrictDropdown.click({force: true});
+        await this.locationDistrictDropdown.click({ force: true });
         await this.selectDropdownValue(value);
     }
 
     async selectLocationStation(value) {
-        await this.locationStationDropdown.click({force: true});
+        await this.locationStationDropdown.click({ force: true });
         await this.selectDropdownValue(value);
     }
 
-    async confirmLocationAddition(){
+    async confirmLocationAddition() {
         await this.locationAddButton.click();
     }
 
-    async verifyLocationNameTooltipAppearsOnHover(){
-        await this.verifyTooltipAppearsOnHover(this.locationNameInfoSign, LOCATION_NAME_TOOLTIP)
+    async verifyLocationNameTooltipAppearsOnHover() {
+        await this.verifyTooltipAppearsOnHover(this.locationNameInfoSign, LOCATION_NAME_TOOLTIP);
     }
 
-    async verifyLocationPhoneTooltipAppearsOnHover(){
-        await this.verifyTooltipAppearsOnHover(this.locationPhoneInfoSign, LOCATION_PHONE_TOOLTIP)
+    async verifyLocationPhoneTooltipAppearsOnHover() {
+        await this.verifyTooltipAppearsOnHover(this.locationPhoneInfoSign, LOCATION_PHONE_TOOLTIP);
     }
 
-    async closeAddLocationWindow(){
+    async closeAddLocationWindow() {
         await this.locationCloseButton.click();
     }
 
-    //---------------------------------------------------------------------
-
-    async verifyLocationPresence(locationName, isPresent){
-        const location = await this.page.getByRole('heading', {name: locationName});
+    async verifyLocationPresence(locationName, isPresent) {
+        const location = await this.page.getByRole('heading', { name: locationName });
         await this.verifyElementVisibility(location, isPresent);
     }
 
-    async toggleIsOnlineSlider(){
+    async toggleIsOnlineSlider() {
         await this.isOnlineSlider.click();
     }
 
-    async verifyAvailableOnlineTooltipAppearsOnHover(){
-        await this.verifyTooltipAppearsOnHover(this.isOnlineInfoSign, CLUB_ONLINE_SLIDER_TOOLTIP)
+    async verifyAvailableOnlineTooltipAppearsOnHover() {
+        await this.verifyTooltipAppearsOnHover(this.isOnlineInfoSign, CLUB_ONLINE_SLIDER_TOOLTIP);
     }
 
     //Step #3
 
-    async uploadLogo(){
+    async uploadLogo() {
         await this.addLogoInput.setInputFiles(IMAGES_PATH + 'clubLogo.jpg');
     }
 
-    async uploadCover(){
+    async uploadCover() {
         await this.addCoverInput.setInputFiles(IMAGES_PATH + 'cover.png');
     }
 
@@ -181,16 +176,14 @@ class AddClubPage extends BasePage {
         await this.addImagesInput.setInputFiles(IMAGES_PATH + 'galery.jpg');
     }
 
-    async fillClubDescription(description){
+    async fillClubDescription(description) {
         await this.descriptionTextArea.clear();
         await this.descriptionTextArea.fill(description);
     }
 
-    async completeClubCreation(){
+    async completeClubCreation() {
         await this.completeButton.click();
     }
-
-
 }
 
 module.exports = AddClubPage;

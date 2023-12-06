@@ -13,9 +13,7 @@ class AddChallengePage extends BasePage {
         this.challengeDescriptionField = page.locator(".ql-editor");
         this.challengePhotoInput = page.locator('input[type="file"]');
         this.saveButton = page.locator('button.flooded-button[type="submit"]');
-
         this.challengeAddedSuccessMessage = this.page.locator('div.ant-message-success');
-        
     }
 
     async gotoAddChallengePage() {
@@ -24,14 +22,14 @@ class AddChallengePage extends BasePage {
 
     async openChallengesPage() {
         await this.backToChallengesButton.click();
-        await this.verifyUrl(CHALLENGES_ADMIN_URL)
+        await this.verifyUrl(CHALLENGES_ADMIN_URL);
     }
 
     async uploadChallengePhoto() {
         await this.challengePhotoInput.setInputFiles(IMAGES_PATH + 'challenge1.jpg');
     }
 
-    async confirmChallengeCreation(){
+    async confirmChallengeCreation() {
         await this.saveButton.click();
     }
 }
