@@ -30,7 +30,6 @@ let apiService, challengesPage, challengeInfoPage,tasksPage, addChallengePage, a
         await addChallengePage.fillInputField(addChallengePage.challengeDescriptionField, NEW_CHALLENGE_CORRECT_DETAILS.description)
         await addChallengePage.uploadChallengePhoto();
         await addChallengePage.confirmChallengeCreation();
-       // await addchallengepage.confirmChallengeCreation();
 
         await addChallengePage.verifyElementVisibility(addChallengePage.challengeAddedSuccessMessage);
         await addChallengePage.openChallengesPage();
@@ -49,30 +48,27 @@ let apiService, challengesPage, challengeInfoPage,tasksPage, addChallengePage, a
         await apiService.createNewChallenge(CREATE_CHALLENGE_REQUEST);
         await tasksPage.gotoTasksPage();
         await tasksPage.openAddTaskPage();
-        
+
         await addTaskPage.selectDate(NEW_TASK_CORRECT_DETAILS.startDate);
         await addTaskPage.uploadTaskPhoto();
-        await addTaskPage.fillInputField(addTaskPage.taskNameField, NEW_TASK_CORRECT_DETAILS.name)
-        await addTaskPage.fillInputField(addTaskPage.taskTitleField, NEW_TASK_CORRECT_DETAILS.title)
-        await addTaskPage.fillInputField(addTaskPage.taskDescriptionField, NEW_TASK_CORRECT_DETAILS.description)
-        await addTaskPage.selectChallenge(CREATE_CHALLENGE_REQUEST.body.name)
+        await addTaskPage.fillInputField(addTaskPage.taskNameField, NEW_TASK_CORRECT_DETAILS.name);
+        await addTaskPage.fillInputField(addTaskPage.taskTitleField, NEW_TASK_CORRECT_DETAILS.title);
+        await addTaskPage.fillInputField(addTaskPage.taskDescriptionField, NEW_TASK_CORRECT_DETAILS.description);
+        await addTaskPage.selectChallenge(CREATE_CHALLENGE_REQUEST.body.name);
 
         await addTaskPage.confirmTaskCreation();
 
         await addTaskPage.verifyElementVisibility(addTaskPage.taskAddedSuccessMessage);
-        
-        /*
-        *identical tasks can be created, so there is little sense in task creation verification yet
-        *same situation with task deletion using API, can't be implemented as multiple tasks
-        *can exist with the same name
-        */
-       
+
         await tasksPage.gotoTasksPage();
-        await tasksPage.verifyElementExistance(tasksPage.allTasksNames, NEW_TASK_CORRECT_DETAILS.name)
-        
+        await tasksPage.verifyElementExistance(tasksPage.allTasksNames, NEW_TASK_CORRECT_DETAILS.name);
+
         await tasksPage.openChallengesPage();
         await challengesPage.openChallengeInfoPage(CREATE_CHALLENGE_REQUEST.body.sortNumber);
-        await challengeInfoPage.verifyElementExistance(challengeInfoPage.tasksTableCells, NEW_TASK_CORRECT_DETAILS.name);
+        await challengeInfoPage.verifyElementExistance(
+            challengeInfoPage.tasksTableCells,
+            NEW_TASK_CORRECT_DETAILS.name
+        );
     });
 
 
@@ -88,24 +84,24 @@ let apiService, challengesPage, challengeInfoPage,tasksPage, addChallengePage, a
         );
     });
 
-    test("Verify that an existing challenge can be edited on the challenges list page", async({page})=>{
+    test("Verify that an existing challenge can be edited on the challenges list page", async ({ page }) => {
         await apiService.createNewChallenge(CREATE_CHALLENGE_REQUEST);
-        await apiService.deleteChallengeBySequenceNumber(EDITED_CHALLENGE_CORRECT_DETAILS.sequenceNumber
-)
+        await apiService.deleteChallengeBySequenceNumber(EDITED_CHALLENGE_CORRECT_DETAILS.sequenceNumber);
         await challengesPage.gotoChallengesPage();
         await challengesPage.turnOnEditChallenge(CREATE_CHALLENGE_REQUEST.body.sortNumber);
-        await challengesPage.fillInputField(challengesPage.challengeSequenceNumberField, EDITED_CHALLENGE_CORRECT_DETAILS.sequenceNumber
-)
-        await challengesPage.fillInputField(challengesPage.challengeNameField, EDITED_CHALLENGE_CORRECT_DETAILS.name)
-        await challengesPage.fillInputField(challengesPage.challengeTitleField, EDITED_CHALLENGE_CORRECT_DETAILS.title)
+        await challengesPage.fillInputField(
+            challengesPage.challengeSequenceNumberField,
+            EDITED_CHALLENGE_CORRECT_DETAILS.sequenceNumber
+        );
+        await challengesPage.fillInputField(challengesPage.challengeNameField, EDITED_CHALLENGE_CORRECT_DETAILS.name);
+        await challengesPage.fillInputField(challengesPage.challengeTitleField, EDITED_CHALLENGE_CORRECT_DETAILS.title);
         await challengesPage.confirmEditChallenge();
         await challengesPage.verifyElementExistance(
             challengesPage.allChallengesSequenceNumbers,
-            EDITED_CHALLENGE_CORRECT_DETAILS.sequenceNumber
-,
+            EDITED_CHALLENGE_CORRECT_DETAILS.sequenceNumber,
             true
         );
-    })
+    });
 
     test("Verify that an existing challenge can be edited", async ({ page }) => {
         addChallengePage = new AddChallengePage(page);
@@ -134,7 +130,7 @@ let apiService, challengesPage, challengeInfoPage,tasksPage, addChallengePage, a
         await tasksPage.deleteTask(CREATE_TASK_REQUEST.body.name);
         await tasksPage.verifyElementVisibility(tasksPage.actionSuccessMessage);
         
-        /*Verification below won't work if there a couple of tasks with the same name*/
+        // Verification below won't work if there a couple of tasks with the same name
         await tasksPage.verifyElementExistance(
             tasksPage.allTasksNames,
             CREATE_TASK_REQUEST.body.name, false

@@ -21,21 +21,39 @@ class BasePage {
         await expect(element).not.toContainText(text);
     }
 
+    /**
+     * Asserts that the given text is contained within another text.
+     * @param {string} text - The text to search within.
+     * @param {string} searchText - The text to search for.
+     */
     async assertTextContains(text, searchText) {
         const doesContain = text.includes(searchText);
         expect(doesContain).toBe(true);
     }
 
+    /**
+     * Verifies the visibility of an element on a page.
+     * @param {Locator} element - The element to check.
+     * @param {boolean} isVisible - Indicates whether the element should be visible or not.
+     */
     async verifyElementVisibility(element, isVisible = true) {
         if (!(typeof isVisible === "boolean")) {
             throw new Error("Second paramenter should be boolean");
         }
-        isVisible 
-        ? await expect(element, ' should be visible').toBeVisible() 
-        : await expect(element, 'should NOT be visible').not.toBeVisible();
+        isVisible
+            ? await expect(element, ' should be visible').toBeVisible()
+            : await expect(element, 'should NOT be visible').not.toBeVisible();
     }
 
-    async isElementWithNamePresent(allElements, name){
+    // Navigation Methods
+
+    /**
+     * Checks if an element with a specific name is present on a page with pagination.
+     * @param {Locator} allElements - All elements to search through.
+     * @param {string} name - The name to search for.
+     * @returns {boolean} - True if the element is present, false otherwise.
+     */
+    async isElementWithNamePresent(allElements, name) {
         const elementsTextContents = await allElements.allTextContents();
         if (await elementsTextContents.includes(name)) {
             return true;
@@ -49,8 +67,14 @@ class BasePage {
         }
     }
 
-    //use the method above to make assertion
+    /**
+     * Verifies the existence of an element with a specific name.
+     * @param {Locator} allElements - All elements to search through.
+     * @param {string} name - The name to search for.
+     * @param {boolean} doesExist - Indicates whether the element should exist or not.
+     */
     async verifyElementExistance(allElements, name, doesExist = true) {
+        // Navigates to the first page, if it is not selected.
         if (await this.isItFirstPage()) {
             await this.paginationFirstPage.click();
         }
@@ -70,9 +94,13 @@ class BasePage {
         );
     }
 
+    /**
+     * Checks if the current page is the first page.
+     * @returns {boolean} - False if it's the first page, true otherwise.
+     */
     async isItFirstPage() {
         return (
-            (await this.paginationFirstPage.isVisible()) && 
+            (await this.paginationFirstPage.isVisible()) &&
             !(await this.paginationFirstPage.getAttribute("ant-pagination-item-active"))
         );
     }
@@ -81,6 +109,11 @@ class BasePage {
         await this.paginationNextPageButton.click();
     }
 
+    /**
+     * Navigates to the next page if available and executes additional actions on the page.
+     * @param {Function} actionsOnThePage - Optional function to perform additional actions on the page.
+     *                                      Defaults to an empty async function.
+     */
     async goToNextPageIfAvailabe(actionsOnThePage = async () => {}) {
         if (await this.isNextPageAvailable()) {
             await this.goToNextPage();
@@ -88,11 +121,11 @@ class BasePage {
         }
     }
 
-    /*
-     *This method can be used to check whether the element is present and, if visible, 
-     *has the required text.
-     *It combines both checks to reduce code duplication when 
-     *verifying error messages' presence or absence.
+    /**
+     * Combines visibility and text checks for an element.
+     * @param {Locator} element - The element to check.
+     * @param {boolean} isVisible - Indicates whether the element should be visible or not.
+     * @param {string} text - The expected text.
      */
     async verifyElementVisibilityAndText(element, isVisible = true, text) {
         await this.verifyElementVisibility(element, isVisible);
@@ -121,6 +154,11 @@ class BasePage {
         return elements.sort((a, b) => b - a);
     }
 
+    /**
+     * Verifies that a tooltip appears on hover with the specified message.
+     * @param {Locator} selector - The element to hover over.
+     * @param {string} message - The expected tooltip message.
+     */
     async verifyTooltipAppearsOnHover(selector, message) {
         await selector.hover();
         const tooltip = this.page.locator("div.ant-tooltip-inner").filter({ hasText: `${message}` });

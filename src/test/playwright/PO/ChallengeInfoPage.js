@@ -12,7 +12,6 @@ class ChallengeInfoPage extends BasePage {
         this.slickCardsNames = page.locator('div.slick-slide div.name');
         this.slickDots = page.locator('ul.slick-dots li');
         this.slickRightArrow = page.locator('span.arrows-next svg');
-
         this.challengePageTitle = page.locator('h1.ant-typography');
         this.challengeSortNumber = page.locator('input#sortNumber');
         this.challengeStatus = page.locator('button#isActive');
@@ -20,9 +19,8 @@ class ChallengeInfoPage extends BasePage {
         this.challengeTitle = page.locator('input#title');
         this.challengeDescription = page.locator('div.ql-editor');
         this.saveButton = page.locator('button.flooded-button[type="submit"]');
-
         this.tasksTableCells = page.locator('td[class="ant-table-cell"]');
-        }
+    }
 
     async openViewChallenge() {
         await this.viewChallengeButton.click();

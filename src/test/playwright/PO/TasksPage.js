@@ -7,25 +7,18 @@ class TasksPage extends BasePage {
         super(page);
         this.addTaskButton = page.locator('a[href="/dev/admin/addTask"]');
         this.openChallengesButton = page.locator('a.back-btn button');
-
-        //Task information page
         this.taskInfoName = page.locator('div.task-header');
         this.allTasksNames = page.locator('td.ant-table-cell > a.table-name[href*="task"]');
-
         this.firstTask = page.locator('tr:first-child a.table-name');
         this.editTaskButtons = page.locator('span.table-action').filter({hasText: TASKS_PAGE.edit});
         this.editConfirmButton = page.locator('span.table-action').filter({ hasText: TASKS_PAGE.confirmEdit});
         this.editCancelButton = page.locator('span.table-action').filter({ hasText: TASKS_PAGE.cancel});
-
         this.deleteTaskButtons = page.locator('span.table-action').filter({hasText: TASKS_PAGE.delete});
-        //insecure locator below (each time 'delete' button was clicked, it created a new instance). No unique locator available
         this.popUpYes = page.locator('button.popConfirm-ok-button');
         this.popUpNo = page.locator('popConfirm-cancel-button');
-
         this.taskNameField = page.locator('input#name');
         this.taskChallengeField = page.locator('input#challengeId');
         this.taskIsActiveCheckbox = page.locator('input#isActive');
-
         this.actionSuccessMessage = page.locator('div.ant-message-success');
     }
 
@@ -35,17 +28,20 @@ class TasksPage extends BasePage {
 
     async openAddTaskPage() {
         await this.addTaskButton.click();
-        await this.verifyUrl(ADD_TASK_ADMIN_URL);        
+        await this.verifyUrl(ADD_TASK_ADMIN_URL);
     }
 
     async openChallengesPage() {
         await this.openChallengesButton.click();
-        await this.verifyUrl(CHALLENGES_ADMIN_URL);        
+        await this.verifyUrl(CHALLENGES_ADMIN_URL);
     }
 
+    // Opens the page with details of a specific task by clicking on its name.
     async openTaskInfoPage(taskName) {
+        // Check if there is at least one task present before proceeding
         await this.verifyElementVisibility(this.firstTask);
 
+        // Searches for the task by name and clicks on it
         const task = await this.allTasksNames.filter({
             has: this.page.getByText(taskName, { exact: true }),
         });
@@ -53,27 +49,37 @@ class TasksPage extends BasePage {
             await task.click();
             return;
         } else if (await this.isNextPageAvailable()) {
+            // If the task is not found on this page, checks if there's a next page and recursively searches
             await this.goToNextPage();
             await this.openTaskInfoPage(taskName);
         } else {
+            // If the task is not found and there are no more pages, throws an error
             throw new Error("No such task exist");
         }
     }
 
+    /**
+     * Selects a management option for a task, such as edit or delete
+     * @param {string} taskName - The name of the task for which the option is selected.
+     * @param {Locator} option - The Playwright Locator representing the option to be selected.
+     */
     async selectTaskManageOption(taskName, option) {
+        // Searches for the task by name and selects the specified option
         const task = await this.allTasksNames.filter({
             has: this.page.getByText(taskName, { exact: true }),
         });
+
+        // In case there are multiple tasks with the same name, first() selects the first one
         if (await task.first().isVisible()) {
             const row = await this.page.getByRole("row", { name: taskName }).first();
             await row.locator(option).click();
             return;
         } else if (await this.isNextPageAvailable()) {
-            // If the club is not found on this page, check if there's a next page and recursively search
+            // If the club is not found on this page, checks if there's a next page and recursively search
             await this.goToNextPage();
             await this.selectTaskManageOption(challengeSortNumber, option);
         } else {
-            // If the club is not found and there are no more pages, throw an error
+            // If the club is not found and there are no more pages, throws an error
             throw new Error("No such task exists");
         }
     }
@@ -93,10 +99,9 @@ class TasksPage extends BasePage {
     async deleteTask(taskName) {
         await this.selectTaskManageOption(taskName + "", this.deleteTaskButtons);
         await this.popUpYes.click();
-        const task = await this.page.getByText(taskName, { exact: true })
+        const task = await this.page.getByText(taskName, { exact: true });
         await this.verifyElementVisibility(task, false);
     }
-
 }
 
 module.exports = TasksPage;

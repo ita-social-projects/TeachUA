@@ -15,9 +15,7 @@ class AddTaskPage extends BasePage {
         this.taskDescriptionField =page.locator('div.ant-form-item').filter({ hasText: ADD_TASK_PAGE.description }).locator('.ql-editor');
         this.taskChallengeField = page.locator('input#challengeId');
         this.saveButton = page.locator('button.flooded-button[type="submit"]');
-
         this.taskAddedSuccessMessage = this.page.locator('div.ant-message-success');
-        
     }
 
     async gotoAddChallengePage() {
@@ -26,10 +24,10 @@ class AddTaskPage extends BasePage {
 
     async openChallengesPage() {
         await this.backToChallengesButton.click();
-        await this.verifyUrl(CHALLENGES_ADMIN_URL)
+        await this.verifyUrl(CHALLENGES_ADMIN_URL);
     }
 
-    async selectDate(date){
+    async selectDate(date) {
         await this.fillInputField(this.taskDateStartField, date);
         await this.taskDateStartField.press('Enter');
     }
@@ -38,11 +36,11 @@ class AddTaskPage extends BasePage {
         await this.taskPhotoInput.setInputFiles(IMAGES_PATH + 'task1.jpg');
     }
 
-    async confirmTaskCreation(){
+    async confirmTaskCreation() {
         await this.saveButton.click();
     }
 
-    async selectChallenge(challengeName){
+    async selectChallenge(challengeName) {
         await this.taskChallengeField.click();
         await this.page.locator('div.ant-select-item-option-content').filter({hasText: challengeName}).click();
     }

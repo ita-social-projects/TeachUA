@@ -20,7 +20,7 @@ let apiService, addClubPage, homePage, userPage, clubInfoPage;
 
     test("Verify that a new club can be succesfully added", async ({ page }) => {
         userPage = new UserPage(page);
-        //remove the club with the test club_title if it exists
+        // Remove the club with the test club_title if it exists
         try {
             await apiService.deleteClubByTitle(NEW_CLUB_CORRECT_DETAILS.clubTitle);
         } catch (e) {
@@ -69,7 +69,7 @@ let apiService, addClubPage, homePage, userPage, clubInfoPage;
         
         await userPage.gotoUserPage();
 
-        //verify that the created club information is correct
+        // Verify that the created club information is correct
         clubInfoPage = new ClubInfoPage(page);
         await userPage.gotoUserPage();
         await userPage.openClubInfoPage(NEW_CLUB_CORRECT_DETAILS.clubTitle);
@@ -139,19 +139,18 @@ let apiService, addClubPage, homePage, userPage, clubInfoPage;
         await addClubPage.proceedToNextStep();
         await addClubPage.openAddLocationWindow();
 
-        //trigger validation of mandatory fields and verify that each is present and correct
-        //message is displayed
+        // Trigger validation of mandatory fields and verify that each is present and correct
         await addClubPage.confirmLocationAddition();
         
         await addClubPage.verifyElementVisibilityAndText(addClubPage.locationNameFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.locationNameIsMandatory);
         await addClubPage.verifyElementVisibilityAndText(addClubPage.locationCityErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.cityIsMandatory);
 
-        //this one is ommitted because of the defect which displays both mandatory and incorrect value validation for the address field
-        //await addclubpage.verifyElementVisibilityAndText(addclubpage.locationAddressFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.locationNameIsMandatory);
+        // This one is ommitted because of the defect which displays both mandatory and incorrect value validation for the address field
+        // await addclubpage.verifyElementVisibilityAndText(addclubpage.locationAddressFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.locationNameIsMandatory);
         await addClubPage.verifyElementVisibilityAndText(addClubPage.locationCoordinatesFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.coordinatesAreIncorrect);
         await addClubPage.verifyElementVisibilityAndText(addClubPage.locationPhoneFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.phoneIsMandatory);
 
-        //fill fields with incorrect data and verify that appropriate error message appears
+        // Fill fields with incorrect data and verify that appropriate error message appears
         await addClubPage.fillInputField(addClubPage.locationNameField, NEW_LOCATION_INCORRECT_DETAILS.locationName);
         await addClubPage.verifyElementVisibilityAndText(addClubPage.locationNameFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.locationNameIsIncorrect);
 
@@ -166,7 +165,7 @@ let apiService, addClubPage, homePage, userPage, clubInfoPage;
         await addClubPage.fillInputField(addClubPage.locationPhoneNumberField, NEW_LOCATION_INCORRECT_DETAILS.locationPhone);
         await addClubPage.verifyElementVisibilityAndText(addClubPage.locationPhoneFieldErrorMessage, true, ADD_LOCATION_VALIDATION_ERROR_MESSAGE.phoneIsIncorrect);
 
-        //fill fields with correct data and verify that error messages disappear
+        // Fill fields with correct data and verify that error messages disappear
         await addClubPage.fillInputField(addClubPage.locationNameField, NEW_LOCATION_CORRECT_DETAILS.locationName);
         await addClubPage.verifyElementVisibilityAndText(addClubPage.locationNameFieldErrorMessage, false);
 
@@ -184,7 +183,7 @@ let apiService, addClubPage, homePage, userPage, clubInfoPage;
 
         await addClubPage.confirmLocationAddition();
 
-        //trigger step 2 mandatory fields validation
+        // Trigger step 2 mandatory fields validation
         await addClubPage.proceedToNextStep();
         await addClubPage.verifyElementVisibilityAndText(addClubPage.clubPhoneFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.phoneIsMandatory);
 
@@ -199,9 +198,6 @@ let apiService, addClubPage, homePage, userPage, clubInfoPage;
         await addClubPage.verifyElementVisibilityAndText(addClubPage.clubEmailFieldErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.emailIsIncorrect); 
         await addClubPage.fillInputField(addClubPage.clubEmailField, NEW_CLUB_CORRECT_CONTACT_DETAILS.email);
         await addClubPage.verifyElementVisibilityAndText(addClubPage.clubEmailFieldErrorMessage, false); 
-
-
-
     });
 
 
@@ -216,7 +212,7 @@ let apiService, addClubPage, homePage, userPage, clubInfoPage;
         await addClubPage.proceedToNextStep();
 
         await addClubPage.completeClubCreation();
-        //to be updated once the correct error messages are implemented
+        // To be updated once the correct error messages are implemented
         await addClubPage.verifyElementVisibilityAndText(addClubPage.clubDescriptionErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.descriptionIsIncorrect); 
         await addClubPage.fillInputField(addClubPage.descriptionTextArea, NEW_CLUB_INCORRECT_DETAILS.clubDescription);
         await addClubPage.verifyElementVisibilityAndText(addClubPage.clubDescriptionErrorMessage, true, ADD_CLUB_VALIDATION_ERROR_MESSAGE.descriptionIsIncorrectCharLimit); 
@@ -227,7 +223,7 @@ let apiService, addClubPage, homePage, userPage, clubInfoPage;
 
 
     test("Verify that tooltips and warning messages appear", async ({ page }) => {
-        //remove the club with the test club_title if it exists
+        // Remove the club with the test club_title if it exists
         try {
             await apiService.deleteClubByTitle(NEW_CLUB_CORRECT_DETAILS.clubTitle);
         } catch (e) {
@@ -255,8 +251,10 @@ let apiService, addClubPage, homePage, userPage, clubInfoPage;
         await addClubPage.verifyElementVisibility(addClubPage.clubIsAutomaticallyOnlineMessage, true);
         await addClubPage.fillInputField(addClubPage.descriptionTextArea, NEW_CLUB_CORRECT_DETAILS.clubDescription);
 
-        //complete club creation and go through the creation steps again to verify that
-        //'this club already exists' message appears
+        /* 
+         * Complete club creation and go through the creation steps again to verify that
+         * 'this club already exists' message appears
+         */
         await addClubPage.completeClubCreation();
         await homePage.openAddClubPage();
         await addClubPage.fillInputField(addClubPage.clubNameField, NEW_CLUB_CORRECT_DETAILS.clubTitle);

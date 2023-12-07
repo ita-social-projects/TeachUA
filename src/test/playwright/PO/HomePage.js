@@ -26,6 +26,10 @@ class HomePage extends BasePage{
         await this.addClubButton.click();
     }
 
+    /**
+     * Performs a user interface login based on the specified user type.
+     * @param {string} userType - The type of user to log in as (e.g., "admin" or "user").
+     */
     async uiLoginAs(userType){
         const userData = {
             admin: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },

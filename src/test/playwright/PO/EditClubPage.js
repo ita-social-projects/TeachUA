@@ -72,7 +72,7 @@ class EditClubPage extends AddClubPage {
         this.clubUpdatedSuccessMessage = this.page
             .locator('div.ant-message-success')
             .filter({ hasText: EDIT_CLUB_PAGE.clubSuccessfullyEdited });
-            
+
         this.clubAlreadyExistMessage = this.page
             .locator('div.ant-message-notice-content')
             .filter({ hasText: EDIT_CLUB_PAGE.clubAlreadyExistMessage });
@@ -80,14 +80,22 @@ class EditClubPage extends AddClubPage {
         this.clubDescriptionErrorMessage = this.page.locator('div#basic_descriptionText_help');
     }
 
+    /**
+     * Opens the edit location window for the specified location.
+     * @param {string} locationName - The name of the location to edit.
+     */
     async openEditLocationWindow(locationName) {
         await this.page
             .locator('li.ant-list-item')
             .filter({ hasText: locationName })
             .locator(this.editLocationButton)
             .click();
-    
-        }
+    }
+
+    /**
+     * Deletes the specified location.
+     * @param {string} locationName - The name of the location to delete.
+     */
     async deleteLocation(locationName) {
         await this.page
             .locator('li.ant-list-item')

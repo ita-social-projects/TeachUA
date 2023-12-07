@@ -19,17 +19,17 @@ test.describe.configure({
     })
 
     test("Verify that clubs received in the result of the simple search contain search query (search by club name/description)", async ({ page }) => {
-        //search by the club name and verification
+        // Search by the club name and verification
         await clubsPage.simpleSearchByQuery(SIMPLE_SEARCH_PARAMETERS.clubNameSearchQuery);
         await clubsPage.verifyClubCardsContainText(SIMPLE_SEARCH_PARAMETERS.clubNameSearchQuery);
 
-        //change the search (by the club description) and verify that the results are correct
+        // Change the search (by the club description) and verify that the results are correct
         await clubsPage.simpleSearchByQuery(SIMPLE_SEARCH_PARAMETERS.descriptionSearchQuery);
         await clubsPage.verifyClubCardsContainText(SIMPLE_SEARCH_PARAMETERS.descriptionSearchQuery);
     });
 
     test("Verify that clubs received in the result of the simple search contain search query (search by category name)", async ({ page }) => {
-        //search by the club category and verification/different city
+        // Search by the club category and verification/different city
         basePage = new BasePage(page);
         await basePage.selectCityInNavBar(CITIES.kharkiv)
         await clubsPage.simpleSearchByQuery(SIMPLE_SEARCH_PARAMETERS.categorySearchQuery);

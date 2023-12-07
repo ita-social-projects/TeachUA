@@ -13,7 +13,6 @@ class UserPage extends BasePage {
         this.deleteClubOption = page.locator('li.ant-dropdown-menu-item').filter({ hasText: USER_PAGE.deleteClub });
         this.editClubWindowTitle = page.getByRole('dialog').getByText(USER_PAGE.editClub);
         this.clubDetailsButton = page.locator('button.details-button');
-
         this.clubDeletedSuccessMessage = this.page
             .locator("div.ant-message-success")
             .filter({ hasText: USER_PAGE.clubSuccessfullyDeleted });
@@ -48,16 +47,22 @@ class UserPage extends BasePage {
         }
     }
 
-    /*
-     *This method verifies whether there is a club with provided title on the user page
-     *if the club is not present, it will iterate through the pages untill the required club is found and
-     *then selecting the provided option from the dropdown
-     *or if the are no pages left and club wasn't found, it will throw an error
+    /**
+     * Selects a dropdown option for a club with the specified title on the user page.
+     * If the club is not found on the current page, it iterates through available pages until
+     * the required club is found, selecting the provided option from the dropdown.
+     * Throws an error if the club is not found and there are no more pages.
+     * @param {string} clubTitle - The title of the club for which the dropdown option is selected.
+     * @param {Locator} option - The locator representing the dropdown option to be selected.
      */
     async selectClubDropdownOption(clubTitle, option) {
+        // Check if the user has clubs
         await this.checkIfUserHasClubs();
 
+        // Filter the owned clubs based on the provided title
         const club = await this.ownedClubs.filter({ has: this.page.getByText(clubTitle, { exact: true }) });
+
+        // If the club is found on this page, perform the required actions
         if (await club.isVisible()) {
             await club.locator("div.update-club-dropdown").click();
             await option.click();
@@ -72,10 +77,15 @@ class UserPage extends BasePage {
         }
     }
 
+    // Open the club information page for a club with the specified title
     async openClubInfoPage(clubTitle) {
+        // Check if the user has clubs
         await this.checkIfUserHasClubs();
 
+        // Filter the owned clubs based on the provided title
         const club = await this.ownedClubs.filter({ has: this.page.getByText(clubTitle, { exact: true }) });
+        
+        // If the club is found on this page, open the information page
         if (await club.isVisible()) {
             await club.locator(this.clubDetailsButton).click();
             return;
