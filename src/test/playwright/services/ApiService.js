@@ -1,7 +1,7 @@
 
 import { expect} from "@playwright/test";
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
-import {SIGN_IN_URL, CREATE_CLUB_REQUEST , USERS_CLUBS, CREATE_CHALLENGE_REQUEST, CREATE_TASK_REQUEST, GET_CHALLENGES_REQUEST, GET_TASK_REQUEST} from "../constants/api.constants";
+import {SIGN_IN_URL, USERS_CLUBS, CREATE_CHALLENGE_REQUEST, GET_CHALLENGES_REQUEST, GET_TASK_REQUEST} from "../constants/api.constants";
 
 
 class ApiService {
@@ -59,7 +59,7 @@ class ApiService {
         return responseJson.totalPages;
     }
 
-    async createNewClub() {
+    async createNewClub(CREATE_CLUB_REQUEST) {
         const response = await fetch(CREATE_CLUB_REQUEST.url, {
             method: CREATE_CLUB_REQUEST.method,
             body: JSON.stringify(CREATE_CLUB_REQUEST.body),
