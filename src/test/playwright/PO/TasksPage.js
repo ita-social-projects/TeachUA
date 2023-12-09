@@ -77,7 +77,7 @@ class TasksPage extends BasePage {
         } else if (await this.isNextPageAvailable()) {
             // If the club is not found on this page, checks if there's a next page and recursively search
             await this.goToNextPage();
-            await this.selectTaskManageOption(challengeSortNumber, option);
+            await this.selectTaskManageOption(taskName, option);
         } else {
             // If the club is not found and there are no more pages, throws an error
             throw new Error("No such task exists");

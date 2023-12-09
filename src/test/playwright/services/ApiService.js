@@ -1,7 +1,7 @@
 
 import { expect} from "@playwright/test";
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL, USER_PASSWORD } from "../constants/general.constants";
-import {SIGN_IN_URL, CREATE_CLUB_REQUEST , USERS_CLUBS, CREATE_CHALLENGE_REQUEST, CREATE_TASK_REQUEST, GET_CHALLENGES_REQUEST, GET_TASK_REQUEST} from "../constants/api.constants";
+import {SIGN_IN_URL, CREATE_CLUB_REQUEST , USERS_CLUBS, CREATE_CHALLENGE_REQUEST_2, CREATE_TASK_REQUEST, GET_CHALLENGES_REQUEST, GET_TASK_REQUEST} from "../constants/api.constants";
 
 
 class ApiService {
@@ -164,7 +164,7 @@ class ApiService {
             return;
         }
         const challenges = await this.getAllChallenges();
-        const challenge = challenges.find((c) => c.sortNumber === parseInt(CREATE_CHALLENGE_REQUEST.body.sortNumber));
+        const challenge = challenges.find((c) => c.sortNumber === parseInt(CREATE_CHALLENGE_REQUEST_2.body.sortNumber));
         CREATE_TASK_REQUEST.body.challengeId = challenge.id;
         if (challenge) {
             const response = await fetch(`http://localhost:8080/dev/api/challenge/${challenge.id}/task`, {
