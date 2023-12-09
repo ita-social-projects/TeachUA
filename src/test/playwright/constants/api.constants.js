@@ -87,11 +87,23 @@ export const CREATE_CHALLENGE_REQUEST  = {
     },
 };
 
+export const CREATE_CHALLENGE_REQUEST_2  = {
+    url: "http://localhost:8080/dev/api/challenge",
+    method: "POST",
+    body: {
+        name: "Tasks Testing Challenge",
+        description: "Description for a challenge which purpose is to test tasks functionality. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
+        title: "Test for a task",
+        picture: "/upload/challenges/challenge1.jpg",
+        sortNumber: 54321
+    },
+};
+
 export const CREATE_TASK_REQUEST  = {
     url: "http://localhost:8080/dev/api/challenge",
     method: "POST",
     body: {
-        name: "Super Task Name",
+        name: "First Task Request",
         headerText: "Splendid test Task title. Minimum 40 chars",
         description: "A new TASK test description. Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet.",
         startDate: "2024-12-12",

@@ -10,7 +10,7 @@ class ChallengesPage extends BasePage {
         this.openTasksButton = page.locator('a.back-btn button');
         this.addTaskButton = page.locator('a[href="/dev/admin/addTask"]');
         this.allChallengesSequenceNumbers = page.locator(
-            `td.ant-table-cell:nth-child(${CHALLENGES_PAGE.sequenceNumberTableColumn})`
+            `td.ant-table-cell:nth-child(${CHALLENGES_PAGE.sequenceNumberTableColumn}) a`
         );
         this.firstChallenge = page.locator('tr:first-child td.ant-table-cell:first-child');
         this.editChallengeButtons = page.locator('span.table-action').filter({ hasText: CHALLENGES_PAGE.edit });
