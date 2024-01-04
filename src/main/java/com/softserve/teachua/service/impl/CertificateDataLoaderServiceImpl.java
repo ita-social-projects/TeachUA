@@ -107,9 +107,15 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
         CertificateDates dates = CertificateDates.builder()
                 .date(data.getExcelList().get(index).getDateIssued().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
                 .hours(data.getHours()).courseNumber(data.getCourseNumber()).build();
-        if (data.getType() == 3) {
+        /*if (data.getType() == 3) {
             dates.setDuration(decorator.formDates(data.getStartDate(), data.getEndDate()));
         } else {
+            dates.setStudyForm(data.getStudyType());
+        } */
+        if ((data.getType() == 3) || (data.getType() == 6)) {
+            dates.setDuration(decorator.formDates(data.getStartDate(), data.getEndDate()));
+        }
+        if (data.getType() != 3) {
             dates.setStudyForm(data.getStudyType());
         }
         return certificateDatesService.getOrCreateCertificateDates(dates);
@@ -126,6 +132,7 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
         checkParticipantCertificateData();
         checkBasicParticipantCertificateData();
         checkBusinessParticipantCertificateData();
+        checkVisibleCircleCertificateData();
     }
 
     private void checkTrainerCertificateData() {
@@ -174,7 +181,8 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             templateService.addTemplate(CertificateTemplate.builder().name("Учасник базового рівня")
                     .certificateType(certificateType)
                     .filePath("/certificates/templates/jedyni_basic_participant_template.jrxml")
-                    .courseDescription("Граматичний курс української мови.")
+                    /*.courseDescription("Граматичний курс української мови.")*/
+                    .courseDescription("Вивчення української мови базового рівня.")
                     .projectDescription(PROJECT_DESCRIPTION)
                     .picturePath(PICTURE_PATH).build());
         }
@@ -188,7 +196,27 @@ public class CertificateDataLoaderServiceImpl implements CertificateDataLoaderSe
             templateService.addTemplate(CertificateTemplate.builder().name("Учасник бізнес-курсу")
                     .certificateType(certificateType)
                     .filePath("/certificates/templates/jedyni_business_participant_template.jrxml")
-                    .courseDescription("Бізнес-курс української мови.")
+                    /*.courseDescription("Бізнес-курс української мови.")*/
+                    .courseDescription("Курс української мови «PROукраїнська».")
+                    .projectDescription(PROJECT_DESCRIPTION)
+                    .picturePath(PICTURE_PATH).build());
+        }
+    }
+
+    private void checkVisibleCircleCertificateData() {
+        /*boolean isExistTemplate = certificateTypeRepository.existsByCodeNumber(6);
+        if (!isExistTemplate) {*/
+        if (!templateRepository.existsCertificateTemplateByCertificateTypeId(6)) {
+            log.info("Saving visible circle template");
+            CertificateType certificateTypeFirst = CertificateType.builder().codeNumber(6)
+                    .name(PARTICIPANTS_CERTIFICATE_TYPE_NAME).build();
+            CertificateType certificateType = certificateTypeRepository.saveAndFlush(certificateTypeFirst);
+            /*CertificateType certificateType = certificateTypeRepository.saveAndFlush(
+            //        CertificateType.builder().codeNumber(6).name(PARTICIPANTS_CERTIFICATE_TYPE_NAME).build()); */
+            templateService.addTemplate(CertificateTemplate.builder().name("Учасник творчих особистостей Видноколо")
+                    .certificateType(certificateType)
+                    .filePath("/certificates/templates/jedyni_visible_circle_template.jrxml")
+                    .courseDescription("Курс української мови для творчих особистостей «Видноколо».")
                     .projectDescription(PROJECT_DESCRIPTION)
                     .picturePath(PICTURE_PATH).build());
         }

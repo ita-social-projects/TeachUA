@@ -19,7 +19,7 @@ public interface CertificateService {
     /**
      * This const means the last database id of the certificate's template, which generates using Jasper .xml file.
      */
-    Integer LAST_JRXML_TEMPLATE_ID = 5;
+    Integer LAST_JRXML_TEMPLATE_ID = 6;
 
     /**
      * Get a list of dto {@code CertificateTransfer} of all certificates.
