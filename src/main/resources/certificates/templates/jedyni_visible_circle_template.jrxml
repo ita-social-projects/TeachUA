@@ -103,7 +103,7 @@
                     <font size="19"/>
                 </textElement>
 
-                <textFieldExpression>"Форма навчання - " + <![CDATA[$F{studyForm}]]> + ".\nТривалість - " + <![CDATA[$F{studyHours}]]> + " академічних годин ("+ <![CDATA[$F{credits}]]> +" кредити ECTS)."</textFieldExpression>
+                <textFieldExpression>"Форма навчання &#8211; " + <![CDATA[$F{studyForm}]]> + ".\nТривалість &#8211; " + <![CDATA[$F{studyHours}]]> + " академічних годин ("+ <![CDATA[$F{credits}]]> +" кредити ECTS)."</textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="290" y="468" width="790" height="120" uuid="8d5ebb5d-34ad-40d2-a66f-8046c287bdcf"/>
@@ -134,7 +134,7 @@
                 <textElement>
                     <font size="15"/>
                 </textElement>
-                <text>&#171;Українська гуманітарна платформа&#187;</text>
+                <text>&#171;Українська гуманітарна платформа&#187;,</text>
             </staticText>
             <staticText>
                 <reportElement x="290" y="643" width="500" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
