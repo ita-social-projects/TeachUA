@@ -97,33 +97,33 @@
                 <!--
                 <textFieldExpression>"Проєкт реалізований у період "+<![CDATA[$F{studyDuration}]]> + " \nініціативою \"Навчай українською\",\nдо якої належить \"Українська гуманітарна платформа\"."</textFieldExpression>
                 -->
-                <textFieldExpression>"Проєкт реалізовано "+<![CDATA[$F{studyDuration}]]>+"\nініціативою &#171;Навчай українською&#187;, до якої належить\n&#171;Українська гуманітарна платформа&#187;."</textFieldExpression>
+                <textFieldExpression>"Проєкт реалізовано "+<![CDATA[$F{studyDuration}]]>+"\nініціативою &#171;Навчай українською&#187;, до якої належить\n&#171;Українська гуманітарна платформа&#187;, за підтримки\nІСАР Єднання у межах проєкту &#171;Ініціатива секторальної\nпідтримки громадянського суспільства&#187;."</textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="290" y="553" width="300" height="35" uuid="cb540382-6575-4a56-928c-d44f2058a024"/>
+                <reportElement x="290" y="573" width="300" height="35" uuid="cb540382-6575-4a56-928c-d44f2058a024"/>
                 <textElement>
                     <font pdfFontName="/certificates/fonts/Halvar Breitschrift Bold.ttf" size="24" pdfEncoding="cp1251" isPdfEmbedded="true"/>
                 </textElement>
                 <text>Наталка Федечко</text>
             </staticText>
             <staticText>
-                <reportElement x="290" y="583" width="500" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
+                <reportElement x="290" y="603" width="500" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
                 <textElement>
                     <font size="15"/>
                 </textElement>
                 <text>голова громадської організації</text>
             </staticText>
-            <textField>
-                <reportElement x="290" y="603" width="500" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
+            <staticText>
+                <reportElement x="290" y="623" width="500" height="40" uuid="4ca20b19-60d9-4563-8866-5e12cbdd9c0b"/>
                 <textElement>
                     <font size="15"/>
                 </textElement>
-                <textFieldExpression>"&#171;Українська гуманітарна платформа&#187;,\nкерівник Руху &#171;Єдині&#187;"</textFieldExpression>
-            </textField>
+                <text>&#171;Українська гуманітарна платформа&#187;</text>
+            </staticText>
 
             <image>
                 <reportElement x="200" y="730" width="900" height="40" uuid="f3471345-6bca-4706-a2a4-efd645e19729"/>
-                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/all_logo3.png")]]></imageExpression>
+                <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/all_logo.png")]]></imageExpression>
             </image>
 
             <!--
@@ -146,14 +146,14 @@
                 <imageExpression><![CDATA[com.softserve.teachua.utils.CertificateContentDecorator.getRealPathToImage("jedyni_participant/stamp.jpg")]]></imageExpression>
             </image>
             <staticText>
-                <reportElement x="920" y="10" width="78" height="35" uuid="afa193c3-e74f-4b54-90f3-c2ca75ec401d"/>
+                <reportElement x="925" y="10" width="78" height="35" uuid="afa193c3-e74f-4b54-90f3-c2ca75ec401d"/>
                 <textElement>
                     <font size="14" isBold="false"/>
                 </textElement>
                 <text>Виданий</text>
             </staticText>
             <textField>
-                <reportElement x="998" y="10" width="105" height="35" uuid="81313113-97ec-4c10-84d9-185edd021fca"/>
+                <reportElement x="1003" y="10" width="100" height="35" uuid="81313113-97ec-4c10-84d9-185edd021fca"/>
                 <textElement textAlignment="Right">
                     <font size="14" isBold="false"/>
                 </textElement>
